@@ -15,8 +15,6 @@ import { Form } from 'react-bootstrap';
 
 function SingleQuarterDropdown({ quarters, quarter, setQuarter, controlId, onChange = null, label = "Quarter" }) {
 
-    const defaultQuarter = "20212";
-
     const localSearchQuarter = localStorage.getItem(controlId);
 
     const [quarterState, setQuarterState] = useState(

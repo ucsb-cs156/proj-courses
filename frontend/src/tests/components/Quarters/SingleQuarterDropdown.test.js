@@ -29,7 +29,7 @@ describe("SingleQuarterSelector tests", () => {
         />);
     });
 
-    test("when I select an object, the value changes", () => {
+    test("when I select an object, the value changes", async () => {
         const { getByLabelText } =
             render(<SingleQuarterDropdown
                 quarters={quarterRange("20211", "20222")}
@@ -39,6 +39,7 @@ describe("SingleQuarterSelector tests", () => {
                 label="Select Quarter"
             />
             );
+        await waitFor(() => expect(getByLabelText("Select Quarter")).toBeInTheDocument);
         const selectQuarter = getByLabelText("Select Quarter")
         userEvent.selectOptions(selectQuarter, "20213");
         expect(setQuarter).toBeCalledWith("20213");
@@ -56,15 +57,28 @@ describe("SingleQuarterSelector tests", () => {
                 onChange={onChange}
             />
             );
+        await waitFor(() => expect(getByLabelText("Select Quarter")).toBeInTheDocument);
         const selectQuarter = getByLabelText("Select Quarter")
         userEvent.selectOptions(selectQuarter, "20213");
-        await waitFor( ()=> expect(setQuarter).toBeCalledWith("20213") );
-        await waitFor( ()=> expect(onChange).toBeCalledTimes(1) );
+        await waitFor(() => expect(setQuarter).toBeCalledWith("20213"));
+        await waitFor(() => expect(onChange).toBeCalledTimes(1));
 
         // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
-       
+
         const event = onChange.mock.calls[0][0];
         expect(event.target.value).toBe("20213");
+    });
+
+    test("default label is Quarter", async () => {
+        const { getByLabelText } =
+            render(<SingleQuarterDropdown
+                quarters={quarterRange("20211", "20222")}
+                quarter={quarter}
+                setQuarter={setQuarter}
+                controlId="sqd1"
+            />
+            );
+        await waitFor(() => expect(getByLabelText("Quarter")).toBeInTheDocument);
     });
 
 });

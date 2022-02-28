@@ -11,6 +11,9 @@ import {
   describe("QuarterFormSelect conversion tests", () => {
     test("fromFormat correctly converts", () => {
       expect(fromFormat("20211")).toBe("WINTER 2021");
+      expect(fromFormat("20192")).toBe("SPRING 2019");
+      expect(fromFormat("20173")).toBe("SUMMER 2017");
+      expect(fromFormat("19984")).toBe("FALL 1998");
     });
   
     test("toFormat correctly converts", () => {
