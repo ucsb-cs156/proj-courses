@@ -44,11 +44,12 @@ public class SystemInfoControllerTests extends ControllerTestCase {
 
     // arrange
 
-
     SystemInfo systemInfo = SystemInfo
         .builder()
         .showSwaggerUILink(true)
         .springH2ConsoleEnabled(true)
+        .startQtrYYYYQ("20221")
+        .endQtrYYYYQ("20222")
         .build();
     when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
     String expectedJson = mapper.writeValueAsString(systemInfo);

@@ -5,7 +5,8 @@ import {
     fromNumericYYYYQ,
     toNumericYYYYQ,
     nextQuarter,
-    quarterRange
+    quarterRange,
+    qtrNumToQuarter
   } from "main/utils/quarterUtilities";
   
   describe("QuarterFormSelect conversion tests", () => {
@@ -14,6 +15,13 @@ import {
       expect(fromFormat("20192")).toBe("SPRING 2019");
       expect(fromFormat("20173")).toBe("SUMMER 2017");
       expect(fromFormat("19984")).toBe("FALL 1998");
+    });
+
+    test("qtrNumToQuarter converts property", () => {
+      expect(qtrNumToQuarter[1]).toBe("WINTER");
+      expect(qtrNumToQuarter[2]).toBe("SPRING");
+      expect(qtrNumToQuarter[3]).toBe("SUMMER");
+      expect(qtrNumToQuarter[4]).toBe("FALL");
     });
   
     test("toFormat correctly converts", () => {

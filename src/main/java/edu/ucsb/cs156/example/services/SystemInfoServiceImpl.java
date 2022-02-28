@@ -21,10 +21,18 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.showSwaggerUILink:false}")
   private boolean showSwaggerUILink;
 
+  @Value("${app.startQtrYYYYQ:20221}")
+  private String startQtrYYYYQ;
+
+  @Value("${app.endQtrYYYYQ:20222}")
+  private String endQtrYYYYQ;
+
   public SystemInfo getSystemInfo() {
     SystemInfo si = SystemInfo.builder()
     .springH2ConsoleEnabled(this.springH2ConsoleEnabled)
     .showSwaggerUILink(this.showSwaggerUILink)
+    .startQtrYYYYQ(this.startQtrYYYYQ)
+    .endQtrYYYYQ(this.endQtrYYYYQ)
     .build();
   log.info("getSystemInfo returns {}",si);
   return si;

@@ -93,5 +93,6 @@ export {
     fromNumericYYYYQ,
     toNumericYYYYQ,
     nextQuarter,
-    quarterRange
+    quarterRange,
+    qtrNumToQuarter
 };

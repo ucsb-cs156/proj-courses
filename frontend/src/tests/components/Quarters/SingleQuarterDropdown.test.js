@@ -1,12 +1,23 @@
-import React from 'react';
 import { render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import SingleQuarterDropdown from "main/components/Quarters/SingleQuarterDropdown"
-
 import { quarterRange } from 'main/utils/quarterUtilities';
 
+jest.mock('react', ()=>({
+    ...jest.requireActual('react'),
+    useState: jest.fn()
+  }))
+import { useState } from 'react';
 
 describe("SingleQuarterSelector tests", () => {
+
+    beforeEach(() => {
+        useState.mockImplementation(jest.requireActual('react').useState);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
     const quarter = jest.fn();
     const setQuarter = jest.fn();
@@ -79,6 +90,58 @@ describe("SingleQuarterSelector tests", () => {
             />
             );
         await waitFor(() => expect(getByLabelText("Quarter")).toBeInTheDocument);
+    });
+
+    test("keys / testids are set correctly on options", async () => {
+        const { getByTestId } =
+            render(<SingleQuarterDropdown
+                quarters={quarterRange("20211", "20222")}
+                quarter={quarter}
+                setQuarter={setQuarter}
+                controlId="sqd1"
+            />
+            );
+        const expectedKey = "sqd1-option-0"
+        await waitFor(() => expect(getByTestId(expectedKey).toBeInTheDocument));
+        const firstOption = getByTestId(expectedKey);
+    });
+
+    test("when localstorage has a value, it is passed to useState", async () => {
+        const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+        getItemSpy.mockImplementation(() => "20202");
+
+        const setQuarterStateSpy = jest.fn();
+        useState.mockImplementation((x)=>[x, setQuarterStateSpy])
+
+        const { getByTestId } =
+            render(<SingleQuarterDropdown
+                quarters={quarterRange("20201", "20224")}
+                quarter={quarter}
+                setQuarter={setQuarter}
+                controlId="sqd1"
+            />
+            );
+
+        await waitFor(() => expect(useState).toBeCalledWith("20202"));
+    });
+
+    test("when localstorage has no value, first element of quarter range is passed to useState", async () => {
+        const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+        getItemSpy.mockImplementation(() => null);
+
+        const setQuarterStateSpy = jest.fn();
+        useState.mockImplementation((x)=>[x, setQuarterStateSpy])
+
+        const { getByTestId } =
+            render(<SingleQuarterDropdown
+                quarters={quarterRange("20201", "20224")}
+                quarter={quarter}
+                setQuarter={setQuarter}
+                controlId="sqd1"
+            />
+            );
+
+        await waitFor(() => expect(useState).toBeCalledWith("20201"));
     });
 
 });
