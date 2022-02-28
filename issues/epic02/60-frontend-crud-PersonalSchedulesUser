@@ -1,0 +1,14 @@
+Front End Crud personal schedules (user)
+
+I recommend breaking this issue up into multiple issues.
+
+In this issue you will create front end components for
+users to manipulate personal schedule objects.
+
+You'll need an suitable menu on the menu bar.
+
+You'll need a table to display personal schedules, with buttons for edit and delete.
+
+You'll need a form for entering and editing them.
+
+

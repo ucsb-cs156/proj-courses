@@ -20,75 +20,32 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
 
           <Navbar.Toggle />
 
-          <Nav className="me-auto">
-            {
-              systemInfo?.springH2ConsoleEnabled && (
-                <>
-                  <Nav.Link href="/h2-console">H2Console</Nav.Link>
-                </>
-              )
-            }
-            {
-              systemInfo?.showSwaggerUILink && (
-                <>
-                  <Nav.Link href="/swagger-ui/index.html">Swagger</Nav.Link>
-                </>
-              )
-            }
-          </Nav>
-
           <>
             {/* be sure that each NavDropdown has a unique id and data-testid  */}
           </>
 
           <Navbar.Collapse className="justify-content-between">
+            <Nav className="me-auto">
+              {
+                systemInfo?.springH2ConsoleEnabled && (
+                  <>
+                    <Nav.Link href="/h2-console">H2Console</Nav.Link>
+                  </>
+                )
+              }
+              {
+                systemInfo?.showSwaggerUILink && (
+                  <>
+                    <Nav.Link href="/swagger-ui/index.html">Swagger</Nav.Link>
+                  </>
+                )
+              }
+            </Nav>
             <Nav className="mr-auto">
               {
                 hasRole(currentUser, "ROLE_ADMIN") && (
                   <NavDropdown title="Admin" id="appnavbar-admin-dropdown" data-testid="appnavbar-admin-dropdown" >
                     <NavDropdown.Item href="/admin/users">Users</NavDropdown.Item>
-                  </NavDropdown>
-                )
-              }
-            </Nav>
-
-            <Nav className="mr-auto">
-              {
-                hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="Todos" id="appnavbar-todos-dropdown" data-testid="appnavbar-todos-dropdown" >
-                    <NavDropdown.Item href="/todos/list">List Todos</NavDropdown.Item>
-                    <NavDropdown.Item href="/todos/create">Create Todo</NavDropdown.Item>
-                  </NavDropdown>
-                )
-              }
-            </Nav>
-
-
-            <Nav className="mr-auto">
-              {
-                hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="Students" id="appnavbar-students-dropdown" data-testid="appnavbar-students-dropdown" >
-                    <NavDropdown.Item href="/students/list" data-testid="appnavbar-students-list">List</NavDropdown.Item>
-                    {
-                      hasRole(currentUser, "ROLE_ADMIN") && (
-                        <NavDropdown.Item href="/students/create" data-testid="appnavbar-students-create">Create</NavDropdown.Item>
-                      )
-                    }
-                  </NavDropdown>
-                )
-              }
-            </Nav>
-
-            <Nav className="mr-auto">
-              {
-                hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="UCSBDates" id="appnavbar-ucsbdates-dropdown" data-testid="appnavbar-ucsbdates-dropdown" >
-                    <NavDropdown.Item href="/ucsbdates/list" data-testid="appnavbar-ucsbdates-list">List</NavDropdown.Item>
-                    {
-                      hasRole(currentUser, "ROLE_ADMIN") && (
-                        <NavDropdown.Item href="/ucsbdates/create" data-testid="appnavbar-ucsbdates-create">Create</NavDropdown.Item>
-                      )
-                    }
                   </NavDropdown>
                 )
               }
