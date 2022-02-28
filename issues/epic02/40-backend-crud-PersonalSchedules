@@ -1,0 +1,27 @@
+Backend CRUD personal schedules
+
+I recommend breaking this issue up into multiple issues.
+
+In this issue you will create backend Swagger endpoints for crud operations
+for Personal Schedules.
+
+In this epic, we will not yet reach the point where you will be able to
+actually add or delete courses from these schedules; for now they, are just
+objects with:
+
+* Name
+* Description
+* Quarter
+
+And, like the Todos in the sample code for demo-spring-react-example-v2,
+they *belong to a user*.
+
+So we need the full set of operations where:
+* For admins, admins can manipulate EVERYONE's personal schedules objects
+* For users, they can only manipulate their own.
+
+This is basically just reimplementing the Todo's entities, repositories, and controllers
+but with Name/Description/Quarter instead of the fields for Todos.
+
+Add your own ACs, and break this up into multiple issues as needed.
+
