@@ -32,7 +32,9 @@ describe("utils/systemInfo tests", () => {
             expect(result.current.data).toEqual({ 
                 initialData:true,   
                 springH2ConsoleEnabled: false,
-                showSwaggerUILink: false  
+                showSwaggerUILink: false,
+                startQtrYYYYQ: "20221",
+                endQtrYYYYQ: "20222"  
             });
             
             const queryState = queryClient.getQueryState("systemInfo");
@@ -91,7 +93,9 @@ describe("utils/systemInfo tests", () => {
 
             expect(result.current.data).toEqual({  
                 springH2ConsoleEnabled: false,
-                showSwaggerUILink: false 
+                showSwaggerUILink: false,
+                startQtrYYYYQ: "20221",
+                endQtrYYYYQ: "20222"
             });
             queryClient.clear();
         });
