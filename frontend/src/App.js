@@ -20,6 +20,15 @@ function App() {
         {
           hasRole(currentUser, "ROLE_ADMIN") && <Route exact path="/admin/users" element={<AdminUsersPage />} />
         }
+        {
+          hasRole(currentUser, "ROLE_USER") && (
+            <>
+              <Route exact path="/todos/list" element={<TodosIndexPage />} />
+              <Route exact path="/todos/create" element={<TodosCreatePage />} />
+              <Route exact path="/todos/edit/:todoId" element={<TodosEditPage />} />
+            </>
+          )
+        }
       </Routes>
     </BrowserRouter>
   );
