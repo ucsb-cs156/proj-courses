@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import edu.ucsb.cs156.example.repositories.UserRepository;
 import edu.ucsb.cs156.example.services.UCSBCurriculumService;
 
 @RestController
@@ -21,6 +23,9 @@ public class UCSBCurriculumController {
     private final Logger logger = LoggerFactory.getLogger(UCSBCurriculumController.class);
 
     private ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
