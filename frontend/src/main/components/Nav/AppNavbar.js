@@ -50,6 +50,16 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 )
               }
             </Nav>
+            <Nav className="mr-auto">
+              {
+                hasRole(currentUser, "ROLE_USER") && (
+                  <NavDropdown title="PersonalSchedules" id="appnavbar-personalschedules-dropdown" data-testid="appnavbar-personalschedules-dropdown" >
+                    <NavDropdown.Item href="/personalschedules/list">List PersonalSchedules</NavDropdown.Item>
+                    <NavDropdown.Item href="/personalschedules/create">Create PersonalSchedules</NavDropdown.Item>
+                  </NavDropdown>
+                )
+              }
+            </Nav>
 
             <Nav className="ml-auto">
               {
