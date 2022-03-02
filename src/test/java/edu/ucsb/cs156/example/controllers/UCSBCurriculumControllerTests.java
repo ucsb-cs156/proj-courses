@@ -2,6 +2,7 @@ package edu.ucsb.cs156.example.controllers;
 
 import edu.ucsb.cs156.example.config.SecurityConfig;
 import edu.ucsb.cs156.example.services.UCSBCurriculumService;
+import edu.ucsb.cs156.example.repositories.UserRepository;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +22,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(value = UCSBCurriculumController.class)
@@ -31,6 +29,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UCSBCurriculumControllerTests {
     private final Logger logger = LoggerFactory.getLogger(UCSBCurriculumControllerTests.class);
     private ObjectMapper mapper = new ObjectMapper();
+
+    @MockBean
+    UserRepository userRepository;
 
     @Autowired
     private MockMvc mockMvc;
