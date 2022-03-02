@@ -5,6 +5,7 @@ import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
 import AppNavbar from "main/components/Nav/AppNavbar";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { Dropdown } from "bootstrap";
 
 describe("AppNavbar tests", () => {
 
@@ -40,8 +41,14 @@ describe("AppNavbar tests", () => {
         );
 
         await waitFor(() => expect(getByText("Welcome, phtcon@ucsb.edu")).toBeInTheDocument());
-        const adminMenu = getByTestId("appnavbar-admin-dropdown");
-        expect(adminMenu).toBeInTheDocument();        
+        const dropdown = getByTestId("appnavbar-admin-dropdown");
+        expect(dropdown).toBeInTheDocument(); 
+        
+        const aElement = dropdown.querySelector("a");
+        expect(aElement).toBeInTheDocument();
+        aElement?.click();
+        await waitFor( () => expect(getByTestId(/appnavbar-admin-users/)).toBeInTheDocument() );
+        await waitFor( () => expect(getByTestId(/appnavbar-admin-personalschedule/)).toBeInTheDocument() );
     });
 
     test("renders H2Console and Swagger links correctly", async () => {
