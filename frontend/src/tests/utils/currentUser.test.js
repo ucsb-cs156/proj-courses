@@ -164,6 +164,16 @@ describe("utils/currentUser tests", () => {
             expect(hasRole({ loggedIn: true, root: { rolesList: null } }, "ROLE_ADMIN")).toBeFalsy();
         });
 
+        test('test some code paths when data is in currentUser', async () => {
+            expect(hasRole({ data: {} }, "ROLE_ADMIN")).toBeFalsy();
+            expect(hasRole({ data: {root: null }}, "ROLE_ADMIN")).toBeFalsy();
+            expect(hasRole({ data: {root: {} }}, "ROLE_ADMIN")).toBeFalsy();
+            expect(hasRole({ data: {root: { rolesList: [] } }}, "ROLE_ADMIN")).toBeFalsy();
+            expect(hasRole({ data: {root: { rolesList: ["ROLE_USER"] } }}, "ROLE_ADMIN")).toBeFalsy();
+            expect(hasRole({ data: {root: { rolesList: ["ROLE_USER", "ROLE_ADMIN"] } }}, "ROLE_ADMIN")).toBeTruthy();
+        });
+
+
         test('hasRole(x,"ROLE_ADMIN") returns correct values when currentUser properly defined', async () => {
             expect(hasRole({ loggedIn: true, root: { rolesList: [] } }, "ROLE_ADMIN")).toBeFalsy();
             expect(hasRole({ loggedIn: true, root: { rolesList: ["ROLE_USER"] } }, "ROLE_ADMIN")).toBeFalsy();
@@ -171,4 +181,8 @@ describe("utils/currentUser tests", () => {
         });
 
     });
+
+
+   
+
 });
