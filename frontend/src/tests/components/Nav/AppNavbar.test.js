@@ -5,7 +5,6 @@ import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
 import AppNavbar from "main/components/Nav/AppNavbar";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { Dropdown } from "bootstrap";
 
 describe("AppNavbar tests", () => {
 
