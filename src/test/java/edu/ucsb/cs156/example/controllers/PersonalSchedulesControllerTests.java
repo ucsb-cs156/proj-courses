@@ -135,7 +135,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         verify(personalscheduleRepository, times(1)).findByIdAndUser(7L, u);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Schedule with id 7 not found", json.get("message"));
+        assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -160,7 +160,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         verify(personalscheduleRepository, times(1)).findByIdAndUser(13L, u);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Schedule with id 13 not found", json.get("message"));
+        assertEquals("PersonalSchedule with id 13 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -205,7 +205,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         verify(personalscheduleRepository, times(1)).findById(29L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Schedule with id 29 not found", json.get("message"));
+        assertEquals("PersonalSchedule with id 29 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -285,7 +285,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/personalschedules/post?Name=Test Name&Description=Test Description&done=Test Quarter")
+                post("/api/personalschedules/post?Name=Test Name&Description=Test Description&Quarter=Test Quarter")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
