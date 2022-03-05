@@ -19,6 +19,17 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
           </Navbar.Brand>
 
           <Navbar.Toggle />
+        
+
+
+
+
+          <>
+            {/* be sure that each NavDropdown has a unique id and data-testid  */}
+          </>
+
+          <Navbar.Collapse className="justify-content-between">
+
           <Nav className="me-auto">
             {
               systemInfo?.springH2ConsoleEnabled && (
@@ -36,12 +47,21 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
             }
           </Nav>
 
+        
+            <Nav className="mr-auto">
+              {
+                hasRole(currentUser, "ROLE_USER") && (
+                  <NavDropdown title="PersonalSchedules" id="appnavbar-personalschedules-dropdown" data-testid="appnavbar-personalschedules-dropdown" >
+                    <NavDropdown.Item href="/personalschedules/list" data-testid="appnavbar-personalschedules-list">List</NavDropdown.Item>
+                    <NavDropdown.Item href="/personalschedules/create" data-testid="appnavbar-personalschedules-create">Create</NavDropdown.Item>
+                  </NavDropdown>
+                )
+              }
+            </Nav>
 
-          <>
-            {/* be sure that each NavDropdown has a unique id and data-testid  */}
-          </>
 
-          <Navbar.Collapse className="justify-content-between">
+
+            
             <Nav className="mr-auto">
               {
                 hasRole(currentUser, "ROLE_ADMIN") && (
@@ -52,16 +72,6 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               }
             </Nav>
             
-            <Nav className="mr-auto">
-              {
-                hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="PersonalSchedules" id="appnavbar-personalschedules-dropdown" data-testid="appnavbar-personalschedules-dropdown" >
-                    <NavDropdown.Item href="/personalschedules/list">List</NavDropdown.Item>
-                    <NavDropdown.Item href="/personalschedules/create">Create</NavDropdown.Item>
-                  </NavDropdown>
-                )
-              }
-            </Nav>
 
             <Nav className="ml-auto">
               {
