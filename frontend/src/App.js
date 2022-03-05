@@ -7,6 +7,9 @@ import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
 import "bootstrap/dist/css/bootstrap.css";
 
+import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
+import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
+
 
 function App() {
 
@@ -23,9 +26,8 @@ function App() {
         {
           hasRole(currentUser, "ROLE_USER") && (
             <>
-              <Route exact path="/todos/list" element={<TodosIndexPage />} />
-              <Route exact path="/todos/create" element={<TodosCreatePage />} />
-              <Route exact path="/todos/edit/:todoId" element={<TodosEditPage />} />
+              <Route exact path="/personalschedules/list" element={<PersonalSchedulesIndexPage />} />
+              <Route exact path="/personalschedules/create" element={<PersonalSchedulesCreatePage />} />
             </>
           )
         }
