@@ -28,6 +28,7 @@ public class PersonalSchedule {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  private User user;
   private String Name;
   private String Description;
   private String Quarter;
