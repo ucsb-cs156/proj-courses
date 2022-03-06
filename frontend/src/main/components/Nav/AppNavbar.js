@@ -45,8 +45,11 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               {
                 hasRole(currentUser, "ROLE_ADMIN") && (
                   <NavDropdown title="Admin" id="appnavbar-admin-dropdown" data-testid="appnavbar-admin-dropdown" >
+
                     <NavDropdown.Item href="/admin/users" data-testid="appnavbar-admin-users">Users</NavDropdown.Item>
                     <NavDropdown.Item href="/admin/personalschedule" data-testid="appnavbar-admin-personalschedule">Personal Schedules</NavDropdown.Item>
+                    <NavDropdown.Item href="/admin/loadsubjects" data-testid="appnavbar-admin-loadsubjects">Load Subjects</NavDropdown.Item>
+
                   </NavDropdown>
                 )
               }
