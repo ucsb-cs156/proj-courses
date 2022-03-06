@@ -51,7 +51,7 @@ public class UCSBSubjectsController extends ApiController {
     @ApiOperation(value = "Load subjects into database from UCSB API")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/load")
-    public List<UCSBSubject> loadSubjects() {
+    public List<UCSBSubject> loadSubjects() throws JsonProcessingException{
        
         List<UCSBSubject> subjects = ucsbSubjectsService.get();
         
