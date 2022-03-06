@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,14 @@ public class UCSBCurriculumService  {
 
     private RestTemplate restTemplate = new RestTemplate();
 
+    public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) {
+        restTemplate = restTemplateBuilder.build();
+    }
+
+    public static final String CURRICULUM_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
+
+    public static final String SUBJECTS_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/subjects";
+
     public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -38,17 +47,16 @@ public class UCSBCurriculumService  {
 
         HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-        String uri = "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
         String params = String.format(
                 "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s", quarter,
                 subjectArea, courseLevel, 1, 100, "true");
-        String url = uri + params;
+        String url = CURRICULUM_ENDPOINT + params;
 
         if (courseLevel.equals("A")) {
             params = String.format(
                     "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
                     quarter, subjectArea, 1, 100, "true");
-            url = uri + params;
+            url = CURRICULUM_ENDPOINT + params;
         }
 
         logger.info("url=" + url);
@@ -78,14 +86,13 @@ public class UCSBCurriculumService  {
 
         HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-        String url = "https://api.ucsb.edu/students/lookups/v1/subjects";
-        logger.info("url=" + url);
+        logger.info("url=" + SUBJECTS_ENDPOINT);
 
         String retVal = "";
         MediaType contentType=null;
         HttpStatus statusCode=null;
         try {
-            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> re = restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);
             contentType = re.getHeaders().getContentType();
             statusCode = re.getStatusCode();
             retVal = re.getBody();
