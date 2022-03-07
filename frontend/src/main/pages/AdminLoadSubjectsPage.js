@@ -18,42 +18,42 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
       inactive: ucsbSubject.inactive,
     },
   });
-/*   
-  const onSuccess = (ucsbSubject) => {
-    toast(
-      `The amount of new Subjects Created : ${ucsbSubject.id}`
-    );
-  };
-                                                   //trying out these
-    const mutation = useBackendMutation(
-      objectToAxiosParams,
-      { onSuccess },
-      // Stryker disable next-line all : hard to set up test for caching
-      ["/api/ucsbsubjects/all"]
-    );
-  
-    const { isSuccess } = mutation;
-  
-    const onSubmit = async (data) => {
-      mutation.mutate(data);
+  /*   
+    const onSuccess = (ucsbSubject) => {
+      toast(
+        `The amount of new Subjects Created : ${ucsbSubject.id}`
+      );
     };
-  
-    if (isSuccess) {
-      return <Navigate to="/ucsbsubjects/list" />;
+                                                     //trying out these
+      const mutation = useBackendMutation(
+        objectToAxiosParams,
+        { onSuccess },
+        // Stryker disable next-line all : hard to set up test for caching
+        ["/api/ucsbsubjects/all"]
+      );
+    
+      const { isSuccess } = mutation;
+    
+      const onSubmit = async (data) => {
+        mutation.mutate(data);
+      };
+    
+      if (isSuccess) {
+        return <Navigate to="/ucsbsubjects/list" />;
+      }
+   
+    function update() {
+      reload = location.reload();
     }
- 
-  function update() {
-    reload = location.reload();
-  }
-  //get new list, get old - find delta. could loop through new set and see if in table if not
- */
+    //get new list, get old - find delta. could loop through new set and see if in table if not
+   */
   return (
     <BasicLayout>
       <div className="pt-2">
         <h1>Load Subjects</h1>
-        <p>
-        <input type="button" value = "Refresh" onclick="history.go(0)" />
-        </p>
+
+        <input type="button" value="Refresh" onclick="history.go(0)" />
+
       </div>
     </BasicLayout>
   )
