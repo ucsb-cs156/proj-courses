@@ -41,7 +41,11 @@ describe("AppNavbar tests", () => {
 
         await waitFor(() => expect(getByText("Welcome, phtcon@ucsb.edu")).toBeInTheDocument());
         const adminMenu = getByTestId("appnavbar-admin-dropdown");
-        expect(adminMenu).toBeInTheDocument();        
+        expect(adminMenu).toBeInTheDocument();  
+        const aElement = adminMenu.querySelector("a");
+        expect(aElement).toBeInTheDocument();
+        aElement?.click();
+        await waitFor( () => expect(getByTestId("appnavbar-admin-loadsubjects")).toBeInTheDocument() );      
     });
 
     test("renders H2Console and Swagger links correctly", async () => {
