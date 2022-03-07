@@ -40,12 +40,6 @@ public class UCSBSubjectsService {
     }
     public List<UCSBSubject> get() throws JsonProcessingException {
 
-        // TODO: Replace with a service that will call the UCSB
-        // developer API at the endpoint
-        // https://api.ucsb.edu/students/lookups/v1/subjects?includeInactive=false
-        // convert the JSON to a List<UCSBSubjects> object
-        // return that object.
-
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);
