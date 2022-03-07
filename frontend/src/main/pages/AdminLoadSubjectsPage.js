@@ -18,13 +18,13 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
       inactive: ucsbSubject.inactive,
     },
   });
-
+/*   
   const onSuccess = (ucsbSubject) => {
     toast(
       `The amount of new Subjects Created : ${ucsbSubject.id}`
     );
   };
-  /*                                                    //trying out these
+                                                   //trying out these
     const mutation = useBackendMutation(
       objectToAxiosParams,
       { onSuccess },
@@ -41,13 +41,27 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     if (isSuccess) {
       return <Navigate to="/ucsbsubjects/list" />;
     }
-  */
+ 
   function update() {
     reload = location.reload();
   }
   //get new list, get old - find delta. could loop through new set and see if in table if not
-
+ */
   return (
+    <BasicLayout>
+      <div className="pt-2">
+        <h1>Load Subjects</h1>
+        <p>
+        <input type="button" value = "Refresh" onclick="history.go(0)" />
+        </p>
+      </div>
+    </BasicLayout>
+  )
+}
+
+/*
+
+return (
     <BasicLayout>
       <div className="pt-2">
         <h1>Load Subjects</h1>
@@ -66,3 +80,5 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
   )
 }
 
+
+*/
