@@ -6,7 +6,10 @@ import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 import { useCurrentUser } from "main/utils/currentUser";
 
-export default function AdminLoadSubjectsPage() {                     //NOT DONE
+export default function AdminLoadSubjectsPage() {
+  
+
+                  //NOT DONE
   const currentUser = useCurrentUser();
 
   const { data: subjects, error: _error, status: _status } =
@@ -17,14 +20,14 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     []
   );
 
-
+/* 
   const onSuccess = (ucsbSubject) => {
     toast(
       `The amount of new Subjects Created : ${ucsbSubject.id}`
     );
   };
-  
-  /*                                                    //trying out these
+
+                                                     //trying out these
     const mutation = useBackendMutation(
       objectToAxiosParams,
       { onSuccess },
