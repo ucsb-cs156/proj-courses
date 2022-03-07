@@ -5,8 +5,7 @@ import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 
-
-export default function UCSBSubjectsCreatePage() {
+export default function AdminLoadSubjectsPage() {                     //NOT DONE
   const objectToAxiosParams = (ucsbSubject) => ({
     url: "/api/ucsbsubjects/post",
     method: "POST",
@@ -25,7 +24,7 @@ export default function UCSBSubjectsCreatePage() {
       `The amount of new Subjects Created : ${ucsbSubject.id}`
     );
   };
-  /*
+  /*                                                    //trying out these
     const mutation = useBackendMutation(
       objectToAxiosParams,
       { onSuccess },
@@ -46,25 +45,24 @@ export default function UCSBSubjectsCreatePage() {
   function update() {
     reload = location.reload();
   }
+  //get new list, get old - find delta. could loop through new set and see if in table if not
 
+  return (
+    <BasicLayout>
+      <div className="pt-2">
+        <h1>Load Subjects</h1>
+        <p>
 
-  export default function AdminLoadSubjectsPage() {
-    return (
-      <BasicLayout>
-        <div className="pt-2">
-          <h1>Load Subjects</h1>
-          <p>
-
-            <Button
-              variant='primary'
-              onClick={update()}
-              data-testid="update_Admin_LoadSubjPage"
-            >
-              Update
-            </Button>
-          </p>
-        </div>
-      </BasicLayout>
-    )
-  }
+          <Button
+            variant='primary'
+            onClick={update()}
+            data-testid="update_Admin_LoadSubjPage"
+          >
+            Update
+          </Button>
+        </p>
+      </div>
+    </BasicLayout>
+  )
 }
+
