@@ -54,7 +54,6 @@ describe("PersonalScheduleForm tests", () => {
 
         await waitFor(() => expect(getByText(/Name is required./)).toBeInTheDocument());
         expect(getByText(/Description is required./)).toBeInTheDocument();
-        expect(getByText(/Quarter is required./)).toBeInTheDocument();
 
     });
 
@@ -72,19 +71,19 @@ describe("PersonalScheduleForm tests", () => {
 
         const name = getByTestId("PersonalScheduleForm-name");
         const description = getByTestId("PersonalScheduleForm-description");
-        const quarter = getByTestId("PersonalScheduleForm-quarter");
+        const quarter = document.querySelector("#PersonalScheduleForm-quarter");
         const submitButton = getByTestId("PersonalScheduleForm-submit");
 
         fireEvent.change(name, { target: { value: 'test' } });
         fireEvent.change(description, { target: { value: 'test' } });
-        fireEvent.change(quarter, { target: { value: 'test' } });
+        fireEvent.change(quarter, { target: { value: '20124' } });
         fireEvent.click(submitButton);
 
         await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
 
         expect(queryByText(/Name is required./)).not.toBeInTheDocument();
         expect(queryByText(/Description is required./)).not.toBeInTheDocument();
-        expect(queryByText(/Quarter is required./)).not.toBeInTheDocument();
+        expect(quarter).toHaveValue("20124");
     });
 
 

@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import SingleQuarterDropdown from '../Quarters/SingleQuarterDropdown';
+import { quarterRange } from 'main/utils/quarterUtilities';
+
 
 
 function PersonalScheduleForm({ initialPersonalSchedule, submitAction, buttonLabel = "Create" }) {
@@ -17,6 +20,9 @@ function PersonalScheduleForm({ initialPersonalSchedule, submitAction, buttonLab
     // Stryker enable all
 
     const navigate = useNavigate();
+    const [quarter, setQuarter] = useState({
+        quarters: quarterRange("20081", "20213")
+    }.quarters[0]);
 
     return (
 
@@ -67,21 +73,14 @@ function PersonalScheduleForm({ initialPersonalSchedule, submitAction, buttonLab
                     {errors.description?.message}
                 </Form.Control.Feedback>
             </Form.Group>
-
-            <Form.Group className="mb-3" >
-                <Form.Label htmlFor="quarter">Quarter</Form.Label>
-                <Form.Control
-                    data-testid="PersonalScheduleForm-quarter"
-                    id="quarter"
-                    type="text"
-                    isInvalid={Boolean(errors.quarter)}
-                    {...register("quarter", {
-                        required: "Quarter is required."
-                    })}
-                />
-                <Form.Control.Feedback type="invalid">
-                    {errors.quarter?.message}
-                </Form.Control.Feedback>
+            <Form.Group className="mb-3" data-testid="PersonalScheduleForm-quarter">
+                
+                <SingleQuarterDropdown
+                    quarter={quarter}
+                    setQuarter={setQuarter} 
+                    controlId={"PersonalScheduleForm-quarter"}
+                    label={"Quarter"}
+                    quarters={quarterRange("20081", "20224") }/>
             </Form.Group>
 
 
