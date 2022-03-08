@@ -12,7 +12,7 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     method: "POST",
   });
 //delete things marked with this [***] after
-/*
+
 //[***] 
 const currentUser = useCurrentUser();
 const { data: subjects, error: _error, status: _status } =
@@ -23,7 +23,7 @@ const { data: subjects, error: _error, status: _status } =
       []
     );
 //[***]
-*/
+
 
   const onSuccess = () => {
     toast(
@@ -53,7 +53,7 @@ const { data: subjects, error: _error, status: _status } =
     <BasicLayout>
       <div className="pt-2">
         <h1>Load Subjects</h1>
-        
+        <UCSBSubjectsTable subjects={subjects} currentUser={currentUser} />
         <input type="button" value="Refresh" onclick="onSubmit()" />
 
       </div>
