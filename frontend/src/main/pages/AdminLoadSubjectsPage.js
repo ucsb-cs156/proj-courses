@@ -39,13 +39,7 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     <BasicLayout>
       <div className="pt-2">
         <h1>Load Subjects</h1>
-        <Button
-          variant='primary'
-          onClick={onSubmit()}
-          data-testid="update_Admin_LoadSubjPage"
-        >
-          Update
-        </Button>
+        <input type="button" value="Refresh" onclick="onSubmit()" />
 
       </div>
     </BasicLayout>
@@ -80,6 +74,18 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
    */
 
 /*
+
+ <Button
+          variant='primary'
+          onClick={onSubmit()}
+          data-testid="update_Admin_LoadSubjPage"
+        >
+          Update
+        </Button>
+
+
+
+
 
         <input type="button" value="Refresh" onclick="history.go(0)" />
 
