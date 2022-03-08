@@ -296,270 +296,270 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    // @WithMockUser(roles = { "USER" })
-    // @Test
-    // public void api_schedules__user_logged_in__delete_todo() throws Exception {
-    //     // arrange
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_schedules__user_logged_in__delete_schedule() throws Exception {
+        // arrange
 
-    //     User u = currentUserService.getCurrentUser().getUser();
-    //     Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(u).id(15L).build();
-    //     when(todoRepository.findByIdAndUser(eq(15L), eq(u))).thenReturn(Optional.of(todo1));
+        User u = currentUserService.getCurrentUser().getUser();
+        PersonalSchedule ps1 = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(u).id(15L).build();
+        when(personalscheduleRepository.findByIdAndUser(eq(15L), eq(u))).thenReturn(Optional.of(ps1));
 
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             delete("/api/todos?id=15")
-    //                     .with(csrf()))
-    //             .andExpect(status().isOk()).andReturn();
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/personalschedules?id=15")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
 
-    //     // assert
-    //     verify(todoRepository, times(1)).findByIdAndUser(15L, u);
-    //     verify(todoRepository, times(1)).delete(todo1);
-    //     Map<String, Object> json = responseToJson(response);
-    //     assertEquals("Todo with id 15 deleted", json.get("message"));
-    // }
+        // assert
+        verify(personalscheduleRepository, times(1)).findByIdAndUser(15L, u);
+        verify(personalscheduleRepository, times(1)).delete(ps1);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Personal schedule with id 15 deleted", json.get("message"));
+    }
 
-    // @WithMockUser(roles = { "USER" })
-    // @Test
-    // public void api_schedules__user_logged_in__delete_todo_that_does_not_exist() throws Exception {
-    //     // arrange
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_schedules__user_logged_in__delete_schedule_that_does_not_exist() throws Exception {
+        // arrange
 
-    //     User u = currentUserService.getCurrentUser().getUser();
-    //     User otherUser = User.builder().id(98L).build();
-    //     Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(15L).build();
-    //     when(todoRepository.findByIdAndUser(eq(15L), eq(otherUser))).thenReturn(Optional.of(todo1));
+        User u = currentUserService.getCurrentUser().getUser();
+        User otherUser = User.builder().id(98L).build();
+        PersonalSchedule ps1 = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(u).id(15L).build();
+        when(personalscheduleRepository.findByIdAndUser(eq(15L), eq(otherUser))).thenReturn(Optional.of(ps1));
 
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             delete("/api/todos?id=15")
-    //                     .with(csrf()))
-    //             .andExpect(status().isNotFound()).andReturn();
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/personalschedules?id=15")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
 
-    //     // assert
-    //     verify(todoRepository, times(1)).findByIdAndUser(15L, u);
-    //     Map<String, Object> json = responseToJson(response);
-    //     assertEquals("Todo with id 15 not found", json.get("message"));
-    // }
+        // assert
+        verify(personalscheduleRepository, times(1)).findByIdAndUser(15L, u);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Personal schedule with id 15 not found", json.get("message"));
+    }
 
-    // @WithMockUser(roles = { "USER" })
-    // @Test
-    // public void api_schedules__user_logged_in__cannot_delete_todo_belonging_to_another_user() throws Exception {
-    //     // arrange
-    //     User u = currentUserService.getCurrentUser().getUser();
-    //     User otherUser = User.builder().id(98L).build();
-    //     Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(31L).build();
-    //     when(todoRepository.findById(eq(31L))).thenReturn(Optional.of(todo1));
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_schedules__user_logged_in__cannot_delete_delete_belonging_to_another_user() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+        User otherUser = User.builder().id(98L).build();
+        PersonalSchedule ps1 = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(otherUser).id(31L).build();
+        when(personalscheduleRepository.findById(eq(31L))).thenReturn(Optional.of(ps1));
 
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             delete("/api/todos?id=31")
-    //                     .with(csrf()))
-    //             .andExpect(status().isNotFound()).andReturn();
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/personalschedules?id=31")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
 
-    //     // assert
-    //     verify(todoRepository, times(1)).findByIdAndUser(31L, u);
-    //     Map<String, Object> json = responseToJson(response);
-    //     assertEquals("Todo with id 31 not found", json.get("message"));
-    // }
-
-
-    // @WithMockUser(roles = { "ADMIN", "USER" })
-    // @Test
-    // public void api_schedules__admin_logged_in__delete_todo() throws Exception {
-    //     // arrange
-
-    //     User otherUser = User.builder().id(98L).build();
-    //     Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(16L).build();
-    //     when(todoRepository.findById(eq(16L))).thenReturn(Optional.of(todo1));
-
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             delete("/api/todos/admin?id=16")
-    //                     .with(csrf()))
-    //             .andExpect(status().isOk()).andReturn();
-
-    //     // assert
-    //     verify(todoRepository, times(1)).findById(16L);
-    //     verify(todoRepository, times(1)).delete(todo1);
-    //     Map<String, Object> output = responseToJson(response);
-    //     assertEquals("Todo with id 16 deleted", output.get("message"));
-    // }
-
-    // @WithMockUser(roles = { "ADMIN", "USER" })
-    // @Test
-    // public void api_schedules__admin_logged_in__cannot_delete_todo_that_does_not_exist() throws Exception {
-    //     // arrange
-
-    //     when(todoRepository.findById(eq(17L))).thenReturn(Optional.empty());
-
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             delete("/api/todos/admin?id=17")
-    //                     .with(csrf()))
-    //             .andExpect(status().isNotFound()).andReturn();
-
-    //     // assert
-    //     verify(todoRepository, times(1)).findById(17L);
-    //     Map<String, Object> output = responseToJson(response);
-    //     assertEquals("Todo with id 17 not found", output.get("message"));
-    // }
-
-    // @WithMockUser(roles = { "USER" })
-    // @Test
-    // public void api_schedules__user_logged_in__put_todo() throws Exception {
-    //     // arrange
-
-    //     User u = currentUserService.getCurrentUser().getUser();
-    //     User otherUser = User.builder().id(999).build();
-    //     Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(u).id(67L).build();
-    //     // We deliberately set the user information to another user
-    //     // This should get ignored and overwritten with current user when todo is saved
-
-    //     Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).user(otherUser).id(67L).build();
-    //     Todo correctTodo = Todo.builder().title("New Title").details("New Details").done(true).user(u).id(67L).build();
-
-    //     String requestBody = mapper.writeValueAsString(updatedTodo);
-    //     String expectedReturn = mapper.writeValueAsString(correctTodo);
-
-    //     when(todoRepository.findByIdAndUser(eq(67L), eq(u))).thenReturn(Optional.of(todo1));
-
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             put("/api/todos?id=67")
-    //                     .contentType(MediaType.APPLICATION_JSON)
-    //                     .characterEncoding("utf-8")
-    //                     .content(requestBody)
-    //                     .with(csrf()))
-    //             .andExpect(status().isOk()).andReturn();
-
-    //     // assert
-    //     verify(todoRepository, times(1)).findByIdAndUser(67L, u);
-    //     verify(todoRepository, times(1)).save(correctTodo); // should be saved with correct user
-    //     String responseString = response.getResponse().getContentAsString();
-    //     assertEquals(expectedReturn, responseString);
-    // }
-
-    // @WithMockUser(roles = { "USER" })
-    // @Test
-    // public void api_schedules__user_logged_in__cannot_put_todo_that_does_not_exist() throws Exception {
-    //     // arrange
-
-    //     User u = currentUserService.getCurrentUser().getUser();
-    //     Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).id(67L).build();
-
-    //     String requestBody = mapper.writeValueAsString(updatedTodo);
-
-    //     when(todoRepository.findByIdAndUser(eq(67L), eq(u))).thenReturn(Optional.empty());
-
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             put("/api/todos?id=67")
-    //                     .contentType(MediaType.APPLICATION_JSON)
-    //                     .characterEncoding("utf-8")
-    //                     .content(requestBody)
-    //                     .with(csrf()))
-    //             .andExpect(status().isNotFound()).andReturn();
-
-    //     // assert
-    //     verify(todoRepository, times(1)).findByIdAndUser(67L, u);
-    //     Map<String, Object> output = responseToJson(response);
-    //     assertEquals("Todo with id 67 not found", output.get("message"));
-    // }
+        // assert
+        verify(personalscheduleRepository, times(1)).findByIdAndUser(31L, u);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Personal schedule with id 31 not found", json.get("message"));
+    }
 
 
-    // @WithMockUser(roles = { "USER" })
-    // @Test
-    // public void api_schedules__user_logged_in__cannot_put_todo_for_another_user() throws Exception {
-    //     // arrange
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void api_schedules__admin_logged_in__delete_schedule() throws Exception {
+        // arrange
 
-    //     User u = currentUserService.getCurrentUser().getUser();
-    //     User otherUser = User.builder().id(98L).build();
-    //     Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(31L).build();
-    //     Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).id(31L).build();
+        User otherUser = User.builder().id(98L).build();
+        PersonalSchedule ps1 = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(otherUser).id(16L).build();
+        when(personalscheduleRepository.findById(eq(16L))).thenReturn(Optional.of(ps1));
 
-    //     when(todoRepository.findByIdAndUser(eq(31L), eq(otherUser))).thenReturn(Optional.of(todo1));
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/personalschedules/admin?id=16")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
 
-    //     String requestBody = mapper.writeValueAsString(updatedTodo);
+        // assert
+        verify(personalscheduleRepository, times(1)).findById(16L);
+        verify(personalscheduleRepository, times(1)).delete(ps1);
+        Map<String, Object> output = responseToJson(response);
+        assertEquals("Personal schedule with id 16 deleted", output.get("message"));
+    }
 
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             put("/api/todos?id=31")
-    //                     .contentType(MediaType.APPLICATION_JSON)
-    //                     .characterEncoding("utf-8")
-    //                     .content(requestBody)
-    //                     .with(csrf()))
-    //             .andExpect(status().isNotFound()).andReturn();
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void api_schedules__admin_logged_in__cannot_delete_schedule_that_does_not_exist() throws Exception {
+        // arrange
 
-    //     // assert
-    //     verify(todoRepository, times(1)).findByIdAndUser(31L, u);
-    //     Map<String, Object> json = responseToJson(response);
-    //     assertEquals("EntityNotFoundException", json.get("type"));
-    //     assertEquals("Todo with id 31 not found", json.get("message"));
-    // }
+        when(personalscheduleRepository.findById(eq(17L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/personalschedules/admin?id=17")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        verify(personalscheduleRepository, times(1)).findById(17L);
+        Map<String, Object> output = responseToJson(response);
+        assertEquals("Personal schedule with id 17 not found", output.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_schedules__user_logged_in__put_schedule() throws Exception {
+        // arrange
+
+        User u = currentUserService.getCurrentUser().getUser();
+        User otherUser = User.builder().id(999).build();
+        PersonalSchedule ps1 = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(u).id(67L).build();
+        // We deliberately set the user information to another user
+        // This should get ignored and overwritten with current user when todo is saved
+
+        PersonalSchedule updatedSchedule = PersonalSchedule.builder().Name("Name 2").Description("Description 2").Quarter("Quarter 2").user(otherUser).id(67L).build();
+        PersonalSchedule correctSchedule = PersonalSchedule.builder().Name("Name 2").Description("Description 2").Quarter("Quarter 2").id(67L).build();
+
+        String requestBody = mapper.writeValueAsString(updatedSchedule);
+        String expectedReturn = mapper.writeValueAsString(correctSchedule);
+
+        when(personalscheduleRepository.findByIdAndUser(eq(67L), eq(u))).thenReturn(Optional.of(ps1));
+
+        // act
+        MvcResult response = mockMvc.perform(
+                put("/api/personalschedules?id=67")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(personalscheduleRepository, times(1)).findByIdAndUser(67L, u);
+        verify(personalscheduleRepository, times(1)).save(correctSchedule); // should be saved with correct user
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedReturn, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_schedules__user_logged_in__cannot_put_schedule_that_does_not_exist() throws Exception {
+        // arrange
+
+        User u = currentUserService.getCurrentUser().getUser();
+        PersonalSchedule updatedSchedule = PersonalSchedule.builder().Name("Name 2").Description("Description 2").Quarter("Quarter 2").id(67L).build();
+
+        String requestBody = mapper.writeValueAsString(updatedSchedule);
+
+        when(personalscheduleRepository.findByIdAndUser(eq(67L), eq(u))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+                put("/api/personalschedules?id=67")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        verify(personalscheduleRepository, times(1)).findByIdAndUser(67L, u);
+        Map<String, Object> output = responseToJson(response);
+        assertEquals("Personal schedule with id 67 not found", output.get("message"));
+    }
 
 
-    // @WithMockUser(roles = { "ADMIN", "USER" })
-    // @Test
-    // public void api_schedules__admin_logged_in__put_todo() throws Exception {
-    //     // arrange
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_schedules__user_logged_in__cannot_put_schedule_for_another_user() throws Exception {
+        // arrange
 
-    //     User otherUser = User.builder().id(255L).build();
-    //     Todo todo1 = Todo.builder().title("Todo 1").details("Todo 1").done(false).user(otherUser).id(77L).build();
-    //     User yetAnotherUser = User.builder().id(512L).build();
-    //     // We deliberately put the wrong user on the updated todo
-    //     // We expect the controller to ignore this and keep the user the same
-    //     Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).user(yetAnotherUser).id(77L)
-    //             .build();
-    //     Todo correctTodo = Todo.builder().title("New Title").details("New Details").done(true).user(otherUser).id(77L)
-    //             .build();
+        User u = currentUserService.getCurrentUser().getUser();
+        User otherUser = User.builder().id(98L).build();
+        PersonalSchedule ps1 = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(otherUser).id(31L).build();
+        PersonalSchedule updatedSchedule = PersonalSchedule.builder().Name("Name 2").Description("Description 2").Quarter("Quarter 2").id(31L).build();
 
-    //     String requestBody = mapper.writeValueAsString(updatedTodo);
-    //     String expectedJson = mapper.writeValueAsString(correctTodo);
+        when(personalscheduleRepository.findByIdAndUser(eq(31L), eq(otherUser))).thenReturn(Optional.of(ps1));
 
-    //     when(todoRepository.findById(eq(77L))).thenReturn(Optional.of(todo1));
+        String requestBody = mapper.writeValueAsString(updatedSchedule);
 
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             put("/api/todos/admin?id=77")
-    //                     .contentType(MediaType.APPLICATION_JSON)
-    //                     .characterEncoding("utf-8")
-    //                     .content(requestBody)
-    //                     .with(csrf()))
-    //             .andExpect(status().isOk()).andReturn();
+        // act
+        MvcResult response = mockMvc.perform(
+                put("/api/personalschedules?id=31")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
 
-    //     // assert
-    //     verify(todoRepository, times(1)).findById(77L);
-    //     verify(todoRepository, times(1)).save(correctTodo);
-    //     String responseString = response.getResponse().getContentAsString();
-    //     assertEquals(expectedJson, responseString);
-    // }
+        // assert
+        verify(personalscheduleRepository, times(1)).findByIdAndUser(31L, u);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("Personal schedule with id 31 not found", json.get("message"));
+    }
 
-    // @WithMockUser(roles = { "ADMIN", "USER" })
-    // @Test
-    // public void api_schedules__admin_logged_in__cannot_put_todo_that_does_not_exist() throws Exception {
-    //     // arrange
 
-    //     User otherUser = User.builder().id(345L).build();
-    //     Todo updatedTodo = Todo.builder().title("New Title").details("New Details").done(true).user(otherUser).id(77L)
-    //             .build();
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void api_schedules__admin_logged_in__put_schedule() throws Exception {
+        // arrange
 
-    //     String requestBody = mapper.writeValueAsString(updatedTodo);
+        User otherUser = User.builder().id(255L).build();
+        PersonalSchedule ps1 = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(otherUser).id(77L).build();
+        User yetAnotherUser = User.builder().id(512L).build();
+        // We deliberately put the wrong user on the updated schedule
+        // We expect the controller to ignore this and keep the user the same
+        PersonalSchedule updatedSchedule = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(yetAnotherUser).id(77L)
+                .build();
+        PersonalSchedule correctSchedule = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(otherUser).id(77L)
+                .build();
 
-    //     when(todoRepository.findById(eq(77L))).thenReturn(Optional.empty());
+        String requestBody = mapper.writeValueAsString(updatedSchedule);
+        String expectedJson = mapper.writeValueAsString(correctSchedule);
 
-    //     // act
-    //     MvcResult response = mockMvc.perform(
-    //             put("/api/todos/admin?id=77")
-    //                     .contentType(MediaType.APPLICATION_JSON)
-    //                     .characterEncoding("utf-8")
-    //                     .content(requestBody)
-    //                     .with(csrf()))
-    //             .andExpect(status().isNotFound()).andReturn();
+        when(personalscheduleRepository.findById(eq(77L))).thenReturn(Optional.of(ps1));
 
-    //     // assert
-    //     verify(todoRepository, times(1)).findById(77L);
-    //     Map<String, Object> json = responseToJson(response);
-    //     assertEquals("EntityNotFoundException", json.get("type"));
-    //     assertEquals("Todo with id 77 not found", json.get("message"));
-    // }
+        // act
+        MvcResult response = mockMvc.perform(
+                put("/api/personalschedules/admin?id=77")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(personalscheduleRepository, times(1)).findById(77L);
+        verify(personalscheduleRepository, times(1)).save(correctSchedule);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void api_schedules__admin_logged_in__cannot_put_schedule_that_does_not_exist() throws Exception {
+        // arrange
+
+        User otherUser = User.builder().id(345L).build();
+        PersonalSchedule updatedSchedule = PersonalSchedule.builder().Name("Name 1").Description("Description 1").Quarter("Quarter 1").user(otherUser).id(77L)
+                .build();
+
+        String requestBody = mapper.writeValueAsString(updatedSchedule);
+
+        when(personalscheduleRepository.findById(eq(77L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+                put("/api/personalschedules/admin?id=77")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        verify(personalscheduleRepository, times(1)).findById(77L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("Personal schedule with id 77 not found", json.get("message"));
+    }
 
 }
