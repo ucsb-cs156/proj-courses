@@ -17,7 +17,7 @@ const personalScheduleFixtures = {
             "admin": true
           },
           "description": "Advanced Applications Programming",
-          "quarter": "Winter",
+          "quarter": "20221",
           "name": "CS156"
         },
         {
@@ -36,7 +36,7 @@ const personalScheduleFixtures = {
             "admin": true
           },
           "description": "Operating Systems",
-          "quarter": "Winter",
+          "quarter": "20221",
           "name": "CS170"
         },
         {
@@ -55,7 +55,7 @@ const personalScheduleFixtures = {
             "admin": true
           },
           "description": "DATA STRUCT ALGOR",
-          "quarter": "Winter",
+          "quarter": "20221",
           "name": "CS130A"
         }
     ]
