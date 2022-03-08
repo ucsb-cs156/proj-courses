@@ -60,7 +60,7 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
         
       </div>
     </BasicLayout>
-  )
+  );
 }
 
 
