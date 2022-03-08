@@ -6,18 +6,9 @@ import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 
 export default function AdminLoadSubjectsPage() {                     //NOT DONE
-  const objectToAxiosParams = (ucsbSubject) => ({
+  const objectToAxiosParams = () => ({
     url: "/api/ucsbsubjects/post",
     method: "POST",
-    /*params: {
-      subjectCode: ucsbSubject.subjectCode,
-      subjectTranslation: ucsbSubject.subjectTranslation,
-      deptCode: ucsbSubject.deptCode,
-      collegeCode: ucsbSubject.collegeCode,
-      relatedDeptCode: ucsbSubject.relatedDeptCode,
-      inactive: ucsbSubject.inactive,
-    },
-*/
   });
     
     const onSuccess = (ucsbSubject) => {
