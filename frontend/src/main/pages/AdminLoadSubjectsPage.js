@@ -38,11 +38,14 @@ const { data: subjects, error: _error, status: _status } =
     ["/api/UCSBsubjects/retrieve"]
   );
 
+//if(ucsbSubject.length>0){
+  
+
 
   const { isSuccess } = mutation
 
-  const onSubmit = async (data) => {
-    mutation.mutate(data);
+  const onSubmit = async () => {
+    mutation.mutate();
   }
 
   if (isSuccess) {
