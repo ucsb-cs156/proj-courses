@@ -22,14 +22,10 @@ public class PersonalSchedule {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  // This establishes that many todos can belong to one user
-  // Only the user_id is stored in the table, and through it we
-  // can access the user's details
-
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
-  private String Name;
-  private String Description;
-  private String Quarter;
+  private String name;
+  private String description;
+  private String quarter;
 }

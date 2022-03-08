@@ -82,83 +82,20 @@ public class PersonalSchedulesController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
     public PersonalSchedule postSchedule(
-            @ApiParam("Name") @RequestParam String Name,
-            @ApiParam("Description") @RequestParam String Description,
-            @ApiParam("Quarter") @RequestParam String Quarter) {
+            @ApiParam("name") @RequestParam String name,
+            @ApiParam("description") @RequestParam String description,
+            @ApiParam("quarter") @RequestParam String quarter) {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
         PersonalSchedule personalschedule = new PersonalSchedule();
         personalschedule.setUser(currentUser.getUser());
-        personalschedule.setName(Name);
-        personalschedule.setDescription(Description);
-        personalschedule.setQuarter(Quarter);
+        personalschedule.setName(name);
+        personalschedule.setDescription(description);
+        personalschedule.setQuarter(quarter);
         PersonalSchedule savedPersonalSchedule = personalscheduleRepository.save(personalschedule);
         return savedPersonalSchedule;
     }
 
-    // @ApiOperation(value = "Delete a personal schedule owned by this user")
-    // @PreAuthorize("hasRole('ROLE_USER')")
-    // @DeleteMapping("")
-    // public Object deleteSchedule(
-    //         @ApiParam("id") @RequestParam Long id) {
-    //     User currentUser = getCurrentUser().getUser();
-    //     PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)
-    //       .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
-
-    //       personalscheduleRepository.delete(personalschedule);
-
-    //     return genericMessage("Personal schedule with id %s deleted".formatted(id));
-
-    // }
-
-    // @ApiOperation(value = "Delete another user's personal schedule")
-    // @PreAuthorize("hasRole('ROLE_ADMIN')")
-    // @DeleteMapping("/admin")
-    // public Object deleteSchedule_Admin(
-    //         @ApiParam("id") @RequestParam Long id) {
-    //           PersonalSchedule personalschedule = personalscheduleRepository.findById(id)
-    //       .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
-
-    //       personalscheduleRepository.delete(personalschedule);
-
-    //     return genericMessage("Personal schedule with id %s deleted".formatted(id));
-    // }
-
-    // @ApiOperation(value = "Update a single personal schedule (if it belongs to current user)")
-    // @PreAuthorize("hasRole('ROLE_USER')")
-    // @PutMapping("")
-    // public PersonalSchedule putScheduleById(
-    //         @ApiParam("id") @RequestParam Long id,
-    //         @RequestBody @Valid PersonalSchedule incomingSchedule) {
-    //     User currentUser = getCurrentUser().getUser();
-    //     PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)
-    //       .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
-
-    //     personalschedule.setName(incomingSchedule.getName());
-    //     personalschedule.setDescription(incomingSchedule.getDescription());
-    //     personalschedule.setQuarter(incomingSchedule.getQuarter());
-
-    //     personalscheduleRepository.save(personalschedule);
-
-    //     return personalschedule;
-    // }
-
-    // @ApiOperation(value = "Update a single Schedule (regardless of ownership, admin only, can't change ownership)")
-    // @PreAuthorize("hasRole('ROLE_ADMIN')")
-    // @PutMapping("/admin")
-    // public PersonalSchedule putScheduleById_admin(
-    //         @ApiParam("id") @RequestParam Long id,
-    //         @RequestBody @Valid PersonalSchedule incomingSchedule) {
-    //           PersonalSchedule personalschedule = personalscheduleRepository.findById(id)
-    //       .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
-
-    //     personalschedule.setName(incomingSchedule.getName());
-    //     personalschedule.setDescription(incomingSchedule.getDescription());
-    //     personalschedule.setQuarter(incomingSchedule.getQuarter());
-
-    //     personalscheduleRepository.save(personalschedule);
-
-    //     return personalschedule;
-    // }
+    
 }
