@@ -9,7 +9,7 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
   const objectToAxiosParams = (ucsbSubject) => ({
     url: "/api/ucsbsubjects/post",
     method: "POST",
-    params: {
+    /*params: {
       subjectCode: ucsbSubject.subjectCode,
       subjectTranslation: ucsbSubject.subjectTranslation,
       deptCode: ucsbSubject.deptCode,
@@ -17,6 +17,7 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
       relatedDeptCode: ucsbSubject.relatedDeptCode,
       inactive: ucsbSubject.inactive,
     },
+*/
   });
     
     const onSuccess = (ucsbSubject) => {
@@ -48,7 +49,14 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     <BasicLayout>
       <div className="pt-2">
         <h1>Load Subjects</h1>
-        <UCSBSubjectForm submitAction={onSubmit} />
+        <Button
+            variant='primary'
+            onClick={onSubmit()}
+            data-testid="update_Admin_LoadSubjPage"
+          >
+            Update
+          </Button>
+        
       </div>
     </BasicLayout>
   )
@@ -85,7 +93,7 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
 
         <input type="button" value="Refresh" onclick="history.go(0)" />
 
-
+<submitAction={onSubmit} />
 
 return (
     <BasicLayout>
