@@ -12,6 +12,7 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     method: "POST",
   });
 //delete things marked with this [***] after
+/*
 //[***] 
 const currentUser = useCurrentUser();
 const { data: subjects, error: _error, status: _status } =
@@ -22,9 +23,9 @@ const { data: subjects, error: _error, status: _status } =
       []
     );
 //[***]
+*/
 
-
-  const onSuccess = (ucsbSubject) => {
+  const onSuccess = () => {
     toast(
       `The amount of new Subjects Created : ${ucsbSubject.length}`
     );
@@ -52,7 +53,7 @@ const { data: subjects, error: _error, status: _status } =
     <BasicLayout>
       <div className="pt-2">
         <h1>Load Subjects</h1>
-        <UCSBSubjectsTable subjects={subjects} currentUser={currentUser} />
+        
         <input type="button" value="Refresh" onclick="onSubmit()" />
 
       </div>
@@ -64,7 +65,14 @@ const { data: subjects, error: _error, status: _status } =
 
 
 /*                                                   //trying out these
-      const mutation = useBackendMutation(
+
+
+<UCSBSubjectsTable subjects={subjects} currentUser={currentUser} />
+
+
+
+
+const mutation = useBackendMutation(
         objectToAxiosParams,
         { onSuccess },
         // Stryker disable next-line all : hard to set up test for caching
