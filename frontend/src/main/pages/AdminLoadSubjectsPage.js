@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
-import {UCSBSubjectsTable} from "src/main/components/UCSBSubjects/UCSBSubjectsTable.js"
+import UCSBSubjectsTable from 'main/components/UCSBSubjects/UCSBSubjectsTable';
 
 export default function AdminLoadSubjectsPage() {                     //NOT DONE
   const objectToAxiosParams = () => ({
