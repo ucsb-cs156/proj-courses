@@ -54,7 +54,13 @@ const { data: subjects, error: _error, status: _status } =
       <div className="pt-2">
         <h1>Load Subjects</h1>
         <UCSBSubjectsTable subjects={subjects} currentUser={currentUser} />
-        <input type="button" value="Refresh" onclick="onSubmit()" />
+        <Button
+          variant='primary'
+          onClick={onSubmit()}
+          data-testid="update_Admin_LoadSubjPage"
+        >
+          Update
+        </Button>
 
       </div>
     </BasicLayout>
@@ -70,6 +76,8 @@ const { data: subjects, error: _error, status: _status } =
 <UCSBSubjectsTable subjects={subjects} currentUser={currentUser} />
 
 
+//works but with table the page disapears after a second
+<input type="button" value="Refresh" onclick="onSubmit()" />
 
 
 const mutation = useBackendMutation(
