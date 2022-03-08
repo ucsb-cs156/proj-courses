@@ -46,15 +46,16 @@ const { data: subjects, error: _error, status: _status } =
   }
 
   if (isSuccess) {
-    return <Navigate to="/admin/loadsubjects" />
+    window.location.reload();
+    //return <Navigate to="/admin/loadsubjects" />
   }
 
   return (
     <BasicLayout>
       <div className="pt-2">
         <h1>Load Subjects</h1>
-        <UCSBSubjectsTable subjects={subjects} currentUser={currentUser} />
-        <button onclick="onSubmit()">Refresh The Table</button>
+  
+        <button onclick="onSubmit()">Refresh the Table</button>
 
       </div>
     </BasicLayout>
