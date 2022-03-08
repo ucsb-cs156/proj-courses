@@ -10,6 +10,17 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     url: "/api/ucsbsubjects/post",
     method: "POST",
   });
+//delete things marked with this [***] after
+//[***]
+const { data: subjects, error: _error, status: _status } =
+    useBackend(
+      // Stryker disable next-line all : don't test internal caching of React Query
+      ["/api/ucsbsubjects/all"],
+      { method: "GET", url: "/api/ucsbsubjects/all" },
+      []
+    );
+//[***]
+
 
   const onSuccess = (ucsbSubject) => {
     toast(
