@@ -82,17 +82,17 @@ public class PersonalSchedulesController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
     public PersonalSchedule postSchedule(
-            @ApiParam("Name") @RequestParam String Name,
-            @ApiParam("Description") @RequestParam String Description,
-            @ApiParam("Quarter") @RequestParam String Quarter) {
+            @ApiParam("name") @RequestParam String name,
+            @ApiParam("description") @RequestParam String description,
+            @ApiParam("quarter") @RequestParam String quarter) {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
         PersonalSchedule personalschedule = new PersonalSchedule();
         personalschedule.setUser(currentUser.getUser());
-        personalschedule.setName(Name);
-        personalschedule.setDescription(Description);
-        personalschedule.setQuarter(Quarter);
+        personalschedule.setName(name);
+        personalschedule.setDescription(description);
+        personalschedule.setQuarter(quarter);
         PersonalSchedule savedPersonalSchedule = personalscheduleRepository.save(personalschedule);
         return savedPersonalSchedule;
     }
@@ -161,4 +161,5 @@ public class PersonalSchedulesController extends ApiController {
 
         return personalschedule;
     }
+    
 }
