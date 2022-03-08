@@ -1,5 +1,5 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-//import UCSBSubjectForm from "main/components/UCSBSubjects/UCSBSubjectForm";
+import UCSBSubjectForm from "main/components/UCSBSubjects/UCSBSubjectForm";
 import { Navigate } from "react-router-dom";
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
@@ -18,13 +18,46 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
       inactive: ucsbSubject.inactive,
     },
   });
-  /*   
+    
     const onSuccess = (ucsbSubject) => {
       toast(
         `The amount of new Subjects Created : ${ucsbSubject.id}`
       );
-    };
-                                                     //trying out these
+    }
+
+    const mutation = useBackendMutation(
+      objectToAxiosParams,
+       { onSuccess }, 
+       // Stryker disable next-line all : hard to set up test for caching
+       ["/api/ucsbsubjects/retrieve"]
+       );
+
+
+       const { isSuccess } = mutation
+
+       const onSubmit = async (data) => {
+         mutation.mutate(data);
+       }
+     
+       if (isSuccess) {
+         return <Navigate to="/ucsbsubjects/list" />
+       }
+
+   
+  return (
+    <BasicLayout>
+      <div className="pt-2">
+        <h1>Load Subjects</h1>
+        <UCSBSubjectForm submitAction={onSubmit} />
+      </div>
+    </BasicLayout>
+  )
+}
+
+
+
+
+/*                                                   //trying out these
       const mutation = useBackendMutation(
         objectToAxiosParams,
         { onSuccess },
@@ -47,19 +80,12 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     }
     //get new list, get old - find delta. could loop through new set and see if in table if not
    */
-  return (
-    <BasicLayout>
-      <div className="pt-2">
-        <h1>Load Subjects</h1>
+
+/*
 
         <input type="button" value="Refresh" onclick="history.go(0)" />
 
-      </div>
-    </BasicLayout>
-  )
-}
 
-/*
 
 return (
     <BasicLayout>
