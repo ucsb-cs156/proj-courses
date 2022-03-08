@@ -10,45 +10,43 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     url: "/api/ucsbsubjects/post",
     method: "POST",
   });
-    
-    const onSuccess = (ucsbSubject) => {
-      toast(
-        `The amount of new Subjects Created : ${ucsbSubject.id}`
-      );
-    }
 
-    const mutation = useBackendMutation(
-      objectToAxiosParams,
-       { onSuccess }, 
-       // Stryker disable next-line all : hard to set up test for caching
-       ["/api/ucsbsubjects/retrieve"]
-       );
+  const onSuccess = (ucsbSubject) => {
+    toast(
+      `The amount of new Subjects Created : ${ucsbSubject.length}`
+    );
+  }
+
+  const mutation = useBackendMutation(
+    objectToAxiosParams,
+    { onSuccess },
+    // Stryker disable next-line all : hard to set up test for caching
+    ["/api/ucsbsubjects/retrieve"]
+  );
 
 
-       const { isSuccess } = mutation
+  const { isSuccess } = mutation
 
-       const onSubmit = async (data) => {
-         mutation.mutate(data);
-       }
-     
-       if (isSuccess) {
-        return <Navigate to="/admin/loadsubjects" />
-        //return <Navigate to="/ucsbsubjects/list" />
-       }
+  const onSubmit = async (data) => {
+    mutation.mutate(data);
+  }
 
-   
+  if (isSuccess) {
+    return <Navigate to="/admin/loadsubjects" />
+  }
+
   return (
     <BasicLayout>
       <div className="pt-2">
         <h1>Load Subjects</h1>
         <Button
-            variant='primary'
-            onClick={onSubmit()}
-            data-testid="update_Admin_LoadSubjPage"
-          >
-            Update
-          </Button>
-        
+          variant='primary'
+          onClick={onSubmit()}
+          data-testid="update_Admin_LoadSubjPage"
+        >
+          Update
+        </Button>
+
       </div>
     </BasicLayout>
   );
