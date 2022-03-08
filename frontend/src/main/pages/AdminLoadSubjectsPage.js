@@ -41,7 +41,8 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
        }
      
        if (isSuccess) {
-         return <Navigate to="/ucsbsubjects/list" />
+        return <Navigate to="/admin/loadsubjects" />
+        //return <Navigate to="/ucsbsubjects/list" />
        }
 
    
