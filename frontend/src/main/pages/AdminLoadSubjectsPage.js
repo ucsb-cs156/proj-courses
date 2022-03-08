@@ -54,13 +54,7 @@ const { data: subjects, error: _error, status: _status } =
       <div className="pt-2">
         <h1>Load Subjects</h1>
         <UCSBSubjectsTable subjects={subjects} currentUser={currentUser} />
-        <Button
-          variant='primary'
-          onClick={onSubmit()}
-          data-testid="update_Admin_LoadSubjPage"
-        >
-          Update
-        </Button>
+        <button onclick="onSubmit()">Refresh The Table</button>
 
       </div>
     </BasicLayout>
