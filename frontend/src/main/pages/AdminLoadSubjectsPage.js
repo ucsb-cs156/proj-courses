@@ -12,7 +12,8 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
     method: "POST",
   });
 //delete things marked with this [***] after
-//[***]
+//[***] 
+const currentUser = useCurrentUser();
 const { data: subjects, error: _error, status: _status } =
     useBackend(
       // Stryker disable next-line all : don't test internal caching of React Query
