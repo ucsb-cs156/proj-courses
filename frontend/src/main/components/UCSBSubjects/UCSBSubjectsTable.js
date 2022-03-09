@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 //import { hasRole } from "main/utils/currentUser";
 
 export default function UCSBSubjectsTable({ subjects, currentUser }) {
-/*
+
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
@@ -20,7 +20,7 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
         { onSuccess: onDeleteSuccess },
         ["/api/UCSBSubjects/all"]
     );
-    */
+    
     // Stryker enable all 
 
     // Stryker disable next-line all : TODO try to make a good test for this
@@ -61,12 +61,12 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
     ];
 //if we want buttons for the admin then uncomment section
 // aslo if you do that make sure to uncomment the tests for it as well. this is commented on purpose
-/*
+
     if (hasRole(currentUser, "ROLE_ADMIN")) {
         columns.push(ButtonColumn("Edit", "primary", editCallback, "UCSBSubjectsTable"));
         columns.push(ButtonColumn("Delete", "danger", deleteCallback, "UCSBSubjectsTable"));
     } 
-*/
+
     // Stryker disable next-line ArrayDeclaration : [columns] is a performance optimization
     const memoizedColumns = React.useMemo(() => columns, [columns]);
     const memoizedDates = React.useMemo(() => subjects, [subjects]);
