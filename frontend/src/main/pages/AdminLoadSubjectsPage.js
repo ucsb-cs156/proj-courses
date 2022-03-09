@@ -15,6 +15,7 @@ export default function AdminLoadSubjectsPage() {                     //NOT DONE
 
 //delete things marked with this [***] after testing it out
 //[***] 
+/*
 const currentUser = useCurrentUser();
 const { data: subjects, error: _error, status: _status } =
     useBackend(
@@ -23,7 +24,8 @@ const { data: subjects, error: _error, status: _status } =
       { method: "GET", url: "/api/UCSBSubjects/all" },
       []
     );
-//[***]
+*/
+    //[***]
 
 
   const onSuccess = () => {
