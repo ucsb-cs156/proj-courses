@@ -23,8 +23,8 @@ export default function BasicCourseTable({  courses, currentUser }) {
 
     const columns = [
         {
-        Header: 'Quarter',
-        accessor: 'quarter',
+            Header: 'Quarter',
+            accessor: 'quarter',
         },
         {
             Header: 'Course Id',
