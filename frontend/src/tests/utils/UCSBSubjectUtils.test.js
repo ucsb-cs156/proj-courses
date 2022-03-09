@@ -43,7 +43,7 @@ describe("UCSBSubjectUtils", () => {
 
             // assert
             expect(result).toEqual({
-                url: "/api/ucsbsubjects",
+                url: "/api/UCSBSubjects",
                 method: "DELETE",
                 params: { id: 17 }
             });
