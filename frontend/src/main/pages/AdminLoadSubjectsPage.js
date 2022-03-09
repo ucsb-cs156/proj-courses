@@ -8,7 +8,7 @@ import { useCurrentUser } from 'main/utils/currentUser'
 
 export default function AdminLoadSubjectsPage() {                     //NOT DONE
   const objectToAxiosParams = () => ({
-    url: "/api/UCSBsubjects/post",
+    url: "/api/UCSBSubjects/post",
     method: "POST",
   });
 
@@ -19,8 +19,8 @@ const currentUser = useCurrentUser();
 const { data: subjects, error: _error, status: _status } =
     useBackend(
       // Stryker disable next-line all : don't test internal caching of React Query
-      ["/api/UCSBsubjects/all"],
-      { method: "GET", url: "/api/UCSBsubjects/all" },
+      ["/api/UCSBSubjects/all"],
+      { method: "GET", url: "/api/UCSBSubjects/all" },
       []
     );
 //[***]
@@ -36,7 +36,7 @@ const { data: subjects, error: _error, status: _status } =
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    ["/api/UCSBsubjects/retrieve"]
+    ["/api/UCSBSubjects/retrieve"]
   );
 
 //if(ucsbSubject.length>0){

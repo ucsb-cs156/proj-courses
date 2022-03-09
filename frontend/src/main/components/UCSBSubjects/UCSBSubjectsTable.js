@@ -19,7 +19,7 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
         { onSuccess: onDeleteSuccess },
-        ["/api/UCSBsubjects/all"]
+        ["/api/UCSBSubjects/all"]
     );
     // Stryker enable all 
 
