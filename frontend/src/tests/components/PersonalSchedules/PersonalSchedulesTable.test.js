@@ -4,7 +4,7 @@ import PersonalSchedulesTable from "main/components/PersonalSchedules/PersonalSc
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
-import { yyyyqToQyy } from "src/main/utils/quarterUtilities.js"
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js"
 
 
 const mockedNavigate = jest.fn();
