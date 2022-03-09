@@ -5,7 +5,7 @@ import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/BasicCourse
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 
-export default function PersonalSchedulesTable({  courses, currentUser }) {
+export default function BasicCourseTable({  courses, currentUser }) {
 
     const navigate = useNavigate();
 
