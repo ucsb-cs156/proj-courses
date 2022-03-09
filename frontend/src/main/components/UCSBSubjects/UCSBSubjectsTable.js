@@ -1,10 +1,9 @@
 import React from "react";
-import OurTable, { ButtonColumn } from "main/components/OurTable";
-// import { toast } from "react-toastify";
+import OurTable from "main/components/OurTable";
 import { useBackendMutation } from "main/utils/useBackend";
 import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/UCSBSubjectUtils"
 import { useNavigate } from "react-router-dom";
-import { hasRole } from "main/utils/currentUser";
+//import { hasRole } from "main/utils/currentUser";
 
 export default function UCSBSubjectsTable({ subjects, currentUser }) {
 
@@ -59,12 +58,14 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
         }
         
     ];
-
+//if we want buttons for the admin then uncomment section
+// aslo if you do that make sure to uncomment the tests for it as well. this is commented on purpose
+/*
     if (hasRole(currentUser, "ROLE_ADMIN")) {
         columns.push(ButtonColumn("Edit", "primary", editCallback, "UCSBSubjectsTable"));
         columns.push(ButtonColumn("Delete", "danger", deleteCallback, "UCSBSubjectsTable"));
     } 
-
+*/
     // Stryker disable next-line ArrayDeclaration : [columns] is a performance optimization
     const memoizedColumns = React.useMemo(() => columns, [columns]);
     const memoizedDates = React.useMemo(() => subjects, [subjects]);
