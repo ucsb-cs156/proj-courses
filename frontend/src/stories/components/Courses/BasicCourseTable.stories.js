@@ -1,8 +1,7 @@
 import React from 'react';
 
 import BasicCourseTable from 'main/components/Courses/BasicCourseTable';
-import { coursesFixtures } from 'fixtures/courseFixtures';
-// import { currentUserFixtures } from 'fixtures/currentUserFixtures';
+import {coursesFixtures} from 'fixtures/courseFixtures';
 
 export default {
     title: 'components/Courses/BasicCourseTable',
@@ -21,16 +20,12 @@ Empty.args = {
     courses: []
 };
 
-export const twoCourses = Template.bind({});
-
-twoCourses.args = {
-    courses: coursesFixtures.classesLectureOnly
+export const oneCourse = Template.bind({});
+oneCourse.args = {
+    courses: coursesFixtures.oneCourse
 };
 
-
-// export const ThreeSubjectsUser = Template.bind({});
-// ThreeSubjectsUser.args = {
-//     personalSchedules: personalScheduleFixtures.threePersonalSchedules,
-//     currentUser: currentUserFixtures.adminUser
-// };
-
+export const twoCourses = Template.bind({});
+twoCourses.args = {
+    courses: coursesFixtures.twoCourses
+};

@@ -1,4 +1,5 @@
-export const classesLectureOnly = 
+const coursesFixtures = {
+  twoCourses:
     [
       {
       "quarter": "20211",
@@ -18,10 +19,8 @@ export const classesLectureOnly =
       "subjectArea": "CMPSC ",
       "unitsFixed": 4,
     }
-  ];
-
-
- export const classesLectureOnlyTimeDaysTBD = 
+  ],
+  oneCourse:
     [
       {
       "quarter": "20211",
@@ -32,4 +31,7 @@ export const classesLectureOnly =
       "subjectArea": "CMPSC ",
       "unitsFixed": 4,
     }
-  ];
+  ]
+}
+
+export { coursesFixtures };
