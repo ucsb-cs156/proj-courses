@@ -331,7 +331,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // assert
         verify(personalscheduleRepository, times(1)).findByIdAndUser(15L, u);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Personal schedule with id 15 not found", json.get("message"));
+        assertEquals("PersonalSchedule with id 15 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -352,7 +352,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // assert
         verify(personalscheduleRepository, times(1)).findByIdAndUser(31L, u);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Personal schedule with id 31 not found", json.get("message"));
+        assertEquals("PersonalSchedule with id 31 not found", json.get("message"));
     }
 
 
@@ -553,7 +553,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         verify(personalscheduleRepository, times(1)).findById(77L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("PersonalSchedule  with id 77 not found", json.get("message"));
+        assertEquals("PersonalSchedule with id 77 not found", json.get("message"));
     }
 
 }
