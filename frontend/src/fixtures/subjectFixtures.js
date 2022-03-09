@@ -9,6 +9,25 @@ export const oneSubject = [
       }
 ];
 
+export const outOfOrderSubjects = [
+  {
+    "subjectCode": "ART  CS",
+    "subjectTranslation": "Art (Creative Studies)",
+    "deptCode": "CRSTU",
+    "collegeCode": "CRST",
+    "relatedDeptCode": null,
+    "inactive": false
+  },
+  {
+    "subjectCode": "ANTH",
+    "subjectTranslation": "Anthropology",
+    "deptCode": "ANTH",
+    "collegeCode": "L&S",
+    "relatedDeptCode": null,
+    "inactive": false
+  }
+]
+
 export const threeSubjects = [
     
         {

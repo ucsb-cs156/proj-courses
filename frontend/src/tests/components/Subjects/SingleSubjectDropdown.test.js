@@ -4,12 +4,15 @@ import SingleSubjectDropdown from "main/components/Subjects/SingleSubjectDropdow
 import {oneSubject} from "fixtures/subjectFixtures";
 import {threeSubjects} from "fixtures/subjectFixtures";
 import {allTheSubjects} from "fixtures/subjectFixtures";
+import {outOfOrderSubjects} from "fixtures/subjectFixtures";
 
 jest.mock('react', ()=>({
     ...jest.requireActual('react'),
-    useState: jest.fn()
+    useState: jest.fn(),
+    compareValues: jest.fn()
   }))
 import { useState } from 'react';
+import { compareValues } from "main/utils/sortHelper";
 
 describe("SingleSubjectDropdown tests", () => {
 
@@ -54,6 +57,18 @@ describe("SingleSubjectDropdown tests", () => {
         const selectQuarter = getByLabelText("Subject Area")
         userEvent.selectOptions(selectQuarter, "ANTH");
         expect(setSubject).toBeCalledWith("ANTH");
+    });
+
+    test("out of order subjects is sorted by subjectCode", async () => {
+        const { getByText } =
+            render(<SingleSubjectDropdown
+                subjects={outOfOrderSubjects}
+                subject={subject}
+                setSubject={setSubject}
+                controlId="ssd1"
+            />);
+        await waitFor(() => expect(getByText("Subject Area")).toBeInTheDocument);
+        expect(getByText("ANTH - Anthropology")).toHaveAttribute("data-testid", "ssd1-option-0");
     });
 
     test("if I pass a non-null onChange, it gets called when the value changes", async () => {
