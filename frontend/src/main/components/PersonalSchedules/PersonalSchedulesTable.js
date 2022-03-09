@@ -40,11 +40,11 @@ export default function PersonalSchedulesTable({  personalSchedules, currentUser
         {
             Header: 'Description',
             accessor: 'description',
-            id: 'quarter',
         },
         {
             Header: 'Quarter',
             accessor: (row, _rowIndex) => yyyyqToQyy(row.quarter),
+            id: 'quarter',
         },
     ];
 
