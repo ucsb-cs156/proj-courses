@@ -76,7 +76,7 @@ describe("UserTable tests", () => {
     );
 
     const expectedHeaders = ["id", "Name","Description","Quarter"];
-    const expectedFields = ["id", "name","description","quarter"];
+    const expectedFields = ["id", "name","description","W22"];
     const testId = "PersonalSchedulesTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -116,7 +116,7 @@ describe("UserTable tests", () => {
     );
 
     const expectedHeaders = ["id", "Name","Description","Quarter"];
-    const expectedFields = ["id", "name","description","quarter"];
+    const expectedFields = ["id", "name","description","W22"];
     const testId = "PersonalSchedulesTable";
 
     expectedHeaders.forEach((headerText) => {
