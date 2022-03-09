@@ -24,10 +24,6 @@ export default function PersonalSchedulesTable({  courses, currentUser }) {
 
     const columns = [
         {
-            Header: 'id',
-            accessor: 'id', // accessor is the "key" in the data
-        },
-        {
             Header: 'Course Id',
             accessor: 'courseId',
         },
@@ -53,9 +49,9 @@ export default function PersonalSchedulesTable({  courses, currentUser }) {
         },
     ];
 
-    if (hasRole(currentUser, "ROLE_USER")) {
-        columns.push(ButtonColumn("Add", "primary", addCallback, "BasicCourseTable"));
-    } 
+    // if (hasRole(currentUser, "ROLE_USER")) {
+    //     columns.push(ButtonColumn("Add", "primary", addCallback, "BasicCourseTable"));
+    // } 
 
     // Stryker disable next-line ArrayDeclaration : [columns] is a performance optimization
     const memoizedColumns = React.useMemo(() => columns, [columns]);
