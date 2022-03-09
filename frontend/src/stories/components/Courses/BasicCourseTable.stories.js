@@ -15,10 +15,10 @@ const Template = (args) => {
 
     return (
         < BasicCourseTable 
-        // courses={courses} 
-        // checks={checks}
-        // controlId={"SampleControlId"}
-        // label={"Quarter"} 
+        courses={courses} 
+        checks={checks}
+        controlId={"SampleControlId"}
+        label={"Courses"} 
         {...args} />
     )
 };
@@ -46,7 +46,7 @@ twoCourses.args = {
       "unitsFixed": 4,
     }
   ],
-  checks: [false, false],
+  checks: [false, false, false],
   displayQuarter: "F21"
 };
 
