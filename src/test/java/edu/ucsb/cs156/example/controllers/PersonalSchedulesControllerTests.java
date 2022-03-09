@@ -309,7 +309,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         verify(personalscheduleRepository, times(1)).findByIdAndUser(15L, u);
         verify(personalscheduleRepository, times(1)).delete(ps1);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Personal schedule with id 15 deleted", json.get("message"));
+        assertEquals("PersonalSchedule with id 15 deleted", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -375,7 +375,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         verify(personalscheduleRepository, times(1)).findById(16L);
         verify(personalscheduleRepository, times(1)).delete(ps1);
         Map<String, Object> output = responseToJson(response);
-        assertEquals("Personal schedule with id 16 deleted", output.get("message"));
+        assertEquals("PersonalSchedule with id 16 deleted", output.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -409,7 +409,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // This should get ignored and overwritten with current user when todo is saved
 
         PersonalSchedule updatedSchedule = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("Quarter 2").user(otherUser).id(67L).build();
-        PersonalSchedule correctSchedule = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("Quarter 2").id(67L).build();
+        PersonalSchedule correctSchedule = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("Quarter 2").user(u).id(67L).build();
 
         String requestBody = mapper.writeValueAsString(updatedSchedule);
         String expectedReturn = mapper.writeValueAsString(correctSchedule);
@@ -501,9 +501,9 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         User yetAnotherUser = User.builder().id(512L).build();
         // We deliberately put the wrong user on the updated schedule
         // We expect the controller to ignore this and keep the user the same
-        PersonalSchedule updatedSchedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("Quarter 1").user(yetAnotherUser).id(77L)
+        PersonalSchedule updatedSchedule = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("Quarter 2").user(yetAnotherUser).id(77L)
                 .build();
-        PersonalSchedule correctSchedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("Quarter 1").user(otherUser).id(77L)
+        PersonalSchedule correctSchedule = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("Quarter 2").user(otherUser).id(77L)
                 .build();
 
         String requestBody = mapper.writeValueAsString(updatedSchedule);

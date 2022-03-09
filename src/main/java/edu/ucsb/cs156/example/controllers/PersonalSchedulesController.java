@@ -108,7 +108,7 @@ public class PersonalSchedulesController extends ApiController {
 
           personalscheduleRepository.delete(personalschedule);
 
-        return genericMessage("Personal schedule with id %s deleted".formatted(id));
+        return genericMessage("PersonalSchedule with id %s deleted".formatted(id));
 
     }
 
@@ -122,7 +122,7 @@ public class PersonalSchedulesController extends ApiController {
 
           personalscheduleRepository.delete(personalschedule);
 
-        return genericMessage("Personal schedule with id %s deleted".formatted(id));
+        return genericMessage("PersonalSchedule with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Update a single personal schedule (if it belongs to current user)")
