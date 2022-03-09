@@ -40,6 +40,7 @@ export default function PersonalSchedulesTable({  personalSchedules, currentUser
         {
             Header: 'Description',
             accessor: 'description',
+            id: 'quarter',
         },
         {
             Header: 'Quarter',
