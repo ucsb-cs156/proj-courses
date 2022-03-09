@@ -4,6 +4,7 @@ import PersonalSchedulesTable from "main/components/PersonalSchedules/PersonalSc
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 
 const mockedNavigate = jest.fn();
@@ -76,7 +77,7 @@ describe("UserTable tests", () => {
     );
 
     const expectedHeaders = ["id", "Name","Description","Quarter"];
-    const expectedFields = ["id", "name","description","quarter"];
+    const expectedFields = ["id", "name","description",(row, _rowIndex) => yyyyqToQyy(row.quarter)];
     const testId = "PersonalSchedulesTable";
 
     expectedHeaders.forEach((headerText) => {
