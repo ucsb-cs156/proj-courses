@@ -3,6 +3,7 @@ import HomePage from "main/pages/HomePage";
 import ProfilePage from "main/pages/ProfilePage";
 import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
+import AdminPersonalSchedulesPage from "main/pages/AdminPersonalSchedulePage";
 
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
@@ -26,6 +27,7 @@ function App() {
             <>
               <Route exact path="/admin/users" element={<AdminUsersPage />} />
               <Route exact path="/admin/loadsubjects" element={<AdminLoadSubjectsPage />} />
+              <Route exact path="/admin/personalschedule" element={<AdminPersonalSchedulesPage />} />
             </>
           )
         }
