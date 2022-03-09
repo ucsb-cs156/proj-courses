@@ -1,4 +1,4 @@
-import { onDeleteSuccess, cellToAxiosParamsDelete, editCallback } from "main/utils/UCSBSubjectUtils";
+import { onDeleteSuccess, cellToAxiosParamsDelete } from "main/utils/UCSBSubjectUtils";
 import mockConsole from "jest-mock-console";
 
 const mockToast = jest.fn();
@@ -43,7 +43,7 @@ describe("UCSBSubjectUtils", () => {
 
             // assert
             expect(result).toEqual({
-                url: "/api/UCSBsubjects",
+                url: "/api/UCSBSubjects",
                 method: "DELETE",
                 params: { id: 17 }
             });

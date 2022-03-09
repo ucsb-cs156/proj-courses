@@ -11,7 +11,7 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
-        navigate(`/UCSBsubjects/edit/${cell.row.values.id}`)
+        navigate(`/UCSBSubjects/edit/${cell.row.values.id}`)
     }
 
     // Stryker disable all : hard to test for query caching
@@ -19,7 +19,7 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
         { onSuccess: onDeleteSuccess },
-        ["/api/UCSBsubjects/all"]
+        ["/api/UCSBSubjects/all"]
     );
     // Stryker enable all 
 
@@ -59,7 +59,6 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
         }
         
     ];
-
     if (hasRole(currentUser, "ROLE_ADMIN")) {
         columns.push(ButtonColumn("Edit", "primary", editCallback, "UCSBSubjectsTable"));
         columns.push(ButtonColumn("Delete", "danger", deleteCallback, "UCSBSubjectsTable"));
