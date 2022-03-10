@@ -101,7 +101,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("Quarter 1").user(u).id(7L).build();
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(u).id(7L).build();
         when(personalscheduleRepository.findByIdAndUser(eq(7L), eq(u))).thenReturn(Optional.of(personalschedule1));
 
         // act
@@ -146,7 +146,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
-        PersonalSchedule otherUsersPersonalschedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("Quarter 1").user(otherUser).id(13L)
+        PersonalSchedule otherUsersPersonalschedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(otherUser).id(13L)
                 .build();
 
         when(personalscheduleRepository.findByIdAndUser(eq(13L), eq(otherUser))).thenReturn(Optional.of(otherUsersPersonalschedule));
@@ -171,7 +171,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
-        PersonalSchedule otherUsersPersonalschedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("Quarter 1").user(otherUser).id(27L)
+        PersonalSchedule otherUsersPersonalschedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(otherUser).id(27L)
                 .build();
 
         when(personalscheduleRepository.findById(eq(27L))).thenReturn(Optional.of(otherUsersPersonalschedule));
@@ -218,9 +218,9 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         User u2 = User.builder().id(2L).build();
         User u = currentUserService.getCurrentUser().getUser();
 
-        PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("Quarter 1").user(u1).id(1L).build();
-        PersonalSchedule p2 = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("Quarter 2").user(u2).id(2L).build();
-        PersonalSchedule p3 = PersonalSchedule.builder().name("Name 3").description("Description 3").quarter("Quarter 3").user(u).id(3L).build();
+        PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(u1).id(1L).build();
+        PersonalSchedule p2 = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("20222").user(u2).id(2L).build();
+        PersonalSchedule p3 = PersonalSchedule.builder().name("Name 3").description("Description 3").quarter("20223").user(u).id(3L).build();
 
         ArrayList<PersonalSchedule> expectedSchedules = new ArrayList<>();
         expectedSchedules.addAll(Arrays.asList(p1, p2, p3));
@@ -247,8 +247,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("Quarter 1").user(thisUser).id(1L).build();
-        PersonalSchedule p2 = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("Quarter 2").user(thisUser).id(2L).build();
+        PersonalSchedule p1 = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(thisUser).id(1L).build();
+        PersonalSchedule p2 = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("20222").user(thisUser).id(2L).build();
 
         ArrayList<PersonalSchedule> expectedSchedules = new ArrayList<>();
         expectedSchedules.addAll(Arrays.asList(p1, p2));
@@ -273,13 +273,13 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        PersonalSchedule expectedSchedule = PersonalSchedule.builder().name("Test Name").description("Test Description").quarter("Test Quarter").user(thisUser).id(0L).build();
+        PersonalSchedule expectedSchedule = PersonalSchedule.builder().name("Test Name").description("Test Description").quarter("20222").user(thisUser).id(0L).build();
 
         when(personalscheduleRepository.save(eq(expectedSchedule))).thenReturn(expectedSchedule);
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/personalschedules/post?name=Test Name&description=Test Description&quarter=Test Quarter")
+                post("/api/personalschedules/post?name=Test Name&description=Test Description&quarter=20222")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
