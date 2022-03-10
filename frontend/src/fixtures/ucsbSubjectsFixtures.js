@@ -1,41 +1,37 @@
 const ucsbSubjectsFixtures = {
     oneSubject: {
-        
-        "subjectCode": "GEOG 5",
-        "subjectTranslation": "PEOPLE/PLACE/ENVIRO",
-        "deptCode": "GEOG",
-        "collegeCode": "L&S",
-        "relatedDeptCode": "GEO",
-        "inactive": false
+      "subjectCode": "GEOG",
+      "subjectTranslation": "Geography",
+      "deptCode": "GEOG",
+      "collegeCode": "L&S",
+      "relatedDeptCode": null,
+      "inactive": false
     },
     threeSubjects: [
       {
-        
-        "subjectCode": "GEOG 5",
-        "subjectTranslation": "PEOPLE/PLACE/ENVIRO",
+        "subjectCode": "GEOG",
+        "subjectTranslation": "Geography",
         "deptCode": "GEOG",
         "collegeCode": "L&S",
-        "relatedDeptCode": "COE",
+        "relatedDeptCode": null,
         "inactive": false
       },
       {
-        
-        "subjectCode": "176A",
-        "subjectTranslation": "COMP COMM NETWORKS",
-        "deptCode": "CMPSC",
-        "collegeCode": "COE",
-        "relatedDeptCode": "CS",
-        "inactive": false
-      },
-      {
-        
-        "subjectCode": "120B",
-        "subjectTranslation": "PROB & STATISTICS",
-        "deptCode": "PSTAT",
+        "subjectCode": "GER",
+        "subjectTranslation": "German",
+        "deptCode": "GERSL",
         "collegeCode": "L&S",
-        "relatedDeptCode": "STATS",
-        "inactive": true
-      }
+        "relatedDeptCode": null,
+        "inactive": false
+      },
+      {
+        "subjectCode": "GREEK",
+        "subjectTranslation": "Greek",
+        "deptCode": "CLASS",
+        "collegeCode": "L&S",
+        "relatedDeptCode": null,
+        "inactive": false
+      },
     ]
 };
 

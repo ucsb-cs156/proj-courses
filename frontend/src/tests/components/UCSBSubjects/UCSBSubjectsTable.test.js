@@ -75,8 +75,8 @@ describe("UserTable tests", () => {
 
     );
 
-    const expectedHeaders = ["id", "SubjectCode", "SubjectTranslation", "DeptCode","CollegeCode","RelatedDeptCode","Inactive"];
-    const expectedFields = ["id", "subjectCode", "subjectTranslation", "deptCode","collegeCode","relatedDeptCode","inactive"];
+    const expectedHeaders = ["SubjectCode", "SubjectTranslation", "DeptCode","CollegeCode","RelatedDeptCode","Inactive"];
+    const expectedFields = ["subjectCode", "subjectTranslation", "deptCode","collegeCode","relatedDeptCode","inactive"];
     const testId = "UCSBSubjectsTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -89,8 +89,8 @@ describe("UserTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+    expect(getByTestId(`${testId}-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
+    expect(getByTestId(`${testId}-cell-row-1-col-subjectCode`)).toHaveTextContent("GER");
 
     const editButton = getByTestId(`${testId}-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
@@ -115,14 +115,14 @@ describe("UserTable tests", () => {
 
     );
 
-    await waitFor(() => { expect(getByTestId(`UCSBSubjectsTable-cell-row-0-col-id`)).toHaveTextContent("1"); });
+    await waitFor(() => { expect(getByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG"); });
 
     const editButton = getByTestId(`UCSBSubjectsTable-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
     
     fireEvent.click(editButton);
 
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/UCSBSubjects/edit/1'));
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/UCSBSubjects/edit/GEOG'));
 
   });
 
@@ -139,7 +139,7 @@ describe("UserTable tests", () => {
 
     );
 
-    await waitFor(() => { expect(getByTestId(`UCSBSubjectsTable-cell-row-0-col-id`)).toHaveTextContent("1"); });
+    await waitFor(() => { expect(getByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG"); });
 
     const deleteButton = getByTestId(`UCSBSubjectsTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
