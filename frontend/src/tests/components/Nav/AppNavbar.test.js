@@ -41,11 +41,16 @@ describe("AppNavbar tests", () => {
 
         await waitFor(() => expect(getByText("Welcome, phtcon@ucsb.edu")).toBeInTheDocument());
         const adminMenu = getByTestId("appnavbar-admin-dropdown");
-        expect(adminMenu).toBeInTheDocument();  
+
+        expect(adminMenu).toBeInTheDocument(); 
+        
         const aElement = adminMenu.querySelector("a");
         expect(aElement).toBeInTheDocument();
         aElement?.click();
+        await waitFor( () => expect(getByTestId(/appnavbar-admin-users/)).toBeInTheDocument() );
         await waitFor( () => expect(getByTestId("appnavbar-admin-loadsubjects")).toBeInTheDocument() );      
+        await waitFor( () => expect(getByTestId(/appnavbar-admin-personalschedule/)).toBeInTheDocument() );
+
     });
 
     test("renders H2Console and Swagger links correctly", async () => {
@@ -151,6 +156,31 @@ describe("AppNavbar tests", () => {
 
         await waitFor(() => expect(getByTestId("AppNavbar")).toBeInTheDocument());
         expect(queryByTestId(/AppNavbarLocalhost/i)).toBeNull();
+    });
+
+    test("renders the PersonalSchedules menu correctly", async () => {
+
+        const currentUser = currentUserFixtures.userOnly;
+        const systemInfo = systemInfoFixtures.showingBoth;
+
+        const doLogin = jest.fn();
+
+        const { getByTestId } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} systemInfo={systemInfo} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => expect(getByTestId("appnavbar-personalschedules-dropdown")).toBeInTheDocument());
+        const dropdown = getByTestId("appnavbar-personalschedules-dropdown");
+        const aElement = dropdown.querySelector("a");
+        expect(aElement).toBeInTheDocument();
+        aElement?.click();
+        await waitFor(() => expect(getByTestId("appnavbar-personalschedules-list")).toBeInTheDocument());
+        await waitFor(() => expect(getByTestId(/appnavbar-personalschedules-create/)).toBeInTheDocument());
+
     });
 
 });
