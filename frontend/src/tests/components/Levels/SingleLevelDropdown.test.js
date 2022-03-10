@@ -115,7 +115,7 @@ describe("SingleLevelDropdown tests", () => {
         await waitFor(() => expect(useState).toBeCalledWith("U"));
     });
 
-    test("when localstorage has no value, first element of level range is passed to useState", async () => {
+    test("when localstorage has no value, U is passed to useState", async () => {
         const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
         getItemSpy.mockImplementation(() => null);
 
