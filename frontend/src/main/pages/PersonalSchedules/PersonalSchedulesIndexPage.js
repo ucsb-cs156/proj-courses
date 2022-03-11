@@ -9,7 +9,7 @@ export default function PersonalSchedulesIndexPage() {
 
     const currentUser = useCurrentUser();
 
-    const { data: csr, error: _error, status: _status } =
+    const { data: personalSchedules, error: _error, status: _status } =
         useBackend(
             // Stryker disable next-line all : don't test internal caching of React Query
             ["/api/personalschedules/all"],
@@ -21,7 +21,7 @@ export default function PersonalSchedulesIndexPage() {
         <BasicLayout>
             <div className="pt-2">
                 <h1>PersonalSchedules</h1>
-                <PersonalSchedulesTable csr={csr} currentUser={currentUser} />
+                <PersonalSchedulesTable personalSchedules={personalSchedules} currentUser={currentUser} />
             </div>
         </BasicLayout>
     )
