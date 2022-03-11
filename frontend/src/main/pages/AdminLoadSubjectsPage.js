@@ -59,15 +59,9 @@ export default function AdminLoadSubjectsPage() {
 
 
 /*                                                   //trying out these
-
-
 <UCSBSubjectsTable subjects={subjects} currentUser={currentUser} />
-
-
 //works but with table the page disapears after a second
 <input type="button" value="Refresh" onclick="onSubmit()" />
-
-
 const mutation = useBackendMutation(
         objectToAxiosParams,
         { onSuccess },
@@ -92,7 +86,6 @@ const mutation = useBackendMutation(
    */
 
 /*
-
  <Button
           variant='primary'
           onClick={onSubmit()}
@@ -100,15 +93,8 @@ const mutation = useBackendMutation(
         >
           Update
         </Button>
-
-
-
-
-
         <input type="button" value="Refresh" onclick="history.go(0)" />
-
 <submitAction={onSubmit} />
-
 return (
     <BasicLayout>
       <div className="pt-2">
@@ -120,6 +106,4 @@ return (
     </BasicLayout>
   )
 }
-
-
 */

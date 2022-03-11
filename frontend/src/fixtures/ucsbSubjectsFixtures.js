@@ -1,41 +1,37 @@
 const ucsbSubjectsFixtures = {
     oneSubject: {
-        "id": 1,
-        "subjectCode": "test1",
-        "subjectTranslation": "test1",
-        "deptCode": "test1",
-        "collegeCode": "test1",
-        "relatedDeptCode": "test1",
-        "inactive": false
+      "subjectCode": "GEOG",
+      "subjectTranslation": "Geography",
+      "deptCode": "GEOG",
+      "collegeCode": "L&S",
+      "relatedDeptCode": null,
+      "inactive": false
     },
     threeSubjects: [
       {
-        "id": 1,
-        "subjectCode": "test1",
-        "subjectTranslation": "test1",
-        "deptCode": "test1",
-        "collegeCode": "test1",
-        "relatedDeptCode": "test1",
+        "subjectCode": "GEOG",
+        "subjectTranslation": "Geography",
+        "deptCode": "GEOG",
+        "collegeCode": "L&S",
+        "relatedDeptCode": null,
         "inactive": false
       },
       {
-        "id": 2,
-        "subjectCode": "test2",
-        "subjectTranslation": "test2",
-        "deptCode": "test2",
-        "collegeCode": "test2",
-        "relatedDeptCode": "test2",
+        "subjectCode": "GER",
+        "subjectTranslation": "German",
+        "deptCode": "GERSL",
+        "collegeCode": "L&S",
+        "relatedDeptCode": null,
         "inactive": false
       },
       {
-        "id": 3,
-        "subjectCode": "test3",
-        "subjectTranslation": "test3",
-        "deptCode": "test3",
-        "collegeCode": "test3",
-        "relatedDeptCode": "test3",
+        "subjectCode": "GREEK",
+        "subjectTranslation": "Greek",
+        "deptCode": "CLASS",
+        "collegeCode": "L&S",
+        "relatedDeptCode": null,
         "inactive": false
-      }
+      },
     ]
 };
 

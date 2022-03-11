@@ -36,7 +36,7 @@ describe("UCSBSubjectUtils", () => {
 
         test("It returns the correct params", () => {
             // arrange
-            const cell = { row: { values: { id: 17 } } };   
+            const cell = { row: { values: { subjectCode : "ANTH" } } };
 
             // act
             const result = cellToAxiosParamsDelete(cell);
@@ -45,7 +45,7 @@ describe("UCSBSubjectUtils", () => {
             expect(result).toEqual({
                 url: "/api/UCSBSubjects",
                 method: "DELETE",
-                params: { id: 17 }
+                params: { subjectCode : "ANTH" }
             });
         });
 
