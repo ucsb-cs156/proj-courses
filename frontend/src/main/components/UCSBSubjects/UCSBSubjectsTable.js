@@ -1,15 +1,12 @@
 import React from "react";
-import OurTable from "main/components/OurTable";
-/*import { useBackendMutation } from "main/utils/useBackend";
+import OurTable, { ButtonColumn } from "main/components/OurTable";
+import { useBackendMutation } from "main/utils/useBackend";
 import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/UCSBSubjectUtils"
 import { useNavigate } from "react-router-dom";
-*/
-//import { hasRole } from "main/utils/currentUser";
-//NOTE uncomment to bring back the buttons, for now they're not needed
-//also replace this next line with the one below it too if that's the case
-export default function UCSBSubjectsTable({ subjects }) {
-//export default function UCSBSubjectsTable({ subjects, currentUser }) {
-/*
+import { hasRole } from "main/utils/currentUser";
+
+export default function UCSBSubjectsTable({ subjects, currentUser }) {
+
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
@@ -23,11 +20,10 @@ export default function UCSBSubjectsTable({ subjects }) {
         { onSuccess: onDeleteSuccess },
         ["/api/UCSBSubjects/all"]
     );
-  */  
     // Stryker enable all 
 
     // Stryker disable next-line all : TODO try to make a good test for this
-   // const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
+    const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
 
 
     const columns = [
@@ -58,14 +54,11 @@ export default function UCSBSubjectsTable({ subjects }) {
         }
         
     ];
-//if we want buttons for the admin then uncomment section
-// aslo if you do that make sure to uncomment the tests for it as well. this is commented on purpose
-/*
     if (hasRole(currentUser, "ROLE_ADMIN")) {
         columns.push(ButtonColumn("Edit", "primary", editCallback, "UCSBSubjectsTable"));
         columns.push(ButtonColumn("Delete", "danger", deleteCallback, "UCSBSubjectsTable"));
     } 
-*/
+
     // Stryker disable next-line ArrayDeclaration : [columns] is a performance optimization
     const memoizedColumns = React.useMemo(() => columns, [columns]);
     const memoizedDates = React.useMemo(() => subjects, [subjects]);

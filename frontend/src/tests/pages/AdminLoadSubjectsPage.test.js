@@ -1,21 +1,43 @@
-import { render } from "@testing-library/react";
-import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
+import { fireEvent, render, waitFor} from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
+import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
+
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+
+const mockToast = jest.fn();
+jest.mock('react-toastify', () => {
+    const originalModule = jest.requireActual('react-toastify');
+    return {
+        __esModule: true,
+        ...originalModule,
+        toast: (x) => mockToast(x)
+    };
+});
 
 describe("AdminLoadSubjectsPage tests", () => {
 
     const axiosMock = new AxiosMockAdapter(axios);
-    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    const testId = "UCSBSubjectsTable";
 
-    const queryClient = new QueryClient();
+    const setupAdminUser = () => {
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    };
+
+
     test("renders without crashing for admin user", () => {
+        setupAdminUser();
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/UCSBSubjects/all").reply(200, []);
+
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -25,12 +47,13 @@ describe("AdminLoadSubjectsPage tests", () => {
         );
     });
 
-    test("Refresh button works", async () => {
-        const axiosMock = new AxiosMockAdapter(axios);
-        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
-        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
 
-        const { getByText, getByTestId } = render(
+    test("renders three earthquakes without crashing for regular user", async () => {
+        setupAdminUser();
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/UCSBSubjects/all").reply(200, ucsbSubjectsFixtures.threeSubjects);
+
+        const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <AdminLoadSubjectsPage />
@@ -38,35 +61,37 @@ describe("AdminLoadSubjectsPage tests", () => {
             </QueryClientProvider>
         );
 
-        const editButton = getByTestId(`UCSBSubjectsTable-cell-row-0-col-Edit-button`);
-        expect(editButton).toBeInTheDocument();
-
-        fireEvent.click(editButton);
-        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/UCSBSubjects/edit/1'));
+        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG"); });
+        expect(getByTestId(`${testId}-cell-row-1-col-subjectCode`)).toHaveTextContent("GER");
+        expect(getByTestId(`${testId}-cell-row-2-col-subjectCode`)).toHaveTextContent("GREEK");
     });
-    test("Toast displays  properly", async () => {
 
-        const currentUser = currentUserFixtures.adminUser;
 
-        const { getByText, getByTestId } = render(
+    test("test what happens when you click load, admin", async () => {
+
+        setupAdminUser();
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/UCSBSubjects/all").reply(200, []);
+        axiosMock.onPost("/api/UCSBSubjects/load").reply(200, ucsbSubjectsFixtures.threeSubjects);
+
+        const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
-                    <UCSBSubjectsTable subjects={ucsbSubjectsFixtures.threeSubjects} currentUser={currentUser} />
+                    <AdminLoadSubjectsPage />
                 </MemoryRouter>
             </QueryClientProvider>
-
         );
 
-        await waitFor(() => { expect(getByTestId(`UCSBSubjectsTable-cell-row-0-col-id`)).toHaveTextContent("1"); });
+        await waitFor(() => { expect(getByTestId(`AdminLoadSubjects-Load-Button`)).toBeInTheDocument(); });
 
-        const editButton = getByTestId(`UCSBSubjectsTable-cell-row-0-col-Edit-button`);
-        expect(editButton).toBeInTheDocument();
-
-        fireEvent.click(editButton);
-
-        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/UCSBSubjects/edit/1'));
-
+        const loadButton = getByTestId(`AdminLoadSubjects-Load-Button`);
+        expect(loadButton).toBeInTheDocument();
+        fireEvent.click(loadButton);
+        
+        await waitFor(() =>  expect(axiosMock.history.post.length).toBe(1));
+        expect(mockToast).toBeCalledWith("Number of Subjects Loaded : 3");
     });
 
+    
 
 });

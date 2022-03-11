@@ -1,11 +1,10 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import UCSBSubjectsTable from "main/components/UCSBSubjects/UCSBSubjectsTable"
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
-//NOTE:
-//see comment in ucsbSubjectsTable about the buttons tests this is purposely commented out incase we need it in the future
+
 
 const mockedNavigate = jest.fn();
 
@@ -93,16 +92,16 @@ describe("UserTable tests", () => {
     expect(getByTestId(`${testId}-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
     expect(getByTestId(`${testId}-cell-row-1-col-subjectCode`)).toHaveTextContent("GER");
 
-    //const editButton = getByTestId(`${testId}-cell-row-0-col-Edit-button`);
-    //expect(editButton).toBeInTheDocument();
-    //expect(editButton).toHaveClass("btn-primary");
+    const editButton = getByTestId(`${testId}-cell-row-0-col-Edit-button`);
+    expect(editButton).toBeInTheDocument();
+    expect(editButton).toHaveClass("btn-primary");
 
-    //const deleteButton = getByTestId(`${testId}-cell-row-0-col-Delete-button`);
-    //expect(deleteButton).toBeInTheDocument();
-    //expect(deleteButton).toHaveClass("btn-danger");
+    const deleteButton = getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    expect(deleteButton).toBeInTheDocument();
+    expect(deleteButton).toHaveClass("btn-danger");
 
   });
-/*
+
   test("Edit button navigates to the edit page for admin user", async () => {
 
     const currentUser = currentUserFixtures.adminUser;
@@ -149,7 +148,7 @@ describe("UserTable tests", () => {
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
   });
-*/
+
 
 });
 
