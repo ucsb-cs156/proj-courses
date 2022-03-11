@@ -1,9 +1,9 @@
+import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import SingleSubjectDropdown from "main/components/Subjects/SingleSubjectDropdown";
 import {oneSubject} from "fixtures/subjectFixtures";
 import {threeSubjects} from "fixtures/subjectFixtures";
-import {allTheSubjects} from "fixtures/subjectFixtures";
 import {outOfOrderSubjects} from "fixtures/subjectFixtures";
 
 jest.mock('react', ()=>({
@@ -11,6 +11,7 @@ jest.mock('react', ()=>({
     useState: jest.fn(),
     compareValues: jest.fn()
   }))
+  
 import { useState } from 'react';
 import { compareValues } from "main/utils/sortHelper";
 
@@ -55,8 +56,8 @@ describe("SingleSubjectDropdown tests", () => {
             />);
         await waitFor(() => expect(getByLabelText("Subject Area")).toBeInTheDocument);
         const selectQuarter = getByLabelText("Subject Area")
-        userEvent.selectOptions(selectQuarter, "ANTH");
-        expect(setSubject).toBeCalledWith("ANTH");
+        userEvent.selectOptions(selectQuarter, "ARTHI");
+        expect(setSubject).toBeCalledWith("ARTHI");
     });
 
     test("out of order subjects is sorted by subjectCode", async () => {
@@ -84,14 +85,14 @@ describe("SingleSubjectDropdown tests", () => {
             );
         await waitFor(() => expect(getByLabelText("Subject Area")).toBeInTheDocument);
         const selectSubject = getByLabelText("Subject Area")
-        userEvent.selectOptions(selectSubject, "ANTH");
-        await waitFor(() => expect(setSubject).toBeCalledWith("ANTH"));
+        userEvent.selectOptions(selectSubject, "ARTHI");
+        await waitFor(() => expect(setSubject).toBeCalledWith("ARTHI"));
         await waitFor(() => expect(onChange).toBeCalledTimes(1));
 
         // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
 
         const event = onChange.mock.calls[0][0];
-        expect(event.target.value).toBe("ANTH");
+        expect(event.target.value).toBe("ARTHI");
     });
 
     test("default label is Subject Area", async () => {
@@ -122,7 +123,7 @@ describe("SingleSubjectDropdown tests", () => {
 
     test("when localstorage has a value, it is passed to useState", async () => {
         const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
-        getItemSpy.mockImplementation(() => "ANTH");
+        getItemSpy.mockImplementation(() => "ARTHI");
 
         const setSubjectStateSpy = jest.fn();
         useState.mockImplementation((x)=>[x, setSubjectStateSpy])
@@ -136,7 +137,7 @@ describe("SingleSubjectDropdown tests", () => {
             />
             );
 
-        await waitFor(() => expect(useState).toBeCalledWith("ANTH"));
+        await waitFor(() => expect(useState).toBeCalledWith("ARTHI"));
     });
 
     test("when localstorage has no value, first element of subject list is passed to useState", async () => {
