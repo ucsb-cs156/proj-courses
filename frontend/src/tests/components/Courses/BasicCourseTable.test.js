@@ -54,7 +54,7 @@ describe("CourseTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("20211");
+    expect(getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W21");
     expect(getByTestId(`${testId}-cell-row-1-col-courseId`)).toHaveTextContent("CMPSC 16");
 
   });
