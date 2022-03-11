@@ -23,7 +23,7 @@ const SingleSubjectDropdown = ({ subjects, subject, setSubject, controlId, onCha
     subjects.sort(compareValues("subjectCode"));
 
     return (
-        <Form.Group controlId="BasicSearch.Subject">
+        <Form.Group controlId={controlId}>
             <Form.Label>{label}</Form.Label>
             <Form.Control 
                 as="select" 
