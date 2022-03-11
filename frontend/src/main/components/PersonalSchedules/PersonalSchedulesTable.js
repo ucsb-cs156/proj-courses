@@ -4,6 +4,7 @@ import { useBackendMutation } from "main/utils/useBackend";
 import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/PersonalScheduleUtils"
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 export default function PersonalSchedulesTable({  personalSchedules, currentUser }) {
 
@@ -42,7 +43,8 @@ export default function PersonalSchedulesTable({  personalSchedules, currentUser
         },
         {
             Header: 'Quarter',
-            accessor: 'quarter',
+            accessor: (row, _rowIndex) => yyyyqToQyy(row.quarter),
+            id: 'quarter',
         },
     ];
 
