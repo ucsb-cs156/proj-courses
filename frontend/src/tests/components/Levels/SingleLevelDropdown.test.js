@@ -1,3 +1,4 @@
+import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import SingleLevelDropdown from "main/components/Levels/SingleLevelDropdown"
@@ -6,7 +7,7 @@ import {allTheLevels} from "fixtures/levelsFixtures"
 
 jest.mock('react', ()=>({
     ...jest.requireActual('react'),
-    useState: jest.fn()
+    useState: jest.fn(),
   }))
 import { useState } from 'react';
 
