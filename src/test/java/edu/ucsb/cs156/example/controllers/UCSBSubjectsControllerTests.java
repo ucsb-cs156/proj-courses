@@ -48,9 +48,9 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
     UCSBSubjectsService ucsbSubjectsService;
 
     @Test
-    public void api_UCSBSubjects_all__logged_out__returns_403() throws Exception {
+    public void api_UCSBSubjects_all__logged_out__returns_200() throws Exception {
         mockMvc.perform(get("/api/UCSBSubjects/all"))
-                .andExpect(status().is(403));
+                .andExpect(status().isOk());
     }
 
     @WithMockUser(roles = { "USER" })
