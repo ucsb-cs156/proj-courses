@@ -8,7 +8,7 @@ import BasicCourseTable from "main/components/Courses/BasicCourseTable";
 
 export default function HomePage() {
   // Stryker disable next-line all : Can't test state because hook is internal
-  var [courseJSON, setCourseJSON] = useState([]);
+  const [courseJSON, setCourseJSON] = useState([]);
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/basicsearch",
