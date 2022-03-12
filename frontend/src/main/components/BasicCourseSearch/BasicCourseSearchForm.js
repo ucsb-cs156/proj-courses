@@ -18,12 +18,6 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
   const localLevel = localStorage.getItem("BasicSearch.CourseLevel");
 
-  const loadObjectToAxiosParams = () => ({
-    url: "/api/UCSBSubjects/load",
-    method: "POST",
-    params: {},
-  });
-
   const getObjectToAxiosParams = () => ({
     url: "/api/UCSBSubjects/all",
     method: "GET",
@@ -34,13 +28,6 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
     setSubjects(listSubjects);
   };
 
-  const loadMutation = useBackendMutation(
-    loadObjectToAxiosParams,
-    {},
-    // Stryker disable next-line all : hard to set up test for caching
-    []
-  );
-
   const getMutation = useBackendMutation(
     getObjectToAxiosParams,
     { onSuccess },
@@ -49,7 +36,6 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
   );
 
   useEffect(() => {
-    loadMutation.mutate();
     getMutation.mutate();
   }, []);
 
@@ -62,9 +48,7 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { quarter, subject, level }).then((courseJSON) => {
-      setCourseJSON(courseJSON);
-    });
+    fetchJSON(event, { quarter, subject, level });
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
