@@ -10,7 +10,7 @@ import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import { useBackendMutation } from "main/utils/useBackend";
 
-const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
+const BasicCourseSearchForm = ({ fetchJSON }) => {
   const quarters = quarterRange("20084", "20222");
 
   // Stryker disable all : not sure how to test/mock local storage
@@ -81,7 +81,7 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
             />
           </Col>
         </Row>
-        <Row style={{ paddingTop: 10 }}>
+        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit

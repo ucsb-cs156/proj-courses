@@ -38,10 +38,7 @@ export default function HomePage() {
     <BasicLayout>
       <div className="pt-2">
         <h5>Welcome to the UCSB Courses Search App!</h5>
-        <BasicCourseSearchForm
-          setCourseJSON={setCourseJSON}
-          fetchJSON={fetchBasicCourseJSON}
-        />
+        <BasicCourseSearchForm fetchJSON={fetchBasicCourseJSON} />
         <BasicCourseTable courses={courseJSON} />
       </div>
     </BasicLayout>
