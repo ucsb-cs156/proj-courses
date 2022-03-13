@@ -95,7 +95,6 @@ describe("BasicCourseSearchForm tests", () => {
       sampleKey: "sampleValue",
     };
 
-    const setCourseJSONSpy = jest.fn();
     const fetchJSONSpy = jest.fn();
 
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
@@ -103,10 +102,7 @@ describe("BasicCourseSearchForm tests", () => {
     const { getByText, getByLabelText } = render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <BasicCourseSearchForm
-            setCourseJSON={setCourseJSONSpy}
-            fetchJSON={fetchJSONSpy}
-          />
+          <BasicCourseSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -130,10 +126,8 @@ describe("BasicCourseSearchForm tests", () => {
     const submitButton = getByText("Submit");
     userEvent.click(submitButton);
 
-    await waitFor(() => expect(setCourseJSONSpy).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
 
-    expect(setCourseJSONSpy).toHaveBeenCalledWith(sampleReturnValue);
     expect(fetchJSONSpy).toHaveBeenCalledWith(
       expect.any(Object),
       expectedFields
@@ -147,7 +141,6 @@ describe("BasicCourseSearchForm tests", () => {
       total: 0,
     };
 
-    const setCourseJSONSpy = jest.fn();
     const fetchJSONSpy = jest.fn();
 
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
@@ -155,10 +148,7 @@ describe("BasicCourseSearchForm tests", () => {
     const { getByText, getByLabelText } = render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <BasicCourseSearchForm
-            setCourseJSON={setCourseJSONSpy}
-            fetchJSON={fetchJSONSpy}
-          />
+          <BasicCourseSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -175,7 +165,5 @@ describe("BasicCourseSearchForm tests", () => {
     userEvent.selectOptions(selectLevel, "G");
     const submitButton = getByText("Submit");
     userEvent.click(submitButton);
-
-    await waitFor(() => expect(setCourseJSONSpy).toHaveBeenCalledTimes(0));
   });
 });

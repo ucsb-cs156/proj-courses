@@ -10,19 +10,13 @@ import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import { useBackendMutation } from "main/utils/useBackend";
 
-const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
+const BasicCourseSearchForm = ({ fetchJSON }) => {
   const quarters = quarterRange("20084", "20222");
 
   // Stryker disable all : not sure how to test/mock local storage
   const localSubject = localStorage.getItem("BasicSearch.Subject");
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
   const localLevel = localStorage.getItem("BasicSearch.CourseLevel");
-
-  const loadObjectToAxiosParams = () => ({
-    url: "/api/UCSBSubjects/load",
-    method: "POST",
-    params: {},
-  });
 
   const getObjectToAxiosParams = () => ({
     url: "/api/UCSBSubjects/all",
@@ -34,13 +28,6 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
     setSubjects(listSubjects);
   };
 
-  const loadMutation = useBackendMutation(
-    loadObjectToAxiosParams,
-    {},
-    // Stryker disable next-line all : hard to set up test for caching
-    []
-  );
-
   const getMutation = useBackendMutation(
     getObjectToAxiosParams,
     { onSuccess },
@@ -49,7 +36,6 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
   );
 
   useEffect(() => {
-    loadMutation.mutate();
     getMutation.mutate();
   }, []);
 
@@ -62,9 +48,7 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { quarter, subject, level }).then((courseJSON) => {
-      setCourseJSON(courseJSON);
-    });
+    fetchJSON(event, { quarter, subject, level });
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
@@ -97,7 +81,7 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
             />
           </Col>
         </Row>
-        <Row style={{ paddingTop: 10 }}>
+        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit

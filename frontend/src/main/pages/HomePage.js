@@ -4,14 +4,14 @@ import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourse
 import { useBackendMutation } from "main/utils/useBackend";
 import { queryAllByTestId } from "@testing-library/react";
 import { toast } from "react-toastify";
+import BasicCourseTable from "main/components/Courses/BasicCourseTable";
 
 export default function HomePage() {
   // Stryker disable next-line all : Can't test state because hook is internal
-  const [courseJSON, setCourse] = useState([]);
+  const [courseJSON, setCourseJSON] = useState([]);
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/basicsearch",
-    //Removed the "method: "GET"" statement that was here because the API call still goes through even without it and mutation testing was failing for it
     params: {
       qtr: query.quarter,
       dept: query.subject,
@@ -20,11 +20,7 @@ export default function HomePage() {
   });
 
   const onSuccess = (courses) => {
-    //Toast only in place while Table component has not been added to the page
-    //The toast helps us test that the correct input has been received
-    //After the table component has been added, we can directly check whether the table has the received result
-    toast(courses.classes.length + " Courses Retrieved");
-    return courses.classes;
+    setCourseJSON(courses.classes);
   };
 
   const mutation = useBackendMutation(
@@ -42,10 +38,8 @@ export default function HomePage() {
     <BasicLayout>
       <div className="pt-2">
         <h5>Welcome to the UCSB Courses Search App!</h5>
-        <BasicCourseSearchForm
-          setCourseJSON={setCourse}
-          fetchJSON={fetchBasicCourseJSON}
-        />
+        <BasicCourseSearchForm fetchJSON={fetchBasicCourseJSON} />
+        <BasicCourseTable courses={courseJSON} />
       </div>
     </BasicLayout>
   );
