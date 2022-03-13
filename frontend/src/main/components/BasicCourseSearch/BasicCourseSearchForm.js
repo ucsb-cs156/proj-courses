@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { toast } from "react-toastify";
 
-import { allTheSubjects } from "fixtures/subjectFixtures";
 import { allTheLevels } from "fixtures/levelsFixtures";
 import { quarterRange } from "main/utils/quarterUtilities";
 
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
+import { useBackendMutation } from "main/utils/useBackend";
 
-const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
+const BasicCourseSearchForm = ({ fetchJSON }) => {
   const quarters = quarterRange("20084", "20222");
 
   // Stryker disable all : not sure how to test/mock local storage
@@ -18,24 +18,37 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
   const localLevel = localStorage.getItem("BasicSearch.CourseLevel");
 
-  const firstDepartment = allTheSubjects[0].subjectCode;
+  const getObjectToAxiosParams = () => ({
+    url: "/api/UCSBSubjects/all",
+    method: "GET",
+    params: {},
+  });
+
+  const onSuccess = (listSubjects) => {
+    setSubjects(listSubjects);
+  };
+
+  const getMutation = useBackendMutation(
+    getObjectToAxiosParams,
+    { onSuccess },
+    // Stryker disable next-line all : hard to set up test for caching
+    []
+  );
+
+  useEffect(() => {
+    getMutation.mutate();
+  }, []);
+
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
-  const [subject, setSubject] = useState(localSubject || firstDepartment);
+  const [subject, setSubject] = useState(localSubject || {});
+  const [subjects, setSubjects] = useState([]);
   const [level, setLevel] = useState(localLevel || "U");
   const [errorNotified, setErrorNotified] = useState(false);
   // Stryker restore all
 
   const handleSubmit = (event) => {
-    toast(
-      "If search were implemented, we would have made a call to the back end to get courses for x subject, x quarter, x level",
-      {
-        appearance: "error",
-      }
-    );
     event.preventDefault();
-    fetchJSON(event, { quarter, subject, level }).then((courseJSON) => {
-      setCourseJSON(courseJSON);
-    });
+    fetchJSON(event, { quarter, subject, level });
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
@@ -53,7 +66,7 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
           </Col>
           <Col md="auto">
             <SingleSubjectDropdown
-              subjects={allTheSubjects}
+              subjects={subjects}
               subject={subject}
               setSubject={setSubject}
               controlId={"BasicSearch.Subject"}
@@ -68,7 +81,7 @@ const BasicCourseSearchForm = ({ setCourseJSON, fetchJSON }) => {
             />
           </Col>
         </Row>
-        <Row style={{ paddingTop: 10 }}>
+        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit
