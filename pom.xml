@@ -9,10 +9,10 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.ucsb.cs156</groupId>
-    <artifactId>example</artifactId>
+    <artifactId>courses</artifactId>
     <version>1.1.0</version>
-    <name>example</name>
-    <description>Spring Boot + React Example</description>
+    <name>courses</name>
+    <description>Starter for s22 courses search</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -118,12 +118,12 @@
                 <version>0.8.7</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/edu/ucsb/cs156/example/aop/LoggingAspect.*</exclude>
-                        <exclude>**/edu/ucsb/cs156/example/config/*</exclude>
-                        <exclude>**/edu/ucsb/cs156/example/controllers/FrontendController.*</exclude>
-                        <exclude>**/edu/ucsb/cs156/example/controllers/FrontendProxyController.*</exclude>
-                        <exclude>**/edu/ucsb/cs156/example/services/CurrentUserServiceImpl.*</exclude>
-                        <exclude>**/edu/ucsb/cs156/example/ExampleApplication.*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/aop/LoggingAspect.*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/config/*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/controllers/FrontendController.*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/controllers/FrontendProxyController.*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/services/CurrentUserServiceImpl.*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/CoursesApplication.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -166,7 +166,7 @@
                         <param>edu.ucsb.cs156.courses.controllers.FrontendController</param>
                         <param>edu.ucsb.cs156.courses.controllers.FrontendProxyController</param>
                         <param>edu.ucsb.cs156.courses.services.CurrentUserServiceImpl</param>
-                        <param>edu.ucsb.cs156.courses.ExampleApplication</param>
+                        <param>edu.ucsb.cs156.courses.CoursesApplication</param>
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig</param>
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig.MyCsrfRequestMatcher</param>
                         <param>edu.ucsb.cs156.courses.config.SpringFoxConfig</param>
