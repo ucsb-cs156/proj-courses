@@ -162,14 +162,14 @@
                         <param>edu.ucsb.cs156.*</param>
                     </targetTests>
                     <excludedClasses>
-                        <param>edu.ucsb.cs156.example.aop.LoggingAspect</param>
-                        <param>edu.ucsb.cs156.example.controllers.FrontendController</param>
-                        <param>edu.ucsb.cs156.example.controllers.FrontendProxyController</param>
-                        <param>edu.ucsb.cs156.example.services.CurrentUserServiceImpl</param>
-                        <param>edu.ucsb.cs156.example.ExampleApplication</param>
-                        <param>edu.ucsb.cs156.example.config.SecurityConfig</param>
-                        <param>edu.ucsb.cs156.example.config.SecurityConfig.MyCsrfRequestMatcher</param>
-                        <param>edu.ucsb.cs156.example.config.SpringFoxConfig</param>
+                        <param>edu.ucsb.cs156.courses.aop.LoggingAspect</param>
+                        <param>edu.ucsb.cs156.courses.controllers.FrontendController</param>
+                        <param>edu.ucsb.cs156.courses.controllers.FrontendProxyController</param>
+                        <param>edu.ucsb.cs156.courses.services.CurrentUserServiceImpl</param>
+                        <param>edu.ucsb.cs156.courses.ExampleApplication</param>
+                        <param>edu.ucsb.cs156.courses.config.SecurityConfig</param>
+                        <param>edu.ucsb.cs156.courses.config.SecurityConfig.MyCsrfRequestMatcher</param>
+                        <param>edu.ucsb.cs156.courses.config.SpringFoxConfig</param>
                     </excludedClasses>
                     <excludedTestClasses></excludedTestClasses>
                     <outputFormats>
