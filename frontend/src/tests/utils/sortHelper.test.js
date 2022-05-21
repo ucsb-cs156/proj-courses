@@ -24,7 +24,7 @@ describe("sortHelper tests", () => {
     expect(singers).toEqual( [carpenter, cobain, tyler, nicks] )
   });
 
-  test("should sort by name", async () => {
+  test("should sort by name ascending", async () => {
     singers.sort(compareValues('name', 'asc'));
     expect(singers).toEqual( [carpenter, cobain, tyler, nicks] )
   });

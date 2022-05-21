@@ -1,10 +1,8 @@
-import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useState } from "react";
+import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourseSearchForm";
-import { useBackendMutation } from "main/utils/useBackend";
-import { queryAllByTestId } from "@testing-library/react";
-import { toast } from "react-toastify";
 import BasicCourseTable from "main/components/Courses/BasicCourseTable";
+import { useBackendMutation } from "main/utils/useBackend";
 
 export default function HomePage() {
   // Stryker disable next-line all : Can't test state because hook is internal
@@ -30,7 +28,7 @@ export default function HomePage() {
     []
   );
 
-  async function fetchBasicCourseJSON(event, query) {
+  async function fetchBasicCourseJSON(_event, query) {
     mutation.mutate(query);
   }
 

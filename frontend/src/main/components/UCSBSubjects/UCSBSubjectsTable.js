@@ -14,7 +14,6 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
     }
 
     // Stryker disable all : hard to test for query caching
-
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
         { onSuccess: onDeleteSuccess },
@@ -24,7 +23,6 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
 
     // Stryker disable next-line all : TODO try to make a good test for this
     const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
-
 
     const columns = [
         {
@@ -52,20 +50,19 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
             accessor: (row) => String(row.inactive),
             id: 'inactive',
         }
-        
     ];
-    if (hasRole(currentUser, "ROLE_ADMIN")) {
-        columns.push(ButtonColumn("Edit", "primary", editCallback, "UCSBSubjectsTable"));
-        columns.push(ButtonColumn("Delete", "danger", deleteCallback, "UCSBSubjectsTable"));
-    } 
 
-    // Stryker disable next-line ArrayDeclaration : [columns] is a performance optimization
-    const memoizedColumns = React.useMemo(() => columns, [columns]);
-    const memoizedDates = React.useMemo(() => subjects, [subjects]);
+    const columnsIfAdmin = [
+        ...columns,
+        ButtonColumn("Edit", "primary", editCallback, "UCSBSubjectsTable"),
+        ButtonColumn("Delete", "danger", deleteCallback, "UCSBSubjectsTable")
+    ]
+
+    const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN") ? columnsIfAdmin : columns;
 
     return <OurTable
-        data={memoizedDates}
-        columns={memoizedColumns}
+        data={subjects}
+        columns={columnsToDisplay}
         testid={"UCSBSubjectsTable"}
     />;
 };

@@ -1,12 +1,12 @@
-import React, {useState} from "react";
-import {Form} from "react-bootstrap";
+import { useState } from "react";
+import { Form } from "react-bootstrap";
 
-const SingleLevelDropdown = ({levels, level, setLevel, controlId, onChange = null, label="Course Level"}) => {
+const SingleLevelDropdown = ({levels, setLevel, controlId, onChange = null, label="Course Level"}) => {
     const localSearchLevel = localStorage.getItem(controlId);
     const [levelState, setLevelState] = useState(
         // Stryker disable next-line all : not sure how to test/mock local storage
         localSearchLevel || "U"
-        );
+    );
 
     const handleLeveltoChange = (event) => {
         localStorage.setItem(controlId, event.target.value);

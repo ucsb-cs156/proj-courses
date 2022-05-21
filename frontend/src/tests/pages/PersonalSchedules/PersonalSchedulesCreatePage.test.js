@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -62,7 +62,7 @@ describe("PersonalSchedulesCreatePage tests", () => {
 
         axiosMock.onPost("/api/personalschedules/post").reply( 202, personalSchedule );
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <PersonalSchedulesCreatePage />
@@ -70,16 +70,14 @@ describe("PersonalSchedulesCreatePage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => {
-            expect(getByTestId("PersonalScheduleForm-name")).toBeInTheDocument();
-        });
+        expect(await screen.findByTestId("PersonalScheduleForm-name")).toBeInTheDocument();
         
-        const nameField = getByTestId("PersonalScheduleForm-name");
-        const descriptionField = getByTestId("PersonalScheduleForm-description");
+        const nameField = screen.getByTestId("PersonalScheduleForm-name");
+        const descriptionField = screen.getByTestId("PersonalScheduleForm-description");
         //const quarterField = document.querySelector("#PersonalScheduleForm-quarter");
         const quarterField = document.querySelector("#PersonalScheduleForm-quarter");
         //const selectQuarter = getByLabelText("Quarter")
-        const submitButton = getByTestId("PersonalScheduleForm-submit");
+        const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
         fireEvent.change(nameField, { target: { value: 'SampName' } });
         fireEvent.change(descriptionField, { target: { value: 'desc' } });

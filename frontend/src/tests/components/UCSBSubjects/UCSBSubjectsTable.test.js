@@ -1,10 +1,10 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
-import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
-import UCSBSubjectsTable from "main/components/UCSBSubjects/UCSBSubjectsTable"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
+import { currentUserFixtures } from "fixtures/currentUserFixtures";
+import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
+import UCSBSubjectsTable from "main/components/UCSBSubjects/UCSBSubjectsTable"
 
 const mockedNavigate = jest.fn();
 
@@ -63,10 +63,9 @@ describe("UserTable tests", () => {
   });
 
   test("Has the expected colum headers and content for adminUser", () => {
-
     const currentUser = currentUserFixtures.adminUser;
 
-    const { getByText, getByTestId } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <UCSBSubjectsTable subjects={ucsbSubjectsFixtures.threeSubjects} currentUser={currentUser} />
@@ -80,75 +79,66 @@ describe("UserTable tests", () => {
     const testId = "UCSBSubjectsTable";
 
     expectedHeaders.forEach((headerText) => {
-      const header = getByText(headerText);
+      const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
     });
 
     expectedFields.forEach((field) => {
-      const header = getByTestId(`${testId}-cell-row-0-col-${field}`);
+      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
       expect(header).toBeInTheDocument();
     });
 
-    expect(getByTestId(`${testId}-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
-    expect(getByTestId(`${testId}-cell-row-1-col-subjectCode`)).toHaveTextContent("GER");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-subjectCode`)).toHaveTextContent("GER");
 
-    const editButton = getByTestId(`${testId}-cell-row-0-col-Edit-button`);
+    const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
     expect(editButton).toHaveClass("btn-primary");
 
-    const deleteButton = getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
-
   });
 
   test("Edit button navigates to the edit page for admin user", async () => {
-
     const currentUser = currentUserFixtures.adminUser;
 
-    const { getByText, getByTestId } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <UCSBSubjectsTable subjects={ucsbSubjectsFixtures.threeSubjects} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
-
     );
 
-    await waitFor(() => { expect(getByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG"); });
+    expect(await screen.findByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
 
-    const editButton = getByTestId(`UCSBSubjectsTable-cell-row-0-col-Edit-button`);
+    const editButton = screen.getByTestId(`UCSBSubjectsTable-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
     
     fireEvent.click(editButton);
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/UCSBSubjects/edit/GEOG'));
-
   });
 
   test("Delete button calls delete callback", async () => {
-
     const currentUser = currentUserFixtures.adminUser;
 
-    const { getByText, getByTestId } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <UCSBSubjectsTable subjects={ucsbSubjectsFixtures.threeSubjects} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
-
     );
 
-    await waitFor(() => { expect(getByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG"); });
+    expect(await screen.findByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
 
-    const deleteButton = getByTestId(`UCSBSubjectsTable-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(`UCSBSubjectsTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
     
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
   });
-
-
 });
-

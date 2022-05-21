@@ -1,5 +1,5 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -46,21 +46,22 @@ describe("BasicCourseSearchForm tests", () => {
   });
 
   test("when I select a quarter, the state for quarter changes", () => {
-    const { getByLabelText } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <BasicCourseSearchForm />
         </MemoryRouter>
       </QueryClientProvider>
     );
-    const selectQuarter = getByLabelText("Quarter");
+    const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20204");
     expect(selectQuarter.value).toBe("20204");
   });
 
   test("when I select a subject, the state for subject changes", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    const { getByLabelText } = render(
+    
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <BasicCourseSearchForm />
@@ -71,20 +72,20 @@ describe("BasicCourseSearchForm tests", () => {
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
     });
-    const selectSubject = getByLabelText("Subject Area");
+    const selectSubject = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectSubject, "MATH");
     expect(selectSubject.value).toBe("MATH");
   });
 
   test("when I select a level, the state for level changes", () => {
-    const { getByLabelText } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <BasicCourseSearchForm />
         </MemoryRouter>
       </QueryClientProvider>
     );
-    const selectLevel = getByLabelText("Course Level");
+    const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
     expect(selectLevel.value).toBe("G");
   });
@@ -99,7 +100,7 @@ describe("BasicCourseSearchForm tests", () => {
 
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
 
-    const { getByText, getByLabelText } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <BasicCourseSearchForm fetchJSON={fetchJSONSpy} />
@@ -117,13 +118,13 @@ describe("BasicCourseSearchForm tests", () => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
     });
 
-    const selectQuarter = getByLabelText("Quarter");
+    const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20211");
-    const selectSubject = getByLabelText("Subject Area");
+    const selectSubject = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectSubject, "ANTH");
-    const selectLevel = getByLabelText("Course Level");
+    const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
-    const submitButton = getByText("Submit");
+    const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
 
     await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
@@ -145,7 +146,7 @@ describe("BasicCourseSearchForm tests", () => {
 
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
 
-    const { getByText, getByLabelText } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <BasicCourseSearchForm fetchJSON={fetchJSONSpy} />
@@ -157,13 +158,13 @@ describe("BasicCourseSearchForm tests", () => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
     });
 
-    const selectQuarter = getByLabelText("Quarter");
+    const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20204");
-    const selectSubject = getByLabelText("Subject Area");
+    const selectSubject = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectSubject, "MATH");
-    const selectLevel = getByLabelText("Course Level");
+    const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
-    const submitButton = getByText("Submit");
+    const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
   });
 });
