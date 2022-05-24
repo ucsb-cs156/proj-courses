@@ -76,7 +76,7 @@ describe("HomePage tests", () => {
     axiosMock.resetHistory();
 
     await waitFor(() => {
-      expect(axiosMock.onGet("/api/public/basicsearch"));
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
