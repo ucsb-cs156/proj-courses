@@ -13,7 +13,7 @@ import { Form } from 'react-bootstrap';
 //  { yyyyq :"20221", qyy: "W22"}, 
 //  { yyyyq :"20222", qyy: "S22"}] 
 
-function SingleQuarterDropdown({ quarters, quarter, setQuarter, controlId, onChange = null, label = "Quarter" }) {
+function SingleQuarterDropdown({ quarters, setQuarter, controlId, onChange = null, label = "Quarter" }) {
 
     const localSearchQuarter = localStorage.getItem(controlId);
 

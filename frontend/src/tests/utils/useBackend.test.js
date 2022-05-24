@@ -1,11 +1,10 @@
 import { QueryClient, QueryClientProvider } from "react-query";
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react-hooks'
 import mockConsole from "jest-mock-console";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import { useBackend, useBackendMutation } from "main/utils/useBackend";
-
+import { useBackend } from "main/utils/useBackend";
 
 jest.mock('react-router-dom');
 
@@ -29,7 +28,7 @@ describe("utils/useBackend tests", () => {
         axiosMock.resetHistory();
     });
 
-    test("test useBackend handles 404 error correctly", async () => {
+    test("useBackend handles 404 error correctly", async () => {
         const restoreConsole = mockConsole();
 
         // See: https://react-query.tanstack.com/guides/testing#turn-off-retries

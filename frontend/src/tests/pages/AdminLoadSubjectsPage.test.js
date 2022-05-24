@@ -1,14 +1,13 @@
-import { fireEvent, render, waitFor} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
-
-import axios from "axios";
-import AxiosMockAdapter from "axios-mock-adapter";
+import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
 
 const mockToast = jest.fn();
 jest.mock('react-toastify', () => {
@@ -21,7 +20,6 @@ jest.mock('react-toastify', () => {
 });
 
 describe("AdminLoadSubjectsPage tests", () => {
-
     const axiosMock = new AxiosMockAdapter(axios);
     const testId = "UCSBSubjectsTable";
 
@@ -31,7 +29,6 @@ describe("AdminLoadSubjectsPage tests", () => {
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
     };
-
 
     test("renders without crashing for admin user", () => {
         setupAdminUser();
@@ -47,13 +44,12 @@ describe("AdminLoadSubjectsPage tests", () => {
         );
     });
 
-
     test("renders three earthquakes without crashing for regular user", async () => {
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/UCSBSubjects/all").reply(200, ucsbSubjectsFixtures.threeSubjects);
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <AdminLoadSubjectsPage />
@@ -61,20 +57,18 @@ describe("AdminLoadSubjectsPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG"); });
-        expect(getByTestId(`${testId}-cell-row-1-col-subjectCode`)).toHaveTextContent("GER");
-        expect(getByTestId(`${testId}-cell-row-2-col-subjectCode`)).toHaveTextContent("GREEK");
+        expect(await screen.findByTestId(`${testId}-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-subjectCode`)).toHaveTextContent("GER");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-subjectCode`)).toHaveTextContent("GREEK");
     });
 
-
-    test("test what happens when you click load, admin - originally nothing in table, load 3 subjects", async () => {
-
+    test("what happens when you click load, admin - originally nothing in table, load 3 subjects", async () => {
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/UCSBSubjects/all").reply(200, []);
         axiosMock.onPost("/api/UCSBSubjects/load").reply(200, ucsbSubjectsFixtures.threeSubjects);
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <AdminLoadSubjectsPage />
@@ -82,9 +76,9 @@ describe("AdminLoadSubjectsPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(getByTestId(`AdminLoadSubjects-Load-Button`)).toBeInTheDocument(); });
+        expect(await screen.findByTestId(`AdminLoadSubjects-Load-Button`)).toBeInTheDocument();
 
-        const loadButton = getByTestId(`AdminLoadSubjects-Load-Button`);
+        const loadButton = screen.getByTestId(`AdminLoadSubjects-Load-Button`);
         expect(loadButton).toBeInTheDocument();
         fireEvent.click(loadButton);
         
@@ -92,14 +86,14 @@ describe("AdminLoadSubjectsPage tests", () => {
         expect(mockToast).toBeCalledWith("Number of Subjects Loaded : 3");
     });
 
-    test("test what happens when you click load, admin - originally 3 subjects, load nothing", async () => {
+    test("what happens when you click load, admin - originally 3 subjects, load nothing", async () => {
 
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/UCSBSubjects/all").reply(200, ucsbSubjectsFixtures.threeSubjects);
         axiosMock.onPost("/api/UCSBSubjects/load").reply(200, []);
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <AdminLoadSubjectsPage />
@@ -107,16 +101,13 @@ describe("AdminLoadSubjectsPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(getByTestId(`AdminLoadSubjects-Load-Button`)).toBeInTheDocument(); });
+        expect(await screen.findByTestId(`AdminLoadSubjects-Load-Button`)).toBeInTheDocument();
 
-        const loadButton = getByTestId(`AdminLoadSubjects-Load-Button`);
+        const loadButton = screen.getByTestId(`AdminLoadSubjects-Load-Button`);
         expect(loadButton).toBeInTheDocument();
         fireEvent.click(loadButton);
         
         await waitFor(() =>  expect(axiosMock.history.post.length).toBe(1));
         expect(mockToast).toBeCalledWith("Number of Subjects Loaded : -3");
     });
-
-    
-
 });

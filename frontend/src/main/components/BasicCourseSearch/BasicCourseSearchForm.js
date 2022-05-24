@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { toast } from "react-toastify";
 
 import { allTheLevels } from "fixtures/levelsFixtures";
 import { quarterRange } from "main/utils/quarterUtilities";
@@ -37,14 +36,13 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
 
   useEffect(() => {
     getMutation.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
   const [subject, setSubject] = useState(localSubject || {});
   const [subjects, setSubjects] = useState([]);
   const [level, setLevel] = useState(localLevel || "U");
-  const [errorNotified, setErrorNotified] = useState(false);
-  // Stryker restore all
 
   const handleSubmit = (event) => {
     event.preventDefault();

@@ -4,7 +4,7 @@ import mockConsole from "jest-mock-console";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import { useBackend, useBackendMutation } from "main/utils/useBackend";
+import { useBackendMutation } from "main/utils/useBackend";
 
 
 jest.mock('react-router-dom');
@@ -30,7 +30,7 @@ describe("utils/useBackend tests", () => {
             axiosMock.resetHistory();
         });
 
-        test("test useBackendMutation handles success correctly", async () => {
+        test("useBackendMutation handles success correctly", async () => {
             const restoreConsole = mockConsole();
 
             // See: https://react-query.tanstack.com/guides/testing#turn-off-retries

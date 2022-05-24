@@ -1,20 +1,18 @@
-import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom/extend-expect";
+import { useState } from "react";
+
 import SingleSubjectDropdown from "main/components/Subjects/SingleSubjectDropdown";
 import { oneSubject } from "fixtures/subjectFixtures";
 import { threeSubjects } from "fixtures/subjectFixtures";
 import { outOfOrderSubjects } from "fixtures/subjectFixtures";
-import "@testing-library/jest-dom/extend-expect";
 
 jest.mock("react", () => ({
   ...jest.requireActual("react"),
   useState: jest.fn(),
   compareValues: jest.fn(),
 }));
-
-import { useState } from "react";
-import { compareValues } from "main/utils/sortHelper";
 
 describe("SingleSubjectDropdown tests", () => {
   beforeEach(() => {
@@ -51,7 +49,7 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   test("when I select an object, the value changes", async () => {
-    const { getByLabelText } = render(
+    render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
         subject={subject}
@@ -59,16 +57,16 @@ describe("SingleSubjectDropdown tests", () => {
         controlId="ssd1"
       />
     );
-    await waitFor(
-      () => expect(getByLabelText("Subject Area")).toBeInTheDocument
-    );
-    const selectQuarter = getByLabelText("Subject Area");
+    
+    expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
+
+    const selectQuarter = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectQuarter, "ARTHI");
     expect(setSubject).toBeCalledWith("ARTHI");
   });
 
   test("out of order subjects is sorted by subjectCode", async () => {
-    const { getByText } = render(
+    render(
       <SingleSubjectDropdown
         subjects={outOfOrderSubjects}
         subject={subject}
@@ -76,8 +74,9 @@ describe("SingleSubjectDropdown tests", () => {
         controlId="ssd1"
       />
     );
-    await waitFor(() => expect(getByText("Subject Area")).toBeInTheDocument);
-    expect(getByText("ANTH - Anthropology")).toHaveAttribute(
+
+    expect(await screen.findByText("Subject Area")).toBeInTheDocument();
+    expect(screen.getByText("ANTH - Anthropology")).toHaveAttribute(
       "data-testid",
       "ssd1-option-0"
     );
@@ -85,7 +84,7 @@ describe("SingleSubjectDropdown tests", () => {
 
   test("if I pass a non-null onChange, it gets called when the value changes", async () => {
     const onChange = jest.fn();
-    const { getByLabelText } = render(
+    render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
         subject={subject}
@@ -94,22 +93,21 @@ describe("SingleSubjectDropdown tests", () => {
         onChange={onChange}
       />
     );
-    await waitFor(
-      () => expect(getByLabelText("Subject Area")).toBeInTheDocument
-    );
-    const selectSubject = getByLabelText("Subject Area");
+    
+    expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
+
+    const selectSubject = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectSubject, "ARTHI");
     await waitFor(() => expect(setSubject).toBeCalledWith("ARTHI"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
 
     // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
-
     const event = onChange.mock.calls[0][0];
     expect(event.target.value).toBe("ARTHI");
   });
 
   test("default label is Subject Area", async () => {
-    const { getByLabelText } = render(
+    render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
         subject={subject}
@@ -117,13 +115,12 @@ describe("SingleSubjectDropdown tests", () => {
         controlId="ssd1"
       />
     );
-    await waitFor(
-      () => expect(getByLabelText("Subject Area")).toBeInTheDocument
-    );
+    
+    expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
   });
 
   test("keys / testids are set correctly on options", async () => {
-    const { getByTestId } = render(
+    render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
         subject={subject}
@@ -131,9 +128,9 @@ describe("SingleSubjectDropdown tests", () => {
         controlId="ssd1"
       />
     );
+
     const expectedKey = "ssd1-option-0";
-    await waitFor(() => expect(getByTestId(expectedKey).toBeInTheDocument));
-    const firstOption = getByTestId(expectedKey);
+    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
   });
 
   test("when localstorage has a value, it is passed to useState", async () => {
@@ -143,7 +140,7 @@ describe("SingleSubjectDropdown tests", () => {
     const setSubjectStateSpy = jest.fn();
     useState.mockImplementation((x) => [x, setSubjectStateSpy]);
 
-    const { getByTestId } = render(
+    render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
         subject={subject}
@@ -162,7 +159,7 @@ describe("SingleSubjectDropdown tests", () => {
     const setSubjectStateSpy = jest.fn();
     useState.mockImplementation((x) => [x, setSubjectStateSpy]);
 
-    const { getByTestId } = render(
+    render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
         subject={subject}
@@ -177,7 +174,7 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   test("When no subjects, dropdown is blank", async () => {
-    const { queryByTestId, queryByText, queryByLabelText, get } = render(
+    render(
       <SingleSubjectDropdown
         subjects={[]}
         subject={subject}
@@ -185,7 +182,8 @@ describe("SingleSubjectDropdown tests", () => {
         controlId="ssd1"
       />
     );
+
     const expectedKey = "ssd1";
-    expect(queryByTestId(expectedKey)).toBeNull();
+    expect(screen.queryByTestId(expectedKey)).toBeNull();
   });
 });

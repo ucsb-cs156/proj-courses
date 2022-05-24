@@ -1,4 +1,4 @@
-name: 02 Frontend 01 Tests (JavaScript/Jest)
+name: "34-frontend-mutation-testing: Stryker JS Mutation Testing (JavaScript/Jest)"
 
 on:
   workflow_dispatch:
@@ -10,11 +10,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 40
 
     strategy:
       matrix:
-        node-version: [17.x]
+        node-version: [16.x]
     steps:
       - uses: actions/checkout@v2
         with: 
@@ -25,6 +25,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
         working-directory: ./frontend
-      - run: npm test
+      - run: npx stryker run
         working-directory: ./frontend
-    

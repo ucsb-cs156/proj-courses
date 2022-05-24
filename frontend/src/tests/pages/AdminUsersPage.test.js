@@ -1,17 +1,16 @@
-import { render, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import AdminUsersPage from "main/pages/AdminUsersPage";
-import usersFixtures from "fixtures/usersFixtures";
-import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
-import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import mockConsole from "jest-mock-console";
-
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import mockConsole from "jest-mock-console";
+
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import usersFixtures from "fixtures/usersFixtures";
+import AdminUsersPage from "main/pages/AdminUsersPage";
 
 describe("AdminUsersPage tests", () => {
-
     const axiosMock = new AxiosMockAdapter(axios);
 
     const testId = "UsersTable";
@@ -27,7 +26,7 @@ describe("AdminUsersPage tests", () => {
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/admin/users").reply(200, usersFixtures.threeUsers);
 
-        const { getByText } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <AdminUsersPage />
@@ -35,11 +34,7 @@ describe("AdminUsersPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => expect(getByText("Users")).toBeInTheDocument());
-
-        await waitFor(() => expect(getByText("Users")).toBeInTheDocument());
-
-
+        expect(await screen.findByText("Users")).toBeInTheDocument();
     });
 
     test("renders empty table when backend unavailable", async () => {
@@ -48,7 +43,7 @@ describe("AdminUsersPage tests", () => {
 
         const restoreConsole = mockConsole();
 
-        const { queryByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <AdminUsersPage />
@@ -62,7 +57,7 @@ describe("AdminUsersPage tests", () => {
         expect(errorMessage).toMatch("Error communicating with backend via GET on /api/admin/users");
         restoreConsole();
 
-        expect(queryByTestId(`${testId}-cell-row-0-col-id`)).not.toBeInTheDocument();
+        expect(screen.queryByTestId(`${testId}-cell-row-0-col-id`)).not.toBeInTheDocument();
 
     });
 

@@ -3,20 +3,15 @@ import { useBackendMutation, useBackend } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 import UCSBSubjectsTable from 'main/components/UCSBSubjects/UCSBSubjectsTable';
-import { useCurrentUser } from 'main/utils/currentUser'
-
-
 
 export default function AdminLoadSubjectsPage() {
-
-  const currentUser = useCurrentUser();
   const { data: subjects, error: _error, status: _status } =
       useBackend(
         // Stryker disable next-line all : don't test internal caching of React Query
         ["/api/UCSBSubjects/all"], { method: "GET", url: "/api/UCSBSubjects/all" }, []
       );
 
-  const objectToAxiosParams = (subjects) => ({
+  const objectToAxiosParams = () => ({
     url: '/api/UCSBSubjects/load',
     method: 'POST',
   });

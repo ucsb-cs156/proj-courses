@@ -1,19 +1,15 @@
-import {
-  queryByPlaceholderText,
-  render,
-  waitFor,
-} from "@testing-library/react";
-import HomePage from "main/pages/HomePage";
-import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import { allTheSubjects } from "fixtures/subjectFixtures";
-import { coursesFixtures } from "fixtures/courseFixtures";
-
-import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
-import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import userEvent from "@testing-library/user-event";
+
+import HomePage from "main/pages/HomePage";
+import { coursesFixtures } from "fixtures/courseFixtures";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
+import { allTheSubjects } from "fixtures/subjectFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -55,7 +51,7 @@ describe("HomePage tests", () => {
       .onGet("/api/public/basicsearch")
       .reply(200, { classes: coursesFixtures.oneCourse });
 
-    const { getAllByText, getByText, getByLabelText } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <HomePage />
@@ -63,24 +59,24 @@ describe("HomePage tests", () => {
       </QueryClientProvider>
     );
 
-    const selectQuarter = getByLabelText("Quarter");
+    const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20211");
-    const selectSubject = getByLabelText("Subject Area");
-    await waitFor(() => {
-      expect(getByLabelText("Subject Area")).toHaveTextContent("ANTH");
-    });
+    const selectSubject = screen.getByLabelText("Subject Area");
+
+    expect(await screen.findByLabelText("Subject Area")).toHaveTextContent("ANTH");
+
     userEvent.selectOptions(selectSubject, "ANTH");
-    const selectLevel = getByLabelText("Course Level");
+    const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
 
-    const submitButton = getByText("Submit");
+    const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
 
     axiosMock.resetHistory();
 
     await waitFor(() => {
-      expect(axiosMock.onGet("/api/public/basicsearch"));
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
@@ -89,6 +85,6 @@ describe("HomePage tests", () => {
       level: "G",
     });
 
-    expect(getByText("CMPSC")).toBeInTheDocument();
+    expect(screen.getByText("CMPSC")).toBeInTheDocument();
   });
 });

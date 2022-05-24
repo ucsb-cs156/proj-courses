@@ -1,16 +1,14 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
-
-
-import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
-import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
 
+import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
 const mockToast = jest.fn();
 jest.mock('react-toastify', () => {
@@ -79,7 +77,7 @@ describe("PersonalSchedulesIndexPage tests", () => {
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/personalschedules/all").reply(200, personalScheduleFixtures.threePersonalSchedules);
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <PersonalSchedulesIndexPage />
@@ -87,9 +85,9 @@ describe("PersonalSchedulesIndexPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
-        expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-        expect(getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
+        expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
 
     });
 
@@ -98,7 +96,7 @@ describe("PersonalSchedulesIndexPage tests", () => {
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/personalschedules/all").reply(200, personalScheduleFixtures.threePersonalSchedules);
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <PersonalSchedulesIndexPage />
@@ -106,9 +104,9 @@ describe("PersonalSchedulesIndexPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
-        expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-        expect(getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
+        expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
 
     });
 
@@ -120,7 +118,7 @@ describe("PersonalSchedulesIndexPage tests", () => {
 
         const restoreConsole = mockConsole();
 
-        const { queryByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <PersonalSchedulesIndexPage />
@@ -134,20 +132,18 @@ describe("PersonalSchedulesIndexPage tests", () => {
         expect(errorMessage).toMatch("Error communicating with backend via GET on /api/personalschedules/all");
         restoreConsole();
 
-        expect(queryByTestId(`${testId}-cell-row-0-col-id`)).not.toBeInTheDocument();
+        expect(screen.queryByTestId(`${testId}-cell-row-0-col-id`)).not.toBeInTheDocument();
     });
 
 
     // to be uncommented when Delete is implemented
-    test("test what happens when you click delete, admin", async () => {
-
-
+    test("what happens when you click delete, admin", async () => {
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/personalschedules/all").reply(200, personalScheduleFixtures.threePersonalSchedules);
         axiosMock.onDelete("/api/personalschedules").reply(200, "PersonalSchedule with id 1 was deleted");
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <PersonalSchedulesIndexPage />
@@ -155,18 +151,16 @@ describe("PersonalSchedulesIndexPage tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
-        expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-        expect(getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
+        expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+        expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent("3");
 
-
-        const deleteButton = getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+        const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
         expect(deleteButton).toBeInTheDocument();
 
         fireEvent.click(deleteButton);
 
         await waitFor(() => { expect(mockToast).toBeCalledWith("PersonalSchedule with id 1 was deleted") });
-
     });
 
 });
