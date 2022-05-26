@@ -2,6 +2,9 @@
 
 [![codecov](https://codecov.io/gh/ucsb-cs156-s22/s22-4pm-courses/branch/main/graph/badge.svg?token=8mmcEy6jrV)](https://codecov.io/gh/ucsb-cs156-s22/s22-4pm-courses)
 
+* Heroku QA Dashboard (4pm-2): https://dashboard.heroku.com/apps/s22-4pm-2-courses-qa
+* Heroku QA Deployment (4pm-2): https://s22-4pm-2-courses-qa.herokuapp.com/
+
 Storybook is here:
 * Production: <https://ucsb-cs156-s22.github.io/s22-4pm-courses-docs/>
 * QA:  <https://ucsb-cs156-s22.github.io/s22-4pm-courses-docs-qa/> 
