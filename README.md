@@ -1,6 +1,6 @@
-# team04-w22-5pm-courses
+# s22-4pm-courses
 
-[![codecov](https://codecov.io/gh/ucsb-cs156-w22/team04-w22-5pm-courses/branch/main/graph/badge.svg?token=LvEIQ6tYti)](https://codecov.io/gh/ucsb-cs156-w22/team04-w22-5pm-courses)
+[![codecov](https://codecov.io/gh/ucsb-cs156-s22/s22-4pm-courses/branch/main/graph/badge.svg?token=8mmcEy6jrV)](https://codecov.io/gh/ucsb-cs156-s22/s22-4pm-courses)
 
 
 Heroku QA deployment 4pm-1: <https://s22-4pm-1-courses-qa.herokuapp.com/>
