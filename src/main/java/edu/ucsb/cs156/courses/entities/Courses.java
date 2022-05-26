@@ -22,6 +22,6 @@ public class Courses {
   private long id;
 
   private String enrollCd;
-  private String psld;
+  private String psId;
   private String quarter;
 }
