@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/ucsb-cs156-w22/team04-w22-5pm-courses/branch/main/graph/badge.svg?token=LvEIQ6tYti)](https://codecov.io/gh/ucsb-cs156-w22/team04-w22-5pm-courses)
 Deployed Heroku app link: 
  https://proj01-s22-4pm-courses.herokuapp.com/
+ Dashboard Heroku link: 
+ https://dashboard.heroku.com/apps/proj01-s22-4pm-courses
 
 [![codecov](https://codecov.io/gh/ucsb-cs156-s22/s22-4pm-courses/branch/main/graph/badge.svg?token=8mmcEy6jrV)](https://codecov.io/gh/ucsb-cs156-s22/s22-4pm-courses)
 
