@@ -4,7 +4,7 @@
 
 
 Heroku QA deployment 4pm-1: <https://s22-4pm-1-courses-qa.herokuapp.com/>
-Heroku QA dashboard 4pm-1: <https://dashboard.heroku.com/apps/s22-4pm-1-courses-qa/deploy/heroku-git>
+Heroku QA dashboard 4pm-1: <https://dashboard.heroku.com/apps/s22-4pm-1-courses-qa>
 
 Storybook is here:
 * Production: <https://ucsb-cs156-s22.github.io/s22-4pm-courses-docs/>
