@@ -2,7 +2,7 @@ import OurTable from "main/components/OurTable";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
-import { convertToFraction, spaceOut } from "main/utils/sectionUtils.js";
+import { convertToFraction, spaceOut, isSectionAsString } from "main/utils/sectionUtils.js";
 
 export default function SectionsTable({ sections }) {
 
@@ -20,12 +20,13 @@ export default function SectionsTable({ sections }) {
             accessor: 'courseId',
         },
         {
-            Header: 'Enroll Code',
-            accessor: 'enrollCode', 
-        },
-        {
             Header: 'Title',
             accessor: 'title', 
+        },
+        {
+            Header: 'Is Section?',
+            accessor: (row) => isSectionAsString(row.section),
+            id: 'isSection',
         },
         {
             Header: 'Enrolled',
@@ -34,7 +35,7 @@ export default function SectionsTable({ sections }) {
         },
         {
             Header: 'Location',
-            accessor: (row) => spaceOut(row.room, row.building),
+            accessor: (row) => spaceOut(row.building, row.room),
             id: 'location',
         },
         {
@@ -49,6 +50,9 @@ export default function SectionsTable({ sections }) {
         {
             Header: 'Instructor',
             accessor: 'instructor',
+        },        {
+            Header: 'Enroll Code',
+            accessor: 'enrollCode', 
         }
     ];
 

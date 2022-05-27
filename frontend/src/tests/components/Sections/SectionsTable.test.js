@@ -1,5 +1,5 @@
 import {  render, screen } from "@testing-library/react";
-import { threeSections } from "fixtures/sectionFixtures";
+import { fiveSections } from "fixtures/sectionFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import SectionsTable from "main/components/Sections/SectionsTable";
@@ -35,15 +35,15 @@ describe("Section tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <SectionsTable sections={threeSections} />
+          <SectionsTable sections={fiveSections} />
         </MemoryRouter>
       </QueryClientProvider>
 
     );
 
 
-    const expectedHeaders = ["Quarter",  "Course ID", "Enroll Code","Title","Enrolled","Location", "Days", "Time", "Instructor"];
-    const expectedFields = ["quarter", "courseId","enrollCode", "title","enrolled","location", "days", "time", "instructor"];
+    const expectedHeaders = ["Quarter",  "Course ID", "Title", "Is Section?", "Enrolled", "Location", "Days", "Time", "Instructor", "Enroll Code"];
+    const expectedFields = ["quarter", "courseId", "title", "isSection", "enrolled", "location", "days", "time", "instructor", "enrollCode"];
     const testId = "SectionsTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -59,7 +59,8 @@ describe("Section tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22");
     expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("3:00 PM - 3:50 PM");
     expect(screen.getByTestId(`${testId}-cell-row-1-col-enrolled`)).toHaveTextContent("18/35");
-    expect(screen.getByTestId(`${testId}-cell-row-2-col-location`)).toHaveTextContent("1610 BRDA");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-isSection`)).toHaveTextContent("No");
+    expect(screen.getByTestId(`${testId}-cell-row-2-col-location`)).toHaveTextContent("BRDA 1610");
 
 
   });
