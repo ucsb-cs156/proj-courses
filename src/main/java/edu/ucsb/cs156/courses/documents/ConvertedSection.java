@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConvertedSection {
-    CourseInfo courseInfo;
-    Section section;
+    private CourseInfo courseInfo;
+    private Section section;
 }

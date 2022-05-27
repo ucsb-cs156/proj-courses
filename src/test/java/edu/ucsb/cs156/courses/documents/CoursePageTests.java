@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class CoursePageTests {
+public class CoursePageTests {
 
 
     @Test
-    void convertsCoursePageToObject()  {
+    public void convertsCoursePageToObject()  {
         CoursePage cp = CoursePage.fromJSON(CoursePageFixtures.COURSE_PAGE_JSON);
         assertEquals(1, cp.getPageNumber());
         assertEquals(10, cp.getPageSize());
@@ -24,7 +24,7 @@ class CoursePageTests {
 
 
     @Test
-    void convertsMath3BCoursePageToObject() throws JsonProcessingException {
+    public void convertsMath3BCoursePageToObject() throws JsonProcessingException {
         CoursePage cp = CoursePage.fromJSON(CoursePageFixtures.COURSE_PAGE_JSON_MATH3B);
         assertEquals(1, cp.getPageNumber());
         assertEquals(10, cp.getPageSize());
@@ -37,7 +37,7 @@ class CoursePageTests {
     }
 
     @Test
-    void convertedSectionsConvertsProperly() throws JsonProcessingException {
+    public void convertedSectionsConvertsProperly() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         CoursePage cp = CoursePage.fromJSON(CoursePageFixtures.COURSE_PAGE_JSON_MATH3B);
@@ -50,7 +50,7 @@ class CoursePageTests {
     }
 
     @Test
-    void throwsExceptionOnBadJSON() throws Exception {
+    public void throwsExceptionOnBadJSON() throws Exception {
         CoursePage cp = CoursePage.fromJSON("this is not valid JSON");
         assertNull(cp);
     }
