@@ -12,7 +12,7 @@ export const hhmmTohhmma = (HHMM) => {
         timeValue= "" + (hours - 12);
     } else if (hours > 0 && hours <= 12) {
         timeValue= "" + hours;
-    } else if (hours == 0) {
+    } else if (hours === 0) {
         timeValue= "12";
     } else { 
         throw new Error("invalid hour param");

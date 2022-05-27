@@ -1,8 +1,7 @@
-import {  render } from "@testing-library/react";
+import {  render, screen } from "@testing-library/react";
 import { threeSections } from "fixtures/sectionFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-// import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import SectionsTable from "main/components/Sections/SectionsTable";
 
 
@@ -33,7 +32,7 @@ describe("Section tests", () => {
 
   test("Has the expected column headers and content", () => {
 
-    const { getByText, getByTestId } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <SectionsTable sections={threeSections} />
@@ -48,19 +47,19 @@ describe("Section tests", () => {
     const testId = "SectionsTable";
 
     expectedHeaders.forEach((headerText) => {
-      const header = getByText(headerText);
+      const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
     });
 
     expectedFields.forEach((field) => {
-      const header = getByTestId(`${testId}-cell-row-0-col-${field}`);
+      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
       expect(header).toBeInTheDocument();
     });
 
-    expect(getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22");
-    expect(getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("3:00 PM - 3:50 PM");
-    expect(getByTestId(`${testId}-cell-row-1-col-enrolled`)).toHaveTextContent("18/35");
-    expect(getByTestId(`${testId}-cell-row-2-col-location`)).toHaveTextContent("1610 BRDA");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("3:00 PM - 3:50 PM");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-enrolled`)).toHaveTextContent("18/35");
+    expect(screen.getByTestId(`${testId}-cell-row-2-col-location`)).toHaveTextContent("1610 BRDA");
 
 
   });
