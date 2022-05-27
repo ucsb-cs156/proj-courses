@@ -99,6 +99,15 @@ public class UCSBCurriculumService {
         return result;
     }
 
+    public String getSectionJSON(String subjectArea, String quarter, String courseLevel)
+        throws JsonProcessingException {
+        List<ConvertedSection> l = getConvertedSections(subjectArea, quarter, courseLevel);
+        
+        String arrayToJson = objectMapper.writeValueAsString(l);
+    
+        return arrayToJson;
+    }
+    
     public String getSubjectsJSON() {
 
         HttpHeaders headers = new HttpHeaders();
