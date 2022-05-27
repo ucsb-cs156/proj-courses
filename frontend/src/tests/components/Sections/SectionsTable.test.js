@@ -57,8 +57,11 @@ describe("Section tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(getByTestId(`${testId}-cell-row-0-col-title`)).toHaveTextContent("COMP ENGR SEMINAR");
-    expect(getByTestId(`${testId}-cell-row-1-col-title`)).toHaveTextContent("FOUNDTN CIRC & SYS");
+    expect(getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22");
+    expect(getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("3:00 PM - 3:50 PM");
+    expect(getByTestId(`${testId}-cell-row-1-col-enrolled`)).toHaveTextContent("18/35");
+    expect(getByTestId(`${testId}-cell-row-2-col-location`)).toHaveTextContent("1610 BRDA");
+
 
   });
 

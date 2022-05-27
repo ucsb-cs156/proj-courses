@@ -4,12 +4,18 @@ export const hhmmTohhmma = (HHMM) => {
     var minutes = Number(time[1]);
     var timeValue;
 
-    if (hours > 0 && hours <= 12) {
-    timeValue= "" + hours;
-    } else if (hours > 12) {
-    timeValue= "" + (hours - 12);
-    } else {
-    timeValue= "12";
+    if (minutes > 59 || minutes < 0) {
+        throw new Error("invalid minute param");
+    }
+
+    if (hours > 12 && hours < 24) {
+        timeValue= "" + (hours - 12);
+    } else if (hours > 0 && hours <= 12) {
+        timeValue= "" + hours;
+    } else if (hours == 0) {
+        timeValue= "12";
+    } else { 
+        throw new Error("invalid hour param");
     }
     
     timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
