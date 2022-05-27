@@ -1,76 +1,64 @@
 import OurTable from "main/components/OurTable";
 // import { useBackendMutation } from "main/utils/useBackend";
 
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
+import { convertToFraction, spaceOut } from "main/utils/sectionUtils.js";
 
-export default function SectionTable({ article, _currentUser }) {
+export default function SectionsTable({ sections }) {
 
 
     // Stryker enable all 
 
-    // Stryker disable next-line all : TODO try to make a good test for this
-    // const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
-
     const columns = [
         {
-            Header: 'quarter',
-            accessor: 'Quarter', 
+            Header: 'Quarter',
+            accessor: (row) => yyyyqToQyy(row.quarter),
+            id: 'quarter',
         },
         {
-            Header: 'courseId',
-            accessor: 'Course ID',
+            Header: 'Course ID',
+            accessor: 'courseId',
         },
         {
-            Header: 'title',
-            accessor: 'Title', 
+            Header: 'Enroll Code',
+            accessor: 'enrollCode', 
         },
         {
-            Header: 'subjectArea',
-            accessor: 'Subject Area', 
+            Header: 'Title',
+            accessor: 'title', 
         },
         {
-            Header: 'enrollCode',
-            accessor: 'Enroll Code', 
+            Header: 'Enrolled',
+            accessor: (row) => convertToFraction(row.enrolledTotal, row.maxEnroll),
+            id: 'enrolled',
         },
         {
-            Header: 'enrolledTotal',
-            accessor: 'Total Enrolled',
+            Header: 'Location',
+            accessor: (row) => spaceOut(row.room, row.building),
+            id: 'location',
         },
         {
-            Header: 'maxEnroll',
-            accessor: 'Max Enrolled',
+            Header: 'Days',
+            accessor: 'days',
         },
         {
-            Header: 'room',
-            accessor: 'Room',
+            Header: 'Time',
+            accessor: (row) => convertToTimeRange(hhmmTohhmma(row.beginTime), hhmmTohhmma(row.endTime)),
+            id: 'time',
         },
         {
-            Header: 'building',
-            accessor: 'Building',
-        },
-        {
-            Header: 'days',
-            accessor: 'Days',
-        },
-        {
-            Header: 'beginTime',
-            accessor: 'Begin Time',
-        },
-        {
-            Header: 'endTime',
-            accessor: 'End Time',
-        },
-        {
-            Header: 'instructor',
-            accessor: 'Instructor',
+            Header: 'Instructor',
+            accessor: 'instructor',
         }
     ];
 
-    const testid = "SectionTable";
+    const testid = "SectionsTable";
 
     const columnsToDisplay = columns;
 
     return <OurTable
-        data={article}
+        data={sections}
         columns={columnsToDisplay}
         testid={testid}
     />;
