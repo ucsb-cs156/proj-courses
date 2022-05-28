@@ -22,7 +22,7 @@ public class CoursePage {
     private int pageNumber;
     private int pageSize;
     private int total;
-    List<Course> classes;
+    private List<Course> classes;
 
     /**
      * Create a CoursePage object from json representation
