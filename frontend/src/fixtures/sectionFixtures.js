@@ -138,7 +138,7 @@ export const fiveSections = [
         "courseId": "ECE      15A ",
         "title": "FUND OF LOGIC DES",
         "subjectArea": "ECE     ",
-        "enrollCode": "12757",
+        "enrollCode": "12765",
         "section": "0102",
         "enrolledTotal": 22,
         "maxEnroll": 22,
