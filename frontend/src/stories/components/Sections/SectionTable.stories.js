@@ -2,7 +2,7 @@
 import React from 'react';
 
 import SectionsTable from "main/components/Sections/SectionsTable";
-import { oneSection, threeSections, fiveSections } from 'fixtures/sectionFixtures';
+import { oneSection, threeSections, fiveSections, gigaSections } from 'fixtures/sectionFixtures';
 
 export default {
     title: 'components/Sections/SectionsTable',
@@ -40,3 +40,9 @@ FiveSections.args = {
     sections: fiveSections
 };
 
+
+export const GigaSections = Template.bind({});
+
+GigaSections.args = {
+    sections: gigaSections
+};

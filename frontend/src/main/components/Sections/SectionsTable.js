@@ -1,8 +1,7 @@
 import OurTable from "main/components/OurTable";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
-import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
-import { convertToFraction, spaceOut, isSectionAsString } from "main/utils/sectionUtils.js";
+import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSectionAsString } from "main/utils/sectionUtils.js";
 
 export default function SectionsTable({ sections }) {
 
@@ -12,47 +11,49 @@ export default function SectionsTable({ sections }) {
     const columns = [
         {
             Header: 'Quarter',
-            accessor: (row) => yyyyqToQyy(row.quarter),
+            accessor: (row) => yyyyqToQyy(row.courseInfo.quarter),
             id: 'quarter',
         },
         {
             Header: 'Course ID',
-            accessor: 'courseId',
+            accessor: 'courseInfo.courseId',
         },
         {
             Header: 'Title',
-            accessor: 'title', 
+            accessor: 'courseInfo.title', 
         },
         {
             Header: 'Is Section?',
-            accessor: (row) => isSectionAsString(row.section),
+            accessor: (row) => isSectionAsString(row.section.section),
             id: 'isSection',
         },
         {
             Header: 'Enrolled',
-            accessor: (row) => convertToFraction(row.enrolledTotal, row.maxEnroll),
+            accessor: (row) => convertToFraction(row.section.enrolledTotal, row.section.maxEnroll),
             id: 'enrolled',
         },
         {
             Header: 'Location',
-            accessor: (row) => spaceOut(row.building, row.room),
+            accessor: (row) => formatLocation(row.section.timeLocations),
             id: 'location',
         },
         {
             Header: 'Days',
-            accessor: 'days',
+            accessor: (row) => formatDays(row.section.timeLocations),
+            id: 'days',
         },
         {
             Header: 'Time',
-            accessor: (row) => convertToTimeRange(hhmmTohhmma(row.beginTime), hhmmTohhmma(row.endTime)),
+            accessor: (row) => formatTime(row.section.timeLocations),
             id: 'time',
         },
         {
             Header: 'Instructor',
-            accessor: 'instructor',
+            accessor: (row) => formatInstructors(row.section.instructors),
+            id: 'instructor',
         },        {
             Header: 'Enroll Code',
-            accessor: 'enrollCode', 
+            accessor: 'section.enrollCode', 
         }
     ];
 
