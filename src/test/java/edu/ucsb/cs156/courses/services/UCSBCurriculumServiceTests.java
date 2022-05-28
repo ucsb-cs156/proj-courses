@@ -182,4 +182,39 @@ public class UCSBCurriculumServiceTests {
         assertEquals(expected, convertedSections);
     }
 
+    @Test
+    public void test_getSectionJSON() throws Exception {
+        String expectedResult = CoursePageFixtures.COURSE_PAGE_JSON_MATH3B;
+
+        String subjectArea = "MATH";
+        String quarter = "20222";
+        String level = "L";
+
+        String expectedParams = String.format(
+                "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s", quarter,
+                subjectArea, level, 1, 100, "true");
+        String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+                .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("ucsb-api-version", "1.0"))
+                .andExpect(header("ucsb-api-key", apiKey))
+                .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String convertedSectionsString = ucs.getSectionJSON(subjectArea, quarter, level);
+        List<ConvertedSection> convertedSections = objectMapper.readValue(convertedSectionsString, 
+                new TypeReference<List<ConvertedSection>>() {
+                });            
+        List<ConvertedSection> expected = objectMapper.readValue(CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B,
+                new TypeReference<List<ConvertedSection>>() {
+                });
+
+        assertEquals(expected, convertedSections);
+    }
+
+
+    
+
 }
