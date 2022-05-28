@@ -1,21 +1,21 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import edu.ucsb.cs156.courses.entities.Courses;
-import edu.ucsb.cs156.courses.entities.User;
+// import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
 import edu.ucsb.cs156.courses.repositories.CoursesRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+// import io.swagger.annotations.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.fasterxml.jackson.core.JsonProcessingException;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+// import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Optional;
+// import java.util.Optional;
 
 @Api(description = "Courses")
 @RequestMapping("/api/courses")
@@ -51,7 +51,7 @@ public class CoursesController extends ApiController {
     @GetMapping("/all")
     public Iterable<Courses> thisUsersSchedules() {
         CurrentUser currentUser = getCurrentUser();
-        Iterable<Courses> courses = coursesRepository.findAllByUserId(currentUser.getUser().getId());
+        Iterable<Courses> courses = coursesRepository.findAllByPsId(currentUser.getUser().getId());
         return courses;
     }
 
@@ -60,10 +60,10 @@ public class CoursesController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
     public Courses getScheduleById(
-            @ApiParam("id") @RequestParam Long id) {
-        User currentUser = getCurrentUser().getUser();
-        Courses courses = coursesRepository.findByIdAndUser(id, currentUser)
-            .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+            @ApiParam("psId") @RequestParam Long psId) {
+        // User currentUser = getCurrentUser().getUser();
+        Courses courses = coursesRepository.findByPsId(psId)
+            .orElseThrow(() -> new EntityNotFoundException(Courses.class, psId));
 
         return courses;
     }
@@ -84,7 +84,7 @@ public class CoursesController extends ApiController {
     @PostMapping("/post")
     public Courses postCourses(
             @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam String psId,
+            @ApiParam("psId") @RequestParam Long psId,
             @ApiParam("quarter") @RequestParam String quarter) {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
@@ -101,14 +101,14 @@ public class CoursesController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("")
     public Object deleteCourses(
-            @ApiParam("id") @RequestParam Long id) {
-        User currentUser = getCurrentUser().getUser();
-        Courses courses = coursesRepository.findByIdAndUser(id, currentUser)
-          .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+            @ApiParam("id") @RequestParam Long psId) {
+        // User currentUser = getCurrentUser().getUser();
+        Courses courses = coursesRepository.findByPsId(psId)
+          .orElseThrow(() -> new EntityNotFoundException(Courses.class, psId));
 
           coursesRepository.delete(courses);
 
-        return genericMessage("Courses with id %s deleted".formatted(id));
+        return genericMessage("Courses with id %s deleted".formatted(psId));
 
     }
 
@@ -131,8 +131,8 @@ public class CoursesController extends ApiController {
     public Courses putCoursesById(
             @ApiParam("id") @RequestParam Long id,
             @RequestBody @Valid Courses incomingCourses) {
-        User currentUser = getCurrentUser().getUser();
-        Courses courses = coursesRepository.findByIdAndUser(id, currentUser)
+        // User currentUser = getCurrentUser().getUser();
+        Courses courses = coursesRepository.findById(id)
           .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
 
         courses.setEnrollCd(incomingCourses.getEnrollCd());
