@@ -54,6 +54,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                   <NavDropdown title="PersonalSchedules" id="appnavbar-personalschedules-dropdown" data-testid="appnavbar-personalschedules-dropdown" >
                     <NavDropdown.Item href="/personalschedules/list" data-testid="appnavbar-personalschedules-list">List</NavDropdown.Item>
                     <NavDropdown.Item href="/personalschedules/create" data-testid="appnavbar-personalschedules-create">Create</NavDropdown.Item>
+                    <NavDropdown.Item href="/personalschedules/details" data-testid="appnavbar-personalschedules-details">Details</NavDropdown.Item>
                   </NavDropdown>
                 )
               }
