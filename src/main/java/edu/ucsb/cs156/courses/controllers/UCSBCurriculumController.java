@@ -32,7 +32,7 @@ public class UCSBCurriculumController {
 
     @GetMapping(value = "/basicsearch", produces = "application/json")
     public ResponseEntity<String> basicsearch(@RequestParam String qtr, @RequestParam String dept,
-            @RequestParam String level) throws JsonProcessingException {
+            @RequestParam String level) {
 
         String body = ucsbCurriculumService.getJSON(dept, qtr, level);
         

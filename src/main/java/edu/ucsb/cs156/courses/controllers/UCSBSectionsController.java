@@ -39,4 +39,13 @@ public class UCSBSectionsController {
 
         return ResponseEntity.ok().body(body);
     }      
+
+    @GetMapping(value = "/sectionsearch", produces = "application/json")
+    public ResponseEntity<String> sectionsearch(@RequestParam String qtr, @RequestParam String enrollCode) 
+            throws JsonProcessingException  {
+            
+        String body = ucsbCurriculumService.getSection(enrollCode, qtr);
+
+        return ResponseEntity.ok().body(body);
+    }
 }
