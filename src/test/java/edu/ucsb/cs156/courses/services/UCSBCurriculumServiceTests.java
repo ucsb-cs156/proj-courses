@@ -214,6 +214,29 @@ public class UCSBCurriculumServiceTests {
         assertEquals(expected, convertedSections);
     }
 
+    /*public void test_getSectionsuccess() throws Exception {
+        String expectedResult = "{expectedResult}";
+
+        String subjectArea = "CMPSC";
+        String quarter = "20201";
+        String level = "L";
+
+        String expectedParams = String.format(
+                "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s", quarter,
+                subjectArea, level, 1, 100, "true");
+        String expectedURL = String expectedURL = UCSBCurriculumService.SECTION_ENDPOINT.replace("{quarter}", quarter).replace("{enrollCode}", enrollCode);;
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+                .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("ucsb-api-version", "1.0"))
+                .andExpect(header("ucsb-api-key", apiKey))
+                .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+        String result = ucs.getJSON(subjectArea, quarter, level);
+
+        assertEquals(expectedResult, result);
+    }*/
 
     
 
