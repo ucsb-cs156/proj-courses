@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
 import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -44,29 +43,15 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
     };
 
-    // beforeEach(() => {
-    //     jest.spyOn(console, 'error')
-    //     console.error.mockImplementation(() => null);
-    // });
+    beforeEach(() => {
+        jest.spyOn(console, 'error')
+        console.error.mockImplementation(() => null);
+    });
 
-    // afterEach(() => {
-    //     console.error.mockRestore()
-    // })
+    afterEach(() => {
+        console.error.mockRestore()
+    })
 
-    // test("renders without crashing for regular user", () => {
-
-    //     setupUserOnly();
-    //     const queryClient = new QueryClient();
-    //     axiosMock.onGet("/api/personalschedules/all").reply(200, []);
-
-    //     render(
-    //         <QueryClientProvider client={queryClient}>
-    //             <MemoryRouter>
-    //                 <PersonalSchedulesDetailsPage />
-    //             </MemoryRouter>
-    //         </QueryClientProvider>
-    //     );
-    // });
 
     test("shows the correct info for admin users", async() => {
         setupAdminUser();
