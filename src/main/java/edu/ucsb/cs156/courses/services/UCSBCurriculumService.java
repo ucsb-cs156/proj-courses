@@ -55,7 +55,7 @@ public class UCSBCurriculumService {
 
     public static final String SUBJECTS_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/subjects";
 
-    public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classes/{quarter}/{enrollcode}";
+    public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classsection/{quarter}/{enrollcode}";
 
     public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
@@ -169,7 +169,7 @@ public class UCSBCurriculumService {
         MediaType contentType = null;
         HttpStatus statusCode = null;
         try {
-            ResponseEntity<String> re = restTemplate.exchange(urlTemplate, HttpMethod.GET, entity, String.class, params);
+            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
             contentType = re.getHeaders().getContentType();
             statusCode = re.getStatusCode();
             retVal = re.getBody();
