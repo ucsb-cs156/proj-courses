@@ -9,8 +9,9 @@ export default function PersonalSchedulesDetailsPage() {
 
   const { data: personalSchedule, _error, _status } =
     useBackend(
+        // Stryker disable all : hard to test for query caching
       [`/api/personalschedules?id=${id}`],
-      {  
+      {  // Stryker disable next-line all : GET is the default, so changing this to "" doesn't introduce a bug
         method: "GET",
         url: `/api/personalschedules?id=${id}`,
         params: {

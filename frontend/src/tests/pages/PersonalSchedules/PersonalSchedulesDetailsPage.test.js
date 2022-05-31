@@ -52,6 +52,18 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         console.error.mockRestore()
     })
 
+    test("renders without crashing for regular user", () => {
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/personalschedules/all").reply(200, []);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PersonalSchedulesDetailsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+    });
 
     test("shows the correct info for admin users", async() => {
         setupAdminUser();
