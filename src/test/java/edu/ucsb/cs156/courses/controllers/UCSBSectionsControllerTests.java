@@ -54,4 +54,19 @@ public class UCSBSectionsControllerTests {
 
         assertEquals(expectedResult, responseString);
     }
+
+    @Test
+    public void test_section_search() throws Exception {
+
+        String expectedResult = "{expectedJSONResult}";
+        String urlTemplate = "/api/sections/sectionsearch?qtr=%s&enrollCode=%s";
+        String url = String.format(urlTemplate, "20204", "08268");
+        when(ucsbCurriculumService.getSection(any(String.class), any(String.class))).thenReturn(expectedResult);
+
+        MvcResult response = mockMvc.perform(get(url).contentType("application/json"))
+                .andReturn();
+        String responseString = response.getResponse().getContentAsString();
+
+        assertEquals(expectedResult, responseString);
+    }
 }
