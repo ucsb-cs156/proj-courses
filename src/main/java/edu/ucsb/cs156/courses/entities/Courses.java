@@ -28,5 +28,6 @@ public class Courses {
   private User user;
   private String enrollCd;
   private long psId;
+
   private String quarter;
 }
