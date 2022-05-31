@@ -273,7 +273,7 @@ public class UCSBCurriculumServiceTests {
                 .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
                 .andExpect(header("ucsb-api-version", "1.0"))
                 .andExpect(header("ucsb-api-key", apiKey))
-                .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+                .andRespond(withSuccess("null", MediaType.APPLICATION_JSON));
 
         String result = ucs.getSection(enrollCode, quarter);
         assertEquals(expectedResult, result);

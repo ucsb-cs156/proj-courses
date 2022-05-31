@@ -55,7 +55,7 @@ public class UCSBSectionsControllerTests {
         assertEquals(expectedResult, responseString);
     }
 
-    /* @Test
+    @Test
     public void test_section_search() throws Exception {
 
         String expectedResult = "{expectedJSONResult}";
@@ -68,5 +68,5 @@ public class UCSBSectionsControllerTests {
         String responseString = response.getResponse().getContentAsString();
 
         assertEquals(expectedResult, responseString);
-    } */
+    }
 }
