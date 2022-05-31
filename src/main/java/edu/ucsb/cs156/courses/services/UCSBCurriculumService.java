@@ -27,6 +27,9 @@ import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.Section;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Service object that wraps the UCSB Academic Curriculum API
@@ -51,6 +54,8 @@ public class UCSBCurriculumService {
     public static final String CURRICULUM_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
 
     public static final String SUBJECTS_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/subjects";
+
+    public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classsection/{quarter}/{enrollcode}";
 
     public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
@@ -135,4 +140,48 @@ public class UCSBCurriculumService {
         return retVal;
     }
 
+    public String getSection(String enrollCode, String quarter) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("ucsb-api-version", "1.0");
+        headers.set("ucsb-api-key", this.apiKey);
+
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+        String url = SECTION_ENDPOINT;
+
+
+        logger.info("url=" + url);
+
+        String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
+        .queryParam("quarter", "{quarter}")
+        .queryParam("enrollcode", "{enrollcode}")
+        .encode()
+        .toUriString();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("quarter", quarter);
+        params.put("enrollcode", enrollCode);
+
+        String retVal = "";
+        MediaType contentType = null;
+        HttpStatus statusCode = null;
+        try {
+            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
+            contentType = re.getHeaders().getContentType();
+            statusCode = re.getStatusCode();
+            retVal = re.getBody();
+        } catch (HttpClientErrorException e) {
+            retVal = "{\"error\": \"401: Unauthorized\"}";
+        }
+
+        if(retVal.equals("null")){
+            retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
+        }
+
+        logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+        return retVal;
+    }
 }
