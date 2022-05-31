@@ -177,7 +177,7 @@ public class UCSBCurriculumService {
             retVal = "{\"error\": \"401: Unauthorized\"}";
         }
 
-        if(retVal == null){
+        if(retVal.equals("null")){
             retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
         }
 
