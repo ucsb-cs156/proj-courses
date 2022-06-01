@@ -1,4 +1,5 @@
 export const hhmmTohhmma = (HHMM) => {
+    try{
     var time = HHMM.split(':');
     var hours = Number(time[0]);
     var minutes = Number(time[1]);
@@ -20,10 +21,14 @@ export const hhmmTohhmma = (HHMM) => {
     
     timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
     timeValue += (hours >= 12) ? " PM" : " AM";  // get AM/PM
-
+    
     return timeValue;
+    }
+    catch(error){
+        return null
+    }
 }
 
 export const convertToTimeRange = (time1, time2) => {
-    return `${time1} - ${time2}`
+    return (time1 !== null && time2 !== null) ? `${time1} - ${time2}` : "";
 }
