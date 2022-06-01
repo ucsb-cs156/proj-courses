@@ -49,7 +49,7 @@ describe("Section Searches Index Page tests", () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
       .onGet("/api/sections/basicsearch")
-      .reply(200, { classes:oneSection });
+      .reply(200, oneSection);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -85,6 +85,6 @@ describe("Section Searches Index Page tests", () => {
       level: "G",
     });
 
-    expect(screen.getByText("ECE       1A")).toBeInTheDocument();
+    expect(screen.getByText("ECE 1A")).toBeInTheDocument();
   });
 });
