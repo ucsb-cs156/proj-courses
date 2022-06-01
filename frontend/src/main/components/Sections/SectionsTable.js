@@ -45,10 +45,6 @@ export default function SectionsTable({ sections }) {
         {
             Header: 'Time',
             accessor: (row) => formatTime(row.section.timeLocations),
-            // accessor: (_row) => {
-            //     console.log("_row=",_row);
-            //     return "TBD";
-            // },
             id: 'time',
         },
         {
