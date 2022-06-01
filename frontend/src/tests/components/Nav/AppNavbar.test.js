@@ -149,4 +149,27 @@ describe("AppNavbar tests", () => {
         expect(await screen.findByTestId("appnavbar-personalschedules-list")).toBeInTheDocument();
         expect(screen.getByTestId(/appnavbar-personalschedules-create/)).toBeInTheDocument();
     });
+
+    test("renders the Section Search menu correctly", async () => {
+        const currentUser = currentUserFixtures.userOnly;
+        const systemInfo = systemInfoFixtures.showingBoth;
+
+        const doLogin = jest.fn();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} systemInfo={systemInfo} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByTestId("appnavbar-section-searches-dropdown")).toBeInTheDocument();
+        const dropdown = screen.getByTestId("appnavbar-section-searches-dropdown");
+        const aElement = dropdown.querySelector("a");
+        expect(aElement).toBeInTheDocument();
+        aElement?.click();
+
+        expect(await screen.findByTestId("appnavbar-section-searches-search")).toBeInTheDocument();
+    });
 });
