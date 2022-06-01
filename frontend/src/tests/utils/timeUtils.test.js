@@ -1,4 +1,4 @@
-import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js"
+import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils";
   
 describe("time conversion tests", () => {
     
