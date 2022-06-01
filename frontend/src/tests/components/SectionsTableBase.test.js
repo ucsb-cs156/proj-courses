@@ -1,23 +1,23 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import SectionsTableBase from "main/components/SectionsTableBase";
 
 describe("SectionsTableBase tests", () => {
-    const threeRows = [
-        {
-            col1: 'Hello',
-            col2: 'World',
-        },
-        {
-            col1: 'react-table',
-            col2: 'rocks',
-        },
-        {
-            col1: 'whatever',
-            col2: 'you want',
-        }
-    ];
+    // const threeRows = [
+    //     {
+    //         col1: 'Hello',
+    //         col2: 'World',
+    //     },
+    //     {
+    //         col1: 'react-table',
+    //         col2: 'rocks',
+    //     },
+    //     {
+    //         col1: 'whatever',
+    //         col2: 'you want',
+    //     }
+    // ];
 
-    const clickMeCallback = jest.fn();
+    // const clickMeCallback = jest.fn();
 
     const columns = [
         {
