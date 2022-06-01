@@ -1,7 +1,7 @@
-import OurTable from "main/components/OurTable";
+import SectionsTableBase from "main/components/SectionsTableBase";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
-import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSectionAsString } from "main/utils/sectionUtils.js";
+import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSectionAsString} from "main/utils/sectionUtils.js";
 
 export default function SectionsTable({ sections }) {
 
@@ -12,6 +12,7 @@ export default function SectionsTable({ sections }) {
         {
             Header: 'Quarter',
             accessor: (row) => yyyyqToQyy(row.courseInfo.quarter),
+            disableGroupBy: true,
             id: 'quarter',
         },
         {
@@ -20,7 +21,8 @@ export default function SectionsTable({ sections }) {
         },
         {
             Header: 'Title',
-            accessor: 'courseInfo.title', 
+            accessor: 'courseInfo.title',
+            disableGroupBy: true,
         },
         {
             Header: 'Is Section?',
@@ -30,30 +32,37 @@ export default function SectionsTable({ sections }) {
         {
             Header: 'Enrolled',
             accessor: (row) => convertToFraction(row.section.enrolledTotal, row.section.maxEnroll),
+            disableGroupBy: true,
             id: 'enrolled',
         },
         {
             Header: 'Location',
             accessor: (row) => formatLocation(row.section.timeLocations),
+            disableGroupBy: true,
             id: 'location',
         },
         {
             Header: 'Days',
             accessor: (row) => formatDays(row.section.timeLocations),
+            disableGroupBy: true,
             id: 'days',
         },
         {
             Header: 'Time',
             accessor: (row) => formatTime(row.section.timeLocations),
+            disableGroupBy: true,
             id: 'time',
         },
         {
             Header: 'Instructor',
             accessor: (row) => formatInstructors(row.section.instructors),
+            disableGroupBy: true,
             id: 'instructor',
-        },        {
+        },        
+        {
             Header: 'Enroll Code',
             accessor: 'section.enrollCode', 
+            disableGroupBy: true,
         }
     ];
 
@@ -61,7 +70,7 @@ export default function SectionsTable({ sections }) {
 
     const columnsToDisplay = columns;
 
-    return <OurTable
+    return <SectionsTableBase
         data={sections}
         columns={columnsToDisplay}
         testid={testid}
