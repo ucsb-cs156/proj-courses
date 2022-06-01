@@ -18,6 +18,12 @@ jest.mock("react-toastify", () => ({
 }));
 
 describe("BasicCourseSearchForm tests", () => {
+
+  beforeEach(() => {
+    jest.spyOn(console, 'error')
+    console.error.mockImplementation(() => null);
+  });
+
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
     axiosMock
