@@ -68,22 +68,6 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
                     {errors.psId?.message}
                 </Form.Control.Feedback>
             </Form.Group>
-    
-            <Form.Group className="mb-3" >
-                <Form.Label htmlFor="quarter">Quarter</Form.Label>
-                <Form.Control
-                    data-testid="CourseForm-Quarter"
-                    id="quarter"
-                    type="text"
-                    isInvalid={Boolean(errors.quarter)}
-                    {...register("quarter", {
-                        required: "Quarter is required."
-                    })}
-                />
-                <Form.Control.Feedback type="invalid">
-                    {errors.quarter?.message}
-                </Form.Control.Feedback>
-            </Form.Group>
 
             <Button
                 type="submit"

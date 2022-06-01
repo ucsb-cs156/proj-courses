@@ -100,7 +100,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        Courses course1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(u).id(7L).build();
+        Courses course1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
         when(coursesRepository.findByIdAndUser(eq(7L), eq(u))).thenReturn(Optional.of(course1));
 
         // act
@@ -137,6 +137,56 @@ public class CoursesControllerTests extends ControllerTestCase {
         assertEquals("Courses with id 7 not found", json.get("message"));
     }
 
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void api_courses__admin_logged_in__returns_a_courses_that_exists_using_psid() throws Exception {
+
+        // arrange
+
+        User u = currentUserService.getCurrentUser().getUser();
+        Courses course1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
+        Courses course2 = Courses.builder().enrollCd("08251").psId(13L).user(u).id(8L).build();
+        ArrayList<Courses> expectedCourses = new ArrayList<>();
+        expectedCourses.addAll(Arrays.asList(course1, course2));
+        when(coursesRepository.findAllByPsId(13L)).thenReturn(expectedCourses);
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/courses/admin/psid/all?psId=13"))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(coursesRepository, times(1)).findAllByPsId(13L);
+        String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses__user_logged_in__returns_a_courses_that_exists_using_psid() throws Exception {
+
+        // arrange
+
+        User u = currentUserService.getCurrentUser().getUser();
+        Courses course1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
+        Courses course2 = Courses.builder().enrollCd("08251").psId(13L).user(u).id(8L).build();
+        ArrayList<Courses> expectedCourses = new ArrayList<>();
+        expectedCourses.addAll(Arrays.asList(course1, course2));
+        when(coursesRepository.findAllByPsIdAndUser(13L, u)).thenReturn(expectedCourses);
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/courses/user/psid/all?psId=13"))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(coursesRepository, times(1)).findAllByPsIdAndUser(13L, u);
+        String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_courses__user_logged_in__search_for_courses_that_belongs_to_another_user() throws Exception {
@@ -145,7 +195,7 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
-        Courses otherUsersCourses = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(otherUser).id(13L)
+        Courses otherUsersCourses = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(13L)
                 .build();
 
         when(coursesRepository.findByIdAndUser(eq(13L), eq(otherUser))).thenReturn(Optional.of(otherUsersCourses));
@@ -170,7 +220,7 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
-        Courses otherUsersCourses = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(otherUser).id(27L)
+        Courses otherUsersCourses = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(27L)
                 .build();
 
         when(coursesRepository.findById(eq(27L))).thenReturn(Optional.of(otherUsersCourses));
@@ -217,9 +267,9 @@ public class CoursesControllerTests extends ControllerTestCase {
         User u2 = User.builder().id(2L).build();
         User u = currentUserService.getCurrentUser().getUser();
 
-        Courses p1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(u1).id(1L).build();
-        Courses p2 = Courses.builder().enrollCd("08276").psId(13L).quarter("20222").user(u2).id(2L).build();
-        Courses p3 = Courses.builder().enrollCd("08078").psId(13L).quarter("20223").user(u).id(3L).build();
+        Courses p1 = Courses.builder().enrollCd("08250").psId(13L).user(u1).id(1L).build();
+        Courses p2 = Courses.builder().enrollCd("08276").psId(13L).user(u2).id(2L).build();
+        Courses p3 = Courses.builder().enrollCd("08078").psId(13L).user(u).id(3L).build();
 
         ArrayList<Courses> expectedCourses = new ArrayList<>();
         expectedCourses.addAll(Arrays.asList(p1, p2, p3));
@@ -246,8 +296,8 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        Courses p1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(thisUser).id(1L).build();
-        Courses p2 = Courses.builder().enrollCd("08276").psId(13L).quarter("20222").user(thisUser).id(2L).build();
+        Courses p1 = Courses.builder().enrollCd("08250").psId(13L).user(thisUser).id(1L).build();
+        Courses p2 = Courses.builder().enrollCd("08276").psId(13L).user(thisUser).id(2L).build();
 
         ArrayList<Courses> expectedCourses = new ArrayList<>();
         expectedCourses.addAll(Arrays.asList(p1, p2));
@@ -272,13 +322,13 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        Courses expectedCourses = Courses.builder().enrollCd("08250").psId(13L).quarter("20222").user(thisUser).id(0L).build();
+        Courses expectedCourses = Courses.builder().enrollCd("08250").psId(13L).user(thisUser).id(0L).build();
 
         when(coursesRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/courses/post?enrollCd=08250&psId=13&quarter=20222")
+                post("/api/courses/post?enrollCd=08250&psId=13")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
@@ -295,7 +345,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(u).id(15L).build();
+        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(15L).build();
         when(coursesRepository.findByIdAndUser(eq(15L), eq(u))).thenReturn(Optional.of(ps1));
 
         // act
@@ -318,7 +368,7 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(98L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(u).id(15L).build();
+        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(15L).build();
         when(coursesRepository.findByIdAndUser(eq(15L), eq(otherUser))).thenReturn(Optional.of(ps1));
 
         // act
@@ -339,7 +389,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(98L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(otherUser).id(31L).build();
+        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(31L).build();
         when(coursesRepository.findById(eq(31L))).thenReturn(Optional.of(ps1));
 
         // act
@@ -361,7 +411,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User otherUser = User.builder().id(98L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(otherUser).id(16L).build();
+        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(16L).build();
         when(coursesRepository.findById(eq(16L))).thenReturn(Optional.of(ps1));
 
         // act
@@ -403,12 +453,12 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(u).id(67L).build();
+        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(67L).build();
         // We deliberately set the user information to another user
         // This should get ignored and overwritten with current user when todo is saved
 
-        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).quarter("20222").user(otherUser).id(67L).build();
-        Courses correctCourses = Courses.builder().enrollCd("08276").psId(14L).quarter("20222").user(u).id(67L).build();
+        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).user(otherUser).id(67L).build();
+        Courses correctCourses = Courses.builder().enrollCd("08276").psId(14L).user(u).id(67L).build();
 
         String requestBody = mapper.writeValueAsString(updatedCourses);
         String expectedReturn = mapper.writeValueAsString(correctCourses);
@@ -437,7 +487,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).quarter("20222").id(67L).build();
+        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).id(67L).build();
 
         String requestBody = mapper.writeValueAsString(updatedCourses);
 
@@ -466,8 +516,8 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(98L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(otherUser).id(31L).build();
-        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).quarter("20222").id(31L).build();
+        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(31L).build();
+        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).id(31L).build();
 
         when(coursesRepository.findByIdAndUser(eq(31L), eq(otherUser))).thenReturn(Optional.of(ps1));
 
@@ -496,13 +546,13 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User otherUser = User.builder().id(255L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(otherUser).id(77L).build();
+        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(77L).build();
         User yetAnotherUser = User.builder().id(512L).build();
         // We deliberately put the wrong user on the updated course
         // We expect the controller to ignore this and keep the user the same
-        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).quarter("20222").user(yetAnotherUser).id(77L)
+        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).user(yetAnotherUser).id(77L)
                 .build();
-        Courses correctCourses = Courses.builder().enrollCd("08276").psId(14L).quarter("20222").user(otherUser).id(77L)
+        Courses correctCourses = Courses.builder().enrollCd("08276").psId(14L).user(otherUser).id(77L)
                 .build();
 
         String requestBody = mapper.writeValueAsString(updatedCourses);
@@ -532,7 +582,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User otherUser = User.builder().id(345L).build();
-        Courses updatedCourses = Courses.builder().enrollCd("08250").psId(13L).quarter("20221").user(otherUser).id(77L)
+        Courses updatedCourses = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(77L)
                 .build();
 
         String requestBody = mapper.writeValueAsString(updatedCourses);

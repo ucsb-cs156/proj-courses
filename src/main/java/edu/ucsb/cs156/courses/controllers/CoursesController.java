@@ -103,8 +103,7 @@ public class CoursesController extends ApiController {
     @PostMapping("/post")
     public Courses postCourses(
             @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam Long psId,
-            @ApiParam("quarter") @RequestParam String quarter) {
+            @ApiParam("psId") @RequestParam Long psId) {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
@@ -112,7 +111,6 @@ public class CoursesController extends ApiController {
         courses.setUser(currentUser.getUser());
         courses.setEnrollCd(enrollCd);
         courses.setPsId(psId);
-        courses.setQuarter(quarter);
         Courses savedCourses = coursesRepository.save(courses);
         return savedCourses;
     }
@@ -153,7 +151,6 @@ public class CoursesController extends ApiController {
 
           courses.setEnrollCd(incomingCourses.getEnrollCd());
           courses.setPsId(incomingCourses.getPsId());
-          courses.setQuarter(incomingCourses.getQuarter());
 
         coursesRepository.save(courses);
 
@@ -172,7 +169,6 @@ public class CoursesController extends ApiController {
 
         courses.setEnrollCd(incomingCourses.getEnrollCd());
         courses.setPsId(incomingCourses.getPsId());
-        courses.setQuarter(incomingCourses.getQuarter());
 
         coursesRepository.save(courses);
 
