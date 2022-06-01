@@ -12,7 +12,6 @@ export default function CoursesCreatePage() {
     params: {
       enrollCd: course.enrollCd,
       psId: course.psId,
-      quarter: course.quarter
     }
   });
 
