@@ -101,7 +101,5 @@ export default function SectionsTable({ sections }) {
         data={sections}
         columns={columnsToDisplay}
         testid={testid}
-        //expand={false}
     />;
 };
-
