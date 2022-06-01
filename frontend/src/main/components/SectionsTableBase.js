@@ -2,15 +2,12 @@ import React from "react";
 import { useTable, _useSortBy, useGroupBy, useExpanded } from 'react-table'
 import { Table, _Button } from "react-bootstrap";
 
-export default function SectionsTableBase({ columns, data, testid = "testid" }) {
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({initialState: {groupBy: ["courseInfo.courseId"]}, columns, data }, useGroupBy, useExpanded)
+// Stryker disable StringLiteral, ArrayDeclaration
+export default function SectionsTableBase({ columns, data, testid = "testid"}) {
+  
+  // Stryker disable next-line ObjectLiteral
+  const {getTableProps, getTableBodyProps, headerGroups, rows,prepareRow} = useTable({initialState: {groupBy: []}, columns, data }, useGroupBy, useExpanded)
 
   return (
     <Table {...getTableProps()} striped bordered hover >
@@ -23,13 +20,12 @@ export default function SectionsTableBase({ columns, data, testid = "testid" }) 
                 data-testid={`${testid}-header-${column.id}`}
               >
                 {column.canGroupBy ? (
-                    <span {...column.getGroupByToggleProps()}>
-                        {column.isGrouped ? "- " : "+ "}
+                    <span data-testid={`${testid}-header-${column.id}-expand-boxes`}
+                    {...column.getGroupByToggleProps()}>
+                        {column.isGrouped ? "🟥 " : "🟩 "}
                     </span>
                 ) : null}
                 {column.render('Header')}
-                <span data-testid={`${testid}-header-${column.id}-sort-carets`}>
-                </span>
               </th>
             ))}
           </tr>
@@ -45,20 +41,28 @@ export default function SectionsTableBase({ columns, data, testid = "testid" }) 
                     <td
                     {...cell.getCellProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
+                    // Stryker disable next-line ObjectLiteral
+                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "white"}}
                   >
+                    
                     {cell.isGrouped ? (
                     <>
-                    <span {...row.getToggleRowExpandedProps()}>
+                    <span {...row.getToggleRowExpandedProps()}
+                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
+                    >
                         {row.isExpanded ? "-" : "+"}
                     </span>{" "}
                     {cell.render("Cell")} 
                     </>
-                    
-                    ) : cell.isRepeatedValue ? null : (
-                        cell.render("Cell")
-                    )}
-                    
-                    {cell.render('Cell')}
+                    ) 
+                    : cell.isAggregated ? (
+                      cell.render("Aggregated")
+                    )
+                    : cell.render('Cell')
+                    // : cell.isRepeatedValue ? null : (
+                    //     cell.render("Cell")
+                    // )
+                  }
                   </td>
                 )
               })}

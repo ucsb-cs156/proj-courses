@@ -1,4 +1,4 @@
-import {  render, screen } from "@testing-library/react";
+import {  fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { fiveSections } from "fixtures/sectionFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -67,6 +67,51 @@ describe("Section tests", () => {
 
 
   });
+
+  test("Has the expected cell values when expanded", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>
+      );
+
+      const expectedHeaders = ["Quarter",  "Course ID", "Title", "Enrolled", "Location", "Days", "Time", "Instructor", "Enroll Code"];
+      const expectedFields = ["quarter", "courseInfo.courseId", "courseInfo.title", "enrolled", "location", "days", "time", "instructor", "section.enrollCode"];
+      const testId = "SectionsTable";
+
+      expectedHeaders.forEach((headerText) => {
+        const header = screen.getByText(headerText);
+        expect(header).toBeInTheDocument();
+      });
+
+      expect(await screen.findByTestId(`${testId}-header-courseInfo.courseId-expand-boxes`)).toBeInTheDocument();
+      const expandHeader = screen.getByTestId(`${testId}-header-courseInfo.courseId-expand-boxes`);
+      fireEvent.click(expandHeader);
+
+      expectedFields.forEach((field) => {
+        const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
+        expect(header).toBeInTheDocument();
+      });
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("ECE 1A");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.title`)).toHaveTextContent("COMP ENGR SEMINAR");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-days`)).toHaveTextContent("");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-enrolled`)).toHaveTextContent("");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-location`)).toHaveTextContent("");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent("WANG L C");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-isSection`)).toHaveTextContent("");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-section.enrollCode`)).toHaveTextContent("");
+
+      const expandRow = screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId-expand-symbols`)
+      fireEvent.click(expandRow);
+      
+
+  })
+
+    
 
 
 });
