@@ -139,7 +139,7 @@ describe("CoursesIndexPage tests", () => {
         setupAdminUser();
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/user/all").reply(200, coursesFixtures.twoCourses);
-        axiosMock.onDelete("/api/courses").reply(200, "Course with id 25 was deleted");
+        axiosMock.onDelete("/api/courses/user").reply(200, "Course with id 25 was deleted");
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -152,7 +152,7 @@ describe("CoursesIndexPage tests", () => {
         expect(await screen.findByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25");
         expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
 
-        const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+        const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
         expect(deleteButton).toBeInTheDocument();
 
         fireEvent.click(deleteButton);
