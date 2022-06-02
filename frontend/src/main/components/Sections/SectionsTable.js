@@ -82,7 +82,7 @@ export default function SectionsTable({ sections }) {
             id: 'instructor',
 
             aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) => `${value}`
+            Aggregated: ({ cell: { _value } }) => ``
         },        
         {
             Header: 'Enroll Code',

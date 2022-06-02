@@ -50,7 +50,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     <span {...row.getToggleRowExpandedProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
                     >
-                        {row.isExpanded ? "-" : "+"}
+                        {row.isExpanded ? "➖ " : "➕ "}
                     </span>{" "}
                     {cell.render("Cell")} 
                     </>
@@ -59,9 +59,6 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                       cell.render("Aggregated")
                     )
                     : cell.render('Cell')
-                    // : cell.isRepeatedValue ? null : (
-                    //     cell.render("Cell")
-                    // )
                   }
                   </td>
                 )
@@ -73,45 +70,3 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
     </Table>
   )
 }
-
-// The callback function for ButtonColumn should have the form
-// (cell) => { doSomethingWith(cell); }
-// The fields in cell are:
-//   ["column","row","value","getCellProps","render"]
-// Documented here: https://react-table.tanstack.com/docs/api/useTable#cell-properties
-// Typically, you want cell.row.values, which is where you can get the individual
-//   fields of the object representing the row in the table.
-// Example: 
-//   const deleteCallback = (cell) => 
-//      toast(`Delete Callback called on id: ${cell.row.values.id} name: ${cell.row.values.name}`);
-
-// Add it to table like this:
-// const columns = [
-//   {
-//       Header: 'id',
-//       accessor: 'id', // accessor is the "key" in the data
-//   },
-//   {
-//       Header: 'Name',
-//       accessor: 'name',
-//   },
-//   ButtonColumn("Edit", "primary", editCallback),
-//   ButtonColumn("Delete", "danger", deleteCallback)
-// ];
-
-// export function ButtonColumn(label, variant, callback, testid) {
-//   const column = {
-//     Header: label,
-//     id: label,
-//     Cell: ({ cell }) => (
-//       <Button
-//         variant={variant}
-//         onClick={() => callback(cell)}
-//         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-button`}
-//       >
-//         {label}
-//       </Button>
-//     )
-//   }
-//   return column;
-// }
