@@ -87,8 +87,8 @@ describe("CoursesIndexPage tests", () => {
             </QueryClientProvider>
         );
         
-        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25"); });
-        expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
+        await waitFor(() => { screen.expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25"); });
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
 
     });
 
@@ -106,8 +106,8 @@ describe("CoursesIndexPage tests", () => {
         );
         
         // fix this later
-        await waitFor(() => { expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25"); });
-        expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
+        await waitFor(() => { screen.expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25"); });
+        expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
 
     });
 
@@ -119,7 +119,7 @@ describe("CoursesIndexPage tests", () => {
 
         const restoreConsole = mockConsole();
 
-        const { queryByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <CoursesIndexPage />
