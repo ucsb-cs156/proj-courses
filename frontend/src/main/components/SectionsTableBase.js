@@ -7,7 +7,7 @@ import { Table, _Button } from "react-bootstrap";
 export default function SectionsTableBase({ columns, data, testid = "testid"}) {
   
   // Stryker disable next-line ObjectLiteral
-  const {getTableProps, getTableBodyProps, headerGroups, rows,prepareRow} = useTable({initialState: {groupBy: []}, columns, data }, useGroupBy, useExpanded)
+  const {getTableProps, getTableBodyProps, headerGroups, rows,prepareRow} = useTable({initialState: {groupBy: [], hiddenColumns: ["isSection"], manualGroupBy: true}, columns, data }, useGroupBy, useExpanded)
 
   return (
     <Table {...getTableProps()} striped bordered hover >

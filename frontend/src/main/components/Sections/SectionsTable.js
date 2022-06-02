@@ -1,7 +1,7 @@
 import SectionsTableBase from "main/components/SectionsTableBase";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
-import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSectionAsString} from "main/utils/sectionUtils.js";
+import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSection} from "main/utils/sectionUtils.js";
 
 
 function getFirstVal(values) {
@@ -37,11 +37,9 @@ export default function SectionsTable({ sections }) {
         },
         {
             Header: 'Is Section?',
-            accessor: (row) => isSectionAsString(row.section.section),
+            accessor: (row) => isSection(row.section.section),
             disableGroupBy: true,
             id: 'isSection',
-
-            Aggregated: ({ cell: { _value } }) => ``
         },
         {
             Header: 'Enrolled',

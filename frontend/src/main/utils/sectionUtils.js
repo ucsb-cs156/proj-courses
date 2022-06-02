@@ -57,3 +57,7 @@ export const formatInstructors = (instructorArray) => {
 export const isSectionAsString = (en1) => {
     return (en1.substring(2) !== "00") ? "Yes" : "No";
 }
+
+export const isSection = (en1) => {
+    return (en1.substring(2) !== "00")
+}
