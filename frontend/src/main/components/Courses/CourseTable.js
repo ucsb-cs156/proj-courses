@@ -4,8 +4,6 @@ import { useBackendMutation } from "main/utils/useBackend";
 import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/CoursesUtils"
 import { hasRole } from "main/utils/currentUser";
 
-// import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
-
 export default function CourseTable({ courses, currentUser }) {
 
     // Stryker disable all : hard to test for query caching
