@@ -87,7 +87,7 @@ describe("CoursesIndexPage tests", () => {
             </QueryClientProvider>
         );
         
-        await waitFor(() => { screen.expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25"); });
+        await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25"); });
         expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
 
     });
@@ -105,8 +105,7 @@ describe("CoursesIndexPage tests", () => {
             </QueryClientProvider>
         );
         
-        // fix this later
-        await waitFor(() => { screen.expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25"); });
+        await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25"); });
         expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
 
     });
