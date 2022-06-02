@@ -157,6 +157,27 @@ describe("UserTable tests", () => {
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/personalschedules/edit/1'));
   });
+  test("Edit button navigates to the details page for Ordinary user", async () => {
+
+    const currentUser = currentUserFixtures.userOnly;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    expect(await screen.findByTestId(`PersonalSchedulesTable-cell-row-0-col-id`)).toHaveTextContent("1");
+
+    const detailsButton = screen.getByTestId(`PersonalSchedulesTable-cell-row-0-col-Details-button`);
+    expect(detailsButton).toBeInTheDocument();
+    
+    fireEvent.click(detailsButton);
+
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/personalschedules/details/1'));
+  });
 
   test("Edit button navigates to the edit page for admin user", async () => {
 

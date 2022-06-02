@@ -3,16 +3,17 @@ import OurTable, { ButtonColumn } from "main/components/OurTable";
 import { useBackendMutation } from "main/utils/useBackend";
 import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/PersonalScheduleUtils"
 import { useNavigate } from "react-router-dom";
-import { hasRole } from "main/utils/currentUser";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
-export default function PersonalSchedulesTable({ personalSchedules, currentUser }) {
+export default function PersonalSchedulesTable({ personalSchedules, showButtons=true }) {
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
         navigate(`/personalschedules/edit/${cell.row.values.id}`)
     }
-
+    const detailsCallback = (cell) => {
+        navigate(`/personalschedules/details/${cell.row.values.id}`)
+    }
     // Stryker disable all : hard to test for query caching
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
@@ -45,13 +46,14 @@ export default function PersonalSchedulesTable({ personalSchedules, currentUser 
         },
     ];
 
-    const columnsIfUser = [
+    const buttonColumns = [
         ...columns,
+        ButtonColumn("Details", "primary", detailsCallback, "PersonalSchedulesTable"),
         ButtonColumn("Edit", "primary", editCallback, "PersonalSchedulesTable"),
         ButtonColumn("Delete", "danger", deleteCallback, "PersonalSchedulesTable")
     ]
 
-    const columnsToDisplay = hasRole(currentUser, "ROLE_USER") ? columnsIfUser : columns;
+    const columnsToDisplay = showButtons ? buttonColumns : columns;
 
     return <OurTable
         data={personalSchedules}
