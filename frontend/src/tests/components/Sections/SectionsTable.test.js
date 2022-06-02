@@ -101,7 +101,7 @@ describe("Section tests", () => {
       expect(screen.getByTestId(`${testId}-cell-row-0-col-days`)).toHaveTextContent("");
       expect(screen.getByTestId(`${testId}-cell-row-0-col-enrolled`)).toHaveTextContent("");
       expect(screen.getByTestId(`${testId}-cell-row-0-col-location`)).toHaveTextContent("");
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent("WANG L C");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent("");
       expect(screen.getByTestId(`${testId}-cell-row-0-col-isSection`)).toHaveTextContent("");
       expect(screen.getByTestId(`${testId}-cell-row-0-col-section.enrollCode`)).toHaveTextContent("");
 
