@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
+import edu.ucsb.cs156.courses.errors.BadEnrollCdException;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,7 +27,7 @@ public abstract class ApiController {
     return Map.of("message", message);
   }
 
-  @ExceptionHandler({ EntityNotFoundException.class })
+  @ExceptionHandler({ EntityNotFoundException.class, BadEnrollCdException.class })
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public Object handleGenericException(Throwable e) {
     return Map.of(
