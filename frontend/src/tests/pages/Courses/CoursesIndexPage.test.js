@@ -135,7 +135,6 @@ describe("CoursesIndexPage tests", () => {
     });
 
 
-    // fix this
     test("what happens when you click delete, admin", async () => {
         setupAdminUser();
         const queryClient = new QueryClient();
