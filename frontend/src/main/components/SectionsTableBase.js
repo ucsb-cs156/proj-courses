@@ -42,7 +42,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     {...cell.getCellProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                     // Stryker disable next-line ObjectLiteral
-                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8"}}
+                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
                   >
                     
                     {cell.isGrouped ? (
@@ -50,7 +50,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     <span {...row.getToggleRowExpandedProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
                     >
-                        {row.isExpanded ? "➖ " : "➕ "}
+                    {row.isExpanded ? "➖ " : "➕ "}
                     </span>{" "}
                     {cell.render("Cell")} 
                     </>
@@ -59,10 +59,12 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                       cell.render("Aggregated")
                     )
                     : cell.render('Cell')
-                  }
+                    }
+
                   </td>
                 )
               })}
+
             </tr>
           )
         })}
