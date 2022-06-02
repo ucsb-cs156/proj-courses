@@ -1,4 +1,4 @@
-import { hhmmTohhmma } from "main/utils/timeUtils";
+import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils";
   
 describe("time conversion tests", () => {
     
@@ -32,5 +32,24 @@ describe("time conversion tests", () => {
 
     test("hhmmTohhmma invalid minute test 2", () => {
         expect(() => { hhmmTohhmma("12:60"); }).toThrow("invalid minute param");
+    });
+})
+
+describe("time range conversion tests", () => {
+    
+    test("12:30 - 12:59", () => {
+        expect(convertToTimeRange("12:30","12:59")).toBe("12:30 - 12:59");
+    });
+
+    test("null - 12:59", () => {
+        expect(convertToTimeRange(null,"12:59")).toBe("");
+    });
+
+    test("null - null", () => {
+        expect(convertToTimeRange(null,null)).toBe("");
+    });
+
+    test("12:59 - null", () => {
+        expect(convertToTimeRange("12:59",null)).toBe("");
     });
 })

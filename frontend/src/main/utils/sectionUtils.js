@@ -21,8 +21,8 @@ export const formatLocation = (timeLocationArray) => {
 export const formatDays = (timeLocationArray) => {
     let res = "";
     for (let index = 0; index < timeLocationArray.length; index++) {
-        res += `${timeLocationArray[index].days}`;
-        if (index + 1 < timeLocationArray.length) {
+        res += (timeLocationArray[index].days !== null) ? `${timeLocationArray[index].days}` : "";
+        if (index + 1 < timeLocationArray.length && timeLocationArray[index].days !== null) {
             res += `, `
         } 
     }
