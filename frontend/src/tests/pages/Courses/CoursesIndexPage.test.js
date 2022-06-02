@@ -79,7 +79,7 @@ describe("CoursesIndexPage tests", () => {
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/user/all").reply(200, coursesFixtures.twoCourses);
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <CoursesIndexPage />
@@ -97,7 +97,7 @@ describe("CoursesIndexPage tests", () => {
         const queryClient = new QueryClient();
         axiosMock.onGet("/api/courses/user/all").reply(200, coursesFixtures.twoCourses);
 
-        const { getByTestId } = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
                     <CoursesIndexPage />
