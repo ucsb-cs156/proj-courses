@@ -118,7 +118,7 @@ public class CoursesController extends ApiController {
 
         // Check if psId exists and if psId belongs to user
         PersonalSchedule checkPsId = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser())
-        .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, 2));
+        .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
         // Check if enrollCd exists
         String body = ucsbCurriculumService.getSection(enrollCd, checkPsId.getQuarter());
         if(body.equals("{\"error\": \"401: Unauthorized\"}") || body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")){
