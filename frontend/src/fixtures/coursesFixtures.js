@@ -12,14 +12,11 @@ const coursesFixtures = {
         "enrollCd": "08276",
       }
     ],
-    oneCourse:
-      [
-        {
-            "id": 27,
-            "psId": 13,
-            "enrollCd": "08078",
-      }
-    ]
+    oneCourse:{
+        "id": 27,
+        "psId": 13,
+        "enrollCd": "08078",
+    }
   }
   
   export { coursesFixtures };
