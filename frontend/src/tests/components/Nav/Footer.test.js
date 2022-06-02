@@ -1,11 +1,29 @@
 import { render, screen } from "@testing-library/react";
-import Footer from "main/components/Nav/Footer";
+import Footer, {space} from "main/components/Nav/Footer";
 
 describe("Footer tests", () => {
-    test("renders correctly", async () => {
-        render(
-            <Footer />
+    test("space stands for a space", () => {
+        expect(space).toBe(" ");
+      });
+    
+    
+      test("renders without crashing", () => {
+        render(<Footer />);
+      });
+    
+      test("Links are correct", async () => {
+        const { getByText } = render(<Footer />);
+        expect(getByText("CMPSC 156").closest("a")).toHaveAttribute(
+          "href",
+          "https://ucsb-cs156.github.io"
         );
-        expect(await screen.findByText(/This is a sample webapp using React with a Spring Boot backend./)).toBeInTheDocument();
-    });
+        expect(getByText("UCSB").closest("a")).toHaveAttribute(
+          "href",
+          "https://ucsb.edu"
+        );
+        expect(getByText(/GitHub/i).closest("a")).toHaveAttribute(
+          "href",
+          "https://github.com/ucsb-cs156-s22/s22-4pm-courses"
+        );
+      });
 });
