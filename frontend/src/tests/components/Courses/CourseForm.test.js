@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import CourseForm from "main/components/Courses/CourseForm";
+import { coursesFixtures } from "fixtures/coursesFixtures";
 
 const mockedNavigate = jest.fn();
 
@@ -23,6 +24,17 @@ describe("CourseForm tests", () => {
         expect(screen.getByText(/Create/)).toBeInTheDocument();
     });
 
+    test("renders correctly when passing in a Course", async () => {
+        render(
+            <Router>
+                <CourseForm initialCourse={coursesFixtures.oneCourse} />
+            </Router>
+        );
+
+        expect(await screen.findByTestId(/CourseForm-id/)).toBeInTheDocument();
+        expect(screen.getByText(/Id/)).toBeInTheDocument();
+        expect(screen.getByTestId(/CourseForm-id/)).toHaveValue("27");
+    });
 
     test("Correct Error messages on missing input", async () => {
         render(
