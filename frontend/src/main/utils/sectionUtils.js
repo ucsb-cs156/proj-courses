@@ -53,7 +53,6 @@ export const formatInstructors = (instructorArray) => {
     return res;
 }
 
-// 
 export const isSectionAsString = (en1) => {
     return (en1.substring(2) !== "00") ? "Yes" : "No";
 }

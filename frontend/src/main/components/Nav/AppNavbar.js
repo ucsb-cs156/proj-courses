@@ -14,9 +14,8 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
         )
       }
       <Navbar expand="xl" variant="dark" bg="dark" sticky="top" data-testid="AppNavbar">
-        <Container>
-        {/* Stryker disable next-line all: No need to test image alt */}
-        <img src={headerImg} alt="" style={{width: 80, height: 80,marginRight: 10}} />
+        <Container >
+        <img data-testid="AppNavbarImage" src={headerImg} alt="" style={{width: 80, height: 80, marginRight: 10}} />
           <Navbar.Brand as={Link} to="/">
             Example
           </Navbar.Brand>
