@@ -46,7 +46,7 @@ describe("AppNavbar tests", () => {
         aElement?.click();
 
         expect(await screen.findByTestId(/appnavbar-admin-users/)).toBeInTheDocument();
-        expect(screen.getByTestId("appnavbar-admin-loadsubjects")).toBeInTheDocument();      
+        expect(screen.getByTestId("appnavbar-admin-loadsubjects")).toBeInTheDocument(); 
         expect(screen.getByTestId(/appnavbar-admin-personalschedule/)).toBeInTheDocument();
     });
 
@@ -124,6 +124,30 @@ describe("AppNavbar tests", () => {
 
         expect(await screen.findByTestId("AppNavbar")).toBeInTheDocument();
         expect(screen.queryByTestId(/AppNavbarLocalhost/i)).toBeNull();
+    });
+
+    test("renders the Courses menu correctly", async () => {
+        const currentUser = currentUserFixtures.userOnly;
+        const systemInfo = systemInfoFixtures.showingBoth;
+
+        const doLogin = jest.fn();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} systemInfo={systemInfo} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByTestId("appnavbar-courses-dropdown")).toBeInTheDocument();
+        const dropdown = screen.getByTestId("appnavbar-courses-dropdown");
+        const aElement = dropdown.querySelector("a");
+        expect(aElement).toBeInTheDocument();
+        aElement?.click();
+
+        expect(await screen.findByTestId("appnavbar-courses-list")).toBeInTheDocument();
+        expect(screen.getByTestId(/appnavbar-courses-create/)).toBeInTheDocument();
     });
 
     test("renders the PersonalSchedules menu correctly", async () => {

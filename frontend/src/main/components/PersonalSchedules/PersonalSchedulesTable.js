@@ -13,9 +13,6 @@ export default function PersonalSchedulesTable({ personalSchedules, currentUser 
         navigate(`/personalschedules/edit/${cell.row.values.id}`)
     }
 
-    const coursesCallback = (cell) => {
-        navigate(`/courses/psid/list`, { state: { id: cell.row.values.id} })
-    }
 
     // Stryker disable all : hard to test for query caching
     const deleteMutation = useBackendMutation(
@@ -53,7 +50,6 @@ export default function PersonalSchedulesTable({ personalSchedules, currentUser 
         ...columns,
         ButtonColumn("Edit", "primary", editCallback, "PersonalSchedulesTable"),
         ButtonColumn("Delete", "danger", deleteCallback, "PersonalSchedulesTable"),
-        ButtonColumn("Courses", "success", coursesCallback, "PersonalSchedulesTable")
     ]
 
     const columnsToDisplay = hasRole(currentUser, "ROLE_USER") ? columnsIfUser : columns;
