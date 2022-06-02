@@ -124,6 +124,7 @@ public class CoursesController extends ApiController {
         if(body.equals("{\"error\": \"401: Unauthorized\"}") || body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")){
             throw new BadEnrollCdException(enrollCd);
         }
+
         Courses courses = new Courses();
         courses.setUser(currentUser.getUser());
         courses.setEnrollCd(enrollCd);

@@ -29,6 +29,7 @@ import java.util.Optional;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -324,31 +325,97 @@ public class CoursesControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-//     @WithMockUser(roles = { "USER" })
-//     @Test
-//     public void api_courses_post__user_logged_in() throws Exception {
-//         // arrange
-//         // I think it might be because psId 13 does not exist cause there is a check for psid now
-//         // WE HAVE TO CREATE A PS THEN RUN THE TEST WITH THAT PSID
-//         User thisUser = currentUserService.getCurrentUser().getUser();
-//         PersonalSchedule ps = PersonalSchedule.builder().user(thisUser).name("Test").description("Test").quarter("20224").id(1L).build();
-//         when(personalScheduleRepository.save(eq(ps))).thenReturn(ps);
-//         Courses expectedCourses = Courses.builder().enrollCd("08268").psId(1L).user(thisUser).id(1L).build();
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses_post__user_logged_in() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
 
-//         when(coursesRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
 
-//         // act
-//         MvcResult response = mockMvc.perform(
-//                 post("/api/courses/post?enrollCd=08268&psId=1")
-//                         .with(csrf()))
-//                 .andExpect(status().isOk()).andReturn();
+        Courses expectedCourses = Courses.builder().enrollCd("08268").psId(1L).user(u).id(0L).build();
+        when(coursesRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
 
-//         // assert
-//         verify(coursesRepository, times(1)).save(expectedCourses);
-//         String expectedJson = mapper.writeValueAsString(expectedCourses);
-//         String responseString = response.getResponse().getContentAsString();
-//         assertEquals(expectedJson, responseString);
-//     }
+        when(ucsbCurriculumService.getSection(eq("08268"), eq("20224"))).thenReturn("API OUTPUT");
+
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=08268&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).save(expectedCourses);
+        String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void apiCoursesUserCreatesCourseWithInvalidEnrollCd() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+
+        when(ucsbCurriculumService.getSection(eq("test"), eq("20224"))).thenReturn("{\"error\": \"Enroll code doesn't exist in that quarter.\"}");
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=test&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EnrollCd: test is invalid, (enrollCd must be valid, numeric, and no more than five digits)", json.get("message"));
+        assertEquals("BadEnrollCdException", json.get("type"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void apiCoursesUserCreatesCourseWithInvalidEnrollCd2() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+
+        when(ucsbCurriculumService.getSection(eq("test"), eq("20224"))).thenReturn("{\"error\": \"401: Unauthorized\"}");
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=test&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EnrollCd: test is invalid, (enrollCd must be valid, numeric, and no more than five digits)", json.get("message"));
+        assertEquals("BadEnrollCdException", json.get("type"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void apiCoursesUserCreatesCourseWithInvalidPSID() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=08268&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PersonalSchedule with id 1 not found", json.get("message"));
+        assertEquals("EntityNotFoundException", json.get("type"));
+    }
 
     @WithMockUser(roles = { "USER" })
     @Test
