@@ -88,10 +88,6 @@ describe("UserTable tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25");
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
 
-    // const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
-    // expect(editButton).toBeInTheDocument();
-    // expect(editButton).toHaveClass("btn-primary");
-
     const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
@@ -127,58 +123,10 @@ describe("UserTable tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25");
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
 
-    // const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
-    // expect(editButton).toBeInTheDocument();
-    // expect(editButton).toHaveClass("btn-primary");
-
     const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
   });
-
-//   test("Edit button navigates to the edit page for Ordinary user", async () => {
-
-//     const currentUser = currentUserFixtures.userOnly;
-
-//     render(
-//       <QueryClientProvider client={queryClient}>
-//         <MemoryRouter>
-//           <CourseTable courses={coursesFixtures.twoCourses} currentUser={currentUser} />
-//         </MemoryRouter>
-//       </QueryClientProvider>
-//     );
-
-//     expect(await screen.findByTestId(`CourseTable-cell-row-0-col-id`)).toHaveTextContent("1");
-
-//     const editButton = screen.getByTestId(`CourseTable-cell-row-0-col-Edit-button`);
-//     expect(editButton).toBeInTheDocument();
-    
-//     fireEvent.click(editButton);
-
-//     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/courses/edit/1'));
-//   });
-
-//   test("Edit button navigates to the edit page for admin user", async () => {
-
-//     const currentUser = currentUserFixtures.adminUser;
-
-//     render(
-//       <QueryClientProvider client={queryClient}>
-//         <MemoryRouter>
-//           <CourseTable courses={coursesFixtures.twoCourses} currentUser={currentUser} />
-//         </MemoryRouter>
-//       </QueryClientProvider>
-//     );
-
-//     expect(await screen.findByTestId(`CourseTable-cell-row-0-col-id`)).toHaveTextContent("25");
-
-//     const editButton = screen.getByTestId(`CourseTable-cell-row-0-col-Edit-button`);
-//     expect(editButton).toBeInTheDocument();
-    
-//     fireEvent.click(editButton);
-
-//     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/courses/edit/1'));
-//   });
 
   test("Delete button calls delete callback for ordinary user", async () => {
 
