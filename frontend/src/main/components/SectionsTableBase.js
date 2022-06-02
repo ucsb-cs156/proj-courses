@@ -42,7 +42,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     {...cell.getCellProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                     // Stryker disable next-line ObjectLiteral
-                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "white"}}
+                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8"}}
                   >
                     
                     {cell.isGrouped ? (
