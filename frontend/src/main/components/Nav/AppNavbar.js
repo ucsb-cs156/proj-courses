@@ -15,7 +15,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
       }
       <Navbar expand="xl" variant="dark" bg="dark" sticky="top" data-testid="AppNavbar">
         <Container>
-        <img src={headerImg} style={{
+        <img src={headerImg} alt="" style={{
             width: 80, 
             height: 80,
             marginRight: 10
