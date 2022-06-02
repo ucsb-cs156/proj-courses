@@ -6,6 +6,9 @@ import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.Courses;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.repositories.CoursesRepository;
+import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
+import edu.ucsb.cs156.courses.entities.PersonalSchedule;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,6 +29,7 @@ import java.util.Optional;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,6 +40,12 @@ public class CoursesControllerTests extends ControllerTestCase {
 
     @MockBean
     CoursesRepository coursesRepository;
+
+    @MockBean
+    PersonalScheduleRepository personalScheduleRepository;
+
+    @MockBean
+    UCSBCurriculumService ucsbCurriculumService;
 
     @MockBean
     UserRepository userRepository;
@@ -319,16 +329,20 @@ public class CoursesControllerTests extends ControllerTestCase {
     @Test
     public void api_courses_post__user_logged_in() throws Exception {
         // arrange
+        User u = currentUserService.getCurrentUser().getUser();
 
-        User thisUser = currentUserService.getCurrentUser().getUser();
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
 
-        Courses expectedCourses = Courses.builder().enrollCd("08250").psId(13L).user(thisUser).id(0L).build();
-
+        Courses expectedCourses = Courses.builder().enrollCd("08268").psId(1L).user(u).id(0L).build();
         when(coursesRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
+
+        when(ucsbCurriculumService.getSection(eq("08268"), eq("20224"))).thenReturn("API OUTPUT");
+
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/courses/post?enrollCd=08250&psId=13")
+                post("/api/courses/post?enrollCd=08268&psId=1")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
@@ -337,6 +351,70 @@ public class CoursesControllerTests extends ControllerTestCase {
         String expectedJson = mapper.writeValueAsString(expectedCourses);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void apiCoursesUserCreatesCourseWithInvalidEnrollCd() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+
+        when(ucsbCurriculumService.getSection(eq("test"), eq("20224"))).thenReturn("{\"error\": \"Enroll code doesn't exist in that quarter.\"}");
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=test&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EnrollCd: test is invalid, (enrollCd must be valid, numeric, and no more than five digits)", json.get("message"));
+        assertEquals("BadEnrollCdException", json.get("type"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void apiCoursesUserCreatesCourseWithInvalidEnrollCd2() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+
+        when(ucsbCurriculumService.getSection(eq("test"), eq("20224"))).thenReturn("{\"error\": \"401: Unauthorized\"}");
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=test&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EnrollCd: test is invalid, (enrollCd must be valid, numeric, and no more than five digits)", json.get("message"));
+        assertEquals("BadEnrollCdException", json.get("type"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void apiCoursesUserCreatesCourseWithInvalidPSID() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=08268&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PersonalSchedule with id 1 not found", json.get("message"));
+        assertEquals("EntityNotFoundException", json.get("type"));
     }
 
     @WithMockUser(roles = { "USER" })

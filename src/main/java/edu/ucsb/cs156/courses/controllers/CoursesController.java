@@ -29,6 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Optional;
 
+import edu.ucsb.cs156.courses.entities.PersonalSchedule;
+import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.errors.BadEnrollCdException;
+
 @Api(description = "Courses")
 @RequestMapping("/api/courses")
 @RestController
@@ -37,6 +42,10 @@ public class CoursesController extends ApiController {
 
     @Autowired
     CoursesRepository coursesRepository;
+    @Autowired
+    PersonalScheduleRepository personalScheduleRepository;
+    @Autowired
+    UCSBCurriculumService ucsbCurriculumService;
 
     @ApiOperation(value = "List all courses (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -106,6 +115,14 @@ public class CoursesController extends ApiController {
             @ApiParam("psId") @RequestParam Long psId) {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
+
+        PersonalSchedule checkPsId = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser())
+        .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
+
+        String body = ucsbCurriculumService.getSection(enrollCd, checkPsId.getQuarter());
+        if(body.equals("{\"error\": \"401: Unauthorized\"}") || body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")){
+            throw new BadEnrollCdException(enrollCd);
+        }
 
         Courses courses = new Courses();
         courses.setUser(currentUser.getUser());
