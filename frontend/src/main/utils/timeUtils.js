@@ -20,10 +20,10 @@ export const hhmmTohhmma = (HHMM) => {
     
     timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
     timeValue += (hours >= 12) ? " PM" : " AM";  // get AM/PM
-
+    
     return timeValue;
 }
 
 export const convertToTimeRange = (time1, time2) => {
-    return `${time1} - ${time2}`
+    return (time1 !== null && time2 !== null) ? `${time1} - ${time2}` : "";
 }
