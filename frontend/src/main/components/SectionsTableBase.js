@@ -1,13 +1,13 @@
 import React from "react";
 import { useTable, _useSortBy, useGroupBy, useExpanded } from 'react-table'
-import { Table, _Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 
 
 // Stryker disable StringLiteral, ArrayDeclaration
 export default function SectionsTableBase({ columns, data, testid = "testid"}) {
   
   // Stryker disable next-line ObjectLiteral
-  const {getTableProps, getTableBodyProps, headerGroups, rows,prepareRow} = useTable({initialState: {groupBy: [], hiddenColumns: ["isSection"], manualGroupBy: true}, columns, data }, useGroupBy, useExpanded)
+  const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = useTable({initialState: {groupBy: ["courseInfo.courseId"], hiddenColumns: []}, columns, data }, useGroupBy, useExpanded)
 
   return (
     <Table {...getTableProps()} striped bordered hover >
@@ -19,12 +19,12 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                 {...column.getHeaderProps()}
                 data-testid={`${testid}-header-${column.id}`}
               >
-                {column.canGroupBy ? (
+                {/* {column.canGroupBy ? (
                     <span data-testid={`${testid}-header-${column.id}-expand-boxes`}
                     {...column.getGroupByToggleProps()}>
                         {column.isGrouped ? "🟥 " : "🟩 "}
                     </span>
-                ) : null}
+                ) : null} */}
                 {column.render('Header')}
               </th>
             ))}
@@ -35,6 +35,8 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
         {rows.map(row => {
           prepareRow(row)
           return (
+            <>
+            {row.cells[0].isGrouped || (!row.cells[0].isGrouped && row.cells[3].value) ? 
             <tr {...row.getRowProps()}>
               {row.cells.map((cell, _index) => {
                 return (
@@ -66,6 +68,8 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
               })}
 
             </tr>
+            : null}
+            </>
           )
         })}
       </tbody>

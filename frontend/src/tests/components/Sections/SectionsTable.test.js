@@ -85,9 +85,9 @@ describe("Section tests", () => {
         expect(header).toBeInTheDocument();
       });
 
-      expect(await screen.findByTestId(`${testId}-header-courseInfo.courseId-expand-boxes`)).toBeInTheDocument();
-      const expandHeader = screen.getByTestId(`${testId}-header-courseInfo.courseId-expand-boxes`);
-      fireEvent.click(expandHeader);
+      // expect(await screen.findByTestId(`${testId}-header-courseInfo.courseId-expand-boxes`)).toBeInTheDocument();
+      // const expandHeader = screen.getByTestId(`${testId}-header-courseInfo.courseId-expand-boxes`);
+      // fireEvent.click(expandHeader);
 
       expectedFields.forEach((field) => {
         const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);

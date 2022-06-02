@@ -1,7 +1,7 @@
 import SectionsTableBase from "main/components/SectionsTableBase";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
-import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSection, isSectionAsString} from "main/utils/sectionUtils.js";
+import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSection, _isSectionAsString} from "main/utils/sectionUtils.js";
 
 
 function getFirstVal(values) {
@@ -37,7 +37,7 @@ export default function SectionsTable({ sections }) {
         },
         {
             Header: 'Is Section?',
-            accessor: (row) => isSectionAsString(row.section.section),
+            accessor: (row) => isSection(row.section.section),
             id: 'isSection',
         },
         {
@@ -46,7 +46,8 @@ export default function SectionsTable({ sections }) {
             disableGroupBy: true,
             id: 'enrolled',
 
-            Aggregated: ({ cell: { _value } }) => ``
+            aggregate: getFirstVal,
+            Aggregated: ({ cell: { value } }) => `${value}`
         },
         {
             Header: 'Location',
@@ -54,7 +55,8 @@ export default function SectionsTable({ sections }) {
             disableGroupBy: true,
             id: 'location',
 
-            Aggregated: ({ cell: { _value } }) => ``
+            aggregate: getFirstVal,
+            Aggregated: ({ cell: { value } }) => `${value}`
         },
         {
             Header: 'Days',
@@ -62,7 +64,8 @@ export default function SectionsTable({ sections }) {
             disableGroupBy: true,
             id: 'days',
 
-            Aggregated: ({ cell: { _value } }) => ``
+            aggregate: getFirstVal,
+            Aggregated: ({ cell: { value } }) => `${value}`
         },
         {
             Header: 'Time',
@@ -70,7 +73,8 @@ export default function SectionsTable({ sections }) {
             disableGroupBy: true,
             id: 'time',
 
-            Aggregated: ({ cell: { _value } }) => ``
+            aggregate: getFirstVal,
+            Aggregated: ({ cell: { value } }) => `${value}`
         },
         {
             Header: 'Instructor',
@@ -79,14 +83,15 @@ export default function SectionsTable({ sections }) {
             id: 'instructor',
 
             aggregate: getFirstVal,
-            Aggregated: ({ cell: { _value } }) => ``
+            Aggregated: ({ cell: { value } }) => `${value}`
         },        
         {
             Header: 'Enroll Code',
             accessor: 'section.enrollCode', 
             disableGroupBy: true,
 
-            Aggregated: ({ cell: { _value } }) => ``
+            aggregate: getFirstVal,
+            Aggregated: ({ cell: { value } }) => `${value}`
         }
     ];
 
