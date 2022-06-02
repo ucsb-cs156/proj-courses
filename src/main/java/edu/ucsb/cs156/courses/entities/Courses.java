@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.OneToMany;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +23,12 @@ public class Courses {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
+  @OneToMany
+  @JoinColumn(name = "personalschedule_id")
+  private long psId;
+
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
   private String enrollCd;
-  private long psId;
 }
