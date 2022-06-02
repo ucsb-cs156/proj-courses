@@ -60,13 +60,9 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
             </Nav>
 
             <Nav className="mr-auto">
-              {
-                hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="Section Searches" id="appnavbar-section-searches-dropdown" data-testid="appnavbar-section-searches-dropdown" >
-                    <NavDropdown.Item href="/sectionsearches/search" data-testid="appnavbar-section-searches-search">Search</NavDropdown.Item>
-                  </NavDropdown>
-                )
-              }
+              <NavDropdown title="Section Searches" id="appnavbar-section-searches-dropdown" data-testid="appnavbar-section-searches-dropdown" >
+                <NavDropdown.Item href="/sectionsearches/search" data-testid="appnavbar-section-searches-search">Search</NavDropdown.Item>
+              </NavDropdown>
             </Nav>
 
 
