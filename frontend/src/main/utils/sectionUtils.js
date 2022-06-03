@@ -23,6 +23,9 @@ export const formatLocation = (timeLocationArray) => {
 // Takes a time location array and returns the days
 export const formatDays = (timeLocationArray) => {
     let res = "";
+    if (timeLocationArray == null){
+        return res;
+    }
     for (let index = 0; index < timeLocationArray.length; index++) {
         res += (timeLocationArray[index].days !== null) ? `${timeLocationArray[index].days}` : "";
         if (index + 1 < timeLocationArray.length && timeLocationArray[index].days !== null) {
@@ -35,6 +38,9 @@ export const formatDays = (timeLocationArray) => {
 // Takes a time location array and returns the time range
 export const formatTime = (timeLocationArray) => {
     let res = "";
+    if (timeLocationArray == null){
+        return res;
+    }
     for (let index = 0; index < timeLocationArray.length; index++) {
         res += convertToTimeRange(hhmmTohhmma(timeLocationArray[index].beginTime), hhmmTohhmma(timeLocationArray[index].endTime));
         if (index + 1 < timeLocationArray.length) {
@@ -47,6 +53,9 @@ export const formatTime = (timeLocationArray) => {
 // Takes a instructors array and returns the instructors
 export const formatInstructors = (instructorArray) => {
     let res = "";
+    if (instructorArray == null){
+        return res;
+    }
     for (let index = 0; index < instructorArray.length; index++) {
         res += `${instructorArray[index].instructor}`;
         if (index + 1 < instructorArray.length) {
