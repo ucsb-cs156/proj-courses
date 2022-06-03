@@ -215,7 +215,6 @@ public class UCSBCurriculumService {
             retVal = "{\"error\": \"401: Unauthorized\"}";
         }
         logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
-        //System.out.println("url=" + url);
         return retVal;
 
     }
