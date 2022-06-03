@@ -1,20 +1,20 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import edu.ucsb.cs156.courses.documents.Course;
-import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
-import edu.ucsb.cs156.courses.repositories.UserRepository;
-import edu.ucsb.cs156.courses.testconfig.TestConfig;
-import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
-//import edu.ucsb.cs156.courses.testconfig.SecurityConfig;
-import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.ControllerTestCase;
+import edu.ucsb.cs156.courses.documents.Course;
+import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.Courses;
 import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
+import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.repositories.CoursesRepository;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.testconfig.TestConfig;
 
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,7 +31,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,9 +94,7 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(get("/api/personalSections/all?psId=13"))
                 .andExpect(status().is(404)).andReturn();
         String actual = response.getResponse().getContentAsString();
-        //String expectedResponse = "{\"type\":\"EntityNotFoundException\"}";
         boolean correct = actual.contains("EntityNotFoundException");
-        //String expectedResponse = "{\"type\":\"EntityNotFoundException\",\"message\":\"PersonalSchedule with id 13 not found\"}";
         assertEquals(correct, true);
 
     }
