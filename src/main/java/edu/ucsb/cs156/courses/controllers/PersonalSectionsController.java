@@ -64,7 +64,7 @@ public class PersonalSectionsController extends ApiController {
                 .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
         ArrayList<Course> sections = new ArrayList<Course>();
         ArrayList<String> jsons = new ArrayList<String>();
-        Iterable<Courses> courses = coursesRepository.findAllByPsId(psId); //.orElseThrow(() -> new EntityNotFoundException(Courses.class,"psId", psId ));
+        Iterable<Courses> courses = coursesRepository.findAllByPsId(psId);
         for (Courses crs:courses) {
 
                 User u = crs.getUser();
