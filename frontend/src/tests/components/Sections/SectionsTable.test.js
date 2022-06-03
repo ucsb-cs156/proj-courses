@@ -140,6 +140,8 @@ describe("Section tests", () => {
       </QueryClientProvider>
       );
 
+      const testId = "SectionsTable"
+
       const expandRow = screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`)
       fireEvent.click(expandRow);
 
