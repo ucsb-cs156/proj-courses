@@ -19,12 +19,6 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                 {...column.getHeaderProps()}
                 data-testid={`${testid}-header-${column.id}`}
               >
-                {/* {column.canGroupBy ? (
-                    <span data-testid={`${testid}-header-${column.id}-expand-boxes`}
-                    {...column.getGroupByToggleProps()}>
-                        {column.isGrouped ? "🟥 " : "🟩 "}
-                    </span>
-                ) : null} */}
                 {column.render('Header')}
               </th>
             ))}

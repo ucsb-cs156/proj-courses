@@ -1,5 +1,5 @@
 import {  fireEvent, render, screen } from "@testing-library/react";
-import { fiveSections } from "fixtures/sectionFixtures";
+import { fiveSections, gigaSections } from "fixtures/sectionFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import SectionsTable from "main/components/Sections/SectionsTable";
@@ -30,7 +30,7 @@ describe("Section tests", () => {
 
 
 
-  test("Has the expected column headers and content", () => {
+  test("Has the expected cell values when expanded", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -71,7 +71,7 @@ describe("Section tests", () => {
 
   });
 
-  test("Has the expected cell values when expanded", async () => {
+  test("Has the expected column headers and content", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -110,7 +110,26 @@ describe("Section tests", () => {
 
   })
 
+  test("Correctly groups separate lectures of the same class", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={gigaSections} />
+        </MemoryRouter>
+      </QueryClientProvider>
+      );
     
+      const testId = "SectionsTable"
+
+      expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("➕ MATH 3B");
+      expect(screen.getByTestId(`${testId}-cell-row-2-col-courseInfo.courseId`)).toHaveTextContent("➕ MATH 3B");
+
+      const expandRow = screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`)
+      fireEvent.click(expandRow);
+
+
+      expect(await screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("➖ MATH 3B");
+  })
 
 
 });
