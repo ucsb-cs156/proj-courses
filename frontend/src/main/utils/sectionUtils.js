@@ -7,62 +7,70 @@ export const convertToFraction = (en1, en2) => {
 
 // Takes a time location array and returns the locations
 export const formatLocation = (timeLocationArray) => {
-    let res = "";
-    if (timeLocationArray == null){
+    try{
+        let res = "";
+        for (let index = 0; index < timeLocationArray.length; index++) {
+            res += `${timeLocationArray[index].building} ${timeLocationArray[index].room}`;
+            if (index + 1 < timeLocationArray.length) {
+                res += `, `
+            } 
+        }
         return res;
     }
-    for (let index = 0; index < timeLocationArray.length; index++) {
-        res += `${timeLocationArray[index].building} ${timeLocationArray[index].room}`;
-        if (index + 1 < timeLocationArray.length) {
-            res += `, `
-        } 
+    catch{
+        return ""
     }
-    return res;
 }
 
 // Takes a time location array and returns the days
 export const formatDays = (timeLocationArray) => {
-    let res = "";
-    if (timeLocationArray == null){
+    try {
+        let res = "";
+        for (let index = 0; index < timeLocationArray.length; index++) {
+            res += (timeLocationArray[index].days !== null) ? `${timeLocationArray[index].days}` : "";
+            if (index + 1 < timeLocationArray.length && timeLocationArray[index].days !== null) {
+                res += `, `
+            } 
+        }
         return res;
     }
-    for (let index = 0; index < timeLocationArray.length; index++) {
-        res += (timeLocationArray[index].days !== null) ? `${timeLocationArray[index].days}` : "";
-        if (index + 1 < timeLocationArray.length && timeLocationArray[index].days !== null) {
-            res += `, `
-        } 
+    catch{
+        return ""
     }
-    return res;
 }
 
 // Takes a time location array and returns the time range
 export const formatTime = (timeLocationArray) => {
-    let res = "";
-    if (timeLocationArray == null){
+    try{
+        let res = "";
+        for (let index = 0; index < timeLocationArray.length; index++) {
+            res += convertToTimeRange(hhmmTohhmma(timeLocationArray[index].beginTime), hhmmTohhmma(timeLocationArray[index].endTime));
+            if (index + 1 < timeLocationArray.length) {
+                res += `, `
+            } 
+        }
         return res;
     }
-    for (let index = 0; index < timeLocationArray.length; index++) {
-        res += convertToTimeRange(hhmmTohhmma(timeLocationArray[index].beginTime), hhmmTohhmma(timeLocationArray[index].endTime));
-        if (index + 1 < timeLocationArray.length) {
-            res += `, `
-        } 
+    catch{
+        return ""
     }
-    return res;
 }
 
 // Takes a instructors array and returns the instructors
 export const formatInstructors = (instructorArray) => {
-    let res = "";
-    if (instructorArray == null){
+    try{
+        let res = "";
+        for (let index = 0; index < instructorArray.length; index++) {
+            res += `${instructorArray[index].instructor}`;
+            if (index + 1 < instructorArray.length) {
+                res += `, `
+            } 
+        }
         return res;
     }
-    for (let index = 0; index < instructorArray.length; index++) {
-        res += `${instructorArray[index].instructor}`;
-        if (index + 1 < instructorArray.length) {
-            res += `, `
-        } 
+    catch{
+        return ""
     }
-    return res;
 }
 
 export const isSection = (en1) => {
