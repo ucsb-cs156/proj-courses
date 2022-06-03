@@ -85,5 +85,20 @@ describe ("section utils tests", () => {
     test("formatInstructors test" , () => {
         expect(formatInstructors(testInstructors)).toBe("HESPANHA J P, JOHN S");
     }); 
+    test("formatLocation null test" , () => {
+        expect(formatLocation(null)).toBe("");
+    }); 
+
+    test("formatDays null test" , () => {
+        expect(formatDays(null)).toBe("");
+    });
+
+    test("formatTime null test" , () => {
+        expect(formatTime(null)).toBe("");
+    }); 
+
+    test("formatInstructors test" , () => {
+        expect(formatInstructors(null)).toBe("");
+    }); 
 
 })
