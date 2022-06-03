@@ -53,7 +53,7 @@ export default function Footer() {
         These images are Copyright © 2021 UCSB Associated Students, and may not be reused
         without express written permission of the Executive Director of UCSB Associated Students.  For more info, visit: 
         {space}
-        <a data-testid="footer-sticker-link" href="https://www.as.ucsb.edu/sticker-packs/>">www.as.ucsb.edu/sticker-packs/</a>
+        <a data-testid="footer-sticker-link" href="https://www.as.ucsb.edu/sticker-packs">www.as.ucsb.edu/sticker-packs/</a>
       </p>
       </Container>
     </footer>
