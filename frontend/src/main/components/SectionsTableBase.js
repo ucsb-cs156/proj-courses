@@ -1,5 +1,5 @@
 import React from "react";
-import { useTable, _useSortBy, useGroupBy, useExpanded } from 'react-table'
+import { useTable, useGroupBy, useExpanded } from 'react-table'
 import { Table } from "react-bootstrap";
 
 

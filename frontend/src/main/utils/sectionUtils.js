@@ -8,6 +8,9 @@ export const convertToFraction = (en1, en2) => {
 // Takes a time location array and returns the locations
 export const formatLocation = (timeLocationArray) => {
     let res = "";
+    if (timeLocationArray == null){
+        return res;
+    }
     for (let index = 0; index < timeLocationArray.length; index++) {
         res += `${timeLocationArray[index].building} ${timeLocationArray[index].room}`;
         if (index + 1 < timeLocationArray.length) {
