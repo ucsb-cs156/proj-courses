@@ -128,7 +128,7 @@ describe("Section tests", () => {
       fireEvent.click(expandRow);
 
 
-      expect(await screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("➖ MATH 3B");
+      expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("➖ MATH 3B");
   })
 
 
