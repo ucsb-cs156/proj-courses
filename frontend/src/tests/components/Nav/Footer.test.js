@@ -28,7 +28,7 @@ describe("Footer tests", () => {
 
         expect(screen.getByTestId("footer-sticker-link")).toHaveAttribute(
             "href",
-            "https://www.as.ucsb.edu/sticker-packs/>"
+            "https://www.as.ucsb.edu/sticker-packs"
           );
           expect(screen.getByTestId("footer-course-search-link")).toHaveAttribute(
             "href",
