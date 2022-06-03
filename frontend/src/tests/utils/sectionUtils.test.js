@@ -97,7 +97,7 @@ describe ("section utils tests", () => {
         expect(formatTime(null)).toBe("");
     }); 
 
-    test("formatInstructors test" , () => {
+    test("formatInstructors null test" , () => {
         expect(formatInstructors(null)).toBe("");
     }); 
 
