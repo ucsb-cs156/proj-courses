@@ -7,7 +7,7 @@ import { Table } from "react-bootstrap";
 export default function SectionsTableBase({ columns, data, testid = "testid"}) {
   
   // Stryker disable next-line ObjectLiteral
-  const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = useTable({initialState: {groupBy: ["courseInfo.courseId"], hiddenColumns: []}, columns, data }, useGroupBy, useExpanded)
+  const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = useTable({initialState: {groupBy: ["courseInfo.courseId"], hiddenColumns: ["isSection"]}, columns, data }, useGroupBy, useExpanded)
 
   return (
     <Table {...getTableProps()} striped bordered hover >
@@ -36,7 +36,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
           prepareRow(row)
           return (
             <>
-            {row.cells[0].isGrouped || (!row.cells[0].isGrouped && row.cells[3].value) ? 
+            {row.cells[0].isGrouped || (!row.cells[0].isGrouped && row.allCells[3].value) ? 
             <tr {...row.getRowProps()}>
               {row.cells.map((cell, _index) => {
                 return (
@@ -45,7 +45,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                     // Stryker disable next-line ObjectLiteral
                     style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
-                  >
+                    >
                     
                     {cell.isGrouped ? (
                     <>
@@ -62,7 +62,9 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     )
                     : cell.render('Cell')
                     }
-
+                    <>
+                    
+                    </>
                   </td>
                 )
               })}

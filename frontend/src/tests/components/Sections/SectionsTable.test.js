@@ -45,6 +45,7 @@ describe("Section tests", () => {
     const expectedHeaders = ["Quarter",  "Course ID", "Title", "Enrolled", "Location", "Days", "Time", "Instructor", "Enroll Code"];
     const expectedFields = ["quarter", "courseInfo.courseId", "courseInfo.title", "enrolled", "location", "days", "time", "instructor", "section.enrollCode"];
     const testId = "SectionsTable";
+    
 
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
@@ -56,10 +57,13 @@ describe("Section tests", () => {
       expect(header).toBeInTheDocument();
     });
 
+    const expandRow = screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`)
+    fireEvent.click(expandRow);
+
     expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22");
     expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("3:00 PM - 3:50 PM");
     expect(screen.getByTestId(`${testId}-cell-row-0-col-days`)).toHaveTextContent("M");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-enrolled`)).toHaveTextContent("84/80");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-enrolled`)).toHaveTextContent("84/100");
     expect(screen.getByTestId(`${testId}-cell-row-2-col-location`)).toHaveTextContent("HFH 1124");
     expect(screen.getByTestId(`${testId}-cell-row-2-col-instructor`)).toHaveTextContent("YUNG A S");
 
@@ -96,15 +100,12 @@ describe("Section tests", () => {
       expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`)).toHaveTextContent("ECE 1A");
       expect(screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.title`)).toHaveTextContent("COMP ENGR SEMINAR");
       expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22");
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("");
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-days`)).toHaveTextContent("");
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-enrolled`)).toHaveTextContent("");
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-location`)).toHaveTextContent("");
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent("");
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-section.enrollCode`)).toHaveTextContent("");
-
-      const expandRow = screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId-expand-symbols`)
-      fireEvent.click(expandRow);
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("3:00 PM - 3:50 PM");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-days`)).toHaveTextContent("M");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-enrolled`)).toHaveTextContent("84/100");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-location`)).toHaveTextContent("BUCHN 1930");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent("WANG L C");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-section.enrollCode`)).toHaveTextContent("12583");
       
 
   })

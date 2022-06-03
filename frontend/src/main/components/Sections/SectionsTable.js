@@ -26,6 +26,8 @@ export default function SectionsTable({ sections }) {
         {
             Header: 'Course ID',
             accessor: 'courseInfo.courseId',
+
+            Cell: ({ cell: { value } }) => value.substring(0, value.length-2)
         },
         {
             Header: 'Title',
