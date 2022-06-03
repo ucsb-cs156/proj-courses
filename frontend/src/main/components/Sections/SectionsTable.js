@@ -38,8 +38,10 @@ export default function SectionsTable({ sections }) {
             Aggregated: ({ cell: { value } }) => `${value}`
         },
         {
+            // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
             Header: 'Is Section?',
             accessor: (row) => isSection(row.section.section),
+            // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
             id: 'isSection',
         },
         {

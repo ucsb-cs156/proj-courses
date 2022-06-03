@@ -108,7 +108,7 @@ describe("Section tests", () => {
       expect(screen.getByTestId(`${testId}-cell-row-0-col-section.enrollCode`)).toHaveTextContent("12583");
       
 
-  })
+  });
 
   test("Correctly groups separate lectures of the same class", async () => {
     render(
@@ -130,6 +130,22 @@ describe("Section tests", () => {
 
       expect(screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`)).toHaveTextContent("➖ MATH 3B");
   })
+
+  test("First dropdown is different than last dropdown", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>
+      );
+
+      const expandRow = screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`)
+      fireEvent.click(expandRow);
+
+      expect(screen.getByTestId(`${testId}-cell-row-1-col-enrolled`)).toHaveTextContent("84/80");
+      expect(screen.getByTestId(`${testId}-cell-row-2-col-enrolled`)).toHaveTextContent("21/21");
+  });
 
 
 });
