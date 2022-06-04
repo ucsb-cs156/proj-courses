@@ -2,6 +2,7 @@ import { Button, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 import AppNavbarLocalhost from "main/components/Nav/AppNavbarLocalhost"
+import headerImg from "../../../assets/header-logo-240.png"
 
 export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUrl = window.location.href }) {
   return (
@@ -13,7 +14,8 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
         )
       }
       <Navbar expand="xl" variant="dark" bg="dark" sticky="top" data-testid="AppNavbar">
-        <Container>
+        <Container >
+        <img data-testid="AppNavbarImage" src={headerImg} alt="" style={{width: 80, height: 80, marginRight: 10}} />
           <Navbar.Brand as={Link} to="/">
             Example
           </Navbar.Brand>
