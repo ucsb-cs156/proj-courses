@@ -11,6 +11,7 @@ export default function PersonalSchedulesTable({ personalSchedules, showButtons=
     const editCallback = (cell) => {
         navigate(`/personalschedules/edit/${cell.row.values.id}`)
     }
+
     const detailsCallback = (cell) => {
         navigate(`/personalschedules/details/${cell.row.values.id}`)
     }
@@ -50,7 +51,7 @@ export default function PersonalSchedulesTable({ personalSchedules, showButtons=
         ...columns,
         ButtonColumn("Details", "primary", detailsCallback, "PersonalSchedulesTable"),
         ButtonColumn("Edit", "primary", editCallback, "PersonalSchedulesTable"),
-        ButtonColumn("Delete", "danger", deleteCallback, "PersonalSchedulesTable")
+        ButtonColumn("Delete", "danger", deleteCallback, "PersonalSchedulesTable"),
     ]
 
     const columnsToDisplay = showButtons ? buttonColumns : columns;
