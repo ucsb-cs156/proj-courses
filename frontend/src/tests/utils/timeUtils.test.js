@@ -19,19 +19,23 @@ describe("time conversion tests", () => {
     });
 
     test("hhmmTohhmma invalid hour test 1", () => {
-        expect(() => { hhmmTohhmma("-1:00"); }).toThrow("invalid hour param");
+        expect(hhmmTohhmma("-1:00")).toBe("");
     });
 
     test("hhmmTohhmma invalid hour test 2", () => {
-        expect(() => { hhmmTohhmma("24:00"); }).toThrow("invalid hour param");
+        expect(hhmmTohhmma("24:00")).toBe("");
     });
 
     test("hhmmTohhmma invalid minute test 1", () => {
-        expect(() => { hhmmTohhmma("23:-1"); }).toThrow("invalid minute param");
+        expect(hhmmTohhmma("23:-1")).toBe("");
     });
 
     test("hhmmTohhmma invalid minute test 2", () => {
-        expect(() => { hhmmTohhmma("12:60"); }).toThrow("invalid minute param");
+        expect(hhmmTohhmma("12:60")).toBe("");
+    });
+
+    test("hhmmTohhmma invalid hhmm", () => {
+        expect(hhmmTohhmma(null)).toBe("");
     });
 })
 
@@ -42,14 +46,14 @@ describe("time range conversion tests", () => {
     });
 
     test("null - 12:59", () => {
-        expect(convertToTimeRange(null,"12:59")).toBe("");
+        expect(convertToTimeRange("","12:59")).toBe("");
     });
 
     test("null - null", () => {
-        expect(convertToTimeRange(null,null)).toBe("");
+        expect(convertToTimeRange("","")).toBe("");
     });
 
     test("12:59 - null", () => {
-        expect(convertToTimeRange("12:59",null)).toBe("");
+        expect(convertToTimeRange("12:59","")).toBe("");
     });
 })

@@ -1,4 +1,4 @@
-import {convertToFraction, formatLocation, isSectionAsString, formatDays, formatTime, formatInstructors} from "main/utils/sectionUtils"
+import {convertToFraction, formatLocation, isSection, formatDays, formatTime, formatInstructors} from "main/utils/sectionUtils"
 
 const testTimeLocations = [
     {
@@ -58,8 +58,12 @@ describe ("section utils tests", () => {
         expect(convertToFraction("100", null)).toBe("");
     }); 
 
-    test("isSectionAsString yes test" , () => {
-        expect(isSectionAsString("0104")).toBe("Yes");
+    test("isSection true test" , () => {
+        expect(isSection("0104")).toBe(true);
+    }); 
+
+    test("isSection false test" , () => {
+        expect(isSection("0100")).toBe(false);
     }); 
 
     test("formatLocation test" , () => {
@@ -80,6 +84,21 @@ describe ("section utils tests", () => {
 
     test("formatInstructors test" , () => {
         expect(formatInstructors(testInstructors)).toBe("HESPANHA J P, JOHN S");
+    }); 
+    test("formatLocation null test" , () => {
+        expect(formatLocation(null)).toBe("");
+    }); 
+
+    test("formatDays null test" , () => {
+        expect(formatDays(null)).toBe("");
+    });
+
+    test("formatTime null test" , () => {
+        expect(formatTime(null)).toBe("");
+    }); 
+
+    test("formatInstructors null test" , () => {
+        expect(formatInstructors(null)).toBe("");
     }); 
 
 })

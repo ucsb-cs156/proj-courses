@@ -11,10 +11,12 @@ import "bootstrap/dist/css/bootstrap.css";
 
 import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
-import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailsPage";
 
+import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailsPage";
 import SectionSearchesIndexPage from "main/pages/SectionSearches/SectionSearchesIndexPage";
 
+import CoursesIndexPage from "main/pages/Courses/CoursesIndexPage";
+import CoursesCreatePage from "main/pages/Courses/CoursesCreatePage";
 
 function App() {
 
@@ -39,6 +41,9 @@ function App() {
             <>
               <Route exact path="/personalschedules/list" element={<PersonalSchedulesIndexPage />} />
               <Route exact path="/personalschedules/create" element={<PersonalSchedulesCreatePage />} />
+
+              <Route exact path="/courses/list" element={<CoursesIndexPage />} />
+              <Route exact path="/courses/create" element={<CoursesCreatePage />} />
               <Route exact path="/personalschedules/details/:id" element={<PersonalSchedulesDetailsPage />} />
             </>
           )
