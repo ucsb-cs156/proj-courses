@@ -18,7 +18,7 @@ import lombok.Builder;
 @NoArgsConstructor
 @Builder
 @Entity(name = "courses")
-public class Courses {
+public class PSCourse {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;

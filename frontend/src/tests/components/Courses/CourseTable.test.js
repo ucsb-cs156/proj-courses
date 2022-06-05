@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 
 import CourseTable from "main/components/Courses/CourseTable";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
-import { coursesFixtures } from "fixtures/coursesFixtures";
+import { coursesFixtures } from "fixtures/pscourseFixtures";
 
 const mockedNavigate = jest.fn();
 
