@@ -3,9 +3,9 @@ package edu.ucsb.cs156.courses.controllers;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import edu.ucsb.cs156.courses.ControllerTestCase;
-import edu.ucsb.cs156.courses.entities.Courses;
+import edu.ucsb.cs156.courses.entities.PSCourse;
 import edu.ucsb.cs156.courses.entities.User;
-import edu.ucsb.cs156.courses.repositories.CoursesRepository;
+import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
@@ -34,12 +34,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@WebMvcTest(controllers = CoursesController.class)
+@WebMvcTest(controllers = PSCourseController.class)
 @Import(TestConfig.class)
-public class CoursesControllerTests extends ControllerTestCase {
+public class PSCourseControllerTests extends ControllerTestCase {
 
     @MockBean
-    CoursesRepository coursesRepository;
+    PSCourseRepository coursesRepository;
 
     @MockBean
     PersonalScheduleRepository personalScheduleRepository;
@@ -110,7 +110,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        Courses course1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
+        PSCourse course1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
         when(coursesRepository.findByIdAndUser(eq(7L), eq(u))).thenReturn(Optional.of(course1));
 
         // act
@@ -144,7 +144,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findByIdAndUser(7L, u);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 7 not found", json.get("message"));
+        assertEquals("PSCourse with id 7 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN" })
@@ -154,9 +154,9 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        Courses course1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
-        Courses course2 = Courses.builder().enrollCd("08251").psId(13L).user(u).id(8L).build();
-        ArrayList<Courses> expectedCourses = new ArrayList<>();
+        PSCourse course1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
+        PSCourse course2 = PSCourse.builder().enrollCd("08251").psId(13L).user(u).id(8L).build();
+        ArrayList<PSCourse> expectedCourses = new ArrayList<>();
         expectedCourses.addAll(Arrays.asList(course1, course2));
         when(coursesRepository.findAllByPsId(13L)).thenReturn(expectedCourses);
 
@@ -179,9 +179,9 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        Courses course1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
-        Courses course2 = Courses.builder().enrollCd("08251").psId(13L).user(u).id(8L).build();
-        ArrayList<Courses> expectedCourses = new ArrayList<>();
+        PSCourse course1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u).id(7L).build();
+        PSCourse course2 = PSCourse.builder().enrollCd("08251").psId(13L).user(u).id(8L).build();
+        ArrayList<PSCourse> expectedCourses = new ArrayList<>();
         expectedCourses.addAll(Arrays.asList(course1, course2));
         when(coursesRepository.findAllByPsIdAndUser(13L, u)).thenReturn(expectedCourses);
 
@@ -205,7 +205,7 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
-        Courses otherUsersCourses = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(13L)
+        PSCourse otherUsersCourses = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(13L)
                 .build();
 
         when(coursesRepository.findByIdAndUser(eq(13L), eq(otherUser))).thenReturn(Optional.of(otherUsersCourses));
@@ -219,7 +219,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findByIdAndUser(13L, u);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 13 not found", json.get("message"));
+        assertEquals("PSCourse with id 13 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -230,7 +230,7 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
-        Courses otherUsersCourses = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(27L)
+        PSCourse otherUsersCourses = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(27L)
                 .build();
 
         when(coursesRepository.findById(eq(27L))).thenReturn(Optional.of(otherUsersCourses));
@@ -264,7 +264,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findById(29L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 29 not found", json.get("message"));
+        assertEquals("PSCourse with id 29 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -277,11 +277,11 @@ public class CoursesControllerTests extends ControllerTestCase {
         User u2 = User.builder().id(2L).build();
         User u = currentUserService.getCurrentUser().getUser();
 
-        Courses p1 = Courses.builder().enrollCd("08250").psId(13L).user(u1).id(1L).build();
-        Courses p2 = Courses.builder().enrollCd("08276").psId(13L).user(u2).id(2L).build();
-        Courses p3 = Courses.builder().enrollCd("08078").psId(13L).user(u).id(3L).build();
+        PSCourse p1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u1).id(1L).build();
+        PSCourse p2 = PSCourse.builder().enrollCd("08276").psId(13L).user(u2).id(2L).build();
+        PSCourse p3 = PSCourse.builder().enrollCd("08078").psId(13L).user(u).id(3L).build();
 
-        ArrayList<Courses> expectedCourses = new ArrayList<>();
+        ArrayList<PSCourse> expectedCourses = new ArrayList<>();
         expectedCourses.addAll(Arrays.asList(p1, p2, p3));
 
         when(coursesRepository.findAll()).thenReturn(expectedCourses);
@@ -306,10 +306,10 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        Courses p1 = Courses.builder().enrollCd("08250").psId(13L).user(thisUser).id(1L).build();
-        Courses p2 = Courses.builder().enrollCd("08276").psId(13L).user(thisUser).id(2L).build();
+        PSCourse p1 = PSCourse.builder().enrollCd("08250").psId(13L).user(thisUser).id(1L).build();
+        PSCourse p2 = PSCourse.builder().enrollCd("08276").psId(13L).user(thisUser).id(2L).build();
 
-        ArrayList<Courses> expectedCourses = new ArrayList<>();
+        ArrayList<PSCourse> expectedCourses = new ArrayList<>();
         expectedCourses.addAll(Arrays.asList(p1, p2));
         when(coursesRepository.findAllByUserId(thisUser.getId())).thenReturn(expectedCourses);
 
@@ -334,7 +334,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
 
-        Courses expectedCourses = Courses.builder().enrollCd("08268").psId(1L).user(u).id(0L).build();
+        PSCourse expectedCourses = PSCourse.builder().enrollCd("08268").psId(1L).user(u).id(0L).build();
         when(coursesRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
 
         when(ucsbCurriculumService.getSection(eq("08268"), eq("20224"))).thenReturn("API OUTPUT");
@@ -423,7 +423,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(15L).build();
+        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u).id(15L).build();
         when(coursesRepository.findByIdAndUser(eq(15L), eq(u))).thenReturn(Optional.of(ps1));
 
         // act
@@ -436,7 +436,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findByIdAndUser(15L, u);
         verify(coursesRepository, times(1)).delete(ps1);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 15 deleted", json.get("message"));
+        assertEquals("PSCourse with id 15 deleted", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -446,7 +446,7 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(98L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(15L).build();
+        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u).id(15L).build();
         when(coursesRepository.findByIdAndUser(eq(15L), eq(otherUser))).thenReturn(Optional.of(ps1));
 
         // act
@@ -458,7 +458,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // assert
         verify(coursesRepository, times(1)).findByIdAndUser(15L, u);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 15 not found", json.get("message"));
+        assertEquals("PSCourse with id 15 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -467,7 +467,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(98L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(31L).build();
+        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(31L).build();
         when(coursesRepository.findById(eq(31L))).thenReturn(Optional.of(ps1));
 
         // act
@@ -479,7 +479,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // assert
         verify(coursesRepository, times(1)).findByIdAndUser(31L, u);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 31 not found", json.get("message"));
+        assertEquals("PSCourse with id 31 not found", json.get("message"));
     }
 
 
@@ -489,7 +489,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User otherUser = User.builder().id(98L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(16L).build();
+        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(16L).build();
         when(coursesRepository.findById(eq(16L))).thenReturn(Optional.of(ps1));
 
         // act
@@ -502,7 +502,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findById(16L);
         verify(coursesRepository, times(1)).delete(ps1);
         Map<String, Object> output = responseToJson(response);
-        assertEquals("Courses with id 16 deleted", output.get("message"));
+        assertEquals("PSCourse with id 16 deleted", output.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -521,7 +521,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // assert
         verify(coursesRepository, times(1)).findById(17L);
         Map<String, Object> output = responseToJson(response);
-        assertEquals("Courses with id 17 not found", output.get("message"));
+        assertEquals("PSCourse with id 17 not found", output.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -531,12 +531,12 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(u).id(67L).build();
+        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u).id(67L).build();
         // We deliberately set the user information to another user
         // This should get ignored and overwritten with current user when todo is saved
 
-        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).user(otherUser).id(67L).build();
-        Courses correctCourses = Courses.builder().enrollCd("08276").psId(14L).user(u).id(67L).build();
+        PSCourse updatedCourses = PSCourse.builder().enrollCd("08276").psId(14L).user(otherUser).id(67L).build();
+        PSCourse correctCourses = PSCourse.builder().enrollCd("08276").psId(14L).user(u).id(67L).build();
 
         String requestBody = mapper.writeValueAsString(updatedCourses);
         String expectedReturn = mapper.writeValueAsString(correctCourses);
@@ -565,7 +565,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User u = currentUserService.getCurrentUser().getUser();
-        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).id(67L).build();
+        PSCourse updatedCourses = PSCourse.builder().enrollCd("08276").psId(14L).id(67L).build();
 
         String requestBody = mapper.writeValueAsString(updatedCourses);
 
@@ -583,7 +583,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // assert
         verify(coursesRepository, times(1)).findByIdAndUser(67L, u);
         Map<String, Object> output = responseToJson(response);
-        assertEquals("Courses with id 67 not found", output.get("message"));
+        assertEquals("PSCourse with id 67 not found", output.get("message"));
     }
 
 
@@ -594,8 +594,8 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(98L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(31L).build();
-        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).id(31L).build();
+        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(31L).build();
+        PSCourse updatedCourses = PSCourse.builder().enrollCd("08276").psId(14L).id(31L).build();
 
         when(coursesRepository.findByIdAndUser(eq(31L), eq(otherUser))).thenReturn(Optional.of(ps1));
 
@@ -614,7 +614,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findByIdAndUser(31L, u);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 31 not found", json.get("message"));
+        assertEquals("PSCourse with id 31 not found", json.get("message"));
     }
 
 
@@ -624,13 +624,13 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User otherUser = User.builder().id(255L).build();
-        Courses ps1 = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(77L).build();
+        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(77L).build();
         User yetAnotherUser = User.builder().id(512L).build();
         // We deliberately put the wrong user on the updated course
         // We expect the controller to ignore this and keep the user the same
-        Courses updatedCourses = Courses.builder().enrollCd("08276").psId(14L).user(yetAnotherUser).id(77L)
+        PSCourse updatedCourses = PSCourse.builder().enrollCd("08276").psId(14L).user(yetAnotherUser).id(77L)
                 .build();
-        Courses correctCourses = Courses.builder().enrollCd("08276").psId(14L).user(otherUser).id(77L)
+        PSCourse correctCourses = PSCourse.builder().enrollCd("08276").psId(14L).user(otherUser).id(77L)
                 .build();
 
         String requestBody = mapper.writeValueAsString(updatedCourses);
@@ -660,7 +660,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         User otherUser = User.builder().id(345L).build();
-        Courses updatedCourses = Courses.builder().enrollCd("08250").psId(13L).user(otherUser).id(77L)
+        PSCourse updatedCourses = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(77L)
                 .build();
 
         String requestBody = mapper.writeValueAsString(updatedCourses);
@@ -680,7 +680,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findById(77L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 77 not found", json.get("message"));
+        assertEquals("PSCourse with id 77 not found", json.get("message"));
     }
 
 }

@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import CourseForm from "main/components/Courses/CourseForm";
-import { coursesFixtures } from "fixtures/coursesFixtures";
+import { coursesFixtures } from "fixtures/pscourseFixtures";
 
 const mockedNavigate = jest.fn();
 

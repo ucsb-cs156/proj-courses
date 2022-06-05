@@ -1,12 +1,12 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
-import edu.ucsb.cs156.courses.entities.Courses;
+import edu.ucsb.cs156.courses.entities.PSCourse;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
-import edu.ucsb.cs156.courses.repositories.CoursesRepository;
+import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
@@ -47,7 +47,7 @@ public class PersonalSectionsController extends ApiController {
     PersonalScheduleRepository personalScheduleRepository;
 
     @Autowired
-    CoursesRepository coursesRepository;
+    PSCourseRepository coursesRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -64,8 +64,8 @@ public class PersonalSectionsController extends ApiController {
                 .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
         ArrayList<Course> sections = new ArrayList<Course>();
         ArrayList<String> jsons = new ArrayList<String>();
-        Iterable<Courses> courses = coursesRepository.findAllByPsId(psId);
-        for (Courses crs:courses) {
+        Iterable<PSCourse> courses = coursesRepository.findAllByPsId(psId);
+        for (PSCourse crs:courses) {
 
                 User u = crs.getUser();
                 String qtr = ps.getQuarter();

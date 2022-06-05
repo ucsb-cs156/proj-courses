@@ -5,10 +5,10 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
 
-import CoursesIndexPage from "main/pages/Courses/CoursesIndexPage";
+import CoursesIndexPage from "main/pages/Courses/PSCourseIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { coursesFixtures } from "fixtures/coursesFixtures";
+import { coursesFixtures } from "fixtures/pscourseFixtures";
 
 
 

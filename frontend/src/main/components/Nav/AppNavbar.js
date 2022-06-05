@@ -52,7 +52,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
             <Nav className="mr-auto">
               {
                 hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="Courses" id="appnavbar-courses-dropdown" data-testid="appnavbar-courses-dropdown" >
+                  <NavDropdown title="PSCourse" id="appnavbar-courses-dropdown" data-testid="appnavbar-courses-dropdown" >
                     <NavDropdown.Item href="/courses/list" data-testid="appnavbar-courses-list">List</NavDropdown.Item>
                     <NavDropdown.Item href="/courses/create" data-testid="appnavbar-courses-create">Create</NavDropdown.Item>
                   </NavDropdown>

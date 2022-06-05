@@ -4,12 +4,12 @@ import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
-import edu.ucsb.cs156.courses.entities.Courses;
+import edu.ucsb.cs156.courses.entities.PSCourse;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
-import edu.ucsb.cs156.courses.repositories.CoursesRepository;
+import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 
@@ -66,7 +66,7 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
     UserRepository userRepository;
 
     @MockBean
-    CoursesRepository coursesRepository;
+    PSCourseRepository coursesRepository;
 
     @MockBean
     private UCSBCurriculumService ucsbCurriculumService;
@@ -107,9 +107,9 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
         User u = currentUserService.getCurrentUser().getUser();
         PersonalSchedule ps = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(u).id(13L)
                 .build();
-        Courses course1 = Courses.builder().id(1L).user(u).enrollCd("59501").psId(13L).build();
+        PSCourse course1 = PSCourse.builder().id(1L).user(u).enrollCd("59501").psId(13L).build();
         Course course = objectMapper.readValue(PersonalSectionsFixtures.ONE_COURSE, Course.class);
-        ArrayList<Courses> crs = new ArrayList<Courses>();
+        ArrayList<PSCourse> crs = new ArrayList<PSCourse>();
         crs.add(course1);
 
         when(personalscheduleRepository.findByIdAndUser(eq(13L), eq(u))).thenReturn(Optional.of(ps));

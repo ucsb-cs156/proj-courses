@@ -1,10 +1,10 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import edu.ucsb.cs156.courses.entities.Courses;
+import edu.ucsb.cs156.courses.entities.PSCourse;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
-import edu.ucsb.cs156.courses.repositories.CoursesRepository;
+import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -34,14 +34,14 @@ import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.errors.BadEnrollCdException;
 
-@Api(description = "Courses")
+@Api(description = "PSCourse")
 @RequestMapping("/api/courses")
 @RestController
 @Slf4j
-public class CoursesController extends ApiController {
+public class PSCourseController extends ApiController {
 
     @Autowired
-    CoursesRepository coursesRepository;
+    PSCourseRepository coursesRepository;
     @Autowired
     PersonalScheduleRepository personalScheduleRepository;
     @Autowired
@@ -50,46 +50,46 @@ public class CoursesController extends ApiController {
     @ApiOperation(value = "List all courses (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/all")
-    public Iterable<Courses> allUsersCourses() {
-        Iterable<Courses> courses = coursesRepository.findAll();
+    public Iterable<PSCourse> allUsersCourses() {
+        Iterable<PSCourse> courses = coursesRepository.findAll();
         return courses;
     }
 
     @ApiOperation(value = "List all courses (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user/all")
-    public Iterable<Courses> thisUsersCourses() {
+    public Iterable<PSCourse> thisUsersCourses() {
         CurrentUser currentUser = getCurrentUser();
-        Iterable<Courses> courses = coursesRepository.findAllByUserId(currentUser.getUser().getId());
+        Iterable<PSCourse> courses = coursesRepository.findAllByUserId(currentUser.getUser().getId());
         return courses;
     }
 
     @ApiOperation(value = "List all courses for a specified psId (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/psid/all")
-    public Iterable<Courses> allCoursesForPsId(
+    public Iterable<PSCourse> allCoursesForPsId(
             @ApiParam("psId") @RequestParam Long psId) {
-        Iterable<Courses> courses = coursesRepository.findAllByPsId(psId);
+        Iterable<PSCourse> courses = coursesRepository.findAllByPsId(psId);
         return courses;
     }
 
     @ApiOperation(value = "List all courses for a specified psId (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user/psid/all")
-    public Iterable<Courses> thisUsersCoursesForPsId(
+    public Iterable<PSCourse> thisUsersCoursesForPsId(
             @ApiParam("psId") @RequestParam Long psId) {
         User currentUser = getCurrentUser().getUser();
-        Iterable<Courses> courses = coursesRepository.findAllByPsIdAndUser(psId, currentUser);
+        Iterable<PSCourse> courses = coursesRepository.findAllByPsIdAndUser(psId, currentUser);
         return courses;
     }
 
     @ApiOperation(value = "Get a single course (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
-    public Courses getCourseById_admin(
+    public PSCourse getCourseById_admin(
             @ApiParam("id") @RequestParam Long id) {
-        Courses courses = coursesRepository.findById(id)
-          .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+        PSCourse courses = coursesRepository.findById(id)
+          .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
         return courses;
     }
@@ -97,11 +97,11 @@ public class CoursesController extends ApiController {
     @ApiOperation(value = "Get a single course (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user")
-    public Courses getCourseById(
+    public PSCourse getCourseById(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
-        Courses courses = coursesRepository.findByIdAndUser(id, currentUser)
-            .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+        PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
         return courses;
     }
@@ -110,7 +110,7 @@ public class CoursesController extends ApiController {
     @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
-    public Courses postCourses(
+    public PSCourse postCourses(
             @ApiParam("enrollCd") @RequestParam String enrollCd,
             @ApiParam("psId") @RequestParam Long psId) {
         CurrentUser currentUser = getCurrentUser();
@@ -124,11 +124,11 @@ public class CoursesController extends ApiController {
             throw new BadEnrollCdException(enrollCd);
         }
 
-        Courses courses = new Courses();
+        PSCourse courses = new PSCourse();
         courses.setUser(currentUser.getUser());
         courses.setEnrollCd(enrollCd);
         courses.setPsId(psId);
-        Courses savedCourses = coursesRepository.save(courses);
+        PSCourse savedCourses = coursesRepository.save(courses);
         return savedCourses;
     }
 
@@ -137,12 +137,12 @@ public class CoursesController extends ApiController {
     @DeleteMapping("/admin")
     public Object deleteCourses_Admin(
             @ApiParam("id") @RequestParam Long id) {
-              Courses courses = coursesRepository.findById(id)
-          .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+              PSCourse courses = coursesRepository.findById(id)
+          .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
           coursesRepository.delete(courses);
 
-        return genericMessage("Courses with id %s deleted".formatted(id));
+        return genericMessage("PSCourse with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Delete a course (user)")
@@ -151,20 +151,20 @@ public class CoursesController extends ApiController {
     public Object deleteCourses(
             @ApiParam("id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
-        Courses courses = coursesRepository.findByIdAndUser(id, currentUser)
-          .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+        PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)
+          .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
         coursesRepository.delete(courses);
-        return genericMessage("Courses with id %s deleted".formatted(id));
+        return genericMessage("PSCourse with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Update a single Course (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/admin")
-    public Courses putCourseById_admin(
+    public PSCourse putCourseById_admin(
             @ApiParam("id") @RequestParam Long id,
-            @RequestBody @Valid Courses incomingCourses) {
-              Courses courses = coursesRepository.findById(id)
-          .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+            @RequestBody @Valid PSCourse incomingCourses) {
+              PSCourse courses = coursesRepository.findById(id)
+          .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
           courses.setEnrollCd(incomingCourses.getEnrollCd());
           courses.setPsId(incomingCourses.getPsId());
@@ -177,12 +177,12 @@ public class CoursesController extends ApiController {
     @ApiOperation(value = "Update a single course (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/user")
-    public Courses putCoursesById(
+    public PSCourse putCoursesById(
             @ApiParam("id") @RequestParam Long id,
-            @RequestBody @Valid Courses incomingCourses) {
+            @RequestBody @Valid PSCourse incomingCourses) {
         User currentUser = getCurrentUser().getUser();
-        Courses courses = coursesRepository.findByIdAndUser(id, currentUser)
-          .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+        PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)
+          .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
         courses.setEnrollCd(incomingCourses.getEnrollCd());
         courses.setPsId(incomingCourses.getPsId());

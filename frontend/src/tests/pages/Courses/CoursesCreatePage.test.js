@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import CoursesCreatePage from "main/pages/Courses/CoursesCreatePage";
+import CoursesCreatePage from "main/pages/Courses/PSCourseCreatePage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
