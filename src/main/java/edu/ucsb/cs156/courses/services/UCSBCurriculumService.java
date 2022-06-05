@@ -31,6 +31,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.io.*;
+
 /**
  * Service object that wraps the UCSB Academic Curriculum API
  */
@@ -184,4 +186,37 @@ public class UCSBCurriculumService {
         logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
         return retVal;
     }
+     
+
+    public String getJSONbyQtrEnrollCd(String quarter, String enrollCd) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("ucsb-api-version", "1.0");
+        headers.set("ucsb-api-key", this.apiKey);
+
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+
+        String url = "https://api.ucsb.edu/academics/curriculums/v3/classsection/" + quarter + "/" + enrollCd;
+
+        logger.info("url=" + url);
+
+        String retVal = "";
+        MediaType contentType = null;
+        HttpStatus statusCode = null;
+        try {
+            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            contentType = re.getHeaders().getContentType();
+            statusCode = re.getStatusCode();
+            retVal = re.getBody();
+        } catch (HttpClientErrorException e) {
+            retVal = "{\"error\": \"401: Unauthorized\"}";
+        }
+        logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+        return retVal;
+
+    }
+
 }
