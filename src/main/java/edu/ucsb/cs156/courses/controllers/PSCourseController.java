@@ -34,7 +34,7 @@ import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.errors.BadEnrollCdException;
 
-@Api(description = "Courses")
+@Api(description = "PSCourse")
 @RequestMapping("/api/courses")
 @RestController
 @Slf4j
@@ -142,7 +142,7 @@ public class PSCourseController extends ApiController {
 
           coursesRepository.delete(courses);
 
-        return genericMessage("Courses with id %s deleted".formatted(id));
+        return genericMessage("PSCourse with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Delete a course (user)")
@@ -154,7 +154,7 @@ public class PSCourseController extends ApiController {
         PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)
           .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
         coursesRepository.delete(courses);
-        return genericMessage("Courses with id %s deleted".formatted(id));
+        return genericMessage("PSCourse with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Update a single Course (admin)")

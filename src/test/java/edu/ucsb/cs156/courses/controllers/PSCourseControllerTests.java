@@ -144,7 +144,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findByIdAndUser(7L, u);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 7 not found", json.get("message"));
+        assertEquals("PSCourse with id 7 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN" })
@@ -219,7 +219,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findByIdAndUser(13L, u);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 13 not found", json.get("message"));
+        assertEquals("PSCourse with id 13 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -264,7 +264,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findById(29L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 29 not found", json.get("message"));
+        assertEquals("PSCourse with id 29 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -436,7 +436,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findByIdAndUser(15L, u);
         verify(coursesRepository, times(1)).delete(ps1);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 15 deleted", json.get("message"));
+        assertEquals("PSCourse with id 15 deleted", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -458,7 +458,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         // assert
         verify(coursesRepository, times(1)).findByIdAndUser(15L, u);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 15 not found", json.get("message"));
+        assertEquals("PSCourse with id 15 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -479,7 +479,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         // assert
         verify(coursesRepository, times(1)).findByIdAndUser(31L, u);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 31 not found", json.get("message"));
+        assertEquals("PSCourse with id 31 not found", json.get("message"));
     }
 
 
@@ -502,7 +502,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findById(16L);
         verify(coursesRepository, times(1)).delete(ps1);
         Map<String, Object> output = responseToJson(response);
-        assertEquals("Courses with id 16 deleted", output.get("message"));
+        assertEquals("PSCourse with id 16 deleted", output.get("message"));
     }
 
     @WithMockUser(roles = { "ADMIN", "USER" })
@@ -521,7 +521,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         // assert
         verify(coursesRepository, times(1)).findById(17L);
         Map<String, Object> output = responseToJson(response);
-        assertEquals("Courses with id 17 not found", output.get("message"));
+        assertEquals("PSCourse with id 17 not found", output.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
@@ -583,7 +583,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         // assert
         verify(coursesRepository, times(1)).findByIdAndUser(67L, u);
         Map<String, Object> output = responseToJson(response);
-        assertEquals("Courses with id 67 not found", output.get("message"));
+        assertEquals("PSCourse with id 67 not found", output.get("message"));
     }
 
 
@@ -614,7 +614,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findByIdAndUser(31L, u);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 31 not found", json.get("message"));
+        assertEquals("PSCourse with id 31 not found", json.get("message"));
     }
 
 
@@ -680,7 +680,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).findById(77L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Courses with id 77 not found", json.get("message"));
+        assertEquals("PSCourse with id 77 not found", json.get("message"));
     }
 
 }
