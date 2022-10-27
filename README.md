@@ -78,6 +78,10 @@ If you get the following message on Heroku, it probably means that you failed to
 Failed to connect to the frontend server... On Heroku, be sure that PRODUCTION is defined.  On localhost, open a second terminal window, cd into frontend and type: npm install; npm start";
 ```
 
+Additional environment variables that are needed may be found in `.env.SAMPLE` 
+
+In particular, you will need a value for the `UCSB_API_KEY`.  This is documented in `docs/ucsb_api_key.md`
+
 # Accessing swagger
 
 To access the swagger API endpoints, use:
