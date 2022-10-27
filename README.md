@@ -6,13 +6,12 @@ The project provides a web application where users can search for UCSB courses i
 
 Users with a Google Account can also store past, current or future schedules of courses for particular quarters. 
 
-# Links
+# Deployments
 
-* Deployed Heroku app link: 
- <https://f22-proj-courses.herokuapp.com/>
- 
-* Dashboard Heroku link: 
- <https://dashboard.heroku.com/apps/f22-proj-courses>
+| Type | Link       | Heroku Dashboard |
+|------|------------|------------------|
+| prod | <https://f22-proj-courses.herokuapp.com/> | <https://dashboard.heroku.com/apps/f22-proj-courses> |
+| qa | <https://f22-proj-courses-qa.herokuapp.com/> | <https://dashboard.heroku.com/apps/f22-proj-courses-qa> |
 
 
 Storybook is here:
