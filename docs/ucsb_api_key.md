@@ -23,6 +23,13 @@ If you want to try to obtain one on your own, here are the steps:
 8. On this page, click where is says `Show Key`, and copy the value of the `Consumer Key` (we do not need the `Consumer Secret`).
 9. The value of `Consumer Key` is what you will use for `UCSB_API_KEY` in your `.env` file, and/or for the value of the Environment variable `UCSB_API_KEY` on your cloud provider.
 
+# Loading Subjects
+
+After setting the `UCSB_API_KEY`, you'll need to log in as an Admin and do the `Load Subjects` function at least once.  This loads all of the subjects
+the UCSB API into the database.
+
+<img width="457" alt="image" src="https://user-images.githubusercontent.com/1119017/198414341-a4230ce6-a05c-4149-b91a-4aca76d2339e.png">
+
 
 
 
