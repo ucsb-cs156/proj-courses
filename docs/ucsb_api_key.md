@@ -23,14 +23,28 @@ If you want to try to obtain one on your own, here are the steps:
 8. On this page, click where is says `Show Key`, and copy the value of the `Consumer Key` (we do not need the `Consumer Secret`).
 9. The value of `Consumer Key` is what you will use for `UCSB_API_KEY` in your `.env` file, and/or for the value of the Environment variable `UCSB_API_KEY` on your cloud provider.
 
-# Loading Subjects
+# Follow Up Steps
+
+## Loading Subjects 
 
 After setting the `UCSB_API_KEY`, you'll need to log in as an Admin and do the `Load Subjects` function at least once.  This loads all of the subjects
 the UCSB API into the database.
 
 <img width="457" alt="image" src="https://user-images.githubusercontent.com/1119017/198414341-a4230ce6-a05c-4149-b91a-4aca76d2339e.png">
 
+## Start and End Quarters
 
+You may also want to override the default values for `START_QTR` and `END_QTR`.   
+
+The default values are defined in `/src/main/resources/application.properties`, for example:
+
+```
+app.startQtrYYYYQ=${START_QTR:${env.START_QTR:20221}}
+app.endQtrYYYYQ=${END_QTR:${env.END_QTR:20222}}
+```
+
+* `20221` represents Winter 2022
+* `20222` represents Spring 2022.
 
 
    
