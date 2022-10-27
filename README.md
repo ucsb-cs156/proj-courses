@@ -8,10 +8,12 @@ Users with a Google Account can also store past, current or future schedules of 
 
 # Links
 
-Deployed Heroku app link: 
+* Deployed Heroku app link: 
  <https://f22-proj-courses.herokuapp.com/>
- Dashboard Heroku link: 
+ 
+* Dashboard Heroku link: 
  <https://dashboard.heroku.com/apps/f22-proj-courses>
+
 
 Storybook is here:
 * Production: <https://ucsb-cs156.github.io/f22-proj-courses-docs/>
