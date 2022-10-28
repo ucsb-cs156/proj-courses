@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.Builder;
 import lombok.AccessLevel;
 
-
+/**
+ * This class represents the public information about the application.
+ */
+ 
 @Data
 @Builder
 @AllArgsConstructor
