@@ -10,7 +10,14 @@ import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import { useBackendMutation } from "main/utils/useBackend";
 
 const BasicCourseSearchForm = ({ fetchJSON }) => {
-  const quarters = quarterRange("20084", "20231");
+
+  const { data: systemInfo } = useSystemInfo();
+
+  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+
+
+  const quarters = quarterRange(startQtr, endQtr);
 
   // Stryker disable all : not sure how to test/mock local storage
   const localSubject = localStorage.getItem("BasicSearch.Subject");
@@ -26,6 +33,8 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
   const onSuccess = (listSubjects) => {
     setSubjects(listSubjects);
   };
+
+
 
   const getMutation = useBackendMutation(
     getObjectToAxiosParams,
