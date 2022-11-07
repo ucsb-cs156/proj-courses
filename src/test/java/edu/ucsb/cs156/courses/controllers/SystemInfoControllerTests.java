@@ -27,15 +27,51 @@ public class SystemInfoControllerTests extends ControllerTestCase {
 
   @Test
   public void systemInfo__logged_out() throws Exception {
-    mockMvc.perform(get("/api/systemInfo"))
-        .andExpect(status().is(403));
+    // arrange
+
+    SystemInfo systemInfo = SystemInfo
+        .builder()
+        .showSwaggerUILink(true)
+        .springH2ConsoleEnabled(true)
+        .startQtrYYYYQ("20221")
+        .endQtrYYYYQ("20222")
+        .build();
+    when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
+    String expectedJson = mapper.writeValueAsString(systemInfo);
+
+    // act
+    MvcResult response = mockMvc.perform(get("/api/systemInfo"))
+        .andExpect(status().isOk()).andReturn();
+
+    // assert
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
   }
+
+  
 
   @WithMockUser(roles = { "USER" })
   @Test
   public void systemInfo__user_logged_in() throws Exception {
-    mockMvc.perform(get("/api/systemInfo"))
-        .andExpect(status().is(403));
+    // arrange
+
+    SystemInfo systemInfo = SystemInfo
+        .builder()
+        .showSwaggerUILink(true)
+        .springH2ConsoleEnabled(true)
+        .startQtrYYYYQ("20221")
+        .endQtrYYYYQ("20222")
+        .build();
+    when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
+    String expectedJson = mapper.writeValueAsString(systemInfo);
+
+    // act
+    MvcResult response = mockMvc.perform(get("/api/systemInfo"))
+        .andExpect(status().isOk()).andReturn();
+
+    // assert
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
   }
 
   @WithMockUser(roles = { "ADMIN", "USER" })
