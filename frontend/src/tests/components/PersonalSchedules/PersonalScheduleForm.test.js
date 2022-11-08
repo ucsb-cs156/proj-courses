@@ -21,14 +21,14 @@ describe("PersonalScheduleForm tests", () => {
 
     const axiosMock = new AxiosMockAdapter(axios);
     beforeEach(() => {
-      axiosMock
-        .onGet("/api/systemInfo")
-        .reply(200, {
-            "springH2ConsoleEnabled": false,
-            "showSwaggerUILink": false,
-            "startQtrYYYYQ": "20154",
-            "endQtrYYYYQ": "20162"
-        });
+        axiosMock
+            .onGet("/api/systemInfo")
+            .reply(200, {
+                "springH2ConsoleEnabled": false,
+                "showSwaggerUILink": false,
+                "startQtrYYYYQ": "20154",
+                "endQtrYYYYQ": "20162"
+            });
     });
 
     const queryClient = new QueryClient();
@@ -125,4 +125,45 @@ describe("PersonalScheduleForm tests", () => {
 
         await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(-1));
     });
+
+    test("Fallback hardcoded values for startQtr and endQtr work when systemInfo doesn't provide any", async () => {
+        const mockSubmitAction = jest.fn();
+
+        axiosMock
+            .onGet("/api/systemInfo")
+            .reply(200, {
+                "springH2ConsoleEnabled": false,
+                "showSwaggerUILink": false,
+                "startQtrYYYYQ": null, // use fallback value
+                "endQtrYYYYQ": null  // use fallback value
+            });
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <PersonalScheduleForm submitAction={mockSubmitAction} />
+                </Router>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByTestId("PersonalScheduleForm-name")).toBeInTheDocument();
+
+        const name = screen.getByTestId("PersonalScheduleForm-name");
+        const description = screen.getByTestId("PersonalScheduleForm-description");
+        const quarter = document.querySelector("#PersonalScheduleForm-quarter");
+        const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
+
+        fireEvent.change(name, { target: { value: 'test' } });
+        fireEvent.change(description, { target: { value: 'test' } });
+        fireEvent.change(quarter, { target: { value: '20124' } });
+        fireEvent.click(submitButton);
+
+        await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
+
+        expect(screen.queryByText(/Name is required./)).not.toBeInTheDocument();
+        expect(screen.queryByText(/Description is required./)).not.toBeInTheDocument();
+        expect(quarter).toHaveValue("20211");
+    });
+
+
 });
