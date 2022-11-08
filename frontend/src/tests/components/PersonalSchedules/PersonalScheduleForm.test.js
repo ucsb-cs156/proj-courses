@@ -4,6 +4,11 @@ import { BrowserRouter as Router } from "react-router-dom";
 import PersonalScheduleForm from "main/components/PersonalSchedules/PersonalScheduleForm";
 import { personalSchedulesFixtures } from "fixtures/personalSchedulesFixtures";
 
+import { QueryClient, QueryClientProvider } from "react-query";
+
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
+
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -12,11 +17,30 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe("PersonalScheduleForm tests", () => {
+
+
+    const axiosMock = new AxiosMockAdapter(axios);
+    beforeEach(() => {
+      axiosMock
+        .onGet("/api/systemInfo")
+        .reply(200, {
+            "springH2ConsoleEnabled": false,
+            "showSwaggerUILink": false,
+            "startQtrYYYYQ": "20154",
+            "endQtrYYYYQ": "20162"
+        });
+    });
+
+    const queryClient = new QueryClient();
+
+
     test("renders correctly", async () => {
         render(
-            <Router>
-                <PersonalScheduleForm />
-            </Router>
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <PersonalScheduleForm />
+                </Router>
+            </QueryClientProvider>
         );
 
         expect(await screen.findByText(/Name/)).toBeInTheDocument();
@@ -27,9 +51,11 @@ describe("PersonalScheduleForm tests", () => {
 
     test("renders correctly when passing in a PersonalSchedule", async () => {
         render(
-            <Router>
-                <PersonalScheduleForm initialPersonalSchedule={personalSchedulesFixtures.onePersonalSchedule} />
-            </Router>
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <PersonalScheduleForm initialPersonalSchedule={personalSchedulesFixtures.onePersonalSchedule} />
+                </Router>
+            </QueryClientProvider>
         );
 
         expect(await screen.findByTestId(/PersonalScheduleForm-id/)).toBeInTheDocument();
@@ -39,9 +65,11 @@ describe("PersonalScheduleForm tests", () => {
 
     test("Correct Error messages on missing input", async () => {
         render(
-            <Router  >
-                <PersonalScheduleForm />
-            </Router>
+            <QueryClientProvider client={queryClient}>
+                <Router  >
+                    <PersonalScheduleForm />
+                </Router>
+            </QueryClientProvider>
         );
         expect(await screen.findByTestId("PersonalScheduleForm-submit")).toBeInTheDocument();
         const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
@@ -56,9 +84,11 @@ describe("PersonalScheduleForm tests", () => {
         const mockSubmitAction = jest.fn();
 
         render(
-            <Router>
-                <PersonalScheduleForm submitAction={mockSubmitAction} />
-            </Router>
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <PersonalScheduleForm submitAction={mockSubmitAction} />
+                </Router>
+            </QueryClientProvider>
         );
 
         expect(await screen.findByTestId("PersonalScheduleForm-name")).toBeInTheDocument();
@@ -77,14 +107,16 @@ describe("PersonalScheduleForm tests", () => {
 
         expect(screen.queryByText(/Name is required./)).not.toBeInTheDocument();
         expect(screen.queryByText(/Description is required./)).not.toBeInTheDocument();
-        expect(quarter).toHaveValue("20124");
+        expect(quarter).toHaveValue("20154");
     });
 
     test("that navigate(-1) is called when Cancel is clicked", async () => {
         render(
-            <Router>
-                <PersonalScheduleForm />
-            </Router>
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <PersonalScheduleForm />
+                </Router>
+            </QueryClientProvider>
         );
         expect(await screen.findByTestId("PersonalScheduleForm-cancel")).toBeInTheDocument();
         const cancelButton = screen.getByTestId("PersonalScheduleForm-cancel");
