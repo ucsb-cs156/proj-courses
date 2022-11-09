@@ -175,7 +175,7 @@ describe("BasicCourseSearchForm tests", () => {
   });
 
 
-  test("renders without crashing when fallback values are used", () => {
+  test("renders without crashing when fallback values are used", async () => {
 
     axiosMock
       .onGet("/api/systemInfo")
@@ -193,6 +193,11 @@ describe("BasicCourseSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>
     );
+
+    // Make sure the first and last options 
+    expect(await screen.findByTestId(/BasicSearch.Quarter-option-0/)).toHaveValue("20211")
+    expect(await screen.findByTestId(/BasicSearch.Quarter-option-3/)).toHaveValue("20214")
+
   });
 
 });

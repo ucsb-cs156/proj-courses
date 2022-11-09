@@ -12,8 +12,10 @@ import { useSystemInfo } from "main/utils/systemInfo";
 function PersonalScheduleForm({ initialPersonalSchedule, submitAction, buttonLabel = "Create" }) {
 
     const { data: systemInfo } = useSystemInfo();
+    // Stryker disable OptionalChaining
     const startQtr = systemInfo?.startQtrYYYYQ || "20211";
     const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+    // Stryker enable OptionalChaining
     const quarters = quarterRange(startQtr, endQtr);
 
     // Stryker disable all
