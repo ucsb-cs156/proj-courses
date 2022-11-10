@@ -66,7 +66,7 @@ describe("BasicCourseSearchForm tests", () => {
 
   test("when I select a subject, the state for subject changes", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -173,4 +173,31 @@ describe("BasicCourseSearchForm tests", () => {
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
   });
+
+
+  test("renders without crashing when fallback values are used", async () => {
+
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, {
+        "springH2ConsoleEnabled": false,
+        "showSwaggerUILink": false,
+        "startQtrYYYYQ": null, // use fallback value
+        "endQtrYYYYQ": null  // use fallback value
+      });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <BasicCourseSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    // Make sure the first and last options 
+    expect(await screen.findByTestId(/BasicSearch.Quarter-option-0/)).toHaveValue("20211")
+    expect(await screen.findByTestId(/BasicSearch.Quarter-option-3/)).toHaveValue("20214")
+
+  });
+
 });

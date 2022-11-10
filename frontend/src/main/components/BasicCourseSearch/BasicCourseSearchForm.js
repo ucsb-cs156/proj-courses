@@ -4,13 +4,22 @@ import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { allTheLevels } from "fixtures/levelsFixtures";
 import { quarterRange } from "main/utils/quarterUtilities";
 
+import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import { useBackendMutation } from "main/utils/useBackend";
 
 const BasicCourseSearchForm = ({ fetchJSON }) => {
-  const quarters = quarterRange("20084", "20231");
+
+  const { data: systemInfo } = useSystemInfo();
+
+  // Stryker disable OptionalChaining
+  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+  // Stryker enable OptionalChaining
+
+  const quarters = quarterRange(startQtr, endQtr);
 
   // Stryker disable all : not sure how to test/mock local storage
   const localSubject = localStorage.getItem("BasicSearch.Subject");
@@ -26,6 +35,8 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
   const onSuccess = (listSubjects) => {
     setSubjects(listSubjects);
   };
+
+
 
   const getMutation = useBackendMutation(
     getObjectToAxiosParams,

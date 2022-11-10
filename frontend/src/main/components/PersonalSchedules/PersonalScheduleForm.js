@@ -5,9 +5,18 @@ import { useNavigate } from 'react-router-dom'
 import SingleQuarterDropdown from '../Quarters/SingleQuarterDropdown';
 import { quarterRange } from 'main/utils/quarterUtilities';
 
+import { useSystemInfo } from "main/utils/systemInfo";
+
 
 
 function PersonalScheduleForm({ initialPersonalSchedule, submitAction, buttonLabel = "Create" }) {
+
+    const { data: systemInfo } = useSystemInfo();
+    // Stryker disable OptionalChaining
+    const startQtr = systemInfo?.startQtrYYYYQ || "20211";
+    const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+    // Stryker enable OptionalChaining
+    const quarters = quarterRange(startQtr, endQtr);
 
     // Stryker disable all
     const {
@@ -21,7 +30,7 @@ function PersonalScheduleForm({ initialPersonalSchedule, submitAction, buttonLab
 
     const navigate = useNavigate();
     const [quarter, setQuarter] = useState({
-        quarters: quarterRange("20081", "20231")
+        quarters: quarters
     }.quarters[0]);
 
     return (
@@ -80,7 +89,7 @@ function PersonalScheduleForm({ initialPersonalSchedule, submitAction, buttonLab
                     setQuarter={setQuarter} 
                     controlId={"PersonalScheduleForm-quarter"}
                     label={"Quarter"}
-                    quarters={quarterRange("20081", "20231") }/>
+                    quarters={quarters}/>
             </Form.Group>
 
 
