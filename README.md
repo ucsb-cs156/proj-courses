@@ -14,7 +14,8 @@ Users with a Google Account can also store past, current or future schedules of 
 | qa | <https://f22-proj-courses-qa.herokuapp.com/> | <https://dashboard.heroku.com/apps/f22-proj-courses-qa> |
 
 
-Storybook is here:
+# Storybook
+
 * Production: <https://ucsb-cs156.github.io/f22-proj-courses-docs/>
 * QA:  <https://ucsb-cs156.github.io/f22-proj-courses-docs-qa/> 
 
@@ -31,7 +32,6 @@ Otherwise, when you try to login for the first time, you
 will likely see an error such as:
 
 <img src="https://user-images.githubusercontent.com/1119017/149858436-c9baa238-a4f7-4c52-b995-0ed8bee97487.png" alt="Authorization Error; Error 401: invalid_client; The OAuth client was not found." width="400"/>
-
 
 
 # Getting Started on localhost
