@@ -18,7 +18,7 @@ jobs:
           REPOSITORY=${OWNER_PLUS_REPOSITORY/$OWNER\//}
           HOMEPAGE="https://${OWNER}.github.io/${REPOSITORY}${SUFFIX}"
           NEW_REPO=${OWNER_PLUS_REPOSITORY}${SUFFIX}      
-          echo "Trying to create ${NEW_REPO} if it doesn't already exist"
+          echo "Trying to create https://github.com/${NEW_REPO} if it doesn't already exist"
           gh repo create ${NEW_REPO} --public --description "${DESC}" --template ${TEMPLATE}
         env:
           GITHUB_TOKEN: ${{ secrets.DOCS_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
           REPOSITORY=${OWNER_PLUS_REPOSITORY/$OWNER\//}
           HOMEPAGE="https://${OWNER}.github.io/${REPOSITORY}${SUFFIX}"
           NEW_REPO=${OWNER_PLUS_REPOSITORY}${SUFFIX}      
-          echo "Trying to create ${NEW_REPO} if it doesn't already exist"
+          echo "Trying to create https://github.com/${NEW_REPO} if it doesn't already exist"
           gh repo create ${NEW_REPO} --public --description "${DESC}" --template ${TEMPLATE}
         env:
           GITHUB_TOKEN: ${{ secrets.DOCS_TOKEN }}
@@ -66,4 +66,3 @@ jobs:
           gh repo edit ${NEW_REPO} --homepage ${HOMEPAGE}
         env:
           GITHUB_TOKEN: ${{ secrets.DOCS_TOKEN }}
-   
