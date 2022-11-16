@@ -102,6 +102,13 @@
             <version>2.0.1.Final</version>
         </dependency>
 
+          <!-- To help with testing async jobs; see http://www.awaitility.org/ https://stackoverflow.com/a/46227996 -->
+          <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>4.2.0</version>
+          </dependency>
+
     </dependencies>
 
     <build>
