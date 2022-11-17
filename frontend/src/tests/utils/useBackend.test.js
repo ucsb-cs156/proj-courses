@@ -14,7 +14,7 @@ jest.mock('react-toastify', () => {
     return {
         __esModule: true,
         ...originalModule,
-        toast: (x) => mockToast(x)
+        toast: (...params) => mockToast(...params),
     };
 });
 
@@ -55,9 +55,8 @@ describe("utils/useBackend tests", () => {
             ["initialData"]
         ), { wrapper });
 
-        await waitFor(() => result.current.isError);
-
-        expect(result.current.data).toEqual(["initialData"]);
+        
+        await waitFor(()=>expect(result.current.data).toEqual(["initialData"]) ); 
         await waitFor(() => expect(console.error).toHaveBeenCalled());
         const errorMessage = console.error.mock.calls[0][0];
         expect(errorMessage).toMatch("Error communicating with backend via GET on /api/admin/users");

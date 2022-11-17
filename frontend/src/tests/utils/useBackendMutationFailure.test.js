@@ -15,7 +15,7 @@ jest.mock('react-toastify', () => {
     return {
         __esModule: true,
         ...originalModule,
-        toast: (x) => mockToast(x)
+        toast: (...params) => mockToast(...params)
     };
 });
 
@@ -82,15 +82,15 @@ describe("utils/useBackend tests", () => {
             });
 
             await waitFor(() => expect(mockToast).toHaveBeenCalled());
-            expect(mockToast).toHaveBeenCalledTimes(2);
-            expect(mockToast).toHaveBeenCalledWith("Axios Error: Error: Request failed with status code 404");
-            expect(mockToast).toHaveBeenCalledWith("Error: Request failed with status code 404");
+            expect(mockToast).toHaveBeenCalledTimes(1);
+            expect(mockToast).toHaveBeenCalledWith("useBackendMutation: Error communicating with backend via post on /api/ucsbdates/post",{type: "error"});
 
             expect(console.error).toHaveBeenCalledTimes(3);
-            const errorMessage0 = console.error.mock.calls[0][0];
-            expect(errorMessage0).toMatch(/Axios Error:/);
-            const errorMessage1 = console.error.mock.calls[2][0];
-            expect(errorMessage1).toBe("onError from mutation.mutate called!");
+
+            expect(console.error.mock.calls[1][0]).toEqual("useBackendMutation: Error communicating with backend via post on /api/ucsbdates/post");
+            expect(console.error.mock.calls[2][0]).toEqual("onError from mutation.mutate called!");
+            expect(console.error.mock.calls[2][1]).toEqual("Error: Request failed with status code 404");
+
             restoreConsole();
         });
     });
