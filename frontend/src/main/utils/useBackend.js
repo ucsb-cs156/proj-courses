@@ -37,11 +37,11 @@ export function useBackend(queryKey, axiosParameters, initialData, rest) {
                 const errorMessage = `useBackend: Error communicating with backend via ${axiosParameters.method} on ${axiosParameters.url}: ${e}`;
                 toast(errorMessage, { type: "error" });
                 console.error(errorMessage);
+                throw e;
             }
-            throw e;
         },
         onError: (e) => {
-            const errorMessage = `Error communicating with backend via ${axiosParameters.method} on ${axiosParameters.url}`;
+            const errorMessage = `Error communicating with backend via ${axiosParameters.method} on ${axiosParameters.url}: ${e}`;
             toast(errorMessage, { type: "error" });
             console.error(errorMessage);
         },
