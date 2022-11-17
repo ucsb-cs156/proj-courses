@@ -7,6 +7,7 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(value = UCSBCurriculumController.class)
 @Import(SecurityConfig.class)
+@AutoConfigureDataJpa
 public class UCSBCurriculumControllerTests {
     private final Logger logger = LoggerFactory.getLogger(UCSBCurriculumControllerTests.class);
     private ObjectMapper mapper = new ObjectMapper();
