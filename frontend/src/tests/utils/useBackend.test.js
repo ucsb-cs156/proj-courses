@@ -62,5 +62,14 @@ describe("utils/useBackend tests", () => {
         expect(errorMessage).toMatch("Error communicating with backend via GET on /api/admin/users");
         restoreConsole();
 
+        const messageA = "useBackend: Error communicating with backend via GET on /api/admin/users: Error: Request failed with status code 404"
+        const messageB = "Error communicating with backend via GET on /api/admin/users: Error: Request failed with status code 404"
+        
+
+        await waitFor(() => expect(mockToast).toHaveBeenCalled());
+        expect(mockToast).toHaveBeenCalledTimes(2);
+        expect(mockToast).toHaveBeenCalledWith(messageA,{type: "error"});
+        expect(mockToast).toHaveBeenCalledWith(messageB,{type: "error"});
+
     });
 });
