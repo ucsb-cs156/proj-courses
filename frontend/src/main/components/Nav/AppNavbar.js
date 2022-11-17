@@ -17,7 +17,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
         <Container >
         <img data-testid="AppNavbarImage" src={headerImg} alt="" style={{width: 80, height: 80, marginRight: 10}} />
           <Navbar.Brand as={Link} to="/">
-            Example
+            UCSB Courses Search
           </Navbar.Brand>
 
           <Navbar.Toggle />
