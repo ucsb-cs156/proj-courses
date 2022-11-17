@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -32,6 +33,7 @@ import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
 
 @RestClientTest(UCSBCurriculumService.class)
+@AutoConfigureDataJpa
 public class UCSBCurriculumServiceTests {
 
     @Value("${app.ucsb.api.consumer_key}")

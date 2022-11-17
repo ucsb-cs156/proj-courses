@@ -6,6 +6,7 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.SystemInfoService;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = SystemInfoController.class)
+@AutoConfigureDataJpa
 public class SystemInfoControllerTests extends ControllerTestCase {
 
   @MockBean

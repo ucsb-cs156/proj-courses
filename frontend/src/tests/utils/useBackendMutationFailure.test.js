@@ -81,16 +81,19 @@ describe("utils/useBackend tests", () => {
                 onError: (e) => console.error("onError from mutation.mutate called!", String(e).substring(0, 199))
             });
 
+            const messageA = "useBackendMutation: Error communicating with backend via post on /api/ucsbdates/post"
+            const messageB = "onError from mutation.mutate called!"
+            const messageC = "Error: Request failed with status code 404"
+
             await waitFor(() => expect(mockToast).toHaveBeenCalled());
             expect(mockToast).toHaveBeenCalledTimes(1);
-            expect(mockToast).toHaveBeenCalledWith("useBackendMutation: Error communicating with backend via post on /api/ucsbdates/post",{type: "error"});
+            expect(mockToast).toHaveBeenCalledWith(messageA,{type: "error"});
 
-            expect(console.error).toHaveBeenCalledTimes(3);
-
-            expect(console.error.mock.calls[1][0]).toEqual("useBackendMutation: Error communicating with backend via post on /api/ucsbdates/post");
-            expect(console.error.mock.calls[2][0]).toEqual("onError from mutation.mutate called!");
-            expect(console.error.mock.calls[2][1]).toEqual("Error: Request failed with status code 404");
-
+            expect(console.error).toHaveBeenCalledTimes(2);
+            
+            expect(console.error.mock.calls[1][0]).toEqual(messageB);
+            expect(console.error.mock.calls[1][1]).toEqual(messageC)
+            
             restoreConsole();
         });
     });
