@@ -8,6 +8,7 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
+import PersonalScheduleDropdown from "../PersonalSchedules/PersonalScheduleDropdown";
 import { useBackendMutation } from "main/utils/useBackend";
 
 const BasicCourseSearchForm = ({ fetchJSON }) => {
@@ -20,11 +21,14 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
   // Stryker enable OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
+  //Placeholder for what the dropdown option is supposed to be
+  const schedules = []
 
   // Stryker disable all : not sure how to test/mock local storage
   const localSubject = localStorage.getItem("BasicSearch.Subject");
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
   const localLevel = localStorage.getItem("BasicSearch.CourseLevel");
+  const localSchedule = localStorage.getItem("BasicSearch.PersonalSchedules");
 
   const getObjectToAxiosParams = () => ({
     url: "/api/UCSBSubjects/all",
@@ -54,10 +58,11 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
   const [subject, setSubject] = useState(localSubject || {});
   const [subjects, setSubjects] = useState([]);
   const [level, setLevel] = useState(localLevel || "U");
+  const [schedule, setSchedule] = useState(localSchedule || 1);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { quarter, subject, level });
+    fetchJSON(event, { quarter, subject, level, schedule });
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
@@ -87,6 +92,14 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
               level={level}
               setLevel={setLevel}
               controlId={"BasicSearch.Level"}
+            />
+          </Col>
+          <Col md="auto">
+            <PersonalScheduleDropdown
+              schedules={schedules}
+              schedule={schedule}
+              setSchedule={setSchedule}
+              controlId={"BasicSearch.PersonalSchedules"}
             />
           </Col>
         </Row>
