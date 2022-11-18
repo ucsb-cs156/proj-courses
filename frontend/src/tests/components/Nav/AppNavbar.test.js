@@ -192,7 +192,7 @@ describe("AppNavbar tests", () => {
         expect(screen.getByTestId(/appnavbar-personalschedules-create/)).toBeInTheDocument();
     });
 
-    test("renders the Section Search menu correctly", async () => {
+    test("renders the Course Description menu correctly", async () => {
         const currentUser = currentUserFixtures.userOnly;
         const systemInfo = systemInfoFixtures.showingBoth;
 
@@ -206,12 +206,12 @@ describe("AppNavbar tests", () => {
             </QueryClientProvider>
         );
 
-        expect(await screen.findByTestId("appnavbar-section-searches-dropdown")).toBeInTheDocument();
-        const dropdown = screen.getByTestId("appnavbar-section-searches-dropdown");
+        expect(await screen.findByTestId("appnavbar-course-descriptions-dropdown")).toBeInTheDocument();
+        const dropdown = screen.getByTestId("appnavbar-course-descriptions-dropdown");
         const aElement = dropdown.querySelector("a");
         expect(aElement).toBeInTheDocument();
         aElement?.click();
 
-        expect(await screen.findByTestId("appnavbar-section-searches-search")).toBeInTheDocument();
+        expect(await screen.findByTestId("appnavbar-course-descriptions-search")).toBeInTheDocument();
     });
 });
