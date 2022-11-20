@@ -28,6 +28,7 @@ jobs:
     - name: Pitest
       run: mvn org.pitest:pitest-maven:mutationCoverage -DmutationThreshold=100
     - name: Upload Pitest to Artifacts
+      if: always() # always upload artifacts, even on failure
       uses: actions/upload-artifact@v2
       with:
         name: pitest-mutation-testing
