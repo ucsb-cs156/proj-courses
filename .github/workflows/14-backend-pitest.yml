@@ -26,8 +26,9 @@ jobs:
         TEST_PROPERTIES: ${{ secrets.TEST_PROPERTIES }}
       run: mvn -B test 
     - name: Pitest
-      run: mvn test org.pitest:pitest-maven:mutationCoverage
+      run: mvn org.pitest:pitest-maven:mutationCoverage -DmutationThreshold=100
     - name: Upload Pitest to Artifacts
+      if: always() # always upload artifacts, even on failure
       uses: actions/upload-artifact@v2
       with:
         name: pitest-mutation-testing
