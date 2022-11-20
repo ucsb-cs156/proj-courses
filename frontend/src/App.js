@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "main/pages/HomePage";
+import CourseDescriptionIndexPage from "main/pages/CourseDescriptions/CourseDescriptionIndexPage";
 import ProfilePage from "main/pages/ProfilePage";
 import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
@@ -26,7 +26,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/" element={<HomePage />} />
+        <Route exact path="/" element={<SectionSearchesIndexPage />} />
         <Route exact path="/profile" element={<ProfilePage />} />
         {
           hasRole(currentUser, "ROLE_ADMIN") && (
@@ -50,7 +50,7 @@ function App() {
             </>
           )
         }
-        <Route exact path="/sectionsearches/search" element={<SectionSearchesIndexPage />} />
+        <Route exact path="/coursedescriptions/search" element={<CourseDescriptionIndexPage />} />
       </Routes>
     </BrowserRouter>
   );
