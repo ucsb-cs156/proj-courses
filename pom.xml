@@ -124,8 +124,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Test case coverage report -->
-            <plugin>
+             <!-- Test case coverage report -->
+             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
@@ -175,7 +175,6 @@
                                     </limits>
                                 </rule>
                             </rules>
-
                         </configuration>
                     </execution>
                 </executions>
@@ -191,7 +190,7 @@
                 </configuration>
 
             </plugin>
-
+            
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
@@ -339,4 +338,4 @@
             </build>
         </profile>
     </profiles>
-</project>
+</project> 
