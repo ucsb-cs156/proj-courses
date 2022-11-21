@@ -19,8 +19,6 @@ public class JobService {
   @Lazy
   @Autowired
   private JobService self;
-
-
   public Job runAsJob(JobContextConsumer jobFunction) {
     Job job = Job.builder()
       .createdBy(currentUserService.getUser())
