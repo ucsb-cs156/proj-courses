@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJob;
+import edu.ucsb.cs156.courses.jobs.TestJob;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
 
-@Slf4j
+
 @Api(description = "Jobs")
 @RequestMapping("/api/jobs")
 @RestController
@@ -52,14 +53,26 @@ public class JobsController extends ApiController {
         @ApiParam("sleepMs") @RequestParam Integer sleepMs
     ) {
 
-        return jobService.runAsJob(ctx -> {
-            ctx.log("Hello World! from test job!");
-            Thread.sleep(sleepMs);
-            if (fail) {
-                throw new Exception("Fail!");
-            }
-            ctx.log("Goodbye from test job!");
-          });
+        TestJob testJob = TestJob.builder()
+        .fail(fail)
+        .sleepMs(sleepMs)
+        .build();
+        return jobService.runAsJob(testJob);
+    }
+    
+    @ApiOperation(value = "Launch Job to Update Course Data")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/launch/updateCourses")
+    public Job launchUpdateCourseDataJob(
+        @ApiParam("quarter (YYYYQ format)") @RequestParam String quarterYYYYQ,
+        @ApiParam("subject area") @RequestParam String subjectArea
+    ) {
+        UpdateCourseDataJob updateCourseDataJob = UpdateCourseDataJob.builder()
+        .quarterYYYYQ(quarterYYYYQ)
+        .subjectArea(subjectArea)
+        .build();
+
+        return jobService.runAsJob(updateCourseDataJob);
     }
 
 }
