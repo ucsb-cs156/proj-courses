@@ -40,7 +40,6 @@ public class JobService {
     try {
       jobFunction.accept(context);
     } catch (Exception e) {
-      e.printStackTrace();
       job.setStatus("error");
       context.log(e.getMessage());
       return;
