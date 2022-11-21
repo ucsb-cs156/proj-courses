@@ -48,7 +48,7 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   test("renders without crashing on three subjects", async () => {
-     const { getAllByTestId} = render(
+     render(
       <SingleSubjectDropdown
         subjects={[ 
           threeSubjects[2],
@@ -67,10 +67,12 @@ describe("SingleSubjectDropdown tests", () => {
 
     // Check that blanks are replaced with hyphens
     await waitFor(() => expect(screen.getByTestId(ART_CS).toBeInTheDocument));
+    await waitFor(() => expect(screen.getByTestId(ANTH).toBeInTheDocument));
+    await waitFor(() => expect(screen.getByTestId(ARTHI).toBeInTheDocument));
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
-    const allOptions = getAllByTestId("ssd1-option-",  { exact: false });
+    const allOptions = screen.getAllByTestId("ssd1-option-",  { exact: false });
     for (let i = 0; i < allOptions.length - 1; i++) {
       console.log("[i]" + allOptions[i].value);
       console.log("[i+1]" + allOptions[i+1].value);
