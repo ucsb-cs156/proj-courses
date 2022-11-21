@@ -154,7 +154,7 @@ public class SectionFixtures {
       ]
     }
           """;
-  public static final String SECTION_JSON_CMPSC156 = """
+  public static final String SECTION_JSON_CMPSC156_UNEXPECTED = """
     {
       "quarter": "20221",
       "courseId": "CMPSC   156  ",
@@ -175,41 +175,6 @@ public class SectionFixtures {
       "deptCode": "CMPSC",
       "generalEducation": [],
       "classSections": [
-        {
-          "enrollCode": "08292",
-          "section": "0100",
-          "session": null,
-          "classClosed": "Y",
-          "courseCancelled": null,
-          "gradingOptionCode": null,
-          "enrolledTotal": 72,
-          "maxEnroll": 72,
-          "secondaryStatus": "R",
-          "departmentApprovalRequired": false,
-          "instructorApprovalRequired": false,
-          "restrictionLevel": null,
-          "restrictionMajor": "+CMPSC+CMPEN+CPSCI",
-          "restrictionMajorPass": null,
-          "restrictionMinor": null,
-          "restrictionMinorPass": null,
-          "concurrentCourses": [],
-          "timeLocations": [
-            {
-              "room": "1431",
-              "building": "SH",
-              "roomCapacity": 76,
-              "days": "M W    ",
-              "beginTime": "12:30",
-              "endTime": "13:45"
-            }
-          ],
-          "instructors": [
-            {
-              "instructor": "CONRAD P T",
-              "functionCode": "Teaching and in charge"
-            }
-          ]
-        },
         {
           "enrollCode": "08300",
           "section": "0101",
@@ -246,6 +211,41 @@ public class SectionFixtures {
             {
               "instructor": "HEFFERNAN K J",
               "functionCode": "Teaching but not in charge"
+            }
+          ]
+        },
+	{
+          "enrollCode": "08292",
+          "section": "0100",
+          "session": null,
+          "classClosed": "Y",
+          "courseCancelled": null,
+          "gradingOptionCode": null,
+          "enrolledTotal": 72,
+          "maxEnroll": 72,
+          "secondaryStatus": "R",
+          "departmentApprovalRequired": false,
+          "instructorApprovalRequired": false,
+          "restrictionLevel": null,
+          "restrictionMajor": "+CMPSC+CMPEN+CPSCI",
+          "restrictionMajorPass": null,
+          "restrictionMinor": null,
+          "restrictionMinorPass": null,
+          "concurrentCourses": [],
+          "timeLocations": [
+            {
+              "room": "1431",
+              "building": "SH",
+              "roomCapacity": 76,
+              "days": "M W    ",
+              "beginTime": "12:30",
+              "endTime": "13:45"
+            }
+          ],
+          "instructors": [
+            {
+              "instructor": "CONRAD P T",
+              "functionCode": "Teaching and in charge"
             }
           ]
         },
@@ -355,6 +355,66 @@ public class SectionFixtures {
         {
           "enrollCode": "08896",
           "section": "0200",
+          "session": null,
+          "classClosed": "Y",
+          "courseCancelled": null,
+          "gradingOptionCode": null,
+          "enrolledTotal": 5,
+          "maxEnroll": 10,
+          "secondaryStatus": null,
+          "departmentApprovalRequired": false,
+          "instructorApprovalRequired": false,
+          "restrictionLevel": "G",
+          "restrictionMajor": "+CMPSC",
+          "restrictionMajorPass": null,
+          "restrictionMinor": null,
+          "restrictionMinorPass": null,
+          "concurrentCourses": [],
+          "timeLocations": [
+            {
+              "room": "2510",
+              "building": "PHELP",
+              "roomCapacity": null,
+              "days": "M W    ",
+              "beginTime": "13:00",
+              "endTime": "14:50"
+            }
+          ],
+          "instructors": [
+            {
+              "instructor": "YAN L",
+              "functionCode": "Teaching and in charge"
+            }
+          ]
+        }
+      ]
+    }
+    """;
+    
+    public static final String SECTION_JSON_CMPSC291A_UNEXPECTED = """
+    {
+      "quarter": "20221",
+      "courseId": "CMPSC   291A ",
+      "title": "SPEC TOPIC APPS GEN",
+      "contactHours": 30,
+      "description": "These courses provide for the study of topics of current   interest in computer science applications.",
+      "college": "ENGR",
+      "objLevelCode": "G",
+      "subjectArea": "CMPSC   ",
+      "unitsFixed": 4,
+      "unitsVariableHigh": null,
+      "unitsVariableLow": null,
+      "delayedSectioning": null,
+      "inProgressCourse": null,
+      "gradingOption": "L",
+      "instructionType": "LEC",
+      "onLineCourse": false,
+      "deptCode": "CMPSC",
+      "generalEducation": [],
+      "classSections": [
+        {
+          "enrollCode": "08896",
+          "section": "0201",
           "session": null,
           "classClosed": "Y",
           "courseCancelled": null,
