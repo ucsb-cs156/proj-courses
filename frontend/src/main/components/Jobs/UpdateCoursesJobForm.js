@@ -36,7 +36,9 @@ const UpdateCoursesJobForm = ({ callback }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    callback({quarter, subject});
+    console.log("UpdateCoursesJobForm: quarter", quarter);
+    console.log("UpdateCoursesJobForm: subject", subject);
+    callback({ quarter, subject});
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
