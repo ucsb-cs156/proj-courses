@@ -1,12 +1,12 @@
 import React from "react";
 
-import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourseSearchForm";
+import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 export default {
-  title: "components/BasicCourseSearch/BasicCourseSearchForm",
-  component: BasicCourseSearchForm,
+  title: "components/Jobs/UpdateCoursesJobForm",
+  component: UpdateCoursesJobForm,
   parameters: {
     mockData: [
       {
@@ -19,21 +19,20 @@ export default {
         url: '/api/systemInfo',
         method: 'GET',
         status: 200,
-        response: systemInfoFixtures.showingBothStartAndEndQtr
+        response: systemInfoFixtures.showingBoth
       },
     ],
   },
 };
 
 const Template = (args) => {
-  return <BasicCourseSearchForm {...args} />;
+  return <UpdateCoursesJobForm {...args} />;
 };
 
 export const Default = Template.bind({});
 
 Default.args = {
-  submitText: "Create",
-  fetchJSON: (_event, data) => {
+  callback: (data) => {
     console.log("Submit was clicked, data=", data);
   }
 };
