@@ -6,8 +6,6 @@ import edu.ucsb.cs156.courses.services.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +19,6 @@ public class JobService {
   @Lazy
   @Autowired
   private JobService self;
-
-
   public Job runAsJob(JobContextConsumer jobFunction) {
     Job job = Job.builder()
       .createdBy(currentUserService.getUser())
@@ -30,7 +26,7 @@ public class JobService {
       .build();
 
     jobsRepository.save(job);
-    self.runJobAsync(job, jobFunction, SecurityContextHolder.getContext());
+    self.runJobAsync(job, jobFunction);
 
     return job;
   }
@@ -38,15 +34,12 @@ public class JobService {
   
 
   @Async
-  public void runJobAsync(Job job, JobContextConsumer jobFunction, SecurityContext securityContext) {
+  public void runJobAsync(Job job, JobContextConsumer jobFunction) {
     JobContext context = new JobContext(jobsRepository, job);
-
-    SecurityContextHolder.setContext(securityContext);
 
     try {
       jobFunction.accept(context);
     } catch (Exception e) {
-      e.printStackTrace();
       job.setStatus("error");
       context.log(e.getMessage());
       return;

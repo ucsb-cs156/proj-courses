@@ -24,8 +24,10 @@ jobs:
     - name: Build with Maven
       env:
         TEST_PROPERTIES: ${{ secrets.TEST_PROPERTIES }}
-      run: mvn -B test jacoco:report 
-    - name: Upload to Codecov
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run: bash <(curl -s https://codecov.io/bash)
+      run: mvn -B test jacoco:report verify
+   - name: Upload Jacoco reports to Artifacts
+      if: always() # always upload artifacts, even on failure
+      uses: actions/upload-artifact@v2
+      with:
+        name: jacoco-report
+        path: target/site/jacoco/* 
