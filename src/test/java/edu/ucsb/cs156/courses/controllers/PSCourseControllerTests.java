@@ -380,6 +380,28 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
+    public void api_courses_post__user_logged_in__primary_enroll_code_has_one_secondary_reversed() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+        when(ucsbCurriculumService.getAllSections(eq("63370"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC100_REVERSED);
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=63370&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+	Map<String, Object> json = responseToJson(response);
+	assertEquals("63370 is for a course with sections; please add a specific section and the lecture will be automatically added", json.get("message"));
+        assertEquals("IllegalArgumentException", json.get("type"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
     public void api_courses_post__user_logged_in__unexpected_ucsb_api_response_assumes_primary_course() throws Exception {
         // arrange
         User u = currentUserService.getCurrentUser().getUser();
