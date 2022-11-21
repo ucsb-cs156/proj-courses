@@ -1,7 +1,7 @@
 import React from "react";
 
 import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourseSearchForm";
-import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
+import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 export default {
@@ -13,7 +13,7 @@ export default {
         url: '/api/UCSBSubjects/all',
         method: 'GET',
         status: 200,
-        response: ucsbSubjectsFixtures.threeSubjects
+        response: allTheSubjects
       },
       {
         url: '/api/systemInfo',

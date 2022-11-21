@@ -47,7 +47,39 @@ describe("SingleSubjectDropdown tests", () => {
     );
   });
 
-  test("renders without crashing on three subjects", () => {
+  test("renders without crashing on three subjects", async () => {
+     const { getAllByTestId} = render(
+      <SingleSubjectDropdown
+        subjects={[ 
+          threeSubjects[2],
+          threeSubjects[0],
+          threeSubjects[1]
+        ]}
+        subject={subject}
+        setSubject={setSubject}
+        controlId="ssd1"
+      />
+    );
+
+    const ART_CS = "ssd1-option-ART--CS";
+    const ANTH = "ssd1-option-ANTH";
+    const ARTHI = "ssd1-option-ARTHI";
+
+    // Check that blanks are replaced with hyphens
+    await waitFor(() => expect(screen.getByTestId(ART_CS).toBeInTheDocument));
+
+    // Check that the options are sorted
+    // See: https://www.atkinsondev.com/post/react-testing-library-order/
+    const allOptions = getAllByTestId("ssd1-option-",  { exact: false });
+    for (let i = 0; i < allOptions.length - 1; i++) {
+      console.log("[i]" + allOptions[i].value);
+      console.log("[i+1]" + allOptions[i+1].value);
+      expect(allOptions[i].value < allOptions[i + 1].value).toBe(true);
+    }
+
+  });
+
+  test("sorts and puts hyphens in testids", () => {
     render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
@@ -88,7 +120,7 @@ describe("SingleSubjectDropdown tests", () => {
     expect(await screen.findByText("Subject Area")).toBeInTheDocument();
     expect(screen.getByText("ANTH - Anthropology")).toHaveAttribute(
       "data-testid",
-      "ssd1-option-0"
+      "ssd1-option-ANTH"
     );
   });
 
@@ -139,7 +171,7 @@ describe("SingleSubjectDropdown tests", () => {
       />
     );
 
-    const expectedKey = "ssd1-option-0";
+    const expectedKey = "ssd1-option-ANTH";
     await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
   });
 
