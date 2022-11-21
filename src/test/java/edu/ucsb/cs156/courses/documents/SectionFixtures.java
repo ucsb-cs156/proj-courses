@@ -82,8 +82,8 @@ public class SectionFixtures {
       "generalEducation": [],
       "classSections": [
         {
-          "enrollCode": "63388",
-          "section": "0101",
+          "enrollCode": "63370",
+          "section": "0100",
           "session": null,
           "classClosed": null,
           "courseCancelled": null,
@@ -117,8 +117,8 @@ public class SectionFixtures {
           ]
 	},
 	{
-          "enrollCode": "63370",
-          "section": "0100",
+          "enrollCode": "63388",
+          "section": "0101",
           "session": null,
           "classClosed": null,
           "courseCancelled": null,
@@ -151,6 +151,100 @@ public class SectionFixtures {
             }
           ]
         }
+      ]
+    }
+          """;
+    public static final String SECTION_JSON_CMPSC100_REVERSED = """ 
+    {
+      "quarter": "20221",
+      "courseId": "CMPSC   100  ",
+      "title": "INTRO TEACH METHODS",
+      "contactHours": 30,
+      "description": "Designed to train outstanding undergraduates for learning assistant positio ns in CS courses. Lecture/discussion surveys current research and best prac tices in CS pedagogy including student development theories, different peda gogical techniques, and methods for assessing learning. Students gain exper ience working one-on-one with students, fostering positive learning environ ments, and providing feedback on student work. Students who successfully co mplete this course will earn units by serving as an apprentice undergraduat e learning assistant.",
+      "college": "ENGR",
+      "objLevelCode": "U",
+      "subjectArea": "CMPSC   ",
+      "unitsFixed": 4,
+      "unitsVariableHigh": null,
+      "unitsVariableLow": null,
+      "delayedSectioning": null,
+      "inProgressCourse": null,
+      "gradingOption": "L",
+      "instructionType": "LEC",
+      "onLineCourse": false,
+      "deptCode": "CMPSC",
+      "generalEducation": [],
+      "classSections": [
+	{
+          "enrollCode": "63388",
+          "section": "0101",
+          "session": null,
+          "classClosed": null,
+          "courseCancelled": null,
+          "gradingOptionCode": null,
+          "enrolledTotal": 18,
+          "maxEnroll": 25,
+          "secondaryStatus": "R",
+          "departmentApprovalRequired": false,
+          "instructorApprovalRequired": true,
+          "restrictionLevel": null,
+          "restrictionMajor": null,
+          "restrictionMajorPass": null,
+          "restrictionMinor": null,
+          "restrictionMinorPass": null,
+          "concurrentCourses": [],
+          "timeLocations": [
+            {
+              "room": "3526",
+              "building": "PHELP",
+              "roomCapacity": null,
+              "days": "    F  ",
+              "beginTime": "12:30",
+              "endTime": "13:45"
+            }
+          ],
+          "instructors": [
+            {
+              "instructor": "MIRZA D",
+              "functionCode": "Teaching and in charge"
+            }
+          ]
+	},
+        {
+          "enrollCode": "63370",
+          "section": "0100",
+          "session": null,
+          "classClosed": null,
+          "courseCancelled": null,
+          "gradingOptionCode": null,
+          "enrolledTotal": 18,
+          "maxEnroll": 25,
+          "secondaryStatus": null,
+          "departmentApprovalRequired": false,
+          "instructorApprovalRequired": true,
+          "restrictionLevel": null,
+          "restrictionMajor": null,
+          "restrictionMajorPass": null,
+          "restrictionMinor": null,
+          "restrictionMinorPass": null,
+          "concurrentCourses": [],
+          "timeLocations": [
+            {
+              "room": "3525",
+              "building": "PHELP",
+              "roomCapacity": null,
+              "days": "  W    ",
+              "beginTime": "09:00",
+              "endTime": "11:50"
+            }
+          ],
+          "instructors": [
+            {
+              "instructor": "MIRZA D",
+              "functionCode": "Teaching and in charge"
+            }
+          ]
+	}
       ]
     }
           """;
