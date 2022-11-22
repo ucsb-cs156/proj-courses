@@ -34,9 +34,11 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,6 +59,12 @@ public class JobsControllerTests extends ControllerTestCase {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @MockBean
+    UCSBCurriculumService ucsbCurriculumService;
+
+    @MockBean
+    UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
     @WithMockUser(roles = { "ADMIN" })
     @Test

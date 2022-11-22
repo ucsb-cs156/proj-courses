@@ -36,7 +36,7 @@ import java.io.*;
 /**
  * Service object that wraps the UCSB Academic Curriculum API
  */
-@Service
+@Service("ucs")
 public class UCSBCurriculumService {
 
     @Autowired

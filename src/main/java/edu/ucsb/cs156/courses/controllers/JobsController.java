@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJob;
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.jobs.TestJob;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
@@ -36,6 +37,9 @@ public class JobsController extends ApiController {
 
     @Autowired
     ObjectMapper mapper;
+
+    @Autowired
+    UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
     @ApiOperation(value = "List all jobs")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -67,10 +71,10 @@ public class JobsController extends ApiController {
         @ApiParam("quarter (YYYYQ format)") @RequestParam String quarterYYYYQ,
         @ApiParam("subject area") @RequestParam String subjectArea
     ) {
-        UpdateCourseDataJob updateCourseDataJob = UpdateCourseDataJob.builder()
-        .quarterYYYYQ(quarterYYYYQ)
-        .subjectArea(subjectArea)
-        .build();
+       
+        UpdateCourseDataJob updateCourseDataJob = updateCourseDataJobFactory.create(
+            subjectArea,
+            quarterYYYYQ);
 
         return jobService.runAsJob(updateCourseDataJob);
     }
