@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.context.annotation.Import;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
@@ -31,6 +32,9 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 public class JobsController extends ApiController {
     @Autowired
     private JobsRepository jobsRepository;
+
+    @Autowired
+    private ConvertedSectionCollection convertedSectionCollection;
 
     @Autowired
     private JobService jobService;

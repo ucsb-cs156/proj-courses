@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import edu.ucsb.cs156.courses.ControllerTestCase;
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.entities.Job;
@@ -65,6 +66,9 @@ public class JobsControllerTests extends ControllerTestCase {
 
     @MockBean
     UpdateCourseDataJobFactory updateCourseDataJobFactory;
+
+    @MockBean
+    ConvertedSectionCollection convertedSectionCollection;
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
