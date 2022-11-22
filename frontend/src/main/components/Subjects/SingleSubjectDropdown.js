@@ -36,8 +36,9 @@ const SingleSubjectDropdown = ({
         value={subjectState}
         onChange={handleSubjectOnChange}
       >
-        {subjects.map(function (object, i) {
-          const key = `${controlId}-option-${i}`;
+        {subjects.map(function (object) {
+          const subjectCode = object.subjectCode.replace(/ /g, "-");
+          const key = `${controlId}-option-${subjectCode}`;
           return (
             <option key={key} data-testid={key} value={object.subjectCode}>
               {object.subjectCode} - {object.subjectTranslation}

@@ -19,27 +19,32 @@ jest.mock("react-toastify", () => ({
 
 describe("BasicCourseSearchForm tests", () => {
 
+  const axiosMock = new AxiosMockAdapter(axios);
+
+  const queryClient = new QueryClient();
+  const addToast = jest.fn();
+
   beforeEach(() => {
+    jest.clearAllMocks();
     jest.spyOn(console, 'error')
     console.error.mockImplementation(() => null);
-  });
 
-  const axiosMock = new AxiosMockAdapter(axios);
-  beforeEach(() => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock
       .onGet("/api/systemInfo")
-      .reply(200, systemInfoFixtures.showingNeither);
-  });
-  const queryClient = new QueryClient();
-  const addToast = jest.fn();
-  beforeEach(() => {
+      .reply(200, {
+        ...systemInfoFixtures.showingNeither,
+        "startQtrYYYYQ": "20201",
+        "endQtrYYYYQ": "20214"
+      });
+
     toast.mockReturnValue({
       addToast: addToast,
     });
   });
+
 
   test("renders without crashing", () => {
     render(
@@ -75,11 +80,12 @@ describe("BasicCourseSearchForm tests", () => {
       </QueryClientProvider>
     );
 
-    await waitFor(() => {
-      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
-    });
+    const expectedKey = "BasicSearch.Subject-option-MATH";
+    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+
     const selectSubject = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectSubject, "MATH");
+
     expect(selectSubject.value).toBe("MATH");
   });
 
@@ -120,13 +126,13 @@ describe("BasicCourseSearchForm tests", () => {
       level: "G",
     };
 
-    await waitFor(() => {
-      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
-    });
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
 
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20211");
     const selectSubject = screen.getByLabelText("Subject Area");
+    expect(selectSubject).toBeInTheDocument();
     userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
@@ -143,6 +149,7 @@ describe("BasicCourseSearchForm tests", () => {
 
   test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+
     const sampleReturnValue = {
       sampleKey: "sampleValue",
       total: 0,
@@ -160,9 +167,8 @@ describe("BasicCourseSearchForm tests", () => {
       </QueryClientProvider>
     );
 
-    await waitFor(() => {
-      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
-    });
+    const expectedKey = "BasicSearch.Subject-option-MATH";
+    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
 
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20204");

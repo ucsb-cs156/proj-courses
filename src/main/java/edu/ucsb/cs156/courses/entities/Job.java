@@ -34,5 +34,7 @@ public class Job {
     private ZonedDateTime updatedAt;
 
     private String status;
+
+    @Column(columnDefinition="TEXT") // needed for long strings, i.e. log entries longer than 255 characters
     private String log;
 }

@@ -7,6 +7,7 @@ import TestJobForm from "main/components/Jobs/TestJobForm";
 import JobComingSoon from "main/components/Jobs/JobComingSoon";
 
 import { useBackendMutation } from "main/utils/useBackend";
+import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 
 const AdminJobsPage = () => {
 
@@ -22,7 +23,7 @@ const AdminJobsPage = () => {
     // Stryker disable all
     const testJobMutation = useBackendMutation(
         objectToAxiosParamsTestJob,
-        {  },
+        {},
         ["/api/jobs/all"]
     );
     // Stryker enable all
@@ -30,6 +31,26 @@ const AdminJobsPage = () => {
     const submitTestJob = async (data) => {
         console.log("submitTestJob, data=", data);
         testJobMutation.mutate(data);
+    }
+
+    // ***** update courses job *******
+
+    const objectToAxiosParamsUpdateCoursesJob = (data) => ({
+        url: `/api/jobs/launch/updateCourses?quarterYYYYQ=${data.quarter}&subjectArea=${data.subject}`,
+        method: "POST"
+    });
+
+    // Stryker disable all
+    const updateCoursesJobMutation = useBackendMutation(
+        objectToAxiosParamsUpdateCoursesJob,
+        {},
+        ["/api/jobs/all"]
+    );
+    // Stryker enable all
+
+    const submitUpdateCoursesJob = async (data) => {
+        console.log("submitUpdateCoursesJob, data=", data);
+        updateCoursesJobMutation.mutate(data);
     }
 
     // Stryker disable all 
@@ -48,11 +69,11 @@ const AdminJobsPage = () => {
     const jobLaunchers = [
         {
             name: "Test Job",
-            form:  <TestJobForm submitAction={submitTestJob} />
+            form: <TestJobForm submitAction={submitTestJob} />
         },
         {
             name: "Update Courses Database",
-            form: <JobComingSoon />
+            form: <UpdateCoursesJobForm callback={submitUpdateCoursesJob}  />
         },
         {
             name: "Update Grade Info",
@@ -67,7 +88,7 @@ const AdminJobsPage = () => {
             <Accordion>
                 {
                     jobLaunchers.map((jobLauncher, index) => (
-                        <Accordion.Item eventKey={index}>
+                        <Accordion.Item eventKey={index} key={index}>
                             <Accordion.Header>{jobLauncher.name}</Accordion.Header>
                             <Accordion.Body>
                                 {jobLauncher.form}
