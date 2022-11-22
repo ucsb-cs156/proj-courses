@@ -3,9 +3,10 @@ name: "32-frontend-coverage: Frontend Coverage (JavaScript/Jest)"
 on:
   workflow_dispatch:
   pull_request:
+    paths: [frontend/**]
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths: [frontend/**]
 
 jobs:
   build:
@@ -27,9 +28,10 @@ jobs:
         working-directory: ./frontend
       - run: npm run coverage
         working-directory: ./frontend
-      - name: Upload to Codecov
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bash <(curl -s https://codecov.io/bash)
-        working-directory: ./frontend
+      - name: Upload reports to Artifacts
+        if: always() # always upload artifacts, even on failure
+        uses: actions/upload-artifact@v2
+        with:
+          name: jest-coverage-report
+          path: frontend/coverage/lcov-report/*
      
