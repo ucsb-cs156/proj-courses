@@ -73,4 +73,28 @@ public class Section {
      * List of {@link Instructor} objects for this course
      */
     private List<Instructor> instructors;
+
+    public Section clone() {
+        Section newSection = new Section();
+        newSection.setEnrollCode(this.getEnrollCode());
+        newSection.setSection(this.getSection());
+        newSection.setSession(this.getSession());
+        newSection.setClassClosed(this.getClassClosed());
+        newSection.setCourseCancelled(this.getCourseCancelled());
+        newSection.setGradingOptionCode(this.getGradingOptionCode());
+        newSection.setEnrolledTotal(this.getEnrolledTotal());
+        newSection.setMaxEnroll(this.getMaxEnroll());
+        newSection.setSecondaryStatus(this.getSecondaryStatus());
+        newSection.setDepartmentApprovalRequired(this.isDepartmentApprovalRequired());
+        newSection.setInstructorApprovalRequired(this.isInstructorApprovalRequired());
+        newSection.setRestrictionLevel(this.getRestrictionLevel());
+        newSection.setRestrictionMajor(this.getRestrictionMajor());
+        newSection.setRestrictionMajorPass(this.getRestrictionMajorPass());
+        newSection.setRestrictionMinor(this.getRestrictionMinor());
+        newSection.setRestrictionMinorPass(this.getRestrictionMinorPass());
+        newSection.setConcurrentCourses(this.getConcurrentCourses());
+        newSection.setTimeLocations(this.getTimeLocations());
+        newSection.setInstructors(this.getInstructors());
+        return newSection;
+    }
 }

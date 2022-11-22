@@ -24,16 +24,16 @@ import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+
 @AllArgsConstructor
 public class UpdateCourseDataJob implements JobContextConsumer {
 
-    private String subjectArea;
-    private String quarterYYYYQ;
-    private UCSBCurriculumService ucsbCurriculumService;
-    private ConvertedSectionCollection convertedSectionCollection;
+    @Getter private String subjectArea;
+    @Getter private String quarterYYYYQ;
+    @Getter private UCSBCurriculumService ucsbCurriculumService;
+    @Getter private ConvertedSectionCollection convertedSectionCollection;
 
     @Override
     public void accept(JobContext ctx) throws Exception {

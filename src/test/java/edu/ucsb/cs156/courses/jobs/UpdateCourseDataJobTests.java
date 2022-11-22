@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -33,7 +35,6 @@ import edu.ucsb.cs156.courses.services.jobs.JobContext;
 
 
 @ExtendWith(SpringExtension.class)
-@Import(ObjectMapper.class)
 @ContextConfiguration
 public class UpdateCourseDataJobTests {
 
@@ -42,9 +43,6 @@ public class UpdateCourseDataJobTests {
 
     @Mock
     ConvertedSectionCollection convertedSectionCollection;
-
-    @Autowired
-    ObjectMapper mapper;
 
     @Test
     void test_log_output_success() throws Exception {
@@ -182,6 +180,60 @@ public class UpdateCourseDataJobTests {
                 Courses for [MATH 20211] have been updated""";
 
         assertEquals(expected, jobStarted.getLog());
+    }
+
+    @Test
+    void test_updating_to_new_values() throws Exception {
+
+        // Arrange
+
+        Job jobStarted = Job.builder().build();
+        JobContext ctx = new JobContext(null, jobStarted);
+
+        String coursePageJson = CoursePageFixtures.COURSE_PAGE_JSON_MATH3B;
+        CoursePage coursePage = CoursePage.fromJSON(coursePageJson);
+
+        List<ConvertedSection> convertedSections = coursePage.convertedSections();
+
+        List<ConvertedSection> listWithUpdatedSection = new ArrayList<>();
+
+        ConvertedSection section0 = convertedSections.get(0);
+       
+        int oldEnrollment = section0.getSection().getEnrolledTotal();
+
+        ConvertedSection updatedSection = new ConvertedSection();
+        updatedSection.setCourseInfo(section0.getCourseInfo());
+        updatedSection.setSection(section0.getSection().clone());
+        updatedSection.getSection().setEnrolledTotal(oldEnrollment + 1);
+        listWithUpdatedSection.add(updatedSection);
+
+        UpdateCourseDataJob updateCourseDataJob = new UpdateCourseDataJob("MATH", "20211", ucsbCurriculumService, convertedSectionCollection);
+
+        Optional<ConvertedSection> section0Optional = Optional.of(section0);
+
+        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A"))).thenReturn(listWithUpdatedSection);
+        when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
+            eq(section0.getCourseInfo().getQuarter()), 
+            eq(section0.getSection().getEnrollCode())))
+            .thenReturn(section0Optional);
+       
+        // Act
+
+        updateCourseDataJob.accept(ctx);
+
+        // Assert
+
+        String expected = """
+                Updating courses for [MATH 20211]
+                Found 1 sections
+                Storing in MongoDB Collection...
+                0 new sections saved, 1 sections updated, 0 errors
+                Courses for [MATH 20211] have been updated""";
+
+        assertEquals(expected, jobStarted.getLog());
+
+        verify(convertedSectionCollection, times(1)).save(updatedSection);
+
     }
 
 }
