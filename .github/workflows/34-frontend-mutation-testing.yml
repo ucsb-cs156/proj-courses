@@ -3,9 +3,10 @@ name: "34-frontend-mutation-testing: Stryker JS Mutation Testing (JavaScript/Jes
 on:
   workflow_dispatch:
   pull_request:
+    paths: [frontend/**]
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths: [frontend/**]
 
 jobs:
   build:
