@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 
 @RestClientTest(UpdateCourseDataJobFactory.class)
@@ -20,6 +21,9 @@ public class UpdateCourseDataJobFactoryTests {
 
     @MockBean
     UCSBCurriculumService ucsbCurriculumService;
+
+    @MockBean
+    ConvertedSectionCollection convertedSectionCollection;
 
     @Autowired
     UpdateCourseDataJobFactory updateCourseDataJobFactory;
@@ -36,6 +40,7 @@ public class UpdateCourseDataJobFactoryTests {
         assertEquals("CMPSC",updateCourseDataJob.getSubjectArea());
         assertEquals("20211",updateCourseDataJob.getQuarterYYYYQ());
         assertEquals(ucsbCurriculumService,updateCourseDataJob.getUcsbCurriculumService());
+        assertEquals(convertedSectionCollection,updateCourseDataJob.getConvertedSectionCollection());
 
     }
 }
