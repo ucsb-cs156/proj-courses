@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @Import(ObjectMapper.class)
 @ContextConfiguration
-public class SectionTests {
+public class ConvertedSectionTests {
 
     @Autowired
     ObjectMapper mapper;
@@ -27,9 +28,10 @@ public class SectionTests {
     public void test_clone() throws JsonProcessingException, CloneNotSupportedException {
        List<ConvertedSection> cs = mapper.readValue(CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B, 
        new TypeReference<List<ConvertedSection>>() {});
-       Section s1 = cs.get(0).getSection();
-       Section s2 = (Section) s1.clone();
-       assertEquals(s1, s2);
-    }
 
+       ConvertedSection cs1 = cs.get(0);
+       cs1.set_id(new ObjectId());
+       ConvertedSection cs2 = (ConvertedSection) cs1.clone();
+       assertEquals(cs1, cs2);
+    }
 }

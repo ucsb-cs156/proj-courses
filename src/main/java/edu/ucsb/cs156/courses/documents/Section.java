@@ -1,17 +1,15 @@
 package edu.ucsb.cs156.courses.documents;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class Section {
+public class Section implements Cloneable {
 
     /** a unique number assigned to a section */
     private String enrollCode;
@@ -74,27 +72,25 @@ public class Section {
      */
     private List<Instructor> instructors;
 
-    public Section clone() {
-        Section newSection = new Section();
-        newSection.setEnrollCode(this.getEnrollCode());
-        newSection.setSection(this.getSection());
-        newSection.setSession(this.getSession());
-        newSection.setClassClosed(this.getClassClosed());
-        newSection.setCourseCancelled(this.getCourseCancelled());
-        newSection.setGradingOptionCode(this.getGradingOptionCode());
-        newSection.setEnrolledTotal(this.getEnrolledTotal());
-        newSection.setMaxEnroll(this.getMaxEnroll());
-        newSection.setSecondaryStatus(this.getSecondaryStatus());
-        newSection.setDepartmentApprovalRequired(this.isDepartmentApprovalRequired());
-        newSection.setInstructorApprovalRequired(this.isInstructorApprovalRequired());
-        newSection.setRestrictionLevel(this.getRestrictionLevel());
-        newSection.setRestrictionMajor(this.getRestrictionMajor());
-        newSection.setRestrictionMajorPass(this.getRestrictionMajorPass());
-        newSection.setRestrictionMinor(this.getRestrictionMinor());
-        newSection.setRestrictionMinorPass(this.getRestrictionMinorPass());
-        newSection.setConcurrentCourses(this.getConcurrentCourses());
-        newSection.setTimeLocations(this.getTimeLocations());
-        newSection.setInstructors(this.getInstructors());
+    public Object clone() throws CloneNotSupportedException {
+
+        Section newSection = (Section) super.clone();
+        // List<String> copyConcurrentCourses = new ArrayList<>();
+        // Collections.copy(copyConcurrentCourses, this.getConcurrentCourses());
+        // newSection.setConcurrentCourses(copyConcurrentCourses);
+
+        // List<TimeLocation> copyTimeLocations = new ArrayList<>();
+        // for (TimeLocation tl : this.getTimeLocations()) {
+        //     copyTimeLocations.add((TimeLocation) tl.clone());
+        // }
+        // newSection.setTimeLocations(copyTimeLocations);
+
+        // List<Instructor> copyInstructors = new ArrayList<>();
+        // for (Instructor i : this.getInstructors()) {
+        //     copyInstructors.add((Instructor) i.clone());
+        // }
+        // newSection.setInstructors(copyInstructors);
+
         return newSection;
     }
 }

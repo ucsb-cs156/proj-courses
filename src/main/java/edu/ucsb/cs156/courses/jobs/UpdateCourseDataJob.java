@@ -1,21 +1,7 @@
 package edu.ucsb.cs156.courses.jobs;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.mongodb.WriteError;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.UpdateResult;
-
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-
 
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
@@ -25,9 +11,11 @@ import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 
 @AllArgsConstructor
+@Slf4j
 public class UpdateCourseDataJob implements JobContextConsumer {
 
     @Getter private String subjectArea;
@@ -51,8 +39,10 @@ public class UpdateCourseDataJob implements JobContextConsumer {
 
         for (ConvertedSection section : convertedSections) {
             try {
+                String quarter = section.getCourseInfo().getQuarter();
+                String enrollCode =  section.getSection().getEnrollCode();
                 Optional<ConvertedSection> optionalSection = convertedSectionCollection
-                        .findOneByQuarterAndEnrollCode(section.getCourseInfo().getQuarter(), section.getSection().getEnrollCode());
+                        .findOneByQuarterAndEnrollCode(quarter,enrollCode);
                 if (optionalSection.isPresent()) {
                     ConvertedSection existingSection = optionalSection.get();
                     existingSection.setCourseInfo(section.getCourseInfo());

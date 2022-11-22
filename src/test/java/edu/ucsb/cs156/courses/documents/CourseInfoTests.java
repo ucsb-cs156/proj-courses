@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @Import(ObjectMapper.class)
 @ContextConfiguration
-public class SectionTests {
+public class CourseInfoTests {
 
     @Autowired
     ObjectMapper mapper;
@@ -27,9 +27,8 @@ public class SectionTests {
     public void test_clone() throws JsonProcessingException, CloneNotSupportedException {
        List<ConvertedSection> cs = mapper.readValue(CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B, 
        new TypeReference<List<ConvertedSection>>() {});
-       Section s1 = cs.get(0).getSection();
-       Section s2 = (Section) s1.clone();
-       assertEquals(s1, s2);
+       CourseInfo c1 = cs.get(0).getCourseInfo();
+       CourseInfo c2 = (CourseInfo) c1.clone();
+       assertEquals(c1, c2);
     }
-
 }
