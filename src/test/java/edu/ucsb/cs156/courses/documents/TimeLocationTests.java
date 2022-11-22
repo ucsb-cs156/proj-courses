@@ -18,18 +18,23 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @Import(ObjectMapper.class)
 @ContextConfiguration
-public class SectionTests {
+public class TimeLocationTests {
 
     @Autowired
     ObjectMapper mapper;
 
     @Test
     public void test_clone() throws JsonProcessingException, CloneNotSupportedException {
-       List<ConvertedSection> cs = mapper.readValue(CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B, 
-       new TypeReference<List<ConvertedSection>>() {});
-       Section s1 = cs.get(0).getSection();
-       Section s2 = (Section) s1.clone();
-       assertEquals(s1, s2);
-    }
+        TimeLocation tl1 = TimeLocation.builder()
+                .room("123")
+                .building("Bren Hall")
+                .roomCapacity("16")
+                .days("MWF")
+                .beginTime("10:00")
+                .endTime("11:00")
+                .build();
 
+        TimeLocation tl2 = (TimeLocation) tl1.clone();
+        assertEquals(tl1, tl2);
+    }
 }
