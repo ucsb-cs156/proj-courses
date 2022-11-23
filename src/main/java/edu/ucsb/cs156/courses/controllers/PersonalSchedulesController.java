@@ -81,7 +81,7 @@ public class PersonalSchedulesController extends ApiController {
     @ApiOperation(value = "Create a new personal schedule")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
-    public PersonalSchedule postSchedule(
+    public Object postSchedule(
             @ApiParam("name") @RequestParam String name,
             @ApiParam("description") @RequestParam String description,
             @ApiParam("quarter") @RequestParam String quarter) {
@@ -93,8 +93,14 @@ public class PersonalSchedulesController extends ApiController {
         personalschedule.setName(name);
         personalschedule.setDescription(description);
         personalschedule.setQuarter(quarter);
+
+        Optional<PersonalSchedule> existCheck = personalscheduleRepository.findByUserAndNameAndQuarter(currentUser.getUser(), name, quarter);
+        if (existCheck.isPresent()) {
+          throw new IllegalArgumentException("already exists");
+        }
         PersonalSchedule savedPersonalSchedule = personalscheduleRepository.save(personalschedule);
         return savedPersonalSchedule;
+        
     }
 
     @ApiOperation(value = "Delete a personal schedule owned by this user")
