@@ -10,6 +10,8 @@ import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import PersonalScheduleDropdown from "../PersonalSchedules/PersonalScheduleDropdown";
 import { useBackendMutation } from "main/utils/useBackend";
+import { useBackend } from 'main/utils/useBackend';
+
 
 const BasicCourseSearchForm = ({ fetchJSON }) => {
 
@@ -22,7 +24,21 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
 
   const quarters = quarterRange(startQtr, endQtr);
   //Placeholder for what the dropdown option is supposed to be
-  const schedules = []
+  const { data: schedules, error: _error, status: _status } =
+        useBackend(
+            // Stryker disable next-line all : don't test internal caching of React Query
+            ["/api/personalschedules/all"],
+            { method: "GET", url: "/api/personalschedules/all" },
+            []
+        );
+
+  const new_schedules = [];
+  for(var i in schedules){
+    new_schedules.push({id: i, 
+                        name: schedules[i][0],
+                        description: schedules[i][1],
+                        quarter: schedules[i][2]});
+  }
 
   // Stryker disable all : not sure how to test/mock local storage
   const localSubject = localStorage.getItem("BasicSearch.Subject");
@@ -96,7 +112,7 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
           </Col>
           <Col md="auto">
             <PersonalScheduleDropdown
-              schedules={schedules}
+              schedules={new_schedules}
               schedule={schedule}
               setSchedule={setSchedule}
               controlId={"BasicSearch.PersonalSchedules"}
