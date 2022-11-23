@@ -1,0 +1,23 @@
+import { Meta, Story, Canvas } from "@storybook/addon-docs/blocks";
+import { action } from "@storybook/addon-actions";
+import JobsTable from "main/components/Jobs/JobsTable";
+import jobsFixtures from "fixtures/jobsFixtures";
+
+
+<Meta
+  title="components/Jobs/JobsTable"
+  component={JobsTable}
+/>
+
+# Jobs
+
+Shows a table of log entries for background jobs.
+
+<Canvas>
+  <Story name="emptytable">
+    <JobsTable jobs={[]} />
+  </Story>
+  <Story name="six-jobs">
+    <JobsTable jobs={jobsFixtures.sixJobs} />
+  </Story>
+</Canvas>

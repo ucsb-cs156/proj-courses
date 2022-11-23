@@ -35,6 +35,14 @@ describe("AdminUsersPage tests", () => {
         );
 
         expect(await screen.findByText("Users")).toBeInTheDocument();
+        expect(await screen.findByTestId("UsersTable-cell-row-0-col-id")).toBeInTheDocument();
+
+
+        expect(screen.getByTestId(`UsersTable-cell-row-0-col-id`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`UsersTable-cell-row-0-col-givenName`)).toHaveTextContent("Phill");
+        expect(screen.getByTestId(`UsersTable-cell-row-0-col-familyName`)).toHaveTextContent("Conrad");
+        expect(screen.getByTestId(`UsersTable-cell-row-0-col-email`)).toHaveTextContent("phtcon@ucsb.edu");
+        expect(screen.getByTestId(`UsersTable-cell-row-0-col-admin`)).toHaveTextContent("true");
     });
 
     test("renders empty table when backend unavailable", async () => {
