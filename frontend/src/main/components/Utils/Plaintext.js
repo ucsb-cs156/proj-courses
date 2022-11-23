@@ -8,6 +8,7 @@ export default function Plaintext({ text }) {
   }
   const textToRender = typeof text === "string" ? text : JSON.stringify(text, null, 2);
   const [firstLine, ...rest] = textToRender.split('\n')
+  // Stryker disable StringLiteral
   return (
     <pre data-testid="plaintext">
       <span key={"0"}>{firstLine}</span>
@@ -17,4 +18,5 @@ export default function Plaintext({ text }) {
       }
     </pre>
   );
+  // Stryker enable StringLiteral
 }
