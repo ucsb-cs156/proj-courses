@@ -556,4 +556,19 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 77 not found", json.get("message"));
     }
 
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void api_schedules__admin_logged_in__cannot_post_long_name() throws Exception {
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("IllegalArgumentException", json.get("type"));
+        assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
+    }
 }
