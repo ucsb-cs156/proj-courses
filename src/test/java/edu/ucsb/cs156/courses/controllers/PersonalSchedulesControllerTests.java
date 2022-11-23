@@ -590,17 +590,17 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void api_schedules__user_logged_in__can_post_long_name() throws Exception {
+    public void api_schedules__user_logged_in__can_post_15_char_name() throws Exception {
         // arrange
         User thisUser = currentUserService.getCurrentUser().getUser();
 
-        PersonalSchedule expectedSchedule = PersonalSchedule.builder().name("Test Name").description("Test Description").quarter("20221").user(thisUser).id(0L).build();
+        PersonalSchedule expectedSchedule = PersonalSchedule.builder().name("ABCDEFGHIJKLMNO").description("Test Description").quarter("20221").user(thisUser).id(0L).build();
 
         when(personalscheduleRepository.save(eq(expectedSchedule))).thenReturn(expectedSchedule);
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/personalschedules/post?name=Test Name&description=Test Description&quarter=20221")
+                post("/api/personalschedules/post?name=ABCDEFGHIJKLMNO&description=Test Description&quarter=20221")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
