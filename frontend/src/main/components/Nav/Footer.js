@@ -2,7 +2,7 @@ import { Container } from "react-bootstrap";
 
 export const space=" ";
 
-export default function Footer() {
+export default function Footer(systemInfo) {
   return (
     <footer className="bg-light pt-3 pt-md-4 pb-4 pb-md-5">
       <Container>
@@ -26,7 +26,7 @@ export default function Footer() {
       {space}
       <a
         data-testid="footer-source-code-link"
-        href="https://github.com/ucsb-cs156-s22/s22-4pm-courses"
+        href={systemInfo?.systemInfo?.sourceRepo ? systemInfo?.systemInfo?.sourceRepo : "https://github.com/ucsb-cs156-f22/f22-5pm-courses" }
         target="_blank"
         rel="noopener noreferrer"
       >

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render, screen } from "@testing-library/react";
 import Footer, {space} from "main/components/Nav/Footer";
 
