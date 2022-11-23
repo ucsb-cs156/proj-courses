@@ -14,9 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Slf4j
 public class CoursePage {
     private int pageNumber;
