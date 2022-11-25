@@ -12,6 +12,7 @@ import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = PSCourseController.class)
 @Import(TestConfig.class)
+@AutoConfigureDataJpa
 public class PSCourseControllerTests extends ControllerTestCase {
 
     @MockBean

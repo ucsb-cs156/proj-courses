@@ -19,4 +19,5 @@ public class SystemInfo {
   private Boolean showSwaggerUILink;
   private String startQtrYYYYQ;
   private String endQtrYYYYQ;
+  private String sourceRepo;
 }

@@ -15,7 +15,7 @@ jest.mock('react-toastify', () => {
     return {
         __esModule: true,
         ...originalModule,
-        toast: (x) => mockToast(x)
+        toast: (...params) => mockToast(...params)
     };
 });
 
@@ -81,16 +81,19 @@ describe("utils/useBackend tests", () => {
                 onError: (e) => console.error("onError from mutation.mutate called!", String(e).substring(0, 199))
             });
 
-            await waitFor(() => expect(mockToast).toHaveBeenCalled());
-            expect(mockToast).toHaveBeenCalledTimes(2);
-            expect(mockToast).toHaveBeenCalledWith("Axios Error: Error: Request failed with status code 404");
-            expect(mockToast).toHaveBeenCalledWith("Error: Request failed with status code 404");
+            const messageA = "useBackendMutation: Error communicating with backend via post on /api/ucsbdates/post"
+            const messageB = "onError from mutation.mutate called!"
+            const messageC = "Error: Request failed with status code 404"
 
-            expect(console.error).toHaveBeenCalledTimes(3);
-            const errorMessage0 = console.error.mock.calls[0][0];
-            expect(errorMessage0).toMatch(/Axios Error:/);
-            const errorMessage1 = console.error.mock.calls[2][0];
-            expect(errorMessage1).toBe("onError from mutation.mutate called!");
+            await waitFor(() => expect(mockToast).toHaveBeenCalled());
+            expect(mockToast).toHaveBeenCalledTimes(1);
+            expect(mockToast).toHaveBeenCalledWith(messageA,{type: "error"});
+
+            expect(console.error).toHaveBeenCalledTimes(2);
+            
+            expect(console.error.mock.calls[1][0]).toEqual(messageB);
+            expect(console.error.mock.calls[1][1]).toEqual(messageC)
+            
             restoreConsole();
         });
     });
