@@ -15,19 +15,11 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
-  //const startQtr = systemInfo?.startQtrYYYYQ || "20211";
-  //const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
   // Stryker enable OptionalChaining
 
-  //const quarters = quarterRange(startQtr, endQtr);
-
-  const {data: quarters}  = 
-  useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/CourseOverTimeSearch/all"], 
-    { method: "GET", url: "/api/CourseOverTimeSearch/all" }, 
-    []
-  );
+  const quarters = quarterRange(startQtr, endQtr);
 
   // Stryker disable all : not sure how to test/mock local storage
   const localStartQuarter = localStorage.getItem("CourseOverTimeSearch.StartQuarter");
@@ -43,8 +35,8 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     []
   );
 
-  const [startQuarter, setStartQuarter] = useState(localStartQuarter || {});
-  const [endQuarter, setEndQuarter] = useState(localEndQuarter || {});
+  const [startQuarter, setStartQuarter] = useState(localStartQuarter || quarters[0].yyyyq);
+  const [endQuarter, setEndQuarter] = useState(localEndQuarter || quarters[0].yyyyq);
   const [subject, setSubject] = useState(localSubject || {});
   const [courseNumber, setCourseNumber] = useState(localCourseNumber || "");
   const [courseSuf, setCourseSuf] = useState("");
