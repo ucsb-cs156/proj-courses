@@ -203,7 +203,7 @@ public class UCSBCurriculumService {
         String url = ALL_SECTIONS_ENDPOINT;
 
 
-        logger.info("url=" + url);
+        log.info("url=" + url);
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
         .queryParam("quarter", "{quarter}")
@@ -231,7 +231,7 @@ public class UCSBCurriculumService {
             retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
         }
 
-        logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
         return retVal;
     }
      
