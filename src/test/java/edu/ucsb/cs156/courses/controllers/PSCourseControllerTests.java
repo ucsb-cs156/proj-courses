@@ -565,46 +565,242 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void api_courses__user_logged_in__delete_course() throws Exception {
+    public void api_courses__user_logged_in__delete_course__ucsb_api__enroll_code_does_not_exist_error__treat_as_primary() throws Exception {
         // arrange
-
         User u = currentUserService.getCurrentUser().getUser();
-        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u).id(15L).build();
-        when(coursesRepository.findByIdAndUser(eq(15L), eq(u))).thenReturn(Optional.of(ps1));
+	PersonalSchedule ps = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        PSCourse primary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(1L).build();
 
+        when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(primary));
+	when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+	when(ucsbCurriculumService.getAllSections(eq("08896"), eq("20221"))).thenReturn("{\"error\": \"Enroll code doesn't exist in that quarter.\"}");
+		
         // act
         MvcResult response = mockMvc.perform(
-                delete("/api/courses/user?id=15")
+                delete("/api/courses/user?id=1")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(coursesRepository, times(1)).findByIdAndUser(15L, u);
-        verify(coursesRepository, times(1)).delete(ps1);
+        verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
+	verify(coursesRepository, times(1)).delete(primary);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("PSCourse with id 15 deleted", json.get("message"));
+        assertEquals("PSCourse with id 1 deleted", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses__user_logged_in__delete_course__ucsb_api__unauthorized_error__treat_as_primary() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+	PersonalSchedule ps = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        PSCourse primary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(1L).build();
+
+        when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(primary));
+	when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+	when(ucsbCurriculumService.getAllSections(eq("08896"), eq("20221"))).thenReturn("{\"error\": \"401: Unauthorized\"}");
+		
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/courses/user?id=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
+	verify(coursesRepository, times(1)).delete(primary);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PSCourse with id 1 deleted", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses__user_logged_in__delete_course__ucsb_api__primary_not_found__treat_as_primary() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+	PersonalSchedule ps = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        PSCourse primary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(1L).build();
+
+        when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(primary));
+	when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+	when(ucsbCurriculumService.getAllSections(eq("08896"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC291A_UNEXPECTED);
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08896"))).thenReturn(Optional.of(primary));
+		
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/courses/user?id=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
+	verify(coursesRepository, times(1)).findByPsIdAndEnrollCd(1L, "08896");
+	verify(coursesRepository, times(1)).delete(primary);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PSCourse with id 1 deleted", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses__user_logged_in__delete_course__primary_with_no_secondary() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+	PersonalSchedule ps = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        PSCourse primary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(1L).build();
+
+        when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(primary));
+	when(ucsbCurriculumService.getAllSections(eq("08896"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC291A);
+	when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08896"))).thenReturn(Optional.of(primary));
+	
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/courses/user?id=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
+	verify(personalScheduleRepository, times(1)).findByIdAndUser(1L, u);
+	verify(coursesRepository, times(1)).delete(primary);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PSCourse with id 1 deleted", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses__user_logged_in__delete_course__primary_with_secondary() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+	PersonalSchedule ps = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        PSCourse primary = PSCourse.builder().enrollCd("63370").psId(1L).user(u).id(1L).build();
+	PSCourse secondary = PSCourse.builder().enrollCd("63388").psId(1L).user(u).id(2L).build();
+
+        when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(primary));
+	when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+	when(ucsbCurriculumService.getAllSections(eq("63370"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC100);
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63370"))).thenReturn(Optional.of(primary));
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63388"))).thenReturn(Optional.of(secondary));
+	     
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/courses/user?id=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
+	verify(personalScheduleRepository, times(1)).findByIdAndUser(1L, u);
+	verify(ucsbCurriculumService, times(1)).getAllSections("63370", "20221");
+	verify(coursesRepository, times(1)).delete(primary);
+	verify(coursesRepository, times(1)).delete(secondary);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PSCourse with id 1 and matching secondary with id 2 deleted", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses__user_logged_in__delete_course__secondary_with_primary() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+	PersonalSchedule ps = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        PSCourse primary = PSCourse.builder().enrollCd("63370").psId(1L).user(u).id(1L).build();
+	PSCourse secondary = PSCourse.builder().enrollCd("63388").psId(1L).user(u).id(2L).build();
+
+        when(coursesRepository.findByIdAndUser(eq(2L), eq(u))).thenReturn(Optional.of(secondary));
+	when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+	when(ucsbCurriculumService.getAllSections(eq("63388"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC100);
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63370"))).thenReturn(Optional.of(primary));
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63388"))).thenReturn(Optional.of(secondary));
+	     
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/courses/user?id=2")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).findByIdAndUser(2L, u);
+	verify(personalScheduleRepository, times(1)).findByIdAndUser(1L, u);
+	verify(ucsbCurriculumService, times(1)).getAllSections("63388", "20221");
+	verify(coursesRepository, times(1)).delete(primary);
+	verify(coursesRepository, times(1)).delete(secondary);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PSCourse with id 2 and matching primary with id 1 deleted", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses__user_logged_in__delete_course__primary_with_multiple_secondaries() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+	PersonalSchedule ps = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        PSCourse primary = PSCourse.builder().enrollCd("08292").psId(1L).user(u).id(1L).build();
+	PSCourse secondary = PSCourse.builder().enrollCd("08300").psId(1L).user(u).id(2L).build();
+
+        when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(primary));
+	when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+	when(ucsbCurriculumService.getAllSections(eq("08292"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC156_UNEXPECTED);
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08292"))).thenReturn(Optional.of(primary));
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08300"))).thenReturn(Optional.of(secondary));
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08318"))).thenReturn(Optional.empty());
+	when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08326"))).thenReturn(Optional.empty());
+	     
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/courses/user?id=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
+	verify(personalScheduleRepository, times(1)).findByIdAndUser(1L, u);
+	verify(ucsbCurriculumService, times(1)).getAllSections("08292", "20221");
+	verify(coursesRepository, times(1)).delete(primary);
+	verify(coursesRepository, times(1)).delete(secondary);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PSCourse with id 1 and matching secondary with id 2 deleted", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
     @Test
     public void api_courses__user_logged_in__delete_course_that_does_not_exist() throws Exception {
         // arrange
-
         User u = currentUserService.getCurrentUser().getUser();
-        User otherUser = User.builder().id(98L).build();
-        PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(u).id(15L).build();
-        when(coursesRepository.findByIdAndUser(eq(15L), eq(otherUser))).thenReturn(Optional.of(ps1));
+        when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.empty());
 
         // act
         MvcResult response = mockMvc.perform(
-                delete("/api/courses/user?id=15")
+                delete("/api/courses/user?id=1")
                         .with(csrf()))
                 .andExpect(status().isNotFound()).andReturn();
 
         // assert
-        verify(coursesRepository, times(1)).findByIdAndUser(15L, u);
+        verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("PSCourse with id 15 not found", json.get("message"));
+        assertEquals("PSCourse with id 1 not found", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses__user_logged_in__delete_course_with_personal_schedule_that_does_not_exist() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+	PSCourse course = PSCourse.builder().enrollCd("00000").psId(1L).user(u).id(1L).build();
+        when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(course));
+	when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/courses/user?id=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
+	verify(personalScheduleRepository, times(1)).findByIdAndUser(1L, u);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("PersonalSchedule with id 1 not found", json.get("message"));
     }
 
     @WithMockUser(roles = { "USER" })
