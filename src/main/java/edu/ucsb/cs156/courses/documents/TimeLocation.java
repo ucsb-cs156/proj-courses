@@ -7,13 +7,18 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class TimeLocation {
+@NoArgsConstructor
+public class TimeLocation implements Cloneable {
     private String room;
     private String building;
     private String roomCapacity;
     private String days; 
     private String beginTime; 
     private String endTime;
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

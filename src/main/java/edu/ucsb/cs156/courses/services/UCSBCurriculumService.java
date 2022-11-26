@@ -27,6 +27,8 @@ import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.Section;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Map;
 import java.util.HashMap;
@@ -37,12 +39,11 @@ import java.io.*;
  * Service object that wraps the UCSB Academic Curriculum API
  */
 @Service
+@Slf4j
 public class UCSBCurriculumService {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    private Logger logger = LoggerFactory.getLogger(UCSBCurriculumService.class);
 
     @Value("${app.ucsb.api.consumer_key}")
     private String apiKey;
@@ -81,7 +82,7 @@ public class UCSBCurriculumService {
             url = CURRICULUM_ENDPOINT + params;
         }
 
-        logger.info("url=" + url);
+        log.info("url=" + url);
 
         String retVal = "";
         MediaType contentType = null;
@@ -94,7 +95,7 @@ public class UCSBCurriculumService {
         } catch (HttpClientErrorException e) {
             retVal = "{\"error\": \"401: Unauthorized\"}";
         }
-        logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
         return retVal;
     }
 
@@ -125,7 +126,7 @@ public class UCSBCurriculumService {
 
         HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-        logger.info("url=" + SUBJECTS_ENDPOINT);
+        log.info("url=" + SUBJECTS_ENDPOINT);
 
         String retVal = "";
         MediaType contentType = null;
@@ -138,7 +139,7 @@ public class UCSBCurriculumService {
         } catch (HttpClientErrorException e) {
             retVal = "{\"error\": \"401: Unauthorized\"}";
         }
-        logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
         return retVal;
     }
 
@@ -155,7 +156,7 @@ public class UCSBCurriculumService {
         String url = SECTION_ENDPOINT;
 
 
-        logger.info("url=" + url);
+        log.info("url=" + url);
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
         .queryParam("quarter", "{quarter}")
@@ -183,7 +184,7 @@ public class UCSBCurriculumService {
             retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
         }
 
-        logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
         return retVal;
     }
      
@@ -201,7 +202,7 @@ public class UCSBCurriculumService {
 
         String url = "https://api.ucsb.edu/academics/curriculums/v3/classsection/" + quarter + "/" + enrollCd;
 
-        logger.info("url=" + url);
+        log.info("url=" + url);
 
         String retVal = "";
         MediaType contentType = null;
@@ -214,7 +215,7 @@ public class UCSBCurriculumService {
         } catch (HttpClientErrorException e) {
             retVal = "{\"error\": \"401: Unauthorized\"}";
         }
-        logger.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
         return retVal;
 
     }

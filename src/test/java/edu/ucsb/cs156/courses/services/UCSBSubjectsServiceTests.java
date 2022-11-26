@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.test.web.client.MockRestServiceServer;
 
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @RestClientTest(UCSBSubjectsService.class)
+@AutoConfigureDataJpa
 class UCSBSubjectsServiceTests {
 
   @Autowired
