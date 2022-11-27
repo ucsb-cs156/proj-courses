@@ -1,32 +1,44 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom/extend-expect";
 import { useState } from 'react';
 
 import PersonalScheduleDropdown from "main/components/PersonalSchedules/PersonalScheduleDropdown"
-import {onePersonalSchedule} from "fixtures/personalSchedulesFixtures"
-import {twoPersonalSchedules} from "fixtures/personalSchedulesFixtures"
+import {personalSchedulesFixtures} from "fixtures/personalSchedulesFixtures"
+import {personalScheduleFixtures} from "fixtures/personalScheduleFixtures"
 
-jest.mock('react', () => ({
-    ...jest.requireActual('react'),
-    useState: jest.fn()
-}))
-
-describe("SingleScheduleSelector tests", () => {
+jest.mock("react", () => ({
+    ...jest.requireActual("react"),
+    useState: jest.fn(),
+    compareValues: jest.fn(),
+  }));
+  
+describe("SingleSubjectDropdown tests", () => {
+  
     beforeEach(() => {
-        useState.mockImplementation(jest.requireActual('react').useState);
+      jest.spyOn(console, 'error')
+      console.error.mockImplementation(() => null);
     });
-
+  
+    beforeEach(() => {
+      useState.mockImplementation(jest.requireActual("react").useState);
+    });
+  
     afterEach(() => {
-        jest.clearAllMocks();
+      jest.clearAllMocks();
     });
+  
+    afterEach(() => {
+      console.error.mockRestore();
+   })
 
     const schedule = jest.fn();
     const setSchedule = jest.fn();
 
     test("renders without crashing on one schedule", () => {
         render(<PersonalScheduleDropdown
-            schedules={[onePersonalSchedule]}
-            schedule={onePersonalSchedule}
+            schedules={[personalSchedulesFixtures.onePersonalSchedule]}
+            schedule={[personalSchedulesFixtures.onePersonalSchedule]}
             setSchedule={setSchedule}
             controlId="psd1"
         />);
@@ -34,7 +46,7 @@ describe("SingleScheduleSelector tests", () => {
 
     test("renders without crashing on three schedules", () => {
         render(<PersonalScheduleDropdown
-            schedules={twoPersonalSchedules}
+            schedules={personalScheduleFixtures.threePersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd2"
@@ -44,7 +56,7 @@ describe("SingleScheduleSelector tests", () => {
     test("when I select an object, the value changes", async () => {
         render(
             <PersonalScheduleDropdown
-                schedules={twoPersonalSchedules}
+                schedules={personalScheduleFixtures.threePersonalSchedules}
                 schedule={schedule}
                 setSchedule={setSchedule}
                 controlId="psd3"
@@ -60,7 +72,7 @@ describe("SingleScheduleSelector tests", () => {
         const onChange = jest.fn();
         render(
             <PersonalScheduleDropdown
-                schedules={twoPersonalSchedules}
+                schedules={personalScheduleFixtures.threePersonalSchedules}
                 schedule={schedule}
                 setSchedule={setSchedule}
                 controlId="psd1"
@@ -82,7 +94,7 @@ describe("SingleScheduleSelector tests", () => {
     test("default label is Schedule", async () => {
         render(
             <PersonalScheduleDropdown
-            schedules={twoPersonalSchedules}
+            schedules={personalScheduleFixtures.threePersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd1"
@@ -95,7 +107,7 @@ describe("SingleScheduleSelector tests", () => {
     test("keys / testids are set correctly on options", async () => {
         render(
             <PersonalScheduleDropdown
-            schedules={twoPersonalSchedules}
+            schedules={personalScheduleFixtures.threePersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd1"
@@ -115,7 +127,7 @@ describe("SingleScheduleSelector tests", () => {
 
         render(
             <PersonalScheduleDropdown
-            schedules={twoPersonalSchedules}
+            schedules={personalScheduleFixtures.threePersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd1"
@@ -126,7 +138,7 @@ describe("SingleScheduleSelector tests", () => {
     });
 
     test("when localstorage has no value, first element of schedule is passed to useState", async () => {
-        const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+        const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
         getItemSpy.mockImplementation(() => null);
 
         const setScheduleStateSpy = jest.fn();
@@ -134,7 +146,7 @@ describe("SingleScheduleSelector tests", () => {
 
         render(
             <PersonalScheduleDropdown
-            schedules={twoPersonalSchedules}
+            schedules={personalScheduleFixtures.threePersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd1"

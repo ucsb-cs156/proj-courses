@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap';
 
-function PersonalScheduleDropdown({ schedules, schedule, setSchedule, controlId, onChange = null, label = "Schedule" }) {
+const PersonalScheduleDropdown = ({ schedules, schedule, setSchedule, controlId, onChange = null, label = "Schedule" }) => {
 
     const localSearchSchedule = localStorage.getItem(controlId);
 
