@@ -1,6 +1,6 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
-import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSection } from "main/utils/sectionUtils.js";
+import { convertToFraction, formatInstructors, formatLocation, formatTime} from "main/utils/sectionUtils.js";
 
 
 export default function PersonalSectionsTable({ personalSections }) {
