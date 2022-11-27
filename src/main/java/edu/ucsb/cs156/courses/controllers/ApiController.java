@@ -27,7 +27,7 @@ public abstract class ApiController {
     return Map.of("message", message);
   }
 
-  @ExceptionHandler({ EntityNotFoundException.class, BadEnrollCdException.class, IllegalArgumentException.class })
+  @ExceptionHandler({ EntityNotFoundException.class, BadEnrollCdException.class })
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public Object handleGenericException(Throwable e) {
     return Map.of(
