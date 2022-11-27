@@ -16,9 +16,9 @@ const personalScheduleFixtures = {
           "hostedDomain": "ucsb.edu",
           "admin": true
         },
-        "description": "Advanced Applications Programming",
+        "description": "My Plan for Winter",
         "quarter": "20221",
-        "name": "CS156"
+        "name": "Winter Courses"
       }
     ],
 
@@ -39,9 +39,9 @@ const personalScheduleFixtures = {
             "hostedDomain": "ucsb.edu",
             "admin": true
           },
-          "description": "Advanced Applications Programming",
+          "description": "My Plan for Winter",
           "quarter": "20221",
-          "name": "CS156"
+          "name": "Winter Courses"
         },
         {
           "id": 2,
@@ -58,9 +58,9 @@ const personalScheduleFixtures = {
             "hostedDomain": "ucsb.edu",
             "admin": true
           },
-          "description": "Operating Systems",
-          "quarter": "20221",
-          "name": "CS170"
+          "description": "My Plan for Spring",
+          "quarter": "20224",
+          "name": "Spring Courses"
         },
         {
           "id": 3,
@@ -77,9 +77,9 @@ const personalScheduleFixtures = {
             "hostedDomain": "ucsb.edu",
             "admin": true
           },
-          "description": "DATA STRUCT ALGOR",
-          "quarter": "20221",
-          "name": "CS130A"
+          "description": "My Plan for Fall",
+          "quarter": "20229",
+          "name": "Fall Courses"
         }
     ]
 };
