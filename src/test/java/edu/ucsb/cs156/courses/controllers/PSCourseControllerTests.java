@@ -372,7 +372,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(
                 post("/api/courses/post?enrollCd=63370&psId=1")
                         .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                .andExpect(status().is(400)).andReturn();
 
         // assert
 	Map<String, Object> json = responseToJson(response);
@@ -394,7 +394,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(
                 post("/api/courses/post?enrollCd=63370&psId=1")
                         .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                .andExpect(status().is(400)).andReturn();
 
         // assert
 	Map<String, Object> json = responseToJson(response);
