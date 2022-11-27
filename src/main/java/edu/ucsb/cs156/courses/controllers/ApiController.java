@@ -35,4 +35,13 @@ public abstract class ApiController {
       "message", e.getMessage()
     );
   }
+  
+  @ExceptionHandler({IllegalArgumentException.class })
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Object handleIllegalArgumentException(Throwable e) {
+    return Map.of(
+      "type", e.getClass().getSimpleName(),
+      "message", e.getMessage()
+    );
+  }
 }
