@@ -117,7 +117,7 @@ describe("BasicCourseSearchForm tests", () => {
     const expectedFields = {
       quarter: "20211",
       subject: "ANTH",
-      level: "G"
+      level: "G",
     };
 
     await waitFor(() => {
