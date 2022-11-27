@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap';
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 const PersonalScheduleDropdown = ({ schedules, schedule, setSchedule, controlId, onChange = null, label = "Schedule" }) => {
 
@@ -36,7 +37,7 @@ const PersonalScheduleDropdown = ({ schedules, schedule, setSchedule, controlId,
                             data-testid={key}
                             value={object.id}
                         >
-                            {object.name}
+                            {yyyyqToQyy(object.quarter)} {object.name}
                         </option>
                     );
                 })}

@@ -4,7 +4,6 @@ import "@testing-library/jest-dom/extend-expect";
 import { useState } from 'react';
 
 import PersonalScheduleDropdown from "main/components/PersonalSchedules/PersonalScheduleDropdown"
-import {personalSchedulesFixtures} from "fixtures/personalSchedulesFixtures"
 import {personalScheduleFixtures} from "fixtures/personalScheduleFixtures"
 
 jest.mock("react", () => ({
@@ -37,8 +36,8 @@ describe("SingleSubjectDropdown tests", () => {
 
     test("renders without crashing on one schedule", () => {
         render(<PersonalScheduleDropdown
-            schedules={[personalSchedulesFixtures.onePersonalSchedule]}
-            schedule={[personalSchedulesFixtures.onePersonalSchedule]}
+            schedules={personalScheduleFixtures.onePersonalSchedule}
+            schedule={personalScheduleFixtures.onePersonalSchedule}
             setSchedule={setSchedule}
             controlId="psd1"
         />);
