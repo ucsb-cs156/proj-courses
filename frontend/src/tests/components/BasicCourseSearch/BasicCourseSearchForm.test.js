@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { allTheSubjects } from "fixtures/subjectFixtures";
-import { twoPersonalSchedules } from "fixtures/personalSchedulesFixtures"
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -97,26 +96,6 @@ describe("BasicCourseSearchForm tests", () => {
     expect(selectLevel.value).toBe("G");
   });
 
-  test("when I select a schedule, the state for schedule changes", async () => {
-    axiosMock.onGet("/api/personalschedules/all").reply(200, twoPersonalSchedules);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <BasicCourseSearchForm />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-    await waitFor(() => {
-      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
-    });
-    const selectSchedule = screen.getByLabelText("Schedule");
-    console.log(selectSchedule.textContent)
-    userEvent.selectOptions(selectSchedule, 1);
-    expect(selectSchedule.value).toBe(1);
-  });
-
   test("when I click submit, the right stuff happens", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     const sampleReturnValue = {
@@ -138,8 +117,7 @@ describe("BasicCourseSearchForm tests", () => {
     const expectedFields = {
       quarter: "20211",
       subject: "ANTH",
-      level: "G",
-      schedule: 1
+      level: "G"
     };
 
     await waitFor(() => {
@@ -152,8 +130,6 @@ describe("BasicCourseSearchForm tests", () => {
     userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
-    // const selectSchedule = screen.getByLabelText("Schedule");
-    // userEvent.selectOptions(selectSchedule, "1");
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
 
@@ -194,8 +170,6 @@ describe("BasicCourseSearchForm tests", () => {
     userEvent.selectOptions(selectSubject, "MATH");
     const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
-    // const selectSchedule = screen.getByLabelText("Schedule");
-    // userEvent.selectOptions(selectSchedule, "1");
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
   });

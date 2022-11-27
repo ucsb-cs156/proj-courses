@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap';
 
-function PersonalScheduleDropdown({ schedules, setSchedule, controlId, onChange = null, label = "Schedule" }) {
+function PersonalScheduleDropdown({ schedules, schedule, setSchedule, controlId, onChange = null, label = "Schedule" }) {
 
     const localSearchSchedule = localStorage.getItem(controlId);
 
     const [scheduleState, setScheduleState] = useState(
     // Stryker disable next-line all : not sure how to test/mock local storage
-    localSearchSchedule || {}
+    localSearchSchedule || schedule
     );
 
     const handleScheduleOnChange = (event) => {
