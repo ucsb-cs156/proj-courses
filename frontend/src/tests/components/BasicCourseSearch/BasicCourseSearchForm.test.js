@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { allTheSubjects } from "fixtures/subjectFixtures";
+import { twoPersonalSchedules } from "fixtures/personalSchedulesFixtures"
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -96,7 +97,9 @@ describe("BasicCourseSearchForm tests", () => {
     expect(selectLevel.value).toBe("G");
   });
 
-  test("when I select a schedule, the state for schedule changes", () => {
+  test("when I select a schedule, the state for schedule changes", async () => {
+    axiosMock.onGet("/api/personalschedules/all").reply(200, twoPersonalSchedules);
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -104,10 +107,14 @@ describe("BasicCourseSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>
     );
-    const selectedSchedule = screen.getByLabelText("Schedule");
-    // console.log(selectedSchedule)
-    // userEvent.selectOptions(selectedSchedule, "1");
-    // expect(selectedSchedule.value).toBe("1");
+
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
+    });
+    const selectSchedule = screen.getByLabelText("Schedule");
+    console.log(selectSchedule.textContent)
+    userEvent.selectOptions(selectSchedule, 1);
+    expect(selectSchedule.value).toBe(1);
   });
 
   test("when I click submit, the right stuff happens", async () => {

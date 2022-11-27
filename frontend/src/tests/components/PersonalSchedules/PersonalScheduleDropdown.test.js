@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { useState } from 'react';
 
 import PersonalScheduleDropdown from "main/components/PersonalSchedules/PersonalScheduleDropdown"
-import {personalSchedulesFixtures} from "fixtures/personalSchedulesFixtures"
+import {onePersonalSchedule} from "fixtures/personalSchedulesFixtures"
+import {twoPersonalSchedules} from "fixtures/personalSchedulesFixtures"
 
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
@@ -24,8 +25,8 @@ describe("SingleScheduleSelector tests", () => {
 
     test("renders without crashing on one schedule", () => {
         render(<PersonalScheduleDropdown
-            schedules={[personalSchedulesFixtures.onePersonalSchedule]}
-            schedule={schedule}
+            schedules={onePersonalSchedule}
+            schedule={onePersonalSchedule}
             setSchedule={setSchedule}
             controlId="psd1"
         />);
@@ -33,7 +34,7 @@ describe("SingleScheduleSelector tests", () => {
 
     test("renders without crashing on three schedules", () => {
         render(<PersonalScheduleDropdown
-            schedules={personalSchedulesFixtures.twoPersonalSchedules}
+            schedules={twoPersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd2"
@@ -43,15 +44,14 @@ describe("SingleScheduleSelector tests", () => {
     test("when I select an object, the value changes", async () => {
         render(
             <PersonalScheduleDropdown
-                schedules={personalSchedulesFixtures.twoPersonalSchedules}
+                schedules={twoPersonalSchedules}
                 schedule={schedule}
                 setSchedule={setSchedule}
                 controlId="psd3"
-                label="Select Schedule"
             />
         );
-        expect(await screen.findByLabelText("Select Schedule")).toBeInTheDocument();
-        const selectSchedule = screen.getByLabelText("Select Schedule")
+        expect(await screen.findByLabelText("Schedule")).toBeInTheDocument();
+        const selectSchedule = screen.getByLabelText("Schedule")
         userEvent.selectOptions(selectSchedule, "2");
         expect(setSchedule).toBeCalledWith("2");
     });
@@ -60,30 +60,30 @@ describe("SingleScheduleSelector tests", () => {
         const onChange = jest.fn();
         render(
             <PersonalScheduleDropdown
-                schedules={personalSchedulesFixtures.twoPersonalSchedules}
+                schedules={twoPersonalSchedules}
                 schedule={schedule}
                 setSchedule={setSchedule}
-                controlId="psd4"
-                label="Select Schedule"
+                controlId="psd1"
+                label="Schedule"
                 onChange={onChange}
             />
         );
 
-        expect(await screen.findByLabelText("Select Schedule")).toBeInTheDocument();
-        const selectSchedule = screen.getByLabelText("Select Schedule")
+        expect(await screen.findByLabelText("Schedule")).toBeInTheDocument();
+        const selectSchedule = screen.getByLabelText("Schedule")
         userEvent.selectOptions(selectSchedule, "2");
         await waitFor(() => expect(setSchedule).toBeCalledWith("2"));
-        await waitFor(() => expect(onChange).toBeCalledTimes(1));
+        await waitFor(() => expect(onChange).toBeCalledTimes("1"));
 
         // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
         const event = onChange.mock.calls[0][0];
-        expect(event.target.value).toBe("2");
+        expect(event.target.value).toBe(2);
     });
 
     test("default label is Schedule", async () => {
         render(
             <PersonalScheduleDropdown
-            schedules={[personalSchedulesFixtures.onePersonalSchedule]}
+            schedules={twoPersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd1"
@@ -96,7 +96,7 @@ describe("SingleScheduleSelector tests", () => {
     test("keys / testids are set correctly on options", async () => {
         render(
             <PersonalScheduleDropdown
-            schedules={[personalSchedulesFixtures.onePersonalSchedule]}
+            schedules={twoPersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd1"
@@ -109,24 +109,24 @@ describe("SingleScheduleSelector tests", () => {
 
     test("when localstorage has a value, it is passed to useState", async () => {
         const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
-        getItemSpy.mockImplementation(() => "1");
+        getItemSpy.mockImplementation(() => "2");
 
         const setScheduleStateSpy = jest.fn();
         useState.mockImplementation((x)=>[x, setScheduleStateSpy]);
 
         render(
             <PersonalScheduleDropdown
-            schedules={[personalSchedulesFixtures.onePersonalSchedule]}
+            schedules={twoPersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd1"
             />
         );
 
-        // await waitFor(() => expect(useState).toBeCalledWith("1"));
+        await waitFor(() => expect(useState).toBeCalledWith("2"));
     });
 
-    test("when localstorage has no value, first element of schedule range is passed to useState", async () => {
+    test("when localstorage has no value, first element of schedule is passed to useState", async () => {
         const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
         getItemSpy.mockImplementation(() => null);
 
@@ -135,13 +135,28 @@ describe("SingleScheduleSelector tests", () => {
 
         render(
             <PersonalScheduleDropdown
-            schedules={[personalSchedulesFixtures.onePersonalSchedule]}
+            schedules={twoPersonalSchedules}
             schedule={schedule}
             setSchedule={setSchedule}
             controlId="psd1"
             />
         );
 
-        // await waitFor(() => expect(useState).toBeCalledWith(1));
+        await waitFor(() =>
+        expect(useState).toBeCalledWith(expect.objectContaining({})));
     });
+
+    test("When no schedules, dropdown is blank", async () => {
+        render(
+          <PersonalScheduleDropdown
+            schedules={[]}
+            schedule={schedule}
+            setSchedule={setSchedule}
+            controlId="psd1"
+          />
+        );
+    
+        const expectedKey = "psd1";
+        expect(screen.queryByTestId(expectedKey)).toBeNull();
+      });
 });
