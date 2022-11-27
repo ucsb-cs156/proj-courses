@@ -145,6 +145,10 @@ public class UCSBCurriculumService {
         return retVal;
     }
 
+    /**
+     * This method retrieves exactly one section matching the
+     *  enrollCode and quarter arguments, if such a section exists.
+     */
     public String getSection(String enrollCode, String quarter) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -190,6 +194,12 @@ public class UCSBCurriculumService {
         return retVal;
     }
 
+    /**
+     * This method retrieves all of the sections related to a certain
+     *  enroll code. For example, if the enrollCode is for a discussion
+     *  section, the lecture section and all related discussion sections
+     *  will also be returned.
+     */
     public String getAllSections(String enrollCode, String quarter) {
 
         HttpHeaders headers = new HttpHeaders();
