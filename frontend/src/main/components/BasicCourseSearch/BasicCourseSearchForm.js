@@ -10,7 +10,6 @@ import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import { useBackendMutation } from "main/utils/useBackend";
 
-
 const BasicCourseSearchForm = ({ fetchJSON }) => {
 
   const { data: systemInfo } = useSystemInfo();
