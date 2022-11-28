@@ -88,11 +88,21 @@ public class PersonalSchedulesController extends ApiController {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
+        // Checks length of name parameter (length should be 15 chars or less, nonzero)
+        if (name.length() > 15) {
+          throw new IllegalArgumentException("name parameter restricted to 15 chars or less");
+        }
+
         PersonalSchedule personalschedule = new PersonalSchedule();
         personalschedule.setUser(currentUser.getUser());
         personalschedule.setName(name);
         personalschedule.setDescription(description);
         personalschedule.setQuarter(quarter);
+
+        Optional<PersonalSchedule> existCheck = personalscheduleRepository.findByUserAndNameAndQuarter(currentUser.getUser(), name, quarter);
+        if (existCheck.isPresent()) {
+          throw new IllegalArgumentException("already exists");
+        }
         PersonalSchedule savedPersonalSchedule = personalscheduleRepository.save(personalschedule);
         return savedPersonalSchedule;
     }

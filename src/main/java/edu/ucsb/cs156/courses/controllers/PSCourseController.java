@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Iterator;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
@@ -46,6 +49,8 @@ public class PSCourseController extends ApiController {
     PersonalScheduleRepository personalScheduleRepository;
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
+    @Autowired
+    ObjectMapper mapper;
 
     @ApiOperation(value = "List all courses (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -106,29 +111,64 @@ public class PSCourseController extends ApiController {
         return courses;
     }
 
-
     @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
-    public PSCourse postCourses(
+    public ArrayList<PSCourse> postCourses(
             @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam Long psId) {
+            @ApiParam("psId") @RequestParam Long psId) throws JsonProcessingException {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
         PersonalSchedule checkPsId = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser())
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
 
-        String body = ucsbCurriculumService.getSection(enrollCd, checkPsId.getQuarter());
+        String body = ucsbCurriculumService.getAllSections(enrollCd, checkPsId.getQuarter());
         if(body.equals("{\"error\": \"401: Unauthorized\"}") || body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")){
             throw new BadEnrollCdException(enrollCd);
         }
 
-        PSCourse courses = new PSCourse();
-        courses.setUser(currentUser.getUser());
-        courses.setEnrollCd(enrollCd);
-        courses.setPsId(psId);
-        PSCourse savedCourses = coursesRepository.save(courses);
+	String enrollCdPrimary = null;
+	boolean hasSecondary = false;
+	Iterator<JsonNode> it = mapper.readTree(body).path("classSections").elements();
+	while (it.hasNext()) {
+	    JsonNode classSection = it.next();
+	    String section = classSection.path("section").asText();
+	    if (section.endsWith("00")) {
+		String currentEnrollCd = classSection.path("enrollCode").asText();
+		enrollCdPrimary = currentEnrollCd;
+		if (hasSecondary)
+		    break;
+	    } else {
+		hasSecondary = true;
+	    }
+	}
+
+	if (enrollCdPrimary == null) {
+	    enrollCdPrimary = enrollCd;
+	    hasSecondary = false;
+	}
+
+	ArrayList<PSCourse> savedCourses = new ArrayList<>();
+
+	if (!enrollCdPrimary.equals(enrollCd)) {
+	    String enrollCdSecondary = enrollCd;
+	    PSCourse secondary = new PSCourse();
+	    secondary.setUser(currentUser.getUser());
+	    secondary.setEnrollCd(enrollCdSecondary);
+	    secondary.setPsId(psId);
+	    PSCourse savedSecondary = coursesRepository.save(secondary);
+	    savedCourses.add(savedSecondary);
+	} else if (hasSecondary) {
+	    throw new IllegalArgumentException(enrollCd + " is for a course with sections; please add a specific section and the lecture will be automatically added");
+	}
+
+	PSCourse primary = new PSCourse();
+	primary.setUser(currentUser.getUser());
+	primary.setEnrollCd(enrollCdPrimary);
+	primary.setPsId(psId);
+	PSCourse savedPrimary = coursesRepository.save(primary);
+	savedCourses.add(savedPrimary);
         return savedCourses;
     }
 
@@ -149,12 +189,46 @@ public class PSCourseController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/user")
     public Object deleteCourses(
-            @ApiParam("id") @RequestParam Long id) {
+            @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
         User currentUser = getCurrentUser().getUser();
-        PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)
+        PSCourse psCourse = coursesRepository.findByIdAndUser(id, currentUser)
           .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
-        coursesRepository.delete(courses);
-        return genericMessage("PSCourse with id %s deleted".formatted(id));
+	long psId = psCourse.getPsId();
+	PersonalSchedule checkPsId = personalScheduleRepository.findByIdAndUser(psId, currentUser)
+	  .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
+	
+	String body = ucsbCurriculumService.getAllSections(psCourse.getEnrollCd(), checkPsId.getQuarter());
+        if (body.equals("{\"error\": \"401: Unauthorized\"}") || body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")) {
+	    coursesRepository.delete(psCourse);
+	    return genericMessage("PSCourse with id %s deleted".formatted(id));
+        }
+	
+	Iterator<JsonNode> it = mapper.readTree(body).path("classSections").elements();
+	Optional<Long> primaryId = Optional.empty();
+	Optional<Long> secondaryId = Optional.empty();
+	while (it.hasNext()) {
+	    JsonNode classSection = it.next();
+	    String section = classSection.path("section").asText();
+	    String currentEnrollCd = classSection.path("enrollCode").asText();
+	    Optional<PSCourse> currentPsCourse = coursesRepository.findByPsIdAndEnrollCd(psId, currentEnrollCd);
+	    if (!currentPsCourse.isPresent())
+		continue;
+	    Optional<Long> idOpt = Optional.of(currentPsCourse.get().getId());
+	    if (section.endsWith("00"))
+		primaryId = idOpt;
+	    else
+		secondaryId = idOpt;
+	    coursesRepository.delete(currentPsCourse.get());
+	}
+	
+	if (primaryId.isPresent() && secondaryId.isPresent()) {
+	    if (primaryId.get() == id)
+		return genericMessage("PSCourse with id %s and matching secondary with id %s deleted".formatted(id, secondaryId.get()));
+	    else
+		return genericMessage("PSCourse with id %s and matching primary with id %s deleted".formatted(id, primaryId.get()));
+	}
+	
+	return genericMessage("PSCourse with id %s deleted".formatted(id));
     }
 
     @ApiOperation(value = "Update a single Course (admin)")
