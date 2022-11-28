@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 import java.util.ArrayList;
-import edu.ucsb.cs156.courses.services.QuarterListService;;
 
 public class QuarterTests {
 
@@ -255,6 +254,11 @@ public class QuarterTests {
     }
 
     @Test
+    public void test_qyyToQyyyy__F50() throws Exception {
+        assertEquals(20504, Quarter.qyyToQyyyy("F50"));
+    }
+
+    @Test
     public void test_qyyToQyyyy__W03() throws Exception {
         assertEquals(20031, Quarter.qyyToQyyyy("W03"));
     }
@@ -298,7 +302,14 @@ public class QuarterTests {
         expected.add(new Quarter("S20"));
         expected.add(new Quarter("W20"));
         expected.add(new Quarter("F19"));
-        assertEquals(expected, QuarterListService.quarterList("S20", "F19"));
+        assertEquals(expected, Quarter.quarterList("S20", "F19"));
+    }
+
+    @Test
+    public void test_quarterList_S20_F19_1() throws Exception {
+        ArrayList<Quarter> expected = new ArrayList<Quarter>();
+        expected.add(new Quarter("S20"));
+        assertEquals(expected, Quarter.quarterList("S20", "S20"));
     }
 
     @Test
@@ -308,15 +319,7 @@ public class QuarterTests {
         expected.add(new Quarter("W20"));
         expected.add(new Quarter("S20"));
 
-        assertEquals(expected, QuarterListService.quarterList("F19", "S20"));
-    }
-
-    @Test
-    public void test_quarterList_F19_F19() throws Exception {
-        List<Quarter> expected = new ArrayList<Quarter>();
-        expected.add(new Quarter("F19"));
-    
-        assertEquals(expected, QuarterListService.quarterList("F19", "F19"));
+        assertEquals(expected, Quarter.quarterList("F19", "S20"));
     }
 
     @Test
@@ -356,6 +359,13 @@ public class QuarterTests {
         Quarter q1 = new Quarter("W20");
         Quarter q2 = new Quarter("W20");
         assertEquals(q1.hashCode(), q2.hashCode());
+    }
+
+    @Test
+    public void test_hashCode2() {
+        Quarter q1 = new Quarter("W20");
+        Quarter q2 = new Quarter("F20");
+        assertNotEquals(q1.hashCode(), q2.hashCode());
     }
 
 }
