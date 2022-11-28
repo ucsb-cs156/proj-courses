@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 import java.util.ArrayList;
+import edu.ucsb.cs156.courses.services.QuarterListService;;
 
 public class QuarterTests {
 
@@ -297,7 +298,7 @@ public class QuarterTests {
         expected.add(new Quarter("S20"));
         expected.add(new Quarter("W20"));
         expected.add(new Quarter("F19"));
-        assertEquals(expected, Quarter.quarterList("S20", "F19"));
+        assertEquals(expected, QuarterListService.quarterList("S20", "F19"));
     }
 
     @Test
@@ -307,7 +308,15 @@ public class QuarterTests {
         expected.add(new Quarter("W20"));
         expected.add(new Quarter("S20"));
 
-        assertEquals(expected, Quarter.quarterList("F19", "S20"));
+        assertEquals(expected, QuarterListService.quarterList("F19", "S20"));
+    }
+
+    @Test
+    public void test_quarterList_F19_F19() throws Exception {
+        List<Quarter> expected = new ArrayList<Quarter>();
+        expected.add(new Quarter("F19"));
+    
+        assertEquals(expected, QuarterListService.quarterList("F19", "F19"));
     }
 
     @Test
