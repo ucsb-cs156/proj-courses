@@ -559,6 +559,61 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 77 not found", json.get("message"));
     }
 
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_schedules__user_logged_in__cannot_post_long_name() throws Exception {
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
+                        .with(csrf()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("IllegalArgumentException", json.get("type"));
+        assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void api_schedules__admin_logged_in__cannot_post_long_name() throws Exception {
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
+                        .with(csrf()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("IllegalArgumentException", json.get("type"));
+        assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_schedules__user_logged_in__can_post_15_char_name() throws Exception {
+        // arrange
+        User thisUser = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule expectedSchedule = PersonalSchedule.builder().name("ABCDEFGHIJKLMNO").description("Test Description").quarter("20221").user(thisUser).id(0L).build();
+
+        when(personalscheduleRepository.save(eq(expectedSchedule))).thenReturn(expectedSchedule);
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/personalschedules/post?name=ABCDEFGHIJKLMNO&description=Test Description&quarter=20221")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(personalscheduleRepository, times(1)).save(expectedSchedule);
+        String expectedJson = mapper.writeValueAsString(expectedSchedule);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+        
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
     public void cannot_add_two_personal_schedules_with_same_name_and_quarter() throws Exception {
@@ -577,5 +632,6 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         Map<String, Object> json = responseToJson(response);
         assertEquals("already exists", json.get("message"));
+
     }
 }
