@@ -45,6 +45,9 @@ public class JobsController extends ApiController {
     ObjectMapper mapper;
 
     @Autowired
+    UpdateCourseDataJobFactory updateCourseDataJobFactory;
+
+    @Autowired
     UpdateCourseDataWithQuarterJobFactory updateCourseDataWithQuarterJobFactory;
 
     @ApiOperation(value = "List all jobs")
