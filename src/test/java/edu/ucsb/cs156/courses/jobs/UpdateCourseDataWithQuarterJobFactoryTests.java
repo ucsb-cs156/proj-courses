@@ -14,10 +14,14 @@ import org.springframework.context.annotation.Import;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 
 @RestClientTest(UpdateCourseDataWithQuarterJobFactory.class)
 @AutoConfigureDataJpa
 public class UpdateCourseDataWithQuarterJobFactoryTests {
+
+    @MockBean
+    UCSBSubjectsService ucsbSubjectsService;
 
     @MockBean
     UCSBCurriculumService ucsbCurriculumService;
@@ -38,6 +42,7 @@ public class UpdateCourseDataWithQuarterJobFactoryTests {
         // Assert
 
         assertEquals("20212",updateCourseDataWithQuarterJob.getQuarterYYYYQ());
+        assertEquals(ucsbSubjectsService,updateCourseDataWithQuarterJob.getUcsbSubjectService());
         assertEquals(ucsbCurriculumService,updateCourseDataWithQuarterJob.getUcsbCurriculumService());
         assertEquals(convertedSectionCollection,updateCourseDataWithQuarterJob.getConvertedSectionCollection());
 
