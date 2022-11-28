@@ -9,6 +9,7 @@ import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.documents.SectionFixtures;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -329,32 +330,175 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
-    public void api_courses_post__user_logged_in() throws Exception {
+    public void api_courses_post__user_logged_in__primary_enroll_code() throws Exception {
         // arrange
         User u = currentUserService.getCurrentUser().getUser();
 
-        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+	when(ucsbCurriculumService.getAllSections(eq("08896"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC291A);
 
-        PSCourse expectedCourses = PSCourse.builder().enrollCd("08268").psId(1L).user(u).id(0L).build();
-        when(coursesRepository.save(eq(expectedCourses))).thenReturn(expectedCourses);
+        PSCourse expectedPrimary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(0L).build();
+        when(coursesRepository.save(eq(expectedPrimary))).thenReturn(expectedPrimary);
+        
 
-        when(ucsbCurriculumService.getSection(eq("08268"), eq("20224"))).thenReturn("API OUTPUT");
-
+	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
+	expectedCourses.add(expectedPrimary);
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/courses/post?enrollCd=08268&psId=1")
+                post("/api/courses/post?enrollCd=08896&psId=1")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(coursesRepository, times(1)).save(expectedCourses);
+        verify(coursesRepository, times(1)).save(expectedPrimary);
         String expectedJson = mapper.writeValueAsString(expectedCourses);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
 
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses_post__user_logged_in__primary_enroll_code_has_one_secondary() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+        when(ucsbCurriculumService.getAllSections(eq("63370"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC100);
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=63370&psId=1")
+                        .with(csrf()))
+                .andExpect(status().is(400)).andReturn();
+
+        // assert
+	Map<String, Object> json = responseToJson(response);
+	assertEquals("63370 is for a course with sections; please add a specific section and the lecture will be automatically added", json.get("message"));
+        assertEquals("IllegalArgumentException", json.get("type"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses_post__user_logged_in__primary_enroll_code_has_one_secondary_reversed() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+        when(ucsbCurriculumService.getAllSections(eq("63370"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC100_REVERSED);
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=63370&psId=1")
+                        .with(csrf()))
+                .andExpect(status().is(400)).andReturn();
+
+        // assert
+	Map<String, Object> json = responseToJson(response);
+	assertEquals("63370 is for a course with sections; please add a specific section and the lecture will be automatically added", json.get("message"));
+        assertEquals("IllegalArgumentException", json.get("type"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses_post__user_logged_in__unexpected_ucsb_api_response_assumes_primary_course() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+        when(ucsbCurriculumService.getAllSections(eq("08896"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC291A_UNEXPECTED);
+	
+	PSCourse expectedPrimary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(0L).build();
+        when(coursesRepository.save(eq(expectedPrimary))).thenReturn(expectedPrimary);
+
+	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
+	expectedCourses.add(expectedPrimary);
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=08896&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(coursesRepository, times(1)).save(expectedPrimary);
+        String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses_post__user_logged_in__secondary_enroll_code_adds_secondary_and_primary() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+        when(ucsbCurriculumService.getAllSections(eq("63388"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC100);
+
+	PSCourse expectedPrimary = PSCourse.builder().enrollCd("63370").psId(1L).user(u).id(0L).build();
+        when(coursesRepository.save(eq(expectedPrimary))).thenReturn(expectedPrimary);
+
+	PSCourse expectedSecondary = PSCourse.builder().enrollCd("63388").psId(1L).user(u).id(0L).build();
+        when(coursesRepository.save(eq(expectedSecondary))).thenReturn(expectedSecondary);
+
+	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
+	expectedCourses.add(expectedSecondary);
+	expectedCourses.add(expectedPrimary);
+	
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=63388&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+	verify(coursesRepository, times(1)).save(expectedPrimary);
+	verify(coursesRepository, times(1)).save(expectedSecondary);
+        String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void api_courses_post__user_logged_in__section_order_in_json_does_not_matter() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+        when(ucsbCurriculumService.getAllSections(eq("08326"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC156_UNEXPECTED);
+
+	PSCourse expectedPrimary = PSCourse.builder().enrollCd("08292").psId(1L).user(u).id(0L).build();
+        when(coursesRepository.save(eq(expectedPrimary))).thenReturn(expectedPrimary);
+
+	PSCourse expectedSecondary = PSCourse.builder().enrollCd("08326").psId(1L).user(u).id(0L).build();
+        when(coursesRepository.save(eq(expectedSecondary))).thenReturn(expectedSecondary);
+
+	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
+	expectedCourses.add(expectedSecondary);
+	expectedCourses.add(expectedPrimary);
+	
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=08326&psId=1")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+	verify(coursesRepository, times(1)).save(expectedPrimary);
+	verify(coursesRepository, times(1)).save(expectedSecondary);
+        String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+    
     @WithMockUser(roles = { "USER" })
     @Test
     public void apiCoursesUserCreatesCourseWithInvalidEnrollCd() throws Exception {
@@ -364,7 +508,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
 
-        when(ucsbCurriculumService.getSection(eq("test"), eq("20224"))).thenReturn("{\"error\": \"Enroll code doesn't exist in that quarter.\"}");
+        when(ucsbCurriculumService.getAllSections(eq("test"), eq("20224"))).thenReturn("{\"error\": \"Enroll code doesn't exist in that quarter.\"}");
 
         // act
         MvcResult response = mockMvc.perform(
@@ -387,7 +531,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20224").user(u).id(1L).build();
         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
 
-        when(ucsbCurriculumService.getSection(eq("test"), eq("20224"))).thenReturn("{\"error\": \"401: Unauthorized\"}");
+        when(ucsbCurriculumService.getAllSections(eq("test"), eq("20224"))).thenReturn("{\"error\": \"401: Unauthorized\"}");
 
         // act
         MvcResult response = mockMvc.perform(

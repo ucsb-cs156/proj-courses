@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Iterator;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
@@ -46,6 +49,8 @@ public class PSCourseController extends ApiController {
     PersonalScheduleRepository personalScheduleRepository;
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
+    @Autowired
+    ObjectMapper mapper;
 
     @ApiOperation(value = "List all courses (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -110,25 +115,61 @@ public class PSCourseController extends ApiController {
     @ApiOperation(value = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
-    public PSCourse postCourses(
+    public ArrayList<PSCourse> postCourses(
             @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam Long psId) {
+            @ApiParam("psId") @RequestParam Long psId) throws JsonProcessingException {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
         PersonalSchedule checkPsId = personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser())
         .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
 
-        String body = ucsbCurriculumService.getSection(enrollCd, checkPsId.getQuarter());
+        String body = ucsbCurriculumService.getAllSections(enrollCd, checkPsId.getQuarter());
         if(body.equals("{\"error\": \"401: Unauthorized\"}") || body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")){
             throw new BadEnrollCdException(enrollCd);
         }
 
-        PSCourse courses = new PSCourse();
-        courses.setUser(currentUser.getUser());
-        courses.setEnrollCd(enrollCd);
-        courses.setPsId(psId);
-        PSCourse savedCourses = coursesRepository.save(courses);
+	String enrollCdPrimary = null;
+	boolean hasSecondary = false;
+	Iterator<JsonNode> it = mapper.readTree(body).path("classSections").elements();
+	while (it.hasNext()) {
+	    JsonNode classSection = it.next();
+	    String section = classSection.path("section").asText();
+	    if (section.endsWith("00")) {
+		String currentEnrollCd = classSection.path("enrollCode").asText();
+		enrollCdPrimary = currentEnrollCd;
+		if (hasSecondary)
+		    break;
+	    } else {
+		hasSecondary = true;
+	    }
+	}
+
+	if (enrollCdPrimary == null) {
+	    enrollCdPrimary = enrollCd;
+	    hasSecondary = false;
+	}
+
+	ArrayList<PSCourse> savedCourses = new ArrayList<>();
+
+	if (!enrollCdPrimary.equals(enrollCd)) {
+	    String enrollCdSecondary = enrollCd;
+	    PSCourse secondary = new PSCourse();
+	    secondary.setUser(currentUser.getUser());
+	    secondary.setEnrollCd(enrollCdSecondary);
+	    secondary.setPsId(psId);
+	    PSCourse savedSecondary = coursesRepository.save(secondary);
+	    savedCourses.add(savedSecondary);
+	} else if (hasSecondary) {
+	    throw new IllegalArgumentException(enrollCd + " is for a course with sections; please add a specific section and the lecture will be automatically added");
+	}
+
+	PSCourse primary = new PSCourse();
+	primary.setUser(currentUser.getUser());
+	primary.setEnrollCd(enrollCdPrimary);
+	primary.setPsId(psId);
+	PSCourse savedPrimary = coursesRepository.save(primary);
+	savedCourses.add(savedPrimary);
         return savedCourses;
     }
 
