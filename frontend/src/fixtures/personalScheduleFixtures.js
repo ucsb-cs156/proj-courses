@@ -59,7 +59,7 @@ const personalScheduleFixtures = {
             "admin": true
           },
           "description": "My Plan for Spring",
-          "quarter": "20224",
+          "quarter": "20222",
           "name": "Spring Courses"
         },
         {
@@ -78,7 +78,7 @@ const personalScheduleFixtures = {
             "admin": true
           },
           "description": "My Plan for Fall",
-          "quarter": "20229",
+          "quarter": "20224",
           "name": "Fall Courses"
         }
     ]
