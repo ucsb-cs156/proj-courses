@@ -5,11 +5,15 @@ import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class UpdateCourseDataWithQuarterJobFactory  {
+
+    @Autowired
+    private UCSBSubjectsService ucsbSubjectService;
 
     @Autowired
     private UCSBCurriculumService ucsbCurriculumService;
@@ -18,8 +22,9 @@ public class UpdateCourseDataWithQuarterJobFactory  {
     private ConvertedSectionCollection convertedSectionCollection;
 
     public UpdateCourseDataWithQuarterJob create(String quarterYYYYQ) {
+        log.info("ucsbSubjectService = " + ucsbSubjectService);
         log.info("ucsbCurriculumService = " + ucsbCurriculumService);
         log.info("convertedSectionCollection = " + convertedSectionCollection);
-        return new UpdateCourseDataWithQuarterJob(quarterYYYYQ, convertedSectionCollection);
+        return new UpdateCourseDataWithQuarterJob(quarterYYYYQ, ucsbSubjectService, ucsbCurriculumService, convertedSectionCollection);
     }
 }
