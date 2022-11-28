@@ -98,6 +98,11 @@ public class PersonalSchedulesController extends ApiController {
         personalschedule.setName(name);
         personalschedule.setDescription(description);
         personalschedule.setQuarter(quarter);
+
+        Optional<PersonalSchedule> existCheck = personalscheduleRepository.findByUserAndNameAndQuarter(currentUser.getUser(), name, quarter);
+        if (existCheck.isPresent()) {
+          throw new IllegalArgumentException("already exists");
+        }
         PersonalSchedule savedPersonalSchedule = personalscheduleRepository.save(personalschedule);
         return savedPersonalSchedule;
     }

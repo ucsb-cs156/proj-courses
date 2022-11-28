@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.jca.endpoint.GenericMessageEndpointFactory;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -611,5 +612,25 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         String expectedJson = mapper.writeValueAsString(expectedSchedule);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
+        
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    @Test
+    public void cannot_add_two_personal_schedules_with_same_name_and_quarter() throws Exception {
+        // arrange
+
+        User thisUser = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule expectedSchedule = PersonalSchedule.builder().name("TestName").description("uniquedescription1").quarter("20222").user(thisUser).id(0L).build();
+        when(personalscheduleRepository.findByUserAndNameAndQuarter(thisUser, "TestName", "20222")).thenReturn(Optional.of(expectedSchedule));
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/personalschedules/post?name=TestName&description=uniquedescrition1&quarter=20222")
+                        .with(csrf()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("already exists", json.get("message"));
+
     }
 }
