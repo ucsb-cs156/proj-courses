@@ -219,7 +219,6 @@
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig</param>
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig.MyCsrfRequestMatcher</param>
                         <param>edu.ucsb.cs156.courses.config.SpringFoxConfig</param>
-                        <param>edu.ucsb.cs156.courses.services.QuarterListService</param>
                     </excludedClasses>
                     <excludedTestClasses></excludedTestClasses>
                     <outputFormats>
