@@ -20,6 +20,6 @@ public class UpdateCourseDataWithQuarterJobFactory  {
     public UpdateCourseDataWithQuarterJob create(String quarterYYYYQ) {
         log.info("ucsbCurriculumService = " + ucsbCurriculumService);
         log.info("convertedSectionCollection = " + convertedSectionCollection);
-        return new UpdateCourseDataWithQuarterJob(quarterYYYYQ, ucsbCurriculumService, convertedSectionCollection);
+        return new UpdateCourseDataWithQuarterJob(quarterYYYYQ, convertedSectionCollection);
     }
 }
