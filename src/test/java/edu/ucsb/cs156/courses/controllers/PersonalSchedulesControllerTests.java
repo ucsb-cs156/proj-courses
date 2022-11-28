@@ -567,7 +567,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(
                 post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
                         .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                .andExpect(status().isBadRequest()).andReturn();
 
         // assert
         Map<String, Object> json = responseToJson(response);
@@ -583,7 +583,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(
                 post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
                         .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                .andExpect(status().isBadRequest()).andReturn();
 
         // assert
         Map<String, Object> json = responseToJson(response);
