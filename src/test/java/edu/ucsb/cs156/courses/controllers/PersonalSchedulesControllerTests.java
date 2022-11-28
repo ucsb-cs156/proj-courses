@@ -612,6 +612,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         String expectedJson = mapper.writeValueAsString(expectedSchedule);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
+    }
         
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
