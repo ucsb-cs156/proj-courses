@@ -31,11 +31,15 @@ import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.Section;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 public class UpdateCourseDataWithQuarterJobTests {
+
+    @Mock
+    UCSBSubjectsService ucsbSubjectsService;
 
     @Mock
     UCSBCurriculumService ucsbCurriculumService;
@@ -56,7 +60,7 @@ public class UpdateCourseDataWithQuarterJobTests {
 
         List<ConvertedSection> result = coursePage.convertedSections();
 
-        UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = new UpdateCourseDataWithQuarterJob("20211", ucsbCurriculumService,
+        UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = new UpdateCourseDataWithQuarterJob("20211", ucsbSubjectsService, ucsbCurriculumService,
                 convertedSectionCollection);
 
         when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20211"), eq("A"))).thenReturn(result);
