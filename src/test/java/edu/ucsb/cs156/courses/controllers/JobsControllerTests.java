@@ -35,6 +35,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJobFactory;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
@@ -67,6 +68,9 @@ public class JobsControllerTests extends ControllerTestCase {
 
     @MockBean
     UCSBCurriculumService ucsbCurriculumService;
+
+    @MockBean
+    UpdateCourseDataWithQuarterJobFactory updateCourseDataWithQuarterJobFactory;
 
     @MockBean
     UpdateCourseDataJobFactory updateCourseDataJobFactory;
