@@ -65,19 +65,6 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         );
     });
 
-    test("renders without crashing for regular user", () => {
-        const queryClient = new QueryClient();
-        axiosMock.onGet("/api/personalSections/all").reply(200, []);
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <PersonalSchedulesDetailsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-    });
-
     test("shows the correct info for admin users", async() => {
         setupAdminUser();
         const queryClient = new QueryClient();
