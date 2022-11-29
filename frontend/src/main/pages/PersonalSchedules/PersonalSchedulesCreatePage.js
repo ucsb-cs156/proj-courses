@@ -20,9 +20,13 @@ export default function PersonalSchedulesCreatePage() {
     toast(`New personalSchedule Created - id: ${personalSchedule.id} name: ${personalSchedule.name}`);
   }
 
+  const onError = (error) => {
+    toast(`Error: ${error.response.data.message}`);
+  }
+
   const mutation = useBackendMutation(
     objectToAxiosParams,
-     { onSuccess }, 
+     { onSuccess, onError }, 
      // Stryker disable next-line all : hard to set up test for caching
      ["/api/personalschedules/all"]
      );
