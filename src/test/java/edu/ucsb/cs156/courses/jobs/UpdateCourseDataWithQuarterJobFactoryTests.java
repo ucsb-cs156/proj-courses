@@ -13,8 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
-import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 
 @RestClientTest(UpdateCourseDataWithQuarterJobFactory.class)
 @AutoConfigureDataJpa
