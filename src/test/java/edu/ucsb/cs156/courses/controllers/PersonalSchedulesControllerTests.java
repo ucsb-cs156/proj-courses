@@ -631,7 +631,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
                 .andExpect(status().isBadRequest()).andReturn();
 
         Map<String, Object> json = responseToJson(response);
-        assertEquals("already exists", json.get("message"));
+        assertEquals("A personal schedule with that name already exists in that quarter", json.get("message"));
 
     }
 }
