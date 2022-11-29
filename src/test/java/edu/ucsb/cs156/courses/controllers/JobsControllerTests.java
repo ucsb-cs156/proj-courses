@@ -40,6 +40,7 @@ import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,6 +61,9 @@ public class JobsControllerTests extends ControllerTestCase {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @MockBean
+    UCSBSubjectsService ucsbSubjectsService;
 
     @MockBean
     UCSBCurriculumService ucsbCurriculumService;
@@ -203,7 +207,7 @@ public class JobsControllerTests extends ControllerTestCase {
     @Test
     public void admin_can_launch_update_courses_job_with_quarter() throws Exception {
         // act
-        MvcResult response = mockMvc.perform(post("/api/jobs/launch/updateCourses?quarterYYYYQ=20231").with(csrf()))
+        MvcResult response = mockMvc.perform(post("/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20231").with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
