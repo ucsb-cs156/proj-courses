@@ -24,7 +24,7 @@ jest.mock('react-toastify', () => {
 
 describe("CourseOverTimeIndexPage tests", () => {
 
-    const axiosMock = new AxiosMockAdapter(axios);
+    const axiosMock =new AxiosMockAdapter(axios);
     
     beforeEach(() => {
         axiosMock.resetHistory();
@@ -47,7 +47,7 @@ describe("CourseOverTimeIndexPage tests", () => {
         );
     });
 
-    test("calls UCSB Course over time search api correctly with 1 section response", async () => {
+    test("calls UCSB Course over time search api correctly with 3 section response", async () => {
         axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
         axiosMock
             .onGet("/api/public/courseovertime/search")

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CourseOverTimeSearchForm from "main/components/BasicCourseSearch/CourseOverTimeSearchForm";
-import BasicCourseTable from "main/components/Courses/BasicCourseTable";
 import { useBackendMutation } from "main/utils/useBackend";
+import SectionsTable from "main/components/Sections/SectionsTable";
 
 export default function CourseDescriptionIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
@@ -19,7 +19,7 @@ export default function CourseDescriptionIndexPage() {
   });
 
   const onSuccess = (courses) => {
-    setCourseJSON(courses.classes);
+    setCourseJSON(courses);
   };
 
   const mutation = useBackendMutation(
@@ -38,7 +38,7 @@ export default function CourseDescriptionIndexPage() {
       <div className="pt-2">
         <h5>Welcome to the UCSB Course History Search!</h5>
         <CourseOverTimeSearchForm fetchJSON={fetchCourseOverTimeJSON} />
-        <BasicCourseTable courses={courseJSON} />
+        <SectionsTable sections={courseJSON} />
       </div>
     </BasicLayout>
   );
