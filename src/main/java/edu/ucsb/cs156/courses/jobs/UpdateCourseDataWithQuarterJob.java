@@ -27,7 +27,7 @@ public class UpdateCourseDataWithQuarterJob implements JobContextConsumer {
 
     @Override
     public void accept(JobContext ctx) throws Exception {
-        ctx.log("Updating courses for [" + quarterYYYYQ + "]");
+        ctx.log("Updating quarter courses for [" + quarterYYYYQ + "]");
 
         List<UCSBSubject> ucsbsubjects = ucsbSubjectService.get();
         for (UCSBSubject subject : ucsbsubjects){
@@ -38,41 +38,41 @@ public class UpdateCourseDataWithQuarterJob implements JobContextConsumer {
             List<ConvertedSection> convertedSections = ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ,
                 "A");
             
-                ctx.log("Found " + convertedSections.size() + " sections");
-                ctx.log("Storing in MongoDB Collection...");
+            ctx.log("Found " + convertedSections.size() + " sections");
+            ctx.log("Storing in MongoDB Collection...");
         
-                int newSections = 0;
-                int updatedSections = 0;
-                int errors = 0;
+            int newSections = 0;
+            int updatedSections = 0;
+            int errors = 0;
         
-                for (ConvertedSection section : convertedSections) {
-                    try {
-                        String quarter = section.getCourseInfo().getQuarter();
-                        String enrollCode =  section.getSection().getEnrollCode();
-                        Optional<ConvertedSection> optionalSection = convertedSectionCollection
+            for (ConvertedSection section : convertedSections) {
+                try {
+                    String quarter = section.getCourseInfo().getQuarter();
+                    String enrollCode =  section.getSection().getEnrollCode();
+                    Optional<ConvertedSection> optionalSection = convertedSectionCollection
                                 .findOneByQuarterAndEnrollCode(quarter,enrollCode);
-                        if (optionalSection.isPresent()) {
-                            ConvertedSection existingSection = optionalSection.get();
-                            existingSection.setCourseInfo(section.getCourseInfo());
-                            existingSection.setSection(section.getSection());
-                            convertedSectionCollection.save(existingSection);
-                            updatedSections++;
-                        } else {
-                            convertedSectionCollection.save(section);
-                            newSections++;
-                        }
-                    } catch (Exception e) {
-                        ctx.log("Error saving section: " + e.getMessage());
-                        errors++;
+                    if (optionalSection.isPresent()) {
+                        ConvertedSection existingSection = optionalSection.get();
+                        existingSection.setCourseInfo(section.getCourseInfo());
+                        existingSection.setSection(section.getSection());
+                        convertedSectionCollection.save(existingSection);
+                        updatedSections++;
+                    } else {
+                        convertedSectionCollection.save(section);
+                        newSections++;
                     }
+                } catch (Exception e) {
+                    ctx.log("Error saving section: " + e.getMessage());
+                    errors++;
                 }
+            }
             
-                ctx.log(String.format("%d new sections saved, %d sections updated, %d errors", newSections, updatedSections,
+            ctx.log(String.format("%d new sections saved, %d sections updated, %d errors", newSections, updatedSections,
                         errors));
-                ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");
+            ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");
         }
 
-        ctx.log("Courses for [ " + quarterYYYYQ + "] have been updated");
+        ctx.log("Quarter courses for [" + quarterYYYYQ + "] have been updated");
 
     }
 }
