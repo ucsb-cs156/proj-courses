@@ -13,6 +13,10 @@ describe("SectionsOverTimeTableBase tests", () => {
             accessor: 'col2',
         },
         //add groupable columns
+        {
+            Header: 'Groupable',
+            accessor: 'quarter',
+        },
     ];
     
     test("renders an empty table without crashing", () => {
@@ -20,4 +24,6 @@ describe("SectionsOverTimeTableBase tests", () => {
             <SectionsOverTimeTableBase columns={columns} data={[]} group={false} />
         );
     });
+
+    
 })

@@ -1,5 +1,5 @@
 import {  fireEvent, render, screen } from "@testing-library/react";
-import { sixSections } from "fixtures/sectionOverTimeFixtures";
+import { fiveSections, sixSections, gigaSections } from "fixtures/sectionOverTimeFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import SectionsOverTimeTable from "main/components/Sections/SectionsOverTimeTable";
@@ -110,28 +110,28 @@ describe("Section tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <SectionsOverTimeTable sections={sixSections} />
+          <SectionsOverTimeTable sections={gigaSections} />
         </MemoryRouter>
       </QueryClientProvider>
       );
     
       const testId = "SectionsOverTimeTable"
 
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("S22");
-      expect(screen.getByTestId(`${testId}-cell-row-1-col-quarter`)).toHaveTextContent("W22");
+      expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22");
+      expect(screen.getByTestId(`${testId}-cell-row-3-col-quarter`)).toHaveTextContent("S21");
 
       const expandRow = screen.getByTestId(`${testId}-cell-row-1-col-quarter-expand-symbols`)
       fireEvent.click(expandRow);
 
 
-      expect(screen.getByTestId(`${testId}-cell-row-1-col-quarter`)).toHaveTextContent("W22");
+      expect(screen.getByTestId(`${testId}-cell-row-1-col-quarter`)).toHaveTextContent("S22");
   })
 
   test("First dropdown is different than last dropdown", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <SectionsOverTimeTable sections={sixSections} />
+          <SectionsOverTimeTable sections={fiveSections} />
         </MemoryRouter>
       </QueryClientProvider>
       );
@@ -141,8 +141,8 @@ describe("Section tests", () => {
       const expandRow = screen.getByTestId(`${testId}-cell-row-1-col-quarter-expand-symbols`)
       fireEvent.click(expandRow);
 
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-enrolled`)).toHaveTextContent("51/77");
-      expect(screen.getByTestId(`${testId}-cell-row-1-col-enrolled`)).toHaveTextContent("80/100");
+      expect(screen.getByTestId(`${testId}-cell-row-1-col-enrolled`)).toHaveTextContent("84/80");
+      expect(screen.getByTestId(`${testId}-cell-row-2-col-enrolled`)).toHaveTextContent("21/21");
   });
 
 
