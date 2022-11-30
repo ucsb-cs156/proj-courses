@@ -99,7 +99,7 @@ describe("AdminJobsPage tests", () => {
 
         expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
 
-        const submitButton = screen.getByText("Update Courses");
+        const submitButton = screen.getByTestId("updateCourses");
 
         const expectedKey = "BasicSearch.Subject-option-ANTH";
         await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
