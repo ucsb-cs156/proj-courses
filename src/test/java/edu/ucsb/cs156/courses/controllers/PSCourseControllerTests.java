@@ -479,7 +479,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
 	PSCourse expectedSecondary = PSCourse.builder().enrollCd("63388").psId(1L).user(u).id(0L).build();
         when(coursesRepository.save(eq(expectedSecondary))).thenReturn(expectedSecondary);
 
-        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63388"))).thenReturn(Optional.empty());
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63370"))).thenReturn(Optional.empty());
 
 	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
 	expectedCourses.add(expectedSecondary);
@@ -515,7 +515,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
 	PSCourse expectedSecondary = PSCourse.builder().enrollCd("08326").psId(1L).user(u).id(0L).build();
         when(coursesRepository.save(eq(expectedSecondary))).thenReturn(expectedSecondary);
 
-        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08326"))).thenReturn(Optional.empty());
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08292"))).thenReturn(Optional.empty());
 
 	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
 	expectedCourses.add(expectedSecondary);
