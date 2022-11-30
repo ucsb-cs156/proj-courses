@@ -106,13 +106,6 @@ describe("PersonalSchedulesCreatePage tests", () => {
     test("filling the form with a duplicate personal schedule returns an error", async () => {
 
         const queryClient = new QueryClient();
-        const personalSchedule = {
-            id: 18,
-            name: "Duplicate",
-            description: "dupe",
-            quarter: "W08"
-        };
-
         const error = {
             message: "A personal schedule with that name already exists in that quarter",
         };
