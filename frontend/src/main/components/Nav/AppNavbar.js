@@ -78,6 +78,11 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               </NavDropdown>
             </Nav>
 
+            <Nav className="mr-auto">
+              <NavDropdown title="Course History" id="appnavbar-course-over-time-dropdown" data-testid="appnavbar-course-over-time-dropdown" >
+                <NavDropdown.Item href="/courseovertime/search" data-testid="appnavbar-course-over-time-search">Search</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
 
 
             
