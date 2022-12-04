@@ -59,7 +59,6 @@ describe("PersonalSchedulesCreatePage tests", () => {
             description: "desc",
             quarter: "W08"
         };
-
         axiosMock.onPost("/api/personalschedules/post").reply( 202, personalSchedule );
 
         render(
@@ -103,6 +102,55 @@ describe("PersonalSchedulesCreatePage tests", () => {
         expect(mockToast).toBeCalledWith("New personalSchedule Created - id: 17 name: SampName");
         expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
     });
+    
+    test("filling the form with a duplicate personal schedule returns an error", async () => {
 
+        const queryClient = new QueryClient();
+        const error = {
+            message: "A personal schedule with that name already exists in that quarter",
+        };
 
+        
+        axiosMock.onPost("/api/personalschedules/post").reply( 404, error );
+        
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PersonalSchedulesCreatePage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByTestId("PersonalScheduleForm-name")).toBeInTheDocument();
+        
+        const nameField = screen.getByTestId("PersonalScheduleForm-name");
+        const descriptionField = screen.getByTestId("PersonalScheduleForm-description");
+        const quarterField = document.querySelector("#PersonalScheduleForm-quarter");
+        const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
+
+        fireEvent.change(nameField, { target: { value: 'Duplicate' } });
+        fireEvent.change(descriptionField, { target: { value: 'dupe' } });
+        fireEvent.change(quarterField, { target: { value: '20124' } });
+
+        expect(submitButton).toBeInTheDocument();
+
+        fireEvent.click(submitButton);
+
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+        expect(quarterField).toHaveValue("20124");
+        //expect(setQuarter).toBeCalledWith("20124"); //need this and axiosMock below?
+
+        expect(axiosMock.history.post[0].params).toEqual(
+            {
+            "name": "Duplicate",
+            "description": "dupe",
+            "quarter": "20124"
+        });
+
+        expect(mockToast).toBeCalledWith("Error: A personal schedule with that name already exists in that quarter");
+        // expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
+    });
+
+    
 });
