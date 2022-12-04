@@ -42,7 +42,7 @@ public class Quarter {
         switch (s
                 .length()) {
         case 3:
-            this.yyyyq = qyyToQyyyy(s);
+            this.yyyyq = qyyToyyyyQ(s);
             return;
         case 5:
             this.yyyyq = yyyyqToInt(s);
@@ -198,10 +198,10 @@ public class Quarter {
                 .format("%04d", (yyyyq / 10));
     }
 
-    public static int qyyToQyyyy(String qyy) {
+    public static int qyyToyyyyQ(String qyy) {
         if (qyy
                 .length() != 3)
-            throw new IllegalArgumentException("Argument shoudl be in QYY format");
+            throw new IllegalArgumentException("Argument should be in QYY format");
 
         char q = qyy
                 .charAt(0);
@@ -251,8 +251,8 @@ public class Quarter {
     public static List<Quarter> quarterList(String start, String end) {
         List<Quarter> result = new ArrayList<Quarter>();
 
-        int startInt = Quarter.qyyToQyyyy(start);
-        int endInt = Quarter.qyyToQyyyy(end);
+        int startInt = Quarter.yyyyqToInt(start);
+        int endInt = Quarter.yyyyqToInt(end);
 
         if (startInt < endInt) {
             for (Quarter iter = new Quarter(startInt); iter.getValue() <= endInt; iter.increment()) {

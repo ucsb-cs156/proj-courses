@@ -229,70 +229,70 @@ public class QuarterTests {
     }
 
     @Test
-    public void test_qyyToQyyyy__F19() throws Exception {
-        assertEquals(20194, Quarter.qyyToQyyyy("F19"));
+    public void test_qyyToyyyyQ__F19() throws Exception {
+        assertEquals(20194, Quarter.qyyToyyyyQ("F19"));
     }
 
     @Test
-    public void test_qyyToQyyyy__W20() throws Exception {
-        assertEquals(20201, Quarter.qyyToQyyyy("W20"));
+    public void test_qyyToyyyyQ__W20() throws Exception {
+        assertEquals(20201, Quarter.qyyToyyyyQ("W20"));
     }
 
     @Test
-    public void test_qyyToQyyyy__S20() throws Exception {
-        assertEquals(20202, Quarter.qyyToQyyyy("S20"));
+    public void test_qyyToyyyyQ__S20() throws Exception {
+        assertEquals(20202, Quarter.qyyToyyyyQ("S20"));
     }
 
     @Test
-    public void test_qyyToQyyyy__M20() throws Exception {
-        assertEquals(20203, Quarter.qyyToQyyyy("M20"));
+    public void test_qyyToyyyyQ__M20() throws Exception {
+        assertEquals(20203, Quarter.qyyToyyyyQ("M20"));
     }
 
     @Test
-    public void test_qyyToQyyyy__F99() throws Exception {
-        assertEquals(19994, Quarter.qyyToQyyyy("F99"));
+    public void test_qyyToyyyyQ__F99() throws Exception {
+        assertEquals(19994, Quarter.qyyToyyyyQ("F99"));
     }
 
     @Test
-    public void test_qyyToQyyyy__F50() throws Exception {
-        assertEquals(20504, Quarter.qyyToQyyyy("F50"));
+    public void test_qyyToyyyyQ__F50() throws Exception {
+        assertEquals(20504, Quarter.qyyToyyyyQ("F50"));
     }
 
     @Test
-    public void test_qyyToQyyyy__W03() throws Exception {
-        assertEquals(20031, Quarter.qyyToQyyyy("W03"));
+    public void test_qyyToyyyyQ__W03() throws Exception {
+        assertEquals(20031, Quarter.qyyToyyyyQ("W03"));
     }
 
     @Test
-    public void test_qyyToQyyyy__S89() throws Exception {
-        assertEquals(19892, Quarter.qyyToQyyyy("S89"));
+    public void test_qyyToyyyyQ__S89() throws Exception {
+        assertEquals(19892, Quarter.qyyToyyyyQ("S89"));
     }
 
     @Test
-    public void test_qyyToQyyyy_badQuarter() throws Exception {
+    public void test_qyyToyyyyQ_badQuarter() throws Exception {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Quarter.qyyToQyyyy("X20");
+            Quarter.qyyToyyyyQ("X20");
         });
     }
 
     @Test
-    public void test_qyyToQyyyy_wrongLength1() throws Exception {
+    public void test_qyyToyyyyQ_wrongLength1() throws Exception {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Quarter.qyyToQyyyy("F");
+            Quarter.qyyToyyyyQ("F");
         });
     }
 
     @Test
-    public void test_qyyToQyyyy_wrongLength5() throws Exception {
+    public void test_qyyToyyyyQ_wrongLength5() throws Exception {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Quarter.qyyToQyyyy("F2019");
+            Quarter.qyyToyyyyQ("F2019");
         });
     }
 
     @Test
-    public void test_qyyToQyyyy__badChar() throws Exception {
+    public void test_qyyToyyyyQ__badChar() throws Exception {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Quarter.qyyToQyyyy("F2X");
+            Quarter.qyyToyyyyQ("F2X");
         });
     }
 
@@ -302,14 +302,14 @@ public class QuarterTests {
         expected.add(new Quarter("S20"));
         expected.add(new Quarter("W20"));
         expected.add(new Quarter("F19"));
-        assertEquals(expected, Quarter.quarterList("S20", "F19"));
+        assertEquals(expected, Quarter.quarterList("20202", "20194"));
     }
 
     @Test
     public void test_quarterList_S20_F19_1() throws Exception {
         ArrayList<Quarter> expected = new ArrayList<Quarter>();
         expected.add(new Quarter("S20"));
-        assertEquals(expected, Quarter.quarterList("S20", "S20"));
+        assertEquals(expected, Quarter.quarterList("20202", "20202"));
     }
 
     @Test
@@ -319,7 +319,7 @@ public class QuarterTests {
         expected.add(new Quarter("W20"));
         expected.add(new Quarter("S20"));
 
-        assertEquals(expected, Quarter.quarterList("F19", "S20"));
+        assertEquals(expected, Quarter.quarterList("20194", "20202"));
     }
 
     @Test
