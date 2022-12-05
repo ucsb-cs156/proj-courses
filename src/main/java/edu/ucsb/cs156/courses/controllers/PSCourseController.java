@@ -149,9 +149,10 @@ public class PSCourseController extends ApiController {
 	    hasSecondary = false;
 	}
 
-    if (coursesRepository.findByPsIdAndEnrollCd(psId, enrollCdPrimary).isPresent()) {
-        throw new IllegalArgumentException("class exists in schedule");
-    }
+	if (coursesRepository.findByPsIdAndEnrollCd(psId, enrollCdPrimary).isPresent()) {
+	    throw new IllegalArgumentException("class exists in schedule");
+        }
+	
 	ArrayList<PSCourse> savedCourses = new ArrayList<>();
 
 	if (!enrollCdPrimary.equals(enrollCd)) {
