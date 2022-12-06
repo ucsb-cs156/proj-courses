@@ -340,7 +340,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
         PSCourse expectedPrimary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(0L).build();
         when(coursesRepository.save(eq(expectedPrimary))).thenReturn(expectedPrimary);
-        
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08896"))).thenReturn(Optional.empty());
 
 	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
 	expectedCourses.add(expectedPrimary);
@@ -360,6 +360,35 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "USER" })
     @Test
+    public void api_courses_post__user_logged_in__primary_enroll_code_already_exists() throws Exception {
+        // arrange
+        User u = currentUserService.getCurrentUser().getUser();
+
+        PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
+        when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
+	when(ucsbCurriculumService.getAllSections(eq("08896"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC291A);
+
+        PSCourse expectedPrimary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(0L).build();
+        when(coursesRepository.save(eq(expectedPrimary))).thenReturn(expectedPrimary);
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08896"))).thenReturn(Optional.of(expectedPrimary));
+
+	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
+	expectedCourses.add(expectedPrimary);
+
+        // act
+        MvcResult response = mockMvc.perform(
+                post("/api/courses/post?enrollCd=08896&psId=1")
+                        .with(csrf()))
+                .andExpect(status().is(400)).andReturn();
+
+        // assert
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("class exists in schedule", json.get("message"));
+        assertEquals("IllegalArgumentException", json.get("type"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
     public void api_courses_post__user_logged_in__primary_enroll_code_has_one_secondary() throws Exception {
         // arrange
         User u = currentUserService.getCurrentUser().getUser();
@@ -367,6 +396,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
         when(ucsbCurriculumService.getAllSections(eq("63370"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC100);
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63370"))).thenReturn(Optional.empty());
 
         // act
         MvcResult response = mockMvc.perform(
@@ -389,6 +419,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
         PersonalSchedule personalschedule1 = PersonalSchedule.builder().name("Test").description("Test").quarter("20221").user(u).id(1L).build();
         when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(personalschedule1));
         when(ucsbCurriculumService.getAllSections(eq("63370"), eq("20221"))).thenReturn(SectionFixtures.SECTION_JSON_CMPSC100_REVERSED);
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63370"))).thenReturn(Optional.empty());
 
         // act
         MvcResult response = mockMvc.perform(
@@ -414,6 +445,7 @@ public class PSCourseControllerTests extends ControllerTestCase {
 	
 	PSCourse expectedPrimary = PSCourse.builder().enrollCd("08896").psId(1L).user(u).id(0L).build();
         when(coursesRepository.save(eq(expectedPrimary))).thenReturn(expectedPrimary);
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08896"))).thenReturn(Optional.empty());
 
 	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
 	expectedCourses.add(expectedPrimary);
@@ -446,6 +478,8 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
 	PSCourse expectedSecondary = PSCourse.builder().enrollCd("63388").psId(1L).user(u).id(0L).build();
         when(coursesRepository.save(eq(expectedSecondary))).thenReturn(expectedSecondary);
+
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("63370"))).thenReturn(Optional.empty());
 
 	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
 	expectedCourses.add(expectedSecondary);
@@ -480,6 +514,8 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
 	PSCourse expectedSecondary = PSCourse.builder().enrollCd("08326").psId(1L).user(u).id(0L).build();
         when(coursesRepository.save(eq(expectedSecondary))).thenReturn(expectedSecondary);
+
+        when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08292"))).thenReturn(Optional.empty());
 
 	ArrayList<PSCourse> expectedCourses = new ArrayList<>();
 	expectedCourses.add(expectedSecondary);
