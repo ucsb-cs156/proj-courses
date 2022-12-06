@@ -5,10 +5,8 @@ import { quarterRange } from "main/utils/quarterUtilities";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
-import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
-import { useBackend  } from "main/utils/useBackend";
 
-const UpdateCoursesJobForm = ({ callback }) => {
+const UpdateCoursesByQuarterJobForm = ({ callback }) => {
 
   const { data: systemInfo } = useSystemInfo();
 
@@ -20,28 +18,24 @@ const UpdateCoursesJobForm = ({ callback }) => {
   const quarters = quarterRange(startQtr, endQtr);
 
   // Stryker disable all : not sure how to test/mock local storage
-  const localSubject = localStorage.getItem("BasicSearch.Subject");
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
-
-  const { data: subjects, error: _error, status: _status } =
-  useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/UCSBSubjects/all"], 
-    { method: "GET", url: "/api/UCSBSubjects/all" }, 
-    []
-  );
+  // Stryker enable all 
 
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
-  const [subject, setSubject] = useState(localSubject || "ANTH");
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("UpdateCoursesJobForm: quarter", quarter);
-    console.log("UpdateCoursesJobForm: subject", subject);
-    callback({ quarter, subject});
+    callback({quarter});
   };
 
+
+
+
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
+  const padding = { paddingTop: 10, paddingBottom: 10 }
+  // Stryker enable all
+  
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
@@ -54,18 +48,10 @@ const UpdateCoursesJobForm = ({ callback }) => {
               controlId={"BasicSearch.Quarter"}
             />
           </Col>
-          <Col md="auto">
-            <SingleSubjectDropdown
-              subjects={subjects}
-              subject={subject}
-              setSubject={setSubject}
-              controlId={"BasicSearch.Subject"}
-            />
-          </Col>
         </Row>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row style={padding}>
           <Col md="auto">
-            <Button variant="primary" type="submit" data-testid="updateCourses">
+            <Button variant="primary" type="submit" data-testid="updateCoursesByQuarter">
               Update Courses
             </Button>
           </Col>
@@ -75,4 +61,4 @@ const UpdateCoursesJobForm = ({ callback }) => {
   );
 };
 
-export default UpdateCoursesJobForm;
+export default UpdateCoursesByQuarterJobForm;
