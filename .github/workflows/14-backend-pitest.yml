@@ -5,9 +5,16 @@ name: "14-backend-pitest: Java Mutation Testing (Pitest)"
 
 on:
   workflow_dispatch:
-  pull_request:
   push:
     branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
 
 jobs:
   build:
