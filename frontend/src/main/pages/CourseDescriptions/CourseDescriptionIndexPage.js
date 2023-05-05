@@ -4,7 +4,7 @@ import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourse
 import BasicCourseTable from "main/components/Courses/BasicCourseTable";
 import { useBackendMutation } from "main/utils/useBackend";
 
-export default function HomePage() {
+export default function CourseDescriptionIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
 
@@ -35,7 +35,7 @@ export default function HomePage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h5>Welcome to the UCSB Courses Search App!</h5>
+        <h5>Welcome to the UCSB Courses Description Search!</h5>
         <BasicCourseSearchForm fetchJSON={fetchBasicCourseJSON} />
         <BasicCourseTable courses={courseJSON} />
       </div>

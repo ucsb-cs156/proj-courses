@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 import { allTheLevels } from "fixtures/levelsFixtures";
@@ -8,7 +8,7 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
-import { useBackendMutation } from "main/utils/useBackend";
+import { useBackend  } from "main/utils/useBackend";
 
 const BasicCourseSearchForm = ({ fetchJSON }) => {
 
@@ -26,33 +26,16 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
   const localLevel = localStorage.getItem("BasicSearch.CourseLevel");
 
-  const getObjectToAxiosParams = () => ({
-    url: "/api/UCSBSubjects/all",
-    method: "GET",
-    params: {},
-  });
-
-  const onSuccess = (listSubjects) => {
-    setSubjects(listSubjects);
-  };
-
-
-
-  const getMutation = useBackendMutation(
-    getObjectToAxiosParams,
-    { onSuccess },
-    // Stryker disable next-line all : hard to set up test for caching
+  const { data: subjects, error: _error, status: _status } =
+  useBackend(
+    // Stryker disable next-line all : don't test internal caching of React Query
+    ["/api/UCSBSubjects/all"], 
+    { method: "GET", url: "/api/UCSBSubjects/all" }, 
     []
   );
 
-  useEffect(() => {
-    getMutation.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
   const [subject, setSubject] = useState(localSubject || {});
-  const [subjects, setSubjects] = useState([]);
   const [level, setLevel] = useState(localLevel || "U");
 
   const handleSubmit = (event) => {
