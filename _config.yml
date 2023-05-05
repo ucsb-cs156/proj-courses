@@ -1,0 +1,26 @@
+
+title: Documentation
+description: >- # this means to ignore newlines until "baseurl:"
+  When reviewing a PR for this repo, you can see what the documentation,
+  e.g. the storybook, will look like when published for the branches
+  named above.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+
+collections:
+  branches:
+    output: true
+    permalink: /branches/:path/
+
+repo_name: "TBD"
+
+
+repo: ucsb-cs156/proj-courses
+owner: ucsb-cs156
+repo_name: proj-courses
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-update-workflows","number":15,"title":"pc - update workflows for documentation to S23 standard","url":"https://github.com/ucsb-cs156/proj-courses/pull/15"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"staff-f22-pc-course-job-mongodb-part","number":14,"title":"Staff f22: Add job to update MongoDB for a single quarter / subject area","url":"https://github.com/ucsb-cs156/proj-courses/pull/14"}]
