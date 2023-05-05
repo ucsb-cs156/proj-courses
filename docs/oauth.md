@@ -1,15 +1,23 @@
 # OAuth Setup
 
-This Spring Boot application is set up to use Google OAuth as it's authentication scheme.
+This Spring Boot application is set up to use Google OAuth as its authentication scheme.
 
-Setting this up on localhost requires the first two steps below; getting this to work on Heroku requires an additional third step.
+If this is your first time setting up a Google OAuth application in this course, you may need to do three steps.
+Later in the course, you'll only need to do the last of these, three, since the first two are typically "one-time" only steps.
 
-1. Obtaining a Google *client id* and *client secret*, which is
-   done at the [Google Developer Console](https://console.cloud.google.com/).
-2. Configuring the `.env` file with these values.
-3. Copying the `.env` values to the Heroku app's configuration values.
+1. One time only: Set up a project in the Google Developer Console: 
+   - <https://ucsb-cs156.github.io/topics/oauth/google_create_developer_project.html>
+2. One time only: Set up an OAuth Consent Screen for your project: 
+   - <https://ucsb-cs156.github.io/topics/oauth/google_oauth_consent_screen.html>
+3. Once for each application: Create a set of OAuth credentials (`GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` values): 
+   - <https://ucsb-cs156.github.io/topics/oauth/oauth_google_setup.html>
 
-Each of these three steps is explained in more detail below.
+Once you have created the OAuth Credentials, you'll need to
+configure your application with these values.
+
+* For `localhost`, those values go in the `.env` file (as explained below)
+* For Dokku, those values are set using `dokku config:set ...` (as explained below)
+
 
 # About the `.env` and `.env.SAMPLE` files.
 
@@ -25,38 +33,7 @@ Each of these three steps is explained in more detail below.
 * There is more information about `.env` vs. `.env.SAMPLE` on this page if you are interested: [docs/environment-variables](environment-variables.md).
 
 
-## Step 1: Obtain a Google client id and client secret
-
-1. Login to the Google Developer Console at <https://console.cloud.google.com/>.
-
-2. Create a new project on the top left (or select the project you would like to create your OAuth app in)
-
-2. On the upper left, there is a hamburger menu icon that provides a left navigation menu.
-   
-   * Look for `APIs and Services` then `Credentials`.
-   * On that page, near the top, click the button for `+ CREATE CREDENTIALS`
-   * This makes a pull-down menu where you can select `OAuth Client ID`
-   * For Application Type, select `Web Application`
-   * For name, choose something you will remember; I suggest using the name of your repo, or the name of the Heroku application
-   * Scroll down to the part of the page that says: `Authorized redirect URIs`
-
-3. Under `Authorized redirect URIs`, you'll need to click the `+ ADD URI` button twice to enter two addresses:
-
-   * For localhost, enter: `http://localhost:8080/login/oauth2/code/google`
-     - Note that this *must* be `http` not `https`
-   * For Heroku, enter: `https://myappname.herokuapp.com/login/oauth2/code/google`
-     - Note that you should substitute in *your* app name in place of `my-app-name`
-     - Note that this *must* be `https` not `http`
-
-   ![image](https://user-images.githubusercontent.com/1119017/149854295-8e1c4c63-929c-4706-972d-1962c644a40a.png)
-
-   Then click the blue `CREATE` button.
-   
-   You will now see the client id and client secret values.
-   
-   Keep this window open, since you'll need these values in the next step.
-   
-## Step 2: Copy `.env.SAMPLE` to `.env` and enter values
+## Step 1: Set up `.env` values for `localhost`
 
 In the frontend directory, use this command to copy `.env.SAMPLE` to `.env`.  Recall that you
 may need to use `ls -a` to get the files to show up, since they are hidden files on Unix-like systems.
@@ -81,86 +58,120 @@ ADMIN_EMAILS=phtcon@ucsb.edu
 
 Replace `see-instructions` with the appropriate values.
 
-For ADMIN_EMAILS, add your own email and any teammates you are collaborating with after phtcon.ucsb.edu; you can separate multiple emails with commas, e.g.
+# Setting up `ADMIN_EMAILS`
+
+The `ADMIN_EMAILS` value is used to determine which users have access to administrative features in the app.  One of those
+is the ability to list the users that have logged in.
+
+For `ADMIN_EMAILS`, add your own email and any teammates you are collaborating with after phtcon.ucsb.edu; you can separate multiple emails with commas, e.g.
 
 ```
-ADMIN_EMAILS=phtcon@ucsb.edu,cgaucho@ucsb.edu,ldelplaya@ucsb.edu
+`ADMIN_EMAILS=phtcon@ucsb.edu,cgaucho@ucsb.edu,ldelplaya@ucsb.edu`
 ```
+
+*Do not separate emails with spaces*; only commas:
+* ❌ WRONG: `ADMIN_EMAILS=phtcon@ucsb.edu, cgaucho@ucsb.edu, ldelplaya@ucsb.edu`
+* ✅ Correct: `ADMIN_EMAILS=phtcon@ucsb.edu,cgaucho@ucsb.edu,ldelplaya@ucsb.edu`
+
+* Add your own UCSB email address
+* Add `phtcon@ucsb.edu` (your instructor)
+* Add the mentor for your team (look up the mentor's name on the course team listing, then ask them in your channel)
+* Add everyone else on your team
+
+I suggest that, as a team, you collaborate in your team slack channel on getting a standard list of these, and then
+that you pin that post in your team slack channel for easy reference.
 
 With this done, you should be all set to run on localhost.
 
-For Heroku, there is one more step.
 
-## Step 3: Copying `.env` values to Heroku
+## Step 2: Copying `.env` values to Dokku
 
-The easy way, using the Heroku CLI:
+There are two ways to set up your `.env` values on Dokku.
 
-(Note: if you don't access to the Heroku CLI, scroll down to "the tedious way")
+* One variable at a time (recommended if this is your first time doing this)
+* All at once with a file 
 
-1.  Make sure you have the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install) installed.
-2.  Login with `heroku login`
-3.  Use this command, with the name of your app in place of `my-heroku-app`
+## Step 2a: Copying `.env` values to Dokku one at a time
 
-    ```
-    heroku config:set --app my-heroku-app  `cat .env` 
-    ```
+To copy the values to Dokku one at a time, do this
+for each line in the `.env` file:
 
-    You should get output like this:
+On the dokku server command line, type:<br />
 
-    ```
-    Setting GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, ADMIN_EMAILS and restarting ⬢ demo-spring-react-example... done, v6
-    ```
+<tt>dokku config:set --no-restart <b></i>app-name VARIABLE=VALUE</i></b></tt>, where
 
-    You can check the values by visiting the `Settings` tab 
-    in the Heroku Dashboard, and clicking `Reveal Config Vars`
+* <b></i>app-name</i></b> is your app name such as `jpa03-cgaucho`.  It needs to match what you see when you type `dokku apps:list`
+* <b></i>VARIABLE=VALUE</i></b> is one of the lines in your .env. file
 
-    If the command fails with the following error:
+Note that on Dokku, you also typically need to set this
+value (this typically does *not* go in your .env)
 
-    ```
-     is invalid. Must be in the format FOO=bar.
-    ```
+<tt>dokku config:set --no-restart <b></i>app-name</i></b> PRODUCTION=true</tt>
 
-    Ensure that your `.env` file does not have any empty lines, then retry the command.
 
-The slightly more tedious way: 
+## Step 2b: Copying `.env` values to Dokku all at once
 
-1. In the Heroku Dashboard, visit the `Settings` tab 
-   then click `Reveal Config Vars`.
-2. For each variable in `.env`, create a Config Var entry
-   with the corresponding name and value.  
+The idea of this step is to copy/paste the values
+from from your `.env` file into a file in your Dokku account
+and then load the values all at once.
+
+You could use file transfer, but because of various firewall settings, it may be easier to just copy/paste like this:
+
+
+1. On the system where you are doing development, 
+   use `cat .env` to list out the contents, e.g.
+
+   ```
+   pconrad@Phillips-MacBook-Air STARTER-jpa03 % cat .env
+   GOOGLE_CLIENT_ID=26622685272-ofq4729s9nt8loednuuv5c0opja1vaeb.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=GOCSPX-fakeCredentials99_fakefake-_fake
+   ADMIN_EMAILS=phtcon@ucsb.edu
+
+   JDBC_DATABASE_URL=jdbc:postgresql://example.org:5432/starter_jpa03_db
+   JDBC_DATABASE_USERNAME=postgres
+   JDBC_DATABASE_PASSWORD=password
+   pconrad@Phillips-MacBook-Air STARTER-jpa03 % 
+   ```
+
+2. At the shell prompt on your dokku server (e.g. dokku-07.cs.ucsb.edu), type this, where `jpa03-cgaucho` is the name of your
+app:
+
+   ```
+   cat > jpa03-gaucho.env
+   ```
+
+   Then, copy paste the contents of the `.env` file into the window, followed by hitting enter, and then Control-D.
+
+   If you then do an `ls` you should see that you have
+   a file called `jpa03-gaucho.env` containing the values
+   you want to set.
+
+3. Now type the following (assuming that `jpa03-cgaucho` is
+   your Dokku app name).
+
+   ```
+   dokku config:set --no-restart jpa03-cgaucho `cat jpa03-gaucho.env`
+   ```
+
+   In this command, the part in backticks (<tt>\`cat jpa03-gaucho.env\`</tt>) specfies that the output of that command should be placed on the command line.
+
+   Accordingly, this sets all of the environment variables at once.
+
+   Note that on Dokku, you also typically need to set this
+   value (this typically does *not* go in your .env)
+
+   <tt>dokku config:set --no-restart <b></i>app-name</i></b> PRODUCTION=true</tt>
+
+   Your next step is likely to configure the application
+   for using the Postgres database; instructions for that
+   can be found here:
+
+   * <https://ucsb-cs156.github.io/topics/dokku/postgres_database.html>
+
+   If you want to restart the application you can either
+   * Leave off the `--no-restart` part, or
+   * Type `dokku ps:restart jpa03-cgaucho` as the next command
    
-   Be sure that you preserve case: if it's `CLIENT_SECRET`, you must use `CLIENT_SECRET` not `client_secret`.
+For troubleshooting advice with OAuth, this page may help:
 
-3. When finished, restart the application by going to the 
-   `Deploy` tab and clicking `Deploy Branch`.
-
-## Troubleshooting
-
-If you see this:
-
-<img src="https://user-images.githubusercontent.com/1119017/149856156-575fb638-7db8-460a-a344-9069145aa242.png" alt="Redirect URI Mismatch" width="600" />
-
-
-Try clicking the little arrow to open up the additional message:
-
-<img src="https://user-images.githubusercontent.com/1119017/149856193-512acb25-2bfc-4e53-991b-f61de37f1ed6.png" alt="Request Details" width="600" />
-
-
-Now, you'll see  the Redirect URI that the app is expecting.
-
-If you go back to the [Google Developer Console](https://console.cloud.google.com/) you can see what you really entered.
-
-For example, when I was getting this error message, it's because I put in this for my Redirect URI:
-
-![image](https://user-images.githubusercontent.com/1119017/149856340-98acd5e4-8712-4723-a899-e3bf2f06d3fa.png)
-
-Rookie mistake!  I literally had `my-heroku-app` instead of `demo-spring-react-example`. 
-
-Change it to the correct URI, click save.  Then go back to the URL for the home page of your app and refresh the page (you don't need to restart the Heroku backend; just refresh your browser page.)  Click login again, and you should get something like this:
-
-
-<img src="https://user-images.githubusercontent.com/1119017/149856532-b1cda813-bd3f-4fd1-a79e-630e5929d7be.png" alt="Choose an Account" width="600" />
-
-
-Success!
-  
+* <https://ucsb-cs156.github.io/topics/oauth/oauth_troubleshooting.html>

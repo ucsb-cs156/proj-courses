@@ -3,10 +3,16 @@ name: "36-frontend-eslint: JavaScript style checking"
 on:
   workflow_dispatch:
   pull_request:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
   push:
     branches:
       - main
-
+    paths:
+      - 'frontend/**'
+      
 jobs:
   lint:
     runs-on: ubuntu-latest
