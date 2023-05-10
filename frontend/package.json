@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -32,8 +35,8 @@
     "@storybook/node-logger": "^6.2.7",
     "@storybook/preset-create-react-app": "^4.0.0",
     "@storybook/react": "^6.2.7",
-    "@stryker-mutator/core": "^5.6.1",
-    "@stryker-mutator/jest-runner": "^5.6.1",
+    "@stryker-mutator/core": "^6.4.2",
+    "@stryker-mutator/jest-runner": "^6.4.2",
     "@testing-library/react-hooks": "^5.1.2",
     "axios-mock-adapter": "^1.19.0",
     "env-cmd": "^10.1.0",
