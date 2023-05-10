@@ -99,11 +99,7 @@ describe("AdminJobsPage tests", () => {
 
         expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
 
-<<<<<<< HEAD
-        const submitButton = screen.getByText("Update Courses");
-=======
         const submitButton = screen.getByTestId("updateCourses");
->>>>>>> origin/main
 
         const expectedKey = "BasicSearch.Subject-option-ANTH";
         await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
@@ -122,8 +118,6 @@ describe("AdminJobsPage tests", () => {
 
         expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH");
     });
-<<<<<<< HEAD
-=======
 
 
     test("user can submit the update course data by quarter job", async () => {
@@ -158,7 +152,6 @@ describe("AdminJobsPage tests", () => {
 
         expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20211");
     });
->>>>>>> origin/main
 
 
 });
