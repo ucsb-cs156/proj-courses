@@ -35,5 +35,14 @@ import java.util.Map;
 <span class="fc" id="L35">      &quot;message&quot;, e.getMessage()</span>
     );
   }
+  
+  @ExceptionHandler({IllegalArgumentException.class })
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Object handleIllegalArgumentException(Throwable e) {
+<span class="fc" id="L42">    return Map.of(</span>
+<span class="fc" id="L43">      &quot;type&quot;, e.getClass().getSimpleName(),</span>
+<span class="fc" id="L44">      &quot;message&quot;, e.getMessage()</span>
+    );
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
