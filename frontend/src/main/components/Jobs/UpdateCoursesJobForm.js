@@ -32,7 +32,7 @@ const UpdateCoursesJobForm = ({ callback }) => {
   );
 
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
-  const [subject, setSubject] = useState(localSubject || {});
+  const [subject, setSubject] = useState(localSubject || "ANTH");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -65,7 +65,7 @@ const UpdateCoursesJobForm = ({ callback }) => {
         </Row>
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" data-testid="updateCourses">
               Update Courses
             </Button>
           </Col>

@@ -8,6 +8,7 @@ on:
     branches: [ main ]
     paths: [frontend/**]
 
+
 jobs:
   lint:
     runs-on: ubuntu-latest

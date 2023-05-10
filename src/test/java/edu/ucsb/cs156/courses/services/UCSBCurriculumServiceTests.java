@@ -328,4 +328,68 @@ public class UCSBCurriculumServiceTests {
         assertEquals(expectedResult, result);
     }
 
+    @Test
+    public void test_getAllSections_success() throws Exception {
+        String expectedResult = SectionFixtures.SECTION_JSON_CMPSC165B;
+        //String expectedResult = "expected Result";
+
+        String enrollCode = "08268";
+        String quarter = "20224";
+
+        String expectedURL = UCSBCurriculumService.ALL_SECTIONS_ENDPOINT.replace("{quarter}", quarter).replace("{enrollcode}", enrollCode);
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+                .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("ucsb-api-version", "3.0"))
+                .andExpect(header("ucsb-api-key", apiKey))
+                .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+        String result = ucs.getAllSections(enrollCode, quarter);
+
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void test_getAllSections_exception() throws Exception {
+        String expectedResult = "{\"error\": \"401: Unauthorized\"}";
+
+
+        String enrollCode = "08268";
+        String quarter = "20224";
+
+        String expectedURL = UCSBCurriculumService.ALL_SECTIONS_ENDPOINT.replace("{quarter}", quarter).replace("{enrollcode}", enrollCode);
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+                .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("ucsb-api-version", "3.0"))
+                .andExpect(header("ucsb-api-key", apiKey))
+                .andRespond(withUnauthorizedRequest());
+
+        String result = ucs.getAllSections(enrollCode, quarter);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void test_getAllSections_not_found() throws Exception {
+        String expectedResult = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
+
+
+        String enrollCode = "08268";
+        String quarter = "00000";
+
+        String expectedURL = UCSBCurriculumService.ALL_SECTIONS_ENDPOINT.replace("{quarter}", quarter).replace("{enrollcode}", enrollCode);
+
+        this.mockRestServiceServer.expect(requestTo(expectedURL))
+                .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+                .andExpect(header("ucsb-api-version", "3.0"))
+                .andExpect(header("ucsb-api-key", apiKey))
+                .andRespond(withSuccess("null", MediaType.APPLICATION_JSON));
+
+        String result = ucs.getAllSections(enrollCode, quarter);
+        assertEquals(expectedResult, result);
+    }
+
 }

@@ -60,6 +60,8 @@ public class UCSBCurriculumService {
 
     public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classsection/{quarter}/{enrollcode}";
 
+    public static final String ALL_SECTIONS_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
+
     public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -143,6 +145,10 @@ public class UCSBCurriculumService {
         return retVal;
     }
 
+    /**
+     * This method retrieves exactly one section matching the
+     *  enrollCode and quarter arguments, if such a section exists.
+     */
     public String getSection(String enrollCode, String quarter) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -154,6 +160,57 @@ public class UCSBCurriculumService {
         HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
         String url = SECTION_ENDPOINT;
+
+
+        log.info("url=" + url);
+
+        String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
+        .queryParam("quarter", "{quarter}")
+        .queryParam("enrollcode", "{enrollcode}")
+        .encode()
+        .toUriString();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("quarter", quarter);
+        params.put("enrollcode", enrollCode);
+
+        String retVal = "";
+        MediaType contentType = null;
+        HttpStatus statusCode = null;
+        try {
+            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
+            contentType = re.getHeaders().getContentType();
+            statusCode = re.getStatusCode();
+            retVal = re.getBody();
+        } catch (HttpClientErrorException e) {
+            retVal = "{\"error\": \"401: Unauthorized\"}";
+        }
+
+        if(retVal.equals("null")){
+            retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
+        }
+
+        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+        return retVal;
+    }
+
+    /**
+     * This method retrieves all of the sections related to a certain
+     *  enroll code. For example, if the enrollCode is for a discussion
+     *  section, the lecture section and all related discussion sections
+     *  will also be returned.
+     */
+    public String getAllSections(String enrollCode, String quarter) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("ucsb-api-version", "3.0");
+        headers.set("ucsb-api-key", this.apiKey);
+
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+        String url = ALL_SECTIONS_ENDPOINT;
 
 
         log.info("url=" + url);

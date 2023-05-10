@@ -35,11 +35,13 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJobFactory;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,7 +64,13 @@ public class JobsControllerTests extends ControllerTestCase {
     ObjectMapper objectMapper;
 
     @MockBean
+    UCSBSubjectsService ucsbSubjectsService;
+
+    @MockBean
     UCSBCurriculumService ucsbCurriculumService;
+
+    @MockBean
+    UpdateCourseDataWithQuarterJobFactory updateCourseDataWithQuarterJobFactory;
 
     @MockBean
     UpdateCourseDataJobFactory updateCourseDataJobFactory;
@@ -189,6 +197,21 @@ public class JobsControllerTests extends ControllerTestCase {
     public void admin_can_launch_update_courses_job() throws Exception {
         // act
         MvcResult response = mockMvc.perform(post("/api/jobs/launch/updateCourses?quarterYYYYQ=20231&subjectArea=CMPSC").with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        String responseString = response.getResponse().getContentAsString();
+        log.info("responseString={}", responseString);
+        Job jobReturned = objectMapper.readValue(responseString, Job.class);
+
+        assertNotNull(jobReturned.getStatus());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_launch_update_courses_job_with_quarter() throws Exception {
+        // act
+        MvcResult response = mockMvc.perform(post("/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20231").with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert

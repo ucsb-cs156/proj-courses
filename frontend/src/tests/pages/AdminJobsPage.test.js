@@ -99,7 +99,11 @@ describe("AdminJobsPage tests", () => {
 
         expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
 
+<<<<<<< HEAD
         const submitButton = screen.getByText("Update Courses");
+=======
+        const submitButton = screen.getByTestId("updateCourses");
+>>>>>>> origin/main
 
         const expectedKey = "BasicSearch.Subject-option-ANTH";
         await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
@@ -118,6 +122,43 @@ describe("AdminJobsPage tests", () => {
 
         expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH");
     });
+<<<<<<< HEAD
+=======
+
+
+    test("user can submit the update course data by quarter job", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminJobsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText("Update Courses Database by quarter")).toBeInTheDocument();
+
+        const updateCoursesButton = screen.getByText("Update Courses Database by quarter");
+        expect(updateCoursesButton).toBeInTheDocument();
+        updateCoursesButton.click();
+
+        expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+
+        const submitButton = screen.getByTestId("updateCoursesByQuarter");
+
+        const expectedKey = "BasicSearch.Subject-option-ANTH";
+        await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    
+        const selectQuarter = screen.getByLabelText("Quarter");
+        userEvent.selectOptions(selectQuarter, "20211");
+        expect(submitButton).toBeInTheDocument();
+
+        submitButton.click();
+
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20211");
+    });
+>>>>>>> origin/main
 
 
 });

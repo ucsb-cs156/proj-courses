@@ -11,6 +11,7 @@ on:
     branches: [ main ]
     paths: [src/**, pom.xml, lombok.config]
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
