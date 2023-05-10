@@ -37,6 +37,8 @@ object-assign
  * Released under the MIT License.
  */
 
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+
 /**
  * React Router DOM v6.2.2
  *
@@ -57,6 +59,12 @@ object-assign
  * LICENSE.md file in the root directory of this source tree.
  *
  * @license MIT
+ */
+
+/**
+ * mock-xmlhttprequest v7.0.4
+ * (c) 2021 Bertrand Guay-Paquet
+ * @license ISC
  */
 
 /** @license React v0.20.2
