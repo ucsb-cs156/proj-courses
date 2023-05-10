@@ -27,12 +27,16 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.endQtrYYYYQ:20222}")
   private String endQtrYYYYQ;
 
+  @Value("${app.sourceRepo:https://github.com/ucsb-cs156/proj-courses}")
+  private String sourceRepo;
+
   public SystemInfo getSystemInfo() {
     SystemInfo si = SystemInfo.builder()
     .springH2ConsoleEnabled(this.springH2ConsoleEnabled)
     .showSwaggerUILink(this.showSwaggerUILink)
     .startQtrYYYYQ(this.startQtrYYYYQ)
     .endQtrYYYYQ(this.endQtrYYYYQ)
+    .sourceRepo(this.sourceRepo)
     .build();
   log.info("getSystemInfo returns {}",si);
   return si;

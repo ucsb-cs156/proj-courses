@@ -14,7 +14,7 @@ describe("TestJobsForm tests", () => {
   it("renders correctly with the right defaults", async () => {
     render(
       <Router >
-        <TestJobsForm jobs={jobsFixtures.sixJobs}/>
+        <TestJobsForm />
       </Router>
     );
 
