@@ -44,12 +44,9 @@ public class CoursePage {
     }
 
     /**
-     * Create a List<ConvertedSection> from json representation
+     * Create a List of ConvertedSections from json representation
      * 
-     * @param json String of json returned by API endpoint {@code /classes/search}
-     * @return a new CoursePage object
-     * @see <a href=
-     *      "https://developer.ucsb.edu/content/academic-curriculums">https://developer.ucsb.edu/content/academic-curriculums</a>
+     * @return a list of converted sections
      */
     public List<ConvertedSection> convertedSections() {
 
