@@ -17,7 +17,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
         <Container >
         <img data-testid="AppNavbarImage" src={headerImg} alt="" style={{width: 80, height: 80, marginRight: 10}} />
           <Navbar.Brand as={Link} to="/">
-            Example
+            UCSB Courses Search
           </Navbar.Brand>
 
           <Navbar.Toggle />
@@ -73,11 +73,16 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
             </Nav>
 
             <Nav className="mr-auto">
-              <NavDropdown title="Section Searches" id="appnavbar-section-searches-dropdown" data-testid="appnavbar-section-searches-dropdown" >
-                <NavDropdown.Item href="/sectionsearches/search" data-testid="appnavbar-section-searches-search">Search</NavDropdown.Item>
+              <NavDropdown title="Course Descriptions" id="appnavbar-course-descriptions-dropdown" data-testid="appnavbar-course-descriptions-dropdown" >
+                <NavDropdown.Item href="/coursedescriptions/search" data-testid="appnavbar-course-descriptions-search">Search</NavDropdown.Item>
               </NavDropdown>
             </Nav>
 
+            <Nav className="mr-auto">
+              <NavDropdown title="Course History" id="appnavbar-course-over-time-dropdown" data-testid="appnavbar-course-over-time-dropdown" >
+                <NavDropdown.Item href="/courseovertime/search" data-testid="appnavbar-course-over-time-search">Search</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
 
 
             

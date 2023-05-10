@@ -5,7 +5,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import userEvent from "@testing-library/user-event";
 
-import HomePage from "main/pages/HomePage";
+import CourseDescriptionIndexPage from "main/pages/CourseDescriptions/CourseDescriptionIndexPage";
 import { coursesFixtures } from "fixtures/courseFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
@@ -21,7 +21,7 @@ jest.mock("react-toastify", () => {
   };
 });
 
-describe("HomePage tests", () => {
+describe("CourseDescriptionIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe("HomePage tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <HomePage />
+          <CourseDescriptionIndexPage />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -59,7 +59,7 @@ describe("HomePage tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <HomePage />
+          <CourseDescriptionIndexPage />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -67,6 +67,13 @@ describe("HomePage tests", () => {
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20211");
     const selectSubject = screen.getByLabelText("Subject Area");
+
+
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+
+    await waitFor(
+      () => expect(screen.getByTestId(expectedKey).toBeInTheDocument)
+    );
 
     expect(await screen.findByLabelText("Subject Area")).toHaveTextContent("ANTH");
 

@@ -3,15 +3,11 @@ name: "30-frontend-tests: JavaScript, Jest Unit tests"
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
-    paths:
-      - 'frontend/**'
+    paths: [frontend/**]
   push:
-    branches:
-      - main
-    paths:
-      - 'frontend/**'
+    branches: [ main ]
+    paths: [frontend/**]
+
 
 jobs:
   build:
