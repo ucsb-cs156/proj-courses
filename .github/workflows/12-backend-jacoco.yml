@@ -13,24 +13,52 @@ on:
 
 
 jobs:
-  build:
+  build-jacoco-report:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 17
-      uses: actions/setup-java@v2
+    - uses: actions/checkout@v3.5.2
+    - name: Set up Java (version from .java-version file)
+      uses: actions/setup-java@v3
       with:
-        java-version: '17'
-        distribution: 'adopt'
+         distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
+         java-version-file: ./.java-version
+  
     - name: Build with Maven
       env:
         TEST_PROPERTIES: ${{ secrets.TEST_PROPERTIES }}
       run: mvn -B test jacoco:report verify
-    - name: Upload Jacoco reports to Artifacts
-      if: always() # always upload artifacts, even on failure
-      uses: actions/upload-artifact@v2
+
+    - name: Get PR number
+      id: get-pr-num
+      run: |
+         echo "GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH}"
+         pr_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+         echo "pr_number=${pr_number}" 
+         echo "pr_number=${pr_number}" >> "$GITHUB_ENV"
+
+    - name: Set path for github pages deploy when there is a PR num
+      if: ${{ env.pr_number != 'null' }}
+      run: |
+        prefix="prs/${pr_number}/"
+        echo "prefix=${prefix}"
+        echo "prefix=${prefix}" >> "$GITHUB_ENV"
+    
+    - name: Set path for github pages deploy when there is NOT a PR num
+      if: ${{ env.pr_number == 'null' }}
+      run: |
+        prefix=""
+        echo "prefix=${prefix}"
+        echo "prefix=${prefix}" >> "$GITHUB_ENV"
+    
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
-        name: jacoco-report
-        path: target/site/jacoco/* 
+        branch: gh-pages # The branch the action should deploy to.
+        folder: target/site/jacoco # The folder where mvn puts the files
+        clean: true # Automatically remove deleted files from the deploy branch
+        target-folder: ${{env.prefix}}jacoco # The folder that we serve our files from
+
+
+  
