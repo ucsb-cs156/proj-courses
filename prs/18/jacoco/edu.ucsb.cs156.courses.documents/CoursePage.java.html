@@ -44,35 +44,32 @@ public class CoursePage {
     }
 
     /**
-     * Create a List&lt;ConvertedSection&gt; from json representation
+     * Create a List of ConvertedSections from json representation
      * 
-     * @param json String of json returned by API endpoint {@code /classes/search}
-     * @return a new CoursePage object
-     * @see &lt;a href=
-     *      &quot;https://developer.ucsb.edu/content/academic-curriculums&quot;&gt;https://developer.ucsb.edu/content/academic-curriculums&lt;/a&gt;
+     * @return a list of converted sections
      */
     public List&lt;ConvertedSection&gt; convertedSections() {
 
-<span class="fc" id="L56">        List&lt;ConvertedSection&gt; result = new ArrayList&lt;ConvertedSection&gt;();</span>
+<span class="fc" id="L53">        List&lt;ConvertedSection&gt; result = new ArrayList&lt;ConvertedSection&gt;();</span>
 
-<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (Course c : this.getClasses()) {</span>
-<span class="fc bfc" id="L59" title="All 2 branches covered.">            for (Section section : c.getClassSections()) {</span>
-<span class="fc" id="L60">                int lectureNum = Integer.parseInt(section.getSection()) / 100;</span>
-<span class="fc" id="L61">                CourseInfo courseInfo = CourseInfo.builder()</span>
-<span class="fc" id="L62">                        .quarter(c.getQuarter())</span>
-<span class="fc" id="L63">                        .courseId(c.getCourseId() + &quot;-&quot; + Integer.toString(lectureNum))</span>
-<span class="fc" id="L64">                        .title(c.getTitle())</span>
-<span class="fc" id="L65">                        .description(c.getDescription())</span>
-<span class="fc" id="L66">                        .build();</span>
-<span class="fc" id="L67">                ConvertedSection cs = ConvertedSection.builder()</span>
-<span class="fc" id="L68">                        .courseInfo(courseInfo)</span>
-<span class="fc" id="L69">                        .section(section)</span>
-<span class="fc" id="L70">                        .build();</span>
-<span class="fc" id="L71">                result.add(cs);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        for (Course c : this.getClasses()) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            for (Section section : c.getClassSections()) {</span>
+<span class="fc" id="L57">                int lectureNum = Integer.parseInt(section.getSection()) / 100;</span>
+<span class="fc" id="L58">                CourseInfo courseInfo = CourseInfo.builder()</span>
+<span class="fc" id="L59">                        .quarter(c.getQuarter())</span>
+<span class="fc" id="L60">                        .courseId(c.getCourseId() + &quot;-&quot; + Integer.toString(lectureNum))</span>
+<span class="fc" id="L61">                        .title(c.getTitle())</span>
+<span class="fc" id="L62">                        .description(c.getDescription())</span>
+<span class="fc" id="L63">                        .build();</span>
+<span class="fc" id="L64">                ConvertedSection cs = ConvertedSection.builder()</span>
+<span class="fc" id="L65">                        .courseInfo(courseInfo)</span>
+<span class="fc" id="L66">                        .section(section)</span>
+<span class="fc" id="L67">                        .build();</span>
+<span class="fc" id="L68">                result.add(cs);</span>
 
-<span class="fc" id="L73">            }</span>
-<span class="fc" id="L74">        }</span>
-<span class="fc" id="L75">        return result;</span>
+<span class="fc" id="L70">            }</span>
+<span class="fc" id="L71">        }</span>
+<span class="fc" id="L72">        return result;</span>
     }
 
 }
