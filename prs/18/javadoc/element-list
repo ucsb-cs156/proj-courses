@@ -1,5 +1,6 @@
 edu.ucsb.cs156.courses
 edu.ucsb.cs156.courses.aop
+edu.ucsb.cs156.courses.collections
 edu.ucsb.cs156.courses.config
 edu.ucsb.cs156.courses.controllers
 edu.ucsb.cs156.courses.documents
