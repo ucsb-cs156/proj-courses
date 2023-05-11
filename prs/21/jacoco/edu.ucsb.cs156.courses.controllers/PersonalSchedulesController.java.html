@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonalSchedulesController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">PersonalSchedulesController.java</span></div><h1>PersonalSchedulesController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import edu.ucsb.cs156.courses.entities.PersonalSchedule;
+import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
+import edu.ucsb.cs156.courses.models.CurrentUser;
+import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.Optional;
+
+@Api(description = &quot;PersonalSchedules&quot;)
+@RequestMapping(&quot;/api/personalschedules&quot;)
+@RestController
+<span class="fc" id="L35">@Slf4j</span>
+<span class="fc" id="L36">public class PersonalSchedulesController extends ApiController {</span>
+
+    @Autowired
+    PersonalScheduleRepository personalscheduleRepository;
+
+    @ApiOperation(value = &quot;List all personal schedules&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/admin/all&quot;)
+    public Iterable&lt;PersonalSchedule&gt; allUsersSchedules() {
+<span class="fc" id="L45">        Iterable&lt;PersonalSchedule&gt; personalschedules = personalscheduleRepository.findAll();</span>
+<span class="fc" id="L46">        return personalschedules;</span>
+    }
+
+    @ApiOperation(value = &quot;List this user's personal schedules&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @GetMapping(&quot;/all&quot;)
+    public Iterable&lt;PersonalSchedule&gt; thisUsersSchedules() {
+<span class="fc" id="L53">        CurrentUser currentUser = getCurrentUser();</span>
+<span class="fc" id="L54">        Iterable&lt;PersonalSchedule&gt; personalschedules = personalscheduleRepository.findAllByUserId(currentUser.getUser().getId());</span>
+<span class="fc" id="L55">        return personalschedules;</span>
+    }
+
+    @ApiOperation(value = &quot;Get a single personal schedule (if it belongs to current user)&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @GetMapping(&quot;&quot;)
+    public PersonalSchedule getScheduleById(
+            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L63">        User currentUser = getCurrentUser().getUser();</span>
+<span class="fc" id="L64">        PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)</span>
+<span class="fc" id="L65">          .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, id));</span>
+
+<span class="fc" id="L67">        return personalschedule;</span>
+    }
+
+    @ApiOperation(value = &quot;Get a single personal schedule (no matter who it belongs to, admin only)&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/admin&quot;)
+    public PersonalSchedule getScheduleById_admin(
+            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L75">              PersonalSchedule personalschedule = personalscheduleRepository.findById(id)</span>
+<span class="fc" id="L76">          .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, id));</span>
+
+<span class="fc" id="L78">        return personalschedule;</span>
+    }
+
+    @ApiOperation(value = &quot;Create a new personal schedule&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @PostMapping(&quot;/post&quot;)
+    public PersonalSchedule postSchedule(
+            @ApiParam(&quot;name&quot;) @RequestParam String name,
+            @ApiParam(&quot;description&quot;) @RequestParam String description,
+            @ApiParam(&quot;quarter&quot;) @RequestParam String quarter) {
+<span class="fc" id="L88">        CurrentUser currentUser = getCurrentUser();</span>
+<span class="fc" id="L89">        log.info(&quot;currentUser={}&quot;, currentUser);</span>
+
+        // Checks length of name parameter (length should be 15 chars or less, nonzero)
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (name.length() &gt; 15) {</span>
+<span class="fc" id="L93">          throw new IllegalArgumentException(&quot;name parameter restricted to 15 chars or less&quot;);</span>
+        }
+
+<span class="fc" id="L96">        PersonalSchedule personalschedule = new PersonalSchedule();</span>
+<span class="fc" id="L97">        personalschedule.setUser(currentUser.getUser());</span>
+<span class="fc" id="L98">        personalschedule.setName(name);</span>
+<span class="fc" id="L99">        personalschedule.setDescription(description);</span>
+<span class="fc" id="L100">        personalschedule.setQuarter(quarter);</span>
+
+<span class="fc" id="L102">        Optional&lt;PersonalSchedule&gt; existCheck = personalscheduleRepository.findByUserAndNameAndQuarter(currentUser.getUser(), name, quarter);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (existCheck.isPresent()) {</span>
+<span class="fc" id="L104">          throw new IllegalArgumentException(&quot;A personal schedule with that name already exists in that quarter&quot;);</span>
+        }
+<span class="fc" id="L106">        PersonalSchedule savedPersonalSchedule = personalscheduleRepository.save(personalschedule);</span>
+<span class="fc" id="L107">        return savedPersonalSchedule;</span>
+    }
+
+    @ApiOperation(value = &quot;Delete a personal schedule owned by this user&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @DeleteMapping(&quot;&quot;)
+    public Object deleteSchedule(
+            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L115">        User currentUser = getCurrentUser().getUser();</span>
+<span class="fc" id="L116">        PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)</span>
+<span class="fc" id="L117">          .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, id));</span>
+
+<span class="fc" id="L119">          personalscheduleRepository.delete(personalschedule);</span>
+
+<span class="fc" id="L121">        return genericMessage(&quot;PersonalSchedule with id %s deleted&quot;.formatted(id));</span>
+
+    }
+
+    @ApiOperation(value = &quot;Delete another user's personal schedule&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;/admin&quot;)
+    public Object deleteSchedule_Admin(
+            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L130">              PersonalSchedule personalschedule = personalscheduleRepository.findById(id)</span>
+<span class="fc" id="L131">          .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, id));</span>
+
+<span class="fc" id="L133">          personalscheduleRepository.delete(personalschedule);</span>
+
+<span class="fc" id="L135">        return genericMessage(&quot;PersonalSchedule with id %s deleted&quot;.formatted(id));</span>
+    }
+
+    @ApiOperation(value = &quot;Update a single personal schedule (if it belongs to current user)&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @PutMapping(&quot;&quot;)
+    public PersonalSchedule putScheduleById(
+            @ApiParam(&quot;id&quot;) @RequestParam Long id,
+            @RequestBody @Valid PersonalSchedule incomingSchedule) {
+<span class="fc" id="L144">        User currentUser = getCurrentUser().getUser();</span>
+<span class="fc" id="L145">        PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)</span>
+<span class="fc" id="L146">          .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, id));</span>
+
+<span class="fc" id="L148">        personalschedule.setName(incomingSchedule.getName());</span>
+<span class="fc" id="L149">        personalschedule.setDescription(incomingSchedule.getDescription());</span>
+<span class="fc" id="L150">        personalschedule.setQuarter(incomingSchedule.getQuarter());</span>
+
+<span class="fc" id="L152">        personalscheduleRepository.save(personalschedule);</span>
+
+<span class="fc" id="L154">        return personalschedule;</span>
+    }
+
+    @ApiOperation(value = &quot;Update a single Schedule (regardless of ownership, admin only, can't change ownership)&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;/admin&quot;)
+    public PersonalSchedule putScheduleById_admin(
+            @ApiParam(&quot;id&quot;) @RequestParam Long id,
+            @RequestBody @Valid PersonalSchedule incomingSchedule) {
+<span class="fc" id="L163">              PersonalSchedule personalschedule = personalscheduleRepository.findById(id)</span>
+<span class="fc" id="L164">          .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, id));</span>
+
+<span class="fc" id="L166">        personalschedule.setName(incomingSchedule.getName());</span>
+<span class="fc" id="L167">        personalschedule.setDescription(incomingSchedule.getDescription());</span>
+<span class="fc" id="L168">        personalschedule.setQuarter(incomingSchedule.getQuarter());</span>
+
+<span class="fc" id="L170">        personalscheduleRepository.save(personalschedule);</span>
+
+<span class="fc" id="L172">        return personalschedule;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
