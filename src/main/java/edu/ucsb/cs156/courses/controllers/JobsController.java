@@ -21,6 +21,13 @@ import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersSingleSubjectJob;
+
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory;
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJob;
+
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJobFactory;
+
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJobFactory;
 import edu.ucsb.cs156.courses.jobs.TestJob;
@@ -49,6 +56,12 @@ public class JobsController extends ApiController {
 
     @Autowired
     UpdateCourseDataWithQuarterJobFactory updateCourseDataWithQuarterJobFactory;
+
+    @Autowired
+    UpdateCourseDataRangeOfQuartersJobFactory updateCourseDataRangeOfQuartersJobFactory;
+
+    @Autowired
+    UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory updateCourseDataRangeOfQuartersSingleSubjectJobFactory;
 
     @ApiOperation(value = "List all jobs")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -100,4 +113,37 @@ public class JobsController extends ApiController {
 
         return jobService.runAsJob(updateCourseDataWithQuarterJob);
     }
+
+
+    @ApiOperation(value = "Launch Job to Update Course Data for range of quarters")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/launch/updateCoursesRangeOfQuarters")
+    public Job launchUpdateCourseDataRangeOfQuartersJob(
+        @ApiParam("quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
+        @ApiParam("quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
+    ) {
+       
+        UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(
+            start_quarterYYYYQ, end_quarterYYYYQ);
+
+        return jobService.runAsJob(updateCourseDataRangeOfQuartersJob);
+    }
+
+    @ApiOperation(value = "Launch Job to Update Course Data for a range of quarters for a single subject")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/launch/updateCoursesRangeOfQuartersSingleSubject")
+    public Job launchUpdateCourseDataRangeOfQuartersSingleSubjectJob(
+        @ApiParam("subject area") @RequestParam String subjectArea,
+        @ApiParam("quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
+        @ApiParam("quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
+    ) {
+       
+        UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = 
+        updateCourseDataRangeOfQuartersSingleSubjectJobFactory.create(
+            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
+
+        return jobService.runAsJob(updateCourseDataRangeOfQuartersSingleSubjectJob);
+    }
+
+
 }
