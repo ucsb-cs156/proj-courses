@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateCourseDataRangeOfQuartersJob.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.jobs</a> &gt; <span class="el_source">UpdateCourseDataRangeOfQuartersJob.java</span></div><h1>UpdateCourseDataRangeOfQuartersJob.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.jobs;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.models.Quarter;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+
+@AllArgsConstructor
+<span class="fc" id="L20">@Slf4j</span>
+public class UpdateCourseDataRangeOfQuartersJob implements JobContextConsumer {
+
+    @Getter private String start_quarterYYYYQ;
+    @Getter private String end_quarterYYYYQ;
+    @Getter private UCSBCurriculumService ucsbCurriculumService;
+    @Getter private ConvertedSectionCollection convertedSectionCollection;
+    @Getter private List&lt;String&gt; subjects;
+
+    @Override
+    public void accept(JobContext ctx) throws Exception {
+<span class="fc" id="L31">        List&lt;Quarter&gt; quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for(Quarter quarter : quarters) {</span>
+<span class="fc" id="L33">            String quarterYYYYQ = quarter.getYYYYQ();</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            for (String subjectArea : subjects) {</span>
+<span class="fc" id="L35">                updateCourses(ctx, quarterYYYYQ, subjectArea, ucsbCurriculumService, convertedSectionCollection);</span>
+<span class="fc" id="L36">            }</span>
+<span class="fc" id="L37">        }</span>
+<span class="fc" id="L38">    }</span>
+
+    public static void updateCourses(
+        JobContext ctx, 
+        String quarterYYYYQ, 
+        String subjectArea, 
+        UCSBCurriculumService ucsbCurriculumService,
+        ConvertedSectionCollection convertedSectionCollection
+        ) throws JsonProcessingException {
+<span class="fc" id="L47">        ctx.log(&quot;Updating courses for [&quot; + subjectArea + &quot; &quot; + quarterYYYYQ + &quot;]&quot;);</span>
+
+<span class="fc" id="L49">        List&lt;ConvertedSection&gt; convertedSections = ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ,</span>
+                &quot;A&quot;);
+
+<span class="fc" id="L52">        ctx.log(&quot;Found &quot; + convertedSections.size() + &quot; sections&quot;);</span>
+<span class="fc" id="L53">        ctx.log(&quot;Storing in MongoDB Collection...&quot;);</span>
+
+<span class="fc" id="L55">        int newSections = 0;</span>
+<span class="fc" id="L56">        int updatedSections = 0;</span>
+<span class="fc" id="L57">        int errors = 0;</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (ConvertedSection section : convertedSections) {</span>
+            try {
+<span class="fc" id="L61">                String qtr = section.getCourseInfo().getQuarter();</span>
+<span class="fc" id="L62">                String enrollCode =  section.getSection().getEnrollCode();</span>
+<span class="fc" id="L63">                Optional&lt;ConvertedSection&gt; optionalSection = convertedSectionCollection</span>
+<span class="fc" id="L64">                        .findOneByQuarterAndEnrollCode(qtr,enrollCode);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">                if (optionalSection.isPresent()) {</span>
+<span class="fc" id="L66">                    ConvertedSection existingSection = optionalSection.get();</span>
+<span class="fc" id="L67">                    existingSection.setCourseInfo(section.getCourseInfo());</span>
+<span class="fc" id="L68">                    existingSection.setSection(section.getSection());</span>
+<span class="fc" id="L69">                    convertedSectionCollection.save(existingSection);</span>
+<span class="fc" id="L70">                    updatedSections++;</span>
+<span class="fc" id="L71">                } else {</span>
+<span class="fc" id="L72">                    convertedSectionCollection.save(section);</span>
+<span class="fc" id="L73">                    newSections++;</span>
+                }
+<span class="fc" id="L75">            } catch (Exception e) {</span>
+<span class="fc" id="L76">                ctx.log(&quot;Error saving section: &quot; + e.getMessage());</span>
+<span class="fc" id="L77">                errors++;</span>
+<span class="fc" id="L78">            }</span>
+<span class="fc" id="L79">        }</span>
+         
+<span class="fc" id="L81">        ctx.log(String.format(&quot;%d new sections saved, %d sections updated, %d errors&quot;, newSections, updatedSections,</span>
+<span class="fc" id="L82">                errors));</span>
+<span class="fc" id="L83">        ctx.log(&quot;Courses for [&quot; + subjectArea + &quot; &quot; + quarterYYYYQ + &quot;] have been updated&quot;);</span>
+<span class="fc" id="L84">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
