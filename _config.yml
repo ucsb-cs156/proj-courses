@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-fixNodeVersionInPom.xml","number":24,"title":"pc - fix node version in pom.xml","url":"https://github.com/ucsb-cs156/proj-courses/pull/24"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-updateJobRangeOfQuartersBackend","number":23,"title":"pc - add update quarter for range from f22-6pm-courses","url":"https://github.com/ucsb-cs156/proj-courses/pull/23"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-fixNodeVersionInPom.xml","number":24,"title":"pc - fix node version in pom.xml","url":"https://github.com/ucsb-cs156/proj-courses/pull/24"}]
