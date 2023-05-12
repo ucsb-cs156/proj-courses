@@ -10,7 +10,7 @@ courses,edu.ucsb.cs156.courses.controllers,UsersController,0,16,0,0,0,4,0,2,0,2
 courses,edu.ucsb.cs156.courses.controllers,PSCourseController,0,545,0,34,0,111,0,38,0,21
 courses,edu.ucsb.cs156.courses.controllers,SystemInfoController,0,7,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeController,0,93,0,2,0,17,0,4,0,3
-courses,edu.ucsb.cs156.courses.controllers,JobsController,0,44,0,0,0,12,0,5,0,5
+courses,edu.ucsb.cs156.courses.controllers,JobsController,0,67,0,0,0,17,0,7,0,7
 courses,edu.ucsb.cs156.courses.controllers,UCSBSubjectsController,0,109,0,0,0,24,0,10,0,10
 courses,edu.ucsb.cs156.courses.documents,Course,0,4,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,CoursePage,0,93,0,4,0,26,0,5,0,3
