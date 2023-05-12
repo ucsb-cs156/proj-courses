@@ -20,10 +20,12 @@ courses,edu.ucsb.cs156.courses.documents,ConvertedSection,0,26,0,0,0,7,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,Instructor,0,3,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,Section,0,6,0,0,0,2,0,1,0,1
 courses,edu.ucsb.cs156.courses.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
+courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataRangeOfQuartersSingleSubjectJob,0,34,0,2,0,7,0,3,0,2
 courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJob,0,124,0,4,0,31,0,4,0,2
 courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataWithQuarterJob,0,149,0,6,0,37,0,5,0,2
 courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJobFactory,0,27,0,0,0,5,0,3,0,3
 courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataWithQuarterJobFactory,0,33,0,0,0,6,0,3,0,3
+courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory,0,14,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataRangeOfQuartersJob,0,155,0,8,0,39,0,7,0,3
 courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataRangeOfQuartersJobFactory,0,52,0,2,0,10,0,4,0,3
 courses,edu.ucsb.cs156.courses.errors,EntityNotFoundException,0,17,0,0,0,3,0,1,0,1
