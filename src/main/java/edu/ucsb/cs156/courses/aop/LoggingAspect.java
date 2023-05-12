@@ -2,7 +2,6 @@ package edu.ucsb.cs156.courses.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+
+/**
+ * This class is used to log all incoming requests to the controllers
+ * in a uniform way.
+ * 
+ * Controllers may be excluded by adding them to the stoplist.
+ */
 
 @Slf4j
 @Aspect
