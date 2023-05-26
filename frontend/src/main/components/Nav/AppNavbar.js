@@ -55,7 +55,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                   <NavDropdown title="PSCourse" id="appnavbar-courses-dropdown" data-testid="appnavbar-courses-dropdown" >
                     <NavDropdown.Item href="/courses/list" data-testid="appnavbar-courses-list">List</NavDropdown.Item>
                     <NavDropdown.Item href="/courses/create" data-testid="appnavbar-courses-create">Create</NavDropdown.Item>
-                  </NavDropdown>
+                  </NavDropdown>          
                 )
               }
             </Nav>
@@ -71,8 +71,36 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 )
               }
             </Nav>
+            
+            {/* <Nav className="mr-auto">
+              <NavDropdown title="Personal Info" id="appnavbar-personal-info-dropdown" data-testid="appnavbar-personal-info-dropdown">
+                {hasRole(currentUser, "ROLE_USER") && (
+                  <>
+                    <NavDropdown title="PSCourse" id="appnavbar-courses-dropdown" data-testid="appnavbar-courses-dropdown">
+                      <NavDropdown.Item href="/courses/list" data-testid="appnavbar-courses-list">List</NavDropdown.Item>
+                      <NavDropdown.Item href="/courses/create" data-testid="appnavbar-courses-create">Create</NavDropdown.Item>
+                    </NavDropdown>
+
+                    <NavDropdown title="PersonalSchedules" id="appnavbar-personalschedules-dropdown" data-testid="appnavbar-personalschedules-dropdown">
+                      <NavDropdown.Item href="/personalschedules/list" data-testid="appnavbar-personalschedules-list">List</NavDropdown.Item>
+                      <NavDropdown.Item href="/personalschedules/create" data-testid="appnavbar-personalschedules-create">Create</NavDropdown.Item>
+                    </NavDropdown>
+                  </>
+                )}
+              </NavDropdown>
+            </Nav> */}
+
 
             <Nav className="mr-auto">
+              <NavDropdown title="Course Infos" id="appnavbar-course-infos-dropdown" data-testid="appnavbar-course-infos-dropdown">
+                <NavDropdown.Item href="/coursedescriptions/search" data-testid="appnavbar-course-descriptions-search">Course Descriptions</NavDropdown.Item>
+                <NavDropdown.Item href="/courseovertime/search" data-testid="appnavbar-course-over-time-search">Course History</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+
+
+
+            {/* <Nav className="mr-auto">
               <NavDropdown title="Course Descriptions" id="appnavbar-course-descriptions-dropdown" data-testid="appnavbar-course-descriptions-dropdown" >
                 <NavDropdown.Item href="/coursedescriptions/search" data-testid="appnavbar-course-descriptions-search">Search</NavDropdown.Item>
               </NavDropdown>
@@ -82,7 +110,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               <NavDropdown title="Course History" id="appnavbar-course-over-time-dropdown" data-testid="appnavbar-course-over-time-dropdown" >
                 <NavDropdown.Item href="/courseovertime/search" data-testid="appnavbar-course-over-time-search">Search</NavDropdown.Item>
               </NavDropdown>
-            </Nav>
+            </Nav> */}
 
 
             
