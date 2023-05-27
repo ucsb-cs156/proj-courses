@@ -105,7 +105,7 @@ public class CourseOverTimeBuildingControllerTests {
         MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
         // assert
-        String expectedString = "{expectedJSONResult}";
+        String expectedString = mapper.writeValueAsString(expectedSecs);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedString, responseString);
     }
