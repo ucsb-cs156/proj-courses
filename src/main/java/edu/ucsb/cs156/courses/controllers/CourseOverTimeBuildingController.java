@@ -29,7 +29,7 @@ public class CourseOverTimeBuildingController {
     @Autowired
     ConvertedSectionCollection convertedSectionCollection;
 
-    @ApiOperation(value = "Get a list of courses over time, filtered by building name")
+    @ApiOperation(value = "Get a list of courses over time, filtered by (abbreviated) building name")
     @GetMapping(value = "/buildingsearch", produces = "application/json")
     public ResponseEntity<String> search(
         @RequestParam String startQtr,
