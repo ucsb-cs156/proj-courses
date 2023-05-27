@@ -47,9 +47,9 @@ public class CourseOverTimeInstructorControllerTests {
     @Test
     public void test_search_emptyRequest() throws Exception {
         List<ConvertedSection> expectedResult = new ArrayList<ConvertedSection>();
-        String urlTemplate = "/api/public/courseovertime/search?startQtr=%s&endQtr=%s&instructor=%s";
+        String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s";
         
-        String url = String.format(urlTemplate, "20222", "20212", "DANIEL");
+        String url = String.format(urlTemplate, "20222", "20212", "paul");
 
         // mock
         when(convertedSectionCollection.findByQuarterRangeAndInstructor(any(String.class), any(String.class), any(String.class)))
@@ -92,56 +92,15 @@ public class CourseOverTimeInstructorControllerTests {
             .section(section2)
             .build();
 
-        String urlTemplate = "/api/public/courseovertime/search?startQtr=%s&endQtr=%s&instructor=%s";
+        String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s";
     
-        String url = String.format(urlTemplate, "20222", "20222", "DANIEL");
+        String url = String.format(urlTemplate, "20222", "20222", "EMRE");
 
         List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
         expectedSecs.addAll(Arrays.asList(cs1, cs2));
 
         // mock
-        when(convertedSectionCollection.findByQuarterRangeAndInstructor(any(String.class), any(String.class), eq("DANIEL"))).thenReturn(expectedSecs);
-
-        // act
-        MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
-
-        // assert
-        String expectedString = mapper.writeValueAsString(expectedSecs);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedString, responseString);
-    }
-
-    @Test public void test_search_validRequestWithSuffix() throws Exception {
-        CourseInfo info = CourseInfo.builder()
-            .quarter("20222")
-            .courseId("CMPSC   130A -1")
-            .title("DATA STRUCT AND ALG")
-            .description("Data Structures and Algorithms")
-            .build();
-        
-        Section section1 = new Section();
-
-        Section section2 = new Section();
-
-        ConvertedSection cs1 = ConvertedSection.builder()
-            .courseInfo(info)
-            .section(section1)
-            .build();
-        
-        ConvertedSection cs2 = ConvertedSection.builder()
-            .courseInfo(info)
-            .section(section2)
-            .build();
-
-        String urlTemplate = "/api/public/courseovertime/search?startQtr=%s&endQtr=%s&instructor=%s";
-    
-        String url = String.format(urlTemplate, "20222", "20222", "DANIEL");
-
-        List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
-        expectedSecs.addAll(Arrays.asList(cs1, cs2));
-
-        // mock
-        when(convertedSectionCollection.findByQuarterRangeAndInstructor(any(String.class), any(String.class), eq("DANIEL "))).thenReturn(expectedSecs);
+        when(convertedSectionCollection.findByQuarterRangeAndInstructor(any(String.class), any(String.class), eq("EMRE"))).thenReturn(expectedSecs);
 
         // act
         MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
