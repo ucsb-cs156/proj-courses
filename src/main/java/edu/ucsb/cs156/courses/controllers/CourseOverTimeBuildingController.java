@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiParam;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,11 +31,29 @@ public class CourseOverTimeBuildingController {
     @Autowired
     ConvertedSectionCollection convertedSectionCollection;
 
-    @ApiOperation(value = "Get a list of courses over time, filtered by (abbreviated) building code (e.g. 'GIRV' for Girvetz Hall)")
+    @ApiOperation(value = "Get a list of courses over time, filtered by (abbreviated) building code")
     @GetMapping(value = "/buildingsearch", produces = "application/json")
     public ResponseEntity<String> search(
+        @ApiParam(
+            name =  "startQtr",
+            type = "String",
+            value = "Starting quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+            example = "20231",
+            required = true)
         @RequestParam String startQtr,
+        @ApiParam(
+            name =  "endQtr",
+            type = "String",
+            value = "Ending quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+            example = "20231",
+            required = true)
         @RequestParam String endQtr,
+        @ApiParam(
+            name =  "buildingCode",
+            type = "String",
+            value = "Building code such as PHELP for Phelps, GIRV for Girvetz",
+            example = "GIRV",
+            required = true)
         @RequestParam String buildingCode
     ) throws JsonProcessingException {
         List<ConvertedSection> courseResults = convertedSectionCollection.findByQuarterRangeAndBuildingCode(
