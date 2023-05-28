@@ -55,7 +55,8 @@ public class CourseOverTimeInstructorController {
             type = "String",
             value = "Instructor name; e.g. 'conrad' or 'CONRAD' or 'CONRAD P T'",
             example = "CONRAD",
-            required = true)
+            required = true
+        )
         @RequestParam String instructor
     ) throws JsonProcessingException {
         List<ConvertedSection> courseResults = convertedSectionCollection.findByQuarterRangeAndInstructor(
