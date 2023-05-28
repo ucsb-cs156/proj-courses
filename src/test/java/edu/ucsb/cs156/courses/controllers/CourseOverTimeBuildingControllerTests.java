@@ -46,12 +46,12 @@ public class CourseOverTimeBuildingControllerTests {
     @Test
     public void test_search_emptyRequest() throws Exception {
         List<ConvertedSection> expectedResult = new ArrayList<ConvertedSection>();
-        String urlTemplate = "/api/public/courseovertime/buildingsearch?startQtr=%s&endQtr=%s&buildingName=%s";
+        String urlTemplate = "/api/public/courseovertime/buildingsearch?startQtr=%s&endQtr=%s&buildingCode=%s";
         
         String url = String.format(urlTemplate, "20221", "20222", "Storke Tower");
 
         // mock
-        when(convertedSectionCollection.findByQuarterRangeAndBuildingName(any(String.class), any(String.class), any(String.class)))
+        when(convertedSectionCollection.findByQuarterRangeAndBuildingCode(any(String.class), any(String.class), any(String.class)))
             .thenReturn(expectedResult);
 
         // act
@@ -91,7 +91,7 @@ public class CourseOverTimeBuildingControllerTests {
             .section(section2)
             .build();
 
-        String urlTemplate = "/api/public/courseovertime/buildingsearch?startQtr=%s&endQtr=%s&buildingName=%s";
+        String urlTemplate = "/api/public/courseovertime/buildingsearch?startQtr=%s&endQtr=%s&buildingCode=%s";
         
         String url = String.format(urlTemplate, "20221", "20222", "GIRV");
 
@@ -99,7 +99,7 @@ public class CourseOverTimeBuildingControllerTests {
         expectedSecs.addAll(Arrays.asList(cs1, cs2));
 
         // mock
-        when(convertedSectionCollection.findByQuarterRangeAndBuildingName(any(String.class), any(String.class), eq("GIRV"))).thenReturn(expectedSecs);
+        when(convertedSectionCollection.findByQuarterRangeAndBuildingCode(any(String.class), any(String.class), eq("GIRV"))).thenReturn(expectedSecs);
 
         // act
         MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();

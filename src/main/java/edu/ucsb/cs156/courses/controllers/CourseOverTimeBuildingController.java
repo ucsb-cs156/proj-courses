@@ -29,17 +29,17 @@ public class CourseOverTimeBuildingController {
     @Autowired
     ConvertedSectionCollection convertedSectionCollection;
 
-    @ApiOperation(value = "Get a list of courses over time, filtered by (abbreviated) building name")
+    @ApiOperation(value = "Get a list of courses over time, filtered by (abbreviated) building code (e.g. 'GIRV' for Girvetz Hall)")
     @GetMapping(value = "/buildingsearch", produces = "application/json")
     public ResponseEntity<String> search(
         @RequestParam String startQtr,
         @RequestParam String endQtr,
-        @RequestParam String buildingName
+        @RequestParam String buildingCode
     ) throws JsonProcessingException {
-        List<ConvertedSection> courseResults = convertedSectionCollection.findByQuarterRangeAndBuildingName(
+        List<ConvertedSection> courseResults = convertedSectionCollection.findByQuarterRangeAndBuildingCode(
             startQtr,
             endQtr,
-            buildingName
+            buildingCode
         );
         String body = mapper.writeValueAsString(courseResults);
         return ResponseEntity.ok().body(body);

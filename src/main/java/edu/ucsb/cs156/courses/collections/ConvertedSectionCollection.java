@@ -21,8 +21,8 @@ public interface ConvertedSectionCollection extends MongoRepository<ConvertedSec
         String courseId );
     
      @Query("{'courseInfo.quarter': { $gte: ?0, $lte: ?1 }, 'section.timeLocations.building': { $regex: ?2, $options: 'i' } }")
-     List<ConvertedSection> findByQuarterRangeAndBuildingName(
+     List<ConvertedSection> findByQuarterRangeAndBuildingCode(
         String startQuarter, 
         String endQuarter, 
-        String building );
+        String buildingCode );
 }
