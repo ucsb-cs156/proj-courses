@@ -13,7 +13,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
           <AppNavbarLocalhost url={currentUrl} />
         )
       }
-      <Navbar expand="xl" variant="dark" bg="dark" sticky="top" data-testid="AppNavbar">
+      <Navbar expand="xl" variant="dark" className="color-nav" sticky="top" data-testid="AppNavbar">
         <Container >
         <img data-testid="AppNavbarImage" src={headerImg} alt="" style={{width: 80, height: 80, marginRight: 10}} />
           <Navbar.Brand as={Link} to="/">
