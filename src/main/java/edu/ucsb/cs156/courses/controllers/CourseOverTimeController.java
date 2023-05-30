@@ -5,6 +5,7 @@ import java.util.List;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +33,37 @@ public class CourseOverTimeController {
     @ApiOperation(value = "Get a list of courses over time")
     @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<String> search(
+        @ApiParam(
+            name = "StartQtr",
+            type = "string",
+            value = "starting quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+            example = "20231",
+            required = true
+        )
         @RequestParam String startQtr,
+        @ApiParam(
+            name =  "endQtr",
+            type = "String",
+            value = "ending quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+            example = "20231",
+            required = true
+        )
         @RequestParam String endQtr,
+        @ApiParam(
+            name =  "subjectArea",
+            type = "String",
+            value = "simplified area name followed with full area name",
+            example = "EARTH - Earth Science",
+            required = true
+        )
         @RequestParam String subjectArea,
+        @ApiParam(
+            name =  "courseNumber",
+            type = "String",
+            value = "the spicifc course number",
+            example = "16 or 130A (for CS16 or CS130A)",
+            required = true
+        )
         @RequestParam String courseNumber
     ) throws JsonProcessingException {
         List<ConvertedSection> courseResults = convertedSectionCollection.findByQuarterRangeAndCourseId(
