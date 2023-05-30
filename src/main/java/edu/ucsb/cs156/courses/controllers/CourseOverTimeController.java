@@ -52,8 +52,8 @@ public class CourseOverTimeController {
         @ApiParam(
             name =  "subjectArea",
             type = "String",
-            value = "simplified area name followed with full area name",
-            example = "EARTH - Earth Science",
+            value = "simplified area name",
+            example = "CMPSC (for Computer Science)",
             required = true
         )
         @RequestParam String subjectArea,
@@ -61,7 +61,7 @@ public class CourseOverTimeController {
             name =  "courseNumber",
             type = "String",
             value = "the specific course number",
-            example = "16 or 130A (for CS16 or CS130A)",
+            example = "130A (for CS130A)",
             required = true
         )
         @RequestParam String courseNumber
