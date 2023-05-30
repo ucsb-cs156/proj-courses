@@ -60,7 +60,7 @@ public class CourseOverTimeController {
         @ApiParam(
             name =  "courseNumber",
             type = "String",
-            value = "the spicifc course number",
+            value = "the specific course number",
             example = "16 or 130A (for CS16 or CS130A)",
             required = true
         )
