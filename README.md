@@ -10,8 +10,8 @@ Users with a Google Account can also store past, current or future schedules of 
 
 | Type | Link       | 
 |------|------------|
-| prod | <https://proj-courses.dokku-00.cs.ucsb.edu/> | 
-| qa | <https://proj-courses-qa.dokku-00.cs.ucsb.edu/>  | 
+| prod | <https://proj-courses.dokku-11.cs.ucsb.edu/> | 
+| qa | <https://proj-courses-qa.dokku-11.cs.ucsb.edu/>  | 
 
 
 # Setup before running application
