@@ -27,18 +27,29 @@ import lombok.Builder;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "gradehistory")
-@Table(uniqueConstraints = { @UniqueConstraint(name = "UniqueGradeHistory", columnNames = { "year", "quarter", "subjectArea","course","instructor","gradeGiven","sumofStudentCount" }) })
+
+@Entity(name = "historygrade")
+@Table(uniqueConstraints = { @UniqueConstraint(name = "UniqueGradeHistory", columnNames = { "yyyyq", "course","instructor","grade","count"}) })
+
 public class GradeHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String year;
-    private String quarter;
-    private String level;
-    private String subjectArea;
+    private String yyyyq;
     private String course;
     private String instructor;
-    private String gradeGiven;
-    private int sumofStudentCount;
+    private String grade;
+    private int count;
+
+    public String getSubjectArea() {
+        if (course==null)
+            return null;
+        return course.substring(0, 8).trim();
+    }
+    public String getCourseNum() {
+        if (course==null)
+            return null;
+        return course.substring(8).trim();
+    }
+
 }
