@@ -52,7 +52,7 @@ public class UCSBGradeHistoryServiceTests {
 
     @Test
     public void test_getGradeData() throws Exception {
-        String url = "https://example.org/getGradeData";
+        String url = "https://raw.githubusercontent.com/ucsb-cs156/UCSB_Grades/main/quarters/F09/DANCE.csv";
 
         List<GradeHistory> expectedResult = new ArrayList<GradeHistory>();
         expectedResult.add(
