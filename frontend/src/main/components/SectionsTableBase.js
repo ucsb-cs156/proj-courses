@@ -33,6 +33,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
             {row.cells[0].isGrouped || (!row.cells[0].isGrouped && row.allCells[3].value) ? 
             <tr {...row.getRowProps()}>
               {row.cells.map((cell, _index) => {
+                
                 return (
                     <td
                     {...cell.getCellProps()}
@@ -46,10 +47,11 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     <span {...row.getToggleRowExpandedProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
                     >
-                    {row.isExpanded ? "➖ " : "➕ "}
+                    {row.subRows.length > 1 ? row.isExpanded ? "➖ " : "➕ " : null}
                     </span>{" "}
                     {cell.render("Cell")} 
                     </>
+                    // the fix row.subRows.length above is used as canExpand is not working
                     ) 
                     : cell.isAggregated ? (
                       cell.render("Aggregated")
