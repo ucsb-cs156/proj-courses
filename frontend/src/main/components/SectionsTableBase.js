@@ -33,7 +33,6 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
             {row.cells[0].isGrouped || (!row.cells[0].isGrouped && row.allCells[3].value) ? 
             <tr {...row.getRowProps()}>
               {row.cells.map((cell, _index) => {
-                
                 return (
                     <td
                     {...cell.getCellProps()}
