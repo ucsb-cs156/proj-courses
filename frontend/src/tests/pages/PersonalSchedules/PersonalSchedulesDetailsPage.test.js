@@ -144,7 +144,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
             </QueryClientProvider>
         );
         await waitFor(()=>{
-             expect(screen.getByText("PersonalSchedules Details")).toBeInTheDocument();
+             expect(screen.getByText("Personal Schedules Details")).toBeInTheDocument();
         });
         await waitFor(()=>{
             expect(screen.getByText("Sections in Personal Schedule")).toBeInTheDocument();
