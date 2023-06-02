@@ -47,7 +47,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     <span {...row.getToggleRowExpandedProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
                     >
-                    {row.subRows.length > 1 ? row.isExpanded ? "➖ " : "➕ " : null}
+                    {row.subRows.length >= 2 ? row.isExpanded ? "➖ " : "➕ " : null}
                     </span>{" "}
                     {cell.render("Cell")} 
                     </>
