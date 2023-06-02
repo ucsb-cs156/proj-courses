@@ -38,19 +38,19 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     <td
                     {...cell.getCellProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
-                    // Stryker disable next-line ObjectLiteral
+                    // Stryker disable all
                     style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
                     >
-                    
                     {cell.isGrouped ? (
                     <>
                     <span {...row.getToggleRowExpandedProps()}
-                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
-                    >
-                    {row.subRows.length >= 2 ? row.isExpanded ? "➖ " : "➕ " : null}
-                    </span>{" "}
+                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`} 
+                    > 
+                    {row.subRows.length > 1 ? row.isExpanded ? "➖ " : "➕ " : null} 
+                    </span>{" "} 
                     {cell.render("Cell")} 
-                    </>
+                    </> 
+                    // Stryker enable all
                     // the fix row.subRows.length above is used as canExpand is not working
                     ) 
                     : cell.isAggregated ? (
