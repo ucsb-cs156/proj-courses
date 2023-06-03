@@ -54,14 +54,32 @@ public class CourseOverTimeInstructorController {
             example = "CONRAD",
             required = true
         )
-        @RequestParam String instructor
+        @RequestParam String instructor,
+        
+        @Parameter(
+            name = "lectureOnly", 
+            description = "Lectures only", 
+            example = "true", 
+            required = true
+        ) 
+        @RequestParam boolean lectureOnly
     ) throws JsonProcessingException {
-        List<ConvertedSection> courseResults = convertedSectionCollection.findByQuarterRangeAndInstructor(
-            startQtr,
-            endQtr,
-            instructor
-        );
+		List<ConvertedSection> courseResults;
+		if (lectureOnly) {
+			courseResults = convertedSectionCollection.findByQuarterRangeAndInstructor(
+				startQtr,
+				endQtr,
+				"^"+instructor.toUpperCase(),
+				"^(Teaching and in charge)");
+		} else {
+			courseResults = convertedSectionCollection.findByQuarterRangeAndInstructor(
+				startQtr,
+				endQtr,
+				"^"+instructor.toUpperCase(),
+				"^.*");
+		}
         String body = mapper.writeValueAsString(courseResults);
         return ResponseEntity.ok().body(body);
     }    
 }
+
