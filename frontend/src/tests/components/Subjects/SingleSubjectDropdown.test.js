@@ -42,7 +42,7 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={oneSubject}
         subject={oneSubject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
   });
@@ -57,13 +57,13 @@ describe("SingleSubjectDropdown tests", () => {
         ]}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
-    const ART_CS = "ssd1-option-ART--CS";
-    const ANTH = "ssd1-option-ANTH";
-    const ARTHI = "ssd1-option-ARTHI";
+    const ART_CS = "sbd1-option-ART--CS";
+    const ANTH = "sbd1-option-ANTH";
+    const ARTHI = "sbd1-option-ARTHI";
 
     // Check that blanks are replaced with hyphens
     await waitFor(() => expect(screen.getByTestId(ART_CS).toBeInTheDocument));
@@ -72,7 +72,7 @@ describe("SingleSubjectDropdown tests", () => {
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
-    const allOptions = screen.getAllByTestId("ssd1-option-",  { exact: false });
+    const allOptions = screen.getAllByTestId("sbd1-option-",  { exact: false });
     for (let i = 0; i < allOptions.length - 1; i++) {
       console.log("[i]" + allOptions[i].value);
       console.log("[i+1]" + allOptions[i+1].value);
@@ -87,7 +87,7 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={threeSubjects}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
   });
@@ -98,7 +98,7 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={threeSubjects}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
     
@@ -115,14 +115,14 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={outOfOrderSubjects}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
     expect(await screen.findByText("Subject Area")).toBeInTheDocument();
     expect(screen.getByText("ANTH - Anthropology")).toHaveAttribute(
       "data-testid",
-      "ssd1-option-ANTH"
+      "sbd1-option-ANTH"
     );
   });
 
@@ -133,7 +133,7 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={threeSubjects}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
         onChange={onChange}
       />
     );
@@ -156,7 +156,7 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={threeSubjects}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
     
@@ -169,11 +169,11 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={threeSubjects}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
-    const expectedKey = "ssd1-option-ANTH";
+    const expectedKey = "sbd1-option-ANTH";
     await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
   });
 
@@ -189,7 +189,7 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={threeSubjects}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
@@ -208,7 +208,7 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={threeSubjects}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
@@ -223,11 +223,11 @@ describe("SingleSubjectDropdown tests", () => {
         subjects={[]}
         subject={subject}
         setSubject={setSubject}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
-    const expectedKey = "ssd1";
+    const expectedKey = "sbd1";
     expect(screen.queryByTestId(expectedKey)).toBeNull();
   });
 });
