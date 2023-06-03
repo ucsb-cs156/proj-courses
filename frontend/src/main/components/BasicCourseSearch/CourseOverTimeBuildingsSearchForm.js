@@ -15,7 +15,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   // Stryker disable OptionalChaining
   const startQtr = systemInfo?.startQtrYYYYQ || "20211";
   const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker enable OptionalChaining
+  // Stryker restore OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
 
@@ -27,13 +27,14 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const [startQuarter, setStartQuarter] = useState(localStartQuarter || quarters[0].yyyyq);
   const [endQuarter, setEndQuarter] = useState(localEndQuarter || quarters[0].yyyyq);
   const [buildingCode, setBuildingCode] = useState(localBuildingCode || {});
-    
+  
+  // Stryker restore all
+
   const handleSubmit = (event) => {
     event.preventDefault();
     fetchJSON(event, { startQuarter, endQuarter, buildingCode });
   };
 
-  // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
   return (
     <Form onSubmit={handleSubmit}>
       <Container>

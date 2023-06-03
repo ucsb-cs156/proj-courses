@@ -176,6 +176,8 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     userEvent.selectOptions(selectBuilding, "GIRV");
 
     const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
+    expect(submitButton).toHaveAttribute("style", "paddingTop: 10, paddingBottom: 10");
     userEvent.click(submitButton);
   });
 
