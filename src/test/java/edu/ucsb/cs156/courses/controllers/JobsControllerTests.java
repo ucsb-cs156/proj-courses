@@ -38,6 +38,7 @@ import edu.ucsb.cs156.courses.entities.User;
 
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJobFactory;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
+import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJobFactory;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory;
 
@@ -60,6 +61,9 @@ public class JobsControllerTests extends ControllerTestCase {
 
     @MockBean
     UserRepository userRepository;
+
+    @MockBean
+    UploadGradeDataJobFactory uploadGradeDataJobFactory;
 
     @Autowired
     JobService jobService;
@@ -264,5 +268,18 @@ public class JobsControllerTests extends ControllerTestCase {
         assertNotNull(jobReturned.getStatus());
     }
 
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_launch_upload_course_grade_data_job() throws Exception {
+        // act
+        MvcResult response = mockMvc.perform(post("/api/jobs/launch/uploadGradeData").with(csrf()))
+                .andExpect(status().isOk()).andReturn();
 
+        // assert
+        String responseString = response.getResponse().getContentAsString();
+        log.info("responseString={}", responseString);
+        Job jobReturned = objectMapper.readValue(responseString, Job.class);
+
+        assertNotNull(jobReturned.getStatus());
+    }
 }
