@@ -1,5 +1,3 @@
-//TODO: Backend API?
-
 import React from "react";
 
 import CourseOverTimeInstructorSearchForm from "main/components/BasicCourseSearch/CourseOverTimeInstructorSearchForm";

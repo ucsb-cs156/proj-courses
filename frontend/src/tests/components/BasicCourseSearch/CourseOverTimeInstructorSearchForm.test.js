@@ -56,6 +56,20 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     );
   });
 
+  test("Before I select a start quarter, the state for start quarter is initialized", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    expect(selectStartQuarter.value).toBe("20201");
+  });
+
+  
+
   test("when I select a start quarter, the state for start quarter changes", () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -192,4 +206,30 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
 
   });
 
+  test("Button padding is correct", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+    const submitButton = screen.getByText("Submit");
+    const buttonCol = submitButton.parentElement;
+    const buttonRow = buttonCol.parentElement;
+    expect(buttonRow).toHaveAttribute("style", "padding-top: 10px; padding-bottom: 10px;");
+  });
+
+  test("Before I select an instructor name, the state for instructor name is initialized", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+    const localInstructor = localStorage.getItem("CourseOverTimeInstructorSearch.Instructor");
+    const selectStartQuarter = screen.getByLabelText("Instructor Name");
+    expect(selectStartQuarter.value).toBe(localInstructor);
+  });
 });

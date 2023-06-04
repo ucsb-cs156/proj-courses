@@ -25,6 +25,7 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
   const localStartQuarter = localStorage.getItem("CourseOverTimeInstructorSearch.StartQuarter");
   const localEndQuarter = localStorage.getItem("CourseOverTimeInstructorSearch.EndQuarter");
   const localInstructor = localStorage.getItem("CourseOverTimeInstructorSearch.Instructor");
+  // Stryker restore all
 
   const [startQuarter, setStartQuarter] = useState(localStartQuarter || quarters[0].yyyyq);
   const [endQuarter, setEndQuarter] = useState(localEndQuarter || quarters[0].yyyyq);
@@ -39,8 +40,6 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
     setInstructor(event.target.value);
 };
 
-
-  // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
