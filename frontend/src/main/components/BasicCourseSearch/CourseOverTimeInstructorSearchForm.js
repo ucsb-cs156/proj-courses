@@ -25,11 +25,11 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
   const localStartQuarter = localStorage.getItem("CourseOverTimeInstructorSearch.StartQuarter");
   const localEndQuarter = localStorage.getItem("CourseOverTimeInstructorSearch.EndQuarter");
   const localInstructor = localStorage.getItem("CourseOverTimeInstructorSearch.Instructor");
-  // Stryker restore all
 
   const [startQuarter, setStartQuarter] = useState(localStartQuarter || quarters[0].yyyyq);
   const [endQuarter, setEndQuarter] = useState(localEndQuarter || quarters[0].yyyyq);
   const [instructor, setInstructor] = useState(localInstructor || "");
+  // Stryker restore all
 
   const handleSubmit = (event) => {
     event.preventDefault();
