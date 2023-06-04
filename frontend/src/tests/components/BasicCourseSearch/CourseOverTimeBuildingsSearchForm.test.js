@@ -176,6 +176,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     userEvent.selectOptions(selectBuilding, "GIRV");
 
     const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
   });
 
