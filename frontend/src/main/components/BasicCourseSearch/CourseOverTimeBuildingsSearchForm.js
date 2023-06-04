@@ -27,6 +27,8 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const [startQuarter, setStartQuarter] = useState(localStartQuarter || quarters[0].yyyyq);
   const [endQuarter, setEndQuarter] = useState(localEndQuarter || quarters[0].yyyyq);
   const [buildingCode, setBuildingCode] = useState(localBuildingCode || {});
+
+  const rowStyle = { paddingTop: 10, paddingBottom: 10 };
   
   // Stryker restore all
 
@@ -67,7 +69,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             />
           </Col>
         </Row>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row style={rowStyle}>
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit
