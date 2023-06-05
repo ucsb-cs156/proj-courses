@@ -26,7 +26,6 @@ const Template = (args) => {
 export const Default = Template.bind({});
 
 Default.args = {
-  submitText: "Create",
   fetchJSON: (_event, data) => {
     console.log("Submit was clicked, data=", data);
   }
