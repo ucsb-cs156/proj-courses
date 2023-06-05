@@ -124,6 +124,6 @@ describe("CoursesCreatePage tests", () => {
 
         await screen.findByTestId("PSCourseCreate-Error")
         const PSError = screen.getByTestId("PSCourseCreate-Error");
-        expect(PSError).toBeInTheDocument;
+        expect(PSError).toBeInTheDocument();
     });
 });
