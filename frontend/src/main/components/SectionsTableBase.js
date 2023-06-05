@@ -50,7 +50,6 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     {cell.render("Cell")} 
                     </> 
                     // Stryker restore all
-                    // the fix row.subRows.length above is used as canExpand is not working
                     ) 
                     : cell.isAggregated ? (
                       cell.render("Aggregated")
