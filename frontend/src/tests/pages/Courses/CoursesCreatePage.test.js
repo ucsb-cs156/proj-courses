@@ -97,5 +97,33 @@ describe("CoursesCreatePage tests", () => {
         expect(mockNavigate).toBeCalledWith({ "to": "/courses/list" });
     });
 
+    test("when you input incorrect information, we get an error", async () => {
 
+        const queryClient = new QueryClient();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CoursesCreatePage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByTestId("CourseForm-psId")).toBeInTheDocument();
+        
+        const psIdField = screen.getByTestId("CourseForm-psId");
+        const enrollCdField = screen.getByTestId("CourseForm-enrollCd");
+        const submitButton = screen.getByTestId("CourseForm-submit");
+
+        fireEvent.change(psIdField, { target: { value: 13 } });
+        fireEvent.change(enrollCdField, { target: { value: '99881' } });
+
+        expect(submitButton).toBeInTheDocument();
+
+        fireEvent.click(submitButton);
+
+        await screen.findByTestId("PSCourseCreate-Error")
+        const PSError = screen.getByTestId("PSCourseCreate-Error");
+        expect(PSError).toBeInTheDocument;
+    });
 });
