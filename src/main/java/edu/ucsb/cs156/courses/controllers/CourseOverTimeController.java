@@ -4,7 +4,6 @@ import java.util.List;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
-import edu.ucsb.cs156.courses.utilities.CourseUtilities;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -70,9 +69,25 @@ public class CourseOverTimeController {
         List<ConvertedSection> courseResults = convertedSectionCollection.findByQuarterRangeAndCourseId(
             startQtr,
             endQtr,
-            CourseUtilities.makeFormattedCourseId(subjectArea, courseNumber)
+            makeFormattedCourseId(subjectArea, courseNumber)
         );
         String body = mapper.writeValueAsString(courseResults);
         return ResponseEntity.ok().body(body);
+    }
+    
+    String makeFormattedCourseId(String subjectArea, String courseNumber) {
+        String[] nums = courseNumber.split("[a-zA-Z]+");
+        String[] suffs = courseNumber.split("[0-9]+");
+        if (suffs.length < 2) { // no suffix
+            return
+                  String.format( "%-8s", subjectArea                ) // 'CMPSC   '
+                + String.format( "%3s" , nums[0]                    ) // '  8'
+            ;
+        }
+        return
+              String.format( "%-8s", subjectArea                ) // 'CMPSC   '
+            + String.format( "%3s" , nums[0]                    ) // '  8'
+            + String.format( "%-2s", suffs[1]                   ) // 'A '
+        ;
     }
 }
