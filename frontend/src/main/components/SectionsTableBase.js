@@ -37,7 +37,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     <td
                     {...cell.getCellProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
-                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
+                    style={{background: cell.isGrouped ? ( "#e5fcf4" ) : ( cell.isAggregated ? "#e5fcf4" : "#effcf8" ), fontWeight: cell.isGrouped ? ( "bold" ) : ( cell.isAggregated ? "bold" : "normal" )}}
                     >
                     {cell.isGrouped ? (
                     <>
