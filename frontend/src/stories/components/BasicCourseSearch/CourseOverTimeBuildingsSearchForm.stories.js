@@ -13,7 +13,7 @@ export default {
         url: '/api/systemInfo',
         method: 'GET',
         status: 200,
-        response: systemInfoFixtures.showingBothStartAndEndQtr
+        response: systemInfoFixtures.showingBoth
       },
     ],
   },
