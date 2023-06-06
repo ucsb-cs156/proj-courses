@@ -75,21 +75,4 @@ public class CourseOverTimeController {
         String body = mapper.writeValueAsString(courseResults);
         return ResponseEntity.ok().body(body);
     }
-
-    String makeFormattedCourseId(String subjectArea, String courseNumber) {
-        String[] nums = courseNumber.split("[a-zA-Z]+");
-        String[] suffs = courseNumber.split("[0-9]+");
-        if (suffs.length < 2) { // no suffix
-            return
-                  String.format( "%-8s", subjectArea                ) // 'CMPSC   '
-                + String.format( "%3s" , nums[0]                    ) // '  8'
-            ;
-        }
-        return
-              String.format( "%-8s", subjectArea                ) // 'CMPSC   '
-            + String.format( "%3s" , nums[0]                    ) // '  8'
-            + String.format( "%-2s", suffs[1]                   ) // 'A '
-        ;
-    }
-    
 }
