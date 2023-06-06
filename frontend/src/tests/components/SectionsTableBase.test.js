@@ -119,7 +119,7 @@ describe("SectionsTableBase tests", () => {
     });
 
 
-    test("renders five sections (one with no discussion then lecture with three discussions) correctly ", async () => {
+    test("renders five sections (one with no discussion then lecture with three discussions) correctly", async () => {
         render(
             <SectionsTableBase columns={columns} data={fiveSections}  group={false} />
         );
