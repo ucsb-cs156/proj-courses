@@ -114,8 +114,8 @@ describe("SectionsTableBase tests", () => {
             <SectionsTableBase columns={columns} data={oneLectureSectionWithNoDiscussion} group={false} />
         );
 
-        expect(await screen.queryByText("➖")).not.toBeInTheDocument();
-        expect(await screen.queryByText("➕")).not.toBeInTheDocument();
+        expect(screen.queryByText("➖")).not.toBeInTheDocument();
+        expect(screen.queryByText("➕")).not.toBeInTheDocument();
     });
 
 
@@ -124,10 +124,10 @@ describe("SectionsTableBase tests", () => {
             <SectionsTableBase columns={columns} data={fiveSections}  group={false} />
         );
 
-        expect(await screen.queryByText("➕")).toBeInTheDocument();
-        expect(await screen.queryByText("➖")).not.toBeInTheDocument();
-        expect(await screen.getByTestId("testid-cell-row-1-col-courseInfo.courseId-expand-symbols")).toBeInTheDocument();
-        expect(await screen.getByTestId("testid-cell-row-0-col-courseInfo.courseId")).toHaveAttribute("style", "background: rgb(229, 252, 244); font-weight: bold;");
+        expect(screen.getByText("➕")).toBeInTheDocument();
+        expect(screen.queryByText("➖")).not.toBeInTheDocument();
+        expect(screen.getByTestId("testid-cell-row-1-col-courseInfo.courseId-expand-symbols")).toBeInTheDocument();
+        expect(screen.getByTestId("testid-cell-row-0-col-courseInfo.courseId")).toHaveAttribute("style", "background: rgb(229, 252, 244); font-weight: bold;");
 
     });
 })
