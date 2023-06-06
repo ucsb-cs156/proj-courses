@@ -114,7 +114,7 @@ public class CourseOverTimeControllerTests {
     @Test public void test_search_validRequestWithSuffix() throws Exception {
         CourseInfo info = CourseInfo.builder()
             .quarter("20222")
-            .courseId("CMPSC   130A -1")
+            .courseId("CMPSC   130A ")
             .title("DATA STRUCT AND ALG")
             .description("Data Structures and Algorithms")
             .build();
@@ -141,7 +141,7 @@ public class CourseOverTimeControllerTests {
         expectedSecs.addAll(Arrays.asList(cs1, cs2));
 
         // mock
-        when(convertedSectionCollection.findByQuarterRangeAndCourseId(any(String.class), any(String.class), eq("CMPSC   130A "))).thenReturn(expectedSecs);
+        when(convertedSectionCollection.findByQuarterRangeAndCourseId(any(String.class), any(String.class), eq("CMPSC   130A"))).thenReturn(expectedSecs);
 
         // act
         MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
