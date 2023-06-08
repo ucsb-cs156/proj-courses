@@ -50,14 +50,14 @@ public class GradeHistoryController extends ApiController {
             name =  "subjectArea",
             type = "String",
             value = "Subjects of UCSB",
-            example = "ANTH, WRIT",
+            example = "CMPSC",
             required = true)
         @RequestParam String subjectArea,
         @ApiParam(
             name =  "courseNumber",
             type = "String",
             value = "Represents a subject-specific course",
-            example = "2 for(ANTH), 1 for(WRIT)",
+            example = "130A",
             required = true)
         @RequestParam String courseNumber
       )  

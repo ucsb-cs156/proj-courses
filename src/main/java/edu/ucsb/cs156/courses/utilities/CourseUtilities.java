@@ -10,21 +10,23 @@ public class CourseUtilities {
 
     /**
      * Given a subject area and course number, return a course id that is formatted
-     * in the precise way that course numbers are formatted in UCSB's GOLD system.
+     * similarly to the precise way that course numbers are formatted in UCSB's GOLD system.
      * 
      * That format has the subject area left justified in an 8 character field,
      * followed by the course number right justified in a 3 character field,
      * followed
      * by the suffix (if any) left justified in a 2 character field.
      * 
-     * Examples: (the <code>1234567812312</code> line is there to show the spacing.)
+     * However, we use this function to query rtora's CSV files with grade data, at
+     * https://github.com/rtora/UCSB_Grades/ in which this course
+     * id is trimmed, such that there are never ending spaces.
      * 
-     * <pre>
-     * 1234567812312
-     * CMPSC   130A
-     * CMPSC     5JA
-     * CMPSC    24
-     * </pre>
+     * Therefore, we intentionally also trim the result course id in this function to
+     * properly query the CSV files. For example, CMPSC 130A would typically be written:
+     * 
+     * "CMPSC   130A "
+     * 
+     * but we return "CMPSC   130A" to query the CSV file.
      * 
      * @param subjectArea  subject area, such as CMPSC
      * @param courseNumber course number, such as 130A
