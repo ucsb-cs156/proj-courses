@@ -13,7 +13,7 @@ export default {
         url: '/api/systemInfo',
         method: 'GET',
         status: 200,
-        response: systemInfoFixtures.showingBothStartAndEndQtr
+        response: systemInfoFixtures.showingBoth
       },
     ],
   },
@@ -26,7 +26,6 @@ const Template = (args) => {
 export const Default = Template.bind({});
 
 Default.args = {
-  submitText: "Create",
   fetchJSON: (_event, data) => {
     console.log("Submit was clicked, data=", data);
   }

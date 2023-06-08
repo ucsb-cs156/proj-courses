@@ -178,6 +178,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
+
   });
 
 
@@ -206,6 +207,20 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.BuildingCode-option-0')).toHaveValue("")
     expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.BuildingCode-option-3')).toHaveValue("BRDA")
     
+  });
+
+  test("Button padding is correct", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+    const submitButton = screen.getByText("Submit");
+    const buttonCol = submitButton.parentElement;
+    const buttonRow = buttonCol.parentElement;
+    expect(buttonRow).toHaveAttribute("style", "padding-top: 10px; padding-bottom: 10px;");
   });
 
 });

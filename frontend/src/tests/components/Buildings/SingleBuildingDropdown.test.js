@@ -41,7 +41,7 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={oneBuilding}
         building={oneBuilding}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
   });
@@ -56,13 +56,13 @@ describe("SingleBuildingDropdown tests", () => {
         ]}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
-    const ELLSN = "ssd1-option-0";
-    const ELNGS = "ssd1-option-1";
-    const EMBAR = "ssd1-option-2";
+    const ELLSN = "sbd1-option-0";
+    const ELNGS = "sbd1-option-1";
+    const EMBAR = "sbd1-option-2";
 
     // Check that blanks are replaced with hyphens
     await waitFor(() => expect(screen.getByTestId(ELLSN).toBeInTheDocument));
@@ -71,7 +71,7 @@ describe("SingleBuildingDropdown tests", () => {
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
-    const allOptions = screen.getAllByTestId("ssd1-option-",  { exact: false });
+    const allOptions = screen.getAllByTestId("sbd1-option-",  { exact: false });
     for (let i = 0; i < allOptions.length - 1; i++) {
       console.log("[i]" + allOptions[i].value);
       console.log("[i+1]" + allOptions[i+1].value);
@@ -86,7 +86,7 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={threeBuildings}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
   });
@@ -97,7 +97,7 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={threeBuildings}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
     
@@ -116,7 +116,7 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={threeBuildings}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
         onChange={onChange}
       />
     );
@@ -139,7 +139,7 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={threeBuildings}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
     
@@ -152,11 +152,11 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={threeBuildings}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
-    const expectedKey = "ssd1-option-0";
+    const expectedKey = "sbd1-option-0";
     await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
   });
 
@@ -172,7 +172,7 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={threeBuildings}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
@@ -191,7 +191,7 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={threeBuildings}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
@@ -206,11 +206,11 @@ describe("SingleBuildingDropdown tests", () => {
         buildings={[]}
         building={building}
         setBuilding={setBuilding}
-        controlId="ssd1"
+        controlId="sbd1"
       />
     );
 
-    const expectedKey = "ssd1";
+    const expectedKey = "sbd1";
     expect(screen.queryByTestId(expectedKey)).toBeNull();
   });
 });
