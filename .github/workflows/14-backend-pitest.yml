@@ -7,15 +7,16 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
-    paths: [src/**, pom.xml, lombok.config]
+    paths: [src/**, pom.xml, lombok.config, .github/workflows/14-backend-pitest.yml]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
 
     steps:
     - uses: actions/checkout@v3.5.2
+     
     - name: Set up Java (version from .java-version file)
       uses: actions/setup-java@v3
       with:
@@ -25,8 +26,8 @@ jobs:
       run: mvn -B test 
     
     # Note that we DO NOT download history in this job;
-    # this job is intended as a "reset" of the history each time the 
-    # main branch changes
+    # this job is intended as a "reset" of the history for the main
+    # branch each time the main branch changes
 
     - name: Pitest
       run: mvn test org.pitest:pitest-maven:mutationCoverage -DmutationThreshold=100 
