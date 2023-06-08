@@ -90,4 +90,5 @@ public class CourseOverTimeController {
             + String.format( "%-2s", suffs[1]                   ) // 'A '
         ;
     }
+
 }
