@@ -35,7 +35,19 @@ export default function CoursesCreatePage() {
   if (isSuccess) {
     return <Navigate to="/courses/list" />
   }
+  if (mutation.isError) {
+    return (
+    <BasicLayout>
+      <div className="pt-2">
+        <h1>Create New Course</h1>
 
+        <CourseForm submitAction={onSubmit}/>
+        <p data-testid="PSCourseCreate-Error">Error: {mutation.error.response.data?.message}</p>
+
+      </div>
+    </BasicLayout>
+  )
+    }
   return (
     <BasicLayout>
       <div className="pt-2">
