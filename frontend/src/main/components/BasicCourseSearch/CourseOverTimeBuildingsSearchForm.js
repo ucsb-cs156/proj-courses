@@ -67,7 +67,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             />
           </Col>
         </Row>
-        <Row style={rowStyle}>
+        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit
