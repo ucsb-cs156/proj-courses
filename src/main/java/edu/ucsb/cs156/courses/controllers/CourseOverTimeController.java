@@ -74,7 +74,7 @@ public class CourseOverTimeController {
         String body = mapper.writeValueAsString(courseResults);
         return ResponseEntity.ok().body(body);
     }
-    
+
     String makeFormattedCourseId(String subjectArea, String courseNumber) {
         String[] nums = courseNumber.split("[a-zA-Z]+");
         String[] suffs = courseNumber.split("[0-9]+");

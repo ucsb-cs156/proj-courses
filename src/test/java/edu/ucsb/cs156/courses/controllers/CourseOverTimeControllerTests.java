@@ -142,7 +142,7 @@ public class CourseOverTimeControllerTests {
 
         // mock
         when(convertedSectionCollection.findByQuarterRangeAndCourseId(any(String.class), any(String.class), eq("CMPSC   130A "))).thenReturn(expectedSecs);
-        
+
         // act
         MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
