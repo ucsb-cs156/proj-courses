@@ -30,6 +30,8 @@ import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJobFactory;
 
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJobFactory;
+import edu.ucsb.cs156.courses.jobs.UploadGradeDataJob;
+import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
 import edu.ucsb.cs156.courses.jobs.TestJob;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
@@ -38,7 +40,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 @Api(description = &quot;Jobs&quot;)
 @RequestMapping(&quot;/api/jobs&quot;)
 @RestController
-<span class="fc" id="L41">public class JobsController extends ApiController {</span>
+<span class="fc" id="L43">public class JobsController extends ApiController {</span>
     @Autowired
     private JobsRepository jobsRepository;
 
@@ -63,12 +65,15 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
     @Autowired
     UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory updateCourseDataRangeOfQuartersSingleSubjectJobFactory;
 
+    @Autowired
+    UploadGradeDataJobFactory updateGradeDataJobFactory;
+
     @ApiOperation(value = &quot;List all jobs&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Job&gt; allJobs() {
-<span class="fc" id="L70">        Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
-<span class="fc" id="L71">        return jobs;</span>
+<span class="fc" id="L75">        Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
+<span class="fc" id="L76">        return jobs;</span>
     }
 
     @ApiOperation(value = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
@@ -79,11 +84,11 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
         @ApiParam(&quot;sleepMs&quot;) @RequestParam Integer sleepMs
     ) {
 
-<span class="fc" id="L82">        TestJob testJob = TestJob.builder()</span>
-<span class="fc" id="L83">        .fail(fail)</span>
-<span class="fc" id="L84">        .sleepMs(sleepMs)</span>
-<span class="fc" id="L85">        .build();</span>
-<span class="fc" id="L86">        return jobService.runAsJob(testJob);</span>
+<span class="fc" id="L87">        TestJob testJob = TestJob.builder()</span>
+<span class="fc" id="L88">        .fail(fail)</span>
+<span class="fc" id="L89">        .sleepMs(sleepMs)</span>
+<span class="fc" id="L90">        .build();</span>
+<span class="fc" id="L91">        return jobService.runAsJob(testJob);</span>
     }
     
     @ApiOperation(value = &quot;Launch Job to Update Course Data&quot;)
@@ -94,11 +99,11 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
         @ApiParam(&quot;subject area&quot;) @RequestParam String subjectArea
     ) {
        
-<span class="fc" id="L97">        UpdateCourseDataJob updateCourseDataJob = updateCourseDataJobFactory.create(</span>
+<span class="fc" id="L102">        UpdateCourseDataJob updateCourseDataJob = updateCourseDataJobFactory.create(</span>
             subjectArea,
             quarterYYYYQ);
 
-<span class="fc" id="L101">        return jobService.runAsJob(updateCourseDataJob);</span>
+<span class="fc" id="L106">        return jobService.runAsJob(updateCourseDataJob);</span>
     }
 
     @ApiOperation(value = &quot;Launch Job to Update Course Data using Quarter&quot;)
@@ -108,10 +113,10 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
         @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ
     ) {
        
-<span class="fc" id="L111">        UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = updateCourseDataWithQuarterJobFactory.create(</span>
+<span class="fc" id="L116">        UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = updateCourseDataWithQuarterJobFactory.create(</span>
             quarterYYYYQ);
 
-<span class="fc" id="L114">        return jobService.runAsJob(updateCourseDataWithQuarterJob);</span>
+<span class="fc" id="L119">        return jobService.runAsJob(updateCourseDataWithQuarterJob);</span>
     }
 
 
@@ -123,10 +128,10 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
         @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
     ) {
        
-<span class="fc" id="L126">        UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(</span>
+<span class="fc" id="L131">        UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(</span>
             start_quarterYYYYQ, end_quarterYYYYQ);
 
-<span class="fc" id="L129">        return jobService.runAsJob(updateCourseDataRangeOfQuartersJob);</span>
+<span class="fc" id="L134">        return jobService.runAsJob(updateCourseDataRangeOfQuartersJob);</span>
     }
 
     @ApiOperation(value = &quot;Launch Job to Update Course Data for a range of quarters for a single subject&quot;)
@@ -138,13 +143,20 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
         @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
     ) {
        
-<span class="fc" id="L141">        UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = </span>
-<span class="fc" id="L142">        updateCourseDataRangeOfQuartersSingleSubjectJobFactory.create(</span>
+<span class="fc" id="L146">        UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = </span>
+<span class="fc" id="L147">        updateCourseDataRangeOfQuartersSingleSubjectJobFactory.create(</span>
             subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
 
-<span class="fc" id="L145">        return jobService.runAsJob(updateCourseDataRangeOfQuartersSingleSubjectJob);</span>
+<span class="fc" id="L150">        return jobService.runAsJob(updateCourseDataRangeOfQuartersSingleSubjectJob);</span>
     }
-
+    
+    @ApiOperation(value = &quot;Launch Job to update grade history&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(&quot;/launch/uploadGradeData&quot;)
+    public Job launchUploadGradeData() {
+<span class="fc" id="L157">        UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
+<span class="fc" id="L158">        return jobService.runAsJob(updateGradeDataJob);</span>
+    }
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

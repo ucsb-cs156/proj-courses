@@ -5,6 +5,7 @@ import java.util.List;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping(&quot;/api/public/courseovertime&quot;)
-<span class="fc" id="L23">public class CourseOverTimeController {</span>
+<span class="fc" id="L24">public class CourseOverTimeController {</span>
 
-<span class="fc" id="L25">    private final Logger logger = LoggerFactory.getLogger(CourseOverTimeController.class);</span>
+<span class="fc" id="L26">    private final Logger logger = LoggerFactory.getLogger(CourseOverTimeController.class);</span>
 
-<span class="fc" id="L27">    private ObjectMapper mapper = new ObjectMapper();</span>
+<span class="fc" id="L28">    private ObjectMapper mapper = new ObjectMapper();</span>
 
     @Autowired
     ConvertedSectionCollection convertedSectionCollection;
@@ -32,33 +33,61 @@ import com.fasterxml.jackson.databind.ObjectMapper;
     @ApiOperation(value = &quot;Get a list of courses over time&quot;)
     @GetMapping(value = &quot;/search&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;String&gt; search(
+        @ApiParam(
+            name = &quot;StartQtr&quot;,
+            type = &quot;string&quot;,
+            value = &quot;starting quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)&quot;,
+            example = &quot;20231&quot;,
+            required = true
+        )
         @RequestParam String startQtr,
+        @ApiParam(
+            name =  &quot;endQtr&quot;,
+            type = &quot;String&quot;,
+            value = &quot;ending quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)&quot;,
+            example = &quot;20231&quot;,
+            required = true
+        )
         @RequestParam String endQtr,
+        @ApiParam(
+            name =  &quot;subjectArea&quot;,
+            type = &quot;String&quot;,
+            value = &quot;simplified area name, e.g. CMPSC for computer science&quot;,
+            example = &quot;CMPSC&quot;,
+            required = true
+        )
         @RequestParam String subjectArea,
+        @ApiParam(
+            name =  &quot;courseNumber&quot;,
+            type = &quot;String&quot;,
+            value = &quot;the specific course number, e.g. 130A for CS130A&quot;,
+            example = &quot;130A&quot;,
+            required = true
+        )
         @RequestParam String courseNumber
     ) throws JsonProcessingException {
-<span class="fc" id="L40">        List&lt;ConvertedSection&gt; courseResults = convertedSectionCollection.findByQuarterRangeAndCourseId(</span>
+<span class="fc" id="L69">        List&lt;ConvertedSection&gt; courseResults = convertedSectionCollection.findByQuarterRangeAndCourseId(</span>
             startQtr,
             endQtr,
-<span class="fc" id="L43">            makeFormattedCourseId(subjectArea, courseNumber)</span>
+<span class="fc" id="L72">            makeFormattedCourseId(subjectArea, courseNumber)</span>
         );
-<span class="fc" id="L45">        String body = mapper.writeValueAsString(courseResults);</span>
-<span class="fc" id="L46">        return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L74">        String body = mapper.writeValueAsString(courseResults);</span>
+<span class="fc" id="L75">        return ResponseEntity.ok().body(body);</span>
     }
 
     String makeFormattedCourseId(String subjectArea, String courseNumber) {
-<span class="fc" id="L50">        String[] nums = courseNumber.split(&quot;[a-zA-Z]+&quot;);</span>
-<span class="fc" id="L51">        String[] suffs = courseNumber.split(&quot;[0-9]+&quot;);</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (suffs.length &lt; 2) { // no suffix</span>
-<span class="fc" id="L53">            return</span>
-<span class="fc" id="L54">                  String.format( &quot;%-8s&quot;, subjectArea                ) // 'CMPSC   '</span>
-<span class="fc" id="L55">                + String.format( &quot;%3s&quot; , nums[0]                    ) // '  8'</span>
+<span class="fc" id="L79">        String[] nums = courseNumber.split(&quot;[a-zA-Z]+&quot;);</span>
+<span class="fc" id="L80">        String[] suffs = courseNumber.split(&quot;[0-9]+&quot;);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (suffs.length &lt; 2) { // no suffix</span>
+<span class="fc" id="L82">            return</span>
+<span class="fc" id="L83">                  String.format( &quot;%-8s&quot;, subjectArea                ) // 'CMPSC   '</span>
+<span class="fc" id="L84">                + String.format( &quot;%3s&quot; , nums[0]                    ) // '  8'</span>
             ;
         }
-<span class="fc" id="L58">        return</span>
-<span class="fc" id="L59">              String.format( &quot;%-8s&quot;, subjectArea                ) // 'CMPSC   '</span>
-<span class="fc" id="L60">            + String.format( &quot;%3s&quot; , nums[0]                    ) // '  8'</span>
-<span class="fc" id="L61">            + String.format( &quot;%-2s&quot;, suffs[1]                   ) // 'A '</span>
+<span class="fc" id="L87">        return</span>
+<span class="fc" id="L88">              String.format( &quot;%-8s&quot;, subjectArea                ) // 'CMPSC   '</span>
+<span class="fc" id="L89">            + String.format( &quot;%3s&quot; , nums[0]                    ) // '  8'</span>
+<span class="fc" id="L90">            + String.format( &quot;%-2s&quot;, suffs[1]                   ) // 'A '</span>
         ;
     }
     
