@@ -21,6 +21,9 @@ import CoursesIndexPage from "main/pages/Courses/PSCourseIndexPage";
 import CoursesCreatePage from "main/pages/Courses/PSCourseCreatePage";
 
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
+import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
+
+import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 
 function App() {
 
@@ -56,6 +59,8 @@ function App() {
         }
         <Route exact path="/coursedescriptions/search" element={<CourseDescriptionIndexPage />} />
         <Route exact path="/courseovertime/search" element={<CourseOverTimeIndexPage />} />
+        <Route exact path="/courseovertime/buildingsearch" element={<CourseOverTimeBuildingsIndexPage />} />
+        <Route exact path="/courseovertime/instructorsearch" element={<CourseOverTimeInstructorIndexPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import { useTable, useGroupBy, useExpanded } from 'react-table'
 import { Table } from "react-bootstrap";
 
@@ -11,7 +11,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
 
   return (
     <Table {...getTableProps()} striped bordered hover >
-      <thead>
+      <thead key="thead">
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
@@ -25,11 +25,11 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
           </tr>
         ))}
       </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map(row => {
+      <tbody {...getTableBodyProps()} key="tbody">
+        {rows.map((row,i) => {
           prepareRow(row)
           return (
-            <>
+            <Fragment key={`row-${i}`}>
             {row.cells[0].isGrouped || (!row.cells[0].isGrouped && row.allCells[3].value) ? 
             <tr {...row.getRowProps()}>
               {row.cells.map((cell, _index) => {
@@ -37,19 +37,17 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     <td
                     {...cell.getCellProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
-                    // Stryker disable next-line ObjectLiteral
-                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
+                    style={{background: cell.isGrouped ? ( "#e5fcf4" ) : ( cell.isAggregated ? "#e5fcf4" : "#effcf8" ), fontWeight: cell.isGrouped ? ( "bold" ) : ( cell.isAggregated ? "bold" : "normal" )}}
                     >
-                    
                     {cell.isGrouped ? (
                     <>
                     <span {...row.getToggleRowExpandedProps()}
-                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
-                    >
-                    {row.isExpanded ? "➖ " : "➕ "}
-                    </span>{" "}
+                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`} 
+                    > 
+                    {  ( row.subRows.length > 1  ) ? ( row.isExpanded ? "➖ " : "➕ " ) : null} 
+                    </span>{" "} 
                     {cell.render("Cell")} 
-                    </>
+                    </> 
                     ) 
                     : cell.isAggregated ? (
                       cell.render("Aggregated")
@@ -65,7 +63,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
 
             </tr>
             : null}
-            </>
+            </Fragment>
           )
         })}
       </tbody>

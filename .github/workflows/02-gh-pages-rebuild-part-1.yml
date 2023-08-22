@@ -516,7 +516,7 @@ jobs:
 
 
   f-build-stryker-for-each-pr:
-    timeout-minutes: 120
+    timeout-minutes: 60
     name: f - Stryker (${{ matrix.value.number }}, ${{ matrix.value.headRefName }})
     runs-on: ubuntu-latest
     if: ${{ needs.initialize.outputs.pull_requests != '[]' && needs.initialize.outputs.pull_requests != '' }}

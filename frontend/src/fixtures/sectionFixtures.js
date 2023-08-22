@@ -1,48 +1,94 @@
 export const oneSection = [
-    {
-        "courseInfo": {
-          "quarter": "20221",
-          "courseId": "ECE       1A -1",
-          "title": "COMP ENGR SEMINAR",
-          "description": "Introductory seminar to expose students to a broad range of topics in computer   engineering."
-        },
-        "section": {
-          "enrollCode": "12583",
-          "section": "0100",
-          "session": null,
-          "classClosed": null,
-          "courseCancelled": null,
-          "gradingOptionCode": null,
-          "enrolledTotal": 84,
-          "maxEnroll": 100,
-          "secondaryStatus": null,
-          "departmentApprovalRequired": false,
-          "instructorApprovalRequired": false,
-          "restrictionLevel": null,
-          "restrictionMajor": "+PRCME+CMPEN",
-          "restrictionMajorPass": null,
-          "restrictionMinor": null,
-          "restrictionMinorPass": null,
-          "concurrentCourses": [],
-          "timeLocations": [
-            {
-              "room": "1930",
-              "building": "BUCHN",
-              "roomCapacity": "100",
-              "days": "M      ",
-              "beginTime": "15:00",
-              "endTime": "15:50"
-            }
-          ],
-          "instructors": [
-            {
-              "instructor": "WANG L C",
-              "functionCode": "Teaching and in charge"
-            }
-          ]
-        }
-    }
+  {
+      "courseInfo": {
+        "quarter": "20221",
+        "courseId": "ECE       1A -1",
+        "title": "COMP ENGR SEMINAR",
+        "description": "Introductory seminar to expose students to a broad range of topics in computer   engineering."
+      },
+      "section": {
+        "enrollCode": "12583",
+        "section": "0100",
+        "session": null,
+        "classClosed": null,
+        "courseCancelled": null,
+        "gradingOptionCode": null,
+        "enrolledTotal": 84,
+        "maxEnroll": 100,
+        "secondaryStatus": null,
+        "departmentApprovalRequired": false,
+        "instructorApprovalRequired": false,
+        "restrictionLevel": null,
+        "restrictionMajor": "+PRCME+CMPEN",
+        "restrictionMajorPass": null,
+        "restrictionMinor": null,
+        "restrictionMinorPass": null,
+        "concurrentCourses": [],
+        "timeLocations": [
+          {
+            "room": "1930",
+            "building": "BUCHN",
+            "roomCapacity": "100",
+            "days": "M      ",
+            "beginTime": "15:00",
+            "endTime": "15:50"
+          }
+        ],
+        "instructors": [
+          {
+            "instructor": "WANG L C",
+            "functionCode": "Teaching and in charge"
+          }
+        ]
+      }
+  }
 ]
+
+export const oneLectureSectionWithNoDiscussion = [
+  {
+    "courseInfo": {
+      "quarter": "20222",
+      "courseId": "MATH    101B -1",
+      "title": "MATH SYSTEMS",
+      "description": "The theory of operations within rings and fields and the foundations of   t he real number system. Ideals, quotient rings, and factorization theorems. The history and the historical implications of these developments in mathem atical systems. Especially suitable for prospective middle and high school teachers."
+    },
+    "section": {
+      "enrollCode": "31781",
+      "section": "0100",
+      "session": null,
+      "classClosed": null,
+      "courseCancelled": null,
+      "gradingOptionCode": null,
+      "enrolledTotal": 33,
+      "maxEnroll": 45,
+      "secondaryStatus": null,
+      "departmentApprovalRequired": false,
+      "instructorApprovalRequired": false,
+      "restrictionLevel": null,
+      "restrictionMajor": "+AMATH+MATCS+MATH +MTHSC+FINMS",
+      "restrictionMajorPass": "1",
+      "restrictionMinor": null,
+      "restrictionMinorPass": null,
+      "concurrentCourses": [],
+      "timeLocations": [
+        {
+          "room": "1112",
+          "building": "GIRV",
+          "roomCapacity": "48",
+          "days": " T R   ",
+          "beginTime": "09:30",
+          "endTime": "10:45"
+        }
+      ],
+      "instructors": [
+        {
+          "instructor": "OGRAIN C M",
+          "functionCode": "Teaching and in charge"
+        }
+      ]
+    }
+  }
+];
 
 export const threeSections = [
     {
