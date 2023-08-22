@@ -215,7 +215,7 @@ jobs:
   build-stryker-main:
     name: f - Stryker (main)
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     needs: [initialize]
    
     steps:
