@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>22/22</span>
             </div>
         
             
@@ -135,8 +135,7 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -145,15 +144,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">146x</span>
+<span class="cline-any cline-yes">324x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,13 +164,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">135x</span>
-<span class="cline-any cline-yes">135x</span>
+<span class="cline-any cline-yes">207x</span>
+<span class="cline-any cline-yes">207x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1188x</span>
+<span class="cline-any cline-yes">1836x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -208,8 +207,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, {Fragment} from "react";
 import { useTable, useGroupBy, useExpanded } from 'react-table'
 import { Table } from "react-bootstrap";
 &nbsp;
@@ -222,7 +220,7 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
 &nbsp;
   return (
     &lt;Table {...getTableProps()} striped bordered hover &gt;
-      &lt;thead&gt;
+      &lt;thead key="thead"&gt;
         {headerGroups.map(headerGroup =&gt; (
           &lt;tr {...headerGroup.getHeaderGroupProps()}&gt;
             {headerGroup.headers.map(column =&gt; (
@@ -236,11 +234,11 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
           &lt;/tr&gt;
         ))}
       &lt;/thead&gt;
-      &lt;tbody {...getTableBodyProps()}&gt;
-        {rows.map(row =&gt; {
+      &lt;tbody {...getTableBodyProps()} key="tbody"&gt;
+        {rows.map((row,i) =&gt; {
           prepareRow(row)
           return (
-            &lt;&gt;
+            &lt;Fragment key={`row-${i}`}&gt;
             {row.cells[0].isGrouped || (!row.cells[0].isGrouped &amp;&amp; row.allCells[3].value) ? 
             &lt;tr {...row.getRowProps()}&gt;
               {row.cells.map((cell, _index) =&gt; {
@@ -248,19 +246,17 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
                     &lt;td
                     {...cell.getCellProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
-                    // Stryker disable next-line ObjectLiteral
-                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
+                    style={{background: cell.isGrouped ? ( "#e5fcf4" ) : ( cell.isAggregated ? "#e5fcf4" : "#effcf8" ), fontWeight: cell.isGrouped ? ( "bold" ) : ( cell.isAggregated ? "bold" : "normal" )}}
                     &gt;
-                    
                     {cell.isGrouped ? (
                     &lt;&gt;
                     &lt;span {...row.getToggleRowExpandedProps()}
-                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
-                    &gt;
-                    {row.isExpanded ? "➖ " : "➕ "}
-                    &lt;/span&gt;{" "}
+                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`} 
+                    &gt; 
+                    {  ( row.subRows.length &gt; 1  ) ? ( row.isExpanded ? "➖ " : "➕ " ) : null} 
+                    &lt;/span&gt;{" "} 
                     {cell.render("Cell")} 
-                    &lt;/&gt;
+                    &lt;/&gt; 
                     ) 
                     : cell.isAggregated ? (
                       cell.render("Aggregated")
@@ -276,20 +272,21 @@ export default function SectionsTableBase({ columns, data, testid = "testid"}) {
 &nbsp;
             &lt;/tr&gt;
             : null}
-            &lt;/&gt;
+            &lt;/Fragment&gt;
           )
         })}
       &lt;/tbody&gt;
     &lt;/Table&gt;
   )
-}</pre></td></tr></table></pre>
+}
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri May 12 2023 07:00:05 GMT-0700 (Pacific Daylight Time)
+                at Tue Aug 22 2023 09:25:05 GMT-0700 (Pacific Daylight Time)
             </div>
         <script src="../prettify.js"></script>
         <script>
