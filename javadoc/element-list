@@ -11,3 +11,4 @@ edu.ucsb.cs156.courses.models
 edu.ucsb.cs156.courses.repositories
 edu.ucsb.cs156.courses.services
 edu.ucsb.cs156.courses.services.jobs
+edu.ucsb.cs156.courses.utilities
