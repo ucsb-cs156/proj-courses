@@ -127,7 +127,7 @@ describe("SectionsTableBase tests", () => {
         expect(screen.getByText("➕")).toBeInTheDocument();
         expect(screen.queryByText("➖")).not.toBeInTheDocument();
         expect(screen.getByTestId("testid-cell-row-1-col-courseInfo.courseId-expand-symbols")).toBeInTheDocument();
-        expect(screen.getByTestId("testid-cell-row-0-col-courseInfo.courseId")).toHaveAttribute("style", "background: rgb(229, 252, 244); font-weight: bold;");
+        expect(screen.getByTestId("testid-cell-row-0-col-courseInfo.courseId")).toHaveAttribute("style", "background: rgb(52, 133, 155); color: rgb(239, 252, 244); font-weight: bold;");
 
     });
 })

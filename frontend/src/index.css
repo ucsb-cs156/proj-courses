@@ -14,3 +14,10 @@ body {
   .color-nav{
     background-color: rgb(0, 54, 96);
   } 
+
+  .btn-primary, .btn-primary:hover, .btn-primary:focus{
+    background-color: #34859b;
+    border-color: #34859b;
+  } 
+
+  

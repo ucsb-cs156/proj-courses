@@ -38,7 +38,7 @@ export default function SectionsOverTimeTableBase({ columns, data, testid = "tes
                     {...cell.getCellProps()}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                     // Stryker disable next-line ObjectLiteral
-                    style={{background: cell.isGrouped ? "#e5fcf4" : cell.isAggregated ? "#e5fcf4" : "#effcf8", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
+                    style={{background: cell.isGrouped ? "#34859b" : cell.isAggregated ? "#34859b" : "#9dbfbe", color: cell.isGrouped ? "#effcf4" : cell.isAggregated ? "#effcf4" : "#000000", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
                     >
                     
                     {cell.isGrouped ? (
