@@ -4,9 +4,9 @@ import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Api(description = "API to handle CRUD operations for UCSB Subjects database")
+@Tag(name = "API to handle CRUD operations for UCSB Subjects database")
 @RequestMapping("/api/UCSBSubjects")
 @RestController
 public class UCSBSubjectsController extends ApiController {
@@ -40,14 +40,14 @@ public class UCSBSubjectsController extends ApiController {
     @Autowired
     UCSBSubjectsService ucsbSubjectsService;
 
-    @ApiOperation(value = "Get all UCSB Subjects")
+    @Operation(summary = "Get all UCSB Subjects")
     @GetMapping("/all")
     public Iterable<UCSBSubject> allSubjects() {
         Iterable<UCSBSubject> subjects = subjectRepository.findAll();
         return subjects;
     }
 
-    @ApiOperation(value = "Load subjects into database from UCSB API")
+    @Operation(summary = "Load subjects into database from UCSB API")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/load")
     public List<UCSBSubject> loadSubjects() throws JsonProcessingException{
@@ -68,11 +68,11 @@ public class UCSBSubjectsController extends ApiController {
         return savedSubjects;
     }
 
-    @ApiOperation(value = "Get a single UCSB Subject by id if it is in the database")
+    @Operation(summary = "Get a single UCSB Subject by id if it is in the database")
     @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
     @GetMapping("")
     public UCSBSubject getSubjectById(
-            @ApiParam("subjectCode") @RequestParam String subjectCode) throws JsonProcessingException {
+            @Parameter(name="subjectCode") @RequestParam String subjectCode) throws JsonProcessingException {
 
         UCSBSubject subject = subjectRepository.findById(subjectCode)
                 .orElseThrow(() -> new EntityNotFoundException(UCSBSubject.class, subjectCode));
@@ -80,11 +80,11 @@ public class UCSBSubjectsController extends ApiController {
         return subject;
     }
 
-    @ApiOperation(value = "Delete a UCSB Subject by id")
+    @Operation(summary = "Delete a UCSB Subject by id")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
     public Object deleteSubject(
-            @ApiParam("subjectCode") @RequestParam String subjectCode) {
+            @Parameter(name="subjectCode") @RequestParam String subjectCode) {
 
         UCSBSubject subject = subjectRepository.findById(subjectCode)
                 .orElseThrow(() -> new EntityNotFoundException(UCSBSubject.class, subjectCode));
@@ -94,7 +94,7 @@ public class UCSBSubjectsController extends ApiController {
         return genericMessage("UCSBSubject with id %s deleted".formatted(subjectCode));
     }
 
-    @ApiOperation(value = "Delete all UCSB Subjects in the table")
+    @Operation(summary = "Delete all UCSB Subjects in the table")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/all")
     public Object deleteAllSubjects() {

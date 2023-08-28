@@ -10,10 +10,9 @@ import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,7 +37,7 @@ import java.util.List;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@Api(description = "Personal Sections")
+@Tag(name = "Personal Sections")
 @RequestMapping("/api/personalSections")
 @RestController
 @Slf4j
@@ -55,10 +54,10 @@ public class PersonalSectionsController extends ApiController {
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
 
-    @ApiOperation(value = "List all sections given a psId")
+    @Operation(summary = "List all sections given a psId")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value = "/all", produces = "application/json")
-    public ArrayList<Course> getSectionsByPsId(@ApiParam("psId") @RequestParam Long psId) throws JsonProcessingException{
+    public ArrayList<Course> getSectionsByPsId(@Parameter(name="psId") @RequestParam Long psId) throws JsonProcessingException{
         User us = getCurrentUser().getUser();
         PersonalSchedule ps = personalScheduleRepository.findByIdAndUser(psId,us)
                 .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));

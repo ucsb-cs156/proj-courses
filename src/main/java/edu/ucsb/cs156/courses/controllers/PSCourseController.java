@@ -5,10 +5,9 @@ import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
 import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,7 +36,7 @@ import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.errors.BadEnrollCdException;
 
-@Api(description = "PSCourse")
+@Tag(name = "PSCourse")
 @RequestMapping("/api/courses")
 @RestController
 @Slf4j
@@ -52,7 +51,7 @@ public class PSCourseController extends ApiController {
     @Autowired
     ObjectMapper mapper;
 
-    @ApiOperation(value = "List all courses (admin)")
+    @Operation(summary = "List all courses (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/all")
     public Iterable<PSCourse> allUsersCourses() {
@@ -60,7 +59,7 @@ public class PSCourseController extends ApiController {
         return courses;
     }
 
-    @ApiOperation(value = "List all courses (user)")
+    @Operation(summary = "List all courses (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user/all")
     public Iterable<PSCourse> thisUsersCourses() {
@@ -69,41 +68,41 @@ public class PSCourseController extends ApiController {
         return courses;
     }
 
-    @ApiOperation(value = "List all courses for a specified psId (admin)")
+    @Operation(summary = "List all courses for a specified psId (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/psid/all")
     public Iterable<PSCourse> allCoursesForPsId(
-            @ApiParam("psId") @RequestParam Long psId) {
+            @Parameter(name="psId") @RequestParam Long psId) {
         Iterable<PSCourse> courses = coursesRepository.findAllByPsId(psId);
         return courses;
     }
 
-    @ApiOperation(value = "List all courses for a specified psId (user)")
+    @Operation(summary = "List all courses for a specified psId (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user/psid/all")
     public Iterable<PSCourse> thisUsersCoursesForPsId(
-            @ApiParam("psId") @RequestParam Long psId) {
+            @Parameter(name="psId") @RequestParam Long psId) {
         User currentUser = getCurrentUser().getUser();
         Iterable<PSCourse> courses = coursesRepository.findAllByPsIdAndUser(psId, currentUser);
         return courses;
     }
 
-    @ApiOperation(value = "Get a single course (admin)")
+    @Operation(summary = "Get a single course (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public PSCourse getCourseById_admin(
-            @ApiParam("id") @RequestParam Long id) {
+            @Parameter(name="id") @RequestParam Long id) {
         PSCourse courses = coursesRepository.findById(id)
           .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
         return courses;
     }
 
-    @ApiOperation(value = "Get a single course (user)")
+    @Operation(summary = "Get a single course (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user")
     public PSCourse getCourseById(
-            @ApiParam("id") @RequestParam Long id) {
+            @Parameter(name="id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
         PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)
             .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
@@ -111,12 +110,12 @@ public class PSCourseController extends ApiController {
         return courses;
     }
 
-    @ApiOperation(value = "Create a new course")
+    @Operation(summary = "Create a new course")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
     public ArrayList<PSCourse> postCourses(
-            @ApiParam("enrollCd") @RequestParam String enrollCd,
-            @ApiParam("psId") @RequestParam Long psId) throws JsonProcessingException {
+            @Parameter(name="enrollCd") @RequestParam String enrollCd,
+            @Parameter(name="psId") @RequestParam Long psId) throws JsonProcessingException {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
@@ -176,11 +175,11 @@ public class PSCourseController extends ApiController {
         return savedCourses;
     }
 
-    @ApiOperation(value = "Delete a course (admin)")
+    @Operation(summary = "Delete a course (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/admin")
     public Object deleteCourses_Admin(
-            @ApiParam("id") @RequestParam Long id) {
+            @Parameter(name="id") @RequestParam Long id) {
               PSCourse courses = coursesRepository.findById(id)
           .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
@@ -189,11 +188,11 @@ public class PSCourseController extends ApiController {
         return genericMessage("PSCourse with id %s deleted".formatted(id));
     }
 
-    @ApiOperation(value = "Delete a course (user)")
+    @Operation(summary = "Delete a course (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/user")
     public Object deleteCourses(
-            @ApiParam("id") @RequestParam Long id) throws JsonProcessingException {
+            @Parameter(name="id") @RequestParam Long id) throws JsonProcessingException {
         User currentUser = getCurrentUser().getUser();
         PSCourse psCourse = coursesRepository.findByIdAndUser(id, currentUser)
           .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
@@ -235,11 +234,11 @@ public class PSCourseController extends ApiController {
 	return genericMessage("PSCourse with id %s deleted".formatted(id));
     }
 
-    @ApiOperation(value = "Update a single Course (admin)")
+    @Operation(summary = "Update a single Course (admin)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/admin")
     public PSCourse putCourseById_admin(
-            @ApiParam("id") @RequestParam Long id,
+            @Parameter(name="id") @RequestParam Long id,
             @RequestBody @Valid PSCourse incomingCourses) {
               PSCourse courses = coursesRepository.findById(id)
           .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
@@ -252,11 +251,11 @@ public class PSCourseController extends ApiController {
         return courses;
     }
 
-    @ApiOperation(value = "Update a single course (user)")
+    @Operation(summary = "Update a single course (user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/user")
     public PSCourse putCoursesById(
-            @ApiParam("id") @RequestParam Long id,
+            @Parameter(name="id") @RequestParam Long id,
             @RequestBody @Valid PSCourse incomingCourses) {
         User currentUser = getCurrentUser().getUser();
         PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)

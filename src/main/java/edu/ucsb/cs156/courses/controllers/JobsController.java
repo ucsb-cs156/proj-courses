@@ -2,9 +2,9 @@ package edu.ucsb.cs156.courses.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -37,7 +37,7 @@ import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
 
 
-@Api(description = "Jobs")
+@Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
 @RestController
 public class JobsController extends ApiController {
@@ -68,7 +68,7 @@ public class JobsController extends ApiController {
     @Autowired
     UploadGradeDataJobFactory updateGradeDataJobFactory;
 
-    @ApiOperation(value = "List all jobs")
+    @Operation(summary = "List all jobs")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public Iterable<Job> allJobs() {
@@ -76,12 +76,12 @@ public class JobsController extends ApiController {
         return jobs;
     }
 
-    @ApiOperation(value = "Launch Test Job (click fail if you want to test exception handling)")
+    @Operation(summary = "Launch Test Job (click fail if you want to test exception handling)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/testjob")
     public Job launchTestJob(
-        @ApiParam("fail") @RequestParam Boolean fail, 
-        @ApiParam("sleepMs") @RequestParam Integer sleepMs
+        @Parameter(name="fail") @RequestParam Boolean fail, 
+        @Parameter(name="sleepMs") @RequestParam Integer sleepMs
     ) {
 
         TestJob testJob = TestJob.builder()
@@ -91,12 +91,12 @@ public class JobsController extends ApiController {
         return jobService.runAsJob(testJob);
     }
     
-    @ApiOperation(value = "Launch Job to Update Course Data")
+    @Operation(summary = "Launch Job to Update Course Data")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateCourses")
     public Job launchUpdateCourseDataJob(
-        @ApiParam("quarter (YYYYQ format)") @RequestParam String quarterYYYYQ,
-        @ApiParam("subject area") @RequestParam String subjectArea
+        @Parameter(name="quarter (YYYYQ format)") @RequestParam String quarterYYYYQ,
+        @Parameter(name="subject area") @RequestParam String subjectArea
     ) {
        
         UpdateCourseDataJob updateCourseDataJob = updateCourseDataJobFactory.create(
@@ -106,11 +106,11 @@ public class JobsController extends ApiController {
         return jobService.runAsJob(updateCourseDataJob);
     }
 
-    @ApiOperation(value = "Launch Job to Update Course Data using Quarter")
+    @Operation(summary = "Launch Job to Update Course Data using Quarter")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateQuarterCourses")
     public Job launchUpdateCourseDataWithQuarterJob(
-        @ApiParam("quarter (YYYYQ format)") @RequestParam String quarterYYYYQ
+        @Parameter(name="quarter (YYYYQ format)") @RequestParam String quarterYYYYQ
     ) {
        
         UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = updateCourseDataWithQuarterJobFactory.create(
@@ -120,12 +120,12 @@ public class JobsController extends ApiController {
     }
 
 
-    @ApiOperation(value = "Launch Job to Update Course Data for range of quarters")
+    @Operation(summary = "Launch Job to Update Course Data for range of quarters")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateCoursesRangeOfQuarters")
     public Job launchUpdateCourseDataRangeOfQuartersJob(
-        @ApiParam("quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
-        @ApiParam("quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
+        @Parameter(name="quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
+        @Parameter(name="quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
     ) {
        
         UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(
@@ -134,13 +134,13 @@ public class JobsController extends ApiController {
         return jobService.runAsJob(updateCourseDataRangeOfQuartersJob);
     }
 
-    @ApiOperation(value = "Launch Job to Update Course Data for a range of quarters for a single subject")
+    @Operation(summary = "Launch Job to Update Course Data for a range of quarters for a single subject")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateCoursesRangeOfQuartersSingleSubject")
     public Job launchUpdateCourseDataRangeOfQuartersSingleSubjectJob(
-        @ApiParam("subject area") @RequestParam String subjectArea,
-        @ApiParam("quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
-        @ApiParam("quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
+        @Parameter(name="subject area") @RequestParam String subjectArea,
+        @Parameter(name="quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
+        @Parameter(name="quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
     ) {
        
         UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = 
@@ -150,7 +150,7 @@ public class JobsController extends ApiController {
         return jobService.runAsJob(updateCourseDataRangeOfQuartersSingleSubjectJob);
     }
     
-    @ApiOperation(value = "Launch Job to update grade history")
+    @Operation(summary = "Launch Job to update grade history")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/uploadGradeData")
     public Job launchUploadGradeData() {

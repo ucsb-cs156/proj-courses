@@ -5,10 +5,9 @@ import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@Api(description = "PersonalSchedules")
+@Tag(name = "PersonalSchedules")
 @RequestMapping("/api/personalschedules")
 @RestController
 @Slf4j
@@ -38,7 +37,7 @@ public class PersonalSchedulesController extends ApiController {
     @Autowired
     PersonalScheduleRepository personalscheduleRepository;
 
-    @ApiOperation(value = "List all personal schedules")
+    @Operation(summary = "List all personal schedules")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/all")
     public Iterable<PersonalSchedule> allUsersSchedules() {
@@ -46,7 +45,7 @@ public class PersonalSchedulesController extends ApiController {
         return personalschedules;
     }
 
-    @ApiOperation(value = "List this user's personal schedules")
+    @Operation(summary = "List this user's personal schedules")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
     public Iterable<PersonalSchedule> thisUsersSchedules() {
@@ -55,11 +54,11 @@ public class PersonalSchedulesController extends ApiController {
         return personalschedules;
     }
 
-    @ApiOperation(value = "Get a single personal schedule (if it belongs to current user)")
+    @Operation(summary = "Get a single personal schedule (if it belongs to current user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
     public PersonalSchedule getScheduleById(
-            @ApiParam("id") @RequestParam Long id) {
+            @Parameter(name="id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
         PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)
           .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
@@ -67,24 +66,24 @@ public class PersonalSchedulesController extends ApiController {
         return personalschedule;
     }
 
-    @ApiOperation(value = "Get a single personal schedule (no matter who it belongs to, admin only)")
+    @Operation(summary = "Get a single personal schedule (no matter who it belongs to, admin only)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public PersonalSchedule getScheduleById_admin(
-            @ApiParam("id") @RequestParam Long id) {
+            @Parameter(name="id") @RequestParam Long id) {
               PersonalSchedule personalschedule = personalscheduleRepository.findById(id)
           .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
 
         return personalschedule;
     }
 
-    @ApiOperation(value = "Create a new personal schedule")
+    @Operation(summary = "Create a new personal schedule")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/post")
     public PersonalSchedule postSchedule(
-            @ApiParam("name") @RequestParam String name,
-            @ApiParam("description") @RequestParam String description,
-            @ApiParam("quarter") @RequestParam String quarter) {
+            @Parameter(name="name") @RequestParam String name,
+            @Parameter(name="description") @RequestParam String description,
+            @Parameter(name="quarter") @RequestParam String quarter) {
         CurrentUser currentUser = getCurrentUser();
         log.info("currentUser={}", currentUser);
 
@@ -107,11 +106,11 @@ public class PersonalSchedulesController extends ApiController {
         return savedPersonalSchedule;
     }
 
-    @ApiOperation(value = "Delete a personal schedule owned by this user")
+    @Operation(summary = "Delete a personal schedule owned by this user")
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("")
     public Object deleteSchedule(
-            @ApiParam("id") @RequestParam Long id) {
+            @Parameter(name="id") @RequestParam Long id) {
         User currentUser = getCurrentUser().getUser();
         PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)
           .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
@@ -122,11 +121,11 @@ public class PersonalSchedulesController extends ApiController {
 
     }
 
-    @ApiOperation(value = "Delete another user's personal schedule")
+    @Operation(summary = "Delete another user's personal schedule")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/admin")
     public Object deleteSchedule_Admin(
-            @ApiParam("id") @RequestParam Long id) {
+            @Parameter(name="id") @RequestParam Long id) {
               PersonalSchedule personalschedule = personalscheduleRepository.findById(id)
           .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
 
@@ -135,11 +134,11 @@ public class PersonalSchedulesController extends ApiController {
         return genericMessage("PersonalSchedule with id %s deleted".formatted(id));
     }
 
-    @ApiOperation(value = "Update a single personal schedule (if it belongs to current user)")
+    @Operation(summary = "Update a single personal schedule (if it belongs to current user)")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("")
     public PersonalSchedule putScheduleById(
-            @ApiParam("id") @RequestParam Long id,
+            @Parameter(name="id") @RequestParam Long id,
             @RequestBody @Valid PersonalSchedule incomingSchedule) {
         User currentUser = getCurrentUser().getUser();
         PersonalSchedule personalschedule = personalscheduleRepository.findByIdAndUser(id, currentUser)
@@ -154,11 +153,11 @@ public class PersonalSchedulesController extends ApiController {
         return personalschedule;
     }
 
-    @ApiOperation(value = "Update a single Schedule (regardless of ownership, admin only, can't change ownership)")
+    @Operation(summary = "Update a single Schedule (regardless of ownership, admin only, can't change ownership)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/admin")
     public PersonalSchedule putScheduleById_admin(
-            @ApiParam("id") @RequestParam Long id,
+            @Parameter(name="id") @RequestParam Long id,
             @RequestBody @Valid PersonalSchedule incomingSchedule) {
               PersonalSchedule personalschedule = personalscheduleRepository.findById(id)
           .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));

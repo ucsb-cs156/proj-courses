@@ -6,9 +6,9 @@ import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
 import edu.ucsb.cs156.courses.services.UCSBGradeHistoryService;
 import edu.ucsb.cs156.courses.services.UCSBGradeHistoryServiceImpl;
 import edu.ucsb.cs156.courses.utilities.CourseUtilities;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +33,7 @@ import java.io.Reader;
 import java.util.List;
 
 @Slf4j
-@Api(description = "API for grade history data")
+@Tag(name = "API for grade history data")
 @RequestMapping("/api/gradehistory")
 @RestController
 public class GradeHistoryController extends ApiController {
@@ -43,20 +43,18 @@ public class GradeHistoryController extends ApiController {
     @Autowired
     ObjectMapper mapper;
 
-    @ApiOperation(value = "Get grade history for a course")
+    @Operation(summary = "Get grade history for a course")
     @GetMapping(value = "/search", produces = "application/json")
     public Iterable<GradeHistory> gradeHistoryBySubjectAreaAndCourseNumber(
-        @ApiParam(
+        @Parameter(
             name =  "subjectArea",
-            type = "String",
-            value = "Subjects of UCSB",
+            description = "Subjects of UCSB",
             example = "CMPSC",
             required = true)
         @RequestParam String subjectArea,
-        @ApiParam(
+        @Parameter(
             name =  "courseNumber",
-            type = "String",
-            value = "Represents a subject-specific course",
+            description = "Represents a subject-specific course",
             example = "130A",
             required = true)
         @RequestParam String courseNumber
