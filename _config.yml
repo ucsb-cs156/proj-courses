@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-navbar-other-searches","number":47,"title":"pc - change 'Course Infos' to 'Other Searches' on navbar","url":"https://github.com/ucsb-cs156/proj-courses/pull/47"}]
+pull_requests: []
