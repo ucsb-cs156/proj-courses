@@ -124,8 +124,8 @@ public class JobsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateCoursesRangeOfQuarters")
     public Job launchUpdateCourseDataRangeOfQuartersJob(
-        @Parameter(name="quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
-        @Parameter(name="quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
+        @Parameter(name="start quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
+        @Parameter(name="end quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
     ) {
        
         UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(
@@ -139,8 +139,8 @@ public class JobsController extends ApiController {
     @PostMapping("/launch/updateCoursesRangeOfQuartersSingleSubject")
     public Job launchUpdateCourseDataRangeOfQuartersSingleSubjectJob(
         @Parameter(name="subject area") @RequestParam String subjectArea,
-        @Parameter(name="quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
-        @Parameter(name="quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
+        @Parameter(name="start quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
+        @Parameter(name="end quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
     ) {
        
         UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = 
