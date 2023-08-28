@@ -10,10 +10,9 @@ import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,11 +37,11 @@ import java.util.List;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@Api(description = &quot;Personal Sections&quot;)
+@Tag(name = &quot;Personal Sections&quot;)
 @RequestMapping(&quot;/api/personalSections&quot;)
 @RestController
-<span class="fc" id="L44">@Slf4j</span>
-<span class="fc" id="L45">public class PersonalSectionsController extends ApiController {</span>
+<span class="fc" id="L43">@Slf4j</span>
+<span class="fc" id="L44">public class PersonalSectionsController extends ApiController {</span>
     @Autowired
     PersonalScheduleRepository personalScheduleRepository;
 
@@ -55,27 +54,27 @@ import java.util.Optional;
     @Autowired
     UCSBCurriculumService ucsbCurriculumService;
 
-    @ApiOperation(value = &quot;List all sections given a psId&quot;)
+    @Operation(summary = &quot;List all sections given a psId&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(value = &quot;/all&quot;, produces = &quot;application/json&quot;)
-    public ArrayList&lt;Course&gt; getSectionsByPsId(@ApiParam(&quot;psId&quot;) @RequestParam Long psId) throws JsonProcessingException{
-<span class="fc" id="L62">        User us = getCurrentUser().getUser();</span>
-<span class="fc" id="L63">        PersonalSchedule ps = personalScheduleRepository.findByIdAndUser(psId,us)</span>
-<span class="fc" id="L64">                .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, psId));</span>
-<span class="fc" id="L65">        ArrayList&lt;Course&gt; sections = new ArrayList&lt;Course&gt;();</span>
-<span class="fc" id="L66">        ArrayList&lt;String&gt; jsons = new ArrayList&lt;String&gt;();</span>
-<span class="fc" id="L67">        Iterable&lt;PSCourse&gt; courses = coursesRepository.findAllByPsId(psId);</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">        for (PSCourse crs:courses) {</span>
+    public ArrayList&lt;Course&gt; getSectionsByPsId(@Parameter(name=&quot;psId&quot;) @RequestParam Long psId) throws JsonProcessingException{
+<span class="fc" id="L61">        User us = getCurrentUser().getUser();</span>
+<span class="fc" id="L62">        PersonalSchedule ps = personalScheduleRepository.findByIdAndUser(psId,us)</span>
+<span class="fc" id="L63">                .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, psId));</span>
+<span class="fc" id="L64">        ArrayList&lt;Course&gt; sections = new ArrayList&lt;Course&gt;();</span>
+<span class="fc" id="L65">        ArrayList&lt;String&gt; jsons = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L66">        Iterable&lt;PSCourse&gt; courses = coursesRepository.findAllByPsId(psId);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (PSCourse crs:courses) {</span>
 
-<span class="fc" id="L70">                User u = crs.getUser();</span>
-<span class="fc" id="L71">                String qtr = ps.getQuarter();</span>
-<span class="fc" id="L72">                String responseBody = ucsbCurriculumService.getJSONbyQtrEnrollCd(qtr, crs.getEnrollCd());</span>
-<span class="fc" id="L73">                jsons.add(responseBody);</span>
-<span class="fc" id="L74">                Course course = objectMapper.readValue(responseBody, Course.class);</span>
-<span class="fc" id="L75">                sections.add(course);</span>
+<span class="fc" id="L69">                User u = crs.getUser();</span>
+<span class="fc" id="L70">                String qtr = ps.getQuarter();</span>
+<span class="fc" id="L71">                String responseBody = ucsbCurriculumService.getJSONbyQtrEnrollCd(qtr, crs.getEnrollCd());</span>
+<span class="fc" id="L72">                jsons.add(responseBody);</span>
+<span class="fc" id="L73">                Course course = objectMapper.readValue(responseBody, Course.class);</span>
+<span class="fc" id="L74">                sections.add(course);</span>
 
-<span class="fc" id="L77">        }</span>
-<span class="fc" id="L78">        return sections;</span>
+<span class="fc" id="L76">        }</span>
+<span class="fc" id="L77">        return sections;</span>
     }
 
 }

@@ -2,9 +2,9 @@
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -37,7 +37,7 @@ import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
 
 
-@Api(description = &quot;Jobs&quot;)
+@Tag(name = &quot;Jobs&quot;)
 @RequestMapping(&quot;/api/jobs&quot;)
 @RestController
 <span class="fc" id="L43">public class JobsController extends ApiController {</span>
@@ -68,7 +68,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
     @Autowired
     UploadGradeDataJobFactory updateGradeDataJobFactory;
 
-    @ApiOperation(value = &quot;List all jobs&quot;)
+    @Operation(summary = &quot;List all jobs&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Job&gt; allJobs() {
@@ -76,12 +76,12 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 <span class="fc" id="L76">        return jobs;</span>
     }
 
-    @ApiOperation(value = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
+    @Operation(summary = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/testjob&quot;)
     public Job launchTestJob(
-        @ApiParam(&quot;fail&quot;) @RequestParam Boolean fail, 
-        @ApiParam(&quot;sleepMs&quot;) @RequestParam Integer sleepMs
+        @Parameter(name=&quot;fail&quot;) @RequestParam Boolean fail, 
+        @Parameter(name=&quot;sleepMs&quot;) @RequestParam Integer sleepMs
     ) {
 
 <span class="fc" id="L87">        TestJob testJob = TestJob.builder()</span>
@@ -91,12 +91,12 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 <span class="fc" id="L91">        return jobService.runAsJob(testJob);</span>
     }
     
-    @ApiOperation(value = &quot;Launch Job to Update Course Data&quot;)
+    @Operation(summary = &quot;Launch Job to Update Course Data&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updateCourses&quot;)
     public Job launchUpdateCourseDataJob(
-        @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ,
-        @ApiParam(&quot;subject area&quot;) @RequestParam String subjectArea
+        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ,
+        @Parameter(name=&quot;subject area&quot;) @RequestParam String subjectArea
     ) {
        
 <span class="fc" id="L102">        UpdateCourseDataJob updateCourseDataJob = updateCourseDataJobFactory.create(</span>
@@ -106,11 +106,11 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 <span class="fc" id="L106">        return jobService.runAsJob(updateCourseDataJob);</span>
     }
 
-    @ApiOperation(value = &quot;Launch Job to Update Course Data using Quarter&quot;)
+    @Operation(summary = &quot;Launch Job to Update Course Data using Quarter&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updateQuarterCourses&quot;)
     public Job launchUpdateCourseDataWithQuarterJob(
-        @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ
+        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ
     ) {
        
 <span class="fc" id="L116">        UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = updateCourseDataWithQuarterJobFactory.create(</span>
@@ -120,12 +120,12 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
     }
 
 
-    @ApiOperation(value = &quot;Launch Job to Update Course Data for range of quarters&quot;)
+    @Operation(summary = &quot;Launch Job to Update Course Data for range of quarters&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updateCoursesRangeOfQuarters&quot;)
     public Job launchUpdateCourseDataRangeOfQuartersJob(
-        @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String start_quarterYYYYQ,
-        @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
+        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String start_quarterYYYYQ,
+        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
     ) {
        
 <span class="fc" id="L131">        UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(</span>
@@ -134,13 +134,13 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 <span class="fc" id="L134">        return jobService.runAsJob(updateCourseDataRangeOfQuartersJob);</span>
     }
 
-    @ApiOperation(value = &quot;Launch Job to Update Course Data for a range of quarters for a single subject&quot;)
+    @Operation(summary = &quot;Launch Job to Update Course Data for a range of quarters for a single subject&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updateCoursesRangeOfQuartersSingleSubject&quot;)
     public Job launchUpdateCourseDataRangeOfQuartersSingleSubjectJob(
-        @ApiParam(&quot;subject area&quot;) @RequestParam String subjectArea,
-        @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String start_quarterYYYYQ,
-        @ApiParam(&quot;quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
+        @Parameter(name=&quot;subject area&quot;) @RequestParam String subjectArea,
+        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String start_quarterYYYYQ,
+        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
     ) {
        
 <span class="fc" id="L146">        UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = </span>
@@ -150,7 +150,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 <span class="fc" id="L150">        return jobService.runAsJob(updateCourseDataRangeOfQuartersSingleSubjectJob);</span>
     }
     
-    @ApiOperation(value = &quot;Launch Job to update grade history&quot;)
+    @Operation(summary = &quot;Launch Job to update grade history&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/uploadGradeData&quot;)
     public Job launchUploadGradeData() {

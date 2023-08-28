@@ -6,9 +6,9 @@ import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
 import edu.ucsb.cs156.courses.services.UCSBGradeHistoryService;
 import edu.ucsb.cs156.courses.services.UCSBGradeHistoryServiceImpl;
 import edu.ucsb.cs156.courses.utilities.CourseUtilities;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +33,7 @@ import java.io.Reader;
 import java.util.List;
 
 <span class="fc" id="L35">@Slf4j</span>
-@Api(description = &quot;API for grade history data&quot;)
+@Tag(name = &quot;API for grade history data&quot;)
 @RequestMapping(&quot;/api/gradehistory&quot;)
 @RestController
 <span class="fc" id="L39">public class GradeHistoryController extends ApiController {</span>
@@ -43,28 +43,26 @@ import java.util.List;
     @Autowired
     ObjectMapper mapper;
 
-    @ApiOperation(value = &quot;Get grade history for a course&quot;)
+    @Operation(summary = &quot;Get grade history for a course&quot;)
     @GetMapping(value = &quot;/search&quot;, produces = &quot;application/json&quot;)
     public Iterable&lt;GradeHistory&gt; gradeHistoryBySubjectAreaAndCourseNumber(
-        @ApiParam(
+        @Parameter(
             name =  &quot;subjectArea&quot;,
-            type = &quot;String&quot;,
-            value = &quot;Subjects of UCSB&quot;,
+            description = &quot;Subjects of UCSB&quot;,
             example = &quot;CMPSC&quot;,
             required = true)
         @RequestParam String subjectArea,
-        @ApiParam(
+        @Parameter(
             name =  &quot;courseNumber&quot;,
-            type = &quot;String&quot;,
-            value = &quot;Represents a subject-specific course&quot;,
+            description = &quot;Represents a subject-specific course&quot;,
             example = &quot;130A&quot;,
             required = true)
         @RequestParam String courseNumber
       )  
       {
-<span class="fc" id="L65">      String course=CourseUtilities.makeFormattedCourseId(subjectArea, courseNumber);</span>
-<span class="fc" id="L66">      Iterable&lt;GradeHistory&gt; gradeHistoryRows = gradeHistoryRepository.findByCourse(course);</span>
-<span class="fc" id="L67">      return gradeHistoryRows;</span>
+<span class="fc" id="L63">      String course=CourseUtilities.makeFormattedCourseId(subjectArea, courseNumber);</span>
+<span class="fc" id="L64">      Iterable&lt;GradeHistory&gt; gradeHistoryRows = gradeHistoryRepository.findByCourse(course);</span>
+<span class="fc" id="L65">      return gradeHistoryRows;</span>
     }
 
 }
