@@ -95,7 +95,7 @@ public class JobsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateCourses")
     public Job launchUpdateCourseDataJob(
-        @Parameter(name="quarter (YYYYQ format)") @RequestParam String quarterYYYYQ,
+        @Parameter(name="quarterYYYYQ",description="quarter (YYYYQ format)") @RequestParam String quarterYYYYQ,
         @Parameter(name="subject area") @RequestParam String subjectArea
     ) {
        
@@ -110,7 +110,7 @@ public class JobsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateQuarterCourses")
     public Job launchUpdateCourseDataWithQuarterJob(
-        @Parameter(name="quarter (YYYYQ format)") @RequestParam String quarterYYYYQ
+        @Parameter(name="quarterYYYYQ",description="quarter (YYYYQ format)") @RequestParam String quarterYYYYQ
     ) {
        
         UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = updateCourseDataWithQuarterJobFactory.create(
@@ -124,8 +124,8 @@ public class JobsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateCoursesRangeOfQuarters")
     public Job launchUpdateCourseDataRangeOfQuartersJob(
-        @Parameter(name="start quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
-        @Parameter(name="end quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
+        @Parameter(name="start_quarterYYYYQ",description="start quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
+        @Parameter(name="end_quarterYYYYQ",description="end quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
     ) {
        
         UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(
@@ -138,9 +138,9 @@ public class JobsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updateCoursesRangeOfQuartersSingleSubject")
     public Job launchUpdateCourseDataRangeOfQuartersSingleSubjectJob(
-        @Parameter(name="subject area") @RequestParam String subjectArea,
-        @Parameter(name="start quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
-        @Parameter(name="end quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
+        @Parameter(name="subjectArea",description="subject area") @RequestParam String subjectArea,
+        @Parameter(name="start_quarterYYYYQ",description="start quarter (YYYYQ format)") @RequestParam String start_quarterYYYYQ,
+        @Parameter(name="end_quarterYYYYQ",description="end quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
     ) {
        
         UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = 
