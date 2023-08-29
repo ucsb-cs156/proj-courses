@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
     @GetMapping(value = &quot;/search&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;String&gt; search(
         @Parameter(
-            name = &quot;StartQtr&quot;,
+            name = &quot;startQtr&quot;,
             description = &quot;starting quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)&quot;,
             example = &quot;20231&quot;,
             required = true
