@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjI4MDk4ODQ1","is_bot":false,"login":"vChase42","name":"Chase"},"headRefName":"ca-fix-springdocs-params","number":50,"title":"Fixed Springdocs end-quarter parameter vanishing","url":"https://github.com/ucsb-cs156/proj-courses/pull/50"}]
+pull_requests: []
