@@ -95,7 +95,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updateCourses&quot;)
     public Job launchUpdateCourseDataJob(
-        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ,
+        @Parameter(name=&quot;quarterYYYYQ&quot;,description=&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ,
         @Parameter(name=&quot;subject area&quot;) @RequestParam String subjectArea
     ) {
        
@@ -110,7 +110,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updateQuarterCourses&quot;)
     public Job launchUpdateCourseDataWithQuarterJob(
-        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ
+        @Parameter(name=&quot;quarterYYYYQ&quot;,description=&quot;quarter (YYYYQ format)&quot;) @RequestParam String quarterYYYYQ
     ) {
        
 <span class="fc" id="L116">        UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = updateCourseDataWithQuarterJobFactory.create(</span>
@@ -124,8 +124,8 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updateCoursesRangeOfQuarters&quot;)
     public Job launchUpdateCourseDataRangeOfQuartersJob(
-        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String start_quarterYYYYQ,
-        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
+        @Parameter(name=&quot;start_quarterYYYYQ&quot;,description=&quot;start quarter (YYYYQ format)&quot;) @RequestParam String start_quarterYYYYQ,
+        @Parameter(name=&quot;end_quarterYYYYQ&quot;,description=&quot;end quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
     ) {
        
 <span class="fc" id="L131">        UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(</span>
@@ -138,9 +138,9 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updateCoursesRangeOfQuartersSingleSubject&quot;)
     public Job launchUpdateCourseDataRangeOfQuartersSingleSubjectJob(
-        @Parameter(name=&quot;subject area&quot;) @RequestParam String subjectArea,
-        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String start_quarterYYYYQ,
-        @Parameter(name=&quot;quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
+        @Parameter(name=&quot;subjectArea&quot;,description=&quot;subject area&quot;) @RequestParam String subjectArea,
+        @Parameter(name=&quot;start_quarterYYYYQ&quot;,description=&quot;start quarter (YYYYQ format)&quot;) @RequestParam String start_quarterYYYYQ,
+        @Parameter(name=&quot;end_quarterYYYYQ&quot;,description=&quot;end quarter (YYYYQ format)&quot;) @RequestParam String end_quarterYYYYQ
     ) {
        
 <span class="fc" id="L146">        UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = </span>
