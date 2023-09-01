@@ -67,6 +67,8 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
         userEvent.selectOptions(selectEndQuarter, "20222");
         const enterInstructor = screen.getByLabelText("Instructor Name")
         userEvent.type(enterInstructor, "CONRAD");
+        const selectCheckbox = screen.getByTestId("CourseOverTimeInstructorSearchForm-checkbox");
+        userEvent.click(selectCheckbox);
 
         const submitButton = screen.getByText("Submit");
         expect(submitButton).toBeInTheDocument();
@@ -82,6 +84,7 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
             startQtr: "20222",
             endQtr: "20222",
             instructor: "CONRAD",
+            lectureOnly: true,
         });
 
         expect(screen.getByText("ECE 1A")).toBeInTheDocument();
