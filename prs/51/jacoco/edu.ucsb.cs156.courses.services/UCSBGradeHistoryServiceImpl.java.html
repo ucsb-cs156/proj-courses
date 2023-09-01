@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UCSBGradeHistoryServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.services</a> &gt; <span class="el_source">UCSBGradeHistoryServiceImpl.java</span></div><h1>UCSBGradeHistoryServiceImpl.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.services;
+
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVReader;
+
+import edu.ucsb.cs156.courses.entities.GradeHistory;
+import edu.ucsb.cs156.courses.models.Quarter;
+import edu.ucsb.cs156.courses.models.github.ApiResult;
+import edu.ucsb.cs156.courses.models.github.TreeElement;
+
+import org.springframework.web.client.RestTemplate;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+@Service(&quot;UCSBGradeHistoryService&quot;)
+<span class="fc" id="L32">@Slf4j</span>
+public class UCSBGradeHistoryServiceImpl implements UCSBGradeHistoryService {
+
+    private final RestTemplate restTemplate;
+
+<span class="fc" id="L37">    public UCSBGradeHistoryServiceImpl(RestTemplateBuilder restTemplateBuilder) {</span>
+<span class="fc" id="L38">        restTemplate = restTemplateBuilder.build();</span>
+<span class="fc" id="L39">    }</span>
+
+    @Autowired
+    ObjectMapper mapper;
+
+    public static final String REPO_OWNER_AND_NAME = &quot;ucsb-cs156/UCSB_Grades&quot;;
+    public static final String API_ENDPOINT = &quot;https://api.github.com/repos/&quot;
+            + REPO_OWNER_AND_NAME +
+            &quot;/git/trees/main?recursive=1&quot;;
+
+    @Override
+    public List&lt;String&gt; getUrls() throws Exception {
+
+<span class="fc" id="L52">        log.info(&quot;getting data from {}&quot;, API_ENDPOINT);</span>
+
+<span class="fc" id="L54">        HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L55">        headers.setAccept(List.of(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L56">        headers.setContentType(MediaType.APPLICATION_JSON);</span>
+
+<span class="fc" id="L58">        HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
+<span class="fc" id="L59">        Map&lt;String, String&gt; uriVariables = Map.of(&quot;recursive&quot;, &quot;1&quot;);</span>
+
+<span class="fc" id="L61">        ResponseEntity&lt;String&gt; re = restTemplate.exchange(API_ENDPOINT, HttpMethod.GET, entity, String.class,</span>
+                uriVariables);
+
+<span class="fc" id="L64">        ApiResult apiResult = mapper.readValue(re.getBody(), ApiResult.class);</span>
+
+<span class="fc" id="L66">        List&lt;TreeElement&gt; treeElements = apiResult.getTree();</span>
+<span class="fc" id="L67">        List&lt;String&gt; urls = treeElements.stream().map(treeElement -&gt; treeElement.getPath())</span>
+<span class="fc bfc" id="L68" title="All 4 branches covered.">                .filter(path -&gt; (path.startsWith(&quot;quarters/&quot;) &amp;&amp; path.endsWith(&quot;.csv&quot;))).collect(Collectors.toList());</span>
+<span class="fc" id="L69">        List&lt;String&gt; rawUrls = urls.stream()</span>
+<span class="fc" id="L70">                .map(url -&gt; &quot;https://raw.githubusercontent.com/&quot; + REPO_OWNER_AND_NAME + &quot;/main/&quot; + url)</span>
+<span class="fc" id="L71">                .collect(Collectors.toList());</span>
+<span class="fc" id="L72">        return rawUrls;</span>
+    }
+
+    @Override
+    public List&lt;GradeHistory&gt; getGradeData(String url) throws Exception {
+<span class="fc" id="L77">        log.info(&quot;getting data from {}&quot;, url);</span>
+<span class="fc" id="L78">        HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L79">        headers.setAccept(List.of(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L80">        headers.setContentType(MediaType.APPLICATION_JSON);</span>
+
+<span class="fc" id="L82">        HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
+<span class="fc" id="L83">        ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L84">        String csvData = re.getBody();</span>
+<span class="fc" id="L85">        return parse(new StringReader(csvData));</span>
+    }
+
+    @Override
+    public List&lt;GradeHistory&gt; parse(Reader reader) throws Exception {
+<span class="fc" id="L90">        List&lt;GradeHistory&gt; gradeHistoryList = new ArrayList&lt;GradeHistory&gt;();</span>
+<span class="fc" id="L91">        log.info(&quot;Parsing CSV file with grade history... &quot;);</span>
+<span class="fc" id="L92">        CSVReader csvReader = new CSVReader(reader);</span>
+<span class="fc" id="L93">        csvReader.skip(1);</span>
+<span class="fc" id="L94">        List&lt;String[]&gt; myEntries = csvReader.readAll();</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (String[] row : myEntries) {</span>
+<span class="fc" id="L96">            String yyyyq = Integer.toString(Quarter.qyyToyyyyQ(row[0]));</span>
+<span class="fc" id="L97">            GradeHistory gradeHistory = GradeHistory.builder()</span>
+<span class="fc" id="L98">                    .yyyyq(yyyyq)</span>
+<span class="fc" id="L99">                    .course(row[2])</span>
+<span class="fc" id="L100">                    .instructor(row[3])</span>
+<span class="fc" id="L101">                    .grade(row[4])</span>
+<span class="fc" id="L102">                    .count(Integer.parseInt(row[5]))</span>
+<span class="fc" id="L103">                    .build();</span>
+<span class="fc" id="L104">            log.info(&quot;Parsed: &quot; + gradeHistory.toString());</span>
+<span class="fc" id="L105">            gradeHistoryList.add(gradeHistory);</span>
+<span class="fc" id="L106">        }</span>
+<span class="fc" id="L107">        csvReader.close();</span>
+<span class="fc" id="L108">        return gradeHistoryList;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
