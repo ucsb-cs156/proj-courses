@@ -54,15 +54,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
             example = &quot;CONRAD&quot;,
             required = true
         )
-        @RequestParam String instructor
+        @RequestParam String instructor,
+        
+        @Parameter(
+            name = &quot;lectureOnly&quot;, 
+            description = &quot;Lectures only&quot;, 
+            example = &quot;true&quot;, 
+            required = true
+        ) 
+        @RequestParam boolean lectureOnly
     ) throws JsonProcessingException {
-<span class="fc" id="L59">        List&lt;ConvertedSection&gt; courseResults = convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
-            startQtr,
-            endQtr,
-            instructor
-        );
-<span class="fc" id="L64">        String body = mapper.writeValueAsString(courseResults);</span>
-<span class="fc" id="L65">        return ResponseEntity.ok().body(body);</span>
+		List&lt;ConvertedSection&gt; courseResults;
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		if (lectureOnly) {</span>
+<span class="fc" id="L69">			courseResults = convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
+				startQtr,
+				endQtr,
+<span class="fc" id="L72">				&quot;^&quot;+instructor.toUpperCase(),</span>
+				&quot;^(Teaching and in charge)&quot;);
+		} else {
+<span class="fc" id="L75">			courseResults = convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
+				startQtr,
+				endQtr,
+<span class="fc" id="L78">				&quot;^&quot;+instructor.toUpperCase(),</span>
+				&quot;^.*&quot;);
+		}
+<span class="fc" id="L81">        String body = mapper.writeValueAsString(courseResults);</span>
+<span class="fc" id="L82">        return ResponseEntity.ok().body(body);</span>
     }    
 }
+
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
