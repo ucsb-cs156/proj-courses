@@ -47,7 +47,7 @@ public class CourseOverTimeInstructorControllerTests {
     @Test
     public void test_search_emptyRequest() throws Exception {
         List<ConvertedSection> expectedResult = new ArrayList<ConvertedSection>();
-        String urlTemplate = "/api/public/coursebyinstructor/search?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
+        String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
         
         String url = String.format(urlTemplate, "20222", "20212", "CONRAD P T", "false");
 
@@ -92,23 +92,14 @@ public class CourseOverTimeInstructorControllerTests {
             .section(section2)
             .build();
 
-<<<<<<< HEAD:src/test/java/edu/ucsb/cs156/courses/controllers/CourseOverTimeInstructorControllerTests.java
-        String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s";
-    
-        String url = String.format(urlTemplate, "20222", "20222", "EMRE");
-=======
-        String urlTemplate = "/api/public/coursebyinstructor/search?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
+        String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
     
         String url = String.format(urlTemplate, "20222", "20222", "CONRAD P T", "false");
->>>>>>> 737de85ba (ac - fix tests):src/test/java/edu/ucsb/cs156/courses/controllers/CourseByInstructorControllerTests.java
 
         List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
         expectedSecs.addAll(Arrays.asList(cs1, cs2));
 
         // mock
-<<<<<<< HEAD:src/test/java/edu/ucsb/cs156/courses/controllers/CourseOverTimeInstructorControllerTests.java
-        when(convertedSectionCollection.findByQuarterRangeAndInstructor(any(String.class), any(String.class), eq("EMRE"))).thenReturn(expectedSecs);
-=======
         when(convertedSectionCollection.findByQuarterRangeAndInstructor(any(String.class), any(String.class), eq("^CONRAD P T"), eq("^.*"))).thenReturn(expectedSecs);
 
         // act
@@ -142,7 +133,7 @@ public class CourseOverTimeInstructorControllerTests {
             .section(section2)
             .build();
 
-        String urlTemplate = "/api/public/coursebyinstructor/search?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
+        String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
     
         String url = String.format(urlTemplate, "20222", "20222", "CONRAD P T", "true");
 
@@ -151,7 +142,6 @@ public class CourseOverTimeInstructorControllerTests {
 
         // mock
         when(convertedSectionCollection.findByQuarterRangeAndInstructor(any(String.class), any(String.class), eq("^CONRAD P T"), eq("^(Teaching and in charge)"))).thenReturn(expectedSecs);
->>>>>>> 737de85ba (ac - fix tests):src/test/java/edu/ucsb/cs156/courses/controllers/CourseByInstructorControllerTests.java
 
         // act
         MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
