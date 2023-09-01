@@ -14,6 +14,7 @@ export default function CourseOverTimeInstructorIndexPage() {
       startQtr: query.startQuarter,
       endQtr: query.endQuarter,
       instructor: query.instructor,
+      lectureOnly: query.checkbox,
     },
   });
 
