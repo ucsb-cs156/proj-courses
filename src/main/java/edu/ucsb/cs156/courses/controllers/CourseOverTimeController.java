@@ -34,7 +34,7 @@ public class CourseOverTimeController {
     @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<String> search(
         @Parameter(
-            name = "StartQtr",
+            name = "startQtr",
             description = "starting quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
             example = "20231",
             required = true

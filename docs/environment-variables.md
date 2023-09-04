@@ -32,11 +32,14 @@ app.admin.emails=${ADMIN_EMAILS:${env.ADMIN_EMAILS:phtcon@ucsb.edu}}
 
 The fallback values, in this case being:
 
-| Env variable | Default Value |
-|--------------|---------------|
-| `GOOGLE_CLIENT_ID` | `client_id_unset` |
-| `GOOGLE_CLIENT_SECRET` | `client_secret_unset` |
-| `ADMIN_EMAILS` | `phtcon@ucsb.edu` |
+| Env variable | Default Value | Notes |
+|--------------|---------------|--------|
+| `GOOGLE_CLIENT_ID` | `client_id_unset` |  Needed for OAuth authentication |
+| `GOOGLE_CLIENT_SECRET` | `client_secret_unset` | Needed for OAuth authentication |
+| `ADMIN_EMAILS` | `phtcon@ucsb.edu` |  Comma separated list emails with admin access |
+| `UCSB_API_KEY` | none | api key from https://developer.ucsb.edu |
+| `START_QTR` | `20221` | start quarter for dropdown menus in yyyyq format |
+| `END_QTR` | `20222`  | end quarter for dropdown menus in yyyyq format |
 
 While the values for `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` will not work in practice (i.e. with these values, OAuth login 
 will fail), having a default value:
