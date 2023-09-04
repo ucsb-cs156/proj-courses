@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjI4MDk4ODQ1","is_bot":false,"login":"vChase42","name":"Chase"},"headRefName":"ca-rearrange-navbar","number":52,"title":"Rearrange Course Schedule Navbar","url":"https://github.com/ucsb-cs156/proj-courses/pull/52"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjI4MDk4ODQ1","is_bot":false,"login":"vChase42","name":"Chase"},"headRefName":"ca-fix-localhost-image","number":53,"title":"fixed bug with image not showing up on localhost","url":"https://github.com/ucsb-cs156/proj-courses/pull/53"},{"author":{"id":"MDQ6VXNlcjI4MDk4ODQ1","is_bot":false,"login":"vChase42","name":"Chase"},"headRefName":"ca-rearrange-navbar","number":52,"title":"Rearrange Course Schedule Navbar","url":"https://github.com/ucsb-cs156/proj-courses/pull/52"}]
