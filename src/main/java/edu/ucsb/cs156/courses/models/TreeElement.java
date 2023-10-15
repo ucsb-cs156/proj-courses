@@ -1,4 +1,4 @@
-package edu.ucsb.cs156.courses.models.github;
+package edu.ucsb.cs156.courses.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
