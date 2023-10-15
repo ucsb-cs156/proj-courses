@@ -1,4 +1,4 @@
-package edu.ucsb.cs156.courses.models.github;
+package edu.ucsb.cs156.courses.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,6 @@ import java.util.List;
 public class ApiResult {
     private String sha;
     private String url;
-    private List<edu.ucsb.cs156.courses.models.github.TreeElement> tree;
+    private List<TreeElement> tree;
     private Boolean truncated;
 }
