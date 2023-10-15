@@ -1,28 +1,25 @@
 package edu.ucsb.cs156.courses.jobs;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import edu.ucsb.cs156.courses.entities.GradeHistory;
+import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
+import edu.ucsb.cs156.courses.services.UCSBGradeHistoryServiceImpl;
+import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
-import edu.ucsb.cs156.courses.entities.GradeHistory;
-import edu.ucsb.cs156.courses.entities.Job;
-import edu.ucsb.cs156.courses.services.UCSBGradeHistoryService;
-import edu.ucsb.cs156.courses.services.UCSBGradeHistoryServiceImpl;
-import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RestClientTest(UploadGradeDataJob.class)
 @AutoConfigureDataJpa
@@ -41,26 +38,26 @@ public class UploadGradeDataJobTests {
 
         List<GradeHistory> gradeHistoriesToUpsert = new ArrayList<GradeHistory>();
         GradeHistory existingOne = GradeHistory.builder()
-                .yyyyq("20204")
-                .course("CMPSC   156")
-                .instructor("CONRAD P")
-                .grade("A")
-                .count(50)
-                .build();
+            .yyyyq("20204")
+            .course("CMPSC   156")
+            .instructor("CONRAD P")
+            .grade("A")
+            .count(50)
+            .build();
         GradeHistory existingOneUpdated = GradeHistory.builder()
-                .yyyyq("20204")
-                .course("CMPSC   156")
-                .instructor("CONRAD P")
-                .grade("A")
-                .count(51)
-                .build();
+            .yyyyq("20204")
+            .course("CMPSC   156")
+            .instructor("CONRAD P")
+            .grade("A")
+            .count(51)
+            .build();
         GradeHistory newOne = GradeHistory.builder()
-                .yyyyq("20204")
-                .course("CMPSC   148")
-                .instructor("HOLLERER T")
-                .grade("A")
-                .count(50)
-                .build();
+            .yyyyq("20204")
+            .course("CMPSC   148")
+            .instructor("HOLLERER T")
+            .grade("A")
+            .count(50)
+            .build();
 
         gradeHistoriesToUpsert.add(existingOneUpdated);
         gradeHistoriesToUpsert.add(newOne);
@@ -102,7 +99,7 @@ public class UploadGradeDataJobTests {
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        UploadGradeDataJob uploadGradeDataJob = 
+        UploadGradeDataJob uploadGradeDataJob =
             new UploadGradeDataJob(ucsbGradeHistoryServiceImpl,
                 gradeHistoryRepository);
 

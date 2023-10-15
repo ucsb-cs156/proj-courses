@@ -1,10 +1,6 @@
 package edu.ucsb.cs156.courses.jobs;
 
-import java.util.List;
-import java.util.Optional;
-
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
-import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
@@ -12,6 +8,8 @@ import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Slf4j
@@ -27,7 +25,7 @@ public class UpdateCourseDataRangeOfQuartersSingleSubjectJob implements JobConte
     private UCSBCurriculumService ucsbCurriculumService;
     @Getter
     private ConvertedSectionCollection convertedSectionCollection;
-   
+
     @Override
     public void accept(JobContext ctx) throws Exception {
         List<Quarter> quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);

@@ -23,7 +23,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
   it("renders correctly", async () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <Router >
+        <Router>
           <UpdateCoursesByQuarterJobForm />
         </Router>
       </QueryClientProvider>
@@ -45,13 +45,13 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <Router >
+        <Router>
           <UpdateCoursesByQuarterJobForm />
-        </Router >
+        </Router>
       </QueryClientProvider>
     );
 
-    // Make sure the first and last options 
+    // Make sure the first and last options
     expect(await screen.findByTestId(/BasicSearch.Quarter-option-0/)).toHaveValue("20211")
     expect(await screen.findByTestId(/BasicSearch.Quarter-option-3/)).toHaveValue("20214")
 

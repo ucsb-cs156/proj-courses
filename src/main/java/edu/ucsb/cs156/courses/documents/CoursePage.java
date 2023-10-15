@@ -1,17 +1,14 @@
 package edu.ucsb.cs156.courses.documents;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,7 +21,7 @@ public class CoursePage {
 
     /**
      * Create a CoursePage object from json representation
-     * 
+     *
      * @param json String of json returned by API endpoint {@code /classes/search}
      * @return a new CoursePage object
      * @see <a href=
@@ -45,7 +42,7 @@ public class CoursePage {
 
     /**
      * Create a List of ConvertedSections from json representation
-     * 
+     *
      * @return a list of converted sections
      */
     public List<ConvertedSection> convertedSections() {
@@ -56,15 +53,15 @@ public class CoursePage {
             for (Section section : c.getClassSections()) {
                 int lectureNum = Integer.parseInt(section.getSection()) / 100;
                 CourseInfo courseInfo = CourseInfo.builder()
-                        .quarter(c.getQuarter())
-                        .courseId(c.getCourseId() + "-" + Integer.toString(lectureNum))
-                        .title(c.getTitle())
-                        .description(c.getDescription())
-                        .build();
+                    .quarter(c.getQuarter())
+                    .courseId(c.getCourseId() + "-" + Integer.toString(lectureNum))
+                    .title(c.getTitle())
+                    .description(c.getDescription())
+                    .build();
                 ConvertedSection cs = ConvertedSection.builder()
-                        .courseInfo(courseInfo)
-                        .section(section)
-                        .build();
+                    .courseInfo(courseInfo)
+                    .section(section)
+                    .build();
                 result.add(cs);
 
             }

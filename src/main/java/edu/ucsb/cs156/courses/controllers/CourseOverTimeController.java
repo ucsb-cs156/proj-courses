@@ -1,12 +1,11 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/public/courseovertime")
@@ -41,21 +39,21 @@ public class CourseOverTimeController {
         )
         @RequestParam String startQtr,
         @Parameter(
-            name =  "endQtr",
+            name = "endQtr",
             description = "ending quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
             example = "20231",
             required = true
         )
         @RequestParam String endQtr,
         @Parameter(
-            name =  "subjectArea",
+            name = "subjectArea",
             description = "simplified area name, e.g. CMPSC for computer science",
             example = "CMPSC",
             required = true
         )
         @RequestParam String subjectArea,
         @Parameter(
-            name =  "courseNumber",
+            name = "courseNumber",
             description = "the specific course number, e.g. 130A for CS130A",
             example = "130A",
             required = true
@@ -76,15 +74,15 @@ public class CourseOverTimeController {
         String[] suffs = courseNumber.split("[0-9]+");
         if (suffs.length < 2) { // no suffix
             return
-                  String.format( "%-8s", subjectArea                ) // 'CMPSC   '
-                + String.format( "%3s" , nums[0]                    ) // '  8'
-            ;
+                String.format("%-8s", subjectArea) // 'CMPSC   '
+                    + String.format("%3s", nums[0]) // '  8'
+                ;
         }
         return
-              String.format( "%-8s", subjectArea                ) // 'CMPSC   '
-            + String.format( "%3s" , nums[0]                    ) // '  8'
-            + String.format( "%-2s", suffs[1]                   ) // 'A '
-        ;
+            String.format("%-8s", subjectArea) // 'CMPSC   '
+                + String.format("%3s", nums[0]) // '  8'
+                + String.format("%-2s", suffs[1]) // 'A '
+            ;
     }
-    
+
 }

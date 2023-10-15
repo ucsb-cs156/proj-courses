@@ -20,7 +20,7 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
   const localEndQuarter = localStorage.getItem("CourseOverTimeInstructorSearch.EndQuarter");
   const localInstructor = localStorage.getItem("CourseOverTimeInstructorSearch.Instructor");
   const localStorageCheckbox = localStorage.getItem("CourseOverTimeInstructorSearch.Checkbox") === "true";
-  
+
 
   const [startQuarter, setStartQuarter] = useState(localStartQuarter || quarters[0].yyyyq);
   const [endQuarter, setEndQuarter] = useState(localEndQuarter || quarters[0].yyyyq);
@@ -68,11 +68,12 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
           </Col>
         </Row>
         <Form.Group controlId="CourseOverTimeInstructorSearch.Instructor">
-            <Form.Label>Instructor Name</Form.Label>
-            <Form.Control onChange={handleInstructorOnChange} defaultValue={instructor} />
+          <Form.Label>Instructor Name</Form.Label>
+          <Form.Control onChange={handleInstructorOnChange} defaultValue={instructor} />
         </Form.Group>
         <Form.Group controlId="CourseOverTimeInstructorSearch.Checkbox">
-            <FormCheck data-testid={`${testid}-checkbox`} label="Lectures Only" onChange={handleCheckboxOnChange} checked={checkbox}></FormCheck>
+          <FormCheck data-testid={`${testid}-checkbox`} label="Lectures Only" onChange={handleCheckboxOnChange}
+                     checked={checkbox}></FormCheck>
         </Form.Group>
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">

@@ -7,8 +7,8 @@ import { MemoryRouter } from "react-router-dom";
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate
 }));
 
 describe("CourseTable tests", () => {
@@ -53,4 +53,3 @@ describe("CourseTable tests", () => {
   });
 
 });
-

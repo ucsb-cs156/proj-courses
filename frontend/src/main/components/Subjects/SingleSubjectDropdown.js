@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 
 const SingleSubjectDropdown = ({
-  subjects,
-  subject,
-  setSubject,
-  controlId,
-  onChange = null,
-  label = "Subject Area",
-}) => {
+                                 subjects,
+                                 subject,
+                                 setSubject,
+                                 controlId,
+                                 onChange = null,
+                                 label = "Subject Area",
+                               }) => {
   const localSearchSubject = localStorage.getItem(controlId);
 
   const [subjectState, setSubjectState] = useState(

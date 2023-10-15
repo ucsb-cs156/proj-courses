@@ -5,32 +5,31 @@ import { personalScheduleFixtures } from 'fixtures/personalScheduleFixtures';
 import { currentUserFixtures } from 'fixtures/currentUserFixtures';
 
 export default {
-    title: 'components/PersonalSchedules/PersonalSchedulesTable',
-    component: PersonalSchedulesTable
+  title: 'components/PersonalSchedules/PersonalSchedulesTable',
+  component: PersonalSchedulesTable
 };
 
 const Template = (args) => {
-    return (
-        <PersonalSchedulesTable {...args} />
-    )
+  return (
+    <PersonalSchedulesTable {...args} />
+  )
 };
 
 export const Empty = Template.bind({});
 
 Empty.args = {
-    personalSchedules: []
+  personalSchedules: []
 };
 
 export const ThreeSubjects = Template.bind({});
 
 ThreeSubjects.args = {
-    personalSchedules: personalScheduleFixtures.threePersonalSchedules
+  personalSchedules: personalScheduleFixtures.threePersonalSchedules
 };
 
 
 export const ThreeSubjectsUser = Template.bind({});
 ThreeSubjectsUser.args = {
-    personalSchedules: personalScheduleFixtures.threePersonalSchedules,
-    currentUser: currentUserFixtures.adminUser
+  personalSchedules: personalScheduleFixtures.threePersonalSchedules,
+  currentUser: currentUserFixtures.adminUser
 };
-

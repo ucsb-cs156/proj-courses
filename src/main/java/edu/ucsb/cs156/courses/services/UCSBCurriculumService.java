@@ -1,39 +1,23 @@
 package edu.ucsb.cs156.courses.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CoursePage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import edu.ucsb.cs156.courses.documents.ConvertedSection;
-import edu.ucsb.cs156.courses.documents.Course;
-import edu.ucsb.cs156.courses.documents.CourseInfo;
-import edu.ucsb.cs156.courses.documents.CoursePage;
-import edu.ucsb.cs156.courses.documents.Section;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.web.util.UriComponentsBuilder;
-import java.util.Map;
-import java.util.HashMap;
 
-import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Service object that wraps the UCSB Academic Curriculum API
@@ -73,14 +57,14 @@ public class UCSBCurriculumService {
         HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
         String params = String.format(
-                "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s", quarter,
-                subjectArea, courseLevel, 1, 100, "true");
+            "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s", quarter,
+            subjectArea, courseLevel, 1, 100, "true");
         String url = CURRICULUM_ENDPOINT + params;
 
         if (courseLevel.equals("A")) {
             params = String.format(
-                    "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
-                    quarter, subjectArea, 1, 100, "true");
+                "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
+                quarter, subjectArea, 1, 100, "true");
             url = CURRICULUM_ENDPOINT + params;
         }
 
@@ -102,22 +86,22 @@ public class UCSBCurriculumService {
     }
 
     public List<ConvertedSection> getConvertedSections(String subjectArea, String quarter, String courseLevel)
-            throws JsonProcessingException {
+        throws JsonProcessingException {
         String json = getJSON(subjectArea, quarter, courseLevel);
         CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);
-        List<ConvertedSection> result = coursePage.convertedSections();       
+        List<ConvertedSection> result = coursePage.convertedSections();
         return result;
     }
 
     public String getSectionJSON(String subjectArea, String quarter, String courseLevel)
         throws JsonProcessingException {
         List<ConvertedSection> l = getConvertedSections(subjectArea, quarter, courseLevel);
-        
+
         String arrayToJson = objectMapper.writeValueAsString(l);
-    
+
         return arrayToJson;
     }
-    
+
     public String getSubjectsJSON() {
 
         HttpHeaders headers = new HttpHeaders();
@@ -165,10 +149,10 @@ public class UCSBCurriculumService {
         log.info("url=" + url);
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-        .queryParam("quarter", "{quarter}")
-        .queryParam("enrollcode", "{enrollcode}")
-        .encode()
-        .toUriString();
+            .queryParam("quarter", "{quarter}")
+            .queryParam("enrollcode", "{enrollcode}")
+            .encode()
+            .toUriString();
 
         Map<String, String> params = new HashMap<>();
         params.put("quarter", quarter);
@@ -186,7 +170,7 @@ public class UCSBCurriculumService {
             retVal = "{\"error\": \"401: Unauthorized\"}";
         }
 
-        if(retVal.equals("null")){
+        if (retVal.equals("null")) {
             retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
         }
 
@@ -216,10 +200,10 @@ public class UCSBCurriculumService {
         log.info("url=" + url);
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-        .queryParam("quarter", "{quarter}")
-        .queryParam("enrollcode", "{enrollcode}")
-        .encode()
-        .toUriString();
+            .queryParam("quarter", "{quarter}")
+            .queryParam("enrollcode", "{enrollcode}")
+            .encode()
+            .toUriString();
 
         Map<String, String> params = new HashMap<>();
         params.put("quarter", quarter);
@@ -237,14 +221,14 @@ public class UCSBCurriculumService {
             retVal = "{\"error\": \"401: Unauthorized\"}";
         }
 
-        if(retVal.equals("null")){
+        if (retVal.equals("null")) {
             retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
         }
 
         log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
         return retVal;
     }
-     
+
 
     public String getJSONbyQtrEnrollCd(String quarter, String enrollCd) {
 

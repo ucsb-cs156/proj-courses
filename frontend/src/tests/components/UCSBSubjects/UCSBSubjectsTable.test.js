@@ -9,15 +9,15 @@ import UCSBSubjectsTable from "main/components/UCSBSubjects/UCSBSubjectsTable"
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate
 }));
 
 const mockedMutate = jest.fn();
 
 jest.mock('main/utils/useBackend', () => ({
-    ...jest.requireActual('main/utils/useBackend'),
-    useBackendMutation: () => ({mutate: mockedMutate})
+  ...jest.requireActual('main/utils/useBackend'),
+  useBackendMutation: () => ({ mutate: mockedMutate })
 }));
 
 describe("UserTable tests", () => {
@@ -33,7 +33,6 @@ describe("UserTable tests", () => {
           <UCSBSubjectsTable subjects={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
-
     );
   });
   test("renders without crashing for empty table for ordinary user", () => {
@@ -45,7 +44,6 @@ describe("UserTable tests", () => {
           <UCSBSubjectsTable subjects={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
-
     );
   });
 
@@ -58,7 +56,6 @@ describe("UserTable tests", () => {
           <UCSBSubjectsTable subjects={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
-
     );
   });
 
@@ -71,11 +68,10 @@ describe("UserTable tests", () => {
           <UCSBSubjectsTable subjects={ucsbSubjectsFixtures.threeSubjects} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
-
     );
 
-    const expectedHeaders = ["SubjectCode", "SubjectTranslation", "DeptCode","CollegeCode","RelatedDeptCode","Inactive"];
-    const expectedFields = ["subjectCode", "subjectTranslation", "deptCode","collegeCode","relatedDeptCode","inactive"];
+    const expectedHeaders = ["SubjectCode", "SubjectTranslation", "DeptCode", "CollegeCode", "RelatedDeptCode", "Inactive"];
+    const expectedFields = ["subjectCode", "subjectTranslation", "deptCode", "collegeCode", "relatedDeptCode", "inactive"];
     const testId = "UCSBSubjectsTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -115,7 +111,7 @@ describe("UserTable tests", () => {
 
     const editButton = screen.getByTestId(`UCSBSubjectsTable-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
-    
+
     fireEvent.click(editButton);
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/UCSBSubjects/edit/GEOG'));
@@ -136,7 +132,7 @@ describe("UserTable tests", () => {
 
     const deleteButton = screen.getByTestId(`UCSBSubjectsTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
-    
+
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));

@@ -8,7 +8,7 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
-import { useBackend  } from "main/utils/useBackend";
+import { useBackend } from "main/utils/useBackend";
 
 const BasicCourseSearchForm = ({ fetchJSON }) => {
 
@@ -26,18 +26,18 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
   const localLevel = localStorage.getItem("BasicSearch.CourseLevel");
 
-  
-  const { data: subjects, error: _error, status: _status } =
-  useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/UCSBSubjects/all"], 
-    { method: "GET", url: "/api/UCSBSubjects/all" }, 
-    []
-  );
 
-  const defaultSubjectArea =  "ANTH";
+  const { data: subjects, error: _error, status: _status } =
+    useBackend(
+      // Stryker disable next-line all : don't test internal caching of React Query
+      ["/api/UCSBSubjects/all"],
+      { method: "GET", url: "/api/UCSBSubjects/all" },
+      []
+    );
+
+  const defaultSubjectArea = "ANTH";
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
-  const [subject, setSubject] = useState(localSubject || subjects[0]?.subjectCode || defaultSubjectArea );
+  const [subject, setSubject] = useState(localSubject || subjects[0]?.subjectCode || defaultSubjectArea);
   const [level, setLevel] = useState(localLevel || "U");
 
   const handleSubmit = (event) => {

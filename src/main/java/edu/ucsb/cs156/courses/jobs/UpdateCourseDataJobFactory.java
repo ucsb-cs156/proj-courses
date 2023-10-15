@@ -1,15 +1,14 @@
 package edu.ucsb.cs156.courses.jobs;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class UpdateCourseDataJobFactory  {
+public class UpdateCourseDataJobFactory {
 
     @Autowired
     private UCSBCurriculumService ucsbCurriculumService;

@@ -201,12 +201,12 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       </QueryClientProvider>
     );
 
-    // Make sure the first and last options 
+    // Make sure the first and last options
     expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.StartQuarter-option-0')).toHaveValue("20211")
     expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.EndQuarter-option-3')).toHaveValue("20214")
     expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.BuildingCode-option-0')).toHaveValue("")
     expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.BuildingCode-option-3')).toHaveValue("BRDA")
-    
+
   });
 
   test("Button padding is correct", () => {

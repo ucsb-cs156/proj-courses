@@ -26,10 +26,10 @@ export default function PersonalSchedulesCreatePage() {
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
-     { onSuccess, onError }, 
-     // Stryker disable next-line all : hard to set up test for caching
-     ["/api/personalschedules/all"]
-     );
+    { onSuccess, onError },
+    // Stryker disable next-line all : hard to set up test for caching
+    ["/api/personalschedules/all"]
+  );
 
   const { isSuccess } = mutation
 

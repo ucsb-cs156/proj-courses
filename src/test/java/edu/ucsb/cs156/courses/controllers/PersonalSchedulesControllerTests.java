@@ -1,36 +1,31 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import edu.ucsb.cs156.courses.repositories.UserRepository;
-import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
-
+import edu.ucsb.cs156.courses.repositories.UserRepository;
+import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.jca.endpoint.GenericMessageEndpointFactory;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PersonalSchedulesController.class)
 @Import(TestConfig.class)
@@ -48,28 +43,28 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     @Test
     public void api_schedules_admin_all__logged_out__returns_403() throws Exception {
         mockMvc.perform(get("/api/personalschedules/admin/all"))
-                .andExpect(status().is(403));
+            .andExpect(status().is(403));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules_admin_all__user_logged_in__returns_403() throws Exception {
         mockMvc.perform(get("/api/personalschedules/admin/all"))
-                .andExpect(status().is(403));
+            .andExpect(status().is(403));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules_admin__user_logged_in__returns_403() throws Exception {
         mockMvc.perform(get("/api/personalschedules/admin?id=7"))
-                .andExpect(status().is(403));
+            .andExpect(status().is(403));
     }
 
-    @WithMockUser(roles = { "ADMIN" })
+    @WithMockUser(roles = {"ADMIN"})
     @Test
     public void api_schedules_admin_all__admin_logged_in__returns_200() throws Exception {
         mockMvc.perform(get("/api/personalschedules/admin/all"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
     // Authorization tests for /api/personalschedules/all
@@ -77,14 +72,14 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     @Test
     public void api_schedules_all__logged_out__returns_403() throws Exception {
         mockMvc.perform(get("/api/personalschedules/all"))
-                .andExpect(status().is(403));
+            .andExpect(status().is(403));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules_all__user_logged_in__returns_200() throws Exception {
         mockMvc.perform(get("/api/personalschedules/all"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
     // Authorization tests for /api/personalschedules/post
@@ -92,12 +87,12 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     @Test
     public void api_schedules_post__logged_out__returns_403() throws Exception {
         mockMvc.perform(post("/api/personalschedules/post"))
-                .andExpect(status().is(403));
+            .andExpect(status().is(403));
     }
 
     // Tests with mocks for database actions
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__returns_a_schedules_that_exists() throws Exception {
 
@@ -109,7 +104,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(get("/api/personalschedules?id=7"))
-                .andExpect(status().isOk()).andReturn();
+            .andExpect(status().isOk()).andReturn();
 
         // assert
 
@@ -119,7 +114,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__search_for_schedules_that_does_not_exist() throws Exception {
 
@@ -131,7 +126,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(get("/api/personalschedules?id=7"))
-                .andExpect(status().isNotFound()).andReturn();
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
 
@@ -141,7 +136,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 7 not found", json.get("message"));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__search_for_schedules_that_belongs_to_another_user() throws Exception {
 
@@ -150,13 +145,13 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
         PersonalSchedule otherUsersPersonalschedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(otherUser).id(13L)
-                .build();
+            .build();
 
         when(personalscheduleRepository.findByIdAndUser(eq(13L), eq(otherUser))).thenReturn(Optional.of(otherUsersPersonalschedule));
 
         // act
         MvcResult response = mockMvc.perform(get("/api/personalschedules?id=13"))
-                .andExpect(status().isNotFound()).andReturn();
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
 
@@ -166,7 +161,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 13 not found", json.get("message"));
     }
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void api_schedules__admin_logged_in__search_for_schedule_that_belongs_to_another_user() throws Exception {
 
@@ -175,13 +170,13 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         User u = currentUserService.getCurrentUser().getUser();
         User otherUser = User.builder().id(999L).build();
         PersonalSchedule otherUsersPersonalschedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(otherUser).id(27L)
-                .build();
+            .build();
 
         when(personalscheduleRepository.findById(eq(27L))).thenReturn(Optional.of(otherUsersPersonalschedule));
 
         // act
         MvcResult response = mockMvc.perform(get("/api/personalschedules/admin?id=27"))
-                .andExpect(status().isOk()).andReturn();
+            .andExpect(status().isOk()).andReturn();
 
         // assert
 
@@ -191,7 +186,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void api_schedules__admin_logged_in__search_for_schedule_that_does_not_exist() throws Exception {
 
@@ -201,7 +196,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(get("/api/personalschedules/admin?id=29"))
-                .andExpect(status().isNotFound()).andReturn();
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
 
@@ -211,7 +206,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 29 not found", json.get("message"));
     }
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void api_schedules_admin_all__admin_logged_in__returns_all_schedules() throws Exception {
 
@@ -232,7 +227,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(get("/api/personalschedules/admin/all"))
-                .andExpect(status().isOk()).andReturn();
+            .andExpect(status().isOk()).andReturn();
 
         // assert
 
@@ -242,7 +237,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules_all__user_logged_in__returns_only_schedules_for_user() throws Exception {
 
@@ -259,7 +254,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(get("/api/personalschedules/all"))
-                .andExpect(status().isOk()).andReturn();
+            .andExpect(status().isOk()).andReturn();
 
         // assert
 
@@ -269,7 +264,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules_post__user_logged_in() throws Exception {
         // arrange
@@ -283,8 +278,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 post("/api/personalschedules/post?name=Test Name&description=Test Description&quarter=20222")
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).save(expectedSchedule);
@@ -293,7 +288,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__delete_schedule() throws Exception {
         // arrange
@@ -305,8 +300,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 delete("/api/personalschedules?id=15")
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findByIdAndUser(15L, u);
@@ -315,7 +310,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 15 deleted", json.get("message"));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__delete_schedule_that_does_not_exist() throws Exception {
         // arrange
@@ -328,8 +323,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 delete("/api/personalschedules?id=15")
-                        .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findByIdAndUser(15L, u);
@@ -337,7 +332,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 15 not found", json.get("message"));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__cannot_delete_delete_belonging_to_another_user() throws Exception {
         // arrange
@@ -349,8 +344,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 delete("/api/personalschedules?id=31")
-                        .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findByIdAndUser(31L, u);
@@ -359,7 +354,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     }
 
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void api_schedules__admin_logged_in__delete_schedule() throws Exception {
         // arrange
@@ -371,8 +366,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 delete("/api/personalschedules/admin?id=16")
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findById(16L);
@@ -381,7 +376,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 16 deleted", output.get("message"));
     }
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void api_schedules__admin_logged_in__cannot_delete_schedule_that_does_not_exist() throws Exception {
         // arrange
@@ -391,8 +386,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 delete("/api/personalschedules/admin?id=17")
-                        .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findById(17L);
@@ -400,7 +395,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 17 not found", output.get("message"));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__put_schedule() throws Exception {
         // arrange
@@ -422,11 +417,11 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 put("/api/personalschedules?id=67")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findByIdAndUser(67L, u);
@@ -435,7 +430,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals(expectedReturn, responseString);
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__cannot_put_schedule_that_does_not_exist() throws Exception {
         // arrange
@@ -450,11 +445,11 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 put("/api/personalschedules?id=67")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findByIdAndUser(67L, u);
@@ -463,7 +458,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     }
 
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__cannot_put_schedule_for_another_user() throws Exception {
         // arrange
@@ -480,11 +475,11 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 put("/api/personalschedules?id=31")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findByIdAndUser(31L, u);
@@ -494,7 +489,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     }
 
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void api_schedules__admin_logged_in__put_schedule() throws Exception {
         // arrange
@@ -505,9 +500,9 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // We deliberately put the wrong user on the updated schedule
         // We expect the controller to ignore this and keep the user the same
         PersonalSchedule updatedSchedule = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("20222").user(yetAnotherUser).id(77L)
-                .build();
+            .build();
         PersonalSchedule correctSchedule = PersonalSchedule.builder().name("Name 2").description("Description 2").quarter("20222").user(otherUser).id(77L)
-                .build();
+            .build();
 
         String requestBody = mapper.writeValueAsString(updatedSchedule);
         String expectedJson = mapper.writeValueAsString(correctSchedule);
@@ -517,11 +512,11 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 put("/api/personalschedules/admin?id=77")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findById(77L);
@@ -530,14 +525,14 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void api_schedules__admin_logged_in__cannot_put_schedule_that_does_not_exist() throws Exception {
         // arrange
 
         User otherUser = User.builder().id(345L).build();
         PersonalSchedule updatedSchedule = PersonalSchedule.builder().name("Name 1").description("Description 1").quarter("20221").user(otherUser).id(77L)
-                .build();
+            .build();
 
         String requestBody = mapper.writeValueAsString(updatedSchedule);
 
@@ -546,11 +541,11 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 put("/api/personalschedules/admin?id=77")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).findById(77L);
@@ -559,15 +554,15 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("PersonalSchedule with id 77 not found", json.get("message"));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__cannot_post_long_name() throws Exception {
 
         // act
         MvcResult response = mockMvc.perform(
                 post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
-                        .with(csrf()))
-                .andExpect(status().isBadRequest()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
 
         // assert
         Map<String, Object> json = responseToJson(response);
@@ -575,15 +570,15 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
     }
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void api_schedules__admin_logged_in__cannot_post_long_name() throws Exception {
 
         // act
         MvcResult response = mockMvc.perform(
                 post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
-                        .with(csrf()))
-                .andExpect(status().isBadRequest()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
 
         // assert
         Map<String, Object> json = responseToJson(response);
@@ -591,7 +586,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
     }
 
-    @WithMockUser(roles = { "USER" })
+    @WithMockUser(roles = {"USER"})
     @Test
     public void api_schedules__user_logged_in__can_post_15_char_name() throws Exception {
         // arrange
@@ -604,8 +599,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 post("/api/personalschedules/post?name=ABCDEFGHIJKLMNO&description=Test Description&quarter=20221")
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
 
         // assert
         verify(personalscheduleRepository, times(1)).save(expectedSchedule);
@@ -613,8 +608,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
-        
-    @WithMockUser(roles = { "ADMIN", "USER" })
+
+    @WithMockUser(roles = {"ADMIN", "USER"})
     @Test
     public void cannot_add_two_personal_schedules_with_same_name_and_quarter() throws Exception {
         // arrange
@@ -627,8 +622,8 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
         // act
         MvcResult response = mockMvc.perform(
                 post("/api/personalschedules/post?name=TestName&description=uniquedescrition1&quarter=20222")
-                        .with(csrf()))
-                .andExpect(status().isBadRequest()).andReturn();
+                    .with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
 
         Map<String, Object> json = responseToJson(response);
         assertEquals("A personal schedule with that name already exists in that quarter", json.get("message"));
