@@ -43,7 +43,7 @@ public class UCSBCurriculumControllerTests {
         String expectedResult = "{expectedJSONResult}";
         String urlTemplate = "/api/public/basicsearch?qtr=%s&dept=%s&level=%s";
         String url = String.format(urlTemplate, "20204", "CMPSC", "L");
-        when(ucsbCurriculumService.getJSON(any(String.class), any(String.class), any(String.class)))
+        when(ucsbCurriculumService.searchForCoursesUcsbApi(any(String.class), any(String.class), any(String.class)))
             .thenReturn(expectedResult);
 
         MvcResult response = mockMvc.perform(get(url).contentType("application/json")).andExpect(status().isOk())

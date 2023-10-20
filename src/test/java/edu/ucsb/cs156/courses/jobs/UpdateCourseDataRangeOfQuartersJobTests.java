@@ -57,12 +57,12 @@ public class UpdateCourseDataRangeOfQuartersJobTests {
         UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = new UpdateCourseDataRangeOfQuartersJob("20221", "20222", ucsbCurriculumService,
             convertedSectionCollection, subjects);
 
-        when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20221"), eq("A"))).thenReturn(result);
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20221"), eq("A"))).thenReturn(result);
-        when(ucsbCurriculumService.getConvertedSections(eq("ANTH"), eq("20221"), eq("A"))).thenReturn(result);
-        when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20222"), eq("A"))).thenReturn(result);
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20222"), eq("A"))).thenReturn(result);
-        when(ucsbCurriculumService.getConvertedSections(eq("ANTH"), eq("20222"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("CMPSC"), eq("20221"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20221"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("ANTH"), eq("20221"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("CMPSC"), eq("20222"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20222"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("ANTH"), eq("20222"), eq("A"))).thenReturn(result);
         when(convertedSectionCollection.saveAll(any())).thenReturn(result);
 
         // Act
@@ -139,7 +139,7 @@ public class UpdateCourseDataRangeOfQuartersJobTests {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.getConvertedSections(eq("ANTH"), eq("20221"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("ANTH"), eq("20221"), eq("A")))
             .thenReturn(listWithTwoOrigOneDuplicate);
 
 
@@ -205,7 +205,7 @@ public class UpdateCourseDataRangeOfQuartersJobTests {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.getConvertedSections(eq("ANTH"), eq("20221"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("ANTH"), eq("20221"), eq("A")))
             .thenReturn(listWithTwoOrigOneDuplicate);
 
 
@@ -266,7 +266,7 @@ public class UpdateCourseDataRangeOfQuartersJobTests {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.getConvertedSections(eq("ANTH"), eq("20221"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("ANTH"), eq("20221"), eq("A")))
             .thenReturn(listWithTwoOrigOneDuplicate);
 
 
@@ -333,7 +333,7 @@ public class UpdateCourseDataRangeOfQuartersJobTests {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.getConvertedSections(eq("ANTH"), eq("20224"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("ANTH"), eq("20224"), eq("A")))
             .thenReturn(listWithTwoOrigOneDuplicate);
 
 
@@ -399,7 +399,7 @@ public class UpdateCourseDataRangeOfQuartersJobTests {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.getConvertedSections(eq("ANTH"), eq("20211"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("ANTH"), eq("20211"), eq("A")))
             .thenReturn(listWithTwoOrigOneDuplicate);
 
 
@@ -482,9 +482,9 @@ public class UpdateCourseDataRangeOfQuartersJobTests {
         // Optional<ConvertedSection> section0Optional = Optional.of(section0);
         // Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20221"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20221"), eq("A")))
             .thenReturn(listWithOneSection);
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20222"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20222"), eq("A")))
             .thenReturn(listWithOneSection);
         when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
             eq(section0.getCourseInfo().getQuarter()),
@@ -548,9 +548,9 @@ public class UpdateCourseDataRangeOfQuartersJobTests {
 
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
 
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20221"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20221"), eq("A")))
             .thenReturn(listWithUpdatedSection);
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20222"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20222"), eq("A")))
             .thenReturn(listWithUpdatedSection);
         when(convertedSectionCollection.findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode)))
             .thenReturn(section0Optional);

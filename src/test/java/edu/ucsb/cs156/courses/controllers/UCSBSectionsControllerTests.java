@@ -1,7 +1,11 @@
 package edu.ucsb.cs156.courses.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
+import edu.ucsb.cs156.courses.documents.SectionFixtures;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,11 +45,12 @@ public class UCSBSectionsControllerTests {
     @Test
     public void test_search() throws Exception {
 
-        String expectedResult = "{expectedJSONResult}";
         String urlTemplate = "/api/sections/basicsearch?qtr=%s&dept=%s&level=%s";
         String url = String.format(urlTemplate, "20204", "CMPSC", "L");
-        when(ucsbCurriculumService.getSectionJSON(any(String.class), any(String.class), any(String.class)))
-            .thenReturn(expectedResult);
+        List<ConvertedSection> searchResult = mapper.readValue(CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B, new TypeReference<List<ConvertedSection>>() {});
+        String expectedResult = mapper.writeValueAsString(searchResult);
+        when(ucsbCurriculumService.searchForCourses(any(String.class), any(String.class), any(String.class)))
+            .thenReturn(searchResult);
 
         MvcResult response = mockMvc.perform(get(url).contentType("application/json"))
             .andReturn();

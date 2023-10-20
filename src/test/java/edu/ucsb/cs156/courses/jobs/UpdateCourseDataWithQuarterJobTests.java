@@ -59,7 +59,7 @@ public class UpdateCourseDataWithQuarterJobTests {
         UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = new UpdateCourseDataWithQuarterJob("20211", ucsbSubjectsService, ucsbCurriculumService,
             convertedSectionCollection);
 
-        when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20211"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("CMPSC"), eq("20211"), eq("A"))).thenReturn(result);
         when(convertedSectionCollection.saveAll(any())).thenReturn(result);
 
         // Act
@@ -115,7 +115,7 @@ public class UpdateCourseDataWithQuarterJobTests {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20211"), eq("A")))
             .thenReturn(listWithTwoOrigOneDuplicate);
         when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
             eq(section0.getCourseInfo().getQuarter()),
@@ -176,7 +176,7 @@ public class UpdateCourseDataWithQuarterJobTests {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20211"), eq("A")))
             .thenReturn(listWithOneSection);
         when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
             eq(section0.getCourseInfo().getQuarter()),
@@ -238,7 +238,7 @@ public class UpdateCourseDataWithQuarterJobTests {
 
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
 
-        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
+        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20211"), eq("A")))
             .thenReturn(listWithUpdatedSection);
         when(convertedSectionCollection.findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode)))
             .thenReturn(section0Optional);

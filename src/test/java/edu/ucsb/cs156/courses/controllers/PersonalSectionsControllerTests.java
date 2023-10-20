@@ -90,7 +90,7 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
 
         when(personalscheduleRepository.findByIdAndUser(eq(13L), eq(u))).thenReturn(Optional.of(ps));
         when((coursesRepository.findAllByPsId(eq(13L)))).thenReturn(crs);
-        when(ucsbCurriculumService.getJSONbyQtrEnrollCd(eq("20221"), eq("59501")))
+        when(ucsbCurriculumService.getSection(eq("59501"), eq("20221")))
             .thenReturn(PersonalSectionsFixtures.ONE_COURSE);
 
 
@@ -100,7 +100,7 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
 
         // assert
         verify(coursesRepository, times(1)).findAllByPsId(13L);
-        verify(ucsbCurriculumService, times(1)).getJSONbyQtrEnrollCd("20221", "59501");
+        verify(ucsbCurriculumService, times(1)).getSection("59501", "20221");
         String expectedJson = mapper.writeValueAsString(course);
         expectedJson = "[" + expectedJson + "]";
         String responseString = response.getResponse().getContentAsString();

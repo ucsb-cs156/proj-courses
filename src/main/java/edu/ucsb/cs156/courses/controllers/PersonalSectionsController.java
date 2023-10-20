@@ -54,7 +54,7 @@ public class PersonalSectionsController extends ApiController {
 
             User u = crs.getUser();
             String qtr = ps.getQuarter();
-            String responseBody = ucsbCurriculumService.getJSONbyQtrEnrollCd(qtr, crs.getEnrollCd());
+            String responseBody = ucsbCurriculumService.getSection(crs.getEnrollCd(), qtr);
             jsons.add(responseBody);
             Course course = objectMapper.readValue(responseBody, Course.class);
             sections.add(course);

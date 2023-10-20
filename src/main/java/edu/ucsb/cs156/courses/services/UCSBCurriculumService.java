@@ -12,12 +12,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service object that wraps the UCSB Academic Curriculum API
@@ -32,100 +29,78 @@ public class UCSBCurriculumService {
     @Value("${app.ucsb.api.consumer_key}")
     private String apiKey;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate;
 
     public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) {
         restTemplate = restTemplateBuilder.build();
     }
 
-    public static final String CURRICULUM_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
-
-    public static final String SUBJECTS_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/subjects";
-
-    public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classsection/{quarter}/{enrollcode}";
-
+    public static final String SEARCH_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v3/classes/search";
+    public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v3/classsection/{quarter}/{enrollcode}";
     public static final String ALL_SECTIONS_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
 
-    public String getJSON(String subjectArea, String quarter, String courseLevel) {
+    private String runEndpoint(String url, Object... uriVariables) {
+        log.info("url=" + url);
 
-        HttpHeaders headers = new HttpHeaders();
+        var headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("ucsb-api-version", "1.0");
+        // currently all endpoints use version 3.0
+        headers.set("ucsb-api-version", "3.0");
         headers.set("ucsb-api-key", this.apiKey);
+        var entity = new HttpEntity<>("", headers);
 
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
+        String retVal;
+        HttpStatus statusCode = null;
+        try {
+            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, uriVariables);
+            statusCode = re.getStatusCode();
+            retVal = re.getBody();
+        } catch (HttpClientErrorException e) {
+            retVal = "{\"error\": \"401: Unauthorized\"}";
+        }
+        log.info("json: {} statusCode: {}", retVal, statusCode);
+        return retVal;
+    }
 
-        String params = String.format(
-            "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s", quarter,
-            subjectArea, courseLevel, 1, 100, "true");
-        String url = CURRICULUM_ENDPOINT + params;
-
+    private static String getCourseSearchUrl(String subjectArea, String quarter, String courseLevel) {
+        String params;
         if (courseLevel.equals("A")) {
             params = String.format(
                 "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
                 quarter, subjectArea, 1, 100, "true");
-            url = CURRICULUM_ENDPOINT + params;
+        } else {
+            params = String.format(
+                "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s", quarter,
+                subjectArea, courseLevel, 1, 100, "true");
         }
-
-        log.info("url=" + url);
-
-        String retVal = "";
-        MediaType contentType = null;
-        HttpStatus statusCode = null;
-        try {
-            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            contentType = re.getHeaders().getContentType();
-            statusCode = re.getStatusCode();
-            retVal = re.getBody();
-        } catch (HttpClientErrorException e) {
-            retVal = "{\"error\": \"401: Unauthorized\"}";
-        }
-        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
-        return retVal;
+        return SEARCH_ENDPOINT + params;
     }
 
-    public List<ConvertedSection> getConvertedSections(String subjectArea, String quarter, String courseLevel)
+    /**
+     * This returns the json as returned by the UCSB API endpoint.
+     * This method may be removed in the future.
+     */
+    public String searchForCoursesUcsbApi(String subjectArea, String quarter, String courseLevel) {
+        String url = getCourseSearchUrl(subjectArea, quarter, courseLevel);
+        return runEndpoint(url);
+    }
+
+    public List<ConvertedSection> searchForCourses(String subjectArea, String quarter, String courseLevel)
         throws JsonProcessingException {
-        String json = getJSON(subjectArea, quarter, courseLevel);
+        String json = searchForCoursesUcsbApi(subjectArea, quarter, courseLevel);
         CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);
-        List<ConvertedSection> result = coursePage.convertedSections();
-        return result;
+        return coursePage.convertedSections();
     }
 
-    public String getSectionJSON(String subjectArea, String quarter, String courseLevel)
-        throws JsonProcessingException {
-        List<ConvertedSection> l = getConvertedSections(subjectArea, quarter, courseLevel);
-
-        String arrayToJson = objectMapper.writeValueAsString(l);
-
-        return arrayToJson;
-    }
-
-    public String getSubjectsJSON() {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("ucsb-api-version", "1.0");
-        headers.set("ucsb-api-key", this.apiKey);
-
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-        log.info("url=" + SUBJECTS_ENDPOINT);
-
-        String retVal = "";
-        MediaType contentType = null;
-        HttpStatus statusCode = null;
-        try {
-            ResponseEntity<String> re = restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);
-            contentType = re.getHeaders().getContentType();
-            statusCode = re.getStatusCode();
-            retVal = re.getBody();
-        } catch (HttpClientErrorException e) {
-            retVal = "{\"error\": \"401: Unauthorized\"}";
+    private String runSectionEndpoint(
+        String url,
+        String quarter,
+        String enrollCode) {
+        String retVal = runEndpoint(url, quarter, enrollCode);
+        if (retVal.equals("null")) {
+            retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
         }
-        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
         return retVal;
     }
 
@@ -134,48 +109,7 @@ public class UCSBCurriculumService {
      *  enrollCode and quarter arguments, if such a section exists.
      */
     public String getSection(String enrollCode, String quarter) {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("ucsb-api-version", "1.0");
-        headers.set("ucsb-api-key", this.apiKey);
-
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-        String url = SECTION_ENDPOINT;
-
-
-        log.info("url=" + url);
-
-        String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-            .queryParam("quarter", "{quarter}")
-            .queryParam("enrollcode", "{enrollcode}")
-            .encode()
-            .toUriString();
-
-        Map<String, String> params = new HashMap<>();
-        params.put("quarter", quarter);
-        params.put("enrollcode", enrollCode);
-
-        String retVal = "";
-        MediaType contentType = null;
-        HttpStatus statusCode = null;
-        try {
-            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
-            contentType = re.getHeaders().getContentType();
-            statusCode = re.getStatusCode();
-            retVal = re.getBody();
-        } catch (HttpClientErrorException e) {
-            retVal = "{\"error\": \"401: Unauthorized\"}";
-        }
-
-        if (retVal.equals("null")) {
-            retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
-        }
-
-        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
-        return retVal;
+        return runSectionEndpoint(SECTION_ENDPOINT, quarter, enrollCode);
     }
 
     /**
@@ -185,80 +119,6 @@ public class UCSBCurriculumService {
      *  will also be returned.
      */
     public String getAllSections(String enrollCode, String quarter) {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("ucsb-api-version", "3.0");
-        headers.set("ucsb-api-key", this.apiKey);
-
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-        String url = ALL_SECTIONS_ENDPOINT;
-
-
-        log.info("url=" + url);
-
-        String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-            .queryParam("quarter", "{quarter}")
-            .queryParam("enrollcode", "{enrollcode}")
-            .encode()
-            .toUriString();
-
-        Map<String, String> params = new HashMap<>();
-        params.put("quarter", quarter);
-        params.put("enrollcode", enrollCode);
-
-        String retVal = "";
-        MediaType contentType = null;
-        HttpStatus statusCode = null;
-        try {
-            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
-            contentType = re.getHeaders().getContentType();
-            statusCode = re.getStatusCode();
-            retVal = re.getBody();
-        } catch (HttpClientErrorException e) {
-            retVal = "{\"error\": \"401: Unauthorized\"}";
-        }
-
-        if (retVal.equals("null")) {
-            retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
-        }
-
-        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
-        return retVal;
+        return runSectionEndpoint(ALL_SECTIONS_ENDPOINT, quarter, enrollCode);
     }
-
-
-    public String getJSONbyQtrEnrollCd(String quarter, String enrollCd) {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("ucsb-api-version", "1.0");
-        headers.set("ucsb-api-key", this.apiKey);
-
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-
-        String url = "https://api.ucsb.edu/academics/curriculums/v3/classsection/" + quarter + "/" + enrollCd;
-
-        log.info("url=" + url);
-
-        String retVal = "";
-        MediaType contentType = null;
-        HttpStatus statusCode = null;
-        try {
-            ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            contentType = re.getHeaders().getContentType();
-            statusCode = re.getStatusCode();
-            retVal = re.getBody();
-        } catch (HttpClientErrorException e) {
-            retVal = "{\"error\": \"401: Unauthorized\"}";
-        }
-        log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
-        return retVal;
-
-    }
-
 }

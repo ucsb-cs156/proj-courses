@@ -38,7 +38,7 @@ public class UpdateCourseDataWithQuarterJob implements JobContextConsumer {
 
             ctx.log("Updating courses for [" + subjectArea + " " + quarterYYYYQ + "]");
 
-            List<ConvertedSection> convertedSections = ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ,
+            List<ConvertedSection> convertedSections = ucsbCurriculumService.searchForCourses(subjectArea, quarterYYYYQ,
                 "A");
 
             ctx.log("Found " + convertedSections.size() + " sections");

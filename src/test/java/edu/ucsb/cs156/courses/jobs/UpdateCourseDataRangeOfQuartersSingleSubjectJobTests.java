@@ -49,8 +49,8 @@ public class UpdateCourseDataRangeOfQuartersSingleSubjectJobTests {
         UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob = new UpdateCourseDataRangeOfQuartersSingleSubjectJob(
             "CMPSC", "20221", "20222", ucsbCurriculumService, convertedSectionCollection);
 
-        when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20221"), eq("A"))).thenReturn(result);
-        when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20222"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("CMPSC"), eq("20221"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.searchForCourses(eq("CMPSC"), eq("20222"), eq("A"))).thenReturn(result);
         when(convertedSectionCollection.saveAll(any())).thenReturn(result);
 
         // Act
