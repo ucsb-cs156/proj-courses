@@ -1,14 +1,8 @@
 package edu.ucsb.cs156.courses.models;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
-
-
-import org.springframework.security.core.GrantedAuthority;
 import edu.ucsb.cs156.courses.entities.User;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
@@ -17,6 +11,6 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CurrentUser {
-  private User user;
-  private Collection<? extends GrantedAuthority> roles;
+    private User user;
+    private Collection<? extends GrantedAuthority> roles;
 }

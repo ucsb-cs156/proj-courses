@@ -6,43 +6,45 @@ import { hasRole } from "main/utils/currentUser";
 
 export default function CourseTable({ courses, currentUser }) {
 
-    // Stryker disable all : hard to test for query caching
-    const deleteMutation = useBackendMutation(
-        cellToAxiosParamsDelete,
-        { onSuccess: onDeleteSuccess },
-        []
-    );
-    // Stryker enable all
-    
-    // Stryker disable next-line all : TODO try to make a good test for this
-    const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
+  // Stryker disable all : hard to test for query caching
+  const deleteMutation = useBackendMutation(
+    cellToAxiosParamsDelete,
+    { onSuccess: onDeleteSuccess },
+    []
+  );
+  // Stryker enable all
 
-    const columns = [
-        {
-            Header: 'id',
-            accessor: 'id', 
-        },
-        {
-            Header: 'Enrollment Code',
-            accessor: 'enrollCd',
-        },
-        {
-            Header: 'Personal Schedule ID',
-            accessor: 'psId',
-        },
-    ];
+  // Stryker disable next-line all : TODO try to make a good test for this
+  const deleteCallback = async (cell) => {
+    deleteMutation.mutate(cell);
+  }
 
-    const columnsIfUser = [
-        ...columns,
-        // ButtonColumn("Edit", "primary", editCallback, "PersonalSchedulesTable"),
-        ButtonColumn("Delete", "danger", deleteCallback, "CourseTable")
-    ]
+  const columns = [
+    {
+      Header: 'id',
+      accessor: 'id',
+    },
+    {
+      Header: 'Enrollment Code',
+      accessor: 'enrollCd',
+    },
+    {
+      Header: 'Personal Schedule ID',
+      accessor: 'psId',
+    },
+  ];
 
-    const columnsToDisplay = hasRole(currentUser, "ROLE_USER") ? columnsIfUser : columns;
+  const columnsIfUser = [
+    ...columns,
+    // ButtonColumn("Edit", "primary", editCallback, "PersonalSchedulesTable"),
+    ButtonColumn("Delete", "danger", deleteCallback, "CourseTable")
+  ]
 
-    return <OurTable
-        data={courses}
-        columns={columnsToDisplay}
-        testid={"CourseTable"}
-    />;
+  const columnsToDisplay = hasRole(currentUser, "ROLE_USER") ? columnsIfUser : columns;
+
+  return <OurTable
+    data={courses}
+    columns={columnsToDisplay}
+    testid={"CourseTable"}
+  />;
 };

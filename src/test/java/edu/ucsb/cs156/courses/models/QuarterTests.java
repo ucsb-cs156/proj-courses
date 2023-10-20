@@ -1,12 +1,13 @@
 package edu.ucsb.cs156.courses.models;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import org.junit.jupiter.api.Assertions;
-
-import java.util.List;
-import java.util.ArrayList;
 
 public class QuarterTests {
 

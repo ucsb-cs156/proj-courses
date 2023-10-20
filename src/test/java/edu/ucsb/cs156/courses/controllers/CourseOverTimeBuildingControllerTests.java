@@ -1,7 +1,11 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.config.SecurityConfig;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CourseInfo;
+import edu.ucsb.cs156.courses.documents.Section;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,23 +17,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import edu.ucsb.cs156.courses.config.SecurityConfig;
-import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
-import edu.ucsb.cs156.courses.documents.ConvertedSection;
-import edu.ucsb.cs156.courses.documents.CourseInfo;
-import edu.ucsb.cs156.courses.documents.Section;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = CourseOverTimeBuildingController.class)
 @Import(SecurityConfig.class)
@@ -43,11 +40,12 @@ public class CourseOverTimeBuildingControllerTests {
 
     @MockBean
     ConvertedSectionCollection convertedSectionCollection;
+
     @Test
     public void test_search_emptyRequest() throws Exception {
         List<ConvertedSection> expectedResult = new ArrayList<ConvertedSection>();
         String urlTemplate = "/api/public/courseovertime/buildingsearch?startQtr=%s&endQtr=%s&buildingCode=%s";
-        
+
         String url = String.format(urlTemplate, "20221", "20222", "Storke Tower");
 
         // mock
@@ -65,18 +63,19 @@ public class CourseOverTimeBuildingControllerTests {
         // assert
         String responseString = response.getResponse().getContentAsString();
         String expectedString = mapper.writeValueAsString(expectedResult);
-        
+
         assertEquals(expectedString, responseString);
     }
 
-    @Test public void test_search_validRequestWithoutSuffix() throws Exception {
+    @Test
+    public void test_search_validRequestWithoutSuffix() throws Exception {
         CourseInfo info = CourseInfo.builder()
             .quarter("20222")
             .courseId("CMPSC   24 -1")
             .title("OBJ ORIENTED DESIGN")
             .description("Intro to object oriented design")
             .build();
-        
+
         Section section1 = new Section();
 
         Section section2 = new Section();
@@ -85,14 +84,14 @@ public class CourseOverTimeBuildingControllerTests {
             .courseInfo(info)
             .section(section1)
             .build();
-        
+
         ConvertedSection cs2 = ConvertedSection.builder()
             .courseInfo(info)
             .section(section2)
             .build();
 
         String urlTemplate = "/api/public/courseovertime/buildingsearch?startQtr=%s&endQtr=%s&buildingCode=%s";
-        
+
         String url = String.format(urlTemplate, "20221", "20222", "GIRV");
 
         List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();

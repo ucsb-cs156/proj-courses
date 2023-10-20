@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class Instructor implements Cloneable {
     private String instructor;
     private String functionCode;
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

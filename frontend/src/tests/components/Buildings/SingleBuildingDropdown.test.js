@@ -4,8 +4,7 @@ import "@testing-library/jest-dom/extend-expect";
 import { useState } from "react";
 
 import SingleBuildingDropdown from "main/components/Buildings/SingleBuildingDropdown";
-import { oneBuilding } from "fixtures/buildingFixtures";
-import { threeBuildings } from "fixtures/buildingFixtures";
+import { oneBuilding, threeBuildings } from "fixtures/buildingFixtures";
 
 jest.mock("react", () => ({
   ...jest.requireActual("react"),
@@ -30,7 +29,7 @@ describe("SingleBuildingDropdown tests", () => {
 
   afterEach(() => {
     console.error.mockRestore();
- })
+  })
 
   const building = jest.fn();
   const setBuilding = jest.fn();
@@ -47,9 +46,9 @@ describe("SingleBuildingDropdown tests", () => {
   });
 
   test("renders without crashing on three buildings", async () => {
-     render(
+    render(
       <SingleBuildingDropdown
-        buildings={[ 
+        buildings={[
           threeBuildings[0],
           threeBuildings[1],
           threeBuildings[2]
@@ -71,10 +70,10 @@ describe("SingleBuildingDropdown tests", () => {
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
-    const allOptions = screen.getAllByTestId("sbd1-option-",  { exact: false });
-    for (let i = 0; i < allOptions.length - 1; i++) {
+    const allOptions = screen.getAllByTestId("sbd1-option-", { exact: false });
+    for (let i = 0 ; i < allOptions.length - 1 ; i++) {
       console.log("[i]" + allOptions[i].value);
-      console.log("[i+1]" + allOptions[i+1].value);
+      console.log("[i+1]" + allOptions[i + 1].value);
       expect(allOptions[i].value < allOptions[i + 1].value).toBe(true);
     }
 
@@ -100,7 +99,7 @@ describe("SingleBuildingDropdown tests", () => {
         controlId="sbd1"
       />
     );
-    
+
     expect(await screen.findByLabelText("Building Name")).toBeInTheDocument();
 
     const selectBuilding = screen.getByLabelText("Building Name");
@@ -120,7 +119,7 @@ describe("SingleBuildingDropdown tests", () => {
         onChange={onChange}
       />
     );
-    
+
     expect(await screen.findByLabelText("Building Name")).toBeInTheDocument();
 
     const selectBuilding = screen.getByLabelText("Building Name");
@@ -142,7 +141,7 @@ describe("SingleBuildingDropdown tests", () => {
         controlId="sbd1"
       />
     );
-    
+
     expect(await screen.findByLabelText("Building Name")).toBeInTheDocument();
   });
 

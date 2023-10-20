@@ -13,8 +13,8 @@ public class TimeLocation implements Cloneable {
     private String room;
     private String building;
     private String roomCapacity;
-    private String days; 
-    private String beginTime; 
+    private String days;
+    private String beginTime;
     private String endTime;
 
     @Override

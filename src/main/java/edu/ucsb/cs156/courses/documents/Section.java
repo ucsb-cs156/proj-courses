@@ -1,11 +1,9 @@
 package edu.ucsb.cs156.courses.documents;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,11 +21,11 @@ public class Section implements Cloneable {
     private String courseCancelled;
     /**
      * Grading Options Code like Pass/No Pass (P/NP) Or Letter Grades (L).
-     * 
+     *
      * @see <a href=
      *      "https://developer.ucsb.edu/content/student-record-code-lookups">
      *      https://developer.ucsb.edu/content/student-record-code-lookups</a>
-     * 
+     *
      */
     private String gradingOptionCode;
 

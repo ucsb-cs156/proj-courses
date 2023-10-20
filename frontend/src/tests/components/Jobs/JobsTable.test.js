@@ -12,10 +12,9 @@ describe("JobsTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <JobsTable jobs={[]}  />
+          <JobsTable jobs={[]} />
         </MemoryRouter>
       </QueryClientProvider>
-
     );
   });
 
@@ -25,14 +24,13 @@ describe("JobsTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <JobsTable jobs={jobsFixtures.sixJobs}  />
+          <JobsTable jobs={jobsFixtures.sixJobs} />
         </MemoryRouter>
       </QueryClientProvider>
-
     );
 
     const expectedHeaders = ['id', 'Created', 'Updated', 'Status', 'Log'];
-    const expectedFields = ['id', 'Created', 'Updated','status', 'Log'];
+    const expectedFields = ['id', 'Created', 'Updated', 'status', 'Log'];
     const testId = "JobsTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -57,4 +55,3 @@ describe("JobsTable tests", () => {
   });
 
 });
-

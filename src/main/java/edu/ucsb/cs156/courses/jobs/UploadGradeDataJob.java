@@ -1,25 +1,15 @@
 package edu.ucsb.cs156.courses.jobs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.ucsb.cs156.courses.entities.GradeHistory;
 import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
-
-import edu.ucsb.cs156.courses.services.UCSBGradeHistoryService;
 import edu.ucsb.cs156.courses.services.UCSBGradeHistoryServiceImpl;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
 public class UploadGradeDataJob implements JobContextConsumer {
@@ -53,13 +43,13 @@ public class UploadGradeDataJob implements JobContextConsumer {
     }
 
     public static List<GradeHistory> upsertAll(
-            GradeHistoryRepository gradeHistoryRepository,
-            List<GradeHistory> gradeHistories){
+        GradeHistoryRepository gradeHistoryRepository,
+        List<GradeHistory> gradeHistories) {
         List<GradeHistory> result = new ArrayList<GradeHistory>();
         for (GradeHistory gradeHistory : gradeHistories) {
             List<GradeHistory> query = gradeHistoryRepository.findByYyyyqAndCourseAndInstructorAndGrade(
-                    gradeHistory.getYyyyq(), gradeHistory.getCourse(), gradeHistory.getInstructor(),
-                    gradeHistory.getGrade());
+                gradeHistory.getYyyyq(), gradeHistory.getCourse(), gradeHistory.getInstructor(),
+                gradeHistory.getGrade());
             if (query.size() == 0) {
                 gradeHistoryRepository.save(gradeHistory);
                 result.add(gradeHistory);

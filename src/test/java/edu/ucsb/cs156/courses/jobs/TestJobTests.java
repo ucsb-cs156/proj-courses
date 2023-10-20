@@ -1,19 +1,18 @@
 package edu.ucsb.cs156.courses.jobs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration 
+@ContextConfiguration
 public class TestJobTests {
 
     @Test
@@ -27,9 +26,9 @@ public class TestJobTests {
 
         // Act
         TestJob testJob = TestJob.builder()
-                .sleepMs(0)
-                .fail(false)
-                .build();
+            .sleepMs(0)
+            .fail(false)
+            .build();
         testJob.accept(ctx);
 
         String expected = """
@@ -41,7 +40,7 @@ public class TestJobTests {
     }
 
     @Test
-    @WithMockUser(roles = { "ADMIN" })
+    @WithMockUser(roles = {"ADMIN"})
     void test_log_output_with_mock_user() throws Exception {
         // Arrange
 
@@ -50,15 +49,15 @@ public class TestJobTests {
 
         // Act
         TestJob testJob = TestJob.builder()
-                .sleepMs(0)
-                .fail(false)
-                .build();
+            .sleepMs(0)
+            .fail(false)
+            .build();
         testJob.accept(ctx);
 
         String expected = """
-                Hello World! from test job!
-                authentication is not null
-                Goodbye from test job!""";
+            Hello World! from test job!
+            authentication is not null
+            Goodbye from test job!""";
         // Assert
         assertEquals(expected, jobStarted.getLog());
     }

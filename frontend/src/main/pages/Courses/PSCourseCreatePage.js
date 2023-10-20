@@ -21,10 +21,10 @@ export default function CoursesCreatePage() {
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
-     { onSuccess }, 
-     // Stryker disable next-line all : hard to set up test for caching
-     ["/api/courses/user/all"]
-     );
+    { onSuccess },
+    // Stryker disable next-line all : hard to set up test for caching
+    ["/api/courses/user/all"]
+  );
 
   const { isSuccess } = mutation
 
@@ -37,23 +37,23 @@ export default function CoursesCreatePage() {
   }
   if (mutation.isError) {
     return (
-    <BasicLayout>
-      <div className="pt-2">
-        <h1>Create New Course</h1>
+      <BasicLayout>
+        <div className="pt-2">
+          <h1>Create New Course</h1>
 
-        <CourseForm submitAction={onSubmit}/>
-        <p data-testid="PSCourseCreate-Error">Error: {mutation.error.response.data?.message}</p>
+          <CourseForm submitAction={onSubmit} />
+          <p data-testid="PSCourseCreate-Error">Error: {mutation.error.response.data?.message}</p>
 
-      </div>
-    </BasicLayout>
-  )
-    }
+        </div>
+      </BasicLayout>
+    )
+  }
   return (
     <BasicLayout>
       <div className="pt-2">
         <h1>Create New Course</h1>
 
-        <CourseForm submitAction={onSubmit}/>
+        <CourseForm submitAction={onSubmit} />
 
       </div>
     </BasicLayout>

@@ -4,9 +4,7 @@ import "@testing-library/jest-dom/extend-expect";
 import { useState } from "react";
 
 import SingleSubjectDropdown from "main/components/Subjects/SingleSubjectDropdown";
-import { oneSubject } from "fixtures/subjectFixtures";
-import { threeSubjects } from "fixtures/subjectFixtures";
-import { outOfOrderSubjects } from "fixtures/subjectFixtures";
+import { oneSubject, threeSubjects, outOfOrderSubjects } from "fixtures/subjectFixtures";
 
 jest.mock("react", () => ({
   ...jest.requireActual("react"),
@@ -31,7 +29,7 @@ describe("SingleSubjectDropdown tests", () => {
 
   afterEach(() => {
     console.error.mockRestore();
- })
+  })
 
   const subject = jest.fn();
   const setSubject = jest.fn();
@@ -48,9 +46,9 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   test("renders without crashing on three subjects", async () => {
-     render(
+    render(
       <SingleSubjectDropdown
-        subjects={[ 
+        subjects={[
           threeSubjects[2],
           threeSubjects[0],
           threeSubjects[1]
@@ -72,10 +70,10 @@ describe("SingleSubjectDropdown tests", () => {
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
-    const allOptions = screen.getAllByTestId("ssd1-option-",  { exact: false });
-    for (let i = 0; i < allOptions.length - 1; i++) {
+    const allOptions = screen.getAllByTestId("ssd1-option-", { exact: false });
+    for (let i = 0 ; i < allOptions.length - 1 ; i++) {
       console.log("[i]" + allOptions[i].value);
-      console.log("[i+1]" + allOptions[i+1].value);
+      console.log("[i+1]" + allOptions[i + 1].value);
       expect(allOptions[i].value < allOptions[i + 1].value).toBe(true);
     }
 
@@ -101,7 +99,7 @@ describe("SingleSubjectDropdown tests", () => {
         controlId="ssd1"
       />
     );
-    
+
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
 
     const selectQuarter = screen.getByLabelText("Subject Area");
@@ -137,7 +135,7 @@ describe("SingleSubjectDropdown tests", () => {
         onChange={onChange}
       />
     );
-    
+
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
 
     const selectSubject = screen.getByLabelText("Subject Area");
@@ -159,7 +157,7 @@ describe("SingleSubjectDropdown tests", () => {
         controlId="ssd1"
       />
     );
-    
+
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
   });
 

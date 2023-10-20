@@ -9,15 +9,15 @@ import { coursesFixtures } from "fixtures/pscourseFixtures";
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate
 }));
 
 const mockedMutate = jest.fn();
 
 jest.mock('main/utils/useBackend', () => ({
-    ...jest.requireActual('main/utils/useBackend'),
-    useBackendMutation: () => ({mutate: mockedMutate})
+  ...jest.requireActual('main/utils/useBackend'),
+  useBackendMutation: () => ({ mutate: mockedMutate })
 }));
 
 describe("UserTable tests", () => {
@@ -71,8 +71,8 @@ describe("UserTable tests", () => {
       </QueryClientProvider>
     );
 
-    const expectedHeaders = ["id", "Enrollment Code","Personal Schedule ID"];
-    const expectedFields = ["id", "enrollCd","psId"];
+    const expectedHeaders = ["id", "Enrollment Code", "Personal Schedule ID"];
+    const expectedFields = ["id", "enrollCd", "psId"];
     const testId = "CourseTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -93,7 +93,7 @@ describe("UserTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
 
   });
-  
+
   test("Has the expected column headers and content for adminUser", () => {
 
     const currentUser = currentUserFixtures.adminUser;
@@ -106,8 +106,8 @@ describe("UserTable tests", () => {
       </QueryClientProvider>
     );
 
-    const expectedHeaders = ["id", "Enrollment Code","Personal Schedule ID"];
-    const expectedFields = ["id", "enrollCd","psId"];
+    const expectedHeaders = ["id", "Enrollment Code", "Personal Schedule ID"];
+    const expectedFields = ["id", "enrollCd", "psId"];
     const testId = "CourseTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -144,7 +144,7 @@ describe("UserTable tests", () => {
 
     const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
-    
+
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
@@ -166,7 +166,7 @@ describe("UserTable tests", () => {
 
     const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
-    
+
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));

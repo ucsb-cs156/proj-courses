@@ -9,15 +9,15 @@ import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate
 }));
 
 const mockedMutate = jest.fn();
 
 jest.mock('main/utils/useBackend', () => ({
-    ...jest.requireActual('main/utils/useBackend'),
-    useBackendMutation: () => ({mutate: mockedMutate})
+  ...jest.requireActual('main/utils/useBackend'),
+  useBackendMutation: () => ({ mutate: mockedMutate })
 }));
 
 describe("UserTable tests", () => {
@@ -66,13 +66,14 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules}
+                                  currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
 
-    const expectedHeaders = ["id", "Name","Description","Quarter"];
-    const expectedFields = ["id", "name","description","quarter"];
+    const expectedHeaders = ["id", "Name", "Description", "Quarter"];
+    const expectedFields = ["id", "name", "description", "quarter"];
     const testId = "PersonalSchedulesTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -97,7 +98,7 @@ describe("UserTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
 
   });
-  
+
   test("Has the expected colum headers and content for adminUser", () => {
 
     const currentUser = currentUserFixtures.adminUser;
@@ -105,13 +106,14 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules}
+                                  currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
 
-    const expectedHeaders = ["id", "Name","Description","Quarter"];
-    const expectedFields = ["id", "name","description","quarter"];
+    const expectedHeaders = ["id", "Name", "Description", "Quarter"];
+    const expectedFields = ["id", "name", "description", "quarter"];
     const testId = "PersonalSchedulesTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -143,7 +145,8 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules}
+                                  currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -152,7 +155,7 @@ describe("UserTable tests", () => {
 
     const editButton = screen.getByTestId(`PersonalSchedulesTable-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
-    
+
     fireEvent.click(editButton);
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/personalschedules/edit/1'));
@@ -164,7 +167,8 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules}
+                                  currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -173,7 +177,7 @@ describe("UserTable tests", () => {
 
     const detailsButton = screen.getByTestId(`PersonalSchedulesTable-cell-row-0-col-Details-button`);
     expect(detailsButton).toBeInTheDocument();
-    
+
     fireEvent.click(detailsButton);
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/personalschedules/details/1'));
@@ -186,7 +190,8 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules}
+                                  currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -195,7 +200,7 @@ describe("UserTable tests", () => {
 
     const editButton = screen.getByTestId(`PersonalSchedulesTable-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
-    
+
     fireEvent.click(editButton);
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/personalschedules/edit/1'));
@@ -208,7 +213,8 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules}
+                                  currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -217,7 +223,7 @@ describe("UserTable tests", () => {
 
     const deleteButton = screen.getByTestId(`PersonalSchedulesTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
-    
+
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
@@ -230,7 +236,8 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules} currentUser={currentUser} />
+          <PersonalSchedulesTable personalSchedules={personalScheduleFixtures.threePersonalSchedules}
+                                  currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -239,7 +246,7 @@ describe("UserTable tests", () => {
 
     const deleteButton = screen.getByTestId(`PersonalSchedulesTable-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
-    
+
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));

@@ -14,16 +14,13 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
         )
       }
       <Navbar expand="xl" variant="dark" className="color-nav" sticky="top" data-testid="AppNavbar">
-        <Container >
-        <img data-testid="AppNavbarImage" src={headerImg} alt="" style={{width: 80, height: 80, marginRight: 10}} />
+        <Container>
+          <img data-testid="AppNavbarImage" src={headerImg} alt="" style={{ width: 80, height: 80, marginRight: 10 }} />
           <Navbar.Brand as={Link} to="/">
             UCSB Courses Search
           </Navbar.Brand>
 
           <Navbar.Toggle />
-        
-
-
 
 
           <>
@@ -32,81 +29,91 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
 
           <Navbar.Collapse className="justify-content-between">
 
-          <Nav className="me-auto">
-            {
-              systemInfo?.springH2ConsoleEnabled && (
-                <>
-                  <Nav.Link href="/h2-console">H2Console </Nav.Link>
-                </>
-              )
-            }
-            {
-              systemInfo?.showSwaggerUILink && (
-                <>
-                  <Nav.Link href="/swagger-ui/index.html">Swagger</Nav.Link>
-                </>
-              )
-            }
-          </Nav>
-
-            <Nav className="mr-auto">
+            <Nav className="me-auto">
               {
-                hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="PSCourse" id="appnavbar-courses-dropdown" data-testid="appnavbar-courses-dropdown" >
-                    <NavDropdown.Item href="/courses/list" data-testid="appnavbar-courses-list">List</NavDropdown.Item>
-                    <NavDropdown.Item href="/courses/create" data-testid="appnavbar-courses-create">Create</NavDropdown.Item>
-                  </NavDropdown>          
+                systemInfo?.springH2ConsoleEnabled && (
+                  <>
+                    <Nav.Link href="/h2-console">H2Console </Nav.Link>
+                  </>
+                )
+              }
+              {
+                systemInfo?.showSwaggerUILink && (
+                  <>
+                    <Nav.Link href="/swagger-ui/index.html">Swagger</Nav.Link>
+                  </>
                 )
               }
             </Nav>
 
-        
             <Nav className="mr-auto">
               {
                 hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="PersonalSchedules" id="appnavbar-personalschedules-dropdown" data-testid="appnavbar-personalschedules-dropdown" >
-                    <NavDropdown.Item href="/personalschedules/list" data-testid="appnavbar-personalschedules-list">List</NavDropdown.Item>
-                    <NavDropdown.Item href="/personalschedules/create" data-testid="appnavbar-personalschedules-create">Create</NavDropdown.Item>
+                  <NavDropdown title="PSCourse" id="appnavbar-courses-dropdown" data-testid="appnavbar-courses-dropdown">
+                    <NavDropdown.Item href="/courses/list" data-testid="appnavbar-courses-list">List</NavDropdown.Item>
+                    <NavDropdown.Item href="/courses/create"
+                                      data-testid="appnavbar-courses-create">Create</NavDropdown.Item>
                   </NavDropdown>
                 )
               }
             </Nav>
-      
 
 
             <Nav className="mr-auto">
-              <NavDropdown title="Other Searches" id="appnavbar-course-infos-dropdown" data-testid="appnavbar-course-infos-dropdown">
-                <NavDropdown.Item href="/coursedescriptions/search" data-testid="appnavbar-course-descriptions-search">Course Descriptions</NavDropdown.Item>
-                <NavDropdown.Item href="/courseovertime/search" data-testid="appnavbar-course-over-time-search">Course History</NavDropdown.Item>
-                <NavDropdown.Item href="/courseovertime/buildingsearch" data-testid="appnavbar-course-over-time-buildings-search">Course Location History</NavDropdown.Item>
-                <NavDropdown.Item href="/courseovertime/instructorsearch" data-testid="appnavbar-course-over-time-instructor-search">Search by Instructor</NavDropdown.Item>
+              {
+                hasRole(currentUser, "ROLE_USER") && (
+                  <NavDropdown title="PersonalSchedules" id="appnavbar-personalschedules-dropdown"
+                               data-testid="appnavbar-personalschedules-dropdown">
+                    <NavDropdown.Item href="/personalschedules/list"
+                                      data-testid="appnavbar-personalschedules-list">List</NavDropdown.Item>
+                    <NavDropdown.Item href="/personalschedules/create"
+                                      data-testid="appnavbar-personalschedules-create">Create</NavDropdown.Item>
+                  </NavDropdown>
+                )
+              }
+            </Nav>
+
+
+            <Nav className="mr-auto">
+              <NavDropdown title="Other Searches" id="appnavbar-course-infos-dropdown"
+                           data-testid="appnavbar-course-infos-dropdown">
+                <NavDropdown.Item href="/coursedescriptions/search" data-testid="appnavbar-course-descriptions-search">Course
+                  Descriptions</NavDropdown.Item>
+                <NavDropdown.Item href="/courseovertime/search" data-testid="appnavbar-course-over-time-search">Course
+                  History</NavDropdown.Item>
+                <NavDropdown.Item href="/courseovertime/buildingsearch"
+                                  data-testid="appnavbar-course-over-time-buildings-search">Course Location
+                  History</NavDropdown.Item>
+                <NavDropdown.Item href="/courseovertime/instructorsearch"
+                                  data-testid="appnavbar-course-over-time-instructor-search">Search by
+                  Instructor</NavDropdown.Item>
               </NavDropdown>
             </Nav>
 
 
-
-
-            
             <Nav className="mr-auto">
               {
                 hasRole(currentUser, "ROLE_ADMIN") && (
-                  <NavDropdown title="Admin" id="appnavbar-admin-dropdown" data-testid="appnavbar-admin-dropdown" >
+                  <NavDropdown title="Admin" id="appnavbar-admin-dropdown" data-testid="appnavbar-admin-dropdown">
 
                     <NavDropdown.Item href="/admin/users" data-testid="appnavbar-admin-users">Users</NavDropdown.Item>
-                    <NavDropdown.Item href="/admin/personalschedule" data-testid="appnavbar-admin-personalschedule">Personal Schedules</NavDropdown.Item>
-                    <NavDropdown.Item href="/admin/loadsubjects" data-testid="appnavbar-admin-loadsubjects">Load Subjects</NavDropdown.Item>
+                    <NavDropdown.Item href="/admin/personalschedule" data-testid="appnavbar-admin-personalschedule">Personal
+                      Schedules</NavDropdown.Item>
+                    <NavDropdown.Item href="/admin/loadsubjects" data-testid="appnavbar-admin-loadsubjects">Load
+                      Subjects</NavDropdown.Item>
                     <NavDropdown.Item href="/admin/jobs" data-testid="appnavbar-admin-jobs">Manage Jobs</NavDropdown.Item>
                   </NavDropdown>
                 )
               }
             </Nav>
-            
+
 
             <Nav className="ml-auto">
               {
                 currentUser && currentUser.loggedIn ? (
                   <>
-                    <Navbar.Text className="me-3" as={Link} to="/profile">Welcome, {currentUser.root.user.email}</Navbar.Text>
+                    <Navbar.Text className="me-3" as={Link}
+                                 to="/profile">Welcome, {currentUser.root.user.email}</Navbar.Text>
                     <Button onClick={doLogout}>Log Out</Button>
                   </>
                 ) : (
@@ -115,8 +122,8 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               }
             </Nav>
           </Navbar.Collapse>
-        </Container >
-      </Navbar >
+        </Container>
+      </Navbar>
     </>
   );
 }

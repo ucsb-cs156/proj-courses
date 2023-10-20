@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import Footer, { space } from "main/components/Nav/Footer";
-import {systemInfoFixtures} from "fixtures/systemInfoFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 describe("Footer tests", () => {
 
@@ -40,10 +40,10 @@ describe("Footer tests", () => {
   });
 
 
-  test("Gets sourceRepo from systemInfo", async () => { 
+  test("Gets sourceRepo from systemInfo", async () => {
     const systemInfo = systemInfoFixtures.showingBoth;
 
-    render(<Footer systemInfo={systemInfo}/>);
+    render(<Footer systemInfo={systemInfo} />);
 
     expect(screen.getByTestId("footer-source-code-link")).toHaveAttribute(
       "href",

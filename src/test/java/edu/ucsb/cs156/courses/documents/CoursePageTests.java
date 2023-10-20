@@ -1,21 +1,20 @@
 package edu.ucsb.cs156.courses.documents;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class CoursePageTests {
 
 
     @Test
-    public void convertsCoursePageToObject()  {
+    public void convertsCoursePageToObject() {
         CoursePage cp = CoursePage.fromJSON(CoursePageFixtures.COURSE_PAGE_JSON);
         assertEquals(1, cp.getPageNumber());
         assertEquals(10, cp.getPageSize());
@@ -42,10 +41,10 @@ public class CoursePageTests {
 
         CoursePage cp = CoursePage.fromJSON(CoursePageFixtures.COURSE_PAGE_JSON_MATH3B);
         List<ConvertedSection> convertedSections = cp.convertedSections();
-      
-        List<ConvertedSection> expected = 
-            objectMapper.readValue(CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B,new TypeReference<List<ConvertedSection>>() {});
-                  
+
+        List<ConvertedSection> expected =
+            objectMapper.readValue(CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B, new TypeReference<List<ConvertedSection>>() {});
+
         assertEquals(expected, convertedSections);
     }
 

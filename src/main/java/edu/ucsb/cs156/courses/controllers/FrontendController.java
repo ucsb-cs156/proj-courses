@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Profile("!development")
 @Controller
 public class FrontendController {
-  @GetMapping("/**/{path:[^\\.]*}")
-  public String index() {
-    return "forward:/index.html";
-  }
+    @GetMapping("/**/{path:[^\\.]*}")
+    public String index() {
+        return "forward:/index.html";
+    }
 
-  @GetMapping("/csrf")
-  public ResponseEntity<String> csrf() {
-    return ResponseEntity.notFound().build();
-  }
+    @GetMapping("/csrf")
+    public ResponseEntity<String> csrf() {
+        return ResponseEntity.notFound().build();
+    }
 
 }

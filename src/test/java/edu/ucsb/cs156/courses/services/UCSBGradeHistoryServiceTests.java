@@ -1,13 +1,7 @@
 package edu.ucsb.cs156.courses.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import edu.ucsb.cs156.courses.entities.GradeHistory;
+import edu.ucsb.cs156.courses.fixtures.GradeHistoryFixtures;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import edu.ucsb.cs156.courses.entities.GradeHistory;
-import edu.ucsb.cs156.courses.fixtures.GradeHistoryFixtures;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RestClientTest(UCSBGradeHistoryServiceImpl.class)
 @AutoConfigureDataJpa
@@ -41,9 +40,9 @@ public class UCSBGradeHistoryServiceTests {
         EXPECTED_URLS.add("https://raw.githubusercontent.com/ucsb-cs156/UCSB_Grades/main/quarters/F09/ANTH.csv");
 
         this.mockRestServiceServer.expect(requestTo(expectedURL))
-                .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-                .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-                .andRespond(withSuccess(GradeHistoryFixtures.GITHUB_API_SAMPLE_JSON, MediaType.APPLICATION_JSON));
+            .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+            .andRespond(withSuccess(GradeHistoryFixtures.GITHUB_API_SAMPLE_JSON, MediaType.APPLICATION_JSON));
 
         List<String> result = ucsbGradeHistoryService.getUrls();
 
@@ -57,14 +56,14 @@ public class UCSBGradeHistoryServiceTests {
         List<GradeHistory> expectedResult = new ArrayList<GradeHistory>();
         expectedResult.add(
             GradeHistory.builder()
-            .yyyyq("20094")
-            .course("DANCE    47A")
-            .instructor("HUSTON V G")
-            .grade("A-")
-            .count(3)
-            .build());
+                .yyyyq("20094")
+                .course("DANCE    47A")
+                .instructor("HUSTON V G")
+                .grade("A-")
+                .count(3)
+                .build());
         expectedResult.add(
-                GradeHistory.builder()
+            GradeHistory.builder()
                 .yyyyq("20094")
                 .course("DANCE    47A")
                 .instructor("HUSTON V G")
@@ -72,32 +71,31 @@ public class UCSBGradeHistoryServiceTests {
                 .count(1)
                 .build());
         expectedResult.add(
-                    GradeHistory.builder()
-                    .yyyyq("20094")
-                    .course("DANCE    51")
-                    .instructor("STUNKEL M C")
-                    .grade("A")
-                    .count(8)
-                    .build());
+            GradeHistory.builder()
+                .yyyyq("20094")
+                .course("DANCE    51")
+                .instructor("STUNKEL M C")
+                .grade("A")
+                .count(8)
+                .build());
         expectedResult.add(
-                        GradeHistory.builder()
-                        .yyyyq("20094")
-                        .course("DANCE    51")
-                        .instructor("STUNKEL M C")
-                        .grade("B-")
-                        .count(1)
-                        .build());
+            GradeHistory.builder()
+                .yyyyq("20094")
+                .course("DANCE    51")
+                .instructor("STUNKEL M C")
+                .grade("B-")
+                .count(1)
+                .build());
 
         this.mockRestServiceServer.expect(requestTo(url))
-                .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-                .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-                .andRespond(withSuccess(GradeHistoryFixtures.SAMPLE_CSV_FILE_CONTENTS, MediaType.APPLICATION_JSON));
+            .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+            .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+            .andRespond(withSuccess(GradeHistoryFixtures.SAMPLE_CSV_FILE_CONTENTS, MediaType.APPLICATION_JSON));
 
         List<GradeHistory> actualResult = ucsbGradeHistoryService.getGradeData(url);
 
         assertEquals(expectedResult, actualResult);
     }
-
 
 
 }

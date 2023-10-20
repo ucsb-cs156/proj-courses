@@ -1,7 +1,11 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.config.SecurityConfig;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CourseInfo;
+import edu.ucsb.cs156.courses.documents.Section;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,23 +17,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import edu.ucsb.cs156.courses.config.SecurityConfig;
-import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
-import edu.ucsb.cs156.courses.documents.ConvertedSection;
-import edu.ucsb.cs156.courses.documents.CourseInfo;
-import edu.ucsb.cs156.courses.documents.Section;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = CourseOverTimeInstructorController.class)
 @Import(SecurityConfig.class)
@@ -48,7 +45,7 @@ public class CourseOverTimeInstructorControllerTests {
     public void test_search_emptyRequest() throws Exception {
         List<ConvertedSection> expectedResult = new ArrayList<ConvertedSection>();
         String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
-        
+
         String url = String.format(urlTemplate, "20222", "20212", "CONRAD P T", "false");
 
         // mock
@@ -66,18 +63,19 @@ public class CourseOverTimeInstructorControllerTests {
         // assert
         String responseString = response.getResponse().getContentAsString();
         String expectedString = mapper.writeValueAsString(expectedResult);
-        
+
         assertEquals(expectedString, responseString);
     }
 
-    @Test public void test_search_validRequestWithoutSuffix() throws Exception {
+    @Test
+    public void test_search_validRequestWithoutSuffix() throws Exception {
         CourseInfo info = CourseInfo.builder()
             .quarter("20222")
             .courseId("CMPSC   24 -1")
             .title("OBJ ORIENTED DESIGN")
             .description("Intro to object oriented design")
             .build();
-        
+
         Section section1 = new Section();
 
         Section section2 = new Section();
@@ -86,14 +84,14 @@ public class CourseOverTimeInstructorControllerTests {
             .courseInfo(info)
             .section(section1)
             .build();
-        
+
         ConvertedSection cs2 = ConvertedSection.builder()
             .courseInfo(info)
             .section(section2)
             .build();
 
         String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
-    
+
         String url = String.format(urlTemplate, "20222", "20222", "CONRAD P T", "false");
 
         List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
@@ -111,14 +109,15 @@ public class CourseOverTimeInstructorControllerTests {
         assertEquals(expectedString, responseString);
     }
 
-    @Test public void test_search_validRequestOnlyLectures() throws Exception {
+    @Test
+    public void test_search_validRequestOnlyLectures() throws Exception {
         CourseInfo info = CourseInfo.builder()
             .quarter("20222")
             .courseId("CMPSC   24 -1")
             .title("OBJ ORIENTED DESIGN")
             .description("Intro to object oriented design")
             .build();
-        
+
         Section section1 = new Section();
 
         Section section2 = new Section();
@@ -127,14 +126,14 @@ public class CourseOverTimeInstructorControllerTests {
             .courseInfo(info)
             .section(section1)
             .build();
-        
+
         ConvertedSection cs2 = ConvertedSection.builder()
             .courseInfo(info)
             .section(section2)
             .build();
 
         String urlTemplate = "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
-    
+
         String url = String.format(urlTemplate, "20222", "20222", "CONRAD P T", "true");
 
         List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();

@@ -13,7 +13,7 @@ jest.mock('react-router-dom', () => ({
 describe("TestJobsForm tests", () => {
   it("renders correctly with the right defaults", async () => {
     render(
-      <Router >
+      <Router>
         <TestJobsForm />
       </Router>
     );
@@ -28,9 +28,9 @@ describe("TestJobsForm tests", () => {
     const submitAction = jest.fn();
 
     render(
-      <Router  >
-        <TestJobsForm jobs={jobsFixtures.sixJobs}/>
-      </Router  >
+      <Router>
+        <TestJobsForm jobs={jobsFixtures.sixJobs} />
+      </Router>
     );
 
     expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
