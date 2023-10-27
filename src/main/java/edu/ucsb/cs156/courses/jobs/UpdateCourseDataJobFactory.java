@@ -1,24 +1,20 @@
 package edu.ucsb.cs156.courses.jobs;
 
-import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
-import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.CourseDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
 public class UpdateCourseDataJobFactory {
 
     @Autowired
-    private UCSBCurriculumService ucsbCurriculumService;
-
-    @Autowired
-    private ConvertedSectionCollection convertedSectionCollection;
+    private CourseDataService courseDataService;
 
     public UpdateCourseDataJob create(String subjectArea, String quarterYYYYQ) {
-        log.info("ucsbCurriculumService = " + ucsbCurriculumService);
-        log.info("convertedSectionCollection = " + convertedSectionCollection);
-        return new UpdateCourseDataJob(subjectArea, quarterYYYYQ, ucsbCurriculumService, convertedSectionCollection);
+        return new UpdateCourseDataJob(quarterYYYYQ, quarterYYYYQ, List.of(subjectArea), courseDataService);
     }
 }

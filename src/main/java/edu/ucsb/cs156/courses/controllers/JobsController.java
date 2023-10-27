@@ -90,7 +90,7 @@ public class JobsController extends ApiController {
         @Parameter(name = "quarterYYYYQ", description = "quarter (YYYYQ format)") @RequestParam String quarterYYYYQ
     ) {
 
-        UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob = updateCourseDataWithQuarterJobFactory.create(
+        var updateCourseDataWithQuarterJob = updateCourseDataWithQuarterJobFactory.create(
             quarterYYYYQ);
 
         return jobService.runAsJob(updateCourseDataWithQuarterJob);
@@ -105,7 +105,7 @@ public class JobsController extends ApiController {
         @Parameter(name = "end_quarterYYYYQ", description = "end quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
     ) {
 
-        UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(
+        var updateCourseDataRangeOfQuartersJob = updateCourseDataRangeOfQuartersJobFactory.create(
             start_quarterYYYYQ, end_quarterYYYYQ);
 
         return jobService.runAsJob(updateCourseDataRangeOfQuartersJob);
@@ -120,11 +120,11 @@ public class JobsController extends ApiController {
         @Parameter(name = "end_quarterYYYYQ", description = "end quarter (YYYYQ format)") @RequestParam String end_quarterYYYYQ
     ) {
 
-        UpdateCourseDataRangeOfQuartersSingleSubjectJob updateCourseDataRangeOfQuartersSingleSubjectJob =
+        var job =
             updateCourseDataRangeOfQuartersSingleSubjectJobFactory.create(
-                subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
+                start_quarterYYYYQ, end_quarterYYYYQ, subjectArea);
 
-        return jobService.runAsJob(updateCourseDataRangeOfQuartersSingleSubjectJob);
+        return jobService.runAsJob(job);
     }
 
     @Operation(summary = "Launch Job to update grade history")

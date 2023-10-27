@@ -1,53 +1,25 @@
-package edu.ucsb.cs156.courses.jobs;
+package edu.ucsb.cs156.courses.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
-import edu.ucsb.cs156.courses.models.Quarter;
-import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
-import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-
-@AllArgsConstructor
-@Slf4j
-public class UpdateCourseDataRangeOfQuartersJob implements JobContextConsumer {
-
-    @Getter
-    private String start_quarterYYYYQ;
-    @Getter
-    private String end_quarterYYYYQ;
-    @Getter
+@Getter
+@Service
+public class CourseDataServiceImpl implements CourseDataService {
+    @Autowired
     private UCSBCurriculumService ucsbCurriculumService;
-    @Getter
+    @Autowired
     private ConvertedSectionCollection convertedSectionCollection;
-    @Getter
-    private List<String> subjects;
 
     @Override
-    public void accept(JobContext ctx) throws Exception {
-        List<Quarter> quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);
-        for (Quarter quarter : quarters) {
-            String quarterYYYYQ = quarter.getYYYYQ();
-            for (String subjectArea : subjects) {
-                updateCourses(ctx, quarterYYYYQ, subjectArea, ucsbCurriculumService, convertedSectionCollection);
-            }
-        }
-    }
-
-    public static void updateCourses(
-        JobContext ctx,
-        String quarterYYYYQ,
-        String subjectArea,
-        UCSBCurriculumService ucsbCurriculumService,
-        ConvertedSectionCollection convertedSectionCollection
-    ) throws JsonProcessingException {
+    public void updateCourses(JobContext ctx, String quarterYYYYQ, String subjectArea) throws Exception {
         ctx.log("Updating courses for [" + subjectArea + " " + quarterYYYYQ + "]");
 
         List<ConvertedSection> convertedSections = ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ,

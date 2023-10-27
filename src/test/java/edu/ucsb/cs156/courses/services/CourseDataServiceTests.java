@@ -1,17 +1,15 @@
-package edu.ucsb.cs156.courses.jobs;
+package edu.ucsb.cs156.courses.services;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.entities.Job;
-import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +20,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration
-public class UpdateCourseDataJobTests {
-
-    @Mock
+@SpringBootTest(classes = CourseDataServiceImpl.class)
+class CourseDataServiceTests {
+    @MockBean
     UCSBCurriculumService ucsbCurriculumService;
 
-    @Mock
+    @MockBean
     ConvertedSectionCollection convertedSectionCollection;
+
+    @Autowired
+    CourseDataServiceImpl courseDataService;
 
     @Test
     void test_log_output_success() throws Exception {
@@ -52,8 +51,7 @@ public class UpdateCourseDataJobTests {
         when(convertedSectionCollection.saveAll(any())).thenReturn(result);
 
         // Act
-
-        updateCourseDataJob.accept(ctx);
+        courseDataService.updateCourses(ctx, "20211", "CMPSC");
 
         // Assert
 
@@ -89,8 +87,6 @@ public class UpdateCourseDataJobTests {
         listWithTwoOrigOneDuplicate.add(section1);
         listWithTwoOrigOneDuplicate.add(section0);
 
-        UpdateCourseDataJob updateCourseDataJob = new UpdateCourseDataJob("MATH", "20211", ucsbCurriculumService,
-            convertedSectionCollection);
 
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
@@ -109,7 +105,7 @@ public class UpdateCourseDataJobTests {
 
         // Act
 
-        updateCourseDataJob.accept(ctx);
+        courseDataService.updateCourses(ctx, "20211", "MATH");
 
         // Assert
 
@@ -142,8 +138,6 @@ public class UpdateCourseDataJobTests {
 
         listWithOneSection.add(section0);
 
-        UpdateCourseDataJob updateCourseDataJob = new UpdateCourseDataJob("MATH", "20211", ucsbCurriculumService,
-            convertedSectionCollection);
 
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
@@ -157,7 +151,7 @@ public class UpdateCourseDataJobTests {
 
         // Act
 
-        updateCourseDataJob.accept(ctx);
+        courseDataService.updateCourses(ctx, "20211", "MATH");
 
         // Assert
 
@@ -198,9 +192,6 @@ public class UpdateCourseDataJobTests {
         updatedSection.getSection().setEnrolledTotal(oldEnrollment + 1);
         listWithUpdatedSection.add(updatedSection);
 
-        UpdateCourseDataJob updateCourseDataJob = new UpdateCourseDataJob("MATH", "20211", ucsbCurriculumService,
-            convertedSectionCollection);
-
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
 
         when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
@@ -210,7 +201,7 @@ public class UpdateCourseDataJobTests {
 
         // Act
 
-        updateCourseDataJob.accept(ctx);
+        courseDataService.updateCourses(ctx, "20211", "MATH");
 
         // Assert
 
