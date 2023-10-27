@@ -35,7 +35,6 @@ public class UpdateCourseDataJobsTest {
         verify(courseDataService).updateCourses(ctx, "20212", "CMPSC");
         verify(courseDataService).updateCourses(ctx, "20213", "CMPSC");
 
-
         verify(courseDataService).updateCourses(ctx, "20211", "MATH");
         verify(courseDataService).updateCourses(ctx, "20212", "MATH");
         verify(courseDataService).updateCourses(ctx, "20213", "MATH");

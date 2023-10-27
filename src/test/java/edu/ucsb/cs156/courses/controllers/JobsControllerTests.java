@@ -64,17 +64,7 @@ public class JobsControllerTests extends ControllerTestCase {
     UCSBCurriculumService ucsbCurriculumService;
 
     @MockBean
-    UpdateCourseDataWithQuarterJobFactory updateCourseDataWithQuarterJobFactory;
-
-    @MockBean
     UpdateCourseDataJobFactory updateCourseDataJobFactory;
-
-    @MockBean
-    UpdateCourseDataRangeOfQuartersJobFactory updateCourseDataRangeOfQuartersJobFactory;
-
-    @MockBean
-    UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory updateCourseDataRangeOfQuartersSingleSubjectJobFactory;
-
 
     @MockBean
     ConvertedSectionCollection convertedSectionCollection;

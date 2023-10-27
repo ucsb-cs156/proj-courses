@@ -12,15 +12,11 @@ import java.util.List;
 
 
 @AllArgsConstructor
-@Slf4j
+@Getter
 public class UpdateCourseDataJob implements JobContextConsumer {
-    @Getter
     private String start_quarterYYYYQ;
-    @Getter
     private String end_quarterYYYYQ;
-    @Getter
     private List<String> subjects;
-    @Getter
     private CourseDataService courseDataService;
 
     @Override

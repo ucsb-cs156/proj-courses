@@ -1,10 +1,12 @@
 package edu.ucsb.cs156.courses.jobs;
 
+import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import edu.ucsb.cs156.courses.services.CourseDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,7 +16,36 @@ public class UpdateCourseDataJobFactory {
     @Autowired
     private CourseDataService courseDataService;
 
-    public UpdateCourseDataJob create(String subjectArea, String quarterYYYYQ) {
+    @Autowired
+    private UCSBSubjectRepository subjectRepository;
+
+
+    public UpdateCourseDataJob createForSubjectAndQuarter(String subjectArea, String quarterYYYYQ) {
         return new UpdateCourseDataJob(quarterYYYYQ, quarterYYYYQ, List.of(subjectArea), courseDataService);
     }
+
+    public UpdateCourseDataJob createForSubjectAndQuarterRange(
+        String subjectArea, String start_quarterYYYYQ, String end_quarterYYYYQ) {
+        return new UpdateCourseDataJob(start_quarterYYYYQ, end_quarterYYYYQ, List.of(subjectArea), courseDataService);
+    }
+
+
+    private List<String> getAllSubjectCodes() {
+        var subjects = subjectRepository.findAll();
+        var subjectCodes = new ArrayList<String>();
+        for (var subject : subjects) {
+            subjectCodes.add(subject.getSubjectCode());
+        }
+        return subjectCodes;
+    }
+
+    public UpdateCourseDataJob createForQuarter(String quarterYYYYQ) {
+        return new UpdateCourseDataJob(quarterYYYYQ, quarterYYYYQ, getAllSubjectCodes(), courseDataService);
+    }
+
+    public UpdateCourseDataJob createForQuarterRange(String start_quarterYYYYQ, String end_quarterYYYYQ) {
+        return new UpdateCourseDataJob(start_quarterYYYYQ, end_quarterYYYYQ, getAllSubjectCodes(), courseDataService);
+    }
+
+
 }
