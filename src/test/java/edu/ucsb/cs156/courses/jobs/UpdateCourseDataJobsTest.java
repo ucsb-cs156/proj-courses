@@ -68,7 +68,7 @@ public class UpdateCourseDataJobsTest {
 
         List<ConvertedSection> result = coursePage.convertedSections();
 
-        when(ucsbCurriculumService.searchForCourses(eq("CMPSC"), eq("20211"), eq("A"))).thenReturn(result);
+        when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20211"), eq("A"))).thenReturn(result);
 
         // Act
         var job = new UpdateCourseDataJob(
@@ -115,7 +115,7 @@ public class UpdateCourseDataJobsTest {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20211"), eq("A")))
+        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
             .thenReturn(listWithTwoOrigOneDuplicate);
         when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
             eq(section0.getCourseInfo().getQuarter()),
@@ -168,7 +168,7 @@ public class UpdateCourseDataJobsTest {
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
         Optional<ConvertedSection> emptyOptional = Optional.empty();
 
-        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20211"), eq("A")))
+        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
             .thenReturn(listWithOneSection);
         when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
             eq(section0.getCourseInfo().getQuarter()),
@@ -224,7 +224,7 @@ public class UpdateCourseDataJobsTest {
 
         Optional<ConvertedSection> section0Optional = Optional.of(section0);
 
-        when(ucsbCurriculumService.searchForCourses(eq("MATH"), eq("20211"), eq("A")))
+        when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
             .thenReturn(listWithUpdatedSection);
         when(convertedSectionCollection.findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode)))
             .thenReturn(section0Optional);

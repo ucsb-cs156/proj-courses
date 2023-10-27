@@ -37,7 +37,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     public void updateCourses(JobContext ctx, String quarterYYYYQ, String subjectArea) throws Exception {
         ctx.log("Updating courses for [" + subjectArea + " " + quarterYYYYQ + "]");
 
-        List<ConvertedSection> convertedSections = ucsbCurriculumService.searchForCourses(
+        List<ConvertedSection> convertedSections = ucsbCurriculumService.getConvertedSections(
             subjectArea, quarterYYYYQ, "A");
 
         ctx.log("Found " + convertedSections.size() + " sections");
