@@ -1,8 +1,9 @@
 package edu.ucsb.cs156.courses.jobs;
 
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
-import edu.ucsb.cs156.courses.services.CourseDataService;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +18,11 @@ import static org.mockito.Mockito.when;
 public class UpdateCourseDataJobFactoryTests {
 
     @MockBean
-    CourseDataService courseDataService;
+    UCSBCurriculumService ucsbCurriculumService;
+
+    @MockBean
+    ConvertedSectionCollection convertedSectionCollection;
+
     @MockBean
     UCSBSubjectRepository ucsbSubjectRepository;
 
@@ -34,7 +39,6 @@ public class UpdateCourseDataJobFactoryTests {
         assertEquals(List.of("CMPSC"), job.getSubjects());
         assertEquals("20211", job.getStart_quarterYYYYQ());
         assertEquals("20211", job.getEnd_quarterYYYYQ());
-        assertEquals(courseDataService, job.getCourseDataService());
     }
 
     @Test
@@ -47,7 +51,6 @@ public class UpdateCourseDataJobFactoryTests {
         assertEquals(List.of("CMPSC"), job.getSubjects());
         assertEquals("20211", job.getStart_quarterYYYYQ());
         assertEquals("20213", job.getEnd_quarterYYYYQ());
-        assertEquals(courseDataService, job.getCourseDataService());
     }
 
     @Test
@@ -69,7 +72,6 @@ public class UpdateCourseDataJobFactoryTests {
         assertEquals("20211", job.getStart_quarterYYYYQ());
         assertEquals("20211", job.getEnd_quarterYYYYQ());
         assertEquals(subjectCodes, job.getSubjects());
-        assertEquals(courseDataService, job.getCourseDataService());
     }
 
     @Test
@@ -90,7 +92,6 @@ public class UpdateCourseDataJobFactoryTests {
         // Assert
         assertEquals("20221", job.getStart_quarterYYYYQ());
         assertEquals("20222", job.getEnd_quarterYYYYQ());
-        assertEquals(courseDataService, job.getCourseDataService());
         assertEquals(subjectCodes, job.getSubjects());
     }
 
