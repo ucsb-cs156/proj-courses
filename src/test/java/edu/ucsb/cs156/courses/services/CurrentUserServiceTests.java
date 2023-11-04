@@ -5,10 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
-
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.User;
+import org.junit.jupiter.api.Test;
 
 class CurrentUserServiceTests extends ControllerTestCase {
 
@@ -25,5 +24,4 @@ class CurrentUserServiceTests extends ControllerTestCase {
     when(currentUserService.getUser()).thenReturn(User.builder().build());
     assertTrue(currentUserService.isLoggedIn());
   }
-
 }

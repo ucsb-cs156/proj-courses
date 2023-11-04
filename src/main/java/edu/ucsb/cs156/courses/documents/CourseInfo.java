@@ -6,22 +6,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * CourseInfo is an object that stores all of the information about a
- * course from the UCSB Courses API except for the section info
+ * CourseInfo is an object that stores all of the information about a course from the UCSB Courses
+ * API except for the section info
  */
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseInfo implements Cloneable {
-    private String quarter;
-    private String courseId;
-    private String title;
-    private String description;
+  private String quarter;
+  private String courseId;
+  private String title;
+  private String description;
 
-    public Object clone() throws CloneNotSupportedException {
-        CourseInfo newCourseInfo = (CourseInfo) super.clone();
-        return newCourseInfo;
-    }
+  public Object clone() throws CloneNotSupportedException {
+    CourseInfo newCourseInfo = (CourseInfo) super.clone();
+    return newCourseInfo;
+  }
 }

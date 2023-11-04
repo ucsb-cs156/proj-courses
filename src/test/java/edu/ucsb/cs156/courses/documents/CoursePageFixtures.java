@@ -2,7 +2,8 @@ package edu.ucsb.cs156.courses.documents;
 
 public class CoursePageFixtures {
 
-    public static final String COURSE_PAGE_JSON_MATH3B = """
+  public static final String COURSE_PAGE_JSON_MATH3B =
+      """
                    {
                        "pageNumber": 1,
                        "pageSize": 10,
@@ -533,7 +534,8 @@ public class CoursePageFixtures {
                      }
             """;
 
-    public static final String CONVERTED_SECTIONS_JSON_MATH5B = """
+  public static final String CONVERTED_SECTIONS_JSON_MATH5B =
+      """
         [ {
             "courseInfo" : {
               "quarter" : "20222",
@@ -1066,10 +1068,11 @@ public class CoursePageFixtures {
                 "functionCode" : "Teaching but not in charge"
               } ]
             }
-          } ]          
+          } ]
             """;
 
-    public static final String COURSE_PAGE_JSON = """
+  public static final String COURSE_PAGE_JSON =
+      """
 
             {
                 "pageNumber": 1,
@@ -2969,5 +2972,4 @@ public class CoursePageFixtures {
               }
 
                 """;
-
 }

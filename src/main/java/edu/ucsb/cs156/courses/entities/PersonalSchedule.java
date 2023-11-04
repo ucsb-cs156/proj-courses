@@ -1,17 +1,15 @@
 package edu.ucsb.cs156.courses.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 
 @Data
 @Builder
@@ -26,6 +24,7 @@ public class PersonalSchedule {
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
+
   private String name;
   private String description;
   private String quarter;

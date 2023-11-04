@@ -1,9 +1,6 @@
 package edu.ucsb.cs156.courses.documents;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,86 +8,87 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Section implements Cloneable {
 
-    /** a unique number assigned to a section */
-    private String enrollCode;
-    /** section number of the course */
-    private String section;
-    /** session only for summer quarter */
-    private String session;
-    /** if the class is closed */
-    private String classClosed;
-    /** is course cancelled */
-    private String courseCancelled;
-    /**
-     * Grading Options Code like Pass/No Pass (P/NP) Or Letter Grades (L).
-     * 
-     * @see <a href=
-     *      "https://developer.ucsb.edu/content/student-record-code-lookups">
-     *      https://developer.ucsb.edu/content/student-record-code-lookups</a>
-     * 
-     */
-    private String gradingOptionCode;
+  /** a unique number assigned to a section */
+  private String enrollCode;
 
-    /** total number of enrollments in the course */
-    private Integer enrolledTotal;
-    /** max number of students can be enrolled in the section */
-    private Integer maxEnroll;
+  /** section number of the course */
+  private String section;
 
-    /** Secondary Status of the course */
-    private String secondaryStatus;
+  /** session only for summer quarter */
+  private String session;
 
-    /** Is department approval required for enrollment in the section */
-    private boolean departmentApprovalRequired;
+  /** if the class is closed */
+  private String classClosed;
 
-    /** Is instructor approval required for enrollment in the section */
-    private boolean instructorApprovalRequired;
+  /** is course cancelled */
+  private String courseCancelled;
 
-    /** Is there restriction on the level of the course */
-    private String restrictionLevel;
+  /**
+   * Grading Options Code like Pass/No Pass (P/NP) Or Letter Grades (L).
+   *
+   * @see <a href= "https://developer.ucsb.edu/content/student-record-code-lookups">
+   *     https://developer.ucsb.edu/content/student-record-code-lookups</a>
+   */
+  private String gradingOptionCode;
 
-    /** Is there restriction on the major of the student */
-    private String restrictionMajor;
+  /** total number of enrollments in the course */
+  private Integer enrolledTotal;
 
-    /** Is there restriction on the major and pass time of the student */
-    private String restrictionMajorPass;
+  /** max number of students can be enrolled in the section */
+  private Integer maxEnroll;
 
-    /** Is there restriction on the minor of the student */
-    private String restrictionMinor;
+  /** Secondary Status of the course */
+  private String secondaryStatus;
 
-    /** Is there restriction on the minor and pass time of the student */
-    private String restrictionMinorPass;
+  /** Is department approval required for enrollment in the section */
+  private boolean departmentApprovalRequired;
 
-    /** Concurrent courses for the section */
-    private List<String> concurrentCourses;
+  /** Is instructor approval required for enrollment in the section */
+  private boolean instructorApprovalRequired;
 
-    /**
-     * List of {@link TimeLocation} objects for this course
-     */
-    private List<TimeLocation> timeLocations;
-    /**
-     * List of {@link Instructor} objects for this course
-     */
-    private List<Instructor> instructors;
+  /** Is there restriction on the level of the course */
+  private String restrictionLevel;
 
-    public Object clone() throws CloneNotSupportedException {
+  /** Is there restriction on the major of the student */
+  private String restrictionMajor;
 
-        Section newSection = (Section) super.clone();
-        // List<String> copyConcurrentCourses = new ArrayList<>();
-        // Collections.copy(copyConcurrentCourses, this.getConcurrentCourses());
-        // newSection.setConcurrentCourses(copyConcurrentCourses);
+  /** Is there restriction on the major and pass time of the student */
+  private String restrictionMajorPass;
 
-        // List<TimeLocation> copyTimeLocations = new ArrayList<>();
-        // for (TimeLocation tl : this.getTimeLocations()) {
-        //     copyTimeLocations.add((TimeLocation) tl.clone());
-        // }
-        // newSection.setTimeLocations(copyTimeLocations);
+  /** Is there restriction on the minor of the student */
+  private String restrictionMinor;
 
-        // List<Instructor> copyInstructors = new ArrayList<>();
-        // for (Instructor i : this.getInstructors()) {
-        //     copyInstructors.add((Instructor) i.clone());
-        // }
-        // newSection.setInstructors(copyInstructors);
+  /** Is there restriction on the minor and pass time of the student */
+  private String restrictionMinorPass;
 
-        return newSection;
-    }
+  /** Concurrent courses for the section */
+  private List<String> concurrentCourses;
+
+  /** List of {@link TimeLocation} objects for this course */
+  private List<TimeLocation> timeLocations;
+
+  /** List of {@link Instructor} objects for this course */
+  private List<Instructor> instructors;
+
+  public Object clone() throws CloneNotSupportedException {
+
+    Section newSection = (Section) super.clone();
+    // List<String> copyConcurrentCourses = new ArrayList<>();
+    // Collections.copy(copyConcurrentCourses, this.getConcurrentCourses());
+    // newSection.setConcurrentCourses(copyConcurrentCourses);
+
+    // List<TimeLocation> copyTimeLocations = new ArrayList<>();
+    // for (TimeLocation tl : this.getTimeLocations()) {
+    //     copyTimeLocations.add((TimeLocation) tl.clone());
+    // }
+    // newSection.setTimeLocations(copyTimeLocations);
+
+    // List<Instructor> copyInstructors = new ArrayList<>();
+    // for (Instructor i : this.getInstructors()) {
+    //     copyInstructors.add((Instructor) i.clone());
+    // }
+    // newSection.setInstructors(copyInstructors);
+
+    return newSection;
+  }
 }

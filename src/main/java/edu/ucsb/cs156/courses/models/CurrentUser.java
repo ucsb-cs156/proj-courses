@@ -1,16 +1,13 @@
 package edu.ucsb.cs156.courses.models;
 
+import edu.ucsb.cs156.courses.entities.User;
+import java.util.Collection;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
-
-
 import org.springframework.security.core.GrantedAuthority;
-import edu.ucsb.cs156.courses.entities.User;
-
-import java.util.Collection;
 
 @Data
 @Builder

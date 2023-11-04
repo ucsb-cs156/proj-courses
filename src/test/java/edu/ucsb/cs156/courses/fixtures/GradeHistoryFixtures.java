@@ -1,7 +1,8 @@
 package edu.ucsb.cs156.courses.fixtures;
 
 public class GradeHistoryFixtures {
-    public static final String GITHUB_API_SAMPLE_JSON = """
+  public static final String GITHUB_API_SAMPLE_JSON =
+      """
         {
             "sha": "c5535a56190265628f39b84702f51b4aa73edb73",
             "url": "https://api.github.com/repos/ucsb-cs156/UCSB_Grades/git/trees/c5535a56190265628f39b84702f51b4aa73edb73",
@@ -64,7 +65,8 @@ public class GradeHistoryFixtures {
         }
     """;
 
-    public static final String SAMPLE_CSV_FILE_CONTENTS="""
+  public static final String SAMPLE_CSV_FILE_CONTENTS =
+      """
         Quarter,Course Level,Course,Instructor,Grade Given,Sum of Student Count
         F09,Undergraduate,DANCE    47A,HUSTON V G,A-,3
         F09,Undergraduate,DANCE    47A,HUSTON V G,C+,1
