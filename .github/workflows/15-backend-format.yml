@@ -3,10 +3,10 @@ name: "15-backend-format: Format Java Files"
 on:
   workflow_dispatch:
   pull_request:
-    paths: [src/**]
+    paths: [ src/** ]
   push:
     branches: [ main ]
-    paths: [src/**]
+    paths: [ src/** ]
 
 jobs:
   format:
@@ -20,7 +20,10 @@ jobs:
           distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
           java-version-file: ./.java-version
 
-      - name: Format java files
+      - name: Check java formatting
         uses: axel-op/googlejavaformat-action@v3
         with:
-          args: "--replace src/**"
+          args: "--replace"
+          skip-commit: true
+      - name: Print the diff
+        run: git --no-pager diff --exit-code
