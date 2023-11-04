@@ -2,30 +2,28 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
 function TestJobForm({ submitAction }) {
-
- const defaultValues = {
+  const defaultValues = {
     fail: false,
-    sleepMs: 1000
-};
+    sleepMs: 1000,
+  };
 
   // Stryker disable all
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm(
-    { defaultValues: defaultValues }
-  );
+  } = useForm({ defaultValues: defaultValues });
   // Stryker enable all
 
   const testid = "TestJobForm";
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>
-      
       <Form.Group className="mb-3">
-        <Form.Label htmlFor="fail">Fail? (if checked, job will fail, to test error handling)</Form.Label>
-        <Form.Check 
+        <Form.Label htmlFor="fail">
+          Fail? (if checked, job will fail, to test error handling)
+        </Form.Label>
+        <Form.Check
           data-testid={`${testid}-fail`}
           type="checkbox"
           id="fail"
@@ -45,7 +43,10 @@ function TestJobForm({ submitAction }) {
             valueAsNumber: true,
             required: "sleepMs is required (0 is ok)",
             min: { value: 0, message: "sleepMs must be positive" },
-            max: { value: 60000, message: "sleepMs may not be > 60000 (1 minute)" },
+            max: {
+              value: 60000,
+              message: "sleepMs may not be > 60000 (1 minute)",
+            },
           })}
         />
         <Form.Control.Feedback type="invalid">
@@ -53,7 +54,9 @@ function TestJobForm({ submitAction }) {
         </Form.Control.Feedback>
       </Form.Group>
 
-      <Button type="submit" data-testid="TestJobForm-Submit-Button">Submit</Button>
+      <Button type="submit" data-testid="TestJobForm-Submit-Button">
+        Submit
+      </Button>
     </Form>
   );
 }

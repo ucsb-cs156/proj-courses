@@ -14,9 +14,8 @@ jest.mock("react", () => ({
 }));
 
 describe("SingleBuildingDropdown tests", () => {
-
   beforeEach(() => {
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 
@@ -30,7 +29,7 @@ describe("SingleBuildingDropdown tests", () => {
 
   afterEach(() => {
     console.error.mockRestore();
- })
+  });
 
   const building = jest.fn();
   const setBuilding = jest.fn();
@@ -42,22 +41,18 @@ describe("SingleBuildingDropdown tests", () => {
         building={oneBuilding}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
   });
 
   test("renders without crashing on three buildings", async () => {
-     render(
+    render(
       <SingleBuildingDropdown
-        buildings={[ 
-          threeBuildings[0],
-          threeBuildings[1],
-          threeBuildings[2]
-        ]}
+        buildings={[threeBuildings[0], threeBuildings[1], threeBuildings[2]]}
         building={building}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
 
     const ELLSN = "sbd1-option-0";
@@ -71,13 +66,12 @@ describe("SingleBuildingDropdown tests", () => {
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
-    const allOptions = screen.getAllByTestId("sbd1-option-",  { exact: false });
+    const allOptions = screen.getAllByTestId("sbd1-option-", { exact: false });
     for (let i = 0; i < allOptions.length - 1; i++) {
       console.log("[i]" + allOptions[i].value);
-      console.log("[i+1]" + allOptions[i+1].value);
+      console.log("[i+1]" + allOptions[i + 1].value);
       expect(allOptions[i].value < allOptions[i + 1].value).toBe(true);
     }
-
   });
 
   test("sorts and puts hyphens in testids", () => {
@@ -87,7 +81,7 @@ describe("SingleBuildingDropdown tests", () => {
         building={building}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
   });
 
@@ -98,9 +92,9 @@ describe("SingleBuildingDropdown tests", () => {
         building={building}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
-    
+
     expect(await screen.findByLabelText("Building Name")).toBeInTheDocument();
 
     const selectBuilding = screen.getByLabelText("Building Name");
@@ -118,9 +112,9 @@ describe("SingleBuildingDropdown tests", () => {
         setBuilding={setBuilding}
         controlId="sbd1"
         onChange={onChange}
-      />
+      />,
     );
-    
+
     expect(await screen.findByLabelText("Building Name")).toBeInTheDocument();
 
     const selectBuilding = screen.getByLabelText("Building Name");
@@ -140,9 +134,9 @@ describe("SingleBuildingDropdown tests", () => {
         building={building}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
-    
+
     expect(await screen.findByLabelText("Building Name")).toBeInTheDocument();
   });
 
@@ -153,11 +147,13 @@ describe("SingleBuildingDropdown tests", () => {
         building={building}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
 
     const expectedKey = "sbd1-option-0";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
   });
 
   test("when localstorage has a value, it is passed to useState", async () => {
@@ -173,7 +169,7 @@ describe("SingleBuildingDropdown tests", () => {
         building={building}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
 
     await waitFor(() => expect(useState).toBeCalledWith("ELLSN"));
@@ -192,11 +188,11 @@ describe("SingleBuildingDropdown tests", () => {
         building={building}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
 
     await waitFor(() =>
-      expect(useState).toBeCalledWith(expect.objectContaining({}))
+      expect(useState).toBeCalledWith(expect.objectContaining({})),
     );
   });
 
@@ -207,7 +203,7 @@ describe("SingleBuildingDropdown tests", () => {
         building={building}
         setBuilding={setBuilding}
         controlId="sbd1"
-      />
+      />,
     );
 
     const expectedKey = "sbd1";

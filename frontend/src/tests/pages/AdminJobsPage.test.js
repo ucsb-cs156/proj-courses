@@ -1,4 +1,3 @@
-
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -13,145 +12,170 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import jobsFixtures from "fixtures/jobsFixtures";
 
 describe("AdminJobsPage tests", () => {
-    const queryClient = new QueryClient();
-    const axiosMock = new AxiosMockAdapter(axios);
+  const queryClient = new QueryClient();
+  const axiosMock = new AxiosMockAdapter(axios);
 
-    beforeEach(() => {
-        axiosMock.reset();
-        axiosMock.resetHistory();
-        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
-        axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
-        axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    });
+  beforeEach(() => {
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+  });
 
-    test("renders without crashing", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <AdminJobsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-        expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
-        expect(await screen.findByText("Job Status")).toBeInTheDocument();
+  test("renders without crashing", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
+    expect(await screen.findByText("Job Status")).toBeInTheDocument();
 
-        ["Test Job", "Update Courses Database", "Update Grade Info"].map(
-            (jobName) => expect(screen.getByText(jobName)).toBeInTheDocument()
-        );
+    ["Test Job", "Update Courses Database", "Update Grade Info"].map(
+      (jobName) => expect(screen.getByText(jobName)).toBeInTheDocument(),
+    );
 
+    const testId = "JobsTable";
 
-        const testId = "JobsTable";
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Created`),
+    ).toHaveTextContent("1");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Updated`),
+    ).toHaveTextContent("11/13/2022, 19:49:59");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-status`),
+    ).toHaveTextContent("complete");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Log`),
+    ).toHaveTextContent("Hello World! from test job!Goodbye from test job!");
+  });
 
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-Created`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-Updated`)).toHaveTextContent("11/13/2022, 19:49:59");
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-status`)).toHaveTextContent("complete");
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-Log`)).toHaveTextContent("Hello World! from test job!Goodbye from test job!");
+  test("user can submit a test job", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-    });
+    expect(await screen.findByText("Test Job")).toBeInTheDocument();
 
-    test("user can submit a test job", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <AdminJobsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
+    const testJobButton = screen.getByText("Test Job");
+    expect(testJobButton).toBeInTheDocument();
+    testJobButton.click();
 
-        expect(await screen.findByText("Test Job")).toBeInTheDocument();
+    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
 
-        const testJobButton = screen.getByText("Test Job");
-        expect(testJobButton).toBeInTheDocument();
-        testJobButton.click();
+    const sleepMsInput = screen.getByTestId("TestJobForm-sleepMs");
+    const submitButton = screen.getByTestId("TestJobForm-Submit-Button");
 
-        expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+    expect(sleepMsInput).toBeInTheDocument();
+    expect(submitButton).toBeInTheDocument();
 
-        const sleepMsInput = screen.getByTestId("TestJobForm-sleepMs");
-        const submitButton = screen.getByTestId("TestJobForm-Submit-Button");
+    fireEvent.change(sleepMsInput, { target: { value: "0" } });
+    submitButton.click();
 
-        expect(sleepMsInput).toBeInTheDocument();
-        expect(submitButton).toBeInTheDocument();
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
-        fireEvent.change(sleepMsInput, { target: { value: '0' } })
-        submitButton.click();
+    expect(axiosMock.history.post[0].url).toBe(
+      "/api/jobs/launch/testjob?fail=false&sleepMs=0",
+    );
+  });
 
-        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+  test("user can submit the update course data job", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/testjob?fail=false&sleepMs=0");
-    });
+    expect(
+      await screen.findByText("Update Courses Database"),
+    ).toBeInTheDocument();
 
-    test("user can submit the update course data job", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <AdminJobsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
+    const updateCoursesButton = screen.getByText("Update Courses Database");
+    expect(updateCoursesButton).toBeInTheDocument();
+    updateCoursesButton.click();
 
-        expect(await screen.findByText("Update Courses Database")).toBeInTheDocument();
+    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
 
-        const updateCoursesButton = screen.getByText("Update Courses Database");
-        expect(updateCoursesButton).toBeInTheDocument();
-        updateCoursesButton.click();
+    const submitButton = screen.getByTestId("updateCourses");
 
-        expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
-        const submitButton = screen.getByTestId("updateCourses");
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20211");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    expect(selectSubject).toBeInTheDocument();
+    userEvent.selectOptions(selectSubject, "ANTH");
 
-        const expectedKey = "BasicSearch.Subject-option-ANTH";
-        await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
-    
-        const selectQuarter = screen.getByLabelText("Quarter");
-        userEvent.selectOptions(selectQuarter, "20211");
-        const selectSubject = screen.getByLabelText("Subject Area");
-        expect(selectSubject).toBeInTheDocument();
-        userEvent.selectOptions(selectSubject, "ANTH");
+    expect(submitButton).toBeInTheDocument();
 
-        expect(submitButton).toBeInTheDocument();
+    submitButton.click();
 
-        submitButton.click();
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
-        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+    expect(axiosMock.history.post[0].url).toBe(
+      "/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH",
+    );
+  });
 
-        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH");
-    });
+  test("user can submit the update course data by quarter job", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
+    expect(
+      await screen.findByText("Update Courses Database by quarter"),
+    ).toBeInTheDocument();
 
-    test("user can submit the update course data by quarter job", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <AdminJobsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
+    const updateCoursesButton = screen.getByText(
+      "Update Courses Database by quarter",
+    );
+    expect(updateCoursesButton).toBeInTheDocument();
+    updateCoursesButton.click();
 
-        expect(await screen.findByText("Update Courses Database by quarter")).toBeInTheDocument();
+    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
 
-        const updateCoursesButton = screen.getByText("Update Courses Database by quarter");
-        expect(updateCoursesButton).toBeInTheDocument();
-        updateCoursesButton.click();
+    const submitButton = screen.getByTestId("updateCoursesByQuarter");
 
-        expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
-        const submitButton = screen.getByTestId("updateCoursesByQuarter");
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20211");
+    expect(submitButton).toBeInTheDocument();
 
-        const expectedKey = "BasicSearch.Subject-option-ANTH";
-        await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
-    
-        const selectQuarter = screen.getByLabelText("Quarter");
-        userEvent.selectOptions(selectQuarter, "20211");
-        expect(submitButton).toBeInTheDocument();
+    submitButton.click();
 
-        submitButton.click();
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
-        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
-
-        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20211");
-    });
-
-
+    expect(axiosMock.history.post[0].url).toBe(
+      "/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20211",
+    );
+  });
 });

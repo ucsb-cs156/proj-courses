@@ -14,7 +14,7 @@ const SingleSubjectDropdown = ({
 
   const [subjectState, setSubjectState] = useState(
     // Stryker disable next-line all : not sure how to test/mock local storage
-    localSearchSubject || subject
+    localSearchSubject || subject,
   );
 
   const handleSubjectOnChange = (event) => {

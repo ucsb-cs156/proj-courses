@@ -4,25 +4,24 @@ import { MemoryRouter } from "react-router-dom";
 
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
-import UCSBSubjectsTable from "main/components/UCSBSubjects/UCSBSubjectsTable"
+import UCSBSubjectsTable from "main/components/UCSBSubjects/UCSBSubjectsTable";
 
 const mockedNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedNavigate,
 }));
 
 const mockedMutate = jest.fn();
 
-jest.mock('main/utils/useBackend', () => ({
-    ...jest.requireActual('main/utils/useBackend'),
-    useBackendMutation: () => ({mutate: mockedMutate})
+jest.mock("main/utils/useBackend", () => ({
+  ...jest.requireActual("main/utils/useBackend"),
+  useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
 describe("UserTable tests", () => {
   const queryClient = new QueryClient();
-
 
   test("renders without crashing for empty table with user not logged in", () => {
     const currentUser = null;
@@ -32,8 +31,7 @@ describe("UserTable tests", () => {
         <MemoryRouter>
           <UCSBSubjectsTable subjects={[]} currentUser={currentUser} />
         </MemoryRouter>
-      </QueryClientProvider>
-
+      </QueryClientProvider>,
     );
   });
   test("renders without crashing for empty table for ordinary user", () => {
@@ -44,8 +42,7 @@ describe("UserTable tests", () => {
         <MemoryRouter>
           <UCSBSubjectsTable subjects={[]} currentUser={currentUser} />
         </MemoryRouter>
-      </QueryClientProvider>
-
+      </QueryClientProvider>,
     );
   });
 
@@ -57,8 +54,7 @@ describe("UserTable tests", () => {
         <MemoryRouter>
           <UCSBSubjectsTable subjects={[]} currentUser={currentUser} />
         </MemoryRouter>
-      </QueryClientProvider>
-
+      </QueryClientProvider>,
     );
   });
 
@@ -68,14 +64,30 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UCSBSubjectsTable subjects={ucsbSubjectsFixtures.threeSubjects} currentUser={currentUser} />
+          <UCSBSubjectsTable
+            subjects={ucsbSubjectsFixtures.threeSubjects}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
-
+      </QueryClientProvider>,
     );
 
-    const expectedHeaders = ["SubjectCode", "SubjectTranslation", "DeptCode","CollegeCode","RelatedDeptCode","Inactive"];
-    const expectedFields = ["subjectCode", "subjectTranslation", "deptCode","collegeCode","relatedDeptCode","inactive"];
+    const expectedHeaders = [
+      "SubjectCode",
+      "SubjectTranslation",
+      "DeptCode",
+      "CollegeCode",
+      "RelatedDeptCode",
+      "Inactive",
+    ];
+    const expectedFields = [
+      "subjectCode",
+      "subjectTranslation",
+      "deptCode",
+      "collegeCode",
+      "relatedDeptCode",
+      "inactive",
+    ];
     const testId = "UCSBSubjectsTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -88,14 +100,22 @@ describe("UserTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-subjectCode`)).toHaveTextContent("GER");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-subjectCode`),
+    ).toHaveTextContent("GEOG");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-subjectCode`),
+    ).toHaveTextContent("GER");
 
-    const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
+    const editButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Edit-button`,
+    );
     expect(editButton).toBeInTheDocument();
     expect(editButton).toHaveClass("btn-primary");
 
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
   });
@@ -106,19 +126,28 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UCSBSubjectsTable subjects={ucsbSubjectsFixtures.threeSubjects} currentUser={currentUser} />
+          <UCSBSubjectsTable
+            subjects={ucsbSubjectsFixtures.threeSubjects}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
+    expect(
+      await screen.findByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`),
+    ).toHaveTextContent("GEOG");
 
-    const editButton = screen.getByTestId(`UCSBSubjectsTable-cell-row-0-col-Edit-button`);
+    const editButton = screen.getByTestId(
+      `UCSBSubjectsTable-cell-row-0-col-Edit-button`,
+    );
     expect(editButton).toBeInTheDocument();
-    
+
     fireEvent.click(editButton);
 
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/UCSBSubjects/edit/GEOG'));
+    await waitFor(() =>
+      expect(mockedNavigate).toHaveBeenCalledWith("/UCSBSubjects/edit/GEOG"),
+    );
   });
 
   test("Delete button calls delete callback", async () => {
@@ -127,16 +156,23 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UCSBSubjectsTable subjects={ucsbSubjectsFixtures.threeSubjects} currentUser={currentUser} />
+          <UCSBSubjectsTable
+            subjects={ucsbSubjectsFixtures.threeSubjects}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`)).toHaveTextContent("GEOG");
+    expect(
+      await screen.findByTestId(`UCSBSubjectsTable-cell-row-0-col-subjectCode`),
+    ).toHaveTextContent("GEOG");
 
-    const deleteButton = screen.getByTestId(`UCSBSubjectsTable-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `UCSBSubjectsTable-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
-    
+
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));

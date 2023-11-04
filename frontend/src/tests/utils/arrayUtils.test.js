@@ -39,7 +39,7 @@ describe("arrayUtils tests", () => {
   test("getFirstSmallestLargest abbr", () => {
     const { first, smallest, largest } = getFirstSmallestLargest(
       states,
-      (s) => s.abbr
+      (s) => s.abbr,
     );
     expect(first).toBe("CA");
     expect(smallest).toBe("AK");
@@ -49,7 +49,7 @@ describe("arrayUtils tests", () => {
   test("getFirstSmallestLargest name", () => {
     const { first, smallest, largest } = getFirstSmallestLargest(
       states,
-      (s) => s.name
+      (s) => s.name,
     );
     expect(first).toBe("California");
     expect(smallest).toBe("Alaska");
@@ -59,7 +59,7 @@ describe("arrayUtils tests", () => {
   test("getFirstSmallestLargest symbols.bird", () => {
     const { first, smallest, largest } = getFirstSmallestLargest(
       states,
-      (s) => s.symbols.bird
+      (s) => s.symbols.bird,
     );
     expect(first).toBe("California Quail");
     expect(smallest).toBe("California Quail");
@@ -69,7 +69,7 @@ describe("arrayUtils tests", () => {
   test("getFirstSmallestLargest symbols.flower", () => {
     const { first, smallest, largest } = getFirstSmallestLargest(
       states,
-      (s) => s.symbols.flower
+      (s) => s.symbols.flower,
     );
     expect(first).toBe("California Poppy");
     expect(smallest).toBe("Big Sagebrush");

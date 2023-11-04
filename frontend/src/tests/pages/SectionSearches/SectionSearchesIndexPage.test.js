@@ -41,22 +41,20 @@ describe("Section Searches Index Page tests", () => {
         <MemoryRouter>
           <SectionSearchesIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock
-      .onGet("/api/sections/basicsearch")
-      .reply(200, oneSection);
+    axiosMock.onGet("/api/sections/basicsearch").reply(200, oneSection);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <SectionSearchesIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
@@ -64,8 +62,10 @@ describe("Section Searches Index Page tests", () => {
     const selectSubject = screen.getByLabelText("Subject Area");
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
-    
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
+
     userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");

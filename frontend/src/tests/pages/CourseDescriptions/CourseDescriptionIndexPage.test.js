@@ -25,7 +25,7 @@ describe("CourseDescriptionIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 
@@ -46,7 +46,7 @@ describe("CourseDescriptionIndexPage tests", () => {
         <MemoryRouter>
           <CourseDescriptionIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -61,21 +61,22 @@ describe("CourseDescriptionIndexPage tests", () => {
         <MemoryRouter>
           <CourseDescriptionIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20211");
     const selectSubject = screen.getByLabelText("Subject Area");
 
-
     const expectedKey = "BasicSearch.Subject-option-ANTH";
 
-    await waitFor(
-      () => expect(screen.getByTestId(expectedKey).toBeInTheDocument)
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
     );
 
-    expect(await screen.findByLabelText("Subject Area")).toHaveTextContent("ANTH");
+    expect(await screen.findByLabelText("Subject Area")).toHaveTextContent(
+      "ANTH",
+    );
 
     userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");

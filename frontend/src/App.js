@@ -26,7 +26,6 @@ import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseO
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 
 function App() {
-
   const { data: currentUser } = useCurrentUser();
 
   return (
@@ -34,33 +33,73 @@ function App() {
       <Routes>
         <Route exact path="/" element={<SectionSearchesIndexPage />} />
         <Route exact path="/profile" element={<ProfilePage />} />
-        {
-          hasRole(currentUser, "ROLE_ADMIN") && (
-            <>
-              <Route exact path="/admin/users" element={<AdminUsersPage />} />
-              <Route exact path="/admin/loadsubjects" element={<AdminLoadSubjectsPage />} />
-              <Route exact path="/admin/personalschedule" element={<AdminPersonalSchedulesPage />} />
-              <Route path="/admin/jobs" element={<AdminJobsPage />} />
-            </>
-          )
-        }
-        {
-          hasRole(currentUser, "ROLE_USER") && (
-            <>
-              <Route exact path="/personalschedules/list" element={<PersonalSchedulesIndexPage />} />
-              <Route exact path="/personalschedules/create" element={<PersonalSchedulesCreatePage />} />
-              <Route exact path="/personalschedules/edit/:id" element={<PersonalSchedulesEditPage />} />
+        {hasRole(currentUser, "ROLE_ADMIN") && (
+          <>
+            <Route exact path="/admin/users" element={<AdminUsersPage />} />
+            <Route
+              exact
+              path="/admin/loadsubjects"
+              element={<AdminLoadSubjectsPage />}
+            />
+            <Route
+              exact
+              path="/admin/personalschedule"
+              element={<AdminPersonalSchedulesPage />}
+            />
+            <Route path="/admin/jobs" element={<AdminJobsPage />} />
+          </>
+        )}
+        {hasRole(currentUser, "ROLE_USER") && (
+          <>
+            <Route
+              exact
+              path="/personalschedules/list"
+              element={<PersonalSchedulesIndexPage />}
+            />
+            <Route
+              exact
+              path="/personalschedules/create"
+              element={<PersonalSchedulesCreatePage />}
+            />
+            <Route
+              exact
+              path="/personalschedules/edit/:id"
+              element={<PersonalSchedulesEditPage />}
+            />
 
-              <Route exact path="/courses/list" element={<CoursesIndexPage />} />
-              <Route exact path="/courses/create" element={<CoursesCreatePage />} />
-              <Route exact path="/personalschedules/details/:id" element={<PersonalSchedulesDetailsPage />} />
-            </>
-          )
-        }
-        <Route exact path="/coursedescriptions/search" element={<CourseDescriptionIndexPage />} />
-        <Route exact path="/courseovertime/search" element={<CourseOverTimeIndexPage />} />
-        <Route exact path="/courseovertime/buildingsearch" element={<CourseOverTimeBuildingsIndexPage />} />
-        <Route exact path="/courseovertime/instructorsearch" element={<CourseOverTimeInstructorIndexPage />} />
+            <Route exact path="/courses/list" element={<CoursesIndexPage />} />
+            <Route
+              exact
+              path="/courses/create"
+              element={<CoursesCreatePage />}
+            />
+            <Route
+              exact
+              path="/personalschedules/details/:id"
+              element={<PersonalSchedulesDetailsPage />}
+            />
+          </>
+        )}
+        <Route
+          exact
+          path="/coursedescriptions/search"
+          element={<CourseDescriptionIndexPage />}
+        />
+        <Route
+          exact
+          path="/courseovertime/search"
+          element={<CourseOverTimeIndexPage />}
+        />
+        <Route
+          exact
+          path="/courseovertime/buildingsearch"
+          element={<CourseOverTimeBuildingsIndexPage />}
+        />
+        <Route
+          exact
+          path="/courseovertime/instructorsearch"
+          element={<CourseOverTimeInstructorIndexPage />}
+        />
       </Routes>
     </BrowserRouter>
   );

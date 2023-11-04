@@ -18,7 +18,6 @@ jest.mock("react-toastify", () => ({
 }));
 
 describe("CourseOverTimeSearchForm tests", () => {
-
   const axiosMock = new AxiosMockAdapter(axios);
 
   const queryClient = new QueryClient();
@@ -26,25 +25,22 @@ describe("CourseOverTimeSearchForm tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, {
-        ...systemInfoFixtures.showingNeither,
-        "startQtrYYYYQ": "20201",
-        "endQtrYYYYQ": "20214"
-      });
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      ...systemInfoFixtures.showingNeither,
+      startQtrYYYYQ: "20201",
+      endQtrYYYYQ: "20214",
+    });
 
     toast.mockReturnValue({
       addToast: addToast,
     });
   });
-
 
   test("renders without crashing", () => {
     render(
@@ -52,7 +48,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -62,7 +58,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20201");
@@ -75,7 +71,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectEndQuarter = screen.getByLabelText("End Quarter");
     userEvent.selectOptions(selectEndQuarter, "20204");
@@ -90,11 +86,13 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-MATH";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectSubject = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectSubject, "MATH");
@@ -108,9 +106,11 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-    const selectCourseNumber = screen.getByLabelText("Course Number (Try searching '16' or '130A')");
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
     userEvent.type(selectCourseNumber, "24");
     expect(selectCourseNumber.value).toBe("24");
   });
@@ -121,9 +121,11 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-    const selectCourseNumber = screen.getByLabelText("Course Number (Try searching '16' or '130A')");
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
     userEvent.type(selectCourseNumber, "130A");
     expect(selectCourseNumber.value).toBe("130A");
   });
@@ -134,9 +136,11 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-    const selectCourseNumber = screen.getByLabelText("Course Number (Try searching '16' or '130A')");
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
     userEvent.type(selectCourseNumber, "A");
     expect(selectCourseNumber.value).toBe("A");
   });
@@ -156,7 +160,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedFields = {
@@ -164,11 +168,13 @@ describe("CourseOverTimeSearchForm tests", () => {
       endQuarter: "20214",
       subject: "CMPSC",
       courseNumber: "130",
-      courseSuf: "A"
+      courseSuf: "A",
     };
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20211");
@@ -177,7 +183,9 @@ describe("CourseOverTimeSearchForm tests", () => {
     const selectSubject = screen.getByLabelText("Subject Area");
     expect(selectSubject).toBeInTheDocument();
     userEvent.selectOptions(selectSubject, "CMPSC");
-    const selectCourseNumber = screen.getByLabelText("Course Number (Try searching '16' or '130A')");
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
     userEvent.type(selectCourseNumber, "130A");
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
@@ -186,7 +194,7 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     expect(fetchJSONSpy).toHaveBeenCalledWith(
       expect.any(Object),
-      expectedFields
+      expectedFields,
     );
   });
 
@@ -207,11 +215,13 @@ describe("CourseOverTimeSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20204");
@@ -219,36 +229,36 @@ describe("CourseOverTimeSearchForm tests", () => {
     userEvent.selectOptions(selectEndQuarter, "20204");
     const selectSubject = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectSubject, "CMPSC");
-    const selectCourseNumber = screen.getByLabelText("Course Number (Try searching '16' or '130A')");
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
     userEvent.type(selectCourseNumber, "130A");
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
   });
 
-
   test("renders without crashing when fallback values are used", async () => {
-
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, {
-        "springH2ConsoleEnabled": false,
-        "showSwaggerUILink": false,
-        "startQtrYYYYQ": null, // use fallback value
-        "endQtrYYYYQ": null  // use fallback value
-      });
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: null, // use fallback value
+      endQtrYYYYQ: null, // use fallback value
+    });
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    // Make sure the first and last options 
-    expect(await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-0/)).toHaveValue("20211")
-    expect(await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-3/)).toHaveValue("20214")
-
+    // Make sure the first and last options
+    expect(
+      await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-0/),
+    ).toHaveValue("20211");
+    expect(
+      await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-3/),
+    ).toHaveValue("20214");
   });
-
 });

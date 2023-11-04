@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
-
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
@@ -18,7 +17,6 @@ jest.mock("react-toastify", () => ({
 }));
 
 describe("CourseOverTimeBuildingsSearchForm tests", () => {
-
   const axiosMock = new AxiosMockAdapter(axios);
 
   const queryClient = new QueryClient();
@@ -26,25 +24,22 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, {
-        ...systemInfoFixtures.showingNeither,
-        "startQtrYYYYQ": "20201",
-        "endQtrYYYYQ": "20214"
-      });
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      ...systemInfoFixtures.showingNeither,
+      startQtrYYYYQ: "20201",
+      endQtrYYYYQ: "20214",
+    });
 
     toast.mockReturnValue({
       addToast: addToast,
     });
   });
-
 
   test("renders without crashing", () => {
     render(
@@ -52,7 +47,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -62,7 +57,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20201");
@@ -75,7 +70,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectEndQuarter = screen.getByLabelText("End Quarter");
     userEvent.selectOptions(selectEndQuarter, "20204");
@@ -83,17 +78,18 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   });
 
   test("when I select a building, the state for building changes", async () => {
-
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectBuilding = screen.getByLabelText("Building Name");
     userEvent.selectOptions(selectBuilding, "BRDA");
@@ -102,7 +98,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   });
 
   test("when I click submit, the right stuff happens", async () => {
-
     const sampleReturnValue = {
       sampleKey: "sampleValue",
     };
@@ -116,17 +111,19 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedFields = {
       startQuarter: "20211",
       endQuarter: "20214",
-      buildingCode: "GIRV"
+      buildingCode: "GIRV",
     };
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20211");
@@ -142,12 +139,11 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     expect(fetchJSONSpy).toHaveBeenCalledWith(
       expect.any(Object),
-      expectedFields
+      expectedFields,
     );
   });
 
   test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
-
     const sampleReturnValue = {
       sampleKey: "sampleValue",
       total: 0,
@@ -162,11 +158,13 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20204");
@@ -178,35 +176,45 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
-
   });
 
-
   test("renders without crashing when fallback values are used", async () => {
-
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, {
-        "springH2ConsoleEnabled": false,
-        "showSwaggerUILink": false,
-        "startQtrYYYYQ": null, // use fallback value
-        "endQtrYYYYQ": null  // use fallback value
-      });
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: null, // use fallback value
+      endQtrYYYYQ: null, // use fallback value
+    });
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    // Make sure the first and last options 
-    expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.StartQuarter-option-0')).toHaveValue("20211")
-    expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.EndQuarter-option-3')).toHaveValue("20214")
-    expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.BuildingCode-option-0')).toHaveValue("")
-    expect(await screen.findByTestId('CourseOverTimeBuildingsSearch.BuildingCode-option-3')).toHaveValue("BRDA")
-    
+    // Make sure the first and last options
+    expect(
+      await screen.findByTestId(
+        "CourseOverTimeBuildingsSearch.StartQuarter-option-0",
+      ),
+    ).toHaveValue("20211");
+    expect(
+      await screen.findByTestId(
+        "CourseOverTimeBuildingsSearch.EndQuarter-option-3",
+      ),
+    ).toHaveValue("20214");
+    expect(
+      await screen.findByTestId(
+        "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
+      ),
+    ).toHaveValue("");
+    expect(
+      await screen.findByTestId(
+        "CourseOverTimeBuildingsSearch.BuildingCode-option-3",
+      ),
+    ).toHaveValue("BRDA");
   });
 
   test("Button padding is correct", () => {
@@ -215,12 +223,14 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const submitButton = screen.getByText("Submit");
     const buttonCol = submitButton.parentElement;
     const buttonRow = buttonCol.parentElement;
-    expect(buttonRow).toHaveAttribute("style", "padding-top: 10px; padding-bottom: 10px;");
+    expect(buttonRow).toHaveAttribute(
+      "style",
+      "padding-top: 10px; padding-bottom: 10px;",
+    );
   });
-
 });

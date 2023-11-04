@@ -8,16 +8,16 @@ import { coursesFixtures } from "fixtures/pscourseFixtures";
 
 const mockedNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedNavigate,
 }));
 
 const mockedMutate = jest.fn();
 
-jest.mock('main/utils/useBackend', () => ({
-    ...jest.requireActual('main/utils/useBackend'),
-    useBackendMutation: () => ({mutate: mockedMutate})
+jest.mock("main/utils/useBackend", () => ({
+  ...jest.requireActual("main/utils/useBackend"),
+  useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
 describe("UserTable tests", () => {
@@ -31,7 +31,7 @@ describe("UserTable tests", () => {
         <MemoryRouter>
           <CourseTable courses={[]} currentUser={currentUser} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -43,7 +43,7 @@ describe("UserTable tests", () => {
         <MemoryRouter>
           <CourseTable courses={[]} currentUser={currentUser} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -55,24 +55,26 @@ describe("UserTable tests", () => {
         <MemoryRouter>
           <CourseTable courses={[]} currentUser={currentUser} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
   test("Has the expected colum headers and content for Ordinary User", () => {
-
     const currentUser = currentUserFixtures.userOnly;
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseTable courses={coursesFixtures.twoCourses} currentUser={currentUser} />
+          <CourseTable
+            courses={coursesFixtures.twoCourses}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    const expectedHeaders = ["id", "Enrollment Code","Personal Schedule ID"];
-    const expectedFields = ["id", "enrollCd","psId"];
+    const expectedHeaders = ["id", "Enrollment Code", "Personal Schedule ID"];
+    const expectedFields = ["id", "enrollCd", "psId"];
     const testId = "CourseTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -85,29 +87,36 @@ describe("UserTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "25",
+    );
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
+      "26",
+    );
 
-    const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `CourseTable-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
-
   });
-  
-  test("Has the expected column headers and content for adminUser", () => {
 
+  test("Has the expected column headers and content for adminUser", () => {
     const currentUser = currentUserFixtures.adminUser;
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseTable courses={coursesFixtures.twoCourses} currentUser={currentUser} />
+          <CourseTable
+            courses={coursesFixtures.twoCourses}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    const expectedHeaders = ["id", "Enrollment Code","Personal Schedule ID"];
-    const expectedFields = ["id", "enrollCd","psId"];
+    const expectedHeaders = ["id", "Enrollment Code", "Personal Schedule ID"];
+    const expectedFields = ["id", "enrollCd", "psId"];
     const testId = "CourseTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -120,53 +129,71 @@ describe("UserTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("25");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("26");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "25",
+    );
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
+      "26",
+    );
 
-    const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `CourseTable-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
   test("Delete button calls delete callback for ordinary user", async () => {
-
     const currentUser = currentUserFixtures.userOnly;
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseTable courses={coursesFixtures.twoCourses} currentUser={currentUser} />
+          <CourseTable
+            courses={coursesFixtures.twoCourses}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId(`CourseTable-cell-row-0-col-id`)).toHaveTextContent("25");
+    expect(
+      await screen.findByTestId(`CourseTable-cell-row-0-col-id`),
+    ).toHaveTextContent("25");
 
-    const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `CourseTable-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
-    
+
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
   });
 
   test("Delete button calls delete callback for admin user", async () => {
-
     const currentUser = currentUserFixtures.adminUser;
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseTable courses={coursesFixtures.twoCourses} currentUser={currentUser} />
+          <CourseTable
+            courses={coursesFixtures.twoCourses}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId(`CourseTable-cell-row-0-col-id`)).toHaveTextContent("25");
+    expect(
+      await screen.findByTestId(`CourseTable-cell-row-0-col-id`),
+    ).toHaveTextContent("25");
 
-    const deleteButton = screen.getByTestId(`CourseTable-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `CourseTable-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
-    
+
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));

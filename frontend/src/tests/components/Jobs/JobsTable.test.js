@@ -8,31 +8,26 @@ describe("JobsTable tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table", () => {
-
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <JobsTable jobs={[]}  />
+          <JobsTable jobs={[]} />
         </MemoryRouter>
-      </QueryClientProvider>
-
+      </QueryClientProvider>,
     );
   });
 
-
   test("Has the expected column headers and content", () => {
-
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <JobsTable jobs={jobsFixtures.sixJobs}  />
+          <JobsTable jobs={jobsFixtures.sixJobs} />
         </MemoryRouter>
-      </QueryClientProvider>
-
+      </QueryClientProvider>,
     );
 
-    const expectedHeaders = ['id', 'Created', 'Updated', 'Status', 'Log'];
-    const expectedFields = ['id', 'Created', 'Updated','status', 'Log'];
+    const expectedHeaders = ["id", "Created", "Updated", "Status", "Log"];
+    const expectedFields = ["id", "Created", "Updated", "status", "Log"];
     const testId = "JobsTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -45,16 +40,24 @@ describe("JobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-Created`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-Updated`)).toHaveTextContent("11/13/2022, 19:49:59");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-status`)).toHaveTextContent("complete");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-Log`)).toHaveTextContent("Hello World! from test job!Goodbye from test job!");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Created`),
+    ).toHaveTextContent("1");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Updated`),
+    ).toHaveTextContent("11/13/2022, 19:49:59");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-status`),
+    ).toHaveTextContent("complete");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Log`),
+    ).toHaveTextContent("Hello World! from test job!Goodbye from test job!");
 
-    expect(screen.getByTestId(`JobsTable-header-id-sort-carets`)).toHaveTextContent("🔽");
-
-
+    expect(
+      screen.getByTestId(`JobsTable-header-id-sort-carets`),
+    ).toHaveTextContent("🔽");
   });
-
 });
-

@@ -9,7 +9,6 @@ import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleBuildingDropdown from "../Buildings/SingleBuildingDropdown";
 
 const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
-
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
@@ -20,14 +19,24 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const quarters = quarterRange(startQtr, endQtr);
 
   // Stryker disable all : not sure how to test/mock local storage
-  const localStartQuarter = localStorage.getItem("CourseOverTimeBuildingsSearch.StartQuarter");
-  const localEndQuarter = localStorage.getItem("CourseOverTimeBuildingsSearch.EndQuarter");
-  const localBuildingCode = localStorage.getItem("CourseOverTimeBuildingsSearch.BuildingCode")
+  const localStartQuarter = localStorage.getItem(
+    "CourseOverTimeBuildingsSearch.StartQuarter",
+  );
+  const localEndQuarter = localStorage.getItem(
+    "CourseOverTimeBuildingsSearch.EndQuarter",
+  );
+  const localBuildingCode = localStorage.getItem(
+    "CourseOverTimeBuildingsSearch.BuildingCode",
+  );
 
-  const [startQuarter, setStartQuarter] = useState(localStartQuarter || quarters[0].yyyyq);
-  const [endQuarter, setEndQuarter] = useState(localEndQuarter || quarters[0].yyyyq);
+  const [startQuarter, setStartQuarter] = useState(
+    localStartQuarter || quarters[0].yyyyq,
+  );
+  const [endQuarter, setEndQuarter] = useState(
+    localEndQuarter || quarters[0].yyyyq,
+  );
   const [buildingCode, setBuildingCode] = useState(localBuildingCode || {});
-  
+
   // Stryker restore all
 
   const handleSubmit = (event) => {

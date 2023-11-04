@@ -25,7 +25,7 @@ export default function CourseDescriptionIndexPage() {
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    []
+    [],
   );
 
   async function fetchBasicCourseJSON(_event, query) {

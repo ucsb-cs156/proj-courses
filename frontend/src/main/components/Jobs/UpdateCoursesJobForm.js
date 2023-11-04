@@ -6,10 +6,9 @@ import { quarterRange } from "main/utils/quarterUtilities";
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
-import { useBackend  } from "main/utils/useBackend";
+import { useBackend } from "main/utils/useBackend";
 
 const UpdateCoursesJobForm = ({ callback }) => {
-
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
@@ -23,12 +22,15 @@ const UpdateCoursesJobForm = ({ callback }) => {
   const localSubject = localStorage.getItem("BasicSearch.Subject");
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
 
-  const { data: subjects, error: _error, status: _status } =
-  useBackend(
+  const {
+    data: subjects,
+    error: _error,
+    status: _status,
+  } = useBackend(
     // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/UCSBSubjects/all"], 
-    { method: "GET", url: "/api/UCSBSubjects/all" }, 
-    []
+    ["/api/UCSBSubjects/all"],
+    { method: "GET", url: "/api/UCSBSubjects/all" },
+    [],
   );
 
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
@@ -38,7 +40,7 @@ const UpdateCoursesJobForm = ({ callback }) => {
     event.preventDefault();
     console.log("UpdateCoursesJobForm: quarter", quarter);
     console.log("UpdateCoursesJobForm: subject", subject);
-    callback({ quarter, subject});
+    callback({ quarter, subject });
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better

@@ -1,38 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 import SingleSubjectDropdown from "main/components/Subjects/SingleSubjectDropdown";
-import {oneSubject, threeSubjects, allTheSubjects} from "fixtures/subjectFixtures";
+import {
+  oneSubject,
+  threeSubjects,
+  allTheSubjects,
+} from "fixtures/subjectFixtures";
 
 export default {
-    title: 'components/Subjects/SingleSubjectDropdown',
-    component: SingleSubjectDropdown
+  title: "components/Subjects/SingleSubjectDropdown",
+  component: SingleSubjectDropdown,
 };
 
 const Template = (args) => {
-    const [subjects, setSubject] = useState(args.subjects[0]);
+  const [subjects, setSubject] = useState(args.subjects[0]);
 
-    return (
-        < SingleSubjectDropdown 
-        subjects={subjects} 
-        setSubject={setSubject} 
-        controlId={"SampleControlId"}
-        label={"Subject"} 
-        {...args} />
-    )
+  return (
+    <SingleSubjectDropdown
+      subjects={subjects}
+      setSubject={setSubject}
+      controlId={"SampleControlId"}
+      label={"Subject"}
+      {...args}
+    />
+  );
 };
 
 export const OneSubject = Template.bind({});
 OneSubject.args = {
-    subjects: oneSubject
+  subjects: oneSubject,
 };
 
 export const ThreeSubjects = Template.bind({});
 ThreeSubjects.args = {
-    subjects: threeSubjects
+  subjects: threeSubjects,
 };
 
 export const AllTheSubjects = Template.bind({});
 AllTheSubjects.args = {
-    subjects: allTheSubjects
+  subjects: allTheSubjects,
 };
-
