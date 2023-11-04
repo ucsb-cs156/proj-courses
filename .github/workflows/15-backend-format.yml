@@ -1,0 +1,18 @@
+name: "15-backend-format: Format Java Files"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: [src/**]
+  push:
+    branches: [ main ]
+    paths: [src/**]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: axel-op/googlejavaformat-action@v3
+        with:
+          args: "--replace src/**"
