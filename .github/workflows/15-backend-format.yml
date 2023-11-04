@@ -20,10 +20,5 @@ jobs:
           distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
           java-version-file: ./.java-version
 
-      - name: Check java formatting
-        uses: axel-op/googlejavaformat-action@v3
-        with:
-          args: "--replace"
-          skip-commit: true
-      - name: Print the diff
-        run: git --no-pager diff --exit-code
+      - name: Check formatting with Maven
+        run: mvn git-code-format:validate-code-format
