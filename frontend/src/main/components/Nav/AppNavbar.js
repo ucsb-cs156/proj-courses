@@ -48,25 +48,15 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               )
             }
           </Nav>
-
-            <Nav className="mr-auto">
-              {
-                hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="PSCourse" id="appnavbar-courses-dropdown" data-testid="appnavbar-courses-dropdown" >
-                    <NavDropdown.Item href="/courses/list" data-testid="appnavbar-courses-list">List</NavDropdown.Item>
-                    <NavDropdown.Item href="/courses/create" data-testid="appnavbar-courses-create">Create</NavDropdown.Item>
-                  </NavDropdown>          
-                )
-              }
-            </Nav>
-
         
             <Nav className="mr-auto">
               {
                 hasRole(currentUser, "ROLE_USER") && (
-                  <NavDropdown title="PersonalSchedules" id="appnavbar-personalschedules-dropdown" data-testid="appnavbar-personalschedules-dropdown" >
-                    <NavDropdown.Item href="/personalschedules/list" data-testid="appnavbar-personalschedules-list">List</NavDropdown.Item>
-                    <NavDropdown.Item href="/personalschedules/create" data-testid="appnavbar-personalschedules-create">Create</NavDropdown.Item>
+                  <NavDropdown title="Personal Schedules" id="appnavbar-personalschedules-dropdown" data-testid="appnavbar-personalschedules-dropdown" >
+                    <NavDropdown.Item href="/personalschedules/create" data-testid="appnavbar-personalschedules-create">Add Schedule</NavDropdown.Item>
+                    <NavDropdown.Item href="/personalschedules/list" data-testid="appnavbar-personalschedules-list">All Schedules</NavDropdown.Item>
+                    <NavDropdown.Item href="/courses/create" data-testid="appnavbar-courses-create">Add Course</NavDropdown.Item>
+                    <NavDropdown.Item href="/courses/list" data-testid="appnavbar-courses-list">All Courses</NavDropdown.Item>
                   </NavDropdown>
                 )
               }

@@ -36,7 +36,7 @@ export default function PersonalSchedulesDetailsPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>PersonalSchedules Details</h1>
+        <h1>Personal Schedules Details</h1>
         {personalSchedule &&
                 <PersonalSchedulesTable personalSchedules={[personalSchedule]} showButtons={false} />
             }

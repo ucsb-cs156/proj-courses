@@ -50,7 +50,7 @@ export default function PersonalSchedulesCreatePage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Create New PersonalSchedule</h1>
+        <h1>Create New Personal Schedule</h1>
 
         <PersonalScheduleForm submitAction={onSubmit} />
 
