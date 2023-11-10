@@ -123,7 +123,19 @@
 <a name='L58'></a><a href='#L58'>58</a>
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -149,10 +161,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -162,6 +170,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -169,7 +185,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -179,78 +194,90 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
 import OurTable from "main/components/OurTable";
-import { convertToFraction, formatInstructors, formatLocation, formatTime} from "main/utils/sectionUtils.js";
-&nbsp;
+import {
+  convertToFraction,
+  formatInstructors,
+  formatLocation,
+  formatTime,
+} from "main/utils/sectionUtils.js";
 &nbsp;
 export default function PersonalSectionsTable({ personalSections }) {
+  const columns = [
+    {
+      Header: "Course ID",
+      accessor: "courseId",
+    },
+    {
+      Header: "Enroll Code",
+      accessor: "classSections[0].enrollCode",
+    },
+    {
+      Header: "Section",
+      accessor: "classSections[0].section",
+    },
+    {
+      Header: "Title",
+      accessor: "title",
+    },
+    {
+      Header: "Enrolled",
+      accessor: (row) =&gt;
+        convertToFraction(
+          row.classSections[0].enrolledTotal,
+          row.classSections[0].maxEnroll,
+        ),
+      id: "enrolled",
+    },
+    {
+      Header: "Location",
+      accessor: (row) =&gt; formatLocation(row.classSections[0].timeLocations),
+      id: "location",
+    },
+    {
+      Header: "Days",
+      accessor: "classSections[0].timeLocations[0].days",
+    },
+    {
+      Header: "Time",
+      accessor: (row) =&gt; formatTime(row.classSections[0].timeLocations),
+      id: "time",
+    },
+    {
+      Header: "Instructor",
+      accessor: (row) =&gt; formatInstructors(row.classSections[0].instructors),
+      id: "instructor",
+    },
+  ];
 &nbsp;
-    const columns = [
-        {
-            Header: 'Course ID',
-            accessor: 'courseId',
-        },
-        {
-            Header: 'Enroll Code',
-            accessor: 'classSections[0].enrollCode',
-        },
-        {
-            Header: 'Section',
-            accessor: 'classSections[0].section',
-        },
-        {
-            Header: 'Title',
-            accessor: 'title',
-        },
-        {
-            Header: 'Enrolled',
-            accessor: (row) =&gt; convertToFraction(row.classSections[0].enrolledTotal, row.classSections[0].maxEnroll),
-            id: 'enrolled',
-        },
-        {
-            Header: 'Location',
-            accessor: (row) =&gt; formatLocation(row.classSections[0].timeLocations),
-            id: 'location',
-        },
-        {
-            Header: 'Days',
-            accessor: 'classSections[0].timeLocations[0].days',
-        },
-        {
-            Header: 'Time',
-            accessor: (row) =&gt; formatTime(row.classSections[0].timeLocations),
-            id: 'time',
-        },
-        {
-            Header: 'Instructor',
-            accessor: (row) =&gt; formatInstructors(row.classSections[0].instructors),
-            id: 'instructor',
-        }
+  const testid = "PersonalSectionsTable";
 &nbsp;
-    ];
+  const columnsToDisplay = columns;
 &nbsp;
-    const testid = "PersonalSectionsTable";
-&nbsp;
-    const columnsToDisplay = columns;
-&nbsp;
-    return &lt;OurTable
-        data={personalSections}
-        columns={columnsToDisplay}
-        testid={testid}
-    /&gt;;
-}</pre></td></tr></table></pre>
+  return (
+    &lt;OurTable
+      data={personalSections}
+      columns={columnsToDisplay}
+      testid={testid}
+    /&gt;
+  );
+}
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

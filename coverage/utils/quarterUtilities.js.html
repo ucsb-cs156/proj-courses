@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>43/43</span>
+                <span class='fraction'>44/44</span>
             </div>
         
             
@@ -159,21 +159,9 @@
 <a name='L94'></a><a href='#L94'>94</a>
 <a name='L95'></a><a href='#L95'>95</a>
 <a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -186,12 +174,17 @@
 <span class="cline-any cline-yes">9410x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,12 +227,15 @@
 <span class="cline-any cline-yes">2245x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">335x</span>
 <span class="cline-any cline-yes">335x</span>
 <span class="cline-any cline-yes">335x</span>
 <span class="cline-any cline-yes">335x</span>
+<span class="cline-any cline-yes">335x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8879x</span>
 <span class="cline-any cline-yes">8879x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -259,103 +255,101 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const quarters = [
-    "WINTER",
-    "SPRING",
-    "SUMMER",
-    "FALL"
-];
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const quarters = ["WINTER", "SPRING", "SUMMER", "FALL"];
 &nbsp;
-const shortQuarters = [
-    "W",
-    "S",
-    "M",
-    "F"
-];
+const shortQuarters = ["W", "S", "M", "F"];
 &nbsp;
 const qtrNumToQuarter = {
-    '1': 'WINTER',
-    '2': 'SPRING',
-    '3': 'SUMMER',
-    '4': 'FALL'
+  1: "WINTER",
+  2: "SPRING",
+  3: "SUMMER",
+  4: "FALL",
 };
 &nbsp;
 const yyyyqToQyy = (yyyyq) =&gt; {
-    return `${shortQuarters[parseInt(yyyyq.charAt(4)) - 1]}${yyyyq.substring(2, 4)}`;
-}
+  return `${shortQuarters[parseInt(yyyyq.charAt(4)) - 1]}${yyyyq.substring(
+    2,
+    4,
+  )}`;
+};
 &nbsp;
 const toFormat = (quarter, year) =&gt; {
-    return year.toString() + (parseInt(quarter)).toString();
-}
+  return year.toString() + parseInt(quarter).toString();
+};
 &nbsp;
 const fromFormat = (format) =&gt; {
-    return `${quarters[parseInt(format.charAt(4)) - 1]} ${format.substring(0, 4)}`;
-}
-&nbsp;
+  return `${quarters[parseInt(format.charAt(4)) - 1]} ${format.substring(
+    0,
+    4,
+  )}`;
+};
 &nbsp;
 const fromNumericYYYYQ = (yyyyqInt) =&gt; {
-    if (typeof (yyyyqInt) != 'number') {
-        throw new Error("param should be a number");
-    }
-    const yyyyqStr = yyyyqInt.toString();
-    if (yyyyqStr.length !== 5) {
-        throw new Error("param should be five digits");
-    }
-    const qStr = yyyyqStr.substring(4, 5);
-    if (!(qStr in qtrNumToQuarter)) {
-        throw new Error("param should end in 1,2,3 or 4");
-    }
-    return yyyyqStr;
-}
+  if (typeof yyyyqInt != "number") {
+    throw new Error("param should be a number");
+  }
+  const yyyyqStr = yyyyqInt.toString();
+  if (yyyyqStr.length !== 5) {
+    throw new Error("param should be five digits");
+  }
+  const qStr = yyyyqStr.substring(4, 5);
+  if (!(qStr in qtrNumToQuarter)) {
+    throw new Error("param should end in 1,2,3 or 4");
+  }
+  return yyyyqStr;
+};
 &nbsp;
 const toNumericYYYYQ = (yyyyqStr) =&gt; {
-    if (typeof (yyyyqStr) !== 'string') {
-        throw new Error("param should be a string");
-    }
-    if (yyyyqStr.length !== 5) {
-        throw new Error("param should be five digits");
-    }
-    const qStr = yyyyqStr.substring(4, 5);
-    if (!(qStr in qtrNumToQuarter)) {
-        throw new Error("param should end in 1,2,3 or 4");
-    }
-    return parseInt(yyyyqStr);
-}
+  if (typeof yyyyqStr !== "string") {
+    throw new Error("param should be a string");
+  }
+  if (yyyyqStr.length !== 5) {
+    throw new Error("param should be five digits");
+  }
+  const qStr = yyyyqStr.substring(4, 5);
+  if (!(qStr in qtrNumToQuarter)) {
+    throw new Error("param should end in 1,2,3 or 4");
+  }
+  return parseInt(yyyyqStr);
+};
 &nbsp;
 const nextQuarter = (yyyyqInt) =&gt; {
-    const _yyyyqStr = fromNumericYYYYQ(yyyyqInt); // just for type/format checking
-    const qInt = yyyyqInt % 10;
-    const yyyyInt = Math.floor(yyyyqInt / 10);
-    if (qInt &lt; 4) {
-        return yyyyqInt + 1;
-    }
-    return (yyyyInt + 1) * 10 + 1;
-}
-&nbsp;
+  const _yyyyqStr = fromNumericYYYYQ(yyyyqInt); // just for type/format checking
+  const qInt = yyyyqInt % 10;
+  const yyyyInt = Math.floor(yyyyqInt / 10);
+  if (qInt &lt; 4) {
+    return yyyyqInt + 1;
+  }
+  return (yyyyInt + 1) * 10 + 1;
+};
 &nbsp;
 const quarterRange = (beginYYYYQStr, endYYYYQStr) =&gt; {
-    let quarterList = [];
-    const beginYYYYQInt = toNumericYYYYQ(beginYYYYQStr);
-    const endYYYYQInt = toNumericYYYYQ(endYYYYQStr);
-    for (let yyyyqInt = beginYYYYQInt; yyyyqInt &lt;= endYYYYQInt; yyyyqInt = nextQuarter(yyyyqInt)) {
-        const yyyyqStr = fromNumericYYYYQ(yyyyqInt);
-        quarterList.push({
-            yyyyq : yyyyqStr,
-            qyy: yyyyqToQyy(yyyyqStr)
-        });
-    }
-    return quarterList;
-}
+  let quarterList = [];
+  const beginYYYYQInt = toNumericYYYYQ(beginYYYYQStr);
+  const endYYYYQInt = toNumericYYYYQ(endYYYYQStr);
+  for (
+    let yyyyqInt = beginYYYYQInt;
+    yyyyqInt &lt;= endYYYYQInt;
+    yyyyqInt = nextQuarter(yyyyqInt)
+  ) {
+    const yyyyqStr = fromNumericYYYYQ(yyyyqInt);
+    quarterList.push({
+      yyyyq: yyyyqStr,
+      qyy: yyyyqToQyy(yyyyqStr),
+    });
+  }
+  return quarterList;
+};
 &nbsp;
 export {
-    fromFormat,
-    toFormat,
-    yyyyqToQyy,
-    fromNumericYYYYQ,
-    toNumericYYYYQ,
-    nextQuarter,
-    quarterRange,
-    qtrNumToQuarter
+  fromFormat,
+  toFormat,
+  yyyyqToQyy,
+  fromNumericYYYYQ,
+  toNumericYYYYQ,
+  nextQuarter,
+  quarterRange,
+  qtrNumToQuarter,
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -364,7 +358,7 @@ export {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

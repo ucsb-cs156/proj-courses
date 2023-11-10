@@ -136,7 +136,35 @@
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -146,6 +174,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -167,6 +203,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">33x</span>
 <span class="cline-any cline-yes">33x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -209,87 +246,125 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
-import { useTable, useGroupBy, useExpanded } from 'react-table'
+import { useTable, useGroupBy, useExpanded } from "react-table";
 import { Table } from "react-bootstrap";
 &nbsp;
-&nbsp;
 // Stryker disable StringLiteral, ArrayDeclaration
-export default function SectionsOverTimeTableBase({ columns, data, testid = "testid"}) {
-  
+export default function SectionsOverTimeTableBase({
+  columns,
+  data,
+  testid = "testid",
+}) {
   // Stryker disable next-line ObjectLiteral
-  const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = useTable({initialState: {groupBy: ["quarter"], hiddenColumns: ["isSection"]}, columns, data }, useGroupBy, useExpanded)
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        initialState: { groupBy: ["quarter"], hiddenColumns: ["isSection"] },
+        columns,
+        data,
+      },
+      useGroupBy,
+      useExpanded,
+    );
 &nbsp;
   return (
-    &lt;Table {...getTableProps()} striped bordered hover &gt;
+    &lt;Table {...getTableProps()} striped bordered hover&gt;
       &lt;thead&gt;
-        {headerGroups.map(headerGroup =&gt; (
+        {headerGroups.map((headerGroup) =&gt; (
           &lt;tr {...headerGroup.getHeaderGroupProps()}&gt;
-            {headerGroup.headers.map(column =&gt; (
+            {headerGroup.headers.map((column) =&gt; (
               &lt;th
                 {...column.getHeaderProps()}
                 data-testid={`${testid}-header-${column.id}`}
               &gt;
-                {column.render('Header')}
+                {column.render("Header")}
               &lt;/th&gt;
             ))}
           &lt;/tr&gt;
         ))}
       &lt;/thead&gt;
       &lt;tbody {...getTableBodyProps()}&gt;
-        {rows.map(row =&gt; {
-          prepareRow(row)
+        {rows.map((row) =&gt; {
+          prepareRow(row);
           return (
             &lt;&gt;
-            {row.cells[0].isGrouped || (!row.cells[0].isGrouped &amp;&amp; row.allCells[3].value) ? 
-            &lt;tr {...row.getRowProps()}&gt;
-              {row.cells.map((cell, _index) =&gt; {
-                return (
-                    &lt;td
-                    {...cell.getCellProps()}
-                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
-                    // Stryker disable next-line ObjectLiteral
-                    style={{background: cell.isGrouped ? "#34859b" : cell.isAggregated ? "#34859b" : "#9dbfbe", color: cell.isGrouped ? "#effcf4" : cell.isAggregated ? "#effcf4" : "#000000", fontWeight: cell.isGrouped ? "bold" : cell.isAggregated ? "bold" : "normal"}}
-                    &gt;
-                    
-                    {cell.isGrouped ? (
-                    &lt;&gt;
-                    &lt;span {...row.getToggleRowExpandedProps()}
-                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
-                    &gt;
-                    {row.isExpanded ? "➖ " : "➕ "}
-                    &lt;/span&gt;{" "}
-                    {cell.render("Cell")} 
-                    &lt;/&gt;
-                    ) 
-                    : cell.isAggregated ? (
-                      cell.render("Aggregated")
-                    )
-                    : cell.render('Cell')
-                    }
-                    &lt;&gt;
-                    
-                    &lt;/&gt;
-                  &lt;/td&gt;
-                )
-              })}
-&nbsp;
-            &lt;/tr&gt;
-            : null}
+              {row.cells[0].isGrouped ||
+              (!row.cells[0].isGrouped &amp;&amp; row.allCells[3].value) ? (
+                &lt;tr {...row.getRowProps()}&gt;
+                  {row.cells.map((cell, _index) =&gt; {
+                    return (
+                      &lt;td
+                        {...cell.getCellProps()}
+                        data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
+                        // Stryker disable next-line ObjectLiteral
+                        style={{
+                          background: cell.isGrouped
+                            ? "#34859b"
+                            : cell.isAggregated
+                            ? "#34859b"
+                            : "#9dbfbe",
+                          color: cell.isGrouped
+                            ? "#effcf4"
+                            : cell.isAggregated
+                            ? "#effcf4"
+                            : "#000000",
+                          fontWeight: cell.isGrouped
+                            ? "bold"
+                            : cell.isAggregated
+                            ? "bold"
+                            : "normal",
+                        }}
+                      &gt;
+                        {cell.isGrouped ? (
+                          &lt;&gt;
+                            &lt;span
+                              {...row.getToggleRowExpandedProps()}
+                              data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
+                            &gt;
+                              {row.isExpanded ? "➖ " : "➕ "}
+                            &lt;/span&gt;{" "}
+                            {cell.render("Cell")}
+                          &lt;/&gt;
+                        ) : cell.isAggregated ? (
+                          cell.render("Aggregated")
+                        ) : (
+                          cell.render("Cell")
+                        )}
+                        &lt;&gt;&lt;/&gt;
+                      &lt;/td&gt;
+                    );
+                  })}
+                &lt;/tr&gt;
+              ) : null}
             &lt;/&gt;
-          )
+          );
         })}
       &lt;/tbody&gt;
     &lt;/Table&gt;
-  )
-}</pre></td></tr></table></pre>
+  );
+}
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

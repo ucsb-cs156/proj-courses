@@ -190,8 +190,7 @@
 <a name='L125'></a><a href='#L125'>125</a>
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
-<a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L128'></a><a href='#L128'>128</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -204,7 +203,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -216,8 +214,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -264,14 +260,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -286,6 +274,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -296,7 +298,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -316,14 +317,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
-import Accordion from 'react-bootstrap/Accordion';
+import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import JobComingSoon from "main/components/Jobs/JobComingSoon";
 &nbsp;
@@ -332,118 +330,117 @@ import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 import UpdateCoursesByQuarterJobForm from "main/components/Jobs/UpdateCoursesByQuarterJobForm";
 &nbsp;
 const AdminJobsPage = () =&gt; {
+  const refreshJobsIntervalMilliseconds = 5000;
 &nbsp;
-    const refreshJobsIntervalMilliseconds = 5000;
+  // test job
 &nbsp;
-    // test job 
+  const objectToAxiosParamsTestJob = (data) =&gt; ({
+    url: `/api/jobs/launch/testjob?fail=${data.fail}&amp;sleepMs=${data.sleepMs}`,
+    method: "POST",
+  });
 &nbsp;
-    const objectToAxiosParamsTestJob = (data) =&gt; ({
-        url: `/api/jobs/launch/testjob?fail=${data.fail}&amp;sleepMs=${data.sleepMs}`,
-        method: "POST"
-    });
+  // Stryker disable all
+  const testJobMutation = useBackendMutation(objectToAxiosParamsTestJob, {}, [
+    "/api/jobs/all",
+  ]);
+  // Stryker enable all
 &nbsp;
-    // Stryker disable all
-    const testJobMutation = useBackendMutation(
-        objectToAxiosParamsTestJob,
-        {},
-        ["/api/jobs/all"]
-    );
-    // Stryker enable all
+  const submitTestJob = async (data) =&gt; {
+    console.log("submitTestJob, data=", data);
+    testJobMutation.mutate(data);
+  };
 &nbsp;
-    const submitTestJob = async (data) =&gt; {
-        console.log("submitTestJob, data=", data);
-        testJobMutation.mutate(data);
-    }
+  // ***** update courses job *******
 &nbsp;
-    // ***** update courses job *******
+  const objectToAxiosParamsUpdateCoursesJob = (data) =&gt; ({
+    url: `/api/jobs/launch/updateCourses?quarterYYYYQ=${data.quarter}&amp;subjectArea=${data.subject}`,
+    method: "POST",
+  });
 &nbsp;
-    const objectToAxiosParamsUpdateCoursesJob = (data) =&gt; ({
-        url: `/api/jobs/launch/updateCourses?quarterYYYYQ=${data.quarter}&amp;subjectArea=${data.subject}`,
-        method: "POST"
-    });
+  const objectToAxiosParamsUpdateCoursesByQuarterJob = (data) =&gt; ({
+    url: `/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=${data.quarter}`,
+    method: "POST",
+  });
 &nbsp;
-    const objectToAxiosParamsUpdateCoursesByQuarterJob = (data) =&gt; ({
-        url: `/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=${data.quarter}`,
-        method: "POST"
-    });
+  // Stryker disable all
+  const updateCoursesJobMutation = useBackendMutation(
+    objectToAxiosParamsUpdateCoursesJob,
+    {},
+    ["/api/jobs/all"],
+  );
+  const updateCoursesByQuarterJobMutation = useBackendMutation(
+    objectToAxiosParamsUpdateCoursesByQuarterJob,
+    {},
+    ["/api/jobs/all"],
+  );
+  // Stryker enable all
 &nbsp;
-    // Stryker disable all
-    const updateCoursesJobMutation = useBackendMutation(
-        objectToAxiosParamsUpdateCoursesJob,
-        {},
-        ["/api/jobs/all"]
-    );
-    const updateCoursesByQuarterJobMutation = useBackendMutation(
-        objectToAxiosParamsUpdateCoursesByQuarterJob,
-        {},
-        ["/api/jobs/all"]
-    );
-    // Stryker enable all
+  const submitUpdateCoursesJob = async (data) =&gt; {
+    console.log("submitUpdateCoursesJob, data=", data);
+    updateCoursesJobMutation.mutate(data);
+  };
 &nbsp;
-    const submitUpdateCoursesJob = async (data) =&gt; {
-        console.log("submitUpdateCoursesJob, data=", data);
-        updateCoursesJobMutation.mutate(data);
-    }
+  const submitUpdateCoursesByQuarterJob = async (data) =&gt; {
+    console.log("submitCoursesByQuarterJob, data=", data);
+    updateCoursesByQuarterJobMutation.mutate(data);
+  };
 &nbsp;
-    const submitUpdateCoursesByQuarterJob = async (data) =&gt; {
-        console.log("submitCoursesByQuarterJob, data=", data);
-        updateCoursesByQuarterJobMutation.mutate(data);
-    }
+  // Stryker disable all
+  const {
+    data: jobs,
+    error: _error,
+    status: _status,
+  } = useBackend(
+    ["/api/jobs/all"],
+    {
+      method: "GET",
+      url: "/api/jobs/all",
+    },
+    [],
+    { refetchInterval: refreshJobsIntervalMilliseconds },
+  );
+  // Stryker enable  all
 &nbsp;
-    // Stryker disable all 
-    const { data: jobs, error: _error, status: _status } =
-        useBackend(
-            ["/api/jobs/all"],
-            {
-                method: "GET",
-                url: "/api/jobs/all",
-            },
-            [],
-            { refetchInterval: refreshJobsIntervalMilliseconds }
-        );
-    // Stryker enable  all 
+  const jobLaunchers = [
+    {
+      name: "Test Job",
+      form: &lt;TestJobForm submitAction={submitTestJob} /&gt;,
+    },
+    {
+      name: "Update Courses Database",
+      form: &lt;UpdateCoursesJobForm callback={submitUpdateCoursesJob} /&gt;,
+    },
+    {
+      name: "Update Courses Database by quarter",
+      form: (
+        &lt;UpdateCoursesByQuarterJobForm
+          callback={submitUpdateCoursesByQuarterJob}
+        /&gt;
+      ),
+    },
+    {
+      name: "Update Grade Info",
+      form: &lt;JobComingSoon /&gt;,
+    },
+  ];
 &nbsp;
-    const jobLaunchers = [
-        {
-            name: "Test Job",
-            form: &lt;TestJobForm submitAction={submitTestJob} /&gt;
-        },
-        {
-            name: "Update Courses Database",
-            form: &lt;UpdateCoursesJobForm callback={submitUpdateCoursesJob}  /&gt;
-        },
-        {
-            name: "Update Courses Database by quarter",
-            form: &lt;UpdateCoursesByQuarterJobForm callback={submitUpdateCoursesByQuarterJob} /&gt;
-        },
-        {
-            name: "Update Grade Info",
-            form: &lt;JobComingSoon /&gt;
-        },
-    ]
+  return (
+    &lt;BasicLayout&gt;
+      &lt;h2 className="p-3"&gt;Launch Jobs&lt;/h2&gt;
+      &lt;Accordion&gt;
+        {jobLaunchers.map((jobLauncher, index) =&gt; (
+          &lt;Accordion.Item eventKey={index} key={index}&gt;
+            &lt;Accordion.Header&gt;{jobLauncher.name}&lt;/Accordion.Header&gt;
+            &lt;Accordion.Body&gt;{jobLauncher.form}&lt;/Accordion.Body&gt;
+          &lt;/Accordion.Item&gt;
+        ))}
+      &lt;/Accordion&gt;
 &nbsp;
+      &lt;h2 className="p-3"&gt;Job Status&lt;/h2&gt;
 &nbsp;
-    return (
-        &lt;BasicLayout&gt;
-            &lt;h2 className="p-3"&gt;Launch Jobs&lt;/h2&gt;
-            &lt;Accordion&gt;
-                {
-                    jobLaunchers.map((jobLauncher, index) =&gt; (
-                        &lt;Accordion.Item eventKey={index} key={index}&gt;
-                            &lt;Accordion.Header&gt;{jobLauncher.name}&lt;/Accordion.Header&gt;
-                            &lt;Accordion.Body&gt;
-                                {jobLauncher.form}
-                            &lt;/Accordion.Body&gt;
-                        &lt;/Accordion.Item&gt;
-                    ))
-                }
-            &lt;/Accordion&gt;
-&nbsp;
-            &lt;h2 className="p-3"&gt;Job Status&lt;/h2&gt;
-&nbsp;
-            &lt;JobsTable jobs={jobs} /&gt;
-        &lt;/BasicLayout&gt;
-    );
+      &lt;JobsTable jobs={jobs} /&gt;
+    &lt;/BasicLayout&gt;
+  );
 };
 &nbsp;
 export default AdminJobsPage;
@@ -454,7 +451,7 @@ export default AdminJobsPage;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

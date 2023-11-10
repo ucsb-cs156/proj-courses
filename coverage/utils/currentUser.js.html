@@ -117,13 +117,21 @@
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">275x</span>
 <span class="cline-any cline-yes">275x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">55x</span>
 <span class="cline-any cline-yes">55x</span>
 <span class="cline-any cline-yes">52x</span>
@@ -143,6 +151,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">224x</span>
 <span class="cline-any cline-yes">224x</span>
 <span class="cline-any cline-yes">224x</span>
@@ -151,7 +161,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">224x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -167,33 +176,40 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">493x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 &nbsp;
 export function useCurrentUser() {
   let rolesList = ["ERROR_GETTING_ROLES"];
-  return useQuery("current user", async () =&gt; {
-    try {
-      const response = await axios.get("/api/currentUser");
+  return useQuery(
+    "current user",
+    async () =&gt; {
       try {
-        rolesList = response.data.roles.map((r) =&gt; r.authority);
+        const response = await axios.get("/api/currentUser");
+        try {
+          rolesList = response.data.roles.map((r) =&gt; r.authority);
+        } catch (e) {
+          console.error("Error getting roles: ", e);
+        }
+        response.data = { ...response.data, rolesList: rolesList };
+        return { loggedIn: true, root: response.data };
       } catch (e) {
-        console.error("Error getting roles: ", e);
+        console.error("Error invoking axios.get: ", e);
+        return { loggedIn: false, root: null };
       }
-      response.data = { ...response.data, rolesList: rolesList }
-      return { loggedIn: true, root: response.data };
-    } catch (e) {
-      console.error("Error invoking axios.get: ", e);
-      return { loggedIn: false, root: null };
-    }
-  }, {
-    initialData: { loggedIn: false, root: null, initialData: true }
-  });
+    },
+    {
+      initialData: { loggedIn: false, root: null, initialData: true },
+    },
+  );
 }
 &nbsp;
 export function useLogout() {
@@ -203,36 +219,38 @@ export function useLogout() {
     await axios.post("/logout");
     await queryClient.resetQueries("current user", { exact: true });
     navigate("/");
-  })
+  });
   return mutation;
 }
 &nbsp;
 export function hasRole(currentUser, role) {
-&nbsp;
   // The following hack is because there is some bug in terms of the
-  // shape of the data returned by useCurrentUser.  Is there a separate 
-  // data level, or not? 
+  // shape of the data returned by useCurrentUser.  Is there a separate
+  // data level, or not?
 &nbsp;
   // We will file an issue to track that down and then remove this hack
 &nbsp;
   if (currentUser == null) return false;
 &nbsp;
-  if ("data" in currentUser &amp;&amp;
+  if (
+    "data" in currentUser &amp;&amp;
     "root" in currentUser.data &amp;&amp;
     currentUser.data.root != null &amp;&amp;
-    "rolesList" in currentUser.data.root) {
+    "rolesList" in currentUser.data.root
+  ) {
     return currentUser.data.root.rolesList.includes(role);
   }
 &nbsp;
   return currentUser.root?.rolesList?.includes(role);
-}</pre></td></tr></table></pre>
+}
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

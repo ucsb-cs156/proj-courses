@@ -174,7 +174,20 @@
 <a name='L109'></a><a href='#L109'>109</a>
 <a name='L110'></a><a href='#L110'>110</a>
 <a name='L111'></a><a href='#L111'>111</a>
-<a name='L112'></a><a href='#L112'>112</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -182,8 +195,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">592x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -222,6 +233,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">213x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -280,6 +292,8 @@
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -288,114 +302,121 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import SectionsTableBase from "main/components/SectionsTableBase";
 &nbsp;
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
-import { convertToFraction, formatDays, formatInstructors, formatLocation, formatTime, isSection } from "main/utils/sectionUtils.js";
-&nbsp;
+import {
+  convertToFraction,
+  formatDays,
+  formatInstructors,
+  formatLocation,
+  formatTime,
+  isSection,
+} from "main/utils/sectionUtils.js";
 &nbsp;
 function getFirstVal(values) {
-    return values[0];
-};
+  return values[0];
+}
 &nbsp;
 export default function SectionsTable({ sections }) {
+  // Stryker enable all
+  // Stryker disable BooleanLiteral
+  const columns = [
+    {
+      Header: "Quarter",
+      accessor: (row) =&gt; yyyyqToQyy(row.courseInfo.quarter),
+      disableGroupBy: true,
+      id: "quarter",
 &nbsp;
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) =&gt; `${value}`,
+    },
+    {
+      Header: "Course ID",
+      accessor: "courseInfo.courseId",
 &nbsp;
-    // Stryker enable all 
-    // Stryker disable BooleanLiteral
-    const columns = [
-        {
-            Header: 'Quarter',
-            accessor: (row) =&gt; yyyyqToQyy(row.courseInfo.quarter),
-            disableGroupBy: true,
-            id: 'quarter',
+      Cell: ({ cell: { value } }) =&gt; value.substring(0, value.length - 2),
+    },
+    {
+      Header: "Title",
+      accessor: "courseInfo.title",
+      disableGroupBy: true,
 &nbsp;
-            aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) =&gt; `${value}`
-        },
-        {
-            Header: 'Course ID',
-            accessor: 'courseInfo.courseId',
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) =&gt; `${value}`,
+    },
+    {
+      // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
+      Header: "Is Section?",
+      accessor: (row) =&gt; isSection(row.section.section),
+      // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
+      id: "isSection",
+    },
+    {
+      Header: "Enrolled",
+      accessor: (row) =&gt;
+        convertToFraction(row.section.enrolledTotal, row.section.maxEnroll),
+      disableGroupBy: true,
+      id: "enrolled",
 &nbsp;
-            Cell: ({ cell: { value } }) =&gt; value.substring(0, value.length-2)
-        },
-        {
-            Header: 'Title',
-            accessor: 'courseInfo.title',
-            disableGroupBy: true,
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) =&gt; `${value}`,
+    },
+    {
+      Header: "Location",
+      accessor: (row) =&gt; formatLocation(row.section.timeLocations),
+      disableGroupBy: true,
+      id: "location",
 &nbsp;
-            aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) =&gt; `${value}`
-        },
-        {
-            // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
-            Header: 'Is Section?',
-            accessor: (row) =&gt; isSection(row.section.section),
-            // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
-            id: 'isSection',
-        },
-        {
-            Header: 'Enrolled',
-            accessor: (row) =&gt; convertToFraction(row.section.enrolledTotal, row.section.maxEnroll),
-            disableGroupBy: true,
-            id: 'enrolled',
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) =&gt; `${value}`,
+    },
+    {
+      Header: "Days",
+      accessor: (row) =&gt; formatDays(row.section.timeLocations),
+      disableGroupBy: true,
+      id: "days",
 &nbsp;
-            aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) =&gt; `${value}`
-        },
-        {
-            Header: 'Location',
-            accessor: (row) =&gt; formatLocation(row.section.timeLocations),
-            disableGroupBy: true,
-            id: 'location',
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) =&gt; `${value}`,
+    },
+    {
+      Header: "Time",
+      accessor: (row) =&gt; formatTime(row.section.timeLocations),
+      disableGroupBy: true,
+      id: "time",
 &nbsp;
-            aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) =&gt; `${value}`
-        },
-        {
-            Header: 'Days',
-            accessor: (row) =&gt; formatDays(row.section.timeLocations),
-            disableGroupBy: true,
-            id: 'days',
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) =&gt; `${value}`,
+    },
+    {
+      Header: "Instructor",
+      accessor: (row) =&gt; formatInstructors(row.section.instructors),
+      disableGroupBy: true,
+      id: "instructor",
 &nbsp;
-            aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) =&gt; `${value}`
-        },
-        {
-            Header: 'Time',
-            accessor: (row) =&gt; formatTime(row.section.timeLocations),
-            disableGroupBy: true,
-            id: 'time',
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) =&gt; `${value}`,
+    },
+    {
+      Header: "Enroll Code",
+      accessor: "section.enrollCode",
+      disableGroupBy: true,
 &nbsp;
-            aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) =&gt; `${value}`
-        },
-        {
-            Header: 'Instructor',
-            accessor: (row) =&gt; formatInstructors(row.section.instructors),
-            disableGroupBy: true,
-            id: 'instructor',
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) =&gt; `${value}`,
+    },
+  ];
 &nbsp;
-            aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) =&gt; `${value}`
-        },        
-        {
-            Header: 'Enroll Code',
-            accessor: 'section.enrollCode', 
-            disableGroupBy: true,
+  const testid = "SectionsTable";
 &nbsp;
-            aggregate: getFirstVal,
-            Aggregated: ({ cell: { value } }) =&gt; `${value}`
-        }
-    ];
+  const columnsToDisplay = columns;
 &nbsp;
-    const testid = "SectionsTable";
-&nbsp;
-    const columnsToDisplay = columns;
-&nbsp;
-    return &lt;SectionsTableBase
-        data={sections}
-        columns={columnsToDisplay}
-        testid={testid}
-    /&gt;;
-};
+  return (
+    &lt;SectionsTableBase
+      data={sections}
+      columns={columnsToDisplay}
+      testid={testid}
+    /&gt;
+  );
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -403,7 +424,7 @@ export default function SectionsTable({ sections }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

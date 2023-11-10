@@ -113,11 +113,18 @@
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -158,61 +165,57 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState } from 'react'
-import { Form } from 'react-bootstrap';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState } from "react";
+import { Form } from "react-bootstrap";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 &nbsp;
-const PersonalScheduleDropdown = ({ schedules, schedule, setSchedule, controlId, onChange = null, label = "Schedule" }) =&gt; {
+const PersonalScheduleDropdown = ({
+  schedules,
+  schedule,
+  setSchedule,
+  controlId,
+  onChange = null,
+  label = "Schedule",
+}) =&gt; {
+  const localSearchSchedule = localStorage.getItem(controlId);
 &nbsp;
-    const localSearchSchedule = localStorage.getItem(controlId);
-&nbsp;
-    const [scheduleState, setScheduleState] = useState(
+  const [scheduleState, setScheduleState] = useState(
     // Stryker disable next-line all : not sure how to test/mock local storage
-    localSearchSchedule || schedule
-    );
+    localSearchSchedule || schedule,
+  );
 &nbsp;
-    const handleScheduleOnChange = (event) =&gt; {
-        const selectedSchedule = event.target.value;
-        localStorage.setItem(controlId, selectedSchedule);
-        setScheduleState(selectedSchedule);
-        setSchedule(selectedSchedule);
-        if (onChange != null) {
-            onChange(event);
-        }
-    };
+  const handleScheduleOnChange = (event) =&gt; {
+    const selectedSchedule = event.target.value;
+    localStorage.setItem(controlId, selectedSchedule);
+    setScheduleState(selectedSchedule);
+    setSchedule(selectedSchedule);
+    if (onChange != null) {
+      onChange(event);
+    }
+  };
 &nbsp;
-    return (
-        &lt;Form.Group controlId={controlId}&gt;
-            &lt;Form.Label&gt;{label}&lt;/Form.Label&gt;
-            &lt;Form.Control
-                as="select"
-                value={scheduleState}
-                onChange={handleScheduleOnChange}
-            &gt;
-                {schedules.map(function (object, i) {
-                    const key=`${controlId}-option-${i}`;
-                    return (
-                        &lt;option
-                            key={key}
-                            data-testid={key}
-                            value={object.id}
-                        &gt;
-                            {yyyyqToQyy(object.quarter)} {object.name}
-                        &lt;/option&gt;
-                    );
-                })}
-            &lt;/Form.Control&gt;
-        &lt;/Form.Group&gt;
-    );
+  return (
+    &lt;Form.Group controlId={controlId}&gt;
+      &lt;Form.Label&gt;{label}&lt;/Form.Label&gt;
+      &lt;Form.Control
+        as="select"
+        value={scheduleState}
+        onChange={handleScheduleOnChange}
+      &gt;
+        {schedules.map(function (object, i) {
+          const key = `${controlId}-option-${i}`;
+          return (
+            &lt;option key={key} data-testid={key} value={object.id}&gt;
+              {yyyyqToQyy(object.quarter)} {object.name}
+            &lt;/option&gt;
+          );
+        })}
+      &lt;/Form.Control&gt;
+    &lt;/Form.Group&gt;
+  );
 };
 &nbsp;
 export default PersonalScheduleDropdown;
-&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -220,7 +223,7 @@ export default PersonalScheduleDropdown;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

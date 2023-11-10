@@ -175,13 +175,8 @@
 <a name='L110'></a><a href='#L110'>110</a>
 <a name='L111'></a><a href='#L111'>111</a>
 <a name='L112'></a><a href='#L112'>112</a>
-<a name='L113'></a><a href='#L113'>113</a>
-<a name='L114'></a><a href='#L114'>114</a>
-<a name='L115'></a><a href='#L115'>115</a>
-<a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a>
-<a name='L118'></a><a href='#L118'>118</a>
-<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L113'></a><a href='#L113'>113</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -209,20 +204,14 @@
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">34x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -298,133 +287,126 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState } from 'react'
-import { Button, Form } from 'react-bootstrap';
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import SingleQuarterDropdown from '../Quarters/SingleQuarterDropdown';
-import { quarterRange } from 'main/utils/quarterUtilities';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState } from "react";
+import { Button, Form } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
+import { quarterRange } from "main/utils/quarterUtilities";
 &nbsp;
 import { useSystemInfo } from "main/utils/systemInfo";
 &nbsp;
+function PersonalScheduleForm({
+  initialPersonalSchedule,
+  submitAction,
+  buttonLabel = "Create",
+}) {
+  const { data: systemInfo } = useSystemInfo();
+  // Stryker disable OptionalChaining
+  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+  // Stryker enable OptionalChaining
+  const quarters = quarterRange(startQtr, endQtr);
 &nbsp;
+  // Stryker disable all
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({ defaultValues: initialPersonalSchedule || {} });
+  // Stryker enable all
 &nbsp;
-function PersonalScheduleForm({ initialPersonalSchedule, submitAction, buttonLabel = "Create" }) {
+  const navigate = useNavigate();
+  const [quarter, setQuarter] = useState(
+    {
+      quarters: quarters,
+    }.quarters[0],
+  );
 &nbsp;
-    const { data: systemInfo } = useSystemInfo();
-    // Stryker disable OptionalChaining
-    const startQtr = systemInfo?.startQtrYYYYQ || "20211";
-    const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-    // Stryker enable OptionalChaining
-    const quarters = quarterRange(startQtr, endQtr);
+  return (
+    &lt;Form onSubmit={handleSubmit(submitAction)}&gt;
+      {initialPersonalSchedule &amp;&amp; (
+        &lt;Form.Group className="mb-3"&gt;
+          &lt;Form.Label htmlFor="id"&gt;Id&lt;/Form.Label&gt;
+          &lt;Form.Control
+            data-testid="PersonalScheduleForm-id"
+            id="id"
+            type="text"
+            {...register("id")}
+            value={initialPersonalSchedule.id}
+            disabled
+          /&gt;
+        &lt;/Form.Group&gt;
+      )}
 &nbsp;
-    // Stryker disable all
-    const {
-        register,
-        formState: { errors },
-        handleSubmit,
-    } = useForm(
-        { defaultValues: initialPersonalSchedule || {}, }
-    );
-    // Stryker enable all
+      &lt;Form.Group className="mb-3"&gt;
+        &lt;Form.Label htmlFor="name"&gt;Name&lt;/Form.Label&gt;
+        &lt;Form.Control
+          data-testid="PersonalScheduleForm-name"
+          id="name"
+          type="text"
+          isInvalid={Boolean(errors.name)}
+          {...register("name", {
+            required: "Name is required.",
+            maxLength: {
+              value: 15,
+              message: "Max length 15 characters",
+            },
+          })}
+        /&gt;
+        &lt;Form.Control.Feedback type="invalid"&gt;
+          {errors.name?.message}
+        &lt;/Form.Control.Feedback&gt;
+      &lt;/Form.Group&gt;
 &nbsp;
-    const navigate = useNavigate();
-    const [quarter, setQuarter] = useState({
-        quarters: quarters
-    }.quarters[0]);
+      &lt;Form.Group className="mb-3"&gt;
+        &lt;Form.Label htmlFor="description"&gt;Description&lt;/Form.Label&gt;
+        &lt;Form.Control
+          data-testid="PersonalScheduleForm-description"
+          id="description"
+          type="text"
+          isInvalid={Boolean(errors.description)}
+          {...register("description", {
+            required: "Description is required.",
+          })}
+        /&gt;
+        &lt;Form.Control.Feedback type="invalid"&gt;
+          {errors.description?.message}
+        &lt;/Form.Control.Feedback&gt;
+      &lt;/Form.Group&gt;
+      &lt;Form.Group className="mb-3" data-testid="PersonalScheduleForm-quarter"&gt;
+        &lt;SingleQuarterDropdown
+          quarter={quarter}
+          setQuarter={setQuarter}
+          controlId={"PersonalScheduleForm-quarter"}
+          label={"Quarter"}
+          quarters={quarters}
+        /&gt;
+      &lt;/Form.Group&gt;
 &nbsp;
-    return (
-&nbsp;
-        &lt;Form onSubmit={handleSubmit(submitAction)}&gt;
-&nbsp;
-            {initialPersonalSchedule &amp;&amp; (
-                &lt;Form.Group className="mb-3" &gt;
-                    &lt;Form.Label htmlFor="id"&gt;Id&lt;/Form.Label&gt;
-                    &lt;Form.Control
-                        data-testid="PersonalScheduleForm-id"
-                        id="id"
-                        type="text"
-                        {...register("id")}
-                        value={initialPersonalSchedule.id}
-                        disabled
-                    /&gt;
-                &lt;/Form.Group&gt;
-            )}
-&nbsp;
-            &lt;Form.Group className="mb-3" &gt;
-                &lt;Form.Label htmlFor="name"&gt;Name&lt;/Form.Label&gt;
-                &lt;Form.Control
-                    data-testid="PersonalScheduleForm-name"
-                    id="name"
-                    type="text"
-                    isInvalid={Boolean(errors.name)}
-                    {...register("name", {
-                        required: "Name is required.",
-                        maxLength : {
-                            value: 15,
-                            message: "Max length 15 characters"
-                        }
-                    })}
-                /&gt;
-                &lt;Form.Control.Feedback type="invalid"&gt;
-                    {errors.name?.message}
-                &lt;/Form.Control.Feedback&gt;
-            &lt;/Form.Group&gt;
-&nbsp;
-            &lt;Form.Group className="mb-3" &gt;
-                &lt;Form.Label htmlFor="description"&gt;Description&lt;/Form.Label&gt;
-                &lt;Form.Control
-                    data-testid="PersonalScheduleForm-description"
-                    id="description"
-                    type="text"
-                    isInvalid={Boolean(errors.description)}
-                    {...register("description", {
-                        required: "Description is required."
-                    })}
-                /&gt;
-                &lt;Form.Control.Feedback type="invalid"&gt;
-                    {errors.description?.message}
-                &lt;/Form.Control.Feedback&gt;
-            &lt;/Form.Group&gt;
-            &lt;Form.Group className="mb-3" data-testid="PersonalScheduleForm-quarter"&gt;
-                
-                &lt;SingleQuarterDropdown
-                    quarter={quarter}
-                    setQuarter={setQuarter} 
-                    controlId={"PersonalScheduleForm-quarter"}
-                    label={"Quarter"}
-                    quarters={quarters}/&gt;
-            &lt;/Form.Group&gt;
-&nbsp;
-&nbsp;
-            &lt;Button
-                type="submit"
-                data-testid="PersonalScheduleForm-submit"
-            &gt;
-                {buttonLabel}
-            &lt;/Button&gt;
-            &lt;Button
-                variant="Secondary"
-                onClick={() =&gt; navigate(-1)}
-                data-testid="PersonalScheduleForm-cancel"
-            &gt;
-                Cancel
-            &lt;/Button&gt;
-&nbsp;
-        &lt;/Form&gt;
-&nbsp;
-    )
+      &lt;Button type="submit" data-testid="PersonalScheduleForm-submit"&gt;
+        {buttonLabel}
+      &lt;/Button&gt;
+      &lt;Button
+        variant="Secondary"
+        onClick={() =&gt; navigate(-1)}
+        data-testid="PersonalScheduleForm-cancel"
+      &gt;
+        Cancel
+      &lt;/Button&gt;
+    &lt;/Form&gt;
+  );
 }
 &nbsp;
-export default PersonalScheduleForm;</pre></td></tr></table></pre>
+export default PersonalScheduleForm;
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

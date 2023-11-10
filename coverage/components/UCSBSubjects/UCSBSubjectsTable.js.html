@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -130,7 +130,18 @@
 <a name='L65'></a><a href='#L65'>65</a>
 <a name='L66'></a><a href='#L66'>66</a>
 <a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -155,6 +166,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -192,7 +205,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -200,78 +218,87 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import { useBackendMutation } from "main/utils/useBackend";
-import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/UCSBSubjectUtils"
+import {
+  cellToAxiosParamsDelete,
+  onDeleteSuccess,
+} from "main/utils/UCSBSubjectUtils";
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 &nbsp;
 export default function UCSBSubjectsTable({ subjects, currentUser }) {
+  const navigate = useNavigate();
 &nbsp;
-    const navigate = useNavigate();
+  const editCallback = (cell) =&gt; {
+    navigate(`/UCSBSubjects/edit/${cell.row.values.subjectCode}`);
+  };
 &nbsp;
-    const editCallback = (cell) =&gt; {
-        navigate(`/UCSBSubjects/edit/${cell.row.values.subjectCode}`)
-    }
+  // Stryker disable all : hard to test for query caching
+  const deleteMutation = useBackendMutation(
+    cellToAxiosParamsDelete,
+    { onSuccess: onDeleteSuccess },
+    ["/api/UCSBSubjects/all"],
+  );
+  // Stryker enable all
 &nbsp;
-    // Stryker disable all : hard to test for query caching
-    const deleteMutation = useBackendMutation(
-        cellToAxiosParamsDelete,
-        { onSuccess: onDeleteSuccess },
-        ["/api/UCSBSubjects/all"]
-    );
-    // Stryker enable all 
+  // Stryker disable next-line all : TODO try to make a good test for this
+  const deleteCallback = async (cell) =&gt; {
+    deleteMutation.mutate(cell);
+  };
 &nbsp;
-    // Stryker disable next-line all : TODO try to make a good test for this
-    const deleteCallback = async (cell) =&gt; { deleteMutation.mutate(cell); }
+  const columns = [
+    {
+      Header: "SubjectCode",
+      accessor: "subjectCode",
+    },
+    {
+      Header: "SubjectTranslation",
+      accessor: "subjectTranslation",
+    },
+    {
+      Header: "DeptCode",
+      accessor: "deptCode",
+    },
+    {
+      Header: "CollegeCode",
+      accessor: "collegeCode",
+    },
+    {
+      Header: "RelatedDeptCode",
+      accessor: "relatedDeptCode",
+    },
+    {
+      Header: "Inactive",
+      accessor: (row) =&gt; String(row.inactive),
+      id: "inactive",
+    },
+  ];
 &nbsp;
-    const columns = [
-        {
-            Header: 'SubjectCode',
-            accessor: 'subjectCode', 
-        },
-        {
-            Header: 'SubjectTranslation',
-            accessor: 'subjectTranslation',
-        },
-        {
-            Header: 'DeptCode',
-            accessor: 'deptCode',
-        },
-        {
-            Header: 'CollegeCode',
-            accessor: 'collegeCode',
-        },
-        {
-            Header: 'RelatedDeptCode',
-            accessor: 'relatedDeptCode',
-        },
-        {
-            Header: 'Inactive',
-            accessor: (row) =&gt; String(row.inactive),
-            id: 'inactive',
-        }
-    ];
+  const columnsIfAdmin = [
+    ...columns,
+    ButtonColumn("Edit", "primary", editCallback, "UCSBSubjectsTable"),
+    ButtonColumn("Delete", "danger", deleteCallback, "UCSBSubjectsTable"),
+  ];
 &nbsp;
-    const columnsIfAdmin = [
-        ...columns,
-        ButtonColumn("Edit", "primary", editCallback, "UCSBSubjectsTable"),
-        ButtonColumn("Delete", "danger", deleteCallback, "UCSBSubjectsTable")
-    ]
+  const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN")
+    ? columnsIfAdmin
+    : columns;
 &nbsp;
-    const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN") ? columnsIfAdmin : columns;
-&nbsp;
-    return &lt;OurTable
-        data={subjects}
-        columns={columnsToDisplay}
-        testid={"UCSBSubjectsTable"}
-    /&gt;;
-};</pre></td></tr></table></pre>
+  return (
+    &lt;OurTable
+      data={subjects}
+      columns={columnsToDisplay}
+      testid={"UCSBSubjectsTable"}
+    /&gt;
+  );
+}
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

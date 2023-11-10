@@ -140,11 +140,15 @@
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">449x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -159,7 +163,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">448x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,13 +173,18 @@
 <span class="cline-any cline-yes">445x</span>
 <span class="cline-any cline-yes">445x</span>
 <span class="cline-any cline-yes">418x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">418x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">444x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -187,12 +195,14 @@
 <span class="cline-any cline-yes">449x</span>
 <span class="cline-any cline-yes">449x</span>
 <span class="cline-any cline-yes">421x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">421x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">448x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -210,98 +220,103 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">448x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">444x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js"
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
 &nbsp;
 export const convertToFraction = (en1, en2) =&gt; {
-    return (en1 != null &amp;&amp; en2 != null) ? `${en1}/${en2}` : "";
-}
-&nbsp;
+  return en1 != null &amp;&amp; en2 != null ? `${en1}/${en2}` : "";
+};
 &nbsp;
 // Takes a time location array and returns the locations
 export const formatLocation = (timeLocationArray) =&gt; {
-    try{
-        let res = "";
-        for (let index = 0; index &lt; timeLocationArray.length; index++) {
-            res += `${timeLocationArray[index].building} ${timeLocationArray[index].room}`;
-            if (index + 1 &lt; timeLocationArray.length) {
-                res += `, `
-            } 
-        }
-        return res;
+  try {
+    let res = "";
+    for (let index = 0; index &lt; timeLocationArray.length; index++) {
+      res += `${timeLocationArray[index].building} ${timeLocationArray[index].room}`;
+      if (index + 1 &lt; timeLocationArray.length) {
+        res += `, `;
+      }
     }
-    catch{
-        return ""
-    }
-}
+    return res;
+  } catch {
+    return "";
+  }
+};
 &nbsp;
 // Takes a time location array and returns the days
 export const formatDays = (timeLocationArray) =&gt; {
-    try {
-        let res = "";
-        for (let index = 0; index &lt; timeLocationArray.length; index++) {
-            res += (timeLocationArray[index].days !== null) ? `${timeLocationArray[index].days}` : "";
-            if (index + 1 &lt; timeLocationArray.length &amp;&amp; timeLocationArray[index].days !== null) {
-                res += `, `
-            } 
-        }
-        return res;
+  try {
+    let res = "";
+    for (let index = 0; index &lt; timeLocationArray.length; index++) {
+      res +=
+        timeLocationArray[index].days !== null
+          ? `${timeLocationArray[index].days}`
+          : "";
+      if (
+        index + 1 &lt; timeLocationArray.length &amp;&amp;
+        timeLocationArray[index].days !== null
+      ) {
+        res += `, `;
+      }
     }
-    catch{
-        return ""
-    }
-}
+    return res;
+  } catch {
+    return "";
+  }
+};
 &nbsp;
 // Takes a time location array and returns the time range
 export const formatTime = (timeLocationArray) =&gt; {
-    try{
-        let res = "";
-        for (let index = 0; index &lt; timeLocationArray.length; index++) {
-            res += convertToTimeRange(hhmmTohhmma(timeLocationArray[index].beginTime), hhmmTohhmma(timeLocationArray[index].endTime));
-            if (index + 1 &lt; timeLocationArray.length) {
-                res += `, `
-            } 
-        }
-        return res;
+  try {
+    let res = "";
+    for (let index = 0; index &lt; timeLocationArray.length; index++) {
+      res += convertToTimeRange(
+        hhmmTohhmma(timeLocationArray[index].beginTime),
+        hhmmTohhmma(timeLocationArray[index].endTime),
+      );
+      if (index + 1 &lt; timeLocationArray.length) {
+        res += `, `;
+      }
     }
-    catch{
-        return ""
-    }
-}
+    return res;
+  } catch {
+    return "";
+  }
+};
 &nbsp;
 // Takes a instructors array and returns the instructors
 export const formatInstructors = (instructorArray) =&gt; {
-    try{
-        let res = "";
-        for (let index = 0; index &lt; instructorArray.length; index++) {
-            res += `${instructorArray[index].instructor}`;
-            if (index + 1 &lt; instructorArray.length) {
-                res += `, `
-            } 
-        }
-        return res;
+  try {
+    let res = "";
+    for (let index = 0; index &lt; instructorArray.length; index++) {
+      res += `${instructorArray[index].instructor}`;
+      if (index + 1 &lt; instructorArray.length) {
+        res += `, `;
+      }
     }
-    catch{
-        return ""
-    }
-}
+    return res;
+  } catch {
+    return "";
+  }
+};
 &nbsp;
 export const isSection = (en1) =&gt; {
-    return (en1.substring(2) !== "00")
-}</pre></td></tr></table></pre>
+  return en1.substring(2) !== "00";
+};
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

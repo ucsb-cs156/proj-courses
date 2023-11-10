@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/19</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
@@ -138,8 +138,10 @@
 <a name='L73'></a><a href='#L73'>73</a>
 <a name='L74'></a><a href='#L74'>74</a>
 <a name='L75'></a><a href='#L75'>75</a>
-<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -195,6 +197,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">184x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">184x</span>
@@ -205,8 +213,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -222,7 +228,7 @@ import { toast } from "react-toastify";
 //  queryKey ["/api/users","4"]  for "/api/users?id=4"
 &nbsp;
 // For axiosParameters
-//   
+//
 // {
 //     method: 'post',
 //     url: '/user/12345',
@@ -231,7 +237,7 @@ import { toast } from "react-toastify";
 //       lastName: 'Flintstone'
 //     }
 //  }
-// 
+//
 &nbsp;
 // GET Example:
 // useBackend(
@@ -241,53 +247,56 @@ import { toast } from "react-toastify";
 // );
 &nbsp;
 export function useBackend(queryKey, axiosParameters, initialData, rest) {
-&nbsp;
-    return useQuery({
-        queryKey: queryKey,
-        queryFn: async () =&gt; {
-            try {
-                const response = await axios(axiosParameters);
-                return response.data;
-            } catch (e) {
-                const errorMessage = `useBackend: Error communicating with backend via ${axiosParameters.method} on ${axiosParameters.url}: ${e}`;
-                toast(errorMessage, { type: "error" });
-                console.error(errorMessage);
-                throw e;
-            }
-        },
-        onError: (e) =&gt; {
-            const errorMessage = `Error communicating with backend via ${axiosParameters.method} on ${axiosParameters.url}: ${e}`;
-            toast(errorMessage, { type: "error" });
-            console.error(errorMessage);
-        },
-        initialData: initialData,
-        ...rest
-    });
+  return useQuery({
+    queryKey: queryKey,
+    queryFn: async () =&gt; {
+      try {
+        const response = await axios(axiosParameters);
+        return response.data;
+      } catch (e) {
+        const errorMessage = `useBackend: Error communicating with backend via ${axiosParameters.method} on ${axiosParameters.url}: ${e}`;
+        toast(errorMessage, { type: "error" });
+        console.error(errorMessage);
+        throw e;
+      }
+    },
+    onError: (e) =&gt; {
+      const errorMessage = `Error communicating with backend via ${axiosParameters.method} on ${axiosParameters.url}: ${e}`;
+      toast(errorMessage, { type: "error" });
+      console.error(errorMessage);
+    },
+    initialData: initialData,
+    ...rest,
+  });
 }
 &nbsp;
 const wrappedParams = async (params) =&gt; {
-    return await (await axios(params)).data;
+  return await (
+    await axios(params)
+  ).data;
 };
 &nbsp;
-export function useBackendMutation(objectToAxiosParams, useMutationParams, queryKey = null) {
-    const queryClient = useQueryClient();
+export function useBackendMutation(
+  objectToAxiosParams,
+  useMutationParams,
+  queryKey = null,
+) {
+  const queryClient = useQueryClient();
 &nbsp;
-    return useMutation((object) =&gt; wrappedParams(objectToAxiosParams(object)), {
-        onError: (error) =&gt; {
-            const errorMessage = `useBackendMutation: Error communicating with backend via ${error.response.config.method} on ${error.response.config.url}`;
-            toast(errorMessage, { type: "error" });
-        },
-        // Stryker disable all : Not sure how to set up the complex behavior needed to test this
-        onSettled: () =&gt; {
-            if (queryKey !== null)
-                queryClient.invalidateQueries(queryKey);
-        },
-        // Stryker enable all
-        retry: false,
-        ...useMutationParams
-    })
+  return useMutation((object) =&gt; wrappedParams(objectToAxiosParams(object)), {
+    onError: (error) =&gt; {
+      const errorMessage = `useBackendMutation: Error communicating with backend via ${error.response.config.method} on ${error.response.config.url}`;
+      toast(errorMessage, { type: "error" });
+    },
+    // Stryker disable all : Not sure how to set up the complex behavior needed to test this
+    onSettled: () =&gt; {
+      if (queryKey !== null) queryClient.invalidateQueries(queryKey);
+    },
+    // Stryker enable all
+    retry: false,
+    ...useMutationParams,
+  });
 }
-&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -295,7 +304,7 @@ export function useBackendMutation(objectToAxiosParams, useMutationParams, query
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Nov 07 2023 15:43:12 GMT-0800 (Pacific Standard Time)
+                at Fri Nov 10 2023 11:57:42 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../prettify.js"></script>
         <script>
