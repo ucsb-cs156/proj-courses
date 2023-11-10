@@ -3,8 +3,10 @@ import AppNavbarLocalhost from "main/components/Nav/AppNavbarLocalhost";
 
 describe("AppNavbarLocalhost tests", () => {
   test("renders correctly", async () => {
-    render(<AppNavbarLocalhost />);
+    render(<AppNavbarLocalhost url={"http://localhost:3000"} />);
 
-    expect(await screen.findByText(/Running on /)).toBeInTheDocument();
+    expect(screen.getByText(/Running on/)).toHaveTextContent(
+      "Running on http://localhost:3000 with no backend.You probably want http://localhost:8080 instead.",
+    );
   });
 });

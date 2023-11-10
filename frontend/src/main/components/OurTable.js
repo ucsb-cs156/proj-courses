@@ -1,6 +1,6 @@
 import React from "react";
-import { useTable, useSortBy } from "react-table";
-import { Table, Button } from "react-bootstrap";
+import { useSortBy, useTable } from "react-table";
+import { Button, Table } from "react-bootstrap";
 import Plaintext from "main/components/Utils/Plaintext";
 
 export default function OurTable({
@@ -9,6 +9,12 @@ export default function OurTable({
   testid = "testid",
   ...rest
 }) {
+  // this kills some mutation tests where incorrect values are passed
+  if (
+    !(Array.isArray(data) && data.every((value) => typeof value === "object"))
+  ) {
+    throw new Error("Invalid data value");
+  }
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
       {

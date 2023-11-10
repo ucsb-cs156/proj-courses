@@ -90,4 +90,13 @@ describe("OurTable tests", () => {
     fireEvent.click(col1Header);
     expect(await screen.findByText("🔽")).toBeInTheDocument();
   });
+
+  test("rejects invalid data values", () => {
+    expect(() => {
+      render(<OurTable columns={columns} data="Not an array" />);
+    }).toThrowError("Invalid data value");
+    expect(() => {
+      render(<OurTable columns={columns} data={["Not an object"]} />);
+    }).toThrowError("Invalid data value");
+  });
 });

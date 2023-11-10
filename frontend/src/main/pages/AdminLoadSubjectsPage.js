@@ -1,5 +1,5 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { useBackendMutation, useBackend } from "main/utils/useBackend";
+import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 import UCSBSubjectsTable from "main/components/UCSBSubjects/UCSBSubjectsTable";
@@ -12,6 +12,7 @@ export default function AdminLoadSubjectsPage() {
   } = useBackend(
     // Stryker disable next-line all : don't test internal caching of React Query
     ["/api/UCSBSubjects/all"],
+    // Stryker disable next-line all : stryker changing "GET" to "" does nothing; "get" is the default method
     { method: "GET", url: "/api/UCSBSubjects/all" },
     [],
   );

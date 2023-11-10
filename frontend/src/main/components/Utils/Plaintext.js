@@ -13,12 +13,10 @@ export default function Plaintext({ text }) {
   return (
     <pre data-testid="plaintext">
       <span key={"0"}>{firstLine}</span>
-      {
+      {rest.map((line, index) => (
         // Stryker disable next-line ArithmeticOperator : key value is internal to React and not exposed to tests
-        rest.map((line, index) => (
-          <PlaintextLine key={index + 1} text={line} />
-        ))
-      }
+        <PlaintextLine key={index + 1} text={line} />
+      ))}
     </pre>
   );
   // Stryker enable StringLiteral
