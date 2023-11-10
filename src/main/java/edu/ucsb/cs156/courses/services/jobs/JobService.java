@@ -10,28 +10,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JobService {
-  @Autowired
-  private JobsRepository jobsRepository;
+  @Autowired private JobsRepository jobsRepository;
 
-  @Autowired
-  private CurrentUserService currentUserService;
+  @Autowired private CurrentUserService currentUserService;
 
-  @Lazy
-  @Autowired
-  private JobService self;
+  @Lazy @Autowired private JobService self;
+
   public Job runAsJob(JobContextConsumer jobFunction) {
-    Job job = Job.builder()
-      .createdBy(currentUserService.getUser())
-      .status("running")
-      .build();
+    Job job = Job.builder().createdBy(currentUserService.getUser()).status("running").build();
 
     jobsRepository.save(job);
     self.runJobAsync(job, jobFunction);
 
     return job;
   }
-
-  
 
   @Async
   public void runJobAsync(Job job, JobContextConsumer jobFunction) {

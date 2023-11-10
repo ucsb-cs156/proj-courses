@@ -1,7 +1,8 @@
 package edu.ucsb.cs156.courses.documents;
 
 public class PersonalSectionsFixtures {
-  public static final String ONE_COURSE = """
+  public static final String ONE_COURSE =
+      """
     {
     "quarter": "20221",
     "courseId": "ARTHI     5B ",
@@ -57,5 +58,4 @@ public class PersonalSectionsFixtures {
     "finalExam": null
   }
       """;
-
 }

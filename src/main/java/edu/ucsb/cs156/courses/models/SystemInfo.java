@@ -1,15 +1,12 @@
 package edu.ucsb.cs156.courses.models;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
 
-/**
- * This class represents the public information about the application.
- */
- 
+/** This class represents the public information about the application. */
 @Data
 @Builder
 @AllArgsConstructor

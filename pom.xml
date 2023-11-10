@@ -246,7 +246,27 @@
                     <timestampedReports>false</timestampedReports>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>com.cosium.code</groupId>
+                <artifactId>git-code-format-maven-plugin</artifactId>
+                <version>5.1</version>
+                <executions>
+                    <execution>
+                        <id>validate-code-format</id>
+                        <goals>
+                            <goal>validate-code-format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <!-- Enable https://github.com/google/google-java-format -->
+                    <dependency>
+                        <groupId>com.cosium.code</groupId>
+                        <artifactId>google-java-format</artifactId>
+                        <version>5.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 
         </plugins>
 

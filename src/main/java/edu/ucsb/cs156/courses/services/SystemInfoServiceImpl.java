@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.courses.services;
 
-
 import edu.ucsb.cs156.courses.models.SystemInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service("systemInfo")
 @ConfigurationProperties
 public class SystemInfoServiceImpl extends SystemInfoService {
-  
+
   @Value("${spring.h2.console.enabled:false}")
   private boolean springH2ConsoleEnabled;
 
@@ -31,15 +30,15 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   private String sourceRepo;
 
   public SystemInfo getSystemInfo() {
-    SystemInfo si = SystemInfo.builder()
-    .springH2ConsoleEnabled(this.springH2ConsoleEnabled)
-    .showSwaggerUILink(this.showSwaggerUILink)
-    .startQtrYYYYQ(this.startQtrYYYYQ)
-    .endQtrYYYYQ(this.endQtrYYYYQ)
-    .sourceRepo(this.sourceRepo)
-    .build();
-  log.info("getSystemInfo returns {}",si);
-  return si;
+    SystemInfo si =
+        SystemInfo.builder()
+            .springH2ConsoleEnabled(this.springH2ConsoleEnabled)
+            .showSwaggerUILink(this.showSwaggerUILink)
+            .startQtrYYYYQ(this.startQtrYYYYQ)
+            .endQtrYYYYQ(this.endQtrYYYYQ)
+            .sourceRepo(this.sourceRepo)
+            .build();
+    log.info("getSystemInfo returns {}", si);
+    return si;
   }
-
 }

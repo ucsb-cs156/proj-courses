@@ -10,10 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Instructor implements Cloneable {
-    private String instructor;
-    private String functionCode;
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
+  private String instructor;
+  private String functionCode;
+
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return super.clone();
+  }
 }

@@ -1,7 +1,8 @@
 package edu.ucsb.cs156.courses.documents;
 
 public class SectionFixtures {
-  public static final String SECTION_JSON_CMPSC165B = """
+  public static final String SECTION_JSON_CMPSC165B =
+      """
     {
       "quarter": "20224",
       "courseId": "CMPSC   165B ",
@@ -60,7 +61,8 @@ public class SectionFixtures {
       ]
     }
       """;
-  public static final String SECTION_JSON_CMPSC100 = """ 
+  public static final String SECTION_JSON_CMPSC100 =
+      """
     {
       "quarter": "20221",
       "courseId": "CMPSC   100  ",
@@ -154,7 +156,8 @@ public class SectionFixtures {
       ]
     }
           """;
-    public static final String SECTION_JSON_CMPSC100_REVERSED = """ 
+  public static final String SECTION_JSON_CMPSC100_REVERSED =
+      """
     {
       "quarter": "20221",
       "courseId": "CMPSC   100  ",
@@ -248,7 +251,8 @@ public class SectionFixtures {
       ]
     }
           """;
-  public static final String SECTION_JSON_CMPSC156_UNEXPECTED = """
+  public static final String SECTION_JSON_CMPSC156_UNEXPECTED =
+      """
     {
       "quarter": "20221",
       "courseId": "CMPSC   156  ",
@@ -425,7 +429,8 @@ public class SectionFixtures {
     }
     """;
 
-  public static final String SECTION_JSON_CMPSC291A = """
+  public static final String SECTION_JSON_CMPSC291A =
+      """
     {
       "quarter": "20221",
       "courseId": "CMPSC   291A ",
@@ -484,8 +489,9 @@ public class SectionFixtures {
       ]
     }
     """;
-    
-    public static final String SECTION_JSON_CMPSC291A_UNEXPECTED = """
+
+  public static final String SECTION_JSON_CMPSC291A_UNEXPECTED =
+      """
     {
       "quarter": "20221",
       "courseId": "CMPSC   291A ",
@@ -545,7 +551,8 @@ public class SectionFixtures {
     }
     """;
 
-    public static final String SECTION_JSON_CMPSC291A_WRONG_ENROLL_CODE = """
+  public static final String SECTION_JSON_CMPSC291A_WRONG_ENROLL_CODE =
+      """
     {
       "quarter": "20221",
       "courseId": "CMPSC   291A ",

@@ -17,5 +17,4 @@ public class FrontendController {
   public ResponseEntity<String> csrf() {
     return ResponseEntity.notFound().build();
   }
-
 }

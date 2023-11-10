@@ -1,0 +1,24 @@
+name: "15-backend-format: Format Java Files"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: [ src/** ]
+  push:
+    branches: [ main ]
+    paths: [ src/** ]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Java (version from .java-version file)
+        uses: actions/setup-java@v3
+        with:
+          distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
+          java-version-file: ./.java-version
+
+      - name: Check formatting with Maven
+        run: mvn git-code-format:validate-code-format

@@ -15,7 +15,6 @@ public class JobContext {
     log.info("Job %s: %s".formatted(job.getId(), message));
     String previousLog = job.getLog() == null ? "" : (job.getLog() + "\n");
     job.setLog(previousLog + message);
-    if (jobsRepository!=null)
-      jobsRepository.save(job);
+    if (jobsRepository != null) jobsRepository.save(job);
   }
 }
