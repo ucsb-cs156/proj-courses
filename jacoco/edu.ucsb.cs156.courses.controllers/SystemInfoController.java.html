@@ -2,9 +2,8 @@
 
 import edu.ucsb.cs156.courses.models.SystemInfo;
 import edu.ucsb.cs156.courses.services.SystemInfoService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,16 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;System Information&quot;)
 @RequestMapping(&quot;/api/systemInfo&quot;)
 @RestController
-<span class="fc" id="L16">public class SystemInfoController extends ApiController {</span>
+<span class="fc" id="L15">public class SystemInfoController extends ApiController {</span>
 
-    @Autowired
-    private SystemInfoService systemInfoService;
+  @Autowired private SystemInfoService systemInfoService;
 
-    @Operation(summary = &quot;Get global public information about the application&quot;)
-    @GetMapping(&quot;&quot;)
-    public SystemInfo getSystemInfo() {
-<span class="fc" id="L24">        return systemInfoService.getSystemInfo();</span>
-    }
-
+  @Operation(summary = &quot;Get global public information about the application&quot;)
+  @GetMapping(&quot;&quot;)
+  public SystemInfo getSystemInfo() {
+<span class="fc" id="L22">    return systemInfoService.getSystemInfo();</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

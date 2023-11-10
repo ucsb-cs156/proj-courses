@@ -15,8 +15,7 @@ public class JobContext {
 <span class="fc" id="L15">    log.info(&quot;Job %s: %s&quot;.formatted(job.getId(), message));</span>
 <span class="fc bfc" id="L16" title="All 2 branches covered.">    String previousLog = job.getLog() == null ? &quot;&quot; : (job.getLog() + &quot;\n&quot;);</span>
 <span class="fc" id="L17">    job.setLog(previousLog + message);</span>
-<span class="fc bfc" id="L18" title="All 2 branches covered.">    if (jobsRepository!=null)</span>
-<span class="fc" id="L19">      jobsRepository.save(job);</span>
-<span class="fc" id="L20">  }</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">    if (jobsRepository != null) jobsRepository.save(job);</span>
+<span class="fc" id="L19">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

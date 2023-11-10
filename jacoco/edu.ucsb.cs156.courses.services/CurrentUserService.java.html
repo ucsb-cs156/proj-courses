@@ -2,19 +2,18 @@
 
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.models.CurrentUser;
-
 import java.util.Collection;
-
 import org.springframework.security.core.GrantedAuthority;
 
-<span class="fc" id="L10">public abstract class CurrentUserService {</span>
+<span class="fc" id="L8">public abstract class CurrentUserService {</span>
   public abstract User getUser();
+
   public abstract CurrentUser getCurrentUser();
+
   public abstract Collection&lt;? extends GrantedAuthority&gt; getRoles();
 
   public final boolean isLoggedIn() {
 <span class="fc bfc" id="L16" title="All 2 branches covered.">    return getUser() != null;</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

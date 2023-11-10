@@ -2,8 +2,9 @@
 
 public class BadEnrollCdException extends RuntimeException {
   public BadEnrollCdException(String enrollCd) {
-<span class="fc" id="L5">    super(&quot;EnrollCd: %s is invalid, (enrollCd must be valid, numeric, and no more than five digits)&quot;</span>
-<span class="fc" id="L6">      .formatted(enrollCd.toString()));</span>
-<span class="fc" id="L7">  }</span>
+<span class="fc" id="L5">    super(</span>
+        &quot;EnrollCd: %s is invalid, (enrollCd must be valid, numeric, and no more than five digits)&quot;
+<span class="fc" id="L7">            .formatted(enrollCd.toString()));</span>
+<span class="fc" id="L8">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
