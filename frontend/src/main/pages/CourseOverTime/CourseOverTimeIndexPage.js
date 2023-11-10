@@ -26,7 +26,7 @@ export default function CourseOverTimeIndexPage() {
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    []
+    [],
   );
 
   async function fetchCourseOverTimeJSON(_event, query) {

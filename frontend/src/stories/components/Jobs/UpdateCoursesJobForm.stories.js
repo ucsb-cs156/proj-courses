@@ -10,16 +10,16 @@ export default {
   parameters: {
     mockData: [
       {
-        url: '/api/UCSBSubjects/all',
-        method: 'GET',
+        url: "/api/UCSBSubjects/all",
+        method: "GET",
         status: 200,
-        response: ucsbSubjectsFixtures.threeSubjects
+        response: ucsbSubjectsFixtures.threeSubjects,
       },
       {
-        url: '/api/systemInfo',
-        method: 'GET',
+        url: "/api/systemInfo",
+        method: "GET",
         status: 200,
-        response: systemInfoFixtures.showingBoth
+        response: systemInfoFixtures.showingBoth,
       },
     ],
   },
@@ -34,5 +34,5 @@ export const Default = Template.bind({});
 Default.args = {
   callback: (data) => {
     console.log("Submit was clicked, data=", data);
-  }
+  },
 };

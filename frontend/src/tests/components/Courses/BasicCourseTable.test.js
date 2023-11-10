@@ -6,9 +6,9 @@ import { MemoryRouter } from "react-router-dom";
 
 const mockedNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedNavigate,
 }));
 
 describe("CourseTable tests", () => {
@@ -20,7 +20,7 @@ describe("CourseTable tests", () => {
         <MemoryRouter>
           <BasicCourseTable courses={[]} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -30,11 +30,27 @@ describe("CourseTable tests", () => {
         <MemoryRouter>
           <BasicCourseTable courses={coursesFixtures.twoCourses} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    const expectedHeaders = ["Quarter", "Course Id", "Title", "Description", "Level Code", "Subject Area", "Units"];
-    const expectedFields = ["quarter", "courseId", "title", "description", "objLevelCode", "subjectArea", "unitsFixed"];
+    const expectedHeaders = [
+      "Quarter",
+      "Course Id",
+      "Title",
+      "Description",
+      "Level Code",
+      "Subject Area",
+      "Units",
+    ];
+    const expectedFields = [
+      "quarter",
+      "courseId",
+      "title",
+      "description",
+      "objLevelCode",
+      "subjectArea",
+      "unitsFixed",
+    ];
     const testId = "BasicCourseTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -47,10 +63,11 @@ describe("CourseTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W21");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-courseId`)).toHaveTextContent("CMPSC 16");
-
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-quarter`),
+    ).toHaveTextContent("W21");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-courseId`),
+    ).toHaveTextContent("CMPSC 16");
   });
-
 });
-

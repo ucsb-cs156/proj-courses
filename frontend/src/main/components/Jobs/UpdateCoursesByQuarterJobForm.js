@@ -7,7 +7,6 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 
 const UpdateCoursesByQuarterJobForm = ({ callback }) => {
-
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
@@ -19,23 +18,20 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
 
   // Stryker disable all : not sure how to test/mock local storage
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
-  // Stryker enable all 
+  // Stryker enable all
 
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("UpdateCoursesJobForm: quarter", quarter);
-    callback({quarter});
+    callback({ quarter });
   };
 
-
-
-
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
-  const padding = { paddingTop: 10, paddingBottom: 10 }
+  const padding = { paddingTop: 10, paddingBottom: 10 };
   // Stryker enable all
-  
+
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
@@ -51,7 +47,11 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
         </Row>
         <Row style={padding}>
           <Col md="auto">
-            <Button variant="primary" type="submit" data-testid="updateCoursesByQuarter">
+            <Button
+              variant="primary"
+              type="submit"
+              data-testid="updateCoursesByQuarter"
+            >
               Update Courses
             </Button>
           </Col>

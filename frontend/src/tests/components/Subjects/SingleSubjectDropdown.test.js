@@ -15,9 +15,8 @@ jest.mock("react", () => ({
 }));
 
 describe("SingleSubjectDropdown tests", () => {
-
   beforeEach(() => {
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 
@@ -31,7 +30,7 @@ describe("SingleSubjectDropdown tests", () => {
 
   afterEach(() => {
     console.error.mockRestore();
- })
+  });
 
   const subject = jest.fn();
   const setSubject = jest.fn();
@@ -43,22 +42,18 @@ describe("SingleSubjectDropdown tests", () => {
         subject={oneSubject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
   });
 
   test("renders without crashing on three subjects", async () => {
-     render(
+    render(
       <SingleSubjectDropdown
-        subjects={[ 
-          threeSubjects[2],
-          threeSubjects[0],
-          threeSubjects[1]
-        ]}
+        subjects={[threeSubjects[2], threeSubjects[0], threeSubjects[1]]}
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
 
     const ART_CS = "ssd1-option-ART--CS";
@@ -72,13 +67,12 @@ describe("SingleSubjectDropdown tests", () => {
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
-    const allOptions = screen.getAllByTestId("ssd1-option-",  { exact: false });
+    const allOptions = screen.getAllByTestId("ssd1-option-", { exact: false });
     for (let i = 0; i < allOptions.length - 1; i++) {
       console.log("[i]" + allOptions[i].value);
-      console.log("[i+1]" + allOptions[i+1].value);
+      console.log("[i+1]" + allOptions[i + 1].value);
       expect(allOptions[i].value < allOptions[i + 1].value).toBe(true);
     }
-
   });
 
   test("sorts and puts hyphens in testids", () => {
@@ -88,7 +82,7 @@ describe("SingleSubjectDropdown tests", () => {
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
   });
 
@@ -99,9 +93,9 @@ describe("SingleSubjectDropdown tests", () => {
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
-    
+
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
 
     const selectQuarter = screen.getByLabelText("Subject Area");
@@ -116,13 +110,13 @@ describe("SingleSubjectDropdown tests", () => {
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
 
     expect(await screen.findByText("Subject Area")).toBeInTheDocument();
     expect(screen.getByText("ANTH - Anthropology")).toHaveAttribute(
       "data-testid",
-      "ssd1-option-ANTH"
+      "ssd1-option-ANTH",
     );
   });
 
@@ -135,9 +129,9 @@ describe("SingleSubjectDropdown tests", () => {
         setSubject={setSubject}
         controlId="ssd1"
         onChange={onChange}
-      />
+      />,
     );
-    
+
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
 
     const selectSubject = screen.getByLabelText("Subject Area");
@@ -157,9 +151,9 @@ describe("SingleSubjectDropdown tests", () => {
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
-    
+
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
   });
 
@@ -170,11 +164,13 @@ describe("SingleSubjectDropdown tests", () => {
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
 
     const expectedKey = "ssd1-option-ANTH";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
   });
 
   test("when localstorage has a value, it is passed to useState", async () => {
@@ -190,7 +186,7 @@ describe("SingleSubjectDropdown tests", () => {
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
 
     await waitFor(() => expect(useState).toBeCalledWith("ARTHI"));
@@ -209,11 +205,11 @@ describe("SingleSubjectDropdown tests", () => {
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
 
     await waitFor(() =>
-      expect(useState).toBeCalledWith(expect.objectContaining({}))
+      expect(useState).toBeCalledWith(expect.objectContaining({})),
     );
   });
 
@@ -224,7 +220,7 @@ describe("SingleSubjectDropdown tests", () => {
         subject={subject}
         setSubject={setSubject}
         controlId="ssd1"
-      />
+      />,
     );
 
     const expectedKey = "ssd1";

@@ -18,7 +18,6 @@ jest.mock("react-toastify", () => ({
 }));
 
 describe("BasicCourseSearchForm tests", () => {
-
   const axiosMock = new AxiosMockAdapter(axios);
 
   const queryClient = new QueryClient();
@@ -26,25 +25,22 @@ describe("BasicCourseSearchForm tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, {
-        ...systemInfoFixtures.showingNeither,
-        "startQtrYYYYQ": "20201",
-        "endQtrYYYYQ": "20214"
-      });
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      ...systemInfoFixtures.showingNeither,
+      startQtrYYYYQ: "20201",
+      endQtrYYYYQ: "20214",
+    });
 
     toast.mockReturnValue({
       addToast: addToast,
     });
   });
-
 
   test("renders without crashing", () => {
     render(
@@ -52,7 +48,7 @@ describe("BasicCourseSearchForm tests", () => {
         <MemoryRouter>
           <BasicCourseSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -62,7 +58,7 @@ describe("BasicCourseSearchForm tests", () => {
         <MemoryRouter>
           <BasicCourseSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20204");
@@ -77,11 +73,13 @@ describe("BasicCourseSearchForm tests", () => {
         <MemoryRouter>
           <BasicCourseSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedKey = "BasicSearch.Subject-option-MATH";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectSubject = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectSubject, "MATH");
@@ -95,7 +93,7 @@ describe("BasicCourseSearchForm tests", () => {
         <MemoryRouter>
           <BasicCourseSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
@@ -117,7 +115,7 @@ describe("BasicCourseSearchForm tests", () => {
         <MemoryRouter>
           <BasicCourseSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedFields = {
@@ -127,7 +125,9 @@ describe("BasicCourseSearchForm tests", () => {
     };
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20211");
@@ -143,7 +143,7 @@ describe("BasicCourseSearchForm tests", () => {
 
     expect(fetchJSONSpy).toHaveBeenCalledWith(
       expect.any(Object),
-      expectedFields
+      expectedFields,
     );
   });
 
@@ -164,11 +164,13 @@ describe("BasicCourseSearchForm tests", () => {
         <MemoryRouter>
           <BasicCourseSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const expectedKey = "BasicSearch.Subject-option-MATH";
-    await waitFor(() => expect(screen.getByTestId(expectedKey).toBeInTheDocument));
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
 
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20204");
@@ -180,30 +182,28 @@ describe("BasicCourseSearchForm tests", () => {
     userEvent.click(submitButton);
   });
 
-
   test("renders without crashing when fallback values are used", async () => {
-
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, {
-        "springH2ConsoleEnabled": false,
-        "showSwaggerUILink": false,
-        "startQtrYYYYQ": null, // use fallback value
-        "endQtrYYYYQ": null  // use fallback value
-      });
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: null, // use fallback value
+      endQtrYYYYQ: null, // use fallback value
+    });
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <BasicCourseSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    // Make sure the first and last options 
-    expect(await screen.findByTestId(/BasicSearch.Quarter-option-0/)).toHaveValue("20211")
-    expect(await screen.findByTestId(/BasicSearch.Quarter-option-3/)).toHaveValue("20214")
-
+    // Make sure the first and last options
+    expect(
+      await screen.findByTestId(/BasicSearch.Quarter-option-0/),
+    ).toHaveValue("20211");
+    expect(
+      await screen.findByTestId(/BasicSearch.Quarter-option-3/),
+    ).toHaveValue("20214");
   });
-
 });

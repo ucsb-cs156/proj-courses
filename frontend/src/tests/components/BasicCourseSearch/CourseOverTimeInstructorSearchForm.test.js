@@ -18,7 +18,6 @@ jest.mock("react-toastify", () => ({
 }));
 
 describe("CourseOverTimeInstructorSearchForm tests", () => {
-
   const axiosMock = new AxiosMockAdapter(axios);
 
   const queryClient = new QueryClient();
@@ -27,25 +26,22 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     localStorage.clear();
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, {
-        ...systemInfoFixtures.showingNeither,
-        "startQtrYYYYQ": "20201",
-        "endQtrYYYYQ": "20214"
-      });
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      ...systemInfoFixtures.showingNeither,
+      startQtrYYYYQ: "20201",
+      endQtrYYYYQ: "20214",
+    });
 
     toast.mockReturnValue({
       addToast: addToast,
     });
   });
-
 
   test("renders without crashing", () => {
     render(
@@ -53,9 +49,9 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-  });  
+  });
 
   test("when I select a start quarter, the state for start quarter changes", () => {
     render(
@@ -63,7 +59,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20201");
@@ -76,7 +72,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectEndQuarter = screen.getByLabelText("End Quarter");
     userEvent.selectOptions(selectEndQuarter, "20204");
@@ -89,31 +85,34 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const selectInstructor = screen.getByLabelText("Instructor Name");
     userEvent.type(selectInstructor, "conrad");
     expect(selectInstructor.value).toBe("conrad");
   });
-  
-  
+
   test("when I select the checkbox, the state for checkbox changes", () => {
-    jest.spyOn(Storage.prototype, 'setItem');
+    jest.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-    const selectCheckbox = screen.getByTestId("CourseOverTimeInstructorSearchForm-checkbox");
+    const selectCheckbox = screen.getByTestId(
+      "CourseOverTimeInstructorSearchForm-checkbox",
+    );
     userEvent.click(selectCheckbox);
     expect(selectCheckbox.checked).toBe(true);
-    expect(localStorage.setItem).toBeCalledWith('CourseOverTimeInstructorSearch.Checkbox', "true");
+    expect(localStorage.setItem).toBeCalledWith(
+      "CourseOverTimeInstructorSearch.Checkbox",
+      "true",
+    );
   });
-  
-  
+
   test("when I click submit, the right stuff happens", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     const sampleReturnValue = {
@@ -121,47 +120,48 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     };
 
     const fetchJSONSpy = jest.fn();
-    
-    
+
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
-    
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <CourseOverTimeSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-    
+
     const expectedFields = {
       startQuarter: "20211",
       endQuarter: "20214",
       instructor: "CONRAD",
-      checkbox: true
+      checkbox: true,
     };
-    
+
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20211");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
     userEvent.selectOptions(selectEndQuarter, "20214");
     const selectInstructor = screen.getByLabelText("Instructor Name");
     userEvent.type(selectInstructor, "CONRAD");
-    const selectCheckbox = screen.getByTestId("CourseOverTimeInstructorSearchForm-checkbox");
+    const selectCheckbox = screen.getByTestId(
+      "CourseOverTimeInstructorSearchForm-checkbox",
+    );
     userEvent.click(selectCheckbox);
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
-    
+
     await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
-    
+
     expect(fetchJSONSpy).toHaveBeenCalledWith(
       expect.any(Object),
-      expectedFields
-      );
-    });
-    
-    test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
-      axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-      
+      expectedFields,
+    );
+  });
+
+  test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+
     const sampleReturnValue = {
       sampleKey: "sampleValue",
       total: 0,
@@ -176,7 +176,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
@@ -185,36 +185,41 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     userEvent.selectOptions(selectEndQuarter, "20204");
     const selectInstructor = screen.getByLabelText("Instructor Name");
     userEvent.type(selectInstructor, "conrad");
-    const selectCheckbox = screen.getByTestId("CourseOverTimeInstructorSearchForm-checkbox");
+    const selectCheckbox = screen.getByTestId(
+      "CourseOverTimeInstructorSearchForm-checkbox",
+    );
     userEvent.click(selectCheckbox);
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
   });
 
-
   test("renders without crashing when fallback values are used", async () => {
-
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, {
-        "springH2ConsoleEnabled": false,
-        "showSwaggerUILink": false,
-        "startQtrYYYYQ": null, // use fallback value
-        "endQtrYYYYQ": null  // use fallback value
-      });
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: null, // use fallback value
+      endQtrYYYYQ: null, // use fallback value
+    });
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    // Make sure the first and last options 
-    expect(await screen.findByTestId(/CourseOverTimeInstructorSearch.StartQuarter-option-0/)).toHaveValue("20211")
-    expect(await screen.findByTestId(/CourseOverTimeInstructorSearch.StartQuarter-option-3/)).toHaveValue("20214")
-
+    // Make sure the first and last options
+    expect(
+      await screen.findByTestId(
+        /CourseOverTimeInstructorSearch.StartQuarter-option-0/,
+      ),
+    ).toHaveValue("20211");
+    expect(
+      await screen.findByTestId(
+        /CourseOverTimeInstructorSearch.StartQuarter-option-3/,
+      ),
+    ).toHaveValue("20214");
   });
 
   test("Button padding is correct", () => {
@@ -223,15 +228,14 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         <MemoryRouter>
           <CourseOverTimeSearchForm />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     const submitButton = screen.getByText("Submit");
     const buttonCol = submitButton.parentElement;
     const buttonRow = buttonCol.parentElement;
-    expect(buttonRow).toHaveAttribute("style", "padding-top: 10px; padding-bottom: 10px;");
+    expect(buttonRow).toHaveAttribute(
+      "style",
+      "padding-top: 10px; padding-bottom: 10px;",
+    );
   });
-  
-
-
-  
 });

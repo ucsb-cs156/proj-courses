@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourseSearchForm";
@@ -20,7 +19,7 @@ export default function SectionSearchesIndexPage() {
   });
 
   const onSuccess = (section) => {
-    console.log()
+    console.log();
     setSectionJSON(section);
   };
 
@@ -28,7 +27,7 @@ export default function SectionSearchesIndexPage() {
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    []
+    [],
   );
 
   async function fetchBasicSectionJSON(_event, query) {

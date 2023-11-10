@@ -26,7 +26,7 @@ export default function CourseOverTimeInstructorIndexPage() {
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    []
+    [],
   );
 
   async function fetchCourseOverTimeJSON(_event, query) {
@@ -37,7 +37,9 @@ export default function CourseOverTimeInstructorIndexPage() {
     <BasicLayout>
       <div className="pt-2">
         <h5>Welcome to the UCSB Course Instructor Search!</h5>
-        <CourseOverTimeInstructorSearchForm fetchJSON={fetchCourseOverTimeJSON} />
+        <CourseOverTimeInstructorSearchForm
+          fetchJSON={fetchCourseOverTimeJSON}
+        />
         <SectionsTable sections={courseJSON} />
       </div>
     </BasicLayout>

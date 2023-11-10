@@ -10,16 +10,16 @@ export default {
   parameters: {
     mockData: [
       {
-        url: '/api/UCSBSubjects/all',
-        method: 'GET',
+        url: "/api/UCSBSubjects/all",
+        method: "GET",
         status: 200,
-        response: allTheSubjects
+        response: allTheSubjects,
       },
       {
-        url: '/api/systemInfo',
-        method: 'GET',
+        url: "/api/systemInfo",
+        method: "GET",
         status: 200,
-        response: systemInfoFixtures.showingBothStartAndEndQtr
+        response: systemInfoFixtures.showingBothStartAndEndQtr,
       },
     ],
   },
@@ -35,5 +35,5 @@ Default.args = {
   submitText: "Create",
   fetchJSON: (_event, data) => {
     console.log("Submit was clicked, data=", data);
-  }
+  },
 };

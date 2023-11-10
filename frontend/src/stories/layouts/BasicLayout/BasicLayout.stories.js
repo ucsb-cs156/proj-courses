@@ -1,11 +1,10 @@
-
-import React from 'react';
+import React from "react";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 
 export default {
-    title: 'layouts/BasicLayout/BasicLayout',
-    component: BasicLayout
+  title: "layouts/BasicLayout/BasicLayout",
+  component: BasicLayout,
 };
 
 const Template = () => <BasicLayout />;
