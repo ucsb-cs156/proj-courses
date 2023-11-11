@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PSCourseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">PSCourseController.java</span></div><h1>PSCourseController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.entities.PSCourse;
+import edu.ucsb.cs156.courses.entities.PersonalSchedule;
+import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.errors.BadEnrollCdException;
+import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
+import edu.ucsb.cs156.courses.models.CurrentUser;
+import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
+import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Optional;
+import javax.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = &quot;PSCourse&quot;)
+@RequestMapping(&quot;/api/courses&quot;)
+@RestController
+<span class="fc" id="L37">@Slf4j</span>
+<span class="fc" id="L38">public class PSCourseController extends ApiController {</span>
+
+  @Autowired PSCourseRepository coursesRepository;
+  @Autowired PersonalScheduleRepository personalScheduleRepository;
+  @Autowired UCSBCurriculumService ucsbCurriculumService;
+  @Autowired ObjectMapper mapper;
+
+  @Operation(summary = &quot;List all courses (admin)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @GetMapping(&quot;/admin/all&quot;)
+  public Iterable&lt;PSCourse&gt; allUsersCourses() {
+<span class="fc" id="L49">    Iterable&lt;PSCourse&gt; courses = coursesRepository.findAll();</span>
+<span class="fc" id="L50">    return courses;</span>
+  }
+
+  @Operation(summary = &quot;List all courses (user)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+  @GetMapping(&quot;/user/all&quot;)
+  public Iterable&lt;PSCourse&gt; thisUsersCourses() {
+<span class="fc" id="L57">    CurrentUser currentUser = getCurrentUser();</span>
+<span class="fc" id="L58">    Iterable&lt;PSCourse&gt; courses = coursesRepository.findAllByUserId(currentUser.getUser().getId());</span>
+<span class="fc" id="L59">    return courses;</span>
+  }
+
+  @Operation(summary = &quot;List all courses for a specified psId (admin)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @GetMapping(&quot;/admin/psid/all&quot;)
+  public Iterable&lt;PSCourse&gt; allCoursesForPsId(@Parameter(name = &quot;psId&quot;) @RequestParam Long psId) {
+<span class="fc" id="L66">    Iterable&lt;PSCourse&gt; courses = coursesRepository.findAllByPsId(psId);</span>
+<span class="fc" id="L67">    return courses;</span>
+  }
+
+  @Operation(summary = &quot;List all courses for a specified psId (user)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+  @GetMapping(&quot;/user/psid/all&quot;)
+  public Iterable&lt;PSCourse&gt; thisUsersCoursesForPsId(
+      @Parameter(name = &quot;psId&quot;) @RequestParam Long psId) {
+<span class="fc" id="L75">    User currentUser = getCurrentUser().getUser();</span>
+<span class="fc" id="L76">    Iterable&lt;PSCourse&gt; courses = coursesRepository.findAllByPsIdAndUser(psId, currentUser);</span>
+<span class="fc" id="L77">    return courses;</span>
+  }
+
+  @Operation(summary = &quot;Get a single course (admin)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @GetMapping(&quot;/admin&quot;)
+  public PSCourse getCourseById_admin(@Parameter(name = &quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L84">    PSCourse courses =</span>
+        coursesRepository
+<span class="fc" id="L86">            .findById(id)</span>
+<span class="fc" id="L87">            .orElseThrow(() -&gt; new EntityNotFoundException(PSCourse.class, id));</span>
+
+<span class="fc" id="L89">    return courses;</span>
+  }
+
+  @Operation(summary = &quot;Get a single course (user)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+  @GetMapping(&quot;/user&quot;)
+  public PSCourse getCourseById(@Parameter(name = &quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L96">    User currentUser = getCurrentUser().getUser();</span>
+<span class="fc" id="L97">    PSCourse courses =</span>
+        coursesRepository
+<span class="fc" id="L99">            .findByIdAndUser(id, currentUser)</span>
+<span class="fc" id="L100">            .orElseThrow(() -&gt; new EntityNotFoundException(PSCourse.class, id));</span>
+
+<span class="fc" id="L102">    return courses;</span>
+  }
+
+  @Operation(summary = &quot;Create a new course&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+  @PostMapping(&quot;/post&quot;)
+  public ArrayList&lt;PSCourse&gt; postCourses(
+      @Parameter(name = &quot;enrollCd&quot;) @RequestParam String enrollCd,
+      @Parameter(name = &quot;psId&quot;) @RequestParam Long psId)
+      throws JsonProcessingException {
+<span class="fc" id="L112">    CurrentUser currentUser = getCurrentUser();</span>
+<span class="fc" id="L113">    log.info(&quot;currentUser={}&quot;, currentUser);</span>
+
+<span class="fc" id="L115">    PersonalSchedule checkPsId =</span>
+        personalScheduleRepository
+<span class="fc" id="L117">            .findByIdAndUser(psId, currentUser.getUser())</span>
+<span class="fc" id="L118">            .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, psId));</span>
+
+<span class="fc" id="L120">    String body = ucsbCurriculumService.getAllSections(enrollCd, checkPsId.getQuarter());</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">    if (body.equals(&quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;)</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        || body.equals(&quot;{\&quot;error\&quot;: \&quot;Enroll code doesn't exist in that quarter.\&quot;}&quot;)) {</span>
+<span class="fc" id="L123">      throw new BadEnrollCdException(enrollCd);</span>
+    }
+
+<span class="fc" id="L126">    String enrollCdPrimary = null;</span>
+<span class="fc" id="L127">    boolean hasSecondary = false;</span>
+<span class="fc" id="L128">    Iterator&lt;JsonNode&gt; it = mapper.readTree(body).path(&quot;classSections&quot;).elements();</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">    while (it.hasNext()) {</span>
+<span class="fc" id="L130">      JsonNode classSection = it.next();</span>
+<span class="fc" id="L131">      String section = classSection.path(&quot;section&quot;).asText();</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">      if (section.endsWith(&quot;00&quot;)) {</span>
+<span class="fc" id="L133">        String currentEnrollCd = classSection.path(&quot;enrollCode&quot;).asText();</span>
+<span class="fc" id="L134">        enrollCdPrimary = currentEnrollCd;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (hasSecondary) break;</span>
+<span class="fc" id="L136">      } else {</span>
+<span class="fc" id="L137">        hasSecondary = true;</span>
+      }
+<span class="fc" id="L139">    }</span>
+
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (enrollCdPrimary == null) {</span>
+<span class="fc" id="L142">      enrollCdPrimary = enrollCd;</span>
+<span class="fc" id="L143">      hasSecondary = false;</span>
+    }
+
+<span class="fc bfc" id="L146" title="All 2 branches covered.">    if (coursesRepository.findByPsIdAndEnrollCd(psId, enrollCdPrimary).isPresent()) {</span>
+<span class="fc" id="L147">      throw new IllegalArgumentException(&quot;class exists in schedule&quot;);</span>
+    }
+
+<span class="fc" id="L150">    ArrayList&lt;PSCourse&gt; savedCourses = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (!enrollCdPrimary.equals(enrollCd)) {</span>
+<span class="fc" id="L153">      String enrollCdSecondary = enrollCd;</span>
+<span class="fc" id="L154">      PSCourse secondary = new PSCourse();</span>
+<span class="fc" id="L155">      secondary.setUser(currentUser.getUser());</span>
+<span class="fc" id="L156">      secondary.setEnrollCd(enrollCdSecondary);</span>
+<span class="fc" id="L157">      secondary.setPsId(psId);</span>
+<span class="fc" id="L158">      PSCourse savedSecondary = coursesRepository.save(secondary);</span>
+<span class="fc" id="L159">      savedCourses.add(savedSecondary);</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    } else if (hasSecondary) {</span>
+<span class="fc" id="L161">      throw new IllegalArgumentException(</span>
+          enrollCd
+              + &quot; is for a course with sections; please add a specific section and the lecture will be automatically added&quot;);
+    }
+
+<span class="fc" id="L166">    PSCourse primary = new PSCourse();</span>
+<span class="fc" id="L167">    primary.setUser(currentUser.getUser());</span>
+<span class="fc" id="L168">    primary.setEnrollCd(enrollCdPrimary);</span>
+<span class="fc" id="L169">    primary.setPsId(psId);</span>
+<span class="fc" id="L170">    PSCourse savedPrimary = coursesRepository.save(primary);</span>
+<span class="fc" id="L171">    savedCourses.add(savedPrimary);</span>
+<span class="fc" id="L172">    return savedCourses;</span>
+  }
+
+  @Operation(summary = &quot;Delete a course (admin)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @DeleteMapping(&quot;/admin&quot;)
+  public Object deleteCourses_Admin(@Parameter(name = &quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L179">    PSCourse courses =</span>
+        coursesRepository
+<span class="fc" id="L181">            .findById(id)</span>
+<span class="fc" id="L182">            .orElseThrow(() -&gt; new EntityNotFoundException(PSCourse.class, id));</span>
+
+<span class="fc" id="L184">    coursesRepository.delete(courses);</span>
+
+<span class="fc" id="L186">    return genericMessage(&quot;PSCourse with id %s deleted&quot;.formatted(id));</span>
+  }
+
+  @Operation(summary = &quot;Delete a course (user)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+  @DeleteMapping(&quot;/user&quot;)
+  public Object deleteCourses(@Parameter(name = &quot;id&quot;) @RequestParam Long id)
+      throws JsonProcessingException {
+<span class="fc" id="L194">    User currentUser = getCurrentUser().getUser();</span>
+<span class="fc" id="L195">    PSCourse psCourse =</span>
+        coursesRepository
+<span class="fc" id="L197">            .findByIdAndUser(id, currentUser)</span>
+<span class="fc" id="L198">            .orElseThrow(() -&gt; new EntityNotFoundException(PSCourse.class, id));</span>
+<span class="fc" id="L199">    long psId = psCourse.getPsId();</span>
+<span class="fc" id="L200">    PersonalSchedule checkPsId =</span>
+        personalScheduleRepository
+<span class="fc" id="L202">            .findByIdAndUser(psId, currentUser)</span>
+<span class="fc" id="L203">            .orElseThrow(() -&gt; new EntityNotFoundException(PersonalSchedule.class, psId));</span>
+
+<span class="fc" id="L205">    String body =</span>
+<span class="fc" id="L206">        ucsbCurriculumService.getAllSections(psCourse.getEnrollCd(), checkPsId.getQuarter());</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">    if (body.equals(&quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;)</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        || body.equals(&quot;{\&quot;error\&quot;: \&quot;Enroll code doesn't exist in that quarter.\&quot;}&quot;)) {</span>
+<span class="fc" id="L209">      coursesRepository.delete(psCourse);</span>
+<span class="fc" id="L210">      return genericMessage(&quot;PSCourse with id %s deleted&quot;.formatted(id));</span>
+    }
+
+<span class="fc" id="L213">    Iterator&lt;JsonNode&gt; it = mapper.readTree(body).path(&quot;classSections&quot;).elements();</span>
+<span class="fc" id="L214">    Optional&lt;Long&gt; primaryId = Optional.empty();</span>
+<span class="fc" id="L215">    Optional&lt;Long&gt; secondaryId = Optional.empty();</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">    while (it.hasNext()) {</span>
+<span class="fc" id="L217">      JsonNode classSection = it.next();</span>
+<span class="fc" id="L218">      String section = classSection.path(&quot;section&quot;).asText();</span>
+<span class="fc" id="L219">      String currentEnrollCd = classSection.path(&quot;enrollCode&quot;).asText();</span>
+<span class="fc" id="L220">      Optional&lt;PSCourse&gt; currentPsCourse =</span>
+<span class="fc" id="L221">          coursesRepository.findByPsIdAndEnrollCd(psId, currentEnrollCd);</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">      if (!currentPsCourse.isPresent()) continue;</span>
+<span class="fc" id="L223">      Optional&lt;Long&gt; idOpt = Optional.of(currentPsCourse.get().getId());</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">      if (section.endsWith(&quot;00&quot;)) primaryId = idOpt;</span>
+<span class="fc" id="L225">      else secondaryId = idOpt;</span>
+<span class="fc" id="L226">      coursesRepository.delete(currentPsCourse.get());</span>
+<span class="fc" id="L227">    }</span>
+
+<span class="fc bfc" id="L229" title="All 4 branches covered.">    if (primaryId.isPresent() &amp;&amp; secondaryId.isPresent()) {</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">      if (primaryId.get() == id)</span>
+<span class="fc" id="L231">        return genericMessage(</span>
+            &quot;PSCourse with id %s and matching secondary with id %s deleted&quot;
+<span class="fc" id="L233">                .formatted(id, secondaryId.get()));</span>
+      else
+<span class="fc" id="L235">        return genericMessage(</span>
+            &quot;PSCourse with id %s and matching primary with id %s deleted&quot;
+<span class="fc" id="L237">                .formatted(id, primaryId.get()));</span>
+    }
+
+<span class="fc" id="L240">    return genericMessage(&quot;PSCourse with id %s deleted&quot;.formatted(id));</span>
+  }
+
+  @Operation(summary = &quot;Update a single Course (admin)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PutMapping(&quot;/admin&quot;)
+  public PSCourse putCourseById_admin(
+      @Parameter(name = &quot;id&quot;) @RequestParam Long id, @RequestBody @Valid PSCourse incomingCourses) {
+<span class="fc" id="L248">    PSCourse courses =</span>
+        coursesRepository
+<span class="fc" id="L250">            .findById(id)</span>
+<span class="fc" id="L251">            .orElseThrow(() -&gt; new EntityNotFoundException(PSCourse.class, id));</span>
+
+<span class="fc" id="L253">    courses.setEnrollCd(incomingCourses.getEnrollCd());</span>
+<span class="fc" id="L254">    courses.setPsId(incomingCourses.getPsId());</span>
+
+<span class="fc" id="L256">    coursesRepository.save(courses);</span>
+
+<span class="fc" id="L258">    return courses;</span>
+  }
+
+  @Operation(summary = &quot;Update a single course (user)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+  @PutMapping(&quot;/user&quot;)
+  public PSCourse putCoursesById(
+      @Parameter(name = &quot;id&quot;) @RequestParam Long id, @RequestBody @Valid PSCourse incomingCourses) {
+<span class="fc" id="L266">    User currentUser = getCurrentUser().getUser();</span>
+<span class="fc" id="L267">    PSCourse courses =</span>
+        coursesRepository
+<span class="fc" id="L269">            .findByIdAndUser(id, currentUser)</span>
+<span class="fc" id="L270">            .orElseThrow(() -&gt; new EntityNotFoundException(PSCourse.class, id));</span>
+
+<span class="fc" id="L272">    courses.setEnrollCd(incomingCourses.getEnrollCd());</span>
+<span class="fc" id="L273">    courses.setPsId(incomingCourses.getPsId());</span>
+
+<span class="fc" id="L275">    coursesRepository.save(courses);</span>
+
+<span class="fc" id="L277">    return courses;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
