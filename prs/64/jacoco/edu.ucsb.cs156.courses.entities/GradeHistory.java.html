@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GradeHistory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.entities</a> &gt; <span class="el_source">GradeHistory.java</span></div><h1>GradeHistory.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.entities;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * GradeHistory - Entity for grade history data. Each object represents one row from the CSV files
+ * located in this repository: &lt;a
+ * href=&quot;https://github.com/rtora/UCSB_Grades&quot;&gt;https://github.com/rtora/UCSB_Grades&lt;/a&gt;
+ *
+ * &lt;p&gt;There is a unique constraint on the combination of year, quarter, subjectArea, course,
+ * instructor, and grade, since we do not want duplicate rows of data for the same course.
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity(name = &quot;historygrade&quot;)
+@Table(
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = &quot;UniqueGradeHistory&quot;,
+          columnNames = {&quot;yyyyq&quot;, &quot;course&quot;, &quot;instructor&quot;, &quot;grade&quot;, &quot;count&quot;})
+    })
+public class GradeHistory {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  private String yyyyq;
+  private String course;
+  private String instructor;
+  private String grade;
+  private int count;
+
+  public String getSubjectArea() {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">    if (course == null) return null;</span>
+<span class="fc" id="L46">    return course.substring(0, 8).trim();</span>
+  }
+
+  public String getCourseNum() {
+<span class="fc bfc" id="L50" title="All 2 branches covered.">    if (course == null) return null;</span>
+<span class="fc" id="L51">    return course.substring(8).trim();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
