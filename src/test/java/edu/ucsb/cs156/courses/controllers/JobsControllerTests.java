@@ -6,12 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
@@ -19,9 +18,6 @@ import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJobFactory;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
@@ -60,15 +56,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @MockBean UCSBCurriculumService ucsbCurriculumService;
 
-  @MockBean UpdateCourseDataWithQuarterJobFactory updateCourseDataWithQuarterJobFactory;
-
   @MockBean UpdateCourseDataJobFactory updateCourseDataJobFactory;
-
-  @MockBean UpdateCourseDataRangeOfQuartersJobFactory updateCourseDataRangeOfQuartersJobFactory;
-
-  @MockBean
-  UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory
-      updateCourseDataRangeOfQuartersSingleSubjectJobFactory;
 
   @MockBean ConvertedSectionCollection convertedSectionCollection;
 
