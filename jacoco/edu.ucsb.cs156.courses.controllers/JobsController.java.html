@@ -4,14 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.jobs.TestJob;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJob;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersSingleSubjectJob;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJob;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJobFactory;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJob;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
@@ -30,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;Jobs&quot;)
 @RequestMapping(&quot;/api/jobs&quot;)
 @RestController
-<span class="fc" id="L33">public class JobsController extends ApiController {</span>
+<span class="fc" id="L26">public class JobsController extends ApiController {</span>
   @Autowired private JobsRepository jobsRepository;
 
   @Autowired private ConvertedSectionCollection convertedSectionCollection;
@@ -41,22 +34,14 @@ import org.springframework.web.bind.annotation.RestController;
 
   @Autowired UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
-  @Autowired UpdateCourseDataWithQuarterJobFactory updateCourseDataWithQuarterJobFactory;
-
-  @Autowired UpdateCourseDataRangeOfQuartersJobFactory updateCourseDataRangeOfQuartersJobFactory;
-
-  @Autowired
-  UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory
-      updateCourseDataRangeOfQuartersSingleSubjectJobFactory;
-
   @Autowired UploadGradeDataJobFactory updateGradeDataJobFactory;
 
   @Operation(summary = &quot;List all jobs&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @GetMapping(&quot;/all&quot;)
   public Iterable&lt;Job&gt; allJobs() {
-<span class="fc" id="L58">    Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
-<span class="fc" id="L59">    return jobs;</span>
+<span class="fc" id="L43">    Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
+<span class="fc" id="L44">    return jobs;</span>
   }
 
   @Operation(summary = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
@@ -66,8 +51,8 @@ import org.springframework.web.bind.annotation.RestController;
       @Parameter(name = &quot;fail&quot;) @RequestParam Boolean fail,
       @Parameter(name = &quot;sleepMs&quot;) @RequestParam Integer sleepMs) {
 
-<span class="fc" id="L69">    TestJob testJob = TestJob.builder().fail(fail).sleepMs(sleepMs).build();</span>
-<span class="fc" id="L70">    return jobService.runAsJob(testJob);</span>
+<span class="fc" id="L54">    TestJob testJob = TestJob.builder().fail(fail).sleepMs(sleepMs).build();</span>
+<span class="fc" id="L55">    return jobService.runAsJob(testJob);</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data&quot;)
@@ -78,10 +63,9 @@ import org.springframework.web.bind.annotation.RestController;
           String quarterYYYYQ,
       @Parameter(name = &quot;subject area&quot;) @RequestParam String subjectArea) {
 
-<span class="fc" id="L81">    UpdateCourseDataJob updateCourseDataJob =</span>
-<span class="fc" id="L82">        updateCourseDataJobFactory.create(subjectArea, quarterYYYYQ);</span>
+<span class="fc" id="L66">    var job = updateCourseDataJobFactory.createForSubjectAndQuarter(subjectArea, quarterYYYYQ);</span>
 
-<span class="fc" id="L84">    return jobService.runAsJob(updateCourseDataJob);</span>
+<span class="fc" id="L68">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data using Quarter&quot;)
@@ -91,10 +75,9 @@ import org.springframework.web.bind.annotation.RestController;
       @Parameter(name = &quot;quarterYYYYQ&quot;, description = &quot;quarter (YYYYQ format)&quot;) @RequestParam
           String quarterYYYYQ) {
 
-<span class="fc" id="L94">    UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob =</span>
-<span class="fc" id="L95">        updateCourseDataWithQuarterJobFactory.create(quarterYYYYQ);</span>
+<span class="fc" id="L78">    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);</span>
 
-<span class="fc" id="L97">    return jobService.runAsJob(updateCourseDataWithQuarterJob);</span>
+<span class="fc" id="L80">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data for range of quarters&quot;)
@@ -108,10 +91,10 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam
           String end_quarterYYYYQ) {
 
-<span class="fc" id="L111">    UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob =</span>
-<span class="fc" id="L112">        updateCourseDataRangeOfQuartersJobFactory.create(start_quarterYYYYQ, end_quarterYYYYQ);</span>
+<span class="fc" id="L94">    var job =</span>
+<span class="fc" id="L95">        updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);</span>
 
-<span class="fc" id="L114">    return jobService.runAsJob(updateCourseDataRangeOfQuartersJob);</span>
+<span class="fc" id="L97">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(
@@ -128,20 +111,19 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam
           String end_quarterYYYYQ) {
 
-    UpdateCourseDataRangeOfQuartersSingleSubjectJob
-<span class="fc" id="L132">        updateCourseDataRangeOfQuartersSingleSubjectJob =</span>
-<span class="fc" id="L133">            updateCourseDataRangeOfQuartersSingleSubjectJobFactory.create(</span>
-                subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
+<span class="fc" id="L114">    var job =</span>
+<span class="fc" id="L115">        updateCourseDataJobFactory.createForSubjectAndQuarterRange(</span>
+            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
 
-<span class="fc" id="L136">    return jobService.runAsJob(updateCourseDataRangeOfQuartersSingleSubjectJob);</span>
+<span class="fc" id="L118">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to update grade history&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @PostMapping(&quot;/launch/uploadGradeData&quot;)
   public Job launchUploadGradeData() {
-<span class="fc" id="L143">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
-<span class="fc" id="L144">    return jobService.runAsJob(updateGradeDataJob);</span>
+<span class="fc" id="L125">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
+<span class="fc" id="L126">    return jobService.runAsJob(updateGradeDataJob);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
