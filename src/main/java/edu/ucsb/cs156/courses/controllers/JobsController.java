@@ -4,14 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.jobs.TestJob;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJob;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersSingleSubjectJob;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJob;
-import edu.ucsb.cs156.courses.jobs.UpdateCourseDataWithQuarterJobFactory;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJob;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
@@ -40,14 +33,6 @@ public class JobsController extends ApiController {
   @Autowired ObjectMapper mapper;
 
   @Autowired UpdateCourseDataJobFactory updateCourseDataJobFactory;
-
-  @Autowired UpdateCourseDataWithQuarterJobFactory updateCourseDataWithQuarterJobFactory;
-
-  @Autowired UpdateCourseDataRangeOfQuartersJobFactory updateCourseDataRangeOfQuartersJobFactory;
-
-  @Autowired
-  UpdateCourseDataRangeOfQuartersSingleSubjectJobFactory
-      updateCourseDataRangeOfQuartersSingleSubjectJobFactory;
 
   @Autowired UploadGradeDataJobFactory updateGradeDataJobFactory;
 
@@ -78,10 +63,9 @@ public class JobsController extends ApiController {
           String quarterYYYYQ,
       @Parameter(name = "subject area") @RequestParam String subjectArea) {
 
-    UpdateCourseDataJob updateCourseDataJob =
-        updateCourseDataJobFactory.create(subjectArea, quarterYYYYQ);
+    var job = updateCourseDataJobFactory.createForSubjectAndQuarter(subjectArea, quarterYYYYQ);
 
-    return jobService.runAsJob(updateCourseDataJob);
+    return jobService.runAsJob(job);
   }
 
   @Operation(summary = "Launch Job to Update Course Data using Quarter")
@@ -91,10 +75,9 @@ public class JobsController extends ApiController {
       @Parameter(name = "quarterYYYYQ", description = "quarter (YYYYQ format)") @RequestParam
           String quarterYYYYQ) {
 
-    UpdateCourseDataWithQuarterJob updateCourseDataWithQuarterJob =
-        updateCourseDataWithQuarterJobFactory.create(quarterYYYYQ);
+    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);
 
-    return jobService.runAsJob(updateCourseDataWithQuarterJob);
+    return jobService.runAsJob(job);
   }
 
   @Operation(summary = "Launch Job to Update Course Data for range of quarters")
@@ -108,10 +91,10 @@ public class JobsController extends ApiController {
           @RequestParam
           String end_quarterYYYYQ) {
 
-    UpdateCourseDataRangeOfQuartersJob updateCourseDataRangeOfQuartersJob =
-        updateCourseDataRangeOfQuartersJobFactory.create(start_quarterYYYYQ, end_quarterYYYYQ);
+    var job =
+        updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);
 
-    return jobService.runAsJob(updateCourseDataRangeOfQuartersJob);
+    return jobService.runAsJob(job);
   }
 
   @Operation(
@@ -128,12 +111,11 @@ public class JobsController extends ApiController {
           @RequestParam
           String end_quarterYYYYQ) {
 
-    UpdateCourseDataRangeOfQuartersSingleSubjectJob
-        updateCourseDataRangeOfQuartersSingleSubjectJob =
-            updateCourseDataRangeOfQuartersSingleSubjectJobFactory.create(
-                subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
+    var job =
+        updateCourseDataJobFactory.createForSubjectAndQuarterRange(
+            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
 
-    return jobService.runAsJob(updateCourseDataRangeOfQuartersSingleSubjectJob);
+    return jobService.runAsJob(job);
   }
 
   @Operation(summary = "Launch Job to update grade history")

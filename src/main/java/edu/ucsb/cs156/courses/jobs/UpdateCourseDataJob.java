@@ -2,6 +2,7 @@ package edu.ucsb.cs156.courses.jobs;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
@@ -9,19 +10,29 @@ import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
-@Slf4j
+@Getter
 public class UpdateCourseDataJob implements JobContextConsumer {
-
-  @Getter private String subjectArea;
-  @Getter private String quarterYYYYQ;
-  @Getter private UCSBCurriculumService ucsbCurriculumService;
-  @Getter private ConvertedSectionCollection convertedSectionCollection;
+  private String start_quarterYYYYQ;
+  private String end_quarterYYYYQ;
+  private List<String> subjects;
+  private UCSBCurriculumService ucsbCurriculumService;
+  private ConvertedSectionCollection convertedSectionCollection;
 
   @Override
   public void accept(JobContext ctx) throws Exception {
+    List<Quarter> quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);
+    for (Quarter quarter : quarters) {
+      String quarterYYYYQ = quarter.getYYYYQ();
+      for (String subjectArea : subjects) {
+        updateCourses(ctx, quarterYYYYQ, subjectArea);
+      }
+    }
+  }
+
+  public void updateCourses(JobContext ctx, String quarterYYYYQ, String subjectArea)
+      throws Exception {
     ctx.log("Updating courses for [" + subjectArea + " " + quarterYYYYQ + "]");
 
     List<ConvertedSection> convertedSections =
