@@ -8,13 +8,13 @@ name: 98 - Copy specific issue from starter repo (creates new issue)
 
 env:
     GH_TOKEN: ${{ github.token }}
-    STARTER: https://github.com/ucsb-cs156/proj-courses
+    STARTER: https://github.com/ucsb-cs156/proj-happycows
 on:
   workflow_dispatch:
     inputs:
       issue_number:
         type: number
-        description: issue number from https://github.com/ucsb-cs156/proj-courses
+        description: issue number from https://github.com/ucsb-cs156/proj-happycows
       
 jobs:
   initialize:
@@ -80,5 +80,3 @@ jobs:
       - name: Notify of failure
         run: |
           echo "ERROR: Issue ${{ github.event.inputs.issue_number }} could not be retrieved from  ${{ env.STARTER }}" >> "$GITHUB_STEP_SUMMARY"
-
- 
