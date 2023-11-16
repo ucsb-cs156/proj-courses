@@ -8,13 +8,13 @@ name: 98 - Copy specific issue from starter repo (creates new issue)
 
 env:
     GH_TOKEN: ${{ github.token }}
-    STARTER: https://github.com/ucsb-cs156/proj-happycows
+    STARTER: https://github.com/ucsb-cs156/proj-courses
 on:
   workflow_dispatch:
     inputs:
       issue_number:
         type: number
-        description: issue number from https://github.com/ucsb-cs156/proj-happycows
+        description: issue number from https://github.com/ucsb-cs156/proj-courses
       
 jobs:
   initialize:
