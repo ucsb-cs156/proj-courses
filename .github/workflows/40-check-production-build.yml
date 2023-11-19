@@ -31,6 +31,6 @@ jobs:
       env:
         TEST_PROPERTIES: ${{ secrets.TEST_PROPERTIES }}
         PRODUCTION: true
-      run: mvn -DskipTests clean dependency:list install
+      run: mvn -DskipTests -Dgcf.skip clean dependency:list install
 
   
