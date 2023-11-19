@@ -22,3 +22,17 @@ jobs:
 
       - name: Check formatting with Maven
         run: mvn git-code-format:validate-code-format
+
+      - name: "IF THE STEP ABOVE FAILS ^^^ open this step for a hint"
+        if: failure() # Only run if the previous step failed
+        run: |
+          echo "*******************************************************************************"  >> "$GITHUB_STEP_SUMMARY"
+          echo "*                                                                             *"  >> "$GITHUB_STEP_SUMMARY"
+          echo "* If this job fails, it's because some of your code is improperly formatted.  *"  >> "$GITHUB_STEP_SUMMARY"
+          echo "*                                                                             *"  >> "$GITHUB_STEP_SUMMARY"
+          echo "* To fix it, try running this:                                                *"  >> "$GITHUB_STEP_SUMMARY"
+          echo "*                                                                             *"  >> "$GITHUB_STEP_SUMMARY"
+          echo "*     mvn git-code-format:format-code                                         *"  >> "$GITHUB_STEP_SUMMARY"                                                           *"  >> "$GITHUB_STEP_SUMMARY"
+          echo "*                                                                             *"  >> "$GITHUB_STEP_SUMMARY"
+          echo "*******************************************************************************"  >> "$GITHUB_STEP_SUMMARY"
+
