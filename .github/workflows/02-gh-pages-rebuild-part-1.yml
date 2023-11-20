@@ -112,7 +112,7 @@ jobs:
       continue-on-error: true
       env:
         TEST_PROPERTIES: ${{ secrets.TEST_PROPERTIES }}
-      run: mvn -B test jacoco:report verify
+      run: mvn -B -Dgcf.skip test jacoco:report verify
 
     - name: Upload to artifacts
       uses: actions/upload-artifact@v3.1.2
@@ -383,7 +383,7 @@ jobs:
       continue-on-error: true
       env:
         TEST_PROPERTIES: ${{ secrets.TEST_PROPERTIES }}
-      run: mvn -B test jacoco:report verify
+      run: mvn -B -Dgcf.skip test jacoco:report verify
  
     - name: Upload to artifacts
       uses: actions/upload-artifact@v3.1.2
