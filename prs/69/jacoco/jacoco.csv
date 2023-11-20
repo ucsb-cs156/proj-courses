@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 courses,edu.ucsb.cs156.courses.controllers,CSRFController,0,5,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.controllers,GradeHistoryController,0,18,0,0,0,5,0,3,0,3
-courses,edu.ucsb.cs156.courses.controllers,ApiController,0,33,0,0,0,11,0,6,0,6
+courses,edu.ucsb.cs156.courses.controllers,ApiController,0,33,0,0,0,10,0,6,0,6
 courses,edu.ucsb.cs156.courses.controllers,PersonalSectionsController,0,82,0,2,0,18,0,5,0,4
 courses,edu.ucsb.cs156.courses.controllers,UserInfoController,0,6,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.controllers,PersonalSchedulesController,0,263,0,4,0,61,0,19,0,17
