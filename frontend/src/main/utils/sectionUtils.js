@@ -85,11 +85,14 @@ export const isSection = (en1) => {
 export const formatStatus = (section) => {
   if (section.courseCancelled) {
     return "Cancelled";
-  } else if (section.classClosed === "Y") {
+  }
+  else if (section.classClosed === "Y") {
     return "Closed";
-  } else if (section.enrolledTotal >= section.maxEnroll) {
+  }
+  else if (section.enrolledTotal >= section.maxEnroll) {
     return "Full";
-  } else {
+  }
+  else {
     return "Open";
   }
-};
+}
