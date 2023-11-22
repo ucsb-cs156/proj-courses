@@ -80,3 +80,19 @@ export const formatInstructors = (instructorArray) => {
 export const isSection = (en1) => {
   return en1.substring(2) !== "00";
 };
+
+// returns the course status based on cancel, closed, or full
+export const formatStatus = (section) => {
+  if (section.courseCancelled) {
+    return "Cancelled";
+  }
+  else if (section.classClosed === "Y") {
+    return "Closed";
+  }
+  else if (section.enrolledTotal >= section.maxEnroll) {
+    return "Full";
+  }
+  else {
+    return "Open";
+  }
+}
