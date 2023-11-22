@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import PersonalScheduleDropdown from "../PersonalSchedules/PersonalScheduleDropdown";
+import { useBackend } from "main/utils/useBackend";
 
 function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
   // Stryker disable all
@@ -13,6 +15,22 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
   // Stryker enable all
 
   const navigate = useNavigate();
+  
+  const {
+    data: schedules,
+    error: _error,
+    status: _status,
+  } = useBackend(
+    // Stryker disable next-line all : don't test internal caching of React Query
+    ["/api/personalschedules/all"],
+    { method: "GET", url: "/api/personalschedules/all" },
+    [],
+  );
+  
+  console.log(schedules);
+  const [schedule , setSchedule] = useState(
+    schedules[0]?.id || ""
+  );
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>
@@ -46,20 +64,13 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
         </Form.Control.Feedback>
       </Form.Group>
 
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="psId">Personal Schedule ID</Form.Label>
-        <Form.Control
-          data-testid="CourseForm-psId"
-          id="psId"
-          type="text"
-          isInvalid={Boolean(errors.psId)}
-          {...register("psId", {
-            required: "Personal Schedule ID is required.",
-          })}
+      <Form.Group className="mb-3" data-testid="CourseForm-psId">
+        <PersonalScheduleDropdown
+          schedules={schedules}
+          schedule={schedule}
+          setSchedule={setSchedule}
+          controlId={"CourseForm.Schedule"}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.psId?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Button type="submit" data-testid="CourseForm-submit">
