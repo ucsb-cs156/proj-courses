@@ -30,7 +30,7 @@ public class UCSBSectionsController {
       throws JsonProcessingException {
 
     String body = ucsbCurriculumService.getSectionJSON(dept, qtr, level);
-    
+
     return ResponseEntity.ok().body(body);
   }
 
