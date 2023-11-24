@@ -148,4 +148,22 @@ describe("SingleQuarterSelector tests", () => {
 
     await waitFor(() => expect(useState).toBeCalledWith("20201"));
   });
+
+  test("when localstorage has no value, first element of quarter range is the default parameter", async () => {
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+
+    const setQuarterStateSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    render(
+      <SingleQuarterDropdown
+        quarters={quarterRange("20201", "20224")}
+        quarter={quarter}
+        setQuarter={setQuarter}
+        controlId="sqd1"
+      />,
+    );
+
+    await waitFor(() => expect(setQuarterStateSpy).toBeCalledWith("sqd1", "20201"));
+  });
 });
