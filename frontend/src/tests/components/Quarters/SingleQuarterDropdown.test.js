@@ -164,6 +164,6 @@ describe("SingleQuarterSelector tests", () => {
       />,
     );
 
-    await waitFor(() => expect(setQuarterStateSpy).toBeCalledWith("sqd1", "20201"));
+    await waitFor(() => expect(useState).toBeCalledWith("20201"));
   });
 });
