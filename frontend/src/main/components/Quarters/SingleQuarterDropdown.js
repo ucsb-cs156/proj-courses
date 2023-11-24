@@ -21,6 +21,9 @@ function SingleQuarterDropdown({
   label = "Quarter",
 }) {
   const localSearchQuarter = localStorage.getItem(controlId);
+  if (!localSearchQuarter){
+    localStorage. setItem(controlId, quarters[0].yyyyq);
+  }
 
   const [quarterState, setQuarterState] = useState(
     // Stryker disable next-line all : not sure how to test/mock local storage
