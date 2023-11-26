@@ -15,7 +15,7 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
   // Stryker enable all
 
   const navigate = useNavigate();
-  
+
   const {
     data: schedules,
     error: _error,
@@ -27,17 +27,17 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
     [],
   );
 
-  const localSchedule = localStorage.getItem("CourseForm-psId");  
+  const localSchedule = localStorage.getItem("CourseForm-psId");
   const [schedule, setSchedule] = useState(localSchedule || "");
   if (schedule) {
-    localStorage.setItem("CourseForm-psId", schedule)
+    localStorage.setItem("CourseForm-psId", schedule);
   }
   useEffect(() => {
     if (schedules && schedules.length > 0 && !localSchedule) {
       setSchedule(schedules[0].id);
-      localStorage.setItem("CourseForm-psId", schedules[0].id)
+      localStorage.setItem("CourseForm-psId", schedules[0].id);
     }
-  }, [schedules]);
+  }, [schedules, localSchedule]);
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>
