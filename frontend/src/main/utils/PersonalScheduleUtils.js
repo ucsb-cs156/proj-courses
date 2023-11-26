@@ -6,6 +6,10 @@ export function onDeleteSuccess(message) {
 }
 
 export function cellToAxiosParamsDelete(cell) {
+  const id = cell.row.values.id;
+  if (localStorage["CourseForm-psId"] == id) {
+    localStorage.removeItem("CourseForm-psId");
+  }
   return {
     url: "/api/personalschedules",
     method: "DELETE",

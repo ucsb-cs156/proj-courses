@@ -28,12 +28,10 @@ export default function CoursesCreatePage() {
   const { isSuccess } = mutation;
 
   const onSubmit = async (data) => {
-    const schedule = {
-      psId: localStorage["CourseForm.Schedule"]
+    const psId = {
+      psId: localStorage["CourseForm-psId"]
     };
-    console.log(schedule);
-    const dataFinal = Object.assign(data, schedule);
-    console.log(dataFinal);
+    const dataFinal = Object.assign(data, psId);
     mutation.mutate(dataFinal);
   };
 

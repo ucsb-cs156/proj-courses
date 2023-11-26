@@ -59,7 +59,7 @@ describe("CoursesCreatePage tests", () => {
   test("when you fill in the form and hit submit, it makes a request to the backend", async () => {
     const queryClient = new QueryClient();
     const courses = {
-      id: "17",
+      id: 17,
       psId: 13,
       enrollCd: "08250",
     };
@@ -74,15 +74,15 @@ describe("CoursesCreatePage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("CourseForm-psId")).toBeInTheDocument();
+    expect(await screen.findByTestId("CourseForm-enrollCd")).toBeInTheDocument();
 
-    const psIdField = screen.getByTestId("CourseForm-psId");
     const enrollCdField = screen.getByTestId("CourseForm-enrollCd");
+    const psIdField = document.querySelector("#CourseForm-psId");
     const submitButton = screen.getByTestId("CourseForm-submit");
 
     fireEvent.change(psIdField, { target: { value: 13 } });
+    localStorage.setItem('CourseForm-psId', '13');
     fireEvent.change(enrollCdField, { target: { value: "08250" } });
-
     expect(submitButton).toBeInTheDocument();
 
     fireEvent.click(submitButton);
@@ -91,7 +91,7 @@ describe("CoursesCreatePage tests", () => {
 
     // expect(quarterField).toHaveValue("20124");
     //expect(setQuarter).toBeCalledWith("20124"); //need this and axiosMock below?
-
+    expect(localStorage.getItem('CourseForm-psId')).toBe('13');
     expect(axiosMock.history.post[0].params).toEqual({
       psId: "13",
       enrollCd: "08250",
@@ -116,7 +116,7 @@ describe("CoursesCreatePage tests", () => {
 
     expect(await screen.findByTestId("CourseForm-psId")).toBeInTheDocument();
 
-    const psIdField = screen.getByTestId("CourseForm-psId");
+    const psIdField = document.querySelector("#CourseForm-psId");
     const enrollCdField = screen.getByTestId("CourseForm-enrollCd");
     const submitButton = screen.getByTestId("CourseForm-submit");
 

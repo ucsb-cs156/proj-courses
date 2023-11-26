@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -26,11 +26,18 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
     { method: "GET", url: "/api/personalschedules/all" },
     [],
   );
-  
-  console.log(schedules);
-  const [schedule , setSchedule] = useState(
-    schedules[0]?.id || ""
-  );
+
+  const localSchedule = localStorage.getItem("CourseForm-psId");  
+  const [schedule, setSchedule] = useState(localSchedule || "");
+  if (schedule) {
+    localStorage.setItem("CourseForm-psId", schedule)
+  }
+  useEffect(() => {
+    if (schedules && schedules.length > 0 && !localSchedule) {
+      setSchedule(schedules[0].id);
+      localStorage.setItem("CourseForm-psId", schedules[0].id)
+    }
+  }, [schedules]);
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>
@@ -69,7 +76,7 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
           schedules={schedules}
           schedule={schedule}
           setSchedule={setSchedule}
-          controlId={"CourseForm.Schedule"}
+          controlId={"CourseForm-psId"}
         />
       </Form.Group>
 
