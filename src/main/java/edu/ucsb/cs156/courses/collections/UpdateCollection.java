@@ -6,4 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UpdateCollection extends MongoRepository<Update, ObjectId> {}
+public interface UpdateCollection extends MongoRepository<Update, ObjectId> {
+
+}
