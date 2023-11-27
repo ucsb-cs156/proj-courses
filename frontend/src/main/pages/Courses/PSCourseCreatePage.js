@@ -15,7 +15,7 @@ export default function CoursesCreatePage() {
   });
 
   const onSuccess = (course) => {
-    toast(`New course Created - id: ${course.id} enrollCd: ${course.enrollCd}`);
+    toast(`New course Created - id: ${course[0].id} enrollCd: ${course[0].enrollCd}`);
   };
 
   const mutation = useBackendMutation(
