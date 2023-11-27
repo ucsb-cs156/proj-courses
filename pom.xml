@@ -289,7 +289,8 @@
                 </executions>
                 <configuration>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <!-- <dotGitDirectory>${project.basedir}/submodule_directory/.git</dotGitDirectory> -->
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <dotGitDirectory> /var/lib/jenkins/gitcache/proj-courses-f23-7pm-2.git</dotGitDirectory>
                     <!--CONFIGURATIONS: include or exclude specific information -->
                     <!-- <includeOnlyProperties>    
                         <includeOnlyProperty>git.commit.id</includeOnlyProperty>
