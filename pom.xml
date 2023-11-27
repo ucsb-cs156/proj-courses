@@ -295,13 +295,6 @@
                     <useNativeGit>true</useNativeGit>
                     <!-- similar bug: https://github.com/git-commit-id/git-commit-id-maven-plugin/issues/463 -->
                     <dotGitDirectory> /var/lib/jenkins/gitcache/proj-courses-f23-7pm-2.git</dotGitDirectory>
-                    <!--CONFIGURATIONS: include or exclude specific information -->
-                    <!-- <includeOnlyProperties>    
-                        <includeOnlyProperty>git.commit.id</includeOnlyProperty>
-                    </includeOnlyProperties> -->
-                    <!-- <excludeProperties>
-                        <excludeProperty>git.user.*</excludeProperty>
-                    </excludeProperties> -->
                 </configuration>
             </plugin>
 
