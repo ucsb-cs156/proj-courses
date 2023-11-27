@@ -11,12 +11,12 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 const mockToast = jest.fn();
 jest.mock('react-toastify', () => {
-    const originalModule = jest.requireActual('react-toastify');
-    return {
-        __esModule: true,
-        ...originalModule,
-        toast: (x) => mockToast(x)
-    };
+  const originalModule = jest.requireActual('react-toastify');
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: (x) => mockToast(x)
+  };
 });
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => {
@@ -68,43 +68,43 @@ describe("Course Details Index Page tests", () => {
         "deptCode": "CHEM ",
         "generalEducation": [],
         "classSections": [
-            {
-                "enrollCode": "06619",
-                "section": "0100",
-                "session": null,
-                "classClosed": null,
-                "courseCancelled": null,
-                "gradingOptionCode": null,
-                "enrolledTotal": 19,
-                "maxEnroll": 24,
-                "secondaryStatus": null,
-                "departmentApprovalRequired": false,
-                "instructorApprovalRequired": false,
-                "restrictionLevel": null,
-                "restrictionMajor": null,
-                "restrictionMajorPass": null,
-                "restrictionMinor": null,
-                "restrictionMinorPass": null,
-                "concurrentCourses": [
-                    "CHEM    284  0100"
-                ],
-                "timeLocations": [
-                    {
-                        "room": "1312",
-                        "building": "LIB",
-                        "roomCapacity": null,
-                        "days": " T R   ",
-                        "beginTime": "14:00",
-                        "endTime": "15:15"
-                    }
-                ],
-                "instructors": [
-                    {
-                        "instructor": "HUBER C F",
-                        "functionCode": "Teaching and in charge"
-                    }
-                ]
-            }
+          {
+            "enrollCode": "06619",
+            "section": "0100",
+            "session": null,
+            "classClosed": null,
+            "courseCancelled": null,
+            "gradingOptionCode": null,
+            "enrolledTotal": 19,
+            "maxEnroll": 24,
+            "secondaryStatus": null,
+            "departmentApprovalRequired": false,
+            "instructorApprovalRequired": false,
+            "restrictionLevel": null,
+            "restrictionMajor": null,
+            "restrictionMajorPass": null,
+            "restrictionMinor": null,
+            "restrictionMinorPass": null,
+            "concurrentCourses": [
+              "CHEM    284  0100"
+            ],
+            "timeLocations": [
+              {
+                "room": "1312",
+                "building": "LIB",
+                "roomCapacity": null,
+                "days": " T R   ",
+                "beginTime": "14:00",
+                "endTime": "15:15"
+              }
+            ],
+            "instructors": [
+              {
+                "instructor": "HUBER C F",
+                "functionCode": "Teaching and in charge"
+              }
+            ]
+          }
         ]
       });
   });
@@ -129,7 +129,7 @@ describe("Course Details Index Page tests", () => {
       </QueryClientProvider>,
     );
     // await waitFor(() => {
-      expect(screen.getByText("Course Details for CHEM 184 W22!")).toBeInTheDocument();
+    expect(screen.getByText("Course Details for CHEM 184 W22!")).toBeInTheDocument();
     // });
     expect(screen.getByText("Enroll Code")).toBeInTheDocument();
     expect(screen.getByText("06619")).toBeInTheDocument();
@@ -146,6 +146,6 @@ describe("Course Details Index Page tests", () => {
     expect(screen.getByText("Time")).toBeInTheDocument();
     expect(screen.getByText("2:00 PM - 3:15 PM")).toBeInTheDocument();
 
-   
+
   });
 });

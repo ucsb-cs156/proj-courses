@@ -101,11 +101,11 @@ function App() {
           path="/courseovertime/instructorsearch"
           element={<CourseOverTimeInstructorIndexPage />}
         />
-        <Route 
-        exact 
-        path="/coursedetails/:qtr/:enrollCode" 
-        element={<CourseDetailsIndexPage />} /> 
-      </Routes> 
+        <Route
+          exact
+          path="/coursedetails/:qtr/:enrollCode"
+          element={<CourseDetailsIndexPage />} />
+      </Routes>
     </BrowserRouter>
   );
 }

@@ -66,15 +66,21 @@ describe("UserTable tests", () => {
     );
     expect(screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].section`)).toHaveTextContent(
       "0100",
-    ); 
+    );
     expect(screen.getByTestId(`${testId}-cell-row-0-col-title`)).toHaveTextContent(
-        "COMP ENGR SEMINAR",
-    ); 
+      "COMP ENGR SEMINAR",
+    );
     expect(screen.getByTestId(`${testId}-cell-row-0-col-location`)).toHaveTextContent(
-        "BUCHN 1930",
-    ); 
+      "BUCHN 1930",
+    );
     expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent(
-        "WANG L C",
-    ); 
+      "WANG L C",
+    );
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].timeLocations[0].days`)).toHaveTextContent(
+      "M",
+    );
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent(
+      "3:00 PM - 3:50 PM",
+    );
   });
 });

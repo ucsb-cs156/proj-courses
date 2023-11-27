@@ -6,7 +6,7 @@ export default {
   title: "pages/CourseDetails/CourseDetailsIndexPage",
   component: CourseDetailsIndexPage,
   parameters: {
-    
+
     qtr: "20221",
     enrollCode: "06619"
   }
