@@ -29,6 +29,16 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.sourceRepo:https://github.com/ucsb-cs156/proj-courses}")
   private String sourceRepo;
 
+  // IMPLEMENTED: current github branch, sha, and last commit message
+  @Value("${git.commit.message.short}")
+  private String commitMessage;
+  
+  @Value("${git.branch}")
+  private String branch;
+
+  @Value("${git.commit.id}")
+  private String commitId;
+
   public SystemInfo getSystemInfo() {
     SystemInfo si =
         SystemInfo.builder()
@@ -37,8 +47,13 @@ public class SystemInfoServiceImpl extends SystemInfoService {
             .startQtrYYYYQ(this.startQtrYYYYQ)
             .endQtrYYYYQ(this.endQtrYYYYQ)
             .sourceRepo(this.sourceRepo)
+            // add the 3 implemented fields to the system info object
+            .commitMessage(this.commitMessage)
+            .branch(this.branch)
+            .commitId(this.commitId)
             .build();
     log.info("getSystemInfo returns {}", si);
     return si;
   }
+
 }
