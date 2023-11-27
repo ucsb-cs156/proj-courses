@@ -10,6 +10,7 @@ import { oneSection } from "fixtures/sectionFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -23,7 +24,16 @@ jest.mock("react-toastify", () => {
 
 describe("Section Searches Index Page tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
-
+  const setupAdminUser = () => {
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
+  };
   beforeEach(() => {
     axiosMock.resetHistory();
     axiosMock
@@ -87,5 +97,25 @@ describe("Section Searches Index Page tests", () => {
     });
 
     expect(screen.getByText("ECE 1A")).toBeInTheDocument();
+  });
+
+  test("what happens when you click load, admin - originally nothing in table, load 3 subjects", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, []);
+    axiosMock
+      .onPost("/api/UCSBSubjects/load")
+      .reply(200, ucsbSubjectsFixtures.threeSubjects);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionSearchesIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+    expect(mockToast).toBeCalledWith("Number of Subjects Loaded : 3");
   });
 });
