@@ -259,31 +259,39 @@ describe("Section tests", () => {
 
   test("Info link is correct", () => {
     render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <SectionsTable sections={fiveSections} />
-          </MemoryRouter>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
 
     const testId = "SectionsTable";
 
     const expandRow = screen.getByTestId(
-        `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
     );
     fireEvent.click(expandRow);
 
     expect(
-        screen.getByTestId(`${testId}-cell-row-1-col-info`).querySelector('a[href$="/coursedetails/W22/12591"]'),
+      screen
+        .getByTestId(`${testId}-cell-row-1-col-info`)
+        .querySelector('a[href$="/coursedetails/W22/12591"]'),
     ).toBeInTheDocument();
     expect(
-        screen.getByTestId(`${testId}-cell-row-2-col-info`).querySelector('a[href$="/coursedetails/W22/12609"]'),
+      screen
+        .getByTestId(`${testId}-cell-row-2-col-info`)
+        .querySelector('a[href$="/coursedetails/W22/12609"]'),
     ).toBeInTheDocument();
     expect(
-        screen.getByTestId(`${testId}-cell-row-3-col-info`).querySelector('a[href$="/coursedetails/W22/12617"]'),
+      screen
+        .getByTestId(`${testId}-cell-row-3-col-info`)
+        .querySelector('a[href$="/coursedetails/W22/12617"]'),
     ).toBeInTheDocument();
     expect(
-        screen.getByTestId(`${testId}-cell-row-4-col-info`).querySelector('a[href$="/coursedetails/W22/12625"]'),
+      screen
+        .getByTestId(`${testId}-cell-row-4-col-info`)
+        .querySelector('a[href$="/coursedetails/W22/12625"]'),
     ).toBeInTheDocument();
   });
 });

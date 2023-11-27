@@ -10,7 +10,7 @@ import {
   isSection,
   formatStatus,
   formatInfoLink,
-  renderInfoLink
+  renderInfoLink,
 } from "main/utils/sectionUtils.js";
 
 function getFirstVal(values) {

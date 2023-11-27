@@ -1,5 +1,5 @@
 import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
-import {yyyyqToQyy} from "./quarterUtilities";
+import { yyyyqToQyy } from "./quarterUtilities";
 
 export const convertToFraction = (en1, en2) => {
   return en1 != null && en2 != null ? `${en1}/${en2}` : "";
@@ -95,10 +95,15 @@ export const formatStatus = (section) => {
   }
 };
 
-export const formatInfoLink = (row) => `/coursedetails/${yyyyqToQyy(row.courseInfo.quarter)}/${row.section.enrollCode}`;
+export const formatInfoLink = (row) =>
+  `/coursedetails/${yyyyqToQyy(row.courseInfo.quarter)}/${
+    row.section.enrollCode
+  }`;
 
 export const renderInfoLink = ({ cell: { value } }) => (
-    <p align="center">
-      <a href={value} style={{color: "white"}}><i className="fa fa-info-circle"></i></a>
-    </p>
+  <p align="center">
+    <a href={value} style={{ color: "white" }}>
+      <i className="fa fa-info-circle"></i>
+    </a>
+  </p>
 );
