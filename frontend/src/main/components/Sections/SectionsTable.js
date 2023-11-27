@@ -9,6 +9,8 @@ import {
   formatTime,
   isSection,
   formatStatus,
+  formatInfoLink,
+  renderInfoLink,
 } from "main/utils/sectionUtils.js";
 
 function getFirstVal(values) {
@@ -111,6 +113,16 @@ export default function SectionsTable({ sections }) {
 
       aggregate: getFirstVal,
       Aggregated: ({ cell: { value } }) => `${value}`,
+    },
+    {
+      Header: "Info",
+      accessor: formatInfoLink,
+      Cell: renderInfoLink,
+      disableGroupBy: true,
+      id: "info",
+
+      aggregate: getFirstVal,
+      Aggregated: renderInfoLink,
     },
   ];
 

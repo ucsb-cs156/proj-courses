@@ -44,6 +44,7 @@ describe("Section tests", () => {
       "Time",
       "Instructor",
       "Enroll Code",
+      "Info",
     ];
     const expectedFields = [
       "quarter",
@@ -56,6 +57,7 @@ describe("Section tests", () => {
       "time",
       "instructor",
       "section.enrollCode",
+      "info",
     ];
     const testId = "SectionsTable";
 
@@ -253,5 +255,35 @@ describe("Section tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-4-col-status`),
     ).toHaveTextContent("Open");
+  });
+
+  test("Info link is correct", () => {
+    render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable sections={fiveSections} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+    );
+
+    const testId = "SectionsTable";
+
+    const expandRow = screen.getByTestId(
+        `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    expect(
+        screen.getByTestId(`${testId}-cell-row-1-col-info`).querySelector('a[href$="/coursedetails/W22/12591"]'),
+    ).toBeInTheDocument();
+    expect(
+        screen.getByTestId(`${testId}-cell-row-2-col-info`).querySelector('a[href$="/coursedetails/W22/12609"]'),
+    ).toBeInTheDocument();
+    expect(
+        screen.getByTestId(`${testId}-cell-row-3-col-info`).querySelector('a[href$="/coursedetails/W22/12617"]'),
+    ).toBeInTheDocument();
+    expect(
+        screen.getByTestId(`${testId}-cell-row-4-col-info`).querySelector('a[href$="/coursedetails/W22/12625"]'),
+    ).toBeInTheDocument();
   });
 });
