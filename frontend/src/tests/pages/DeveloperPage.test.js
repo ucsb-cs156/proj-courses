@@ -7,6 +7,7 @@ import userEvent from "@testing-library/user-event";
 
 import DeveloperPage from "main/pages/DeveloperPage";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 
 describe("DeveloperPage tests", () => {
   const queryClient = new QueryClient();
@@ -15,6 +16,9 @@ describe("DeveloperPage tests", () => {
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
