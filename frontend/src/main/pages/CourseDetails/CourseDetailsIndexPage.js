@@ -8,7 +8,11 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities";
 export default function CourseDetailsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   let { qtr, enrollCode } = useParams();
-  const { data: moreDetails, _error, _status } = useBackend(
+  const {
+    data: moreDetails,
+    _error,
+    _status,
+  } = useBackend(
     // Stryker disable all : hard to test for query caching
     [`/api/sections/sectionsearch?qtr=${qtr}&enrollCode=${enrollCode}`],
     {
@@ -16,7 +20,7 @@ export default function CourseDetailsIndexPage() {
       url: `/api/sections/sectionsearch`,
       params: {
         qtr,
-        enrollCode
+        enrollCode,
       },
     },
   );
@@ -24,11 +28,13 @@ export default function CourseDetailsIndexPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        {moreDetails && moreDetails.courseId && (<h5>Course Details for {moreDetails.courseId} {yyyyqToQyy(qtr)}!</h5>)}
+        {moreDetails && moreDetails.courseId && (
+          <h5>
+            Course Details for {moreDetails.courseId} {yyyyqToQyy(qtr)}!
+          </h5>
+        )}
 
-        {moreDetails && (
-          <CourseDetailsTable details={[moreDetails]} />)}
-
+        {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
       </div>
     </BasicLayout>
   );

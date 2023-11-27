@@ -10,12 +10,12 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 const mockToast = jest.fn();
-jest.mock('react-toastify', () => {
-  const originalModule = jest.requireActual('react-toastify');
+jest.mock("react-toastify", () => {
+  const originalModule = jest.requireActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
-    toast: (x) => mockToast(x)
+    toast: (x) => mockToast(x),
   };
 });
 const mockNavigate = jest.fn();
@@ -28,7 +28,10 @@ jest.mock("react-router-dom", () => {
       qtr: "20221",
       enrollCode: "06619",
     }),
-    Navigate: (x) => { mockNavigate(x); return null; }
+    Navigate: (x) => {
+      mockNavigate(x);
+      return null;
+    },
   };
 });
 describe("Course Details Index Page tests", () => {
@@ -47,65 +50,67 @@ describe("Course Details Index Page tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/sections/sectionsearch", { params: { qtr: "20221", enrollCode: "06619" } })
+    axiosMock
+      .onGet("/api/sections/sectionsearch", {
+        params: { qtr: "20221", enrollCode: "06619" },
+      })
       .reply(200, {
-        "quarter": "20221",
-        "courseId": "CHEM    184  ",
-        "title": "CHEM LITERATURE",
-        "contactHours": 20,
-        "description": "Lectures and exercises on the literature and other information resources of use in chemistry.",
-        "college": "L&S",
-        "objLevelCode": "U",
-        "subjectArea": "CHEM    ",
-        "unitsFixed": 2,
-        "unitsVariableHigh": null,
-        "unitsVariableLow": null,
-        "delayedSectioning": null,
-        "inProgressCourse": null,
-        "gradingOption": null,
-        "instructionType": "LEC",
-        "onLineCourse": false,
-        "deptCode": "CHEM ",
-        "generalEducation": [],
-        "classSections": [
+        quarter: "20221",
+        courseId: "CHEM    184  ",
+        title: "CHEM LITERATURE",
+        contactHours: 20,
+        description:
+          "Lectures and exercises on the literature and other information resources of use in chemistry.",
+        college: "L&S",
+        objLevelCode: "U",
+        subjectArea: "CHEM    ",
+        unitsFixed: 2,
+        unitsVariableHigh: null,
+        unitsVariableLow: null,
+        delayedSectioning: null,
+        inProgressCourse: null,
+        gradingOption: null,
+        instructionType: "LEC",
+        onLineCourse: false,
+        deptCode: "CHEM ",
+        generalEducation: [],
+        classSections: [
           {
-            "enrollCode": "06619",
-            "section": "0100",
-            "session": null,
-            "classClosed": null,
-            "courseCancelled": null,
-            "gradingOptionCode": null,
-            "enrolledTotal": 19,
-            "maxEnroll": 24,
-            "secondaryStatus": null,
-            "departmentApprovalRequired": false,
-            "instructorApprovalRequired": false,
-            "restrictionLevel": null,
-            "restrictionMajor": null,
-            "restrictionMajorPass": null,
-            "restrictionMinor": null,
-            "restrictionMinorPass": null,
-            "concurrentCourses": [
-              "CHEM    284  0100"
-            ],
-            "timeLocations": [
+            enrollCode: "06619",
+            section: "0100",
+            session: null,
+            classClosed: null,
+            courseCancelled: null,
+            gradingOptionCode: null,
+            enrolledTotal: 19,
+            maxEnroll: 24,
+            secondaryStatus: null,
+            departmentApprovalRequired: false,
+            instructorApprovalRequired: false,
+            restrictionLevel: null,
+            restrictionMajor: null,
+            restrictionMajorPass: null,
+            restrictionMinor: null,
+            restrictionMinorPass: null,
+            concurrentCourses: ["CHEM    284  0100"],
+            timeLocations: [
               {
-                "room": "1312",
-                "building": "LIB",
-                "roomCapacity": null,
-                "days": " T R   ",
-                "beginTime": "14:00",
-                "endTime": "15:15"
-              }
+                room: "1312",
+                building: "LIB",
+                roomCapacity: null,
+                days: " T R   ",
+                beginTime: "14:00",
+                endTime: "15:15",
+              },
             ],
-            "instructors": [
+            instructors: [
               {
-                "instructor": "HUBER C F",
-                "functionCode": "Teaching and in charge"
-              }
-            ]
-          }
-        ]
+                instructor: "HUBER C F",
+                functionCode: "Teaching and in charge",
+              },
+            ],
+          },
+        ],
       });
   });
 
@@ -129,7 +134,9 @@ describe("Course Details Index Page tests", () => {
       </QueryClientProvider>,
     );
     // await waitFor(() => {
-    expect(screen.getByText("Course Details for CHEM 184 W22!")).toBeInTheDocument();
+    expect(
+      screen.getByText("Course Details for CHEM 184 W22!"),
+    ).toBeInTheDocument();
     // });
     expect(screen.getByText("Enroll Code")).toBeInTheDocument();
     expect(screen.getByText("06619")).toBeInTheDocument();
@@ -145,7 +152,5 @@ describe("Course Details Index Page tests", () => {
     expect(screen.getByText("T R")).toBeInTheDocument();
     expect(screen.getByText("Time")).toBeInTheDocument();
     expect(screen.getByText("2:00 PM - 3:15 PM")).toBeInTheDocument();
-
-
   });
 });

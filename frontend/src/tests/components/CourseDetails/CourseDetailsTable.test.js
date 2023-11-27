@@ -22,7 +22,6 @@ jest.mock("main/utils/useBackend", () => ({
 describe("UserTable tests", () => {
   const queryClient = new QueryClient();
   test("renders without crashing for empty table", () => {
-
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -44,8 +43,25 @@ describe("UserTable tests", () => {
       </QueryClientProvider>,
     );
 
-    const expectedHeaders = ["Course ID", "Enroll Code", "Section", "Title", "Enrolled", "Location", "Days", "Time", "Instructor"];
-    const expectedFields = ["courseId", "classSections[0].enrollCode", "classSections[0].section", "title", "enrolled", "location"];
+    const expectedHeaders = [
+      "Course ID",
+      "Enroll Code",
+      "Section",
+      "Title",
+      "Enrolled",
+      "Location",
+      "Days",
+      "Time",
+      "Instructor",
+    ];
+    const expectedFields = [
+      "courseId",
+      "classSections[0].enrollCode",
+      "classSections[0].section",
+      "title",
+      "enrolled",
+      "location",
+    ];
     const testId = "CourseDetailsTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -58,29 +74,33 @@ describe("UserTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-courseId`)).toHaveTextContent(
-      "ECE 1A",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].enrollCode`)).toHaveTextContent(
-      "12583",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].section`)).toHaveTextContent(
-      "0100",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-title`)).toHaveTextContent(
-      "COMP ENGR SEMINAR",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-location`)).toHaveTextContent(
-      "BUCHN 1930",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent(
-      "WANG L C",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].timeLocations[0].days`)).toHaveTextContent(
-      "M",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent(
-      "3:00 PM - 3:50 PM",
-    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-courseId`),
+    ).toHaveTextContent("ECE 1A");
+    expect(
+      screen.getByTestId(
+        `${testId}-cell-row-0-col-classSections[0].enrollCode`,
+      ),
+    ).toHaveTextContent("12583");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].section`),
+    ).toHaveTextContent("0100");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-title`),
+    ).toHaveTextContent("COMP ENGR SEMINAR");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-location`),
+    ).toHaveTextContent("BUCHN 1930");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
+    ).toHaveTextContent("WANG L C");
+    expect(
+      screen.getByTestId(
+        `${testId}-cell-row-0-col-classSections[0].timeLocations[0].days`,
+      ),
+    ).toHaveTextContent("M");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-time`),
+    ).toHaveTextContent("3:00 PM - 3:50 PM");
   });
 });

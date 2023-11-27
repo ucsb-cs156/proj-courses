@@ -59,11 +59,5 @@ export default function PersonalSectionsTable({ details }) {
 
   const columnsToDisplay = columns;
 
-  return (
-    <OurTable
-      data={details}
-      columns={columnsToDisplay}
-      testid={testid}
-    />
-  );
+  return <OurTable data={details} columns={columnsToDisplay} testid={testid} />;
 }
