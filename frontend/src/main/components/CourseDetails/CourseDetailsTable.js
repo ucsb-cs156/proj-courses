@@ -55,7 +55,7 @@ export default function PersonalSectionsTable({ details }) {
     },
   ];
 
-  const testid = "CouseDetailsTable";
+  const testid = "CourseDetailsTable";
 
   const columnsToDisplay = columns;
 

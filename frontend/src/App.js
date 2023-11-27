@@ -103,9 +103,9 @@ function App() {
         />
         <Route 
         exact 
-        path="/coursedetails/:qyy/:enrollcd" 
-        element={<CourseDetailsIndexPage />} />
-      </Routes>
+        path="/coursedetails/:qtr/:enrollCode" 
+        element={<CourseDetailsIndexPage />} /> 
+      </Routes> 
     </BrowserRouter>
   );
 }
