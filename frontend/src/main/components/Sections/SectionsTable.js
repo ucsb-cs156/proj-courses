@@ -8,6 +8,7 @@ import {
   formatLocation,
   formatTime,
   isSection,
+  formatStatus,
 } from "main/utils/sectionUtils.js";
 
 function getFirstVal(values) {
@@ -47,6 +48,15 @@ export default function SectionsTable({ sections }) {
       accessor: (row) => isSection(row.section.section),
       // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
       id: "isSection",
+    },
+    {
+      Header: "Status",
+      accessor: (row) => formatStatus(row.section),
+      disableGroupBy: true,
+      id: "status",
+
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) => `${value}`,
     },
     {
       Header: "Enrolled",
