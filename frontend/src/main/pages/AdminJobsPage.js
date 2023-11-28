@@ -24,7 +24,7 @@ const AdminJobsPage = () => {
   const testJobMutation = useBackendMutation(objectToAxiosParamsTestJob, {}, [
     "/api/jobs/all",
   ]);
-  // Stryker enable all
+  // Stryker restore all
 
   const submitTestJob = async (data) => {
     console.log("submitTestJob, data=", data);
@@ -54,7 +54,7 @@ const AdminJobsPage = () => {
     {},
     ["/api/jobs/all"],
   );
-  // Stryker enable all
+  // Stryker restore all
 
   const submitUpdateCoursesJob = async (data) => {
     console.log("submitUpdateCoursesJob, data=", data);
