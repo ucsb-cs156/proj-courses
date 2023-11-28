@@ -58,11 +58,13 @@ describe("CoursesCreatePage tests", () => {
 
   test("when you fill in the form and hit submit, it makes a request to the backend", async () => {
     const queryClient = new QueryClient();
-    const courses = {
-      id: "17",
-      psId: 13,
-      enrollCd: "08250",
-    };
+    const courses = [
+      {
+        id: "17",
+        psId: 13,
+        enrollCd: "08250",
+      },
+    ];
 
     axiosMock.onPost("/api/courses/post").reply(202, courses);
 
