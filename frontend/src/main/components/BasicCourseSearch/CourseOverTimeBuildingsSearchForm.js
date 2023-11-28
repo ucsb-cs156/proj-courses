@@ -14,7 +14,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   // Stryker disable OptionalChaining
   const startQtr = systemInfo?.startQtrYYYYQ || "20211";
   const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker enable OptionalChaining
+  // Stryker restore OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
 
