@@ -103,7 +103,7 @@ describe("TestJobsForm tests", () => {
     );
 
     const sleepMsInput = screen.getByTestId("TestJobForm-sleepMs");
-    fireEvent.change(sleepMs, { target: { value: "not a number" } });
+    fireEvent.change(sleepMsInput, { target: { value: "not a number" } });
     expect(sleepMsInput).toHaveValue(null);
     fireEvent.click(screen.getByTestId("TestJobForm-Submit-Button"));
 
