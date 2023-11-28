@@ -17,7 +17,6 @@ public class SystemInfo {
   private String startQtrYYYYQ;
   private String endQtrYYYYQ;
   private String sourceRepo;
-  // IMPLEMENTED: add these new fields to the SystemInfo class
   private String commitMessage;
   private String branch;
   private String commitId;

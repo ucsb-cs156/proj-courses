@@ -287,7 +287,6 @@
                     <dotGitDirectory> /var/lib/jenkins/gitcache/proj-courses-f23-7pm-2.git</dotGitDirectory>
                 </configuration>
             </plugin>
-
         </plugins>
 
     </build>
