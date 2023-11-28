@@ -184,15 +184,15 @@ describe("PersonalScheduleForm tests", () => {
         </Router>
       </QueryClientProvider>,
     );
-  
+
     const nameInput = screen.getByTestId("PersonalScheduleForm-name");
     const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
     fireEvent.change(nameInput, { target: { value: "ThisNameIsWayTooLong" } });
     fireEvent.click(submitButton);
 
-  
-    expect(await screen.findByText("Max length 15 characters")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Max length 15 characters"),
+    ).toBeInTheDocument();
   });
-  
 });
