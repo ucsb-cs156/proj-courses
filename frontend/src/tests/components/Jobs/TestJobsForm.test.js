@@ -1,8 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import TestJobsForm from "main/components/Jobs/TestJobForm";
 import jobsFixtures from "fixtures/jobsFixtures";
-import userEvent from "@testing-library/user-event";
 
 const mockedNavigate = jest.fn();
 
@@ -104,9 +103,38 @@ describe("TestJobsForm tests", () => {
     );
 
     const sleepMsInput = screen.getByTestId("TestJobForm-sleepMs");
-    userEvent.type(sleepMsInput, "not-a-number");
+    fireEvent.change(sleepMs, { target: { value: "not a number" } });
+    expect(sleepMsInput).toHaveValue(null);
     fireEvent.click(screen.getByTestId("TestJobForm-Submit-Button"));
 
     expect(submitAction).not.toHaveBeenCalled();
+  });
+
+  it("submits the form with a number for sleepMs", async () => {
+    // Create a mock submit function
+    const mockSubmitAction = jest.fn();
+
+    render(
+      <Router>
+        <TestJobsForm submitAction={mockSubmitAction} />
+      </Router>,
+    );
+
+    const submitButton = screen.getByTestId("TestJobForm-Submit-Button");
+    const sleepMs = screen.getByTestId("TestJobForm-sleepMs");
+
+    // Set a valid number value
+    fireEvent.change(sleepMs, { target: { value: "5000" } });
+    fireEvent.click(submitButton);
+
+    // Check if the mock submit function was called with sleepMs as a number
+    await waitFor(() =>
+      expect(mockSubmitAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sleepMs: 5000,
+        }),
+        expect.anything(),
+      ),
+    );
   });
 });

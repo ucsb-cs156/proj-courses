@@ -77,7 +77,7 @@ const AdminJobsPage = () => {
     [],
     { refetchInterval: refreshJobsIntervalMilliseconds },
   );
-  // Stryker enable  all
+  // Stryker restore  all
 
   const jobLaunchers = [
     {

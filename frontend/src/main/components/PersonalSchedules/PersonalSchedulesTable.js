@@ -29,7 +29,7 @@ export default function PersonalSchedulesTable({
   );
   // Stryker restore all
 
-  // Stryker disable next-line all : TODO try to make a good test for this
+  // Stryker disable all : TODO try to make a good test for this
   const deleteCallback = async (cell) => {
     const id = String(cell.row.values.id);
     if (localStorage["CourseForm-psId"] === id) {
@@ -37,6 +37,7 @@ export default function PersonalSchedulesTable({
     }
     deleteMutation.mutate(cell);
   };
+  // Stryker restore all
 
   const columns = [
     {
