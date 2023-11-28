@@ -24,7 +24,6 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("UpdateCoursesJobForm: quarter", quarter);
     callback({ quarter });
   };
 

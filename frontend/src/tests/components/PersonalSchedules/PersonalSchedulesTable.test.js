@@ -147,6 +147,7 @@ describe("UserTable tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
       "1",
     );
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-quarter`)).toHaveTextContent("W22")
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
       "2",
     );
@@ -215,6 +216,7 @@ describe("UserTable tests", () => {
       `PersonalSchedulesTable-cell-row-0-col-Details-button`,
     );
     expect(detailsButton).toBeInTheDocument();
+    expect(detailsButton).toHaveClass("btn-primary");
 
     fireEvent.click(detailsButton);
 

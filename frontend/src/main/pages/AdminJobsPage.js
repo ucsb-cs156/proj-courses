@@ -27,7 +27,6 @@ const AdminJobsPage = () => {
   // Stryker restore all
 
   const submitTestJob = async (data) => {
-    console.log("submitTestJob, data=", data);
     testJobMutation.mutate(data);
   };
 
@@ -57,12 +56,10 @@ const AdminJobsPage = () => {
   // Stryker restore all
 
   const submitUpdateCoursesJob = async (data) => {
-    console.log("submitUpdateCoursesJob, data=", data);
     updateCoursesJobMutation.mutate(data);
   };
 
   const submitUpdateCoursesByQuarterJob = async (data) => {
-    console.log("submitCoursesByQuarterJob, data=", data);
     updateCoursesByQuarterJobMutation.mutate(data);
   };
 
