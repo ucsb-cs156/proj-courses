@@ -75,8 +75,12 @@ describe("PersonalSchedulesDetailsPage tests", () => {
   test("shows the correct info for admin users", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();
-    axiosMock.onGet(`/api/personalschedules?id=17`).reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
-    axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
 
     render(
       <QueryClientProvider client={queryClient}>
