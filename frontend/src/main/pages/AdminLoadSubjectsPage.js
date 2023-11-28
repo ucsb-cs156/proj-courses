@@ -1,5 +1,4 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import React, { useEffect } from 'react';
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
@@ -18,33 +17,27 @@ export default function AdminLoadSubjectsPage() {
     [],
   );
 
-  const objectToAxiosParamsSubjects = () => ({
+  const objectToAxiosParams = () => ({
     url: "/api/UCSBSubjects/load",
     method: "POST",
   });
 
   var subjectsCount = subjects.length;
 
-  const onSuccessSubjects = (subjects) => {
+  const onSuccess = (subjects) => {
     toast(`Number of Subjects Loaded : ${subjects.length - subjectsCount}`);
-    console.log(`Number of Subjects Loaded : ${subjects.length - subjectsCount}`);
-
     subjectsCount = subjects.length;
   };
 
-  const mutationSubjects = useBackendMutation(
-    objectToAxiosParamsSubjects,
-    { onSuccess: onSuccessSubjects },
+  const mutation = useBackendMutation(
+    objectToAxiosParams,
+    { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
     ["/api/UCSBSubjects/all"],
   );
-  useEffect(() => {
-    // Fetch subjects when the component mounts
-    mutationSubjects.mutate();
-  }, []);
 
   const onSubmit = async (data) => {
-    mutationSubjects.mutate(data);
+    mutation.mutate(data);
   };
 
   return (

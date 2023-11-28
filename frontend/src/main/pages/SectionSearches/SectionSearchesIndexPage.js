@@ -61,7 +61,6 @@ export default function SectionSearchesIndexPage() {
 
   const onSuccessSubjects = (subjects) => {
     toast(`Number of Subjects Loaded : ${subjects.length - subjectsCount}`);
-    console.log(`Number of Subjects Loaded : ${subjects.length - subjectsCount}`);
     subjectsCount = subjects.length;
   };
 
