@@ -56,7 +56,7 @@ export default function SectionSearchesIndexPage() {
   var subjectsCount = subjects.length;
 
   const onSuccessSubjects = (subjects) => {
-    toast(`Number of Subjects Loaded : ${subjects.length - subjectsCount}`);
+    toast(`Number of Subjects Loaded : ${subjects.length}`);
     subjectsCount = subjects.length;
   };
 
@@ -66,6 +66,7 @@ export default function SectionSearchesIndexPage() {
     // Stryker disable next-line all : hard to set up test for caching
     ["/api/UCSBSubjects/all"],
   );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // Fetch subjects when the component mounts
     mutationSubjects.mutate();
