@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import PersonalScheduleDropdown from "../PersonalSchedules/PersonalScheduleDropdown";
+import { useBackend } from "main/utils/useBackend";
 
 function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
   // Stryker disable all
@@ -13,6 +15,29 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
   // Stryker restore all
 
   const navigate = useNavigate();
+
+  const {
+    data: schedules,
+    error: _error,
+    status: _status,
+  } = useBackend(
+    // Stryker disable next-line all : don't test internal caching of React Query
+    ["/api/personalschedules/all"],
+    { method: "GET", url: "/api/personalschedules/all" },
+    [],
+  );
+
+  const localSchedule = localStorage.getItem("CourseForm-psId");
+  const [schedule, setSchedule] = useState(localSchedule || "");
+  if (schedule) {
+    localStorage.setItem("CourseForm-psId", schedule);
+  }
+  useEffect(() => {
+    if (schedules && schedules.length > 0 && !localSchedule) {
+      setSchedule(schedules[0].id);
+      localStorage.setItem("CourseForm-psId", schedules[0].id);
+    }
+  }, [schedules, localSchedule]);
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>
@@ -46,20 +71,13 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
         </Form.Control.Feedback>
       </Form.Group>
 
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="psId">Personal Schedule ID</Form.Label>
-        <Form.Control
-          data-testid="CourseForm-psId"
-          id="psId"
-          type="text"
-          isInvalid={Boolean(errors.psId)}
-          {...register("psId", {
-            required: "Personal Schedule ID is required.",
-          })}
+      <Form.Group className="mb-3" data-testid="CourseForm-psId">
+        <PersonalScheduleDropdown
+          schedules={schedules}
+          schedule={schedule}
+          setSchedule={setSchedule}
+          controlId={"CourseForm-psId"}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.psId?.message}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Button type="submit" data-testid="CourseForm-submit">

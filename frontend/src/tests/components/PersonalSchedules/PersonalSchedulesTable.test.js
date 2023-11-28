@@ -302,6 +302,7 @@ describe("UserTable tests", () => {
     expect(
       await screen.findByTestId(`PersonalSchedulesTable-cell-row-0-col-id`),
     ).toHaveTextContent("1");
+    localStorage.setItem("CourseForm-psId", "1");
 
     const deleteButton = screen.getByTestId(
       `PersonalSchedulesTable-cell-row-0-col-Delete-button`,
