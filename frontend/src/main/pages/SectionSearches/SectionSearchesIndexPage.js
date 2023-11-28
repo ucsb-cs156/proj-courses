@@ -1,5 +1,5 @@
 import { useState } from "react";
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
@@ -22,7 +22,6 @@ export default function SectionSearchesIndexPage() {
   });
 
   const onSuccess = (section) => {
-    console.log();
     setSectionJSON(section);
   };
 
@@ -36,9 +35,6 @@ export default function SectionSearchesIndexPage() {
   async function fetchBasicSectionJSON(_event, query) {
     mutation.mutate(query);
   }
-
-
-
 
   const {
     data: subjects,
@@ -74,7 +70,6 @@ export default function SectionSearchesIndexPage() {
     // Fetch subjects when the component mounts
     mutationSubjects.mutate();
   }, []);
-
 
   return (
     <BasicLayout>

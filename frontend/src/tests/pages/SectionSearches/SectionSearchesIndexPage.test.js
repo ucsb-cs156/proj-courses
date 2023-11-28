@@ -118,4 +118,23 @@ describe("Section Searches Index Page tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(mockToast).toBeCalledWith("Number of Subjects Loaded : 3");
   });
+  test("what happens when you click load, admin - originally 3 subjects, load nothing", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/UCSBSubjects/all")
+      .reply(200, ucsbSubjectsFixtures.threeSubjects);
+    axiosMock.onPost("/api/UCSBSubjects/load").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionSearchesIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+    expect(mockToast).toBeCalledWith("Number of Subjects Loaded : 0");
+  });
 });
