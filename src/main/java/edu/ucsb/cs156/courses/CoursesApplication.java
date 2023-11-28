@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -45,5 +47,15 @@ public class CoursesApplication {
     executor.setThreadNamePrefix("Courses-");
     executor.initialize();
     return executor;
+  }
+
+  // See: https://www.baeldung.com/spring-git-information
+  @Bean
+  public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+    PropertySourcesPlaceholderConfigurer propsConfig = new PropertySourcesPlaceholderConfigurer();
+    propsConfig.setLocation(new ClassPathResource("git.properties"));
+    propsConfig.setIgnoreResourceNotFound(true);
+    propsConfig.setIgnoreUnresolvablePlaceholders(true);
+    return propsConfig;
   }
 }
