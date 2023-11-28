@@ -7,7 +7,7 @@ import {
   formatTime,
 } from "main/utils/sectionUtils.js";
 
-export default function PersonalSectionsTable({ details }) {
+export default function CourseDetailsTable({ details }) {
   const columns = [
     {
       Header: "Course ID",
