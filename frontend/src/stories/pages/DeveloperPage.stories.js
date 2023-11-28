@@ -14,12 +14,6 @@ export default {
         status: 200,
         response: systemInfoFixtures.showingBoth,
       },
-      //   {
-      //     url: "/api/systemInfo",
-      //     method: "GET",
-      //     status: 200,
-      //     response: systemInfoFixtures.showingNeither,
-      //   },
     ],
   },
 };

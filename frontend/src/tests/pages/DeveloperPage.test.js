@@ -40,7 +40,4 @@ describe("DeveloperPage tests", () => {
       ),
     ).toBeInTheDocument();
   });
-
-  //   test("renders correct values in JSON"), async () => {
-  //   });
 });

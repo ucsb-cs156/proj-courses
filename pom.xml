@@ -267,7 +267,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <!--IMPLEMENTED: added plugin for maven dependencies, execution steps, and configurations (in the correct build)-->
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
@@ -279,21 +278,12 @@
                             <goal>revision</goal>
                         </goals>
                     </execution>
-                    <!-- TODO: figure out why the application fails when validateRevision is uncommented -->
-                    <!-- <execution> -->
-                        <!-- <id>validate-the-git-infos</id> -->
-                        <!-- <goals> -->
-                            <!-- <goal>validateRevision</goal> -->
-                        <!-- </goals> -->
-                    <!-- </execution> -->
                 </executions>
                 <configuration>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <failOnNoGitDirectory>false</failOnNoGitDirectory>
-                    <!--DEBUGGING: -->
                     <verbose>false</verbose>
                     <useNativeGit>true</useNativeGit>
-                    <!-- similar bug: https://github.com/git-commit-id/git-commit-id-maven-plugin/issues/463 -->
                     <dotGitDirectory> /var/lib/jenkins/gitcache/proj-courses-f23-7pm-2.git</dotGitDirectory>
                 </configuration>
             </plugin>
