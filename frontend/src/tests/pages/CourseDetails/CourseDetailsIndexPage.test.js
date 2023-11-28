@@ -10,7 +10,6 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 
-
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
   const originalModule = jest.requireActual("react-toastify");
