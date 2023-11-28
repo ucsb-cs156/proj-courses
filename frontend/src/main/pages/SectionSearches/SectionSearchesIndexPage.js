@@ -37,7 +37,7 @@ export default function SectionSearchesIndexPage() {
   }
 
   const {
-    data: subjects,
+    data: _subjects,
     error: _error,
     status: _status,
   } = useBackend(
@@ -53,11 +53,9 @@ export default function SectionSearchesIndexPage() {
     method: "POST",
   });
 
-  var subjectsCount = subjects.length;
-
+ 
   const onSuccessSubjects = (subjects) => {
     toast(`Number of Subjects Loaded : ${subjects.length}`);
-    subjectsCount = subjects.length;
   };
 
   const mutationSubjects = useBackendMutation(
@@ -66,11 +64,10 @@ export default function SectionSearchesIndexPage() {
     // Stryker disable next-line all : hard to set up test for caching
     ["/api/UCSBSubjects/all"],
   );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // Fetch subjects when the component mounts
     mutationSubjects.mutate();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
   return (
     <BasicLayout>
