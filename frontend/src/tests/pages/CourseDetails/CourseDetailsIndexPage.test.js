@@ -8,6 +8,8 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
+
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -54,64 +56,7 @@ describe("Course Details Index Page tests", () => {
       .onGet("/api/sections/sectionsearch", {
         params: { qtr: "20221", enrollCode: "06619" },
       })
-      .reply(200, {
-        quarter: "20221",
-        courseId: "CHEM    184  ",
-        title: "CHEM LITERATURE",
-        contactHours: 20,
-        description:
-          "Lectures and exercises on the literature and other information resources of use in chemistry.",
-        college: "L&S",
-        objLevelCode: "U",
-        subjectArea: "CHEM    ",
-        unitsFixed: 2,
-        unitsVariableHigh: null,
-        unitsVariableLow: null,
-        delayedSectioning: null,
-        inProgressCourse: null,
-        gradingOption: null,
-        instructionType: "LEC",
-        onLineCourse: false,
-        deptCode: "CHEM ",
-        generalEducation: [],
-        classSections: [
-          {
-            enrollCode: "06619",
-            section: "0100",
-            session: null,
-            classClosed: null,
-            courseCancelled: null,
-            gradingOptionCode: null,
-            enrolledTotal: 19,
-            maxEnroll: 24,
-            secondaryStatus: null,
-            departmentApprovalRequired: false,
-            instructorApprovalRequired: false,
-            restrictionLevel: null,
-            restrictionMajor: null,
-            restrictionMajorPass: null,
-            restrictionMinor: null,
-            restrictionMinorPass: null,
-            concurrentCourses: ["CHEM    284  0100"],
-            timeLocations: [
-              {
-                room: "1312",
-                building: "LIB",
-                roomCapacity: null,
-                days: " T R   ",
-                beginTime: "14:00",
-                endTime: "15:15",
-              },
-            ],
-            instructors: [
-              {
-                instructor: "HUBER C F",
-                functionCode: "Teaching and in charge",
-              },
-            ],
-          },
-        ],
-      });
+      .reply(200, personalSectionsFixtures.singleSection);
   });
 
   const queryClient = new QueryClient();
