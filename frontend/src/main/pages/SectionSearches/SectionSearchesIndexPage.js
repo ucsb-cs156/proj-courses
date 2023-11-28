@@ -53,7 +53,6 @@ export default function SectionSearchesIndexPage() {
     method: "POST",
   });
 
- 
   const onSuccessSubjects = (subjects) => {
     toast(`Number of Subjects Loaded : ${subjects.length}`);
   };
@@ -64,10 +63,17 @@ export default function SectionSearchesIndexPage() {
     // Stryker disable next-line all : hard to set up test for caching
     ["/api/UCSBSubjects/all"],
   );
+
+  //not sure how to mutation test for empty dependency list
+  // Stryker disable all
   useEffect(() => {
     mutationSubjects.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+    //not sure how to get around eslint for an empty dependency
+    //list since I have to make it empty to only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps 
+  }, []);
+  // Stryker enable all
+
 
   return (
     <BasicLayout>
