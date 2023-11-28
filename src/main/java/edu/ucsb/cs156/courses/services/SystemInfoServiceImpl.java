@@ -32,7 +32,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   // IMPLEMENTED: current github branch, sha, and last commit message
   @Value("${git.commit.message.short}")
   private String commitMessage;
-  
+
   @Value("${git.branch}")
   private String branch;
 
@@ -55,5 +55,4 @@ public class SystemInfoServiceImpl extends SystemInfoService {
     log.info("getSystemInfo returns {}", si);
     return si;
   }
-
 }
