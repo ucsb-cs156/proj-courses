@@ -118,10 +118,10 @@ describe("section utils tests", () => {
   });
 
   test("renderInfoLink test", () => {
-    const link = renderInfoLink({
+    const render = renderInfoLink({
       cell: { value: "/coursedetails/W22/12583" },
     });
-    expect(link.props.children.props.style.color).toBe("white");
-    expect(link.props.children.props.href).toBe("/coursedetails/W22/12583");
+    expect(render.props.children.props.style.color).toBe("white");
+    expect(render.props.children.props.href).toBe("/coursedetails/W22/12583");
   });
 });
