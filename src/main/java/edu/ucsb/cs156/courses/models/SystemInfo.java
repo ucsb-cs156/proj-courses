@@ -17,4 +17,7 @@ public class SystemInfo {
   private String startQtrYYYYQ;
   private String endQtrYYYYQ;
   private String sourceRepo;
+  private String commitMessage;
+  private String branch;
+  private String commitId;
 }
