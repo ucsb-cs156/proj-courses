@@ -72,7 +72,7 @@ export default function SectionSearchesIndexPage() {
     //list since I have to make it empty to only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // Stryker enable all
+  // Stryker restore all
 
   return (
     <BasicLayout>
