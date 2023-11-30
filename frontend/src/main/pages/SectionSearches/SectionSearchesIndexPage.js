@@ -1,6 +1,4 @@
 import { useState } from "react";
-// import { toast } from "react-toastify";
-
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourseSearchForm";
 import _BasicCourseTable from "main/components/Courses/BasicCourseTable";
