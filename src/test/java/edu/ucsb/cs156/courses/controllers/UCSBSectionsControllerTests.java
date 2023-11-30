@@ -11,8 +11,6 @@ import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,7 +23,6 @@ import org.springframework.test.web.servlet.MvcResult;
 @Import(SecurityConfig.class)
 @AutoConfigureDataJpa
 public class UCSBSectionsControllerTests {
-  private final Logger logger = LoggerFactory.getLogger(UCSBSectionsControllerTests.class);
   private ObjectMapper mapper = new ObjectMapper();
 
   @MockBean UserRepository userRepository;
