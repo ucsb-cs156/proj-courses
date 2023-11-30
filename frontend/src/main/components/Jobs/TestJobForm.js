@@ -13,7 +13,7 @@ function TestJobForm({ submitAction }) {
     formState: { errors },
     handleSubmit,
   } = useForm({ defaultValues: defaultValues });
-  // Stryker enable all
+  // Stryker restore all
 
   const testid = "TestJobForm";
 
