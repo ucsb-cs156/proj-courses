@@ -114,14 +114,14 @@ describe("section utils tests", () => {
   });
 
   test("formatInfoLink test", () => {
-    expect(formatInfoLink(oneSection[0])).toBe("/coursedetails/W22/12583");
+    expect(formatInfoLink(oneSection[0])).toBe("/coursedetails/20221/12583");
   });
 
   test("renderInfoLink test", () => {
     const view = renderInfoLink({
-      cell: { value: "/coursedetails/W22/12583" },
+      cell: { value: "/coursedetails/20221/12583" },
     });
     expect(view.props.children.props.style.color).toBe("white");
-    expect(view.props.children.props.href).toBe("/coursedetails/W22/12583");
+    expect(view.props.children.props.href).toBe("/coursedetails/20221/12583");
   });
 });

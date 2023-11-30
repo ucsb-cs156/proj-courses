@@ -286,27 +286,27 @@ describe("Section tests", () => {
     expect(
       screen
         .getByTestId(`${testId}-cell-row-0-col-info`)
-        .querySelector('a[href$="/coursedetails/S22/12591"]'),
+        .querySelector('a[href$="/coursedetails/20222/12591"]'),
     ).toBeInTheDocument();
     expect(
       screen
         .getByTestId(`${testId}-cell-row-1-col-info`)
-        .querySelector('a[href$="/coursedetails/W22/12591"]'),
+        .querySelector('a[href$="/coursedetails/20221/12591"]'),
     ).toBeInTheDocument();
     expect(
       screen
         .getByTestId(`${testId}-cell-row-2-col-info`)
-        .querySelector('a[href$="/coursedetails/W22/12609"]'),
+        .querySelector('a[href$="/coursedetails/20221/12609"]'),
     ).toBeInTheDocument();
     expect(
       screen
         .getByTestId(`${testId}-cell-row-3-col-info`)
-        .querySelector('a[href$="/coursedetails/W22/12617"]'),
+        .querySelector('a[href$="/coursedetails/20221/12617"]'),
     ).toBeInTheDocument();
     expect(
       screen
         .getByTestId(`${testId}-cell-row-4-col-info`)
-        .querySelector('a[href$="/coursedetails/W22/12625"]'),
+        .querySelector('a[href$="/coursedetails/20221/12625"]'),
     ).toBeInTheDocument();
   });
 });

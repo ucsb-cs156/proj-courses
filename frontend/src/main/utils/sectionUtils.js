@@ -1,5 +1,4 @@
 import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
-import { yyyyqToQyy } from "./quarterUtilities";
 
 export const convertToFraction = (en1, en2) => {
   return en1 != null && en2 != null ? `${en1}/${en2}` : "";
@@ -96,7 +95,7 @@ export const formatStatus = (section) => {
 };
 
 export const formatInfoLink = (row) =>
-  `/coursedetails/${yyyyqToQyy(row.courseInfo.quarter)}/${
+  `/coursedetails/${row.courseInfo.quarter}/${
     row.section.enrollCode
   }`;
 
