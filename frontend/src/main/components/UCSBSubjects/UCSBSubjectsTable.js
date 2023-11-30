@@ -21,7 +21,7 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
     { onSuccess: onDeleteSuccess },
     ["/api/UCSBSubjects/all"],
   );
-  // Stryker enable all
+  // Stryker restore all
 
   // Stryker disable next-line all : TODO try to make a good test for this
   const deleteCallback = async (cell) => {
