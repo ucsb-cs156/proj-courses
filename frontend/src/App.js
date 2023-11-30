@@ -5,6 +5,7 @@ import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
 import AdminPersonalSchedulesPage from "main/pages/AdminPersonalSchedulePage";
 import AdminJobsPage from "main/pages/AdminJobsPage";
+import DeveloperPage from "main/pages/DeveloperPage"; // route from /developer to DeveloperPage
 
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
@@ -25,6 +26,7 @@ import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseO
 
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 
+import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
 function App() {
   const { data: currentUser } = useCurrentUser();
 
@@ -47,6 +49,7 @@ function App() {
               element={<AdminPersonalSchedulesPage />}
             />
             <Route path="/admin/jobs" element={<AdminJobsPage />} />
+            <Route path="/developer" element={<DeveloperPage />} />
           </>
         )}
         {hasRole(currentUser, "ROLE_USER") && (
@@ -99,6 +102,11 @@ function App() {
           exact
           path="/courseovertime/instructorsearch"
           element={<CourseOverTimeInstructorIndexPage />}
+        />
+        <Route
+          exact
+          path="/coursedetails/:qtr/:enrollCode"
+          element={<CourseDetailsIndexPage />}
         />
       </Routes>
     </BrowserRouter>
