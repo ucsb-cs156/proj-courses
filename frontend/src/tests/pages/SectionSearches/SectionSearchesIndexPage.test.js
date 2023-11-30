@@ -23,16 +23,6 @@ jest.mock("react-toastify", () => {
 
 describe("Section Searches Index Page tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
-  const setupAdminUser = () => {
-    axiosMock.reset();
-    axiosMock.resetHistory();
-    axiosMock
-      .onGet("/api/currentUser")
-      .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, systemInfoFixtures.showingNeither);
-  };
   beforeEach(() => {
     axiosMock.resetHistory();
     axiosMock
@@ -97,5 +87,4 @@ describe("Section Searches Index Page tests", () => {
 
     expect(screen.getByText("ECE 1A")).toBeInTheDocument();
   });
-  
 });
