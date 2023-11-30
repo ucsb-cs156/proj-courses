@@ -25,7 +25,7 @@ function PersonalScheduleForm({
     formState: { errors },
     handleSubmit,
   } = useForm({ defaultValues: initialPersonalSchedule || {} });
-  // Stryker enable all
+  // Stryker restore all
 
   const navigate = useNavigate();
   const [quarter, setQuarter] = useState(

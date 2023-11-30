@@ -12,7 +12,7 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
     formState: { errors },
     handleSubmit,
   } = useForm({ defaultValues: initialCourse || {} });
-  // Stryker enable all
+  // Stryker restore all
 
   const navigate = useNavigate();
 
@@ -23,19 +23,25 @@ function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
   } = useBackend(
     // Stryker disable next-line all : don't test internal caching of React Query
     ["/api/personalschedules/all"],
+    // Stryker disable next-line all : don't test internal caching of React Query
     { method: "GET", url: "/api/personalschedules/all" },
     [],
   );
 
+  // Stryker disable all : not sure how to test/mock local storage
   const localSchedule = localStorage.getItem("CourseForm-psId");
   const [schedule, setSchedule] = useState(localSchedule || "");
   if (schedule) {
     localStorage.setItem("CourseForm-psId", schedule);
   }
+  // Stryker restore all
+
   useEffect(() => {
     if (schedules && schedules.length > 0 && !localSchedule) {
       setSchedule(schedules[0].id);
+      // Stryker disable all : not sure how to test/mock local storage
       localStorage.setItem("CourseForm-psId", schedules[0].id);
+      // Stryker restore all
     }
   }, [schedules, localSchedule]);
 

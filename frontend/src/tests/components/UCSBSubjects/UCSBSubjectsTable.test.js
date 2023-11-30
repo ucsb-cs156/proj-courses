@@ -104,8 +104,14 @@ describe("UserTable tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-subjectCode`),
     ).toHaveTextContent("GEOG");
     expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-inactive`),
+    ).toHaveTextContent("false");
+    expect(
       screen.getByTestId(`${testId}-cell-row-1-col-subjectCode`),
     ).toHaveTextContent("GER");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-inactive`),
+    ).toHaveTextContent("false");
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
