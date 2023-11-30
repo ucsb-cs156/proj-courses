@@ -95,9 +95,7 @@ export const formatStatus = (section) => {
 };
 
 export const formatInfoLink = (row) =>
-  `/coursedetails/${row.courseInfo.quarter}/${
-    row.section.enrollCode
-  }`;
+  `/coursedetails/${row.courseInfo.quarter}/${row.section.enrollCode}`;
 
 export const renderInfoLink = ({ cell: { value } }) => (
   <p align="center">
