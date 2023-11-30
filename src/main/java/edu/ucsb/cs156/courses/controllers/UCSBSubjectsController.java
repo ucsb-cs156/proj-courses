@@ -108,6 +108,5 @@ public class UCSBSubjectsController extends ApiController implements Application
   public void run(ApplicationArguments args) throws Exception {
     loadSubjects();
     System.out.println("Got all subjects on launch");
-    
   }
 }
