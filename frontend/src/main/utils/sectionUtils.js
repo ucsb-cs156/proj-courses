@@ -93,3 +93,14 @@ export const formatStatus = (section) => {
     return "Open";
   }
 };
+
+export const formatInfoLink = (row) =>
+  `/coursedetails/${row.courseInfo.quarter}/${row.section.enrollCode}`;
+
+export const renderInfoLink = ({ cell: { value } }) => (
+  <p align="center">
+    <a href={value} style={{ color: "white" }}>
+      <i className="fa fa-info-circle"></i>
+    </a>
+  </p>
+);
