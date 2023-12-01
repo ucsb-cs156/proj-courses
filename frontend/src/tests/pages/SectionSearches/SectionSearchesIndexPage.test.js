@@ -23,7 +23,6 @@ jest.mock("react-toastify", () => {
 
 describe("Section Searches Index Page tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
-
   beforeEach(() => {
     axiosMock.resetHistory();
     axiosMock

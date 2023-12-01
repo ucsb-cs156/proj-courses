@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "API to handle CRUD operations for UCSB Subjects database")
 @RequestMapping("/api/UCSBSubjects")
 @RestController
-public class UCSBSubjectsController extends ApiController {
+public class UCSBSubjectsController extends ApiController implements ApplicationRunner {
   @Autowired UCSBSubjectRepository subjectRepository;
 
   @Autowired ObjectMapper mapper;
@@ -100,5 +102,11 @@ public class UCSBSubjectsController extends ApiController {
     subjectRepository.deleteAll();
 
     return genericMessage("All UCSBSubject records deleted");
+  }
+
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    loadSubjects();
+    log.info("Got all subjects on launch!");
   }
 }
