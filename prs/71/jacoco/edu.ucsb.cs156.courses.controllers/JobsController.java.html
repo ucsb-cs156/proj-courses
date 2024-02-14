@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JobsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">JobsController.java</span></div><h1>JobsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.jobs.TestJob;
+import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
+import edu.ucsb.cs156.courses.jobs.UploadGradeDataJob;
+import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
+import edu.ucsb.cs156.courses.repositories.JobsRepository;
+import edu.ucsb.cs156.courses.services.jobs.JobService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = &quot;Jobs&quot;)
+@RequestMapping(&quot;/api/jobs&quot;)
+@RestController
+<span class="fc" id="L26">public class JobsController extends ApiController {</span>
+  @Autowired private JobsRepository jobsRepository;
+
+  @Autowired private ConvertedSectionCollection convertedSectionCollection;
+
+  @Autowired private JobService jobService;
+
+  @Autowired ObjectMapper mapper;
+
+  @Autowired UpdateCourseDataJobFactory updateCourseDataJobFactory;
+
+  @Autowired UploadGradeDataJobFactory updateGradeDataJobFactory;
+
+  @Operation(summary = &quot;List all jobs&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @GetMapping(&quot;/all&quot;)
+  public Iterable&lt;Job&gt; allJobs() {
+<span class="fc" id="L43">    Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
+<span class="fc" id="L44">    return jobs;</span>
+  }
+
+  @Operation(summary = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PostMapping(&quot;/launch/testjob&quot;)
+  public Job launchTestJob(
+      @Parameter(name = &quot;fail&quot;) @RequestParam Boolean fail,
+      @Parameter(name = &quot;sleepMs&quot;) @RequestParam Integer sleepMs) {
+
+<span class="fc" id="L54">    TestJob testJob = TestJob.builder().fail(fail).sleepMs(sleepMs).build();</span>
+<span class="fc" id="L55">    return jobService.runAsJob(testJob);</span>
+  }
+
+  @Operation(summary = &quot;Launch Job to Update Course Data&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PostMapping(&quot;/launch/updateCourses&quot;)
+  public Job launchUpdateCourseDataJob(
+      @Parameter(name = &quot;quarterYYYYQ&quot;, description = &quot;quarter (YYYYQ format)&quot;) @RequestParam
+          String quarterYYYYQ,
+      @Parameter(name = &quot;subject area&quot;) @RequestParam String subjectArea) {
+
+<span class="fc" id="L66">    var job = updateCourseDataJobFactory.createForSubjectAndQuarter(subjectArea, quarterYYYYQ);</span>
+
+<span class="fc" id="L68">    return jobService.runAsJob(job);</span>
+  }
+
+  @Operation(summary = &quot;Launch Job to Update Course Data using Quarter&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PostMapping(&quot;/launch/updateQuarterCourses&quot;)
+  public Job launchUpdateCourseDataWithQuarterJob(
+      @Parameter(name = &quot;quarterYYYYQ&quot;, description = &quot;quarter (YYYYQ format)&quot;) @RequestParam
+          String quarterYYYYQ) {
+
+<span class="fc" id="L78">    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);</span>
+
+<span class="fc" id="L80">    return jobService.runAsJob(job);</span>
+  }
+
+  @Operation(summary = &quot;Launch Job to Update Course Data for range of quarters&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PostMapping(&quot;/launch/updateCoursesRangeOfQuarters&quot;)
+  public Job launchUpdateCourseDataRangeOfQuartersJob(
+      @Parameter(name = &quot;start_quarterYYYYQ&quot;, description = &quot;start quarter (YYYYQ format)&quot;)
+          @RequestParam
+          String start_quarterYYYYQ,
+      @Parameter(name = &quot;end_quarterYYYYQ&quot;, description = &quot;end quarter (YYYYQ format)&quot;)
+          @RequestParam
+          String end_quarterYYYYQ) {
+
+<span class="fc" id="L94">    var job =</span>
+<span class="fc" id="L95">        updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);</span>
+
+<span class="fc" id="L97">    return jobService.runAsJob(job);</span>
+  }
+
+  @Operation(
+      summary = &quot;Launch Job to Update Course Data for a range of quarters for a single subject&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PostMapping(&quot;/launch/updateCoursesRangeOfQuartersSingleSubject&quot;)
+  public Job launchUpdateCourseDataRangeOfQuartersSingleSubjectJob(
+      @Parameter(name = &quot;subjectArea&quot;, description = &quot;subject area&quot;) @RequestParam
+          String subjectArea,
+      @Parameter(name = &quot;start_quarterYYYYQ&quot;, description = &quot;start quarter (YYYYQ format)&quot;)
+          @RequestParam
+          String start_quarterYYYYQ,
+      @Parameter(name = &quot;end_quarterYYYYQ&quot;, description = &quot;end quarter (YYYYQ format)&quot;)
+          @RequestParam
+          String end_quarterYYYYQ) {
+
+<span class="fc" id="L114">    var job =</span>
+<span class="fc" id="L115">        updateCourseDataJobFactory.createForSubjectAndQuarterRange(</span>
+            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
+
+<span class="fc" id="L118">    return jobService.runAsJob(job);</span>
+  }
+
+  @Operation(summary = &quot;Launch Job to update grade history&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PostMapping(&quot;/launch/uploadGradeData&quot;)
+  public Job launchUploadGradeData() {
+<span class="fc" id="L125">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
+<span class="fc" id="L126">    return jobService.runAsJob(updateGradeDataJob);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

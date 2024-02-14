@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateCourseDataJobFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.jobs</a> &gt; <span class="el_source">UpdateCourseDataJobFactory.java</span></div><h1>UpdateCourseDataJobFactory.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.jobs;
+
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L13">@Slf4j</span>
+<span class="fc" id="L14">public class UpdateCourseDataJobFactory {</span>
+
+  @Autowired private UCSBCurriculumService curriculumService;
+
+  @Autowired private ConvertedSectionCollection convertedSectionCollection;
+
+  @Autowired private UCSBSubjectRepository subjectRepository;
+
+  public UpdateCourseDataJob createForSubjectAndQuarter(String subjectArea, String quarterYYYYQ) {
+<span class="fc" id="L23">    return new UpdateCourseDataJob(</span>
+        quarterYYYYQ,
+        quarterYYYYQ,
+<span class="fc" id="L26">        List.of(subjectArea),</span>
+        curriculumService,
+        convertedSectionCollection);
+  }
+
+  public UpdateCourseDataJob createForSubjectAndQuarterRange(
+      String subjectArea, String start_quarterYYYYQ, String end_quarterYYYYQ) {
+<span class="fc" id="L33">    return new UpdateCourseDataJob(</span>
+        start_quarterYYYYQ,
+        end_quarterYYYYQ,
+<span class="fc" id="L36">        List.of(subjectArea),</span>
+        curriculumService,
+        convertedSectionCollection);
+  }
+
+  private List&lt;String&gt; getAllSubjectCodes() {
+<span class="fc" id="L42">    var subjects = subjectRepository.findAll();</span>
+<span class="fc" id="L43">    var subjectCodes = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">    for (var subject : subjects) {</span>
+<span class="fc" id="L45">      subjectCodes.add(subject.getSubjectCode());</span>
+<span class="fc" id="L46">    }</span>
+<span class="fc" id="L47">    return subjectCodes;</span>
+  }
+
+  public UpdateCourseDataJob createForQuarter(String quarterYYYYQ) {
+<span class="fc" id="L51">    return new UpdateCourseDataJob(</span>
+        quarterYYYYQ,
+        quarterYYYYQ,
+<span class="fc" id="L54">        getAllSubjectCodes(),</span>
+        curriculumService,
+        convertedSectionCollection);
+  }
+
+  public UpdateCourseDataJob createForQuarterRange(
+      String start_quarterYYYYQ, String end_quarterYYYYQ) {
+<span class="fc" id="L61">    return new UpdateCourseDataJob(</span>
+        start_quarterYYYYQ,
+        end_quarterYYYYQ,
+<span class="fc" id="L64">        getAllSubjectCodes(),</span>
+        curriculumService,
+        convertedSectionCollection);
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
