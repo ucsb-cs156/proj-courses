@@ -10,8 +10,29 @@ Users with a Google Account can also store past, current or future schedules of 
 
 | Type | Link       | 
 |------|------------|
-| prod | <https://proj-courses.dokku-10.cs.ucsb.edu/> | 
-| qa | <https://proj-courses-qa.dokku-10.cs.ucsb.edu/>  | 
+| prod | <https://courses.dokku-00.cs.ucsb.edu/> | 
+| qa | <https://courses-qa.dokku-00.cs.ucsb.edu/>  | 
+
+
+# W24 Production Deployments
+
+
+| Team | Link       | 
+|------|------------|
+| w24-4pm-1 | <https://courses.dokku-01.cs.ucsb.edu/> | 
+| w24-4pm-2 | <https://courses.dokku-02.cs.ucsb.edu/>  | 
+| w24-4pm-3 | <https://courses.dokku-03.cs.ucsb.edu/>  | 
+| w24-4pm-4 | <https://courses.dokku-04.cs.ucsb.edu/>  | 
+
+# W24 QA Deployments
+
+
+| Team | Link       | 
+|------|------------|
+| w24-4pm-1 | <https://courses-qa.dokku-01.cs.ucsb.edu/> | 
+| w24-4pm-2 | <https://courses-qa.dokku-02.cs.ucsb.edu/>  | 
+| w24-4pm-3 | <https://courses-qa.dokku-03.cs.ucsb.edu/>  | 
+| w24-4pm-4 | <https://courses-qa.dokku-04.cs.ucsb.edu/>  | 
 
 
 # Setup before running application
@@ -91,28 +112,4 @@ To access the swagger API endpoints, use:
 # Accessing Database Console
 
 * On localhost only: <http://localhost:8080/h2-console>  See also: [docs/h2-console.md](docs/h2-console.md)
-* On Heroku, with CLI:
-  - Use: `heroku psql --app app-name-here` 
-  - Note that this requires that you have the psql CLI tool installed on your system.  
-  - This does work on CSIL, but you may need `heroku login -i` in order to login on CSIL
-  - Example:
-   
-    ```
-    [pconrad@csilvm-03 ~]$ heroku psql --app demo-spring-react-example
-    ›   Warning: heroku update available from 7.59.1 to 7.59.2.
-    --> Connecting to postgresql-tapered-84555
-    psql (13.4, server 13.5 (Ubuntu 13.5-2.pgdg20.04+1))
-    SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
-    Type "help" for help.
-
-    demo-spring-react-example::DATABASE=> 
-    ```
-* On Heroku, without CLI: 
-  - Upper right of dashboard, select "More" then "Run Console"
-    
-    <img alt="Heroku Dashboard; More; Run Console" src="https://user-images.githubusercontent.com/1119017/150204550-a1027ab8-6ce7-4770-b566-a43928f5c3a0.png" width="300" />
-  - Enter `psql $DATABASE_URL` and click `Run`
-   
-    <img alt="Enter psql $DATABASE_URL and click Run" src="https://user-images.githubusercontent.com/1119017/150206174-43193825-1afd-49f4-aeaf-cfadf0c0c6f3.png" width="400" />
-* Cheatsheet of `psql` commands: <https://www.geeksforgeeks.org/postgresql-psql-commands/>
-
+* On Dokku: see: <https://ucsb-cs156.github.io/topics/dokku/postgres_command_line.html>
