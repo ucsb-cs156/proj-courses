@@ -5,7 +5,10 @@ import {
   formatDays,
   formatTime,
   formatInstructors,
+  formatInfoLink,
+  renderInfoLink,
 } from "main/utils/sectionUtils";
+import { oneSection } from "../../fixtures/sectionFixtures";
 
 const testTimeLocations = [
   {
@@ -108,5 +111,17 @@ describe("section utils tests", () => {
 
   test("formatInstructors null test", () => {
     expect(formatInstructors(null)).toBe("");
+  });
+
+  test("formatInfoLink test", () => {
+    expect(formatInfoLink(oneSection[0])).toBe("/coursedetails/20221/12583");
+  });
+
+  test("renderInfoLink test", () => {
+    const view = renderInfoLink({
+      cell: { value: "/coursedetails/20221/12583" },
+    });
+    expect(view.props.children.props.style.color).toBe("white");
+    expect(view.props.children.props.href).toBe("/coursedetails/20221/12583");
   });
 });

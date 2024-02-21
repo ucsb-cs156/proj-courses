@@ -71,7 +71,7 @@ export function useBackendMutation(
     onSettled: () => {
       if (queryKey !== null) queryClient.invalidateQueries(queryKey);
     },
-    // Stryker enable all
+    // Stryker restore all
     retry: false,
     ...useMutationParams,
   });

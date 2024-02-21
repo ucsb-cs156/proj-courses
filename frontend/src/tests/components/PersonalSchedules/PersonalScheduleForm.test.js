@@ -175,4 +175,24 @@ describe("PersonalScheduleForm tests", () => {
     ).not.toBeInTheDocument();
     expect(quarter).toHaveValue("20211");
   });
+
+  test("Shows error message when name exceeds maximum length", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const nameInput = screen.getByTestId("PersonalScheduleForm-name");
+    const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
+
+    fireEvent.change(nameInput, { target: { value: "ThisNameIsWayTooLong" } });
+    fireEvent.click(submitButton);
+
+    expect(
+      await screen.findByText("Max length 15 characters"),
+    ).toBeInTheDocument();
+  });
 });

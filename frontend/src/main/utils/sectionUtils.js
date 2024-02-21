@@ -80,3 +80,27 @@ export const formatInstructors = (instructorArray) => {
 export const isSection = (en1) => {
   return en1.substring(2) !== "00";
 };
+
+// returns the course status based on cancel, closed, or full
+export const formatStatus = (section) => {
+  if (section.courseCancelled) {
+    return "Cancelled";
+  } else if (section.classClosed === "Y") {
+    return "Closed";
+  } else if (section.enrolledTotal >= section.maxEnroll) {
+    return "Full";
+  } else {
+    return "Open";
+  }
+};
+
+export const formatInfoLink = (row) =>
+  `/coursedetails/${row.courseInfo.quarter}/${row.section.enrollCode}`;
+
+export const renderInfoLink = ({ cell: { value } }) => (
+  <p align="center">
+    <a href={value} style={{ color: "white" }}>
+      <i className="fa fa-info-circle"></i>
+    </a>
+  </p>
+);

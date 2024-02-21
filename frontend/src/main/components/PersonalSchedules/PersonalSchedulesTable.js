@@ -27,12 +27,17 @@ export default function PersonalSchedulesTable({
     { onSuccess: onDeleteSuccess },
     ["/api/personalschedules/all"],
   );
-  // Stryker enable all
+  // Stryker restore all
 
-  // Stryker disable next-line all : TODO try to make a good test for this
+  // Stryker disable all : TODO try to make a good test for this
   const deleteCallback = async (cell) => {
+    const id = String(cell.row.values.id);
+    if (localStorage["CourseForm-psId"] === id) {
+      localStorage.removeItem("CourseForm-psId");
+    }
     deleteMutation.mutate(cell);
   };
+  // Stryker restore all
 
   const columns = [
     {

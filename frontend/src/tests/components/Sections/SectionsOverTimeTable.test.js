@@ -41,23 +41,27 @@ describe("Section tests", () => {
       "Quarter",
       "Course ID",
       "Title",
+      "Status",
       "Enrolled",
       "Location",
       "Days",
       "Time",
       "Instructor",
       "Enroll Code",
+      "Info",
     ];
     const expectedFields = [
       "quarter",
       "courseInfo.courseId",
       "courseInfo.title",
+      "status",
       "enrolled",
       "location",
       "days",
       "time",
       "instructor",
       "section.enrollCode",
+      "info",
     ];
     const testId = "SectionsOverTimeTable";
 
@@ -86,6 +90,9 @@ describe("Section tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-days`),
     ).toHaveTextContent("T R");
     expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-status`),
+    ).toHaveTextContent("Closed");
+    expect(
       screen.getByTestId(`${testId}-cell-row-0-col-enrolled`),
     ).toHaveTextContent("51/77");
     expect(
@@ -112,6 +119,7 @@ describe("Section tests", () => {
       "Quarter",
       "Course ID",
       "Title",
+      "Status",
       "Enrolled",
       "Location",
       "Days",
@@ -123,6 +131,7 @@ describe("Section tests", () => {
       "quarter",
       "courseInfo.courseId",
       "courseInfo.title",
+      "status",
       "enrolled",
       "location",
       "days",
@@ -159,6 +168,9 @@ describe("Section tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-days`),
     ).toHaveTextContent("T R");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-status`),
+    ).toHaveTextContent("Closed");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-enrolled`),
     ).toHaveTextContent("51/77");
@@ -223,5 +235,78 @@ describe("Section tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-2-col-enrolled`),
     ).toHaveTextContent("21/21");
+  });
+
+  test("Status utility identifies each type of status", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsOverTimeTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsOverTimeTable";
+
+    const expandRow = screen.getByTestId(
+      `${testId}-cell-row-1-col-quarter-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-status`),
+    ).toHaveTextContent("Closed");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-status`),
+    ).toHaveTextContent("Full");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-3-col-status`),
+    ).toHaveTextContent("Cancelled");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-4-col-status`),
+    ).toHaveTextContent("Open");
+  });
+
+  test("Info link is correct", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsOverTimeTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsOverTimeTable";
+
+    const expandRow = screen.getByTestId(
+      `${testId}-cell-row-1-col-quarter-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-0-col-info`)
+        .querySelector('a[href$="/coursedetails/20222/12591"]'),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-1-col-info`)
+        .querySelector('a[href$="/coursedetails/20221/12591"]'),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-2-col-info`)
+        .querySelector('a[href$="/coursedetails/20221/12609"]'),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-3-col-info`)
+        .querySelector('a[href$="/coursedetails/20221/12617"]'),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-4-col-info`)
+        .querySelector('a[href$="/coursedetails/20221/12625"]'),
+    ).toBeInTheDocument();
   });
 });

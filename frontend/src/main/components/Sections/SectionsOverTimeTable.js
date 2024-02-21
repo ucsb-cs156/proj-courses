@@ -8,6 +8,9 @@ import {
   formatLocation,
   formatTime,
   isSection,
+  formatStatus,
+  formatInfoLink,
+  renderInfoLink,
 } from "main/utils/sectionUtils.js";
 
 function getFirstVal(values) {
@@ -19,7 +22,7 @@ function getCourseId(courseIds) {
 }
 
 export default function SectionsOverTimeTable({ sections }) {
-  // Stryker enable all
+  // Stryker restore all
   // Stryker disable BooleanLiteral
   const columns = [
     {
@@ -54,6 +57,15 @@ export default function SectionsOverTimeTable({ sections }) {
       accessor: (row) => isSection(row.section.section),
       // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
       id: "isSection",
+    },
+    {
+      Header: "Status",
+      accessor: (row) => formatStatus(row.section),
+      disableGroupBy: true,
+      id: "status",
+
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value } }) => `${value}`,
     },
     {
       Header: "Enrolled",
@@ -108,6 +120,16 @@ export default function SectionsOverTimeTable({ sections }) {
 
       aggregate: getFirstVal,
       Aggregated: ({ cell: { value } }) => `${value}`,
+    },
+    {
+      Header: "Info",
+      accessor: formatInfoLink,
+      Cell: renderInfoLink,
+      disableGroupBy: true,
+      id: "info",
+
+      aggregate: getFirstVal,
+      Aggregated: renderInfoLink,
     },
   ];
 

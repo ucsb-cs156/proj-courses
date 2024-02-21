@@ -19,7 +19,6 @@ export default function SectionSearchesIndexPage() {
   });
 
   const onSuccess = (section) => {
-    console.log();
     setSectionJSON(section);
   };
 
@@ -33,7 +32,6 @@ export default function SectionSearchesIndexPage() {
   async function fetchBasicSectionJSON(_event, query) {
     mutation.mutate(query);
   }
-
   return (
     <BasicLayout>
       <div className="pt-2">

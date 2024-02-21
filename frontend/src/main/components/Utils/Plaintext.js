@@ -19,5 +19,5 @@ export default function Plaintext({ text }) {
       ))}
     </pre>
   );
-  // Stryker enable StringLiteral
+  // Stryker restore StringLiteral
 }
