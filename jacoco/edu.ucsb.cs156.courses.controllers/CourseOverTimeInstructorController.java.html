@@ -7,8 +7,6 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(&quot;/api/public/courseovertime&quot;)
-<span class="fc" id="L21">public class CourseOverTimeInstructorController {</span>
+<span class="fc" id="L19">public class CourseOverTimeInstructorController {</span>
 
-<span class="fc" id="L23">  private final Logger logger = LoggerFactory.getLogger(CourseOverTimeInstructorController.class);</span>
-
-<span class="fc" id="L25">  private ObjectMapper mapper = new ObjectMapper();</span>
+<span class="fc" id="L21">  private ObjectMapper mapper = new ObjectMapper();</span>
 
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
@@ -61,17 +57,17 @@ import org.springframework.web.bind.annotation.RestController;
           boolean lectureOnly)
       throws JsonProcessingException {
     List&lt;ConvertedSection&gt; courseResults;
-<span class="fc bfc" id="L64" title="All 2 branches covered.">    if (lectureOnly) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    if (lectureOnly) {</span>
+<span class="fc" id="L61">      courseResults =</span>
+<span class="fc" id="L62">          convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
+<span class="fc" id="L63">              startQtr, endQtr, &quot;^&quot; + instructor.toUpperCase(), &quot;^(Teaching and in charge)&quot;);</span>
+    } else {
 <span class="fc" id="L65">      courseResults =</span>
 <span class="fc" id="L66">          convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
-<span class="fc" id="L67">              startQtr, endQtr, &quot;^&quot; + instructor.toUpperCase(), &quot;^(Teaching and in charge)&quot;);</span>
-    } else {
-<span class="fc" id="L69">      courseResults =</span>
-<span class="fc" id="L70">          convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
-<span class="fc" id="L71">              startQtr, endQtr, &quot;^&quot; + instructor.toUpperCase(), &quot;^.*&quot;);</span>
+<span class="fc" id="L67">              startQtr, endQtr, &quot;^&quot; + instructor.toUpperCase(), &quot;^.*&quot;);</span>
     }
-<span class="fc" id="L73">    String body = mapper.writeValueAsString(courseResults);</span>
-<span class="fc" id="L74">    return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L69">    String body = mapper.writeValueAsString(courseResults);</span>
+<span class="fc" id="L70">    return ResponseEntity.ok().body(body);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
