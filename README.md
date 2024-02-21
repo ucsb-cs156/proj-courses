@@ -19,20 +19,20 @@ Users with a Google Account can also store past, current or future schedules of 
 
 | Team | Link       | 
 |------|------------|
-| w24-4pm-1 | <https://courses.dokku-01.cs.ucsb.edu/> | 
-| w24-4pm-2 | <https://courses.dokku-02.cs.ucsb.edu/>  | 
-| w24-4pm-3 | <https://courses.dokku-03.cs.ucsb.edu/>  | 
-| w24-4pm-4 | <https://courses.dokku-04.cs.ucsb.edu/>  | 
+| w24-5pm-1 | <https://courses.dokku-05.cs.ucsb.edu/> | 
+| w24-5pm-2 | <https://courses.dokku-06.cs.ucsb.edu/>  | 
+| w24-5pm-3 | <https://courses.dokku-07.cs.ucsb.edu/>  | 
+| w24-5pm-4 | <https://courses.dokku-08.cs.ucsb.edu/>  | 
 
 # W24 QA Deployments
 
 
 | Team | Link       | 
 |------|------------|
-| w24-4pm-1 | <https://courses-qa.dokku-01.cs.ucsb.edu/> | 
-| w24-4pm-2 | <https://courses-qa.dokku-02.cs.ucsb.edu/>  | 
-| w24-4pm-3 | <https://courses-qa.dokku-03.cs.ucsb.edu/>  | 
-| w24-4pm-4 | <https://courses-qa.dokku-04.cs.ucsb.edu/>  | 
+| w24-5pm-1 | <https://courses-qa.dokku-05.cs.ucsb.edu/> | 
+| w24-5pm-2 | <https://courses-qa.dokku-06.cs.ucsb.edu/>  | 
+| w24-5pm-3 | <https://courses-qa.dokku-07.cs.ucsb.edu/>  | 
+| w24-5pm-4 | <https://courses-qa.dokku-08.cs.ucsb.edu/>  | 
 
 
 # Setup before running application
