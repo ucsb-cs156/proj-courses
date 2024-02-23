@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjIwOTA4MzM2","is_bot":false,"login":"tallyhawley","name":"isaac hoffman"},"headRefName":"tallyhawley-patch-1","number":82,"title":"Update README.md to remove Heroku references","url":"https://github.com/ucsb-cs156/proj-courses/pull/82"}]
+pull_requests: []
