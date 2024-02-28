@@ -62,7 +62,7 @@ describe("AppNavbar tests", () => {
       screen.getByTestId(/appnavbar-admin-jobs/),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId(/appnavbar-developer/),
+      screen.getByTestId(/appnavbar-admin-developer/),
     ).toBeInTheDocument();
   });
 

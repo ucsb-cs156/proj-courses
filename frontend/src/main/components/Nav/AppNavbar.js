@@ -155,7 +155,7 @@ export default function AppNavbar({
                   </NavDropdown.Item>
                   <NavDropdown.Item
                     href="/developer"
-                    data-testid="appnavbar-developer"
+                    data-testid="appnavbar-admin-developer"
                   >
                     Developer Info
                   </NavDropdown.Item>
