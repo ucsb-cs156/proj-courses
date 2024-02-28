@@ -154,8 +154,8 @@ export default function AppNavbar({
                     Manage Jobs
                   </NavDropdown.Item>
                   <NavDropdown.Item
-                    href="/admin/developer"
-                    data-testid="appnavbar-admin-developer"
+                    href="/developer"
+                    data-testid="appnavbar-developer"
                   >
                     Developer Info
                   </NavDropdown.Item>

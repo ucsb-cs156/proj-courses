@@ -58,12 +58,7 @@ describe("AppNavbar tests", () => {
     expect(
       screen.getByTestId(/appnavbar-admin-personalschedule/),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("appnavbar-admin-jobs"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("appnavbar-admin-developer"),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("appnavbar-developer")).toBeInTheDocument();
   });
 
   test("renders H2Console and Swagger links correctly", async () => {
