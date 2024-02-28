@@ -59,10 +59,10 @@ describe("AppNavbar tests", () => {
       screen.getByTestId(/appnavbar-admin-personalschedule/),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId(/appnavbar-admin-jobs/),
+      screen.getByTestId("appnavbar-admin-jobs"),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId(/appnavbar-admin-developer/),
+      screen.getByTestId("appnavbar-admin-developer"),
     ).toBeInTheDocument();
   });
 
