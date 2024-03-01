@@ -10,8 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import edu.ucsb.cs156.courses.ControllerTestCase;
+import edu.ucsb.cs156.courses.entities.PSCourse;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
@@ -34,6 +36,8 @@ import org.springframework.test.web.servlet.MvcResult;
 public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
   @MockBean PersonalScheduleRepository personalscheduleRepository;
+
+  @MockBean PSCourseRepository coursesRepository;
 
   @MockBean UserRepository userRepository;
 
@@ -384,6 +388,15 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .build();
     when(personalscheduleRepository.findByIdAndUser(eq(15L), eq(u))).thenReturn(Optional.of(ps1));
 
+    PSCourse c1 = 
+        PSCourse.builder()
+            .id(10L)
+            .user(u)
+            .enrollCd("08078")
+            .psId(15L)
+            .build();
+    when(coursesRepository.findByIdAndUser(eq(10L), eq(u))).thenReturn(Optional.of(c1));
+
     // act
     MvcResult response =
         mockMvc
@@ -396,6 +409,19 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     verify(personalscheduleRepository, times(1)).delete(ps1);
     Map<String, Object> json = responseToJson(response);
     assertEquals("PersonalSchedule with id 15 deleted", json.get("message"));
+    
+    // act
+    MvcResult response2 =
+        mockMvc
+            .perform(delete("/api/courses/user?id=10").with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+    
+    // assert
+    verify(coursesRepository.findByIdAndUser(10L, u));
+    json = responseToJson(response2);
+    assertEquals("EntityNotFoundException", json.get("type"));
+    //assertEquals("PSCourse with id 10 not found", json.get("message"));
   }
 
   @WithMockUser(roles = {"USER"})
