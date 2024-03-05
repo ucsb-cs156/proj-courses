@@ -110,7 +110,18 @@ export default function SectionsTable({ sections }) {
       Header: "Enroll Code",
       accessor: "section.enrollCode",
       disableGroupBy: true,
-
+      Cell: ({ cell: { value }, row: { original } }) => {
+        if (isSection(original.section.section)) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <span>{value}</span>
+              <button className="btn btn-success">Add</button>
+            </div>
+          );
+        } else {
+          return value;
+        }
+      },
       aggregate: getFirstVal,
       Aggregated: ({ cell: { value } }) => `${value}`,
     },
