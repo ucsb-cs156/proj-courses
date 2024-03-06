@@ -107,6 +107,32 @@ describe("CoursesCreatePage tests", () => {
     expect(mockNavigate).toBeCalledWith({ to: "/courses/list" });
   });
 
+  test("when there's no personal schedule found, an error message is displayed", async () => {
+    const queryClient = new QueryClient();
+
+    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesCreatePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const enrollCdField = await screen.findByTestId("CourseForm-enrollCd");
+    const submitButton = screen.getByTestId("CourseForm-submit");
+
+    fireEvent.change(enrollCdField, { target: { value: "11111" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("PSCourseCreate-Error")).toHaveTextContent(
+        "Error: No personal schedules found. Please create a new personal schedule first.",
+      );
+    });
+  });
+
   test("when you input incorrect information, we get an error", async () => {
     const queryClient = new QueryClient();
 
@@ -134,35 +160,6 @@ describe("CoursesCreatePage tests", () => {
     await screen.findByTestId("PSCourseCreate-Error");
     const PSError = screen.getByTestId("PSCourseCreate-Error");
     expect(PSError).toBeInTheDocument();
-  });
-
-  
-  test("when there's no personal schedule found, an error message is displayed", async () => {
-    const queryClient = new QueryClient();
-  
-    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
-  
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CoursesCreatePage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-  
-    expect(
-      await screen.findByTestId("CourseForm-enrollCd"),
-    ).toBeInTheDocument();
-    expect(localStorage.getItem("CourseForm-psId")).toBe(null);
-  
-    const submitButton = screen.getByTestId("CourseForm-submit");
-  
-    fireEvent.click(submitButton);
-  
-    await screen.findByTestId("PSCourseCreate-Error");
-    const PSError = screen.getByTestId("PSCourseCreate-Error");
-    expect(PSError).toBeInTheDocument();
-    expect(PSError.textContent).toContain("No personal schedules found");
   });
 
   test("sets schedule and updates localStorage when schedules are available", async () => {
