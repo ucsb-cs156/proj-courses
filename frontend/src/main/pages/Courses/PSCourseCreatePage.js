@@ -50,7 +50,6 @@ export default function CoursesCreatePage() {
             <CourseForm submitAction={onSubmit} />
             <p data-testid="PSCourseCreate-Error">
                 Error: No personal schedules found. Please{" "}
-                <span style={{ color: "blue", cursor: "pointer" }} onClick={() => window.location.href = "/personalschedules/create"}>create a new personal schedule</span>{" "}
                 first.
             </p>
           </div>
