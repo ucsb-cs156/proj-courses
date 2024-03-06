@@ -388,19 +388,12 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .build();
     when(personalscheduleRepository.findByIdAndUser(eq(15L), eq(u))).thenReturn(Optional.of(ps1));
 
-    PSCourse c1 = 
-        PSCourse.builder()
-            .id(10L)
-            .user(u)
-            .enrollCd("08078")
-            .psId(15L)
-            .build();
+    PSCourse c1 = PSCourse.builder().id(10L).user(u).enrollCd("08078").psId(15L).build();
 
     ArrayList<PSCourse> coursesToDelete = new ArrayList<>();
     coursesToDelete.add(c1);
 
     when(coursesRepository.findAllByPsId(eq(15L))).thenReturn(coursesToDelete);
-
 
     // act
     MvcResult response =
@@ -495,13 +488,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .build();
     when(personalscheduleRepository.findById(eq(16L))).thenReturn(Optional.of(ps1));
 
-    PSCourse c1 = 
-        PSCourse.builder()
-            .id(10L)
-            .user(otherUser)
-            .enrollCd("08078")
-            .psId(16L)
-            .build();
+    PSCourse c1 = PSCourse.builder().id(10L).user(otherUser).enrollCd("08078").psId(16L).build();
 
     ArrayList<PSCourse> coursesToDelete = new ArrayList<>();
     coursesToDelete.add(c1);

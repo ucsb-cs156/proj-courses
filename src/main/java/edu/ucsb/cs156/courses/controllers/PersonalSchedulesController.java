@@ -1,12 +1,12 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.PSCourse;
+import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
-import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
+import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -121,7 +121,7 @@ public class PersonalSchedulesController extends ApiController {
     personalscheduleRepository.delete(personalschedule);
 
     Iterable<PSCourse> coursesToDelete = coursesRepository.findAllByPsId(id);
-    for(PSCourse course: coursesToDelete) {
+    for (PSCourse course : coursesToDelete) {
       coursesRepository.delete(course);
     }
 
@@ -140,7 +140,7 @@ public class PersonalSchedulesController extends ApiController {
     personalscheduleRepository.delete(personalschedule);
 
     Iterable<PSCourse> coursesToDelete = coursesRepository.findAllByPsId(id);
-    for(PSCourse course: coursesToDelete) {
+    for (PSCourse course : coursesToDelete) {
       coursesRepository.delete(course);
     }
 
