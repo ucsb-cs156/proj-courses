@@ -395,7 +395,12 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .enrollCd("08078")
             .psId(15L)
             .build();
-    when(coursesRepository.findByIdAndUser(eq(10L), eq(u))).thenReturn(Optional.of(c1));
+
+    ArrayList<PSCourse> coursesToDelete = new ArrayList<>();
+    coursesToDelete.add(c1);
+
+    when(coursesRepository.findAllByPsId(eq(15L))).thenReturn(coursesToDelete);
+
 
     // act
     MvcResult response =
@@ -407,21 +412,9 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     // assert
     verify(personalscheduleRepository, times(1)).findByIdAndUser(15L, u);
     verify(personalscheduleRepository, times(1)).delete(ps1);
+    verify(coursesRepository, times(1)).delete(c1);
     Map<String, Object> json = responseToJson(response);
     assertEquals("PersonalSchedule with id 15 deleted", json.get("message"));
-    
-    // act
-    MvcResult response2 =
-        mockMvc
-            .perform(delete("/api/courses/user?id=10").with(csrf()))
-            .andExpect(status().isNotFound())
-            .andReturn();
-    
-    // assert
-    verify(coursesRepository.findByIdAndUser(10L, u));
-    json = responseToJson(response2);
-    assertEquals("EntityNotFoundException", json.get("type"));
-    //assertEquals("PSCourse with id 10 not found", json.get("message"));
   }
 
   @WithMockUser(roles = {"USER"})
@@ -502,6 +495,19 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .build();
     when(personalscheduleRepository.findById(eq(16L))).thenReturn(Optional.of(ps1));
 
+    PSCourse c1 = 
+        PSCourse.builder()
+            .id(10L)
+            .user(otherUser)
+            .enrollCd("08078")
+            .psId(16L)
+            .build();
+
+    ArrayList<PSCourse> coursesToDelete = new ArrayList<>();
+    coursesToDelete.add(c1);
+
+    when(coursesRepository.findAllByPsId(eq(16L))).thenReturn(coursesToDelete);
+
     // act
     MvcResult response =
         mockMvc
@@ -512,6 +518,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     // assert
     verify(personalscheduleRepository, times(1)).findById(16L);
     verify(personalscheduleRepository, times(1)).delete(ps1);
+    verify(coursesRepository, times(1)).delete(c1);
     Map<String, Object> output = responseToJson(response);
     assertEquals("PersonalSchedule with id 16 deleted", output.get("message"));
   }
