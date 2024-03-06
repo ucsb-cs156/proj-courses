@@ -1,4 +1,5 @@
 import SectionsTableBase from "main/components/SectionsTableBase";
+import AddToScheduleModal from 'main/components/PersonalSchedules/AddToScheduleModal';
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 import {
@@ -20,6 +21,12 @@ function getFirstVal(values) {
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
+
+  const handleAddToSchedule = (section, schedule) => {
+    console.log(section, schedule);
+    // TODO: Handle the adding of the section to the selected schedule
+  };
+
   const columns = [
     {
       Header: "Quarter",
@@ -115,7 +122,7 @@ export default function SectionsTable({ sections }) {
           return (
             <div className="d-flex align-items-center gap-2">
               <span>{value}</span>
-              <button className="btn btn-success">Add</button>
+              <AddToScheduleModal section={original} onAdd={handleAddToSchedule} />
             </div>
           );
         } else {
