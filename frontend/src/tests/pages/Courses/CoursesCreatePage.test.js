@@ -136,6 +136,35 @@ describe("CoursesCreatePage tests", () => {
     expect(PSError).toBeInTheDocument();
   });
 
+  
+  test("when there's no personal schedule found, an error message is displayed", async () => {
+    const queryClient = new QueryClient();
+  
+    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
+  
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesCreatePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  
+    expect(
+      await screen.findByTestId("CourseForm-enrollCd"),
+    ).toBeInTheDocument();
+    expect(localStorage.getItem("CourseForm-psId")).toBe(null);
+  
+    const submitButton = screen.getByTestId("CourseForm-submit");
+  
+    fireEvent.click(submitButton);
+  
+    await screen.findByTestId("PSCourseCreate-Error");
+    const PSError = screen.getByTestId("PSCourseCreate-Error");
+    expect(PSError).toBeInTheDocument();
+    expect(PSError.textContent).toContain("No personal schedules found");
+  });
+
   test("sets schedule and updates localStorage when schedules are available", async () => {
     console.log("Inside Last Test");
     const queryClient = new QueryClient();
