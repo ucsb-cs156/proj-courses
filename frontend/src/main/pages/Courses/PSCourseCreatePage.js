@@ -1,6 +1,6 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CourseForm from "main/components/Courses/CourseForm";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 
@@ -50,9 +50,7 @@ export default function CoursesCreatePage() {
             <CourseForm submitAction={onSubmit} />
             <p data-testid="PSCourseCreate-Error">
               Error: No personal schedules found. Please{" "}
-              <span style={{ color: "blue", cursor: "pointer" }} onClick={() => window.location.href = "/personalschedules/create"}>
-                create a new personal schedule
-              </span>{" "}
+              <Link to="/personalschedules/create">create a new personal schedule</Link>{" "}
               first.
             </p>
           </div>
