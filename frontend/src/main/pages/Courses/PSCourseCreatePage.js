@@ -41,7 +41,7 @@ export default function CoursesCreatePage() {
     return <Navigate to="/courses/list" />;
   }
   if (mutation.isError) {
-    if (mutation.error.response.data?.message.includes("EnrollCd")== false) {
+    if (!mutation.error.response.data?.message || !mutation.error.response.data?.message.includes("EnrollCd")) {
       return (
         <BasicLayout>
           <div className="pt-2">
@@ -58,8 +58,8 @@ export default function CoursesCreatePage() {
           </div>
         </BasicLayout>
       );
-    }
-    return (
+    }else {
+      return (
       <BasicLayout>
         <div className="pt-2">
           <h1>Create New Course</h1>
@@ -71,6 +71,7 @@ export default function CoursesCreatePage() {
         </div>
       </BasicLayout>
     );
+    }
   }
 
   return (
