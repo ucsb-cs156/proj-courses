@@ -41,7 +41,7 @@ export default function CoursesCreatePage() {
     return <Navigate to="/courses/list" />;
   }
   if (mutation.isError) {
-    if (mutation.error.response.data?.message.includes("psId")) {
+    if (mutation.error.response.data?.message.includes("EnrollCd")== false) {
       return (
         <BasicLayout>
           <div className="pt-2">
