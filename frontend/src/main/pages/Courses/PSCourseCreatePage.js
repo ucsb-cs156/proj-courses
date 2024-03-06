@@ -41,34 +41,37 @@ export default function CoursesCreatePage() {
     return <Navigate to="/courses/list" />;
   }
   if (mutation.isError) {
-    if (!mutation.error.response.data?.message || !mutation.error.response.data?.message.includes("EnrollCd")) {
+    if (
+      !mutation.error.response.data?.message ||
+      !mutation.error.response.data?.message.includes("EnrollCd")
+    ) {
       return (
         <BasicLayout>
           <div className="pt-2">
             <h1>Create New Course</h1>
-  
             <CourseForm submitAction={onSubmit} />
             <p data-testid="PSCourseCreate-Error">
               Error: No personal schedules found. Please{" "}
-              <Link to="/personalschedules/create">create a new personal schedule</Link>{" "}
+              <Link to="/personalschedules/create">
+                create a new personal schedule
+              </Link>{" "}
               first.
             </p>
           </div>
         </BasicLayout>
       );
-    }else {
+    } else {
       return (
-      <BasicLayout>
-        <div className="pt-2">
-          <h1>Create New Course</h1>
-
-          <CourseForm submitAction={onSubmit} />
-          <p data-testid="PSCourseCreate-Error">
-            Error: {mutation.error.response.data?.message}
-          </p>
-        </div>
-      </BasicLayout>
-    );
+        <BasicLayout>
+          <div className="pt-2">
+            <h1>Create New Course</h1>
+            <CourseForm submitAction={onSubmit} />
+            <p data-testid="PSCourseCreate-Error">
+              Error: {mutation.error.response.data?.message}
+            </p>
+          </div>
+        </BasicLayout>
+      );
     }
   }
 
