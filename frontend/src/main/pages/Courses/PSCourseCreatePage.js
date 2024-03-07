@@ -41,9 +41,11 @@ export default function CoursesCreatePage() {
     return <Navigate to="/courses/list" />;
   }
   if (mutation.isError) {
-    if (
-      !mutation.error.response.data?.message ||
-      !mutation.error.response.data?.message.includes("EnrollCd")
+    console.log(mutation.error.response.data);
+    if (mutation.error.response.data?.status && (
+      mutation.error.response.data?.status == 400 || 
+      mutation.error.response.data?.status == 404 ||
+      mutation.error.response.data?.message.includes("PersonalSchedule with id"))
     ) {
       return (
         <BasicLayout>
