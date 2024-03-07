@@ -24,7 +24,7 @@ describe("UpdateCoursesByQuarterRangeJobForm tests", () => {
         <Router>
           <UpdateCoursesByQuarterRangeJobForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByText(/Update Courses/)).toBeInTheDocument();
@@ -43,22 +43,22 @@ describe("UpdateCoursesByQuarterRangeJobForm tests", () => {
         <Router>
           <UpdateCoursesByQuarterRangeJobForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // Make sure the first and last options
     expect(
-      await screen.findByTestId(/BasicSearch.StartQuarter-option-0/)
+      await screen.findByTestId(/BasicSearch.StartQuarter-option-0/),
     ).toHaveValue("20211");
     expect(
-      await screen.findByTestId(/BasicSearch.StartQuarter-option-3/)
+      await screen.findByTestId(/BasicSearch.StartQuarter-option-3/),
     ).toHaveValue("20214");
 
     expect(
-      await screen.findByTestId(/BasicSearch.EndQuarter-option-0/)
+      await screen.findByTestId(/BasicSearch.EndQuarter-option-0/),
     ).toHaveValue("20211");
     expect(
-      await screen.findByTestId(/BasicSearch.EndQuarter-option-3/)
+      await screen.findByTestId(/BasicSearch.EndQuarter-option-3/),
     ).toHaveValue("20214");
   });
 });
