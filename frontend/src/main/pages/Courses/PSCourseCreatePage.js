@@ -42,14 +42,15 @@ export default function CoursesCreatePage() {
   }
   if (mutation.isError) {
     console.log(mutation.error.response.data);
-    if (mutation.error.response.data?.status === 400) {
+    if (mutation.error.response.data?.status === 400 ||
+        mutation.error.response.data?.message.includes("PersonalSchedule with id")) {
       return (
         <BasicLayout>
           <div className="pt-2">
             <h1>Create New Course</h1>
             <CourseForm submitAction={onSubmit} />
             <p data-testid="PSCourseCreate-Error">
-              Error: No personal schedules found. Please{" "}
+              Error: Personal schedule not found. Please{" "}
               <Link to="/personalschedules/create">
                 create a new personal schedule
               </Link>{" "}
