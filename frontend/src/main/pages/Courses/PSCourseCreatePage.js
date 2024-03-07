@@ -43,7 +43,7 @@ export default function CoursesCreatePage() {
   if (mutation.isError) {
     console.log(mutation.error.response.data);
     if (
-      mutation.error.response.data?.status === 400 ||
+      mutation.error.response.status === 400 ||
       mutation.error.response.data?.message.includes("PersonalSchedule with id")
     ) {
       return (
