@@ -39,14 +39,8 @@ export default function CourseDetailsIndexPage() {
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
 
         {moreDetails && moreDetails.description && (
-          <h5>
-            Course Description: 
-            {moreDetails.descrpition}
-          </h5>
+            <CourseDescriptionTable course={{ description: moreDetails.description }} />
         )}
-
-        {moreDetails && <CourseDescriptionTable desc={[moreDetails]} />}
-
       </div>
     </BasicLayout>
   );
