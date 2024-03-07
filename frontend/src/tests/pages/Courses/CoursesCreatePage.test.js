@@ -133,6 +133,35 @@ describe("CoursesCreatePage tests", () => {
     });
   });
 
+  test("404", async () => {
+    const queryClient = new QueryClient();
+
+    axiosMock.onPost("/api/courses/post").reply(404, {
+      message: "PersonalSchedule with id 3000 not found",
+      type: "EntityNotFoundException"
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesCreatePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const enrollCdField = await screen.findByTestId("CourseForm-enrollCd");
+    const submitButton = screen.getByTestId("CourseForm-submit");
+
+    fireEvent.change(enrollCdField, { target: { value: "11111" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("PSCourseCreate-Error")).toHaveTextContent(
+        "Error: No personal schedules found. Please create a new personal schedule first.",
+      );
+    });
+  });
+
   test("when you input incorrect information, we get an error", async () => {
     const queryClient = new QueryClient();
 
