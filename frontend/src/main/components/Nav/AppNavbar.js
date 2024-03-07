@@ -60,7 +60,7 @@ export default function AppNavbar({
                   href="/personalschedules/list"
                   data-testid="appnavbar-personalschedules-list"
                 >
-                  Personal Schedules{" "}
+                  Personal Schedules
                 </Nav.Link>
               )}
               {hasRole(currentUser, "ROLE_USER") && (
