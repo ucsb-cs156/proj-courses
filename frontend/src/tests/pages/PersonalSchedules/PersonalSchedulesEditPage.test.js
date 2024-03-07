@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
 
-//import { coursesFixtures } from "fixtures/pscourseFixtures";
+import { coursesFixtures } from "fixtures/pscourseFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
@@ -27,7 +27,7 @@ jest.mock('react-router-dom', () => {
         __esModule: true,
         ...originalModule,
         useParams: () => ({
-            id: 1,
+            id: 17,
         }),
         Navigate: (x) => { mockNavigate(x); return null; },
     };
@@ -44,7 +44,7 @@ describe("PersonalSchedulesEditPage tests", () => {
           axiosMock.resetHistory();
           axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
           axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-          axiosMock.onGet("/api/personalschedules", { params: { id: 1 } }).timeout();
+          axiosMock.onGet("/api/personalschedules", { params: { id: 17 } }).timeout();
       });
 
       const queryClient = new QueryClient();
@@ -74,17 +74,45 @@ describe("PersonalSchedulesEditPage tests", () => {
           axiosMock.resetHistory();
           axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
           axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-          axiosMock.onGet("/api/personalschedules", { params: { id: 1 } }).reply(200, {
-              id: 1,
-              name: "TestName",
-              description: "TestDescription",
-              quarter: "W08"
+          axiosMock.onGet("/api/personalschedules", { params: { id: 17 } }).reply(200, {
+              id: 17,
+              user: {
+                id: 1,
+                email: "phtcon@ucsb.edu",
+                googleSub: "115856948234298493496",
+                pictureUrl:
+                  "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+                fullName: "Phill Conrad",
+                givenName: "Phill",
+                familyName: "Conrad",
+                emailVerified: true,
+                locale: "en",
+                hostedDomain: "ucsb.edu",
+                admin: true,
+              },
+              description: "My Winter Courses",
+              quarter: "20221",
+              name: "CS156",
           });
           axiosMock.onPut('/api/personalschedules').reply(200, {
+            id: 17,
+            user: {
               id: 1,
-              name: "TestName6",
-              description: "TestDescription6",
-              quarter: "W08",
+              email: "phtcon@ucsb.edu",
+              googleSub: "115856948234298493496",
+              pictureUrl:
+                "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+              fullName: "Phill Conrad",
+              givenName: "Phill",
+              familyName: "Conrad",
+              emailVerified: true,
+              locale: "en",
+              hostedDomain: "ucsb.edu",
+              admin: true,
+            },
+            description: "Winter Course Plan",
+            quarter: "20221",
+            name: "CS154",
           });
       });
 
@@ -123,78 +151,116 @@ describe("PersonalSchedulesEditPage tests", () => {
           const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
           expect(idField).toBeInTheDocument();
-          expect(idField).toHaveValue("1");
+          expect(idField).toHaveValue("17");
+
           expect(nameField).toBeInTheDocument();
-          expect(nameField).toHaveValue("TestName");
+          expect(nameField).toHaveValue("CS156");
+
           expect(descriptionField).toBeInTheDocument();
-          expect(descriptionField).toHaveValue("TestDescription");
+          expect(descriptionField).toHaveValue("My Winter Courses");
+
           expect(quarterField).toBeInTheDocument();
 
+          //expect(quarterField).toHaveValue("20221");
           expect(submitButton).toHaveTextContent("Update");
 
-          fireEvent.change(nameField, { target: { value: "TestName6" } });
-          fireEvent.change(descriptionField, { target: { value: "TestDescription6" } });
+          fireEvent.change(nameField, { target: { value: "CS154" } });
+          fireEvent.change(descriptionField, { target: { value: "Winter Course Plan" } });
           fireEvent.click(submitButton);
 
           await waitFor(() => expect(mockToast).toBeCalled());
-          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 1 name: TestName6");
+          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 17 name: CS154");
 
-          expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
+          expect(mockNavigate).toBeCalledWith({ to: "/personalschedules/list" });
 
           expect(axiosMock.history.put.length).toBe(1); // times called
-          expect(axiosMock.history.put[0].params).toEqual({ id : 1 });
+          expect(axiosMock.history.put[0].params).toEqual({ id : 17 });
           expect(axiosMock.history.put[0].data).toBe(JSON.stringify({
-              id: 1,
-              name: "TestName6",
-              description: "TestDescription6",
-              quarter: "W08"
+            user: {
+                id: 1,
+                email: "phtcon@ucsb.edu",
+                googleSub: "115856948234298493496",
+                pictureUrl:
+                  "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+                fullName: "Phill Conrad",
+                givenName: "Phill",
+                familyName: "Conrad",
+                emailVerified: true,
+                locale: "en",
+                hostedDomain: "ucsb.edu",
+                admin: true,
+              },
+              name: "CS154",
+              description: "Winter Course Plan",
+              quarter: "20221",
           })); // posted object
 
 
       });
 
-      test("Changes when you click Update", async () => {
-          render(
-              <QueryClientProvider client={queryClient}>
-                  <MemoryRouter>
-                      <PersonalSchedulesEditPage />
-                  </MemoryRouter>
-              </QueryClientProvider>
-          );
-
-          await screen.findByTestId("PersonalScheduleForm-id");
-
-          const idField = screen.getByTestId("PersonalScheduleForm-id");
-          const nameField = screen.getByTestId("PersonalScheduleForm-name");
-          const descriptionField = screen.getByTestId(
-            "PersonalScheduleForm-description",
-          );
-         // const quarterField = document.querySelector(
-           // "#PersonalScheduleForm-quarter",
-          //);
-          const quarterField = screen.getByTestId("PersonalScheduleForm-quarter");
-
-          const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
-
-          expect(idField).toBeInTheDocument();
-          expect(idField).toHaveValue("1");
-          expect(nameField).toBeInTheDocument();
-          expect(nameField).toHaveValue("TestName");
-          expect(descriptionField).toBeInTheDocument();
-          expect(descriptionField).toHaveValue("TestDescription");
-          expect(quarterField).toBeInTheDocument();
-
-          fireEvent.change(nameField, { target: { value: "TestName6" } });
-          fireEvent.change(descriptionField, { target: { value: "TestDescription6" } });
-
-          fireEvent.click(submitButton);
-
-          await waitFor(() => expect(mockToast).toBeCalled());
-          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 1 name: TestName6");
-          expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
-          }); // posted object
-
+      test("renders without crashing for user", () => {
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/courses/user/all").reply(200, []);
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <PersonalSchedulesEditPage />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
       });
 
+      test("renders without crashing for admin", () => {
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/courses/admin/all").reply(200, []);
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <PersonalSchedulesEditPage />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
+      });
+      const testId = "CourseTable";
+      test("renders two courses without crashing for user", async () => {
+        const queryClient = new QueryClient();
+        axiosMock
+          .onGet("/api/courses/user/psid/all?psId=1")
+          .reply(200, coursesFixtures.twoCourses);
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <PersonalSchedulesEditPage />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(`${testId}-cell-row-0-col-id`),
+          ).toHaveTextContent("25");
+        });
+        expect(
+          screen.getByTestId(`${testId}-cell-row-1-col-id`),
+        ).toHaveTextContent("26");
+      });
+  
+      test("cannot render course with different psid", async () => {
+        const queryClient = new QueryClient();
+        axiosMock
+          .onGet("/api/courses/user/psid/all?psId=13")
+          .reply(200, coursesFixtures.oneCourse);
+  
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <PersonalSchedulesEditPage />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
 
+        expect(
+          screen.queryByTestId(`${testId}-cell-row-0-col-id`),
+        ).not.toBeInTheDocument();
+      });
+    });
   });

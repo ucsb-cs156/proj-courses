@@ -5,11 +5,9 @@ import { Navigate } from "react-router-dom";
 import CourseTable from "main/components/Courses/CourseTable";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
-import { useCurrentUser } from "main/utils/currentUser";
 
-export default function PersonalSchedulesEditPage() {
+export default function PersonalSchedulesEditPage(storybook = false) {
   let { id } = useParams();
-  const currentUser = useCurrentUser();
 
   const { data: personalSchedule, _error, _status } =
     useBackend(
@@ -23,18 +21,6 @@ export default function PersonalSchedulesEditPage() {
         },
       },
     );
-
-  const { data: courses, _PSerror, _PSstatus } = 
-    useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/courses/user/psId/all?psId=${id}"],
-    {
-      // Stryker disable next-line StringLiteral : GET is default, so replacing with "" is an equivalent mutation
-      method: "GET",
-      url: "/api/courses/user/psId/all?psId=${id}",
-    },
-    [],
-  );
   
   const objectToAxiosParams = (personalSchedule) => ({
     url: "/api/personalschedules",
@@ -43,7 +29,7 @@ export default function PersonalSchedulesEditPage() {
       id: personalSchedule.id,
     },
     data: {
-      id: personalSchedule.id,
+      user: personalSchedule.user,
       name: personalSchedule.name,
       description: personalSchedule.description,
       quarter: personalSchedule.quarter,
@@ -67,34 +53,30 @@ export default function PersonalSchedulesEditPage() {
   const { isSuccess } = mutation;
 
   const onSubmit = async (data) => {
-    mutation.mutate(data);
+    const quarter = {
+      quarter: localStorage["PersonalScheduleForm-quarter"],
+    };
+    console.log(quarter);
+    const data2 = Object.assign(data, quarter);
+    console.log(data2);
+    mutation.mutate(data2);
   };
 
-//  const onSubmit = async (data) => {
-    //const quarter = {
-      //quarter: localStorage["PersonalScheduleForm-quarter"],
-    //};
-    //console.log(quarter);
-    //const dataFinal = Object.assign(data, quarter);
-    //console.log(dataFinal);
-    //mutation.mutate(dataFinal);
-  //};
-
-  if (isSuccess) {
+  if (isSuccess && !storybook) {
     return <Navigate to="/personalschedules/list" />;
   }
 
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Edit Personal Schedule</h1>
-
-        personalSchedule && <PersonalScheduleForm initialPersonalSchedule={personalSchedule} submitAction={onSubmit} buttonLabel="Update"/>
-
-        <p className="py-5">
-          <h1>Courses</h1>
-          <CourseTable courses={courses} currentUser={currentUser} />
-        </p>
+      <h1>Edit Personal Schedule</h1>
+        {personalSchedule && (
+          <PersonalScheduleForm
+            submitAction={onSubmit}
+            buttonLabel={"Update"}
+            initialPersonalSchedule={personalSchedule}
+          />
+        )}
       </div>
     </BasicLayout>
   );
