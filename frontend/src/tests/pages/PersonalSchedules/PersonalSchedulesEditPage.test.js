@@ -161,7 +161,7 @@ describe("PersonalSchedulesEditPage tests", () => {
 
           expect(quarterField).toBeInTheDocument();
 
-          //expect(quarterField).toHaveValue("20221");
+          expect(quarterField).toHaveValue("20221");
           expect(submitButton).toHaveTextContent("Update");
 
           fireEvent.change(nameField, { target: { value: "CS154" } });

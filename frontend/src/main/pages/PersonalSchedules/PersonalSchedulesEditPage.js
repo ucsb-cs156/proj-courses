@@ -2,7 +2,6 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useParams } from "react-router-dom";
 import PersonalScheduleForm from "main/components/PersonalSchedules/PersonalScheduleForm";
 import { Navigate } from "react-router-dom";
-import CourseTable from "main/components/Courses/CourseTable";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 
@@ -57,9 +56,9 @@ export default function PersonalSchedulesEditPage(storybook = false) {
       quarter: localStorage["PersonalScheduleForm-quarter"],
     };
     console.log(quarter);
-    const data2 = Object.assign(data, quarter);
-    console.log(data2);
-    mutation.mutate(data2);
+    const dataFinal = Object.assign(data, quarter);
+    console.log(dataFinal);
+    mutation.mutate(dataFinal);
   };
 
   if (isSuccess && !storybook) {
