@@ -19,25 +19,25 @@ export default function PersonalSchedulesEditPage() {
         method: "GET",
         url: `/api/personalschedules`,
         params: {
-          id
-        }
-      }
+          id,
+        },
+      },
     );
 
   const { data: courses, _PSerror, _PSstatus } = 
     useBackend(
     // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/courses/user/all"],
+    ["/api/courses/user/psId/all?psId=${id}"],
     {
       // Stryker disable next-line StringLiteral : GET is default, so replacing with "" is an equivalent mutation
       method: "GET",
-      url: "/api/courses/user/all",
+      url: "/api/courses/user/psId/all?psId=${id}",
     },
     [],
   );
   
   const objectToAxiosParams = (personalSchedule) => ({
-    url: "/api/personalschedules/put",
+    url: "/api/personalschedules",
     method: "PUT",
     params: {
       id: personalSchedule.id,
@@ -52,13 +52,9 @@ export default function PersonalSchedulesEditPage() {
 
   const onSuccess = (personalSchedule) => {
     toast(
-      `PersonalSchedule Updated - id: ${personalSchedule.id} name: ${personalSchedule.name} description: ${personalSchedule.description} quarter: ${personalSchedule.quarter}`,
+      `PersonalSchedule Updated - id: ${personalSchedule.id} name: ${personalSchedule.name}`,
     );
     console.log(personalSchedule.quarter);
-  };
-
-  const onError = (error) => {
-    toast(`Error: ${error.response.data.message}`);
   };
 
   const mutation = useBackendMutation(
@@ -71,14 +67,18 @@ export default function PersonalSchedulesEditPage() {
   const { isSuccess } = mutation;
 
   const onSubmit = async (data) => {
-    const quarter = {
-      quarter: localStorage["PersonalScheduleForm-quarter"],
-    };
-    console.log(quarter);
-    const dataFinal = Object.assign(data, quarter);
-    console.log(dataFinal);
-    mutation.mutate(dataFinal);
+    mutation.mutate(data);
   };
+
+//  const onSubmit = async (data) => {
+    //const quarter = {
+      //quarter: localStorage["PersonalScheduleForm-quarter"],
+    //};
+    //console.log(quarter);
+    //const dataFinal = Object.assign(data, quarter);
+    //console.log(dataFinal);
+    //mutation.mutate(dataFinal);
+  //};
 
   if (isSuccess) {
     return <Navigate to="/personalschedules/list" />;

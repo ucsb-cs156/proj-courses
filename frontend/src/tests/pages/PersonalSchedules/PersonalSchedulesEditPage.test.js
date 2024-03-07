@@ -27,9 +27,9 @@ jest.mock('react-router-dom', () => {
         __esModule: true,
         ...originalModule,
         useParams: () => ({
-            id: 1
+            id: 1,
         }),
-        Navigate: (x) => { mockNavigate(x); return null; }
+        Navigate: (x) => { mockNavigate(x); return null; },
     };
 });
 
@@ -60,7 +60,7 @@ describe("PersonalSchedulesEditPage tests", () => {
               </QueryClientProvider>
           );
           await screen.findByText("Edit Personal Schedule");
-          expect(screen.queryByTestId("PersonalSchedule-id")).not.toBeInTheDocument();
+          expect(screen.queryByTestId("PersonalSchedule-name")).not.toBeInTheDocument();
           restoreConsole();
       });
   });
@@ -81,15 +81,16 @@ describe("PersonalSchedulesEditPage tests", () => {
               quarter: "W08"
           });
           axiosMock.onPut('/api/personalschedules').reply(200, {
-              id: "6",
+              id: 1,
               name: "TestName6",
               description: "TestDescription6",
-              quarter: "S22"
+              quarter: "W08",
           });
       });
 
       const queryClient = new QueryClient();
       test("renders without crashing", () => {
+        axiosMock.onGet("/api/personalschedules").reply(200, []);
           render(
               <QueryClientProvider client={queryClient}>
                   <MemoryRouter>
@@ -100,7 +101,6 @@ describe("PersonalSchedulesEditPage tests", () => {
       });
 
       test("Is populated with the data provided", async () => {
-
           render(
               <QueryClientProvider client={queryClient}>
                   <MemoryRouter>
@@ -109,16 +109,17 @@ describe("PersonalSchedulesEditPage tests", () => {
               </QueryClientProvider>
           );
 
-          await screen.findByTestId("PersonalScheduleForm-name");
+          await screen.findByTestId("PersonalScheduleForm-id");
 
           const idField = screen.getByTestId("PersonalScheduleForm-id");
           const nameField = screen.getByTestId("PersonalScheduleForm-name");
           const descriptionField = screen.getByTestId(
             "PersonalScheduleForm-description",
           );
-          const quarterField = document.querySelector(
-            "#PersonalScheduleForm-quarter",
-          );
+         // const quarterField = document.querySelector(
+           // "#PersonalScheduleForm-quarter",
+          //);
+          const quarterField = screen.getByTestId("PersonalScheduleForm-quarter");
           const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
           expect(idField).toBeInTheDocument();
@@ -131,31 +132,28 @@ describe("PersonalSchedulesEditPage tests", () => {
 
           expect(submitButton).toHaveTextContent("Update");
 
-          fireEvent.change(idField, { target: { value: 6 } });
           fireEvent.change(nameField, { target: { value: "TestName6" } });
           fireEvent.change(descriptionField, { target: { value: "TestDescription6" } });
-          fireEvent.change(quarterField, { target: { value: "S22" } });
           fireEvent.click(submitButton);
 
           await waitFor(() => expect(mockToast).toBeCalled());
-          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 6 name: TestName6 description: TestDescription6 quarter: S22 ");
+          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 1 name: TestName6");
 
           expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
 
           expect(axiosMock.history.put.length).toBe(1); // times called
-          expect(axiosMock.history.put[0].params).toEqual({ id : 6 });
+          expect(axiosMock.history.put[0].params).toEqual({ id : 1 });
           expect(axiosMock.history.put[0].data).toBe(JSON.stringify({
-              id: 6,
+              id: 1,
               name: "TestName6",
               description: "TestDescription6",
-              quarter: "S22"
+              quarter: "W08"
           })); // posted object
 
 
       });
 
       test("Changes when you click Update", async () => {
-
           render(
               <QueryClientProvider client={queryClient}>
                   <MemoryRouter>
@@ -164,16 +162,18 @@ describe("PersonalSchedulesEditPage tests", () => {
               </QueryClientProvider>
           );
 
-          await screen.findByTestId("PersonalScheduleForm-name");
+          await screen.findByTestId("PersonalScheduleForm-id");
 
           const idField = screen.getByTestId("PersonalScheduleForm-id");
           const nameField = screen.getByTestId("PersonalScheduleForm-name");
           const descriptionField = screen.getByTestId(
             "PersonalScheduleForm-description",
           );
-          const quarterField = document.querySelector(
-            "#PersonalScheduleForm-quarter",
-          );
+         // const quarterField = document.querySelector(
+           // "#PersonalScheduleForm-quarter",
+          //);
+          const quarterField = screen.getByTestId("PersonalScheduleForm-quarter");
+
           const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
           expect(idField).toBeInTheDocument();
@@ -184,16 +184,14 @@ describe("PersonalSchedulesEditPage tests", () => {
           expect(descriptionField).toHaveValue("TestDescription");
           expect(quarterField).toBeInTheDocument();
 
-          fireEvent.change(idField, { target: { value: 6 } });
           fireEvent.change(nameField, { target: { value: "TestName6" } });
           fireEvent.change(descriptionField, { target: { value: "TestDescription6" } });
-          fireEvent.change(quarterField, { target: { value: "S22" } });
 
           fireEvent.click(submitButton);
 
           await waitFor(() => expect(mockToast).toBeCalled());
-          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 6 name: TestName6 description: TestDescription6 quarter: S22 ");
-          expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules" });
+          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 1 name: TestName6");
+          expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
           }); // posted object
 
       });
