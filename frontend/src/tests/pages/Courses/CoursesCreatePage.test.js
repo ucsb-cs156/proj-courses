@@ -107,33 +107,6 @@ describe("CoursesCreatePage tests", () => {
     expect(mockNavigate).toBeCalledWith({ to: "/courses/list" });
   });
 
-  /*
-  test("when there's no personal schedule found, an error message is displayed", async () => {
-    const queryClient = new QueryClient();
-
-    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CoursesCreatePage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    const enrollCdField = await screen.findByTestId("CourseForm-enrollCd");
-    const submitButton = screen.getByTestId("CourseForm-submit");
-
-    fireEvent.change(enrollCdField, { target: { value: "11111" } });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(screen.getByTestId("PSCourseCreate-Error")).toHaveTextContent(
-        "Error: No personal schedules found. Please create a new personal schedule first.",
-      );
-    });
-  });
-*/
   test("404", async () => {
     const queryClient = new QueryClient();
 
