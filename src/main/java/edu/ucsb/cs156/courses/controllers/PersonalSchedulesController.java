@@ -1,9 +1,11 @@
 package edu.ucsb.cs156.courses.controllers;
 
+import edu.ucsb.cs156.courses.entities.PSCourse;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.models.CurrentUser;
+import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonalSchedulesController extends ApiController {
 
   @Autowired PersonalScheduleRepository personalscheduleRepository;
+  @Autowired PSCourseRepository coursesRepository;
 
   @Operation(summary = "List all personal schedules")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -117,6 +120,11 @@ public class PersonalSchedulesController extends ApiController {
 
     personalscheduleRepository.delete(personalschedule);
 
+    Iterable<PSCourse> coursesToDelete = coursesRepository.findAllByPsId(id);
+    for (PSCourse course : coursesToDelete) {
+      coursesRepository.delete(course);
+    }
+
     return genericMessage("PersonalSchedule with id %s deleted".formatted(id));
   }
 
@@ -130,6 +138,11 @@ public class PersonalSchedulesController extends ApiController {
             .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
 
     personalscheduleRepository.delete(personalschedule);
+
+    Iterable<PSCourse> coursesToDelete = coursesRepository.findAllByPsId(id);
+    for (PSCourse course : coursesToDelete) {
+      coursesRepository.delete(course);
+    }
 
     return genericMessage("PersonalSchedule with id %s deleted".formatted(id));
   }
