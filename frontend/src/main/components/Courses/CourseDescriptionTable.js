@@ -1,7 +1,7 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
 
-export default function CourseDescriptionTable({ desc }) {
+export default function CourseDescriptionTable({ course }) {
   const columns = [
     {
       Header: "Description",
@@ -9,7 +9,5 @@ export default function CourseDescriptionTable({ desc }) {
     }
   ];
 
-  const testid = "CourseDescriptionTable";
-
-  return <OurTable data={desc} columns={columns} testid={testid} />;
+  return <OurTable data={course} columns={columns} testid={"BasicDescriptionTable"} />;
 }
