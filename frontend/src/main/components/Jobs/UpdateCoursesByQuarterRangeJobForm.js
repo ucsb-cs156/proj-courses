@@ -20,10 +20,13 @@ const UpdateCoursesByQuarterRangeJobForm = ({ callback }) => {
   const localStartQuarter = localStorage.getItem("BasicSearch.StartQuarter");
   const localEndQuarter = localStorage.getItem("BasicSearch.EndQuarter");
 
+  const [startQuarter, setStartQuarter] = useState(
+    localStartQuarter || quarters[0].yyyyq
+  );
+  const [endQuarter, setEndQuarter] = useState(
+    localEndQuarter || quarters[0].yyyyq
+  );
 
-  const [startQuarter, setStartQuarter] = useState(localStartQuarter || quarters[0].yyyyq,);
-  const [endQuarter, setEndQuarter] = useState(localEndQuarter || quarters[0].yyyyq,);
-  
   const handleSubmit = (event) => {
     event.preventDefault();
     callback({ startQuarter, endQuarter });
