@@ -41,7 +41,6 @@ export default function CoursesCreatePage() {
     return <Navigate to="/courses/list" />;
   }
   if (mutation.isError) {
-    console.log(mutation.error.response.data);
     if (mutation.error.response.data?.status == 400) {
       return (
         <BasicLayout>
