@@ -198,11 +198,13 @@ describe("AppNavbar tests", () => {
 
     expect(await screen.findByText("Personal Schedules")).toBeInTheDocument();
     expect(
-      screen.getByTestId("appnavbar-personalschedules-list"),
+      await screen.findByTestId("appnavbar-personalschedules-list"),
     ).toBeInTheDocument();
 
     expect(await screen.findByText("Courses")).toBeInTheDocument();
-    expect(screen.getByTestId("appnavbar-courses-list")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("appnavbar-courses-list"),
+    ).toBeInTheDocument();
   });
 
   test("renders the Course Description menu correctly", async () => {
