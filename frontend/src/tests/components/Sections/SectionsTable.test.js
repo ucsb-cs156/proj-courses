@@ -26,6 +26,21 @@ jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: jest.fn(),
 }));
 
+describe('handleAddToSchedule', () => {
+  it('calls mutate with correct data', () => {
+    const mockMutation = { mutate: jest.fn() };
+    const mockSection = { section: { enrollCode: '123' } };
+    const mockSchedule = '456';
+
+    handleAddToSchedule(mockSection, mockSchedule, mockMutation);
+
+    expect(mockMutation.mutate).toHaveBeenCalledWith({
+      enrollCd: '123',
+      psId: '456',
+    });
+  });
+});
+
 describe('objectToAxiosParams', () => {
   it('should return the correct axios parameters', () => {
     const data = {
