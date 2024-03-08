@@ -2,7 +2,9 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { fiveSections, gigaSections } from "fixtures/sectionFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
+import { toast } from "react-toastify";
 import SectionsTable from "main/components/Sections/SectionsTable";
+import { useBackendMutation } from "main/utils/useBackend";
 
 const mockedNavigate = jest.fn();
 
@@ -11,8 +13,73 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedNavigate,
 }));
 
+jest.mock("react-toastify", () => ({
+  toast: jest.fn(),
+}));
+
+jest.mock("main/utils/useBackend", () => ({
+  useBackendMutation: jest.fn(),
+}));
+
 describe("Section tests", () => {
   const queryClient = new QueryClient();
+
+  // test("calls objectToAxiosParams with correct parameters and returns expected result", () => {
+  //   const mockMutate = jest.fn();
+  //   const mockMutation = { mutate: mockMutate };
+
+  //   useBackendMutation.mockReturnValue(mockMutation);
+
+  //   render(
+  //     <QueryClientProvider client={queryClient}>
+  //       <SectionsTable sections={fiveSections} />
+  //     </QueryClientProvider>,
+  //   );
+
+  //   // Call the handleAddToSchedule function
+  //   const handleAddToSchedule = useBackendMutation.mock.calls[0][2];
+  //   const mockSection = { section: { enrollCode: "00885" } };
+  //   const mockSchedule = "1";
+  //   handleAddToSchedule(mockSection, mockSchedule);
+
+  //   // Call the objectToAxiosParams function
+  //   const objectToAxiosParams = useBackendMutation.mock.calls[0][0];
+  //   const mockData = { enrollCd: "00885", psId: "1" };
+  //   const result = objectToAxiosParams(mockData);
+
+  //   // Verify that objectToAxiosParams was called with the correct parameters and returned the expected result
+  //   expect(result).toEqual({
+  //     url: "/api/courses/post",
+  //     method: "POST",
+  //     params: {
+  //       enrollCd: "00885",
+  //       psId: "1",
+  //     },
+  //   });
+  // });
+
+  test("calls onSuccess when mutation is successful and calls toast with correct parameters", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+  
+    useBackendMutation.mockReturnValue(mockMutation);
+  
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  
+    // Call the onSuccess function
+    const onSuccess = useBackendMutation.mock.calls[0][1].onSuccess;
+    const mockResponse = [{ id: 1, enrollCd: "1234" }];
+    onSuccess(mockResponse);
+  
+    // Verify that toast was called with the correct parameters
+    expect(toast).toHaveBeenCalledWith("New course Created - id: 1 enrollCd: 1234");
+  });
 
   test("renders without crashing for empty table", () => {
     render(
