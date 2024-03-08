@@ -10,8 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import edu.ucsb.cs156.courses.ControllerTestCase;
+import edu.ucsb.cs156.courses.entities.PSCourse;
 import edu.ucsb.cs156.courses.entities.PersonalSchedule;
 import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.repositories.PSCourseRepository;
 import edu.ucsb.cs156.courses.repositories.PersonalScheduleRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
@@ -34,6 +36,8 @@ import org.springframework.test.web.servlet.MvcResult;
 public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
   @MockBean PersonalScheduleRepository personalscheduleRepository;
+
+  @MockBean PSCourseRepository coursesRepository;
 
   @MockBean UserRepository userRepository;
 
@@ -384,6 +388,13 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .build();
     when(personalscheduleRepository.findByIdAndUser(eq(15L), eq(u))).thenReturn(Optional.of(ps1));
 
+    PSCourse c1 = PSCourse.builder().id(10L).user(u).enrollCd("08078").psId(15L).build();
+
+    ArrayList<PSCourse> coursesToDelete = new ArrayList<>();
+    coursesToDelete.add(c1);
+
+    when(coursesRepository.findAllByPsId(eq(15L))).thenReturn(coursesToDelete);
+
     // act
     MvcResult response =
         mockMvc
@@ -394,6 +405,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     // assert
     verify(personalscheduleRepository, times(1)).findByIdAndUser(15L, u);
     verify(personalscheduleRepository, times(1)).delete(ps1);
+    verify(coursesRepository, times(1)).delete(c1);
     Map<String, Object> json = responseToJson(response);
     assertEquals("PersonalSchedule with id 15 deleted", json.get("message"));
   }
@@ -476,6 +488,13 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .build();
     when(personalscheduleRepository.findById(eq(16L))).thenReturn(Optional.of(ps1));
 
+    PSCourse c1 = PSCourse.builder().id(10L).user(otherUser).enrollCd("08078").psId(16L).build();
+
+    ArrayList<PSCourse> coursesToDelete = new ArrayList<>();
+    coursesToDelete.add(c1);
+
+    when(coursesRepository.findAllByPsId(eq(16L))).thenReturn(coursesToDelete);
+
     // act
     MvcResult response =
         mockMvc
@@ -486,6 +505,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     // assert
     verify(personalscheduleRepository, times(1)).findById(16L);
     verify(personalscheduleRepository, times(1)).delete(ps1);
+    verify(coursesRepository, times(1)).delete(c1);
     Map<String, Object> output = responseToJson(response);
     assertEquals("PersonalSchedule with id 16 deleted", output.get("message"));
   }
