@@ -28,14 +28,12 @@ const PersonalScheduleSelector = ({
   );
 
   useEffect(() => {
-    if (schedules) {
       if (schedules.length > 0) {
         setSchedule(schedules[0].id);
         setHasSchedules(true);
       } else {
         setHasSchedules(false);
       }
-    }
   }, [schedules, setSchedule, setHasSchedules]);
 
   const handleScheduleOnChange = (event) => {
