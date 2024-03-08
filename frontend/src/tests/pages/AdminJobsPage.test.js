@@ -178,4 +178,47 @@ describe("AdminJobsPage tests", () => {
       "/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20211",
     );
   });
+
+  test("user can submit the update course data by quarter range job", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Update Courses Database by quarter range"),
+    ).toBeInTheDocument();
+
+    const updateCoursesButton = screen.getByText(
+      "Update Courses Database by quarter range",
+    );
+    expect(updateCoursesButton).toBeInTheDocument();
+    updateCoursesButton.click();
+
+    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+
+    const submitButton = screen.getByTestId("updateCoursesByQuarterRange");
+
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20212");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20213");
+    expect(submitButton).toBeInTheDocument();
+
+    submitButton.click();
+
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+    expect(axiosMock.history.post[0].url).toBe(
+      "/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=20212&end_quarterYYYYQ=20213",
+    );
+  });
 });
