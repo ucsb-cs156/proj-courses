@@ -21,20 +21,20 @@ function getFirstVal(values) {
   return values[0];
 }
 
+export const objectToAxiosParams = (data) => {
+  return {
+    url: "/api/courses/post",
+    method: "POST",
+    params: {
+      enrollCd: data.enrollCd.toString(),
+      psId: data.psId.toString(),
+    },
+  };
+};
+
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
-
-  const objectToAxiosParams = (data) => {
-    return {
-      url: "/api/courses/post",
-      method: "POST",
-      params: {
-        enrollCd: data.enrollCd.toString(),
-        psId: data.psId.toString(),
-      },
-    };
-  };
   
   const onSuccess = (response) => {
     toast(
