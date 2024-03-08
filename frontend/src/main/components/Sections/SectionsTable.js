@@ -25,75 +25,52 @@ export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
 
-  // const objectToAxiosParams = (sectionCode, schedule) => {
-  //   // Check if sectionCode or schedule is undefined and handle it accordingly
-  //   if (typeof sectionCode === 'undefined' || typeof schedule === 'undefined') {
-  //     console.error('objectToAxiosParams was called with undefined sectionCode or schedule');
-  //     // Optionally, return a default object or handle this error appropriately
-  //     return {
-  //       url: "/api/courses/post",
-  //       method: "POST",
-  //       params: {}, // Empty params or some default value if appropriate
-  //     };
-  //   }
+  const objectToAxiosParams = (data) => {
+    // Check if sectionCode or schedule is undefined and handle it accordingly
+    // if (typeof sectionCode === 'undefined' || typeof schedule === 'undefined') {
+    //   console.error('objectToAxiosParams was called with undefined sectionCode or schedule');
+    //   // Optionally, return a default object or handle this error appropriately
+    //   return {
+    //     url: "/api/courses/post",
+    //     method: "POST",
+    //     params: {}, // Empty params or some default value if appropriate
+    //   };
+    // }
   
-  //   return {
-  //     url: "/api/courses/post",
-  //     method: "POST",
-  //     params: {
-  //       enrollCd: sectionCode.toString(),
-  //       psId: schedule.toString(),
-  //     },
-  //   };
-  // };
-  
-  const onSuccess = (response) => {
-    // Assuming the response contains the course information directly
-    toast(`Course with enroll code ${response.id} added to personal schedule with id ${response.enrollCd}`);
-  };
-
-  const mutation = useBackendMutation(
-    () => ({
+    return {
       url: "/api/courses/post",
       method: "POST",
       params: {
-        enrollCd: "00885",
-        psId: "16",
+        enrollCd: data.enrollCd.toString(),
+        psId: data.psId.toString(),
       },
-    }),
-    { onSuccess },
-    ["/api/courses/user/all"]
-  );
+    };
+  };
+  
+  const onSuccess = (response) => {
+    toast(
+      `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
+    );
+  };
 
-  // const mutation = useBackendMutation(
-  //   objectToAxiosParams,
-  //   { onSuccess },
-  //   // Stryker disable next-line all : hard to set up test for caching
-  //   ["/api/courses/user/all"],
-  // );
+  const mutation = useBackendMutation(
+    objectToAxiosParams,
+    { onSuccess },
+    // Stryker disable next-line all : hard to set up test for caching
+    ["/api/courses/user/all"],
+  );
   
   const handleAddToSchedule = (section, schedule) => {
     // Log statements for debugging, consider removing in production
     console.log("Section Enroll Code:", section.section.enrollCode);
     console.log("Schedule ID:", schedule);
   
-    // Prepare the data for mutation
-    // Directly using the section and schedule without Object.assign as they are not objects to merge but values to be used
-    // const mutation = useBackendMutation(() => objectToAxiosParams(section.section.enrollCode, schedule), { onSuccess });
-  
     // Execute the mutation with the provided data
-    if (section.section.enrollCode && schedule) {
-      const dataFinal = {
-        enrollCd: '00885',
-        psId: '16',
-        // enrollCd: section.section.enrollCode ? section.section.enrollCode.toString() : '00885',
-        // psId: schedule ? schedule.toString() : '16',
-      };
+    const dataFinal = {
+      enrollCd: section.section.enrollCode,
+      psId: schedule,
+    };
       mutation.mutate(dataFinal);
-    } else {
-      console.error('One of the required parameters is undefined');
-    }
-    // console.log(dataFinal);
   };
 
   const columns = [
