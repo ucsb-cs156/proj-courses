@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import PersonalSchedulesTable from "main/components/PersonalSchedules/PersonalSchedulesTable";
 import PersonalSectionsTable from "main/components/PersonalSections/PersonalSectionsTable";
 import { useBackend, _useBackendMutation } from "main/utils/useBackend";
+import { Button } from "react-bootstrap";
 
 export default function PersonalSchedulesDetailsPage() {
   let { id } = useParams();
@@ -23,6 +24,13 @@ export default function PersonalSchedulesDetailsPage() {
       },
     },
   );
+  const createButton = () => {
+    return (
+      <Button variant="primary" href="/personalschedules/list" style={{}}>
+        Back
+      </Button>
+    );
+  };
 
   const { data: personalSection } = useBackend(
     // Stryker disable all : hard to test for query caching
@@ -52,6 +60,7 @@ export default function PersonalSchedulesDetailsPage() {
             <PersonalSectionsTable personalSections={personalSection} />
           )}
         </p>
+        {createButton()}
       </div>
     </BasicLayout>
   );

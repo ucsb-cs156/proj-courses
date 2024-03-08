@@ -7,6 +7,7 @@ import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalS
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import userEvent from "@testing-library/user-event";
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => {
@@ -147,5 +148,26 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     expect(
       screen.getByTestId(`PersonalSectionsTable-cell-row-0-col-instructor`),
     ).toHaveTextContent("WANG L C");
+  });
+
+  test("renders 'Back' button", () => {
+    const queryClient = new QueryClient();
+    axiosMock.onGet(`/api/personalschedules?id=17`).reply(200, []);
+    axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const backButton = screen.getByRole("button", { name: /back/i });
+    expect(backButton).toBeInTheDocument();
+
+    // Optional: Test button functionality
+    userEvent.click(backButton);
+    // Add your assertions here to ensure that clicking the button triggers the expected action.
   });
 });
