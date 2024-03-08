@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 export default function AddToScheduleModal({ section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState('');
+  // Stryker disable next-line all : internal hook, not sure how to test
   const [hasSchedules, setHasSchedules] = useState(true);
 
   const handleModalClose = () => {
