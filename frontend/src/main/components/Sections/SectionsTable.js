@@ -26,17 +26,6 @@ export default function SectionsTable({ sections }) {
   // Stryker disable BooleanLiteral
 
   const objectToAxiosParams = (data) => {
-    // Check if sectionCode or schedule is undefined and handle it accordingly
-    // if (typeof sectionCode === 'undefined' || typeof schedule === 'undefined') {
-    //   console.error('objectToAxiosParams was called with undefined sectionCode or schedule');
-    //   // Optionally, return a default object or handle this error appropriately
-    //   return {
-    //     url: "/api/courses/post",
-    //     method: "POST",
-    //     params: {}, // Empty params or some default value if appropriate
-    //   };
-    // }
-  
     return {
       url: "/api/courses/post",
       method: "POST",
