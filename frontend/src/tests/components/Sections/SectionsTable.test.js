@@ -5,7 +5,11 @@ import { MemoryRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import SectionsTable from "main/components/Sections/SectionsTable";
 import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
+import { handleAddToSchedule } from "main/components/Sections/SectionsTable";
+import {onSuccess} from "main/components/Sections/SectionsTable";
 import { useBackendMutation } from "main/utils/useBackend";
+import { useBackend } from "main/utils/useBackend";
+import AddToScheduleModal from 'main/components/PersonalSchedules/AddToScheduleModal';
 
 const mockedNavigate = jest.fn();
 

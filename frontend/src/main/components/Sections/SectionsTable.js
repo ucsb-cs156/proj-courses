@@ -32,35 +32,35 @@ export const objectToAxiosParams = (data) => {
   };
 };
 
+export const handleAddToSchedule = (section, schedule, mutation) => {
+  // Log statements for debugging, consider removing in production
+  console.log("Section Enroll Code:", section.section.enrollCode);
+  console.log("Schedule ID:", schedule);
+
+  // Execute the mutation with the provided data
+  const dataFinal = {
+    enrollCd: section.section.enrollCode,
+    psId: schedule,
+  };
+  mutation.mutate(dataFinal);
+};
+
+export const onSuccess = (response) => {
+  toast(
+    `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
+  );
+};
+
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
   
-  const onSuccess = (response) => {
-    toast(
-      `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
-    );
-  };
-
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
     ["/api/courses/user/all"],
   );
-  
-  const handleAddToSchedule = (section, schedule) => {
-    // Log statements for debugging, consider removing in production
-    console.log("Section Enroll Code:", section.section.enrollCode);
-    console.log("Schedule ID:", schedule);
-  
-    // Execute the mutation with the provided data
-    const dataFinal = {
-      enrollCd: section.section.enrollCode,
-      psId: schedule,
-    };
-      mutation.mutate(dataFinal);
-  };
 
   const columns = [
     {
@@ -157,7 +157,7 @@ export default function SectionsTable({ sections }) {
           return (
             <div className="d-flex align-items-center gap-2">
               <span>{value}</span>
-              <AddToScheduleModal section={original} onAdd={handleAddToSchedule} />
+              <AddToScheduleModal section={original} onAdd={(section, schedule) => handleAddToSchedule(section, schedule, mutation)} />
             </div>
           );
         } else {
