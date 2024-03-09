@@ -1,13 +1,11 @@
 import React from "react";
-import OurTable from "main/components/OurTable";
 
-export default function CourseDescriptionTable({ course }) {
-  const columns = [
-    {
-      Header: "Description",
-      accessor: "description",
-    }
-  ];
-
-  return <OurTable data={course} columns={columns} testid={"BasicDescriptionTable"} />;
+export default function CourseDescriptionComponent({ course }) {
+  return (
+    <div>
+      <h5>Course Description</h5>
+      <p>{course.description}</p>
+    </div>
+  );
 }
+
