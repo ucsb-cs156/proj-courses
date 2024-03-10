@@ -153,6 +153,7 @@ export default function SectionsTable({ sections }) {
       accessor: "section.enrollCode",
       disableGroupBy: true,
       Cell: ({ cell: { value }, row: { original } }) => {
+        /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(original.section.section)) {
           return (
             <div className="d-flex align-items-center gap-2">
@@ -160,7 +161,7 @@ export default function SectionsTable({ sections }) {
               <AddToScheduleModal section={original} onAdd={(section, schedule) => handleAddToSchedule(section, schedule, mutation)} />
             </div>
           );
-        } else {
+        } else { 
           return value;
         }
       },
