@@ -3,6 +3,7 @@ import AddToScheduleModal from 'main/components/PersonalSchedules/AddToScheduleM
 
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
+import { useCurrentUser } from 'main/utils/currentUser.js';
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 import {
@@ -54,6 +55,8 @@ export const onSuccess = (response) => {
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
+
+  const { data: currentUser } = useCurrentUser();
   
   const mutation = useBackendMutation(
     objectToAxiosParams,
@@ -154,7 +157,7 @@ export default function SectionsTable({ sections }) {
       disableGroupBy: true,
       Cell: ({ cell: { value }, row: { original } }) => {
         /* istanbul ignore next : difficult to test modal interaction*/
-        if (isSection(original.section.section)) {
+        if (isSection(original.section.section) && currentUser.loggedIn) {
           return (
             <div className="d-flex align-items-center gap-2">
               <span>{value}</span>
