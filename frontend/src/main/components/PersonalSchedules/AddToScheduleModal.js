@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import PersonalScheduleSelector from './PersonalScheduleSelector';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import PersonalScheduleSelector from "./PersonalScheduleSelector";
+import { Link } from "react-router-dom";
 
 export default function AddToScheduleModal({ section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState('');
+  const [selectedSchedule, setSelectedSchedule] = useState("");
   // Stryker disable next-line all : internal hook, not sure how to test
   const [hasSchedules, setHasSchedules] = useState(true);
 
@@ -25,11 +25,13 @@ export default function AddToScheduleModal({ section, onAdd }) {
     setSchedule={setSelectedSchedule}
     controlId="scheduleSelect"
     setHasSchedules={setHasSchedules}
-  />
+  />;
 
   return (
     <>
-      <Button variant="success" onClick={() => setShowModal(true)}>Add</Button>
+      <Button variant="success" onClick={() => setShowModal(true)}>
+        Add
+      </Button>
 
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
@@ -37,19 +39,22 @@ export default function AddToScheduleModal({ section, onAdd }) {
         </Modal.Header>
         <Modal.Body>
           <Form>
-          {hasSchedules ? (
-            <Form.Group controlId="scheduleSelect">
-              <Form.Label>Select Schedule</Form.Label>
-              <PersonalScheduleSelector
-                schedule={selectedSchedule}
-                setSchedule={setSelectedSchedule}
-                controlId="scheduleSelect"
-                setHasSchedules={setHasSchedules}
-              />
-            </Form.Group>
-          ) : (
-            <p>No schedules found. <Link to="/personalschedules/create">Create a schedule</Link></p>
-          )}
+            {hasSchedules ? (
+              <Form.Group controlId="scheduleSelect">
+                <Form.Label>Select Schedule</Form.Label>
+                <PersonalScheduleSelector
+                  schedule={selectedSchedule}
+                  setSchedule={setSelectedSchedule}
+                  controlId="scheduleSelect"
+                  setHasSchedules={setHasSchedules}
+                />
+              </Form.Group>
+            ) : (
+              <p>
+                No schedules found.{" "}
+                <Link to="/personalschedules/create">Create a schedule</Link>
+              </p>
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>

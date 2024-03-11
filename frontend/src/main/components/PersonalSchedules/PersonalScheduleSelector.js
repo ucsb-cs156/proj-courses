@@ -30,12 +30,12 @@ const PersonalScheduleSelector = ({
   );
 
   useEffect(() => {
-      if (schedules.length > 0) {
-        setSchedule(schedules[0].id);
-        setHasSchedules(true);
-      } else {
-        setHasSchedules(false);
-      }
+    if (schedules.length > 0) {
+      setSchedule(schedules[0].id);
+      setHasSchedules(true);
+    } else {
+      setHasSchedules(false);
+    }
   }, [schedules, setSchedule, setHasSchedules]);
 
   const handleScheduleOnChange = (event) => {
@@ -56,11 +56,12 @@ const PersonalScheduleSelector = ({
         value={scheduleState}
         onChange={handleScheduleOnChange}
       >
-        {schedules && schedules.map((schedule) => (
-          <option key={schedule.id} value={schedule.id}>
-            {schedule.name}
-          </option>
-        ))}
+        {schedules &&
+          schedules.map((schedule) => (
+            <option key={schedule.id} value={schedule.id}>
+              {schedule.name}
+            </option>
+          ))}
       </Form.Control>
     </Form.Group>
   );

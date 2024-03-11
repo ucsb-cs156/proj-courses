@@ -1,9 +1,9 @@
 import SectionsTableBase from "main/components/SectionsTableBase";
-import AddToScheduleModal from 'main/components/PersonalSchedules/AddToScheduleModal';
+import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
-import { useCurrentUser } from 'main/utils/currentUser.js';
+import { useCurrentUser } from "main/utils/currentUser.js";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 import {
@@ -53,7 +53,7 @@ export default function SectionsTable({ sections }) {
   // Stryker disable BooleanLiteral
 
   const { data: currentUser } = useCurrentUser();
-  
+
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess },
@@ -158,10 +158,15 @@ export default function SectionsTable({ sections }) {
           return (
             <div className="d-flex align-items-center gap-2">
               <span>{value}</span>
-              <AddToScheduleModal section={original} onAdd={(section, schedule) => handleAddToSchedule(section, schedule, mutation)} />
+              <AddToScheduleModal
+                section={original}
+                onAdd={(section, schedule) =>
+                  handleAddToSchedule(section, schedule, mutation)
+                }
+              />
             </div>
           );
-        } else { 
+        } else {
           return value;
         }
         // Stryker restore all
