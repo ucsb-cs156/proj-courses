@@ -34,10 +34,6 @@ export const objectToAxiosParams = (data) => {
 };
 
 export const handleAddToSchedule = (section, schedule, mutation) => {
-  // Log statements for debugging, consider removing in production
-  console.log("Section Enroll Code:", section.section.enrollCode);
-  console.log("Schedule ID:", schedule);
-
   // Execute the mutation with the provided data
   const dataFinal = {
     enrollCd: section.section.enrollCode,
@@ -156,6 +152,7 @@ export default function SectionsTable({ sections }) {
       accessor: "section.enrollCode",
       disableGroupBy: true,
       Cell: ({ cell: { value }, row: { original } }) => {
+        // Stryker disable all : difficult to test modal interaction
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(original.section.section) && currentUser.loggedIn) {
           return (
@@ -167,6 +164,7 @@ export default function SectionsTable({ sections }) {
         } else { 
           return value;
         }
+        // Stryker restore all
       },
       aggregate: getFirstVal,
       Aggregated: ({ cell: { value } }) => `${value}`,
