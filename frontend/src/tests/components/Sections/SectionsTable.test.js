@@ -23,23 +23,23 @@ jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: jest.fn(),
 }));
 
-describe('handleAddToSchedule', () => {
-  it('calls mutate with correct data', () => {
+describe("handleAddToSchedule", () => {
+  it("calls mutate with correct data", () => {
     const mockMutation = { mutate: jest.fn() };
-    const mockSection = { section: { enrollCode: '123' } };
-    const mockSchedule = '456';
+    const mockSection = { section: { enrollCode: "123" } };
+    const mockSchedule = "456";
 
     handleAddToSchedule(mockSection, mockSchedule, mockMutation);
 
     expect(mockMutation.mutate).toHaveBeenCalledWith({
-      enrollCd: '123',
-      psId: '456',
+      enrollCd: "123",
+      psId: "456",
     });
   });
 });
 
-describe('objectToAxiosParams', () => {
-  it('should return the correct axios parameters', () => {
+describe("objectToAxiosParams", () => {
+  it("should return the correct axios parameters", () => {
     const data = {
       enrollCd: 12345,
       psId: 15,
@@ -51,8 +51,8 @@ describe('objectToAxiosParams', () => {
       url: "/api/courses/post",
       method: "POST",
       params: {
-        enrollCd: '12345',
-        psId: '15',
+        enrollCd: "12345",
+        psId: "15",
       },
     });
   });
@@ -64,9 +64,9 @@ describe("Section tests", () => {
   test("calls onSuccess when mutation is successful and calls toast with correct parameters", () => {
     const mockMutate = jest.fn();
     const mockMutation = { mutate: mockMutate };
-  
+
     useBackendMutation.mockReturnValue(mockMutation);
-  
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -74,14 +74,16 @@ describe("Section tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-  
+
     // Call the onSuccess function
     const onSuccess = useBackendMutation.mock.calls[0][1].onSuccess;
     const mockResponse = [{ id: 1, enrollCd: "1234" }];
     onSuccess(mockResponse);
-  
+
     // Verify that toast was called with the correct parameters
-    expect(toast).toHaveBeenCalledWith("New course Created - id: 1 enrollCd: 1234");
+    expect(toast).toHaveBeenCalledWith(
+      "New course Created - id: 1 enrollCd: 1234",
+    );
   });
 
   test("renders without crashing for empty table", () => {
