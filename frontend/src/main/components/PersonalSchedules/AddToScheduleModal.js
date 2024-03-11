@@ -51,7 +51,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
               </Form.Group>
             ) : (
               <p>
-                No schedules found.{" "}
+                No schedules found.
                 <Link to="/personalschedules/create">Create a schedule</Link>
               </p>
             )}
