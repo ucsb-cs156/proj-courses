@@ -58,6 +58,8 @@ describe("AppNavbar tests", () => {
     expect(
       screen.getByTestId(/appnavbar-admin-personalschedule/),
     ).toBeInTheDocument();
+    expect(screen.getByTestId("appnavbar-admin-jobs")).toBeInTheDocument();
+    expect(screen.getByTestId("appnavbar-developer")).toBeInTheDocument();
   });
 
   test("renders H2Console and Swagger links correctly", async () => {
@@ -176,7 +178,7 @@ describe("AppNavbar tests", () => {
     expect(screen.queryByTestId(/AppNavbarLocalhost/i)).toBeNull();
   });
 
-  test("renders the PersonalSchedules menu correctly", async () => {
+  test("renders Personal Schedules and Courses links correctly for regular logged in user", async () => {
     const currentUser = currentUserFixtures.userOnly;
     const systemInfo = systemInfoFixtures.showingBoth;
 
@@ -194,25 +196,15 @@ describe("AppNavbar tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      await screen.findByTestId("appnavbar-personalschedules-dropdown"),
-    ).toBeInTheDocument();
-    const dropdown = screen.getByTestId("appnavbar-personalschedules-dropdown");
-    const aElement = dropdown.querySelector("a");
-    expect(aElement).toBeInTheDocument();
-    aElement?.click();
-
+    expect(await screen.findByText("Personal Schedules")).toBeInTheDocument();
     expect(
       await screen.findByTestId("appnavbar-personalschedules-list"),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId(/appnavbar-personalschedules-create/),
-    ).toBeInTheDocument();
 
+    expect(await screen.findByText("Courses")).toBeInTheDocument();
     expect(
       await screen.findByTestId("appnavbar-courses-list"),
     ).toBeInTheDocument();
-    expect(screen.getByTestId(/appnavbar-courses-create/)).toBeInTheDocument();
   });
 
   test("renders the Course Description menu correctly", async () => {

@@ -9,6 +9,7 @@ import CoursesIndexPage from "main/pages/Courses/PSCourseIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { coursesFixtures } from "fixtures/pscourseFixtures";
+import userEvent from "@testing-library/user-event";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -98,6 +99,25 @@ describe("CoursesIndexPage tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
       "26",
     );
+  });
+
+  test("renders 'Add New Course' button", () => {
+    setupUserOnly();
+    const queryClient = new QueryClient();
+    axiosMock.onGet("/api/courses/user/all").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const addButton = screen.getByRole("button", { name: /add new course/i });
+    expect(addButton).toBeInTheDocument();
+
+    userEvent.click(addButton);
   });
 
   test("renders two courses without crashing for admin user", async () => {
