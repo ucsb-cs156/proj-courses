@@ -8,7 +8,6 @@ const PersonalScheduleSelector = ({
   controlId,
   onChange = null,
   label = "Schedule",
-  setHasSchedules,
 }) => {
   const localSearchSchedule = localStorage.getItem(controlId);
 
@@ -32,11 +31,8 @@ const PersonalScheduleSelector = ({
   useEffect(() => {
     if (schedules.length > 0) {
       setSchedule(schedules[0].id);
-      setHasSchedules(true);
-    } else {
-      setHasSchedules(false);
     }
-  }, [schedules, setSchedule, setHasSchedules]);
+  }, [schedules, setSchedule]);
 
   const handleScheduleOnChange = (event) => {
     const selectedSchedule = event.target.value;
