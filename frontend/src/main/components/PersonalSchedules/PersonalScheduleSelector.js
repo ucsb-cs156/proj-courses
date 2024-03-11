@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import { useBackend } from "main/utils/useBackend";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 const PersonalScheduleSelector = ({
   schedule,
@@ -12,7 +13,6 @@ const PersonalScheduleSelector = ({
   const localSearchSchedule = localStorage.getItem(controlId);
 
   const [scheduleState, setScheduleState] = useState(
-    // Stryker disable next-line all : not sure how to test/mock local storage
     localSearchSchedule || schedule,
   );
 
@@ -21,11 +21,9 @@ const PersonalScheduleSelector = ({
     error: _error,
     status: _status,
   } = useBackend(
-    // Stryker disable all : don't test internal caching of React Query
     ["/api/personalschedules/all"],
     { method: "GET", url: "/api/personalschedules/all" },
     [],
-    // Stryker restore all
   );
 
   useEffect(() => {
@@ -55,7 +53,7 @@ const PersonalScheduleSelector = ({
         {schedules &&
           schedules.map((schedule) => (
             <option key={schedule.id} value={schedule.id}>
-              {schedule.name}
+              {yyyyqToQyy(schedule.quarter)} {schedule.name}
             </option>
           ))}
       </Form.Control>
