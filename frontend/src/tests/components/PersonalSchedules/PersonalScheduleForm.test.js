@@ -232,7 +232,6 @@ describe("PersonalScheduleForm tests", () => {
     });
   });
 
-
   test("Form has initialPersonalSchedule content with Spring quarter", async () => {
     const queryClient = new QueryClient();
     const content = {

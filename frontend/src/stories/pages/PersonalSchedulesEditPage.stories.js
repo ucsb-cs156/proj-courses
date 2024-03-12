@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
 
 export default {

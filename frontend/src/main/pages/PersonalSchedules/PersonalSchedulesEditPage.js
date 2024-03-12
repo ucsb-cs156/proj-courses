@@ -11,34 +11,38 @@ export default function PersonalSchedulesEditPage() {
   let { id } = useParams();
   const currentUser = useCurrentUser();
 
-  const { data: personalSchedule, _error, _status } =
-    useBackend(
-      // Stryker disable next-line all : don't test internal caching of React Query
-      ['/api/personalschedules?id=${id}'],
-      {  // Stryker disable next-line all : GET is the default, so changing this to "" doesn't introduce a bug
-        method: "GET",
-        url: `/api/personalschedules`,
-        params: {
-          id,
-        },
+  const {
+    data: personalSchedule,
+    _error,
+    _status,
+  } = useBackend(
+    // Stryker disable next-line all : don't test internal caching of React Query
+    ["/api/personalschedules?id=${id}"],
+    {
+      // Stryker disable next-line all : GET is the default, so changing this to "" doesn't introduce a bug
+      method: "GET",
+      url: `/api/personalschedules`,
+      params: {
+        id,
       },
-    );
+    },
+  );
 
-    const {
-      data: courses,
-      error: _PCerror,
-      status: _PCstatus,
-    } = useBackend(
-      // Stryker disable next-line all : don't test internal caching of React Query
-      [`/api/courses/user/psid/all?psId=${id}`],
-      {
-        // Stryker disable next-line StringLiteral : GET is default, so replacing with "" is an equivalent mutation
-        method: "GET",
-        url: `/api/courses/user/psid/all?psId=${id}`,
-      },
-      [],
-    );
-  
+  const {
+    data: courses,
+    error: _PCerror,
+    status: _PCstatus,
+  } = useBackend(
+    // Stryker disable next-line all : don't test internal caching of React Query
+    [`/api/courses/user/psid/all?psId=${id}`],
+    {
+      // Stryker disable next-line StringLiteral : GET is default, so replacing with "" is an equivalent mutation
+      method: "GET",
+      url: `/api/courses/user/psid/all?psId=${id}`,
+    },
+    [],
+  );
+
   const objectToAxiosParams = (personalSchedule) => ({
     url: "/api/personalschedules",
     method: "PUT",
@@ -50,7 +54,7 @@ export default function PersonalSchedulesEditPage() {
       name: personalSchedule.name,
       description: personalSchedule.description,
       quarter: personalSchedule.quarter,
-    }
+    },
   });
 
   const onSuccess = (personalSchedule) => {
