@@ -23,12 +23,16 @@ describe("PersonalScheduleSelector", () => {
 
   test("sets the initial schedule from local storage", () => {
     localStorage.setItem("controlId", "schedule2");
-    render(<PersonalScheduleSelector controlId="controlId" setSchedule={() => {}} />);
+    render(
+      <PersonalScheduleSelector controlId="controlId" setSchedule={() => {}} />,
+    );
     expect(screen.getByDisplayValue("Q1 2022 Schedule 2")).toBeInTheDocument();
   });
 
   test("sets the initial schedule from the schedule prop", () => {
-    render(<PersonalScheduleSelector schedule="schedule1" setSchedule={() => {}} />);
+    render(
+      <PersonalScheduleSelector schedule="schedule1" setSchedule={() => {}} />,
+    );
     expect(screen.getByDisplayValue("Q1 2022 Schedule 1")).toBeInTheDocument();
   });
 
@@ -40,8 +44,15 @@ describe("PersonalScheduleSelector", () => {
 
   test("updates the schedule state and calls setSchedule when a schedule is selected", () => {
     const setSchedule = jest.fn();
-    render(<PersonalScheduleSelector controlId="controlId" setSchedule={setSchedule} />);
-    fireEvent.change(screen.getByLabelText("Schedule"), { target: { value: "schedule2" } });
+    render(
+      <PersonalScheduleSelector
+        controlId="controlId"
+        setSchedule={setSchedule}
+      />,
+    );
+    fireEvent.change(screen.getByLabelText("Schedule"), {
+      target: { value: "schedule2" },
+    });
     expect(localStorage.getItem("controlId")).toBe("schedule2");
     expect(setSchedule).toHaveBeenCalledWith("schedule2");
   });
@@ -54,11 +65,13 @@ describe("PersonalScheduleSelector", () => {
         controlId="controlId"
         setSchedule={setSchedule}
         onChange={onChange}
-      />
+      />,
     );
-    const selectElement = screen.getByLabelText("Schedule", { selector: "select" });
+    const selectElement = screen.getByLabelText("Schedule", {
+      selector: "select",
+    });
     fireEvent.change(selectElement, { target: { value: "schedule2" } });
-    
+
     expect(localStorage.getItem("controlId")).toBe("schedule2");
     expect(setSchedule).toHaveBeenCalledWith("schedule2");
     expect(onChange).toHaveBeenCalledTimes(1);
@@ -67,20 +80,22 @@ describe("PersonalScheduleSelector", () => {
 
   test("sets the initial schedule when schedules are loaded", () => {
     const setSchedule = jest.fn();
-  
+
     // Mock the useBackend hook to return an empty schedules array initially
     useBackend.mockReturnValueOnce({
       data: [],
       error: null,
       status: "success",
     });
-  
+
     // Render the component with an empty schedules array
-    const { rerender } = render(<PersonalScheduleSelector setSchedule={`setSchedule`} />);
-  
+    const { rerender } = render(
+      <PersonalScheduleSelector setSchedule={`setSchedule`} />,
+    );
+
     // Assert that setSchedule is not called when schedules array is empty
     expect(setSchedule).not.toHaveBeenCalled();
-  
+
     // Mock the useBackend hook to return a non-empty schedules array
     useBackend.mockReturnValueOnce({
       data: [
@@ -90,10 +105,10 @@ describe("PersonalScheduleSelector", () => {
       error: null,
       status: "success",
     });
-  
+
     // Rerender the component with the updated schedules array
     rerender(<PersonalScheduleSelector setSchedule={setSchedule} />);
-  
+
     // Assert that setSchedule is called with the first schedule id when schedules array is not empty
     expect(setSchedule).toHaveBeenCalledWith("schedule1");
   });

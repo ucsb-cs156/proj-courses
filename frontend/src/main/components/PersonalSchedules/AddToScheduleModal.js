@@ -17,7 +17,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
   } = useBackend(
     ["/api/personalschedules/all"],
     { method: "GET", url: "/api/personalschedules/all" },
-    []
+    [],
   );
 
   const handleModalClose = () => {
@@ -28,7 +28,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
     onAdd(section, selectedSchedule);
     handleModalClose();
   };
-// Stryker disable all : tested manually, complicated to test
+  // Stryker disable all : tested manually, complicated to test
   return (
     <>
       <Button variant="success" onClick={() => setShowModal(true)}>
@@ -40,21 +40,23 @@ export default function AddToScheduleModal({ section, onAdd }) {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            {/* istanbul ignore next */schedules.length > 0 ? (
-              <Form.Group controlId="scheduleSelect">
-                <Form.Label>Select Schedule</Form.Label>
-                <PersonalScheduleSelector
-                  schedule={selectedSchedule}
-                  setSchedule={setSelectedSchedule}
-                  controlId="scheduleSelect"
-                />
-              </Form.Group>
-            ) : (
-              <p>
-                No schedules found.
-                <Link to="/personalschedules/create">Create a schedule</Link>
-              </p>
-            )}
+            {
+              /* istanbul ignore next */ schedules.length > 0 ? (
+                <Form.Group controlId="scheduleSelect">
+                  <Form.Label>Select Schedule</Form.Label>
+                  <PersonalScheduleSelector
+                    schedule={selectedSchedule}
+                    setSchedule={setSelectedSchedule}
+                    controlId="scheduleSelect"
+                  />
+                </Form.Group>
+              ) : (
+                <p>
+                  No schedules found.
+                  <Link to="/personalschedules/create">Create a schedule</Link>
+                </p>
+              )
+            }
           </Form>
         </Modal.Body>
         <Modal.Footer>
