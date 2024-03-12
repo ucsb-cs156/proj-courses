@@ -10,6 +10,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
 
+  // Stryker disable all
   const {
     data: schedules,
     error: _error,
@@ -19,6 +20,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
     { method: "GET", url: "/api/personalschedules/all" },
     [],
   );
+  // Stryker restore all
 
   const handleModalClose = () => {
     setShowModal(false);

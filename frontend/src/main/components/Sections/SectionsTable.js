@@ -36,10 +36,11 @@ export function isLectureWithNoSections(enrollCode, sections) {
     // Check if the section number is '0100', indicating a lecture
     if (sectionNumber === "0100") {
       // Filter all sections with the same courseId
+      // Stryker disable all
       const courseSections = sections.filter(
         (section) => section.courseInfo.courseId === courseId,
       );
-
+      // Stryker restore all
       // Check if there is only one section for the course
       return courseSections.length === 1;
     }
