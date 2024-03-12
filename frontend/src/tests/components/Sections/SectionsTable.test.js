@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import SectionsTable from "main/components/Sections/SectionsTable";
 import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
 import { handleAddToSchedule } from "main/components/Sections/SectionsTable";
+import { handleLectureAddToSchedule } from "main/components/Sections/SectionsTable";
 import { useBackendMutation } from "main/utils/useBackend";
 
 const mockedNavigate = jest.fn();
@@ -34,6 +35,28 @@ describe("handleAddToSchedule", () => {
     expect(mockMutation.mutate).toHaveBeenCalledWith({
       enrollCd: "123",
       psId: "456",
+    });
+  });
+});
+
+describe('handleLectureAddToSchedule', () => {
+  it('should execute the mutation with the provided data', () => {
+    // Mock the mutation object
+    const mutationMock = {
+      mutate: jest.fn(),
+    };
+
+    // Define the input data
+    const section = 12345;
+    const schedule = 'FALL2023';
+
+    // Call the function
+    handleLectureAddToSchedule(section, schedule, mutationMock);
+
+    // Assert that the mutation.mutate function was called with the expected data
+    expect(mutationMock.mutate).toHaveBeenCalledWith({
+      enrollCd: section,
+      psId: schedule,
     });
   });
 });
