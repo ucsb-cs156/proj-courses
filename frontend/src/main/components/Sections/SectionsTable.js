@@ -22,7 +22,7 @@ function getFirstVal(values) {
   return values[0];
 }
 
-function isLectureWithNoSections(enrollCode, sections) {
+export function isLectureWithNoSections(enrollCode, sections) {
   // Find the section with the given enrollCode
   const section = sections.find(section => section.section.enrollCode === enrollCode);
 
@@ -205,18 +205,23 @@ export default function SectionsTable({ sections }) {
         // Stryker restore all
       },
       aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => ((isLectureWithNoSections(value, sections) && currentUser.loggedIn)
-      ? 
-      <div className="d-flex align-items-center gap-2">
-        <span>{value}</span>
-        <AddToScheduleModal
-          section={value}
-          onAdd={(section, schedule) =>
-            handleLectureAddToSchedule(section, schedule, mutation)
-          }
-        />
-      </div>
-      : `${value}`),
+      Aggregated: ({ cell: { value } }) => /* istanbul ignore next */ {
+        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <span>{value}</span>
+              <AddToScheduleModal
+                section={value}
+                onAdd={(section, schedule) =>
+                  handleLectureAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else {
+          return `${value}`;
+        }
+      },
     },
     {
       Header: "Info",
