@@ -7,7 +7,7 @@ import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { useCurrentUser } from "main/utils/currentUser";
 
-export default function PersonalSchedulesEditPage(storybook = false) {
+export default function PersonalSchedulesEditPage() {
   let { id } = useParams();
   const currentUser = useCurrentUser();
 
