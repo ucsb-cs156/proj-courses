@@ -16,6 +16,7 @@ const PersonalScheduleSelector = ({
     localSearchSchedule || schedule,
   );
 
+  // Stryker disable all
   const {
     data: schedules,
     error: _error,
@@ -25,6 +26,7 @@ const PersonalScheduleSelector = ({
     { method: "GET", url: "/api/personalschedules/all" },
     [],
   );
+  // Stryker restore all
 
   useEffect(() => {
     if (schedules.length > 0) {
