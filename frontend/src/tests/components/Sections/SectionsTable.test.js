@@ -7,6 +7,7 @@ import SectionsTable from "main/components/Sections/SectionsTable";
 import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
 import { handleAddToSchedule } from "main/components/Sections/SectionsTable";
 import { handleLectureAddToSchedule } from "main/components/Sections/SectionsTable";
+import {isLectureWithNoSections} from "main/components/Sections/SectionsTable";
 import { useBackendMutation } from "main/utils/useBackend";
 
 const mockedNavigate = jest.fn();
@@ -23,6 +24,68 @@ jest.mock("react-toastify", () => ({
 jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: jest.fn(),
 }));
+
+describe('isLectureWithNoSections', () => {
+  it('should return true when the section is a lecture with no other sections', () => {
+    const enrollCode = '12345';
+    const sections = [
+      {
+        courseInfo: { courseId: 'COURSE1' },
+        section: { enrollCode: '12345', section: '0100' },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(true);
+  });
+
+  it('should return false when the section is not a lecture', () => {
+    const enrollCode = '12345';
+    const sections = [
+      {
+        courseInfo: { courseId: 'COURSE1' },
+        section: { enrollCode: '12345', section: '0101' },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false when the section is a lecture but there are other sections', () => {
+    const enrollCode = '12345';
+    const sections = [
+      {
+        courseInfo: { courseId: 'COURSE1' },
+        section: { enrollCode: '12345', section: '0100' },
+      },
+      {
+        courseInfo: { courseId: 'COURSE1' },
+        section: { enrollCode: '67890', section: '0101' },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false when the section is not found', () => {
+    const enrollCode = '12345';
+    const sections = [
+      {
+        courseInfo: { courseId: 'COURSE1' },
+        section: { enrollCode: '67890', section: '0100' },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+});
 
 describe("handleAddToSchedule", () => {
   it("calls mutate with correct data", () => {
