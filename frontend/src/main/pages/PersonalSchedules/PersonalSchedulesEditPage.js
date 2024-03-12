@@ -1,12 +1,15 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useParams } from "react-router-dom";
 import PersonalScheduleForm from "main/components/PersonalSchedules/PersonalScheduleForm";
+import CourseTable from "main/components/Courses/CourseTable";
 import { Navigate } from "react-router-dom";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
+import { useCurrentUser } from "main/utils/currentUser";
 
 export default function PersonalSchedulesEditPage(storybook = false) {
   let { id } = useParams();
+  const currentUser = useCurrentUser();
 
   const { data: personalSchedule, _error, _status } =
     useBackend(
@@ -19,6 +22,21 @@ export default function PersonalSchedulesEditPage(storybook = false) {
           id,
         },
       },
+    );
+
+    const {
+      data: courses,
+      error: _PCerror,
+      status: _PCstatus,
+    } = useBackend(
+      // Stryker disable next-line all : don't test internal caching of React Query
+      [`/api/courses/user/psid/all?psId=${id}`],
+      {
+        // Stryker disable next-line StringLiteral : GET is default, so replacing with "" is an equivalent mutation
+        method: "GET",
+        url: `/api/courses/user/psid/all?psId=${id}`,
+      },
+      [],
     );
   
   const objectToAxiosParams = (personalSchedule) => ({
@@ -52,23 +70,17 @@ export default function PersonalSchedulesEditPage(storybook = false) {
   const { isSuccess } = mutation;
 
   const onSubmit = async (data) => {
-    const quarter = {
-      quarter: localStorage["PersonalScheduleForm-quarter"],
-    };
-    console.log(quarter);
-    const dataFinal = Object.assign(data, quarter);
-    console.log(dataFinal);
-    mutation.mutate(dataFinal);
+    mutation.mutate(data);
   };
 
-  if (isSuccess && !storybook) {
+  if (isSuccess) {
     return <Navigate to="/personalschedules/list" />;
   }
 
   return (
     <BasicLayout>
       <div className="pt-2">
-      <h1>Edit Personal Schedule</h1>
+        <h1>Edit Personal Schedule</h1>
         {personalSchedule && (
           <PersonalScheduleForm
             submitAction={onSubmit}
@@ -76,6 +88,10 @@ export default function PersonalSchedulesEditPage(storybook = false) {
             initialPersonalSchedule={personalSchedule}
           />
         )}
+        <p className="py-5">
+          <h1>Courses</h1>
+          <CourseTable courses={courses} currentUser={currentUser} />
+        </p>
       </div>
     </BasicLayout>
   );
