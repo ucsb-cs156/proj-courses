@@ -21,11 +21,6 @@ describe("PersonalScheduleSelector", () => {
     yyyyqToQyy.mockReturnValue("Q1 2022");
   });
 
-  // test("renders the component with the correct label", () => {
-  //   render(<PersonalScheduleSelector setSchedule={() => {}} />);
-  //   expect(screen.getByLabelText("Schedule", { selector: "label" })).toBeInTheDocument();
-  // });
-
   test("sets the initial schedule from local storage", () => {
     localStorage.setItem("controlId", "schedule2");
     render(<PersonalScheduleSelector controlId="controlId" setSchedule={() => {}} />);
@@ -81,7 +76,7 @@ describe("PersonalScheduleSelector", () => {
     });
   
     // Render the component with an empty schedules array
-    const { rerender } = render(<PersonalScheduleSelector setSchedule={setSchedule} />);
+    const { rerender } = render(<PersonalScheduleSelector setSchedule={`setSchedule`} />);
   
     // Assert that setSchedule is not called when schedules array is empty
     expect(setSchedule).not.toHaveBeenCalled();
