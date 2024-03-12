@@ -24,7 +24,9 @@ function getFirstVal(values) {
 
 export function isLectureWithNoSections(enrollCode, sections) {
   // Find the section with the given enrollCode
-  const section = sections.find(section => section.section.enrollCode === enrollCode);
+  const section = sections.find(
+    (section) => section.section.enrollCode === enrollCode,
+  );
 
   if (section) {
     // Extract the courseId and section number from the found section
@@ -32,9 +34,11 @@ export function isLectureWithNoSections(enrollCode, sections) {
     const sectionNumber = section.section.section;
 
     // Check if the section number is '0100', indicating a lecture
-    if (sectionNumber === '0100') {
+    if (sectionNumber === "0100") {
       // Filter all sections with the same courseId
-      const courseSections = sections.filter(section => section.courseInfo.courseId === courseId);
+      const courseSections = sections.filter(
+        (section) => section.courseInfo.courseId === courseId,
+      );
 
       // Check if there is only one section for the course
       return courseSections.length === 1;
