@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useBackend, _useBackendMutation } from "main/utils/useBackend";
 import CourseDetailsTable from "main/components/CourseDetails/CourseDetailsTable";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
+import CourseDescriptionTable from "main/components/Courses/CourseDescriptionTable";
 
 export default function CourseDetailsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
@@ -35,6 +36,7 @@ export default function CourseDetailsIndexPage() {
         )}
 
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
+        {moreDetails && <CourseDescriptionTable course={moreDetails} />}
       </div>
     </BasicLayout>
   );
