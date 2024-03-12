@@ -22,6 +22,28 @@ function getFirstVal(values) {
   return values[0];
 }
 
+function isLectureWithNoSections(enrollCode, sections) {
+  // Find the section with the given enrollCode
+  const section = sections.find(section => section.section.enrollCode === enrollCode);
+
+  if (section) {
+    // Extract the courseId and section number from the found section
+    const courseId = section.courseInfo.courseId;
+    const sectionNumber = section.section.section;
+
+    // Check if the section number is '0100', indicating a lecture
+    if (sectionNumber === '0100') {
+      // Filter all sections with the same courseId
+      const courseSections = sections.filter(section => section.courseInfo.courseId === courseId);
+
+      // Check if there is only one section for the course
+      return courseSections.length === 1;
+    }
+  }
+
+  return false;
+}
+
 export const objectToAxiosParams = (data) => {
   return {
     url: "/api/courses/post",
@@ -39,6 +61,17 @@ export const handleAddToSchedule = (section, schedule, mutation) => {
     enrollCd: section.section.enrollCode,
     psId: schedule,
   };
+  mutation.mutate(dataFinal);
+};
+
+export const handleLectureAddToSchedule = (section, schedule, mutation) => {
+  // Execute the mutation with the provided data
+  console.log(section);
+  const dataFinal = {
+    enrollCd: section,
+    psId: schedule,
+  };
+  console.log(dataFinal);
   mutation.mutate(dataFinal);
 };
 
@@ -172,7 +205,18 @@ export default function SectionsTable({ sections }) {
         // Stryker restore all
       },
       aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      Aggregated: ({ cell: { value } }) => ((isLectureWithNoSections(value, sections) && currentUser.loggedIn)
+      ? 
+      <div className="d-flex align-items-center gap-2">
+        <span>{value}</span>
+        <AddToScheduleModal
+          section={value}
+          onAdd={(section, schedule) =>
+            handleLectureAddToSchedule(section, schedule, mutation)
+          }
+        />
+      </div>
+      : `${value}`),
     },
     {
       Header: "Info",
