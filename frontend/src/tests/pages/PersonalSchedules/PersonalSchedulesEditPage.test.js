@@ -110,9 +110,9 @@ describe("PersonalSchedulesEditPage tests", () => {
               hostedDomain: "ucsb.edu",
               admin: true,
             },
-            description: "Winter Course Plan",
+            description: "My Plan for Winter",
             quarter: "20221",
-            name: "CS154",
+            name: "Winter Courses",
           });
       });
 
@@ -144,9 +144,6 @@ describe("PersonalSchedulesEditPage tests", () => {
           const descriptionField = screen.getByTestId(
             "PersonalScheduleForm-description",
           );
-         // const quarterField = document.querySelector(
-           // "#PersonalScheduleForm-quarter",
-          //);
           const quarterField = screen.getByTestId("PersonalScheduleForm-quarter");
           const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
@@ -161,15 +158,15 @@ describe("PersonalSchedulesEditPage tests", () => {
 
           expect(quarterField).toBeInTheDocument();
 
-          expect(quarterField).toHaveValue("20221");
+          expect(quarterField).toHaveValue("W22");
           expect(submitButton).toHaveTextContent("Update");
 
-          fireEvent.change(nameField, { target: { value: "CS154" } });
-          fireEvent.change(descriptionField, { target: { value: "Winter Course Plan" } });
+          fireEvent.change(nameField, { target: { value: "Winter Courses" } });
+          fireEvent.change(descriptionField, { target: { value: "My Plan for Winter" } });
           fireEvent.click(submitButton);
 
           await waitFor(() => expect(mockToast).toBeCalled());
-          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 17 name: CS154");
+          expect(mockToast).toBeCalledWith("PersonalSchedule Updated - id: 17 name: Winter Courses");
 
           expect(mockNavigate).toBeCalledWith({ to: "/personalschedules/list" });
 
@@ -190,8 +187,8 @@ describe("PersonalSchedulesEditPage tests", () => {
                 hostedDomain: "ucsb.edu",
                 admin: true,
               },
-              name: "CS154",
-              description: "Winter Course Plan",
+              name: "Winter Courses",
+              description: "My Plan for Winter",
               quarter: "20221",
           })); // posted object
 
@@ -225,7 +222,7 @@ describe("PersonalSchedulesEditPage tests", () => {
       test("renders two courses without crashing for user", async () => {
         const queryClient = new QueryClient();
         axiosMock
-          .onGet("/api/courses/user/psid/all?psId=1")
+          .onGet("/api/courses/user/psid/all?psId=17")
           .reply(200, coursesFixtures.twoCourses);
         render(
           <QueryClientProvider client={queryClient}>
