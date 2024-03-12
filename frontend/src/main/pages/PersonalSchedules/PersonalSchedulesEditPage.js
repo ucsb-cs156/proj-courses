@@ -6,10 +6,19 @@ import { Navigate } from "react-router-dom";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { useCurrentUser } from "main/utils/currentUser";
+import { Button } from "react-bootstrap";
 
 export default function PersonalSchedulesEditPage() {
   let { id } = useParams();
   const currentUser = useCurrentUser();
+  
+  const createButton = () => {
+    return (
+      <Button variant="primary" href="/personalschedules/list" style={{}}>
+        Back
+      </Button>
+    );
+  };
 
   const { data: personalSchedule, _error, _status } =
     useBackend(
@@ -76,6 +85,7 @@ export default function PersonalSchedulesEditPage() {
   if (isSuccess) {
     return <Navigate to="/personalschedules/list" />;
   }
+  
 
   return (
     <BasicLayout>
