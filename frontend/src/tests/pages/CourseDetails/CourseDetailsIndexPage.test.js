@@ -79,7 +79,7 @@ describe("Course Details Index Page tests", () => {
     );
     // await waitFor(() => {
     expect(
-      screen.getByText("Course Details for CHEM 184 W22!"),
+      screen.getByText("Course Details for CHEM 184 W22"),
     ).toBeInTheDocument();
     // });
     expect(screen.getByText("Enroll Code")).toBeInTheDocument();
