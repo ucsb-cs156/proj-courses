@@ -1,4 +1,9 @@
 import SectionsTableBase from "main/components/SectionsTableBase";
+import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
+
+import { useBackendMutation } from "main/utils/useBackend";
+import { toast } from "react-toastify";
+import { useCurrentUser } from "main/utils/currentUser.js";
 
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 import {
@@ -17,9 +22,83 @@ function getFirstVal(values) {
   return values[0];
 }
 
+export function isLectureWithNoSections(enrollCode, sections) {
+  // Find the section with the given enrollCode
+  const section = sections.find(
+    (section) => section.section.enrollCode === enrollCode,
+  );
+
+  if (section) {
+    // Extract the courseId and section number from the found section
+    const courseId = section.courseInfo.courseId;
+    const sectionNumber = section.section.section;
+
+    // Check if the section number is '0100', indicating a lecture
+    if (sectionNumber === "0100") {
+      // Filter all sections with the same courseId
+      // Stryker disable all
+      const courseSections = sections.filter(
+        (section) => section.courseInfo.courseId === courseId,
+      );
+      // Stryker restore all
+      // Check if there is only one section for the course
+      return courseSections.length === 1;
+    }
+  }
+
+  return false;
+}
+
+export const objectToAxiosParams = (data) => {
+  return {
+    url: "/api/courses/post",
+    method: "POST",
+    params: {
+      enrollCd: data.enrollCd.toString(),
+      psId: data.psId.toString(),
+    },
+  };
+};
+
+export const handleAddToSchedule = (section, schedule, mutation) => {
+  // Execute the mutation with the provided data
+  const dataFinal = {
+    enrollCd: section.section.enrollCode,
+    psId: schedule,
+  };
+  mutation.mutate(dataFinal);
+};
+
+export const handleLectureAddToSchedule = (section, schedule, mutation) => {
+  // Execute the mutation with the provided data
+  console.log(section);
+  const dataFinal = {
+    enrollCd: section,
+    psId: schedule,
+  };
+  console.log(dataFinal);
+  mutation.mutate(dataFinal);
+};
+
+export const onSuccess = (response) => {
+  toast(
+    `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
+  );
+};
+
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
+
+  const { data: currentUser } = useCurrentUser();
+
+  const mutation = useBackendMutation(
+    objectToAxiosParams,
+    { onSuccess },
+    // Stryker disable next-line all : hard to set up test for caching
+    ["/api/courses/user/all"],
+  );
+
   const columns = [
     {
       Header: "Quarter",
@@ -110,9 +189,44 @@ export default function SectionsTable({ sections }) {
       Header: "Enroll Code",
       accessor: "section.enrollCode",
       disableGroupBy: true,
-
+      Cell: ({ cell: { value }, row: { original } }) => {
+        // Stryker disable all : difficult to test modal interaction
+        /* istanbul ignore next : difficult to test modal interaction*/
+        if (isSection(original.section.section) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <span>{value}</span>
+              <AddToScheduleModal
+                section={original}
+                onAdd={(section, schedule) =>
+                  handleAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else {
+          return value;
+        }
+        // Stryker restore all
+      },
       aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      Aggregated: ({ cell: { value } }) => /* istanbul ignore next */ {
+        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <span>{value}</span>
+              <AddToScheduleModal
+                section={value}
+                onAdd={(section, schedule) =>
+                  handleLectureAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else {
+          return `${value}`;
+        }
+      },
     },
     {
       Header: "Info",
