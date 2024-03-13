@@ -16,7 +16,7 @@ export default function PersonalSchedulesEditPage() {
       </Button>
     );
   };
-  
+
   let { id } = useParams();
   const currentUser = useCurrentUser();
 
@@ -110,4 +110,3 @@ export default function PersonalSchedulesEditPage() {
     </BasicLayout>
   );
 }
-

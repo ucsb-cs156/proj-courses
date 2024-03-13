@@ -72,8 +72,6 @@ describe("PersonalSchedulesEditPage tests", () => {
       ).not.toBeInTheDocument();
       restoreConsole();
     });
-
-
   });
 
   describe("tests where backend is working normally", () => {
@@ -148,7 +146,7 @@ describe("PersonalSchedulesEditPage tests", () => {
       const queryClient = new QueryClient();
       axiosMock.onGet(`/api/personalschedules?id=17`).reply(200, []);
       axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, []);
-  
+
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -156,16 +154,14 @@ describe("PersonalSchedulesEditPage tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
-  
+
       const backButton = screen.getByRole("button", { name: /back/i });
       expect(backButton).toBeInTheDocument();
-  
+
       // Optional: Test button functionality
       userEvent.click(backButton);
       // Add your assertions here to ensure that clicking the button triggers the expected action.
     });
-
-
 
     test("Is populated with the data provided", async () => {
       render(
