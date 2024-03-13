@@ -195,4 +195,112 @@ describe("PersonalScheduleForm tests", () => {
       await screen.findByText("Max length 15 characters"),
     ).toBeInTheDocument();
   });
+
+  test("Form has initialPersonalSchedule content with Fall quarter", async () => {
+    const queryClient = new QueryClient();
+    const content = {
+      id: 17,
+      user: {
+        id: 1,
+        email: "phtcon@ucsb.edu",
+        googleSub: "115856948234298493496",
+        pictureUrl:
+          "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+        fullName: "Phill Conrad",
+        givenName: "Phill",
+        familyName: "Conrad",
+        emailVerified: true,
+        locale: "en",
+        hostedDomain: "ucsb.edu",
+        admin: true,
+      },
+      description: "My Plan for Fall",
+      quarter: "20224",
+      name: "Fall Courses",
+    };
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm initialPersonalSchedule={content} />
+        </Router>
+      </QueryClientProvider>,
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
+        "F22",
+      );
+    });
+  });
+
+  test("Form has initialPersonalSchedule content with Spring quarter", async () => {
+    const queryClient = new QueryClient();
+    const content = {
+      id: 17,
+      user: {
+        id: 1,
+        email: "phtcon@ucsb.edu",
+        googleSub: "115856948234298493496",
+        pictureUrl:
+          "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+        fullName: "Phill Conrad",
+        givenName: "Phill",
+        familyName: "Conrad",
+        emailVerified: true,
+        locale: "en",
+        hostedDomain: "ucsb.edu",
+        admin: true,
+      },
+      description: "My Plan for Spring",
+      quarter: "20222",
+      name: "Spring Courses",
+    };
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm initialPersonalSchedule={content} />
+        </Router>
+      </QueryClientProvider>,
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
+        "S22",
+      );
+    });
+  });
+
+  test("Form has initialPersonalSchedule content with Summer quarter", async () => {
+    const queryClient = new QueryClient();
+    const content = {
+      id: 17,
+      user: {
+        id: 1,
+        email: "phtcon@ucsb.edu",
+        googleSub: "115856948234298493496",
+        pictureUrl:
+          "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+        fullName: "Phill Conrad",
+        givenName: "Phill",
+        familyName: "Conrad",
+        emailVerified: true,
+        locale: "en",
+        hostedDomain: "ucsb.edu",
+        admin: true,
+      },
+      description: "My Plan for M",
+      quarter: "20223",
+      name: "M Courses",
+    };
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm initialPersonalSchedule={content} />
+        </Router>
+      </QueryClientProvider>,
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
+        "M22",
+      );
+    });
+  });
 });
