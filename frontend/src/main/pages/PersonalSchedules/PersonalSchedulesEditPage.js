@@ -26,7 +26,7 @@ export default function PersonalSchedulesEditPage() {
     _status,
   } = useBackend(
     // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/personalschedules?id=${id}"],
+    [`/api/personalschedules?id=${id}`],
     {
       // Stryker disable next-line all : GET is the default, so changing this to "" doesn't introduce a bug
       method: "GET",
@@ -77,7 +77,7 @@ export default function PersonalSchedulesEditPage() {
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    ["/api/personalschedules/id=${id}"],
+    [`/api/personalschedules/id=${id}`],
   );
 
   const { isSuccess } = mutation;
