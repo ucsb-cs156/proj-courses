@@ -9,6 +9,7 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
+import userEvent from "@testing-library/user-event";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -71,6 +72,8 @@ describe("PersonalSchedulesEditPage tests", () => {
       ).not.toBeInTheDocument();
       restoreConsole();
     });
+
+
   });
 
   describe("tests where backend is working normally", () => {
@@ -140,6 +143,29 @@ describe("PersonalSchedulesEditPage tests", () => {
         </QueryClientProvider>,
       );
     });
+
+    test("renders 'Back' button", () => {
+      const queryClient = new QueryClient();
+      axiosMock.onGet(`/api/personalschedules?id=17`).reply(200, []);
+      axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, []);
+  
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <PersonalSchedulesEditPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+  
+      const backButton = screen.getByRole("button", { name: /back/i });
+      expect(backButton).toBeInTheDocument();
+  
+      // Optional: Test button functionality
+      userEvent.click(backButton);
+      // Add your assertions here to ensure that clicking the button triggers the expected action.
+    });
+
+
 
     test("Is populated with the data provided", async () => {
       render(

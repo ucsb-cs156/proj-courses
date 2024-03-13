@@ -6,8 +6,17 @@ import { Navigate } from "react-router-dom";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { useCurrentUser } from "main/utils/currentUser";
+import { Button } from "react-bootstrap";
 
 export default function PersonalSchedulesEditPage() {
+  const createButton = () => {
+    return (
+      <Button variant="primary" href="/personalschedules/list" style={{}}>
+        Back
+      </Button>
+    );
+  };
+  
   let { id } = useParams();
   const currentUser = useCurrentUser();
 
@@ -85,6 +94,7 @@ export default function PersonalSchedulesEditPage() {
     <BasicLayout>
       <div className="pt-2">
         <h1>Edit Personal Schedule</h1>
+        {createButton()}
         {personalSchedule && (
           <PersonalScheduleForm
             submitAction={onSubmit}
