@@ -4,6 +4,8 @@ FROM bellsoft/liberica-openjdk-alpine:17.0.2
 WORKDIR /app
 
 ENV NODE_VERSION=16.20.0
+RUN pwd
+RUN ls -l
 RUN apk add curl
 RUN apk add bash
 RUN apk add maven
@@ -25,11 +27,11 @@ COPY lombok.config /home/app
 COPY pom.xml /home/app
 
 ENV PRODUCTION=true
-RUN git status
-RUN git remove -v
-RUN cd /home/app
-RUN git status
-RUN git remote -v
+RUN pwd
+RUN ls
+RUN env
+RUN cd /app; git status; exit 0
+RUN cd /app; git remote -v; exit 0
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
 
 ENTRYPOINT ["sh", "-c", "java -jar /home/app/target/*.jar"]
