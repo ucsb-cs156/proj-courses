@@ -7,6 +7,7 @@ ENV NODE_VERSION=16.20.0
 RUN apk add curl
 RUN apk add bash
 RUN apk add maven
+RUN apk add git
 RUN apk add --no-cache libstdc++
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 ENV NVM_DIR=/root/.nvm
@@ -24,6 +25,7 @@ COPY lombok.config /home/app
 COPY pom.xml /home/app
 
 ENV PRODUCTION=true
+RUN cd /home/app; git init; git remote add origin https://github.com/ucsb-cs156/proj-courses; git pull origin main; ls; exit 0
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
 
 ENTRYPOINT ["sh", "-c", "java -jar /home/app/target/*.jar"]
