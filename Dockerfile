@@ -7,6 +7,7 @@ ENV NODE_VERSION=16.20.0
 RUN apk add curl
 RUN apk add bash
 RUN apk add maven
+RUN apk add git
 RUN apk add --no-cache libstdc++
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 ENV NVM_DIR=/root/.nvm
