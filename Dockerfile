@@ -19,6 +19,10 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 RUN node --version
 RUN npm --version
 
+RUN echo "\$REPO=${REPO}"
+RUN echo "\$BRANCH=${BRANCH}"
+
+RUN mkdir /home/app
 RUN cd /home/app; git init; git remote add origin https://github.com/ucsb-cs156/proj-courses; git pull origin main; ls; exit 0
 # COPY frontend /home/app/frontend
 # COPY src /home/app/src
