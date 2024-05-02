@@ -24,6 +24,11 @@ COPY lombok.config /home/app
 COPY pom.xml /home/app
 
 ENV PRODUCTION=true
+RUN git status
+RUN git remove -v
+RUN cd /home/app
+RUN git status
+RUN git remote -v
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
 
 ENTRYPOINT ["sh", "-c", "java -jar /home/app/target/*.jar"]
