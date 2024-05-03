@@ -33,6 +33,8 @@ RUN env
 RUN echo "\$REPO=${REPO}"
 RUN echo "\$BRANCH=${BRANCH}"
 
+RUN pwd
+RUN ls -al
 RUN mkdir /home/app
 RUN cd /home/app; git config --global init.defaultBranch main; git init; git remote add origin ${REPO}; git fetch origin; git checkout -b ${BRANCH}; git pull origin ${BRANCH}
 
