@@ -23,12 +23,7 @@ RUN echo "\$REPO=${REPO}"
 RUN echo "\$BRANCH=${BRANCH}"
 
 RUN mkdir /home/app
-RUN cd /home/app; git init; git remote add origin https://github.com/ucsb-cs156/proj-courses; git pull origin main; ls; exit 0
-# COPY frontend /home/app/frontend
-# COPY src /home/app/src
-# COPY lombok.config /home/app
-# COPY pom.xml /home/app
-
+RUN cd /home/app; git init; git remote add origin ${REPO}; git fetch origin; git checkout -b ${BRANCH}; git pull origin ${BRANCH}
 
 ENV PRODUCTION=true
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
