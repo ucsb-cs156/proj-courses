@@ -3,6 +3,16 @@ FROM bellsoft/liberica-openjdk-alpine:17.0.2
 
 WORKDIR /app
 
+# For the ARG commands to work, you need to do the following configuration:
+#   dokku docker-options:add courses-qa build '--build-arg REPO'
+#   dokku docker-options:add courses-qa build '--build-arg BRANCH'
+
+ARG REPO=https://github.com/ucsb-cs156/proj-courses
+ARG BRANCH=main
+
+ENV REPO=${REPO}
+ENV BRANCH=${BRANCH}
+
 ENV NODE_VERSION=16.20.0
 RUN apk add curl
 RUN apk add bash
@@ -24,7 +34,7 @@ RUN echo "\$REPO=${REPO}"
 RUN echo "\$BRANCH=${BRANCH}"
 
 RUN mkdir /home/app
-RUN cd /home/app; git init; git remote add origin ${REPO}; git fetch origin; git checkout -b ${BRANCH}; git pull origin ${BRANCH}
+RUN cd /home/app; git config --global init.defaultBranch main; git init; git remote add origin ${REPO}; git fetch origin; git checkout -b ${BRANCH}; git pull origin ${BRANCH}
 
 ENV PRODUCTION=true
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
