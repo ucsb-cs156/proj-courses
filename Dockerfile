@@ -8,6 +8,7 @@ RUN apk add curl
 RUN apk add bash
 RUN apk add maven
 RUN apk add --no-cache libstdc++
+RUN apk add git
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 ENV NVM_DIR=/root/.nvm
 RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
@@ -22,6 +23,7 @@ COPY frontend /home/app/frontend
 COPY src /home/app/src
 COPY lombok.config /home/app
 COPY pom.xml /home/app
+COPY .git /home/app/.git
 
 ENV PRODUCTION=true
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
