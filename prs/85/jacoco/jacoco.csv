@@ -32,7 +32,7 @@ courses,edu.ucsb.cs156.courses.errors,BadEnrollCdException,0,12,0,0,0,3,0,1,0,1
 courses,edu.ucsb.cs156.courses.entities,GradeHistory,0,23,0,4,0,4,0,4,0,2
 courses,edu.ucsb.cs156.courses.models,Quarter,0,412,0,43,0,81,0,43,0,21
 courses,edu.ucsb.cs156.courses.services,UCSBSubjectsService,0,58,0,0,0,15,0,3,0,3
-courses,edu.ucsb.cs156.courses.services,SystemInfoServiceImpl,1,52,2,2,0,15,2,3,0,3
+courses,edu.ucsb.cs156.courses.services,SystemInfoServiceImpl,0,55,0,4,0,15,0,6,0,4
 courses,edu.ucsb.cs156.courses.services,GrantedAuthoritiesService,0,21,0,0,0,7,0,3,0,3
 courses,edu.ucsb.cs156.courses.services,UCSBSubjectsService.new TypeReference() {...},0,6,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.services,UCSBGradeHistoryServiceImpl,0,205,0,6,0,51,0,11,0,8
