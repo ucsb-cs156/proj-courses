@@ -49,7 +49,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
             .sourceRepo(this.sourceRepo)
             .commitMessage(this.commitMessage)
             .commitId(this.commitId)
-            .githubUrl(githubUrl(sourceRepo, commitId))
+            .githubUrl(githubUrl(this.sourceRepo, this.commitId))
             .build();
     log.info("getSystemInfo returns {}", si);
     return si;
