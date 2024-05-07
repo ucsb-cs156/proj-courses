@@ -35,6 +35,10 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${git.commit.id}")
   private String commitId;
 
+  public static String githubUrl(String repo, String commit) {
+    return commit != null && repo != null ? repo + "/commit/" + commit : null;
+  }
+
   public SystemInfo getSystemInfo() {
     SystemInfo si =
         SystemInfo.builder()
@@ -45,8 +49,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
             .sourceRepo(this.sourceRepo)
             .commitMessage(this.commitMessage)
             .commitId(this.commitId)
-            .githubUrl(
-                commitId != null && sourceRepo != null ? sourceRepo + "/commit/" + commitId : null)
+            .githubUrl(githubUrl(sourceRepo,commitId))
             .build();
     log.info("getSystemInfo returns {}", si);
     return si;
