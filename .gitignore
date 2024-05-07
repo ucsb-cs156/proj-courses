@@ -1,6 +1,10 @@
 ## emacs ##
 *~
 
+# mac files
+
+.DS_Store
+
 # Stryker reports
 
 frontend/.stryker-tmp
