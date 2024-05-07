@@ -1,5 +1,7 @@
 package edu.ucsb.cs156.courses.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.ucsb.cs156.courses.models.SystemInfo;
@@ -25,5 +27,19 @@ class SystemInfoServiceImplTests {
     SystemInfo si = systemInfoService.getSystemInfo();
     assertTrue(si.getSpringH2ConsoleEnabled());
     assertTrue(si.getShowSwaggerUILink());
+    assertTrue(si.getGithubUrl().startsWith(si.getSourceRepo()));
+    assertTrue(si.getGithubUrl().endsWith(si.getCommitId()));
+    assertTrue(si.getGithubUrl().contains("/commit/"));
+  }
+
+  @Test
+  void test_githubUrl() {
+    assertEquals(
+        SystemInfoServiceImpl.githubUrl(
+            "https://github.com/ucsb-cs156/proj-courses", "abcdef12345"),
+        "https://github.com/ucsb-cs156/proj-courses/commit/abcdef12345");
+    assertNull(SystemInfoServiceImpl.githubUrl(null, null));
+    assertNull(SystemInfoServiceImpl.githubUrl("x", null));
+    assertNull(SystemInfoServiceImpl.githubUrl(null, "x"));
   }
 }
