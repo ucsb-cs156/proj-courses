@@ -32,7 +32,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${git.commit.message.short:unknown}")
   private String commitMessage;
 
-  @Value("${git.commit.id.short:unknown}")
+  @Value("${git.commit.id.abbrev:unknown}")
   private String commitId;
 
   public static String githubUrl(String repo, String commit) {
