@@ -16,7 +16,8 @@ public class SystemInfo {
   private Boolean showSwaggerUILink;
   private String startQtrYYYYQ;
   private String endQtrYYYYQ;
-  private String sourceRepo;
+  private String sourceRepo; // user configured URL of the source repository for footer
+  private String remoteOriginUrl; // ground truth repo for commit
   private String commitMessage;
   private String branch;
   private String commitId;
