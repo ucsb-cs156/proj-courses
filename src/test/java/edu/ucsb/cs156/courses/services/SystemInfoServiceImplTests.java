@@ -27,7 +27,9 @@ class SystemInfoServiceImplTests {
     SystemInfo si = systemInfoService.getSystemInfo();
     assertTrue(si.getSpringH2ConsoleEnabled());
     assertTrue(si.getShowSwaggerUILink());
-    assertEquals(si.getGithubUrl(), "https://github.com/ucsb-cs156/proj-courses/commit/unknown");
+    assertTrue(si.getGithubUrl().startsWith(si.getSourceRepo()));
+    assertTrue(si.getGithubUrl().endsWith(si.getCommitId()));
+    assertTrue(si.getGithubUrl().contains("/commit/"));
   }
 
   @Test
