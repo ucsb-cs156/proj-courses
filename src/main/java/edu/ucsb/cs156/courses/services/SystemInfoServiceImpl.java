@@ -29,14 +29,8 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.sourceRepo:https://github.com/ucsb-cs156/proj-courses}")
   private String sourceRepo;
 
-  @Value("${git.remote.origin.url}")
-  private String remoteOriginUrl;
-
   @Value("${git.commit.message.short}")
   private String commitMessage;
-
-  @Value("${git.branch}")
-  private String branch;
 
   @Value("${git.commit.id}")
   private String commitId;
@@ -49,11 +43,9 @@ public class SystemInfoServiceImpl extends SystemInfoService {
             .startQtrYYYYQ(this.startQtrYYYYQ)
             .endQtrYYYYQ(this.endQtrYYYYQ)
             .sourceRepo(this.sourceRepo)
-            .remoteOriginUrl(this.remoteOriginUrl)
             .commitMessage(this.commitMessage)
-            .branch(this.branch)
             .commitId(this.commitId)
-            .githubUrl(commitId != null && remoteOriginUrl!= null ? remoteOriginUrl + "/commit/" + commitId : null)
+            .githubUrl(commitId != null && sourceRepo!= null ? sourceRepo + "/commit/" + commitId : null)
             .build();
     log.info("getSystemInfo returns {}", si);
     return si;
