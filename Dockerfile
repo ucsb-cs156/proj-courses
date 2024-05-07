@@ -19,7 +19,8 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 RUN node --version
 RUN npm --version
 
-# This relies on the dokku setting:
+# This approach (copying entire directory including git info) 
+# relies on the dokku setting:
 #   dokku git:set appname keep-git-dir true
 
 COPY . /home/app
