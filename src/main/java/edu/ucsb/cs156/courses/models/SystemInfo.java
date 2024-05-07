@@ -20,4 +20,5 @@ public class SystemInfo {
   private String commitMessage;
   private String branch;
   private String commitId;
+  private String githubUrl;
 }
