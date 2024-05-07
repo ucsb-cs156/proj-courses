@@ -19,11 +19,9 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 RUN node --version
 RUN npm --version
 
-COPY frontend /home/app/frontend
-COPY src /home/app/src
-COPY lombok.config /home/app
-COPY pom.xml /home/app
-COPY .git /home/app/.git
+COPY . /home/app
+RUN ls -al /home/app ; exit 0
+RUN cd /home/app && git status; exit 0
 
 ENV PRODUCTION=true
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
