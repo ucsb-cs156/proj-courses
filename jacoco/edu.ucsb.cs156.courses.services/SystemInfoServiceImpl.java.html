@@ -29,29 +29,30 @@ import org.springframework.stereotype.Service;
   @Value(&quot;${app.sourceRepo:https://github.com/ucsb-cs156/proj-courses}&quot;)
   private String sourceRepo;
 
-  @Value(&quot;${git.commit.message.short}&quot;)
+  @Value(&quot;${git.commit.message.short:unknown}&quot;)
   private String commitMessage;
 
-  @Value(&quot;${git.branch}&quot;)
-  private String branch;
-
-  @Value(&quot;${git.commit.id}&quot;)
+  @Value(&quot;${git.commit.id.abbrev:unknown}&quot;)
   private String commitId;
+
+  public static String githubUrl(String repo, String commit) {
+<span class="fc bfc" id="L39" title="All 4 branches covered.">    return commit != null &amp;&amp; repo != null ? repo + &quot;/commit/&quot; + commit : null;</span>
+  }
 
   public SystemInfo getSystemInfo() {
     SystemInfo si =
-<span class="fc" id="L43">        SystemInfo.builder()</span>
-<span class="fc" id="L44">            .springH2ConsoleEnabled(this.springH2ConsoleEnabled)</span>
-<span class="fc" id="L45">            .showSwaggerUILink(this.showSwaggerUILink)</span>
-<span class="fc" id="L46">            .startQtrYYYYQ(this.startQtrYYYYQ)</span>
-<span class="fc" id="L47">            .endQtrYYYYQ(this.endQtrYYYYQ)</span>
-<span class="fc" id="L48">            .sourceRepo(this.sourceRepo)</span>
-<span class="fc" id="L49">            .commitMessage(this.commitMessage)</span>
-<span class="fc" id="L50">            .branch(this.branch)</span>
+<span class="fc" id="L44">        SystemInfo.builder()</span>
+<span class="fc" id="L45">            .springH2ConsoleEnabled(this.springH2ConsoleEnabled)</span>
+<span class="fc" id="L46">            .showSwaggerUILink(this.showSwaggerUILink)</span>
+<span class="fc" id="L47">            .startQtrYYYYQ(this.startQtrYYYYQ)</span>
+<span class="fc" id="L48">            .endQtrYYYYQ(this.endQtrYYYYQ)</span>
+<span class="fc" id="L49">            .sourceRepo(this.sourceRepo)</span>
+<span class="fc" id="L50">            .commitMessage(this.commitMessage)</span>
 <span class="fc" id="L51">            .commitId(this.commitId)</span>
-<span class="fc" id="L52">            .build();</span>
-<span class="fc" id="L53">    log.info(&quot;getSystemInfo returns {}&quot;, si);</span>
-<span class="fc" id="L54">    return si;</span>
+<span class="fc" id="L52">            .githubUrl(githubUrl(this.sourceRepo, this.commitId))</span>
+<span class="fc" id="L53">            .build();</span>
+<span class="fc" id="L54">    log.info(&quot;getSystemInfo returns {}&quot;, si);</span>
+<span class="fc" id="L55">    return si;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
