@@ -45,10 +45,11 @@ import org.springframework.stereotype.Service;
 <span class="fc" id="L45">            .sourceRepo(this.sourceRepo)</span>
 <span class="fc" id="L46">            .commitMessage(this.commitMessage)</span>
 <span class="fc" id="L47">            .commitId(this.commitId)</span>
-<span class="pc bpc" id="L48" title="2 of 4 branches missed.">            .githubUrl(commitId != null &amp;&amp; sourceRepo!= null ? sourceRepo + &quot;/commit/&quot; + commitId : null)</span>
-<span class="fc" id="L49">            .build();</span>
-<span class="fc" id="L50">    log.info(&quot;getSystemInfo returns {}&quot;, si);</span>
-<span class="fc" id="L51">    return si;</span>
+<span class="fc" id="L48">            .githubUrl(</span>
+<span class="pc bpc" id="L49" title="2 of 4 branches missed.">                commitId != null &amp;&amp; sourceRepo != null ? sourceRepo + &quot;/commit/&quot; + commitId : null)</span>
+<span class="fc" id="L50">            .build();</span>
+<span class="fc" id="L51">    log.info(&quot;getSystemInfo returns {}&quot;, si);</span>
+<span class="fc" id="L52">    return si;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
