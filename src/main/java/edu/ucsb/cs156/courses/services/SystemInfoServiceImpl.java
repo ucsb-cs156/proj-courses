@@ -49,6 +49,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
             .commitMessage(this.commitMessage)
             .branch(this.branch)
             .commitId(this.commitId)
+            .githubUrl(commitId != null && sourceRepo!= null ? sourceRepo + "/commit/" + commitId : null)
             .build();
     log.info("getSystemInfo returns {}", si);
     return si;
