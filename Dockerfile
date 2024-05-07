@@ -19,6 +19,9 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 RUN node --version
 RUN npm --version
 
+# This relies on the dokku setting:
+#   dokku git:set appname keep-git-dir true
+
 COPY . /home/app
 RUN cd /home/app && git status && git log | head -50 ; exit 0
 
