@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
   @Value(&quot;${git.commit.message.short:unknown}&quot;)
   private String commitMessage;
 
-  @Value(&quot;${git.commit.id.short:unknown}&quot;)
+  @Value(&quot;${git.commit.id.abbrev:unknown}&quot;)
   private String commitId;
 
   public static String githubUrl(String repo, String commit) {
