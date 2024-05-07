@@ -29,10 +29,10 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.sourceRepo:https://github.com/ucsb-cs156/proj-courses}")
   private String sourceRepo;
 
-  @Value("${git.commit.message.short}")
+  @Value("${git.commit.message.short:unknown}")
   private String commitMessage;
 
-  @Value("${git.commit.id}")
+  @Value("${git.commit.id.short:unknown}")
   private String commitId;
 
   public static String githubUrl(String repo, String commit) {
