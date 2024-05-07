@@ -23,7 +23,7 @@ RUN npm --version
 #   dokku git:set appname keep-git-dir true
 
 COPY . /home/app
-RUN cd /home/app && git status && git log | head -50 ; exit 0
+RUN cd /home/app && git status && git log | head -20 ; exit 0
 
 ENV PRODUCTION=true
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
