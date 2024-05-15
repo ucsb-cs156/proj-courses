@@ -9,6 +9,7 @@ import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSch
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
+import userEvent from "@testing-library/user-event";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -99,6 +100,27 @@ describe("PersonalSchedulesIndexPage tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent(
       "3",
     );
+  });
+
+  test("renders 'Add New Personal Schedule' button", () => {
+    setupUserOnly();
+    const queryClient = new QueryClient();
+    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const addButton = screen.getByRole("button", {
+      name: /add new personal schedule/i,
+    });
+    expect(addButton).toBeInTheDocument();
+
+    userEvent.click(addButton);
   });
 
   test("renders three PersonalSchedules without crashing for admin user", async () => {
