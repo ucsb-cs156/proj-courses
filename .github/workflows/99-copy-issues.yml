@@ -3,7 +3,8 @@ name: 99 - Copy issues from starter repo
 env:
     GH_TOKEN: ${{ github.token }}
     STARTER: https://github.com/ucsb-cs156/proj-courses
-    TAG: w24
+    TAG: ${{vars.QXX}}
+
 on:
   workflow_dispatch:
      
