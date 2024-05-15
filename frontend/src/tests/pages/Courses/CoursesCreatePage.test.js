@@ -107,6 +107,92 @@ describe("CoursesCreatePage tests", () => {
     expect(mockNavigate).toBeCalledWith({ to: "/courses/list" });
   });
 
+  test("404", async () => {
+    const queryClient = new QueryClient();
+
+    axiosMock.onPost("/api/courses/post").reply(404, {
+      status: 404,
+      message: "PersonalSchedule with id 3000 not found",
+      type: "EntityNotFoundException",
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesCreatePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const enrollCdField = await screen.findByTestId("CourseForm-enrollCd");
+    const submitButton = screen.getByTestId("CourseForm-submit");
+
+    fireEvent.change(enrollCdField, { target: { value: "11111" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("PSCourseCreate-Error")).toHaveTextContent(
+        "Error: Personal schedule not found. Please create a new personal schedule first.",
+      );
+    });
+  });
+
+  test("400", async () => {
+    const queryClient = new QueryClient();
+
+    axiosMock.onPost("/api/courses/post").reply(400);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesCreatePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const enrollCdField = await screen.findByTestId("CourseForm-enrollCd");
+    const submitButton = screen.getByTestId("CourseForm-submit");
+
+    fireEvent.change(enrollCdField, { target: { value: "11111" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("PSCourseCreate-Error")).toHaveTextContent(
+        "Error: Personal schedule not found. Please create a new personal schedule first.",
+      );
+    });
+  });
+
+  test("we display the correct error message", async () => {
+    const queryClient = new QueryClient();
+
+    axiosMock.onPost("/api/courses/post").reply(404, {
+      status: 404,
+      message: "haahaha",
+      type: "EntityNotFoundException",
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CoursesCreatePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const enrollCdField = await screen.findByTestId("CourseForm-enrollCd");
+    const submitButton = screen.getByTestId("CourseForm-submit");
+
+    fireEvent.change(enrollCdField, { target: { value: "11111" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("PSCourseCreate-Error")).toHaveTextContent(
+        "Error: haahaha",
+      );
+    });
+  });
+
   test("when you input incorrect information, we get an error", async () => {
     const queryClient = new QueryClient();
 
@@ -134,6 +220,9 @@ describe("CoursesCreatePage tests", () => {
     await screen.findByTestId("PSCourseCreate-Error");
     const PSError = screen.getByTestId("PSCourseCreate-Error");
     expect(PSError).toBeInTheDocument();
+    expect(screen.getByTestId("PSCourseCreate-Error")).not.toHaveTextContent(
+      "Error: Personal schedule not found. Please create a new personal schedule first.",
+    );
   });
 
   test("sets schedule and updates localStorage when schedules are available", async () => {

@@ -2,7 +2,13 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { fiveSections, gigaSections } from "fixtures/sectionFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
+import { toast } from "react-toastify";
 import SectionsTable from "main/components/Sections/SectionsTable";
+import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
+import { handleAddToSchedule } from "main/components/Sections/SectionsTable";
+import { handleLectureAddToSchedule } from "main/components/Sections/SectionsTable";
+import { isLectureWithNoSections } from "main/components/Sections/SectionsTable";
+import { useBackendMutation } from "main/utils/useBackend";
 
 const mockedNavigate = jest.fn();
 
@@ -11,8 +17,160 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedNavigate,
 }));
 
+jest.mock("react-toastify", () => ({
+  toast: jest.fn(),
+}));
+
+jest.mock("main/utils/useBackend", () => ({
+  useBackendMutation: jest.fn(),
+}));
+
+describe("isLectureWithNoSections", () => {
+  it("should return true when the section is a lecture with no other sections", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0100" },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(true);
+  });
+
+  it("should return false when the section is not a lecture", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0101" },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+
+  it("should return false when the section is a lecture but there are other sections", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0100" },
+      },
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "67890", section: "0101" },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+
+  it("should return false when the section is not found", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "67890", section: "0100" },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe("handleAddToSchedule", () => {
+  it("calls mutate with correct data", () => {
+    const mockMutation = { mutate: jest.fn() };
+    const mockSection = { section: { enrollCode: "123" } };
+    const mockSchedule = "456";
+
+    handleAddToSchedule(mockSection, mockSchedule, mockMutation);
+
+    expect(mockMutation.mutate).toHaveBeenCalledWith({
+      enrollCd: "123",
+      psId: "456",
+    });
+  });
+});
+
+describe("handleLectureAddToSchedule", () => {
+  it("should execute the mutation with the provided data", () => {
+    // Mock the mutation object
+    const mutationMock = {
+      mutate: jest.fn(),
+    };
+
+    // Define the input data
+    const section = 12345;
+    const schedule = "FALL2023";
+
+    // Call the function
+    handleLectureAddToSchedule(section, schedule, mutationMock);
+
+    // Assert that the mutation.mutate function was called with the expected data
+    expect(mutationMock.mutate).toHaveBeenCalledWith({
+      enrollCd: section,
+      psId: schedule,
+    });
+  });
+});
+
+describe("objectToAxiosParams", () => {
+  it("should return the correct axios parameters", () => {
+    const data = {
+      enrollCd: 12345,
+      psId: 15,
+    };
+
+    const result = objectToAxiosParams(data);
+
+    expect(result).toEqual({
+      url: "/api/courses/post",
+      method: "POST",
+      params: {
+        enrollCd: "12345",
+        psId: "15",
+      },
+    });
+  });
+});
+
 describe("Section tests", () => {
   const queryClient = new QueryClient();
+
+  test("calls onSuccess when mutation is successful and calls toast with correct parameters", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Call the onSuccess function
+    const onSuccess = useBackendMutation.mock.calls[0][1].onSuccess;
+    const mockResponse = [{ id: 1, enrollCd: "1234" }];
+    onSuccess(mockResponse);
+
+    // Verify that toast was called with the correct parameters
+    expect(toast).toHaveBeenCalledWith(
+      "New course Created - id: 1 enrollCd: 1234",
+    );
+  });
 
   test("renders without crashing for empty table", () => {
     render(
