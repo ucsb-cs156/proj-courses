@@ -1,0 +1,145 @@
+# Creates/Resets the gh-pages branch to the intended start state
+
+# Pre-requisites:
+# (1) Create a slack app following these instructions:
+#    https://docs.celigo.com/hc/en-us/articles/7140655476507-How-to-create-an-app-and-retrieve-OAuth-token-in-Slack
+# (2) Add the OAuth scope chat:write
+# (3) Create an OAuth token
+# (4) Create a repository secret under "Secrets/Actions/Repository Secret" called
+#   SLACK_BOT_USER_OAUTH_ACCESS_TOKEN  and put the value of the OAuth token there
+# (5) Put the channel number in the env.CHANNEL_NUMBER variable below.
+#   (or maybe refactor this into a repository secret? )
+# (6) To test, merge a PR.
+
+name: "82-pull-request-slack-msg: Send a slack message whenever there's a pull request"
+on:
+  pull_request:
+    types:
+      - closed
+
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  TEAM_TO_CHANNEL: ${{ vars.TEAM_TO_CHANNEL }}
+  TEAM: ${{github.repository}}
+  
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3.5.2
+        with:
+          fetch-depth: 1
+          token: ${{ github.token }}
+
+  get-team-name:
+    name: Get Team Name
+    runs-on: ubuntu-latest
+    outputs:
+      team: ${{ steps.find_team.outputs.team }} # Changed from 'get-team-name' to 'find_team'
+    steps:
+      - name: Use bash to extract team name (final nine chars of repo name)
+        id: find_team
+        run: |
+          REPO=${{ github.repository }}
+          TEAM_NAME="${REPO: -9}"
+          echo "Last nine characters: TEAM_NAME"
+          echo "::set-output name=team::${TEAM_NAME}"
+      - name: Debug - Print Team Name
+        run: |
+          echo "Team Name: ${{ steps.find_team.outputs.team }}"
+
+  get-pr-num:
+    name: Get PR Number
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.get-pr-num.outputs.pr_number }}
+      branch_name: ${{ steps.get-branch-name.outputs.branch_name }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3.5.2
+        with:
+          fetch-depth: 1
+          token: ${{ github.token }}
+      - name: Get PR number
+        id: get-pr-num
+        run: |
+          echo "GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH}"
+          pr_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          echo "pr_number=${pr_number}" 
+          echo "pr_number=${pr_number}" >> "$GITHUB_OUTPUT"
+      - name: Figure out Branch name
+        id: get-branch-name
+        run: |
+          GITHUB_HEAD_REF="${GITHUB_HEAD_REF}"
+          echo GITHUB_HEAD_REF=${GITHUB_HEAD_REF}
+          GITHUB_REF_CLEANED=${GITHUB_REF/refs\/heads\//}
+          echo GITHUB_REF_CLEANED=${GITHUB_REF_CLEANED}
+          GITHUB_REF_CLEANED=${GITHUB_REF_CLEANED//\//-}
+          echo GITHUB_REF_CLEANED=${GITHUB_REF_CLEANED}
+          BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF_CLEANED}}"
+          echo "branch_name=${BRANCH}"
+          echo "branch_name=${BRANCH}" >> "$GITHUB_OUTPUT"
+
+  if_merged:
+    needs: [get-pr-num, get-team-name]
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          pr_number=${{needs.get-pr-num.outputs.pr_number}}
+          echo The PR ${pr_number} was merged
+
+      - name: Send message to Slack API
+        uses: archive/github-actions-slack@v2.0.0
+        id: notify
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ fromJSON(env.TEAM_TO_CHANNEL)[ needs.get-team-name.outputs.team] }}
+          slack-text: >
+                      🤔 Hello from reflection bot! 🤔\n
+                      PR https://github.com/${{github.repository}}/pull/${{needs.get-pr-num.outputs.pr_number}} was merged ✅.\n
+                      *Each team member that was involved in this PR (either coding or code review)*, please now write a brief reflection *as a reply thread to this post* on what you as an individual, or your team, learned from this PR, if anything.\n
+                      Note that your team will be graded on two aspects:\n 
+                        (1) the percentage of prompts like this one to which your team responds,\n 
+                        (2) the quality of your responses.\n\n
+                      See https://ucsb-cs156.github.io/s24/lab/team04.html for details.
+                     
+      - name: Result from "Send Message"
+        run: |
+          echo "The result was:"
+          echo '${{ steps.notify.outputs.slack-result }}' | jq
+
+  if_not_merged:
+    needs: [get-pr-num, get-team-name]
+    if: github.event.pull_request.merged != true
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          pr_number=${{needs.get-pr-num.outputs.pr_number}}
+          echo The PR ${pr_number} was merged
+
+      - name: Send message to Slack API
+        uses: archive/github-actions-slack@v2.0.0
+        id: notify
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ fromJSON(env.TEAM_TO_CHANNEL)[ needs.get-team-name.outputs.team] }}
+          slack-text: >
+                      🤔 Hello from reflection bot! 🤔\n
+                      PR https://github.com/${{github.repository}}/pull/${{needs.get-pr-num.outputs.pr_number}} was ❌ closed but not merged! ❌ \n
+                      *Each team member that was involved in this PR (either coding or code review)*, please now write a brief reflection *as a reply thread to this post* on what you as an individual, or your team, learned from this PR, if anything.\n
+                      Note that your team will be graded on two aspects:\n 
+                        (1) the percentage of prompts like this one to which your team responds,\n 
+                        (2) the quality of your responses.\n\n
+                      See https://ucsb-cs156.github.io/s24/lab/team04.html for details.
+      - name: Result from "Send Message"
+        run: |
+          echo "The result was:"
+          echo '${{ steps.notify.outputs.slack-result }}' | jq
