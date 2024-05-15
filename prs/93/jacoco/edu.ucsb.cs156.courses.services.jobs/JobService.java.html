@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JobService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.services.jobs</a> &gt; <span class="el_source">JobService.java</span></div><h1>JobService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.services.jobs;
+
+import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.repositories.JobsRepository;
+import edu.ucsb.cs156.courses.services.CurrentUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L12">public class JobService {</span>
+  @Autowired private JobsRepository jobsRepository;
+
+  @Autowired private CurrentUserService currentUserService;
+
+  @Lazy @Autowired private JobService self;
+
+  public Job runAsJob(JobContextConsumer jobFunction) {
+<span class="fc" id="L20">    Job job = Job.builder().createdBy(currentUserService.getUser()).status(&quot;running&quot;).build();</span>
+
+<span class="fc" id="L22">    jobsRepository.save(job);</span>
+<span class="fc" id="L23">    self.runJobAsync(job, jobFunction);</span>
+
+<span class="fc" id="L25">    return job;</span>
+  }
+
+  @Async
+  public void runJobAsync(Job job, JobContextConsumer jobFunction) {
+<span class="fc" id="L30">    JobContext context = new JobContext(jobsRepository, job);</span>
+
+    try {
+<span class="fc" id="L33">      jobFunction.accept(context);</span>
+<span class="fc" id="L34">    } catch (Exception e) {</span>
+<span class="fc" id="L35">      job.setStatus(&quot;error&quot;);</span>
+<span class="fc" id="L36">      context.log(e.getMessage());</span>
+<span class="fc" id="L37">      return;</span>
+<span class="fc" id="L38">    }</span>
+
+<span class="fc" id="L40">    job.setStatus(&quot;complete&quot;);</span>
+<span class="fc" id="L41">    jobsRepository.save(job);</span>
+<span class="fc" id="L42">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
