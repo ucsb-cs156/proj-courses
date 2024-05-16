@@ -9,7 +9,7 @@ name: 98 - Copy specific issue from starter repo (creates new issue)
 env:
     GH_TOKEN: ${{ github.token }}
     STARTER: https://github.com/ucsb-cs156/proj-courses
-    TAG: f23
+    TAG: ${{vars.QXX}}
 on:
   workflow_dispatch:
     inputs:
