@@ -1,15 +1,15 @@
 # proj-courses
 
 This repo contains the code for the CMPSC 156 legacy code project "Courses Search". 
-
+ 
 The project provides a web application where users can search for UCSB courses in various ways.
 
 Users with a Google Account can also store past, current or future schedules of courses for particular quarters. 
 
 # Deployments
-
+ 
 | Type | Link       | 
-|------|------------|
+|------|------------| 
 | prod | <https://courses.dokku-00.cs.ucsb.edu/> | 
 | qa | <https://courses-qa.dokku-00.cs.ucsb.edu/>  | 
 
