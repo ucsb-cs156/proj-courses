@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"U_kgDOB3E2LA","is_bot":false,"login":"sanilkatula","name":""},"headRefName":"pc-swagger-link","number":93,"title":"pc/sk - add environment variable for SHOW_SWAGGER_UI_LINK","url":"https://github.com/ucsb-cs156/proj-courses/pull/93"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-exampleBranch","number":100,"title":"Update README.md - fake change to illustrate draft PR","url":"https://github.com/ucsb-cs156/proj-courses/pull/100"},{"author":{"id":"U_kgDOB3E2LA","is_bot":false,"login":"sanilkatula","name":""},"headRefName":"pc-swagger-link","number":93,"title":"pc/sk - add environment variable for SHOW_SWAGGER_UI_LINK","url":"https://github.com/ucsb-cs156/proj-courses/pull/93"}]
