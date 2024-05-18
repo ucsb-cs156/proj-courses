@@ -1,5 +1,7 @@
 # proj-courses
 
+This is a fake change to illustrate how to create a draft PR.
+
 This repo contains the code for the CMPSC 156 legacy code project "Courses Search". 
 
 The project provides a web application where users can search for UCSB courses in various ways.
