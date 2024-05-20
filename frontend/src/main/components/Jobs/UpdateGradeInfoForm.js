@@ -20,7 +20,11 @@ const UpdateGradeInfoForm = ({ callback }) => {
       <Container>
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
-            <Button variant="primary" type="submit" data-testid="updateGradeData">
+            <Button
+              variant="primary"
+              type="submit"
+              data-testid="updateGradeData"
+            >
               Update Grade Info
             </Button>
           </Col>
