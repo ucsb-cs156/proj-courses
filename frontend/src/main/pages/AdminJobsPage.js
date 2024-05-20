@@ -53,8 +53,6 @@ const AdminJobsPage = () => {
     method: "POST",
   });
 
-  
-
   // Stryker disable all
   const updateCoursesJobMutation = useBackendMutation(
     objectToAxiosParamsUpdateCoursesJob,
@@ -139,8 +137,7 @@ const AdminJobsPage = () => {
     },
     {
       name: "Update Grade Info",
-      form: <UpdateGradeInfoForm
-        callback={submitUpdateGradeInfoJob}/>,
+      form: <UpdateGradeInfoForm callback={submitUpdateGradeInfoJob} />,
     },
   ];
 
