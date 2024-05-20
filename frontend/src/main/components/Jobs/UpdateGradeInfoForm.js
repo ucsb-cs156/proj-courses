@@ -2,11 +2,7 @@ import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useBackend } from "main/utils/useBackend";
 
 const UpdateGradeInfoForm = ({ callback }) => {
-
-  const {
-    error: _error,
-    status: _status,
-  } = useBackend(
+  const { error: _error, status: _status } = useBackend(
     // Stryker disable next-line all : don't test internal caching of React Query
     ["/api/jobs/launch/uploadGradeData"],
     { method: "POST", url: "/api/jobs/launch/uploadGradeData" },
@@ -24,7 +20,7 @@ const UpdateGradeInfoForm = ({ callback }) => {
       <Container>
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
-            <Button variant="primary" type="submit" data-testid="updateCourses">
+            <Button variant="primary" type="submit" data-testid="updateGradeData">
               Update Grade Info
             </Button>
           </Col>
