@@ -1,13 +1,6 @@
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useBackend } from "main/utils/useBackend";
 
 const UpdateGradeInfoForm = ({ callback }) => {
-  const { error: _error, status: _status } = useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/jobs/launch/uploadGradeData"],
-    { method: "POST", url: "/api/jobs/launch/uploadGradeData" },
-    [],
-  );
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -23,7 +16,7 @@ const UpdateGradeInfoForm = ({ callback }) => {
             <Button
               variant="primary"
               type="submit"
-              data-testid="updateGradeData"
+              data-testid="updateGradeInfo"
             >
               Update Grade Info
             </Button>
