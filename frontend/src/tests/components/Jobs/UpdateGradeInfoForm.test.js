@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
-import UpdateCoursesJobForm from "main/components/Jobs/UpdateGradeInfoForm";
+import UpdateGradeInfoForm from "main/components/Jobs/UpdateGradeInfoForm";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import axios from "axios";
