@@ -20,69 +20,67 @@ jest.mock("main/utils/useBackend", () => ({
 }));
 
 describe("GradeHistoryTable tests", () => {
-    const queryClient = new QueryClient();
-    test("renders without crashing for empty table", () => {
-        render(
-          <QueryClientProvider client={queryClient}>
-            <MemoryRouter>
-              <GradeHistoryTable details={[]} />
-            </MemoryRouter>
-          </QueryClientProvider>,
-        );
-      });
+  const queryClient = new QueryClient();
+  test("renders without crashing for empty table", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GradeHistoryTable details={[]} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  });
 
-      test("Has the expected colum headers and content", () => {
-        // console.log(oneSection)
-        render(
-          <QueryClientProvider client={queryClient}>
-            <MemoryRouter>
-              <GradeHistoryTable
-                details={gradeHistoryFixtures.gradeHistoryData}
-              />
-            </MemoryRouter>
-          </QueryClientProvider>,
-        );
+  test("Has the expected colum headers and content", () => {
+    // console.log(oneSection)
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GradeHistoryTable details={gradeHistoryFixtures.gradeHistoryData} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-        const expectedHeaders = [
-            "ID",
-            "Term",
-            "Course",
-            "Instructor",
-            "Grade",
-            "Count",
-            "Subject Area",
-            "Course Number",
-          ];
-          const testId = "GradeHistoryTable";
+    const expectedHeaders = [
+      "ID",
+      "Term",
+      "Course",
+      "Instructor",
+      "Grade",
+      "Count",
+      "Subject Area",
+      "Course Number",
+    ];
+    const testId = "GradeHistoryTable";
 
-          expectedHeaders.forEach((headerText) => {
-            const header = screen.getByText(headerText);
-            expect(header).toBeInTheDocument();
-          });
+    expectedHeaders.forEach((headerText) => {
+      const header = screen.getByText(headerText);
+      expect(header).toBeInTheDocument();
+    });
 
-          expect(
-            screen.getByTestId(`${testId}-cell-row-0-col-id`),
-          ).toHaveTextContent("889");
-          expect(
-            screen.getByTestId(`${testId}-cell-row-0-col-yyyyq`),
-          ).toHaveTextContent("20094");
-          expect(
-            screen.getByTestId(`${testId}-cell-row-0-col-course`),
-          ).toHaveTextContent("CMPSC 130A");
-          expect(
-            screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
-          ).toHaveTextContent("GONZALEZ T F");
-          expect(
-            screen.getByTestId(`${testId}-cell-row-0-col-grade`),
-          ).toHaveTextContent("A+");
-          expect(
-            screen.getByTestId(`${testId}-cell-row-0-col-count`),
-          ).toHaveTextContent("1");
-          expect(
-            screen.getByTestId(`${testId}-cell-row-0-col-subjectArea`),
-          ).toHaveTextContent("CMPSC");
-          expect(
-            screen.getByTestId(`${testId}-cell-row-0-col-courseNum`),
-          ).toHaveTextContent("130A");
-        });
-      });
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "889",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-yyyyq`),
+    ).toHaveTextContent("20094");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-course`),
+    ).toHaveTextContent("CMPSC 130A");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
+    ).toHaveTextContent("GONZALEZ T F");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-grade`),
+    ).toHaveTextContent("A+");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-count`),
+    ).toHaveTextContent("1");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-subjectArea`),
+    ).toHaveTextContent("CMPSC");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-courseNum`),
+    ).toHaveTextContent("130A");
+  });
+});

@@ -1,7 +1,7 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
 
-export default function GradeHistoryTable({ details}) {
+export default function GradeHistoryTable({ details }) {
   const columns = [
     {
       Header: "ID",
