@@ -1,6 +1,7 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
 
+//change to trigger git
 export default function GradeHistoryTable({ details }) {
   const columns = [
     {
