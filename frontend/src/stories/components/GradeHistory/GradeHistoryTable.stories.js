@@ -13,10 +13,10 @@ const Template = (args) => {
 
 export const Empty = Template.bind({});
 Empty.args = {
-  gradeHistory: [],
+  details: [],
 };
 
 export const GradeHistoryData = Template.bind({});
 GradeHistoryData.args = {
-  gradeHistory: gradeHistoryFixtures.gradeHistoryData,
+  details: gradeHistoryFixtures.gradeHistoryData,
 };
