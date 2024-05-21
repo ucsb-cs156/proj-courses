@@ -7,7 +7,10 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { threeSections, differentQuarterSections } from "fixtures/sectionFixtures";
+import {
+  threeSections,
+  differentQuarterSections,
+} from "fixtures/sectionFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
@@ -96,7 +99,6 @@ describe("CourseOverTimeIndexPage tests", () => {
     expect(screen.getByText("ECE 1A")).toBeInTheDocument();
   });
 
-
   test("passes sorted sections to SectionsOverTimeTable", async () => {
     // Mock the response of the API call with differentQuarterSections data
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
@@ -104,7 +106,10 @@ describe("CourseOverTimeIndexPage tests", () => {
       .onGet("/api/public/courseovertime/search")
       .reply(200, differentQuarterSections);
 
-    const spy = jest.spyOn(require("main/components/Sections/SectionsOverTimeTable"), "default");
+    const spy = jest.spyOn(
+      require("main/components/Sections/SectionsOverTimeTable"),
+      "default",
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -113,7 +118,7 @@ describe("CourseOverTimeIndexPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-  
+
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
@@ -147,13 +152,16 @@ describe("CourseOverTimeIndexPage tests", () => {
       subjectArea: "ANTH",
       courseNumber: "130A",
     });
-  
+
     // Check that SectionsOverTimeTable received the sorted sections data
-    const sortedSections = differentQuarterSections.sort((a, b) => b.courseInfo.quarter.localeCompare(a.courseInfo.quarter));
-    expect(spy).toHaveBeenCalledWith({ sections: sortedSections }, expect.anything());
+    const sortedSections = differentQuarterSections.sort((a, b) =>
+      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
+    );
+    expect(spy).toHaveBeenCalledWith(
+      { sections: sortedSections },
+      expect.anything(),
+    );
 
     spy.mockRestore();
   });
-
-
 });
