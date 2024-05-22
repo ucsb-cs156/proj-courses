@@ -231,13 +231,9 @@ describe("AdminJobsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      await screen.findByText("Update Grades"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Update Grades")).toBeInTheDocument();
 
-    const updateGradeButton = screen.getByText(
-      "Update Grade Info",
-    );
+    const updateGradeButton = screen.getByText("Update Grade Info");
     expect(updateGradeButton).toBeInTheDocument();
     updateGradeButton.click();
 
