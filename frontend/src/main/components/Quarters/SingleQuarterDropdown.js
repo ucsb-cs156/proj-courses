@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
+// import { useSystemInfo } from "main/utils/systemInfo";
 
 // controlId is used to remember the value for localStorage,
 // and for the testId, so it should be unique to at least any
@@ -23,14 +24,22 @@ function SingleQuarterDropdown({
   onChange = null,
   label = "Quarter",
 }) {
+  // const { data: systemInfo } = useSystemInfo();
+  // const lastQuarter = quarters[2].yyyyq;
+  /*console.log(quarters);
+  console.log(quarter);
+  console.log(lastQuarter);*/
+
+  const lastQuarter = quarters[quarters.length - 1].yyyyq;
+
   const localSearchQuarter = localStorage.getItem(controlId);
   if (!localSearchQuarter) {
-    localStorage.setItem(controlId, "20242");
+    localStorage.setItem(controlId, lastQuarter);
   }
 
   const [quarterState, setQuarterState] = useState(
     // Stryker disable next-line all : not sure how to test/mock local storage
-    quarter.yyyq || localSearchQuarter || quarters[0].yyyyq,
+    quarter.yyyyq || localSearchQuarter || lastQuarter.yyyyq,
   );
 
   const handleQuarterOnChange = (event) => {
