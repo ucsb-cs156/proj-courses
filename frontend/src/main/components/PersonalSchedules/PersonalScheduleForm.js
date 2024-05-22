@@ -19,8 +19,6 @@ function PersonalScheduleForm({
   // Stryker enable OptionalChaining
   const quarters = quarterRange(startQtr, endQtr);
 
-  
-
   // Stryker disable all
   const {
     register,
@@ -30,9 +28,7 @@ function PersonalScheduleForm({
   // Stryker restore all
 
   const navigate = useNavigate();
-  const [quarter, setQuarter] = useState(
-    "20242"
-  ); 
+  const [quarter, setQuarter] = useState("20242");
 
   /*
     const [quarter, setQuarter] = useState(
