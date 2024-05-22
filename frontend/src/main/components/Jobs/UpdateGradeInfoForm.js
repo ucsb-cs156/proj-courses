@@ -16,9 +16,9 @@ const UpdateGradeInfoForm = ({ callback }) => {
             <Button
               variant="primary"
               type="submit"
-              data-testid="updateGradeInfo"
+              data-testid="updateGradeInfoSubmit"
             >
-              Update Grade Info
+              Update Grade Info Submit
             </Button>
           </Col>
         </Row>
