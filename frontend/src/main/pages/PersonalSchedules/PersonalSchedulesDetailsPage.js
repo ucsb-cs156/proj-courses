@@ -62,6 +62,7 @@ export default function PersonalSchedulesDetailsPage() {
             <PersonalSectionsTable
               personalSections={personalSection}
               currentUser={currentUser}
+              psId={id}
             />
           )}
         </p>

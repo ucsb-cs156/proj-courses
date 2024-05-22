@@ -6,25 +6,24 @@ import {
   formatInstructors,
   formatLocation,
   formatTime,
-} from "main/utils/sectionUtils.js";
-import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
-} from "main/utils/CoursesUtils";
+} from "main/utils/sectionUtils.js";
 import { hasRole } from "main/utils/currentUser";
 
 export default function PersonalSectionsTable({
   personalSections,
   currentUser,
+  psId,
 }) {
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    [],
+    []
   );
 
   const deleteCallback = async (cell) => {
-    deleteMutation.mutate(cell);
+    deleteMutation.mutate({ cell, psId });
   };
 
   const columns = [
@@ -49,7 +48,7 @@ export default function PersonalSectionsTable({
       accessor: (row) =>
         convertToFraction(
           row.classSections[0].enrolledTotal,
-          row.classSections[0].maxEnroll,
+          row.classSections[0].maxEnroll
         ),
       id: "enrolled",
     },

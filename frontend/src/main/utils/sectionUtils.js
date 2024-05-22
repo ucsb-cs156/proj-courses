@@ -1,4 +1,5 @@
 import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
+import { toast } from "react-toastify";
 
 export const convertToFraction = (en1, en2) => {
   return en1 != null && en2 != null ? `${en1}/${en2}` : "";
@@ -104,3 +105,20 @@ export const renderInfoLink = ({ cell: { value } }) => (
     </a>
   </p>
 );
+
+export function onDeleteSuccess(message) {
+  console.log(message);
+  toast(message);
+}
+
+export function cellToAxiosParamsDelete({cell, psId}) {
+  const enrollCode = cell.row.values["classSections[0].enrollCode"];
+  return {
+    url: "/api/personalSections/delete",
+    method: "DELETE",
+    params: {
+      psId: psId,
+      enrollCd: enrollCode,
+    },
+  };
+}
