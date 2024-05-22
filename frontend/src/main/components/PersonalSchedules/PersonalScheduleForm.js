@@ -28,12 +28,12 @@ function PersonalScheduleForm({
   // Stryker restore all
 
   const navigate = useNavigate();
-  
+
   const [quarter, setQuarter] = useState(
     {
       quarters: quarters,
     }.quarters[0],
-  ); 
+  );
 
   const quarterMap = {
     1: "W",
