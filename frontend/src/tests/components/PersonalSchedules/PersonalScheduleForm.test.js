@@ -42,7 +42,6 @@ describe("PersonalScheduleForm tests", () => {
     expect(screen.getByText(/Description/)).toBeInTheDocument();
     expect(screen.getByText(/Quarter/)).toBeInTheDocument();
     expect(screen.getByText(/Create/)).toBeInTheDocument();
-
     expect(screen.getByText("S24")).toBeInTheDocument();
   });
 
