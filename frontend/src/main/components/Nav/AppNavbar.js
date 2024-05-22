@@ -42,7 +42,7 @@ export default function AppNavbar({
 
           <Navbar.Collapse className="justify-content-between">
             <Nav className="me-auto">
-              {systemInfo?.springH2ConsoleEnabled && (
+              {systemInfo?.springH2Console && (
                 <>
                   <Nav.Link href="/h2-console">H2Console </Nav.Link>
                 </>
