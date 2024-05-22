@@ -48,7 +48,7 @@ export default function PersonalSectionsTable({
       accessor: (row) =>
         convertToFraction(
           row.classSections[0].enrolledTotal,
-          row.classSections[0].maxEnroll
+          row.classSections[0].maxEnroll,
         ),
       id: "enrolled",
     },
