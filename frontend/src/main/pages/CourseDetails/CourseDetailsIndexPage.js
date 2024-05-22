@@ -26,20 +26,28 @@ export default function CourseDetailsIndexPage() {
       },
     },
   );
-  
-  const subjectArea = "CMPSC";
-  const courseNumber = "130A";
+
+  const courseId = moreDetails?.courseId || '';
+
+let trimmedCourse = '';
+let trimmedCourseNumber = '';
+
+if (courseId) {
+  const [course, courseNumber] = courseId.split(/\s+/);
+  trimmedCourse = course.trim();
+  trimmedCourseNumber = courseNumber.trim();
+}
 
   // Fetch Grade History Data
   const {
     data: gradeHistory,
-  } = useBackend([`/api/gradehistory/search?subjectArea=${subjectArea}&courseNumber=${courseNumber}`], 
+  } = useBackend([`/api/gradehistory/search?subjectArea=${trimmedCourse}&courseNumber=${trimmedCourseNumber}`], 
   {
     method: "GET",
     url: "/api/gradehistory/search",
     params: {
-      subjectArea: subjectArea,
-      courseNumber: courseNumber,
+      subjectArea: trimmedCourse,
+      courseNumber: trimmedCourseNumber,
     },
   });
 
@@ -55,6 +63,9 @@ export default function CourseDetailsIndexPage() {
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
         {moreDetails && <CourseDescriptionTable course={moreDetails} />}
         {console.log("Grade History:", gradeHistory)}
+        <h5>
+            Grade History for {moreDetails.courseId}
+            </h5>
         {gradeHistory && <GradeHistoryTable details={gradeHistory} />}
       </div>
     </BasicLayout>
