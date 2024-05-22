@@ -88,9 +88,9 @@ describe("CourseGradeDistTable tests", () => {
     }
 
     // Check id, instructor, grade, count displaying as expected
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-id`),
-    ).toHaveTextContent("1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
     ).toHaveTextContent("Bob Test1");
