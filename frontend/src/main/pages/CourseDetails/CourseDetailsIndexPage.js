@@ -27,29 +27,31 @@ export default function CourseDetailsIndexPage() {
     },
   );
 
-  const courseId = moreDetails?.courseId || '';
+  const courseId = moreDetails?.courseId || "";
 
-let trimmedCourse = '';
-let trimmedCourseNumber = '';
+  let trimmedCourse = "";
+  let trimmedCourseNumber = "";
 
-if (courseId) {
-  const [course, courseNumber] = courseId.split(/\s+/);
-  trimmedCourse = course.trim();
-  trimmedCourseNumber = courseNumber.trim();
-}
+  if (courseId) {
+    const [course, courseNumber] = courseId.split(/\s+/);
+    trimmedCourse = course.trim();
+    trimmedCourseNumber = courseNumber.trim();
+  }
 
   // Fetch Grade History Data
-  const {
-    data: gradeHistory,
-  } = useBackend([`/api/gradehistory/search?subjectArea=${trimmedCourse}&courseNumber=${trimmedCourseNumber}`], 
-  {
-    method: "GET",
-    url: "/api/gradehistory/search",
-    params: {
-      subjectArea: trimmedCourse,
-      courseNumber: trimmedCourseNumber,
+  const { data: gradeHistory } = useBackend(
+    [
+      `/api/gradehistory/search?subjectArea=${trimmedCourse}&courseNumber=${trimmedCourseNumber}`,
+    ],
+    {
+      method: "GET",
+      url: "/api/gradehistory/search",
+      params: {
+        subjectArea: trimmedCourse,
+        courseNumber: trimmedCourseNumber,
+      },
     },
-  });
+  );
 
   return (
     <BasicLayout>
@@ -62,11 +64,7 @@ if (courseId) {
 
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
         {moreDetails && <CourseDescriptionTable course={moreDetails} />}
-        {moreDetails && (
-          <h5>
-            Grade History for {moreDetails.courseId}
-            </h5>
-        )}
+        {moreDetails && <h5>Grade History for {moreDetails.courseId}</h5>}
         {gradeHistory && <GradeHistoryTable details={gradeHistory} />}
       </div>
     </BasicLayout>

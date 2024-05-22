@@ -57,11 +57,11 @@ describe("Course Details Index Page tests", () => {
         params: { qtr: "20221", enrollCode: "06619" },
       })
       .reply(200, personalSectionsFixtures.singleSection);
-      axiosMock
-    .onGet("/api/gradehistory/search", {
-      params: { subjectArea: "CHEM", courseNumber: "184" }, 
-    })
-    .reply(200, gradeHistoryFixtures.gradeHistoryData);
+    axiosMock
+      .onGet("/api/gradehistory/search", {
+        params: { subjectArea: "CHEM", courseNumber: "184" },
+      })
+      .reply(200, gradeHistoryFixtures.gradeHistoryData);
   });
 
   const queryClient = new QueryClient();
