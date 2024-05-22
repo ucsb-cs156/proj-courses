@@ -27,7 +27,7 @@ describe("UpdateGradeInfoForm tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText(/Update Grade Info/)).toBeInTheDocument();
+    expect(screen.getByText(/Update Grades/)).toBeInTheDocument();
   });
 
   test("renders without crashing when fallback values are used", async () => {

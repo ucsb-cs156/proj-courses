@@ -18,7 +18,7 @@ const UpdateGradeInfoForm = ({ callback }) => {
               type="submit"
               data-testid="updateGradeInfoSubmit"
             >
-              Update Grade Info Submit
+              Update Grades
             </Button>
           </Col>
         </Row>
