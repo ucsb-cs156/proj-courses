@@ -111,7 +111,7 @@ export function onDeleteSuccess(message) {
   toast(message);
 }
 
-export function cellToAxiosParamsDelete({cell, psId}) {
+export function cellToAxiosParamsDelete({ cell, psId }) {
   const enrollCode = cell.row.values["classSections[0].enrollCode"];
   return {
     url: "/api/personalSections/delete",

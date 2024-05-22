@@ -19,7 +19,7 @@ export default function PersonalSectionsTable({
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    []
+    [],
   );
 
   const deleteCallback = async (cell) => {
