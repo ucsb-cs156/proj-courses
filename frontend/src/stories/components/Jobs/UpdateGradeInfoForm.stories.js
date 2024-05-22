@@ -3,7 +3,7 @@ import UpdateGradeInfoJobForm from "main/components/Jobs/UpdateGradeInfoForm";
 
 export default {
   title: "components/Jobs/UpdateGradeInfoForm",
-  component: UpdateGradeInfoJobForm
+  component: UpdateGradeInfoJobForm,
 };
 
 const Template = (args) => {
