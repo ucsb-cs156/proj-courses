@@ -1,31 +1,13 @@
 import React from "react";
-import OurTable, { ButtonColumn } from "main/components/OurTable";
-import { useBackendMutation } from "main/utils/useBackend";
+import OurTable from "main/components/OurTable";
 import {
   convertToFraction,
   formatInstructors,
   formatLocation,
   formatTime,
-  cellToAxiosParamsDelete,
-  onDeleteSuccess,
 } from "main/utils/sectionUtils.js";
-import { hasRole } from "main/utils/currentUser";
 
-export default function PersonalSectionsTable({
-  personalSections,
-  currentUser,
-  psId,
-}) {
-  const deleteMutation = useBackendMutation(
-    cellToAxiosParamsDelete,
-    { onSuccess: onDeleteSuccess },
-    []
-  );
-
-  const deleteCallback = async (cell) => {
-    deleteMutation.mutate({ cell, psId });
-  };
-
+export default function PersonalSectionsTable({ personalSections }) {
   const columns = [
     {
       Header: "Course ID",
@@ -48,7 +30,7 @@ export default function PersonalSectionsTable({
       accessor: (row) =>
         convertToFraction(
           row.classSections[0].enrolledTotal,
-          row.classSections[0].maxEnroll
+          row.classSections[0].maxEnroll,
         ),
       id: "enrolled",
     },
@@ -73,16 +55,9 @@ export default function PersonalSectionsTable({
     },
   ];
 
-  const columnsIfUser = [
-    ...columns,
-    ButtonColumn("Delete", "danger", deleteCallback, "CourseTable"),
-  ];
-
   const testid = "PersonalSectionsTable";
 
-  const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
-    ? columnsIfUser
-    : columns;
+  const columnsToDisplay = columns;
 
   return (
     <OurTable
