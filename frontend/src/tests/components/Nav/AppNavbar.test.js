@@ -200,7 +200,6 @@ describe("AppNavbar tests", () => {
     expect(
       await screen.findByTestId("appnavbar-personalschedules-list"),
     ).toBeInTheDocument();
-
   });
 
   test("renders the Course Description menu correctly", async () => {
