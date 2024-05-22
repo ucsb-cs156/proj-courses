@@ -1,4 +1,5 @@
 import OurTable from "../OurTable";
+import { fromFormat } from "main/utils/quarterUtilities";
 
 // eslint-disable-next-line no-unused-vars
 export default function CourseGradeDistTable({ gradeData }) {
@@ -29,30 +30,15 @@ export default function CourseGradeDistTable({ gradeData }) {
     },
   ];
 
-  for (const gradeDist of gradeData) {
-    const year = gradeDist.yyyyq.slice(0, 4);
-    let quarter;
-    switch (gradeDist.yyyyq[4]) {
-      case "1":
-        quarter = "Winter";
-        break;
-      case "2":
-        quarter = "Spring";
-        break;
-      case "3":
-        quarter = "Summer";
-        break;
-      default:
-        // There should never be a case where its not 1,2,3,4, right..
-        quarter = "Fall";
-    }
-    const session = quarter + " " + year;
-    gradeDist.session = session;
-  }
+  // Grade Data with yyyyq parsed into sessions
+  const parsedGradeData = gradeData.map((gradeDist) => ({
+    ...gradeDist,
+    session: fromFormat(gradeDist.yyyyq),
+  }));
 
   return (
     <OurTable
-      data={gradeData}
+      data={parsedGradeData}
       columns={columns}
       testid="CourseGradeDistTable"
     />

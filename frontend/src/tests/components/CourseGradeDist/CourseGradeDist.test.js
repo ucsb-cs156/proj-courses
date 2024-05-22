@@ -104,18 +104,18 @@ describe("CourseGradeDistTable tests", () => {
     // Check sessions displaying as expected
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-session`),
-    ).toHaveTextContent("Winter 2023");
+    ).toHaveTextContent("WINTER 2023");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-session`),
-    ).not.toHaveTextContent("Winter 20231");
+    ).not.toHaveTextContent("WINTER 20231");
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-session`),
-    ).toHaveTextContent("Spring 2023");
+    ).toHaveTextContent("SPRING 2023");
     expect(
       screen.getByTestId(`${testId}-cell-row-2-col-session`),
-    ).toHaveTextContent("Summer 2023");
+    ).toHaveTextContent("SUMMER 2023");
     expect(
       screen.getByTestId(`${testId}-cell-row-3-col-session`),
-    ).toHaveTextContent("Fall 2023");
+    ).toHaveTextContent("FALL 2023");
   });
 });
