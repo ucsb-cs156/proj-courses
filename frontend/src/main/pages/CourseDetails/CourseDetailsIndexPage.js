@@ -62,10 +62,11 @@ if (courseId) {
 
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
         {moreDetails && <CourseDescriptionTable course={moreDetails} />}
-        {console.log("Grade History:", gradeHistory)}
-        <h5>
+        {moreDetails && (
+          <h5>
             Grade History for {moreDetails.courseId}
             </h5>
+        )}
         {gradeHistory && <GradeHistoryTable details={gradeHistory} />}
       </div>
     </BasicLayout>
