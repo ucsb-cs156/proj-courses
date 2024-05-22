@@ -232,7 +232,7 @@ describe("AdminJobsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Update Grade Info Submit"),
+      await screen.findByText("Update Grades"),
     ).toBeInTheDocument();
 
     const updateGradeButton = screen.getByText(
