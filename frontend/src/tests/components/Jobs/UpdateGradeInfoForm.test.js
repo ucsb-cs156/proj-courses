@@ -45,6 +45,8 @@ describe("UpdateGradeInfoForm tests", () => {
     );
 
     // Make sure the first and last options
-    expect(await screen.findByTestId("updateGradeInfoSubmit")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("updateGradeInfoSubmit"),
+    ).toBeInTheDocument();
   });
 });
