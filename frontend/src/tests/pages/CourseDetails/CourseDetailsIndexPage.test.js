@@ -9,6 +9,7 @@ import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexP
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
+import { gradeHistoryFixtures } from "fixtures/gradeHistoryFixtures";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -56,6 +57,11 @@ describe("Course Details Index Page tests", () => {
         params: { qtr: "20221", enrollCode: "06619" },
       })
       .reply(200, personalSectionsFixtures.singleSection);
+    axiosMock
+      .onGet("/api/gradehistory/search", {
+        params: { subjectArea: "CHEM", courseNumber: "184" },
+      })
+      .reply(200, gradeHistoryFixtures.gradeHistoryData);
   });
 
   const queryClient = new QueryClient();
