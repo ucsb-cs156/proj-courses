@@ -19,10 +19,10 @@ Empty.args = {
 
 export const oneGradeData = Template.bind({});
 oneGradeData.args = {
-    gradeData: gradeDistFixtures.oneGradeDist
-}
+  gradeData: gradeDistFixtures.oneGradeDist,
+};
 
 export const threeGradeData = Template.bind({});
 threeGradeData.args = {
-    gradeData: gradeDistFixtures.threeGradeDist
+  gradeData: gradeDistFixtures.threeGradeDist,
 };
