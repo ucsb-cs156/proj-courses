@@ -23,7 +23,7 @@ describe("PersonalScheduleForm tests", () => {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,
       startQtrYYYYQ: "20154",
-      endQtrYYYYQ: "20162",
+      endQtrYYYYQ: "20244",
     });
   });
 
@@ -42,6 +42,8 @@ describe("PersonalScheduleForm tests", () => {
     expect(screen.getByText(/Description/)).toBeInTheDocument();
     expect(screen.getByText(/Quarter/)).toBeInTheDocument();
     expect(screen.getByText(/Create/)).toBeInTheDocument();
+
+    expect(screen.getByText("S24")).toBeInTheDocument();
   });
 
   test("renders correctly when passing in a PersonalSchedule", async () => {
