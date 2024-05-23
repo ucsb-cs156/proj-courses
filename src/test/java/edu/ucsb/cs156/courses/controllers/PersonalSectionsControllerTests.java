@@ -195,6 +195,46 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
       username = "user",
       roles = {"USER"})
   @Test
+  public void api_deleteScheduleAndLectures__user_logged_in__enroll_code_doesnt_exist_in_quarter()
+      throws Exception {
+    User u = currentUserService.getCurrentUser().getUser();
+    PersonalSchedule ps =
+        PersonalSchedule.builder()
+            .name("Name 1")
+            .description("Description 1")
+            .quarter("20221")
+            .user(u)
+            .id(13L)
+            .build();
+    PSCourse course1 = PSCourse.builder().id(1L).user(u).enrollCd("59501").psId(13L).build();
+    ArrayList<PSCourse> crs = new ArrayList<>();
+    crs.add(course1);
+
+    when(personalscheduleRepository.findByIdAndUser(eq(13L), eq(u))).thenReturn(Optional.of(ps));
+    when(coursesRepository.findAllByPsId(eq(13L))).thenReturn(crs);
+    when(ucsbCurriculumService.getAllSections(eq("59501"), eq("20221")))
+        .thenReturn("{\"error\": \"Enroll code doesn't exist in that quarter.\"}");
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                delete("/api/personalSections/delete")
+                    .param("psId", "13")
+                    .param("enrollCd", "59501")
+                    .with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+    verify(coursesRepository, times(0)).delete(course1);
+    String responseString = response.getResponse().getContentAsString();
+    boolean correct = responseString.contains("EntityNotFoundException");
+    assertEquals(true, correct);
+  }
+
+  @WithMockUser(
+      username = "user",
+      roles = {"USER"})
+  @Test
   public void api_deleteScheduleAndLectures__user_logged_in__no_such_schedule() throws Exception {
     User u = currentUserService.getCurrentUser().getUser();
 
