@@ -3,12 +3,10 @@ import { useParams } from "react-router-dom";
 import PersonalSchedulesTable from "main/components/PersonalSchedules/PersonalSchedulesTable";
 import PersonalSectionsTable from "main/components/PersonalSections/PersonalSectionsTable";
 import { useBackend, _useBackendMutation } from "main/utils/useBackend";
-import { useCurrentUser } from "main/utils/currentUser";
 import { Button } from "react-bootstrap";
 
 export default function PersonalSchedulesDetailsPage() {
   let { id } = useParams();
-  const currentUser = useCurrentUser();
 
   const {
     data: personalSchedule,
@@ -59,11 +57,7 @@ export default function PersonalSchedulesDetailsPage() {
         <p>
           <h2>Sections in Personal Schedule</h2>
           {personalSection && (
-            <PersonalSectionsTable
-              personalSections={personalSection}
-              currentUser={currentUser}
-              psId={id}
-            />
+            <PersonalSectionsTable personalSections={personalSection} />
           )}
         </p>
         {createButton()}
