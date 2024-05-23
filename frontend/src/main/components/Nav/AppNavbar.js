@@ -30,7 +30,13 @@ export default function AppNavbar({
             alt=""
             style={{ width: 80, height: 80, marginRight: 10 }}
           />
-          <Navbar.Brand as={Link} to="/">
+          <Navbar.Brand as={Link} to="/" 
+            style={{
+              backgroundColor: "#34859B",
+              padding: "5px 15px",
+              borderRadius: "8px",
+            }}
+          >
             UCSB Courses Search
           </Navbar.Brand>
 
@@ -156,7 +162,11 @@ export default function AppNavbar({
                   <Button onClick={doLogout}>Log Out</Button>
                 </>
               ) : (
-                <Button href="/oauth2/authorization/google">Log In</Button>
+                <
+                  Button href="/oauth2/authorization/google"
+                  
+                >
+                Log In</Button>
               )}
             </Nav>
           </Navbar.Collapse>
