@@ -5,29 +5,13 @@ import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 export default function AddToScheduleModal({ section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
 
   const localQuarter = localStorage.getItem("BasicSearch.Quarter");
-
-  //translate quarter from yyyyq to qyy
-  var quarterTrans = "";
-  if (localQuarter.substring(4, 5) === "1") {
-    quarterTrans = "W";
-  }
-  else if (localQuarter.substring(4, 5) === "2") {
-    quarterTrans = "S"
-  }
-  if (localQuarter.substring(4, 5) === "1") {
-    quarterTrans = "M";
-  }
-  else {
-    quarterTrans = "F";
-  }
-
-  quarterTrans += localQuarter.substring(2, 4);
 
   // Stryker disable all
   const {
@@ -81,7 +65,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
                 </Form.Group>
               ) : (
                 <p>
-                  No personal schedules exist for quarter {quarterTrans}.
+                  No personal schedules exist for quarter {yyyyqToQyy(localQuarter.toString())}.
                   <br />
                   <Link to="/personalschedules/create">[Create One]</Link>
                 </p>

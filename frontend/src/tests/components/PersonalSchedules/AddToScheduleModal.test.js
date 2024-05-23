@@ -9,9 +9,21 @@ const queryClient = new QueryClient();
 
 describe("AddToScheduleModal", () => {
   let mockOnAdd;
+  let getItemSpy;
 
   beforeEach(() => {
     mockOnAdd = jest.fn();
+    // Define your localQuarter variable
+    const localQuarter = "F21";
+
+    // Mock localStorage.getItem
+    getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    getItemSpy.mockReturnValue(localQuarter);
+  });
+
+  afterEach(() => {
+    // Clean up after each test
+    getItemSpy.mockRestore();
   });
 
   test("renders without crashing", () => {
@@ -78,21 +90,16 @@ describe("AddToScheduleModal", () => {
 
     fireEvent.click(screen.getByText("Add"));
 
-    // Define your quarter variable
+      // Define your quarter variable
       const quarter = "F21";
 
-      // Mock the localStorage.getItem function to return the quarter
-      global.localStorage.getItem = jest.fn(() => quarter);
-
-      // ...rest of your test setup...
-
       // Use the quarter variable in your expect statement
-      expect(screen.getByText(`No schedules exist for ${quarter}.`)).toBeInTheDocument();    
+      expect(screen.getByText(`No personal schedules exist for ${quarter}.`)).toBeInTheDocument();    
       expect(screen.getByText("[Create One]")).toHaveAttribute(
           "href",
           "/personalschedules/create",
-        );
-      });
+    );
+  });
 
   test("calls onAdd with the correct schedule when save is clicked", () => {
     render(
@@ -118,12 +125,4 @@ describe("AddToScheduleModal", () => {
       };
     },
   );
-
-    fireEvent.click(screen.getByText("Add"));
-
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
-      "href",
-      "/personalschedules/create",
-    );
-  });
+});
