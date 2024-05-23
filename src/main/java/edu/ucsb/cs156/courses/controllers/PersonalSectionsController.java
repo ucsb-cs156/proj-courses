@@ -15,9 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,42 +64,43 @@ public class PersonalSectionsController extends ApiController {
   }
 
   @Operation(summary = "Delete a schedule and associated lectures by enroll code and psId")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping(value = "/delete")
-    public Object deleteScheduleAndLectures(@Parameter(name = "psId") @RequestParam Long psId,
-                                            @Parameter(name = "enrollCd") @RequestParam String enrollCd)
-            throws JsonProcessingException {
-        User currentUser = getCurrentUser().getUser();
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @DeleteMapping(value = "/delete")
+  public Object deleteScheduleAndLectures(
+      @Parameter(name = "psId") @RequestParam Long psId,
+      @Parameter(name = "enrollCd") @RequestParam String enrollCd)
+      throws JsonProcessingException {
+    User currentUser = getCurrentUser().getUser();
 
-        PersonalSchedule ps = personalScheduleRepository.findByIdAndUser(psId, currentUser)
-                .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
-
-        Iterable<PSCourse> courses = coursesRepository.findAllByPsId(psId);
-
-        boolean courseFound = false;
-
-        ArrayList<String> relatedEnrollCodes = new ArrayList<>();
-        String body = ucsbCurriculumService.getAllSections(enrollCd, ps.getQuarter());
-        if (!body.equals("{\"error\": \"401: Unauthorized\"}") && !body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")) {
-            Iterator<JsonNode> it = objectMapper.readTree(body).path("classSections").elements();
-            while (it.hasNext()) {
-                JsonNode classSection = it.next();
-                String sectionEnrollCd = classSection.path("enrollCode").asText();
-                relatedEnrollCodes.add(sectionEnrollCd);
-            }
-        }
-
-        for (PSCourse crs : courses) {
-            if (relatedEnrollCodes.contains(crs.getEnrollCd())) {
-                courseFound = true;
-                coursesRepository.delete(crs);
-            }
-        }
-
-        if (!courseFound) {
-            throw new EntityNotFoundException(PSCourse.class, "enrollCd: " + enrollCd + " and psId: " + psId);
-        }
-
-        return genericMessage("Schedule with psId %s and associated lectures with enrollCd %s deleted".formatted(psId, enrollCd));
+    PersonalSchedule ps =
+        personalScheduleRepository
+            .findByIdAndUser(psId, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
+    Iterable<PSCourse> courses = coursesRepository.findAllByPsId(psId);
+    boolean courseFound = false;
+    ArrayList<String> relatedEnrollCodes = new ArrayList<>();
+    String body = ucsbCurriculumService.getAllSections(enrollCd, ps.getQuarter());
+    if (!body.equals("{\"error\": \"401: Unauthorized\"}")
+        && !body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")) {
+      Iterator<JsonNode> it = objectMapper.readTree(body).path("classSections").elements();
+      while (it.hasNext()) {
+        JsonNode classSection = it.next();
+        String sectionEnrollCd = classSection.path("enrollCode").asText();
+        relatedEnrollCodes.add(sectionEnrollCd);
+      }
     }
+    for (PSCourse crs : courses) {
+      if (relatedEnrollCodes.contains(crs.getEnrollCd())) {
+        courseFound = true;
+        coursesRepository.delete(crs);
+      }
+    }
+    if (!courseFound) {
+      throw new EntityNotFoundException(
+          PSCourse.class, "enrollCd: " + enrollCd + " and psId: " + psId);
+    }
+    return genericMessage(
+        "Schedule with psId %s and associated lectures with enrollCd %s deleted"
+            .formatted(psId, enrollCd));
+  }
 }
