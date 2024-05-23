@@ -165,9 +165,10 @@ describe("PersonalSectionsTable tests", () => {
     );
 
     const deleteButton = screen.getByTestId(
-      `CourseTable-cell-row-0-col-Delete-button`,
+      `PersonalSectionsTable-cell-row-0-col-Delete-button`,
     );
     expect(deleteButton).toBeInTheDocument();
+    expect(deleteButton).toHaveClass("btn-danger");
 
     fireEvent.click(deleteButton);
 

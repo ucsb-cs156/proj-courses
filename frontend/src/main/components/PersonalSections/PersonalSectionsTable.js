@@ -16,12 +16,13 @@ export default function PersonalSectionsTable({
   currentUser,
   psId,
 }) {
+// Stryker disable all : hard to test for query caching
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
     [],
   );
-
+  // Stryker restore all
   const deleteCallback = async (cell) => {
     deleteMutation.mutate({ cell, psId });
   };
@@ -75,7 +76,7 @@ export default function PersonalSectionsTable({
 
   const columnsIfUser = [
     ...columns,
-    ButtonColumn("Delete", "danger", deleteCallback, "CourseTable"),
+    ButtonColumn("Delete", "danger", deleteCallback, "PersonalSectionsTable"),
   ];
 
   const testid = "PersonalSectionsTable";
