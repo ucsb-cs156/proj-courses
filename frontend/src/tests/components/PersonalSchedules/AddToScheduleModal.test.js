@@ -78,30 +78,21 @@ describe("AddToScheduleModal", () => {
 
     fireEvent.click(screen.getByText("Add"));
 
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
-      "href",
-      "/personalschedules/create",
-    );
-  });
+    // Define your quarter variable
+      const quarter = "F21";
 
-  test("displays correct message when no schedules found initially", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} section={null} />
-        </Router>
-      </QueryClientProvider>,
-    );
+      // Mock the localStorage.getItem function to return the quarter
+      global.localStorage.getItem = jest.fn(() => quarter);
 
-    fireEvent.click(screen.getByText("Add"));
+      // ...rest of your test setup...
 
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
-      "href",
-      "/personalschedules/create",
-    );
-  });
+      // Use the quarter variable in your expect statement
+      expect(screen.getByText(`No schedules exist for ${quarter}.`)).toBeInTheDocument();    
+      expect(screen.getByText("[Create One]")).toHaveAttribute(
+          "href",
+          "/personalschedules/create",
+        );
+      });
 
   test("calls onAdd with the correct schedule when save is clicked", () => {
     render(
@@ -128,15 +119,6 @@ describe("AddToScheduleModal", () => {
     },
   );
 
-  test("displays correct message when no schedules found on initial render", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} section={null} />
-        </Router>
-      </QueryClientProvider>,
-    );
-
     fireEvent.click(screen.getByText("Add"));
 
     expect(screen.getByText("No schedules found.")).toBeInTheDocument();
@@ -145,4 +127,3 @@ describe("AddToScheduleModal", () => {
       "/personalschedules/create",
     );
   });
-});

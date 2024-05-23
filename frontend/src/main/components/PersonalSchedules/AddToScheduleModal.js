@@ -10,6 +10,25 @@ export default function AddToScheduleModal({ section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
 
+  const localQuarter = localStorage.getItem("BasicSearch.Quarter");
+
+  //translate quarter from yyyyq to qyy
+  var quarterTrans = "";
+  if (localQuarter.substring(4, 5) === "1") {
+    quarterTrans = "W";
+  }
+  else if (localQuarter.substring(4, 5) === "2") {
+    quarterTrans = "S"
+  }
+  if (localQuarter.substring(4, 5) === "1") {
+    quarterTrans = "M";
+  }
+  else {
+    quarterTrans = "F";
+  }
+
+  quarterTrans += localQuarter.substring(2, 4);
+
   // Stryker disable all
   const {
     data: schedules,
@@ -30,6 +49,13 @@ export default function AddToScheduleModal({ section, onAdd }) {
     onAdd(section, selectedSchedule);
     handleModalClose();
   };
+
+
+  //filter schedules to match the current quarter 
+  const filteredSchedules = schedules.filter(
+    (schedule) => schedule.quarter === localQuarter
+  );
+
   // Stryker disable all : tested manually, complicated to test
   return (
     <>
@@ -43,10 +69,11 @@ export default function AddToScheduleModal({ section, onAdd }) {
         <Modal.Body>
           <Form>
             {
-              /* istanbul ignore next */ schedules.length > 0 ? (
+              /* istanbul ignore next */ filteredSchedules.length > 0 ? (
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
+                    filteredSchedules={filteredSchedules}
                     schedule={selectedSchedule}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
@@ -54,8 +81,9 @@ export default function AddToScheduleModal({ section, onAdd }) {
                 </Form.Group>
               ) : (
                 <p>
-                  No schedules found.
-                  <Link to="/personalschedules/create">Create a schedule</Link>
+                  No personal schedules exist for quarter {quarterTrans}.
+                  <br />
+                  <Link to="/personalschedules/create">[Create One]</Link>
                 </p>
               )
             }

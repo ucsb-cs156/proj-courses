@@ -10,18 +10,21 @@ jest.mock("main/utils/quarterUtilities.js");
 describe("PersonalScheduleSelector", () => {
   beforeEach(() => {
     localStorage.clear();
-    useBackend.mockReturnValue({
+    /*useBackend.mockReturnValue({
       data: [
         { id: "schedule1", quarter: "20221", name: "Schedule 1" },
         { id: "schedule2", quarter: "20222", name: "Schedule 2" },
       ],
       error: null,
       status: "success",
-    });
+    });*/
+    const quarter = "F21";
+
+    global.localStorage.getItem = jest.fn(() => quarter);
     yyyyqToQyy.mockReturnValue("Q1 2022");
   });
 
-  test("sets the initial schedule from local storage", () => {
+  test("sets the initial schedule from local storage if match", () => {
     localStorage.setItem("controlId", "schedule2");
     render(
       <PersonalScheduleSelector controlId="controlId" setSchedule={() => {}} />,

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
-import { useBackend } from "main/utils/useBackend";
+//import { useBackend } from "main/utils/useBackend";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 const PersonalScheduleSelector = ({
+  filteredSchedules,
   schedule,
   setSchedule,
   controlId,
@@ -16,23 +17,11 @@ const PersonalScheduleSelector = ({
     localSearchSchedule || schedule,
   );
 
-  // Stryker disable all
-  const {
-    data: schedules,
-    error: _error,
-    status: _status,
-  } = useBackend(
-    ["/api/personalschedules/all"],
-    { method: "GET", url: "/api/personalschedules/all" },
-    [],
-  );
-  // Stryker restore all
-
   useEffect(() => {
-    if (schedules.length > 0) {
-      setSchedule(schedules[0].id);
+    if (filteredSchedules && filteredSchedules.length > 0) {
+      setSchedule(filteredSchedules[0].id);
     }
-  }, [schedules, setSchedule]);
+  }, [filteredSchedules, setSchedule]);
 
   const handleScheduleOnChange = (event) => {
     const selectedSchedule = event.target.value;
@@ -52,8 +41,8 @@ const PersonalScheduleSelector = ({
         value={scheduleState}
         onChange={handleScheduleOnChange}
       >
-        {schedules &&
-          schedules.map((schedule) => (
+        {filteredSchedules &&
+          filteredSchedules.map((schedule) => (
             <option key={schedule.id} value={schedule.id}>
               {yyyyqToQyy(schedule.quarter)} {schedule.name}
             </option>
