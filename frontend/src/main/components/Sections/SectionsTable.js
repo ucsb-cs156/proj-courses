@@ -25,7 +25,7 @@ function getFirstVal(values) {
 export function isLectureWithNoSections(enrollCode, sections) {
   // Find the section with the given enrollCode
   const section = sections.find(
-    (section) => section.section.enrollCode === enrollCode,
+    (section) => section.section.enrollCode === enrollCode
   );
 
   if (section) {
@@ -38,7 +38,7 @@ export function isLectureWithNoSections(enrollCode, sections) {
       // Filter all sections with the same courseId
       // Stryker disable all
       const courseSections = sections.filter(
-        (section) => section.courseInfo.courseId === courseId,
+        (section) => section.courseInfo.courseId === courseId
       );
       // Stryker restore all
       // Check if there is only one section for the course
@@ -82,7 +82,7 @@ export const handleLectureAddToSchedule = (section, schedule, mutation) => {
 
 export const onSuccess = (response) => {
   toast(
-    `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
+    `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`
   );
 };
 
@@ -96,7 +96,7 @@ export default function SectionsTable({ sections }) {
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    ["/api/courses/user/all"],
+    ["/api/courses/user/all"]
   );
 
   const columns = [
@@ -197,7 +197,7 @@ export default function SectionsTable({ sections }) {
             <div className="d-flex align-items-center gap-2">
               <span>{value}</span>
               <AddToScheduleModal
-                quarter = {original.courseInfo.quarter}
+                quarter={original.courseInfo.quarter}
                 section={original}
                 onAdd={(section, schedule) =>
                   handleAddToSchedule(section, schedule, mutation)
@@ -217,7 +217,7 @@ export default function SectionsTable({ sections }) {
             <div className="d-flex align-items-center gap-2">
               <span>{value}</span>
               <AddToScheduleModal
-                quarter = {sections[0].courseInfo.quarter}
+                quarter={sections[0].courseInfo.quarter}
                 section={value}
                 onAdd={(section, schedule) =>
                   handleLectureAddToSchedule(section, schedule, mutation)

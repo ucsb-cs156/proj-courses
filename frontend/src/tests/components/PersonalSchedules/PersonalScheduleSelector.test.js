@@ -1,10 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import PersonalScheduleSelector from "main/components/PersonalSchedules/PersonalScheduleSelector";
-import { useBackend } from "main/utils/useBackend";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
-jest.mock("main/utils/useBackend");
 jest.mock("main/utils/quarterUtilities.js");
 
 describe("PersonalScheduleSelector", () => {
@@ -21,12 +19,11 @@ describe("PersonalScheduleSelector", () => {
 
   test("sets the initial schedule from the filtered schedule prop if matching quarters", () => {
     render(
-      
-      <PersonalScheduleSelector 
-      filteredSchedules={filteredSchedules}
-      schedule="schedule1" 
-      setSchedule={() => {}} 
-      />,
+      <PersonalScheduleSelector
+        filteredSchedules={filteredSchedules}
+        schedule="schedule1"
+        setSchedule={() => {}}
+      />
     );
     expect(screen.getByDisplayValue("F22 Schedule 1")).toBeInTheDocument();
   });
@@ -38,7 +35,7 @@ describe("PersonalScheduleSelector", () => {
         filteredSchedules={filteredSchedules}
         controlId="controlId"
         setSchedule={setSchedule}
-      />,
+      />
     );
     fireEvent.change(screen.getByLabelText("Schedule"), {
       target: { value: "schedule1" },
@@ -56,7 +53,7 @@ describe("PersonalScheduleSelector", () => {
         controlId="controlId"
         setSchedule={setSchedule}
         onChange={onChange}
-      />,
+      />
     );
     const selectElement = screen.getByLabelText("Schedule", {
       selector: "select",
@@ -74,18 +71,22 @@ describe("PersonalScheduleSelector", () => {
 
     // Render the component with an empty schedules array
     const { rerender } = render(
-      <PersonalScheduleSelector 
-      filteredSchedules={emptyFilteredSchedules}
-      setSchedule={`setSchedule`} />,
+      <PersonalScheduleSelector
+        filteredSchedules={emptyFilteredSchedules}
+        setSchedule={`setSchedule`}
+      />
     );
 
     // Assert that setSchedule is not called when schedules array is empty
     expect(setSchedule).not.toHaveBeenCalled();
 
     // Rerender the component with the updated schedules array
-    rerender(<PersonalScheduleSelector 
-      filteredSchedules={filteredSchedules}
-      setSchedule={setSchedule} />);
+    rerender(
+      <PersonalScheduleSelector
+        filteredSchedules={filteredSchedules}
+        setSchedule={setSchedule}
+      />
+    );
 
     // Assert that setSchedule is called with the first schedule id when schedules array is not empty
     expect(setSchedule).toHaveBeenCalledWith("schedule1");
