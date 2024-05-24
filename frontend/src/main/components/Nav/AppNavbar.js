@@ -35,6 +35,7 @@ export default function AppNavbar({
             to="/"
             style={{
               backgroundColor: "#34859B",
+              padding: "5px 15px",
               borderRadius: "8px",
             }}
           >
