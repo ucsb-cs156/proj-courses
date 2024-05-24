@@ -38,7 +38,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
     (schedule) => schedule.quarter === currentQuarter
   );
   //Change
-  
+
   return (
     <>
       <Button variant="success" onClick={() => setShowModal(true)}>
@@ -63,8 +63,8 @@ export default function AddToScheduleModal({ section, onAdd }) {
                 </Form.Group>
               ) : (
                 <p>
-                  No schedules found.
-                  <Link to="/personalschedules/create">Create a schedule</Link>
+                  There are no personal schedules for this quarter.
+                  <Link to="/personalschedules/create">[Create Personal Schedule]</Link>
                 </p>
               )
             }
