@@ -9,7 +9,6 @@ name: 98 - Copy specific issue from starter repo (creates new issue)
 env:
     GH_TOKEN: ${{ github.token }}
     STARTER: https://github.com/ucsb-cs156/proj-courses
-    TAG: f23
 on:
   workflow_dispatch:
     inputs:
@@ -30,7 +29,7 @@ jobs:
         id: get-issues
         run: |
           number=${{ github.event.inputs.issue_number }}
-          GH_REPO=${{env.STARTER}} gh issue list -s open -l ${{env.TAG}}} --json number,title,body,labels | jq --argjson issue_num $number  '[ ( .[] | select(.number==$issue_num) | { number: .number, title: .title , body: .body, labels: ( .labels | [ .[].name ] | join(",") )  } ) ]' > issues.json
+          GH_REPO=${{env.STARTER}} gh issue list -s open --json number,title,body,labels | jq --argjson issue_num $number  '[ ( .[] | select(.number==$issue_num) | { number: .number, title: .title , body: .body, labels: ( .labels | [ .[].name ] | join(",") )  } ) ]' > issues.json
           cat issues.json
           {
                echo 'issues<<THIS_IS_THIS_EOF_MARKER'
