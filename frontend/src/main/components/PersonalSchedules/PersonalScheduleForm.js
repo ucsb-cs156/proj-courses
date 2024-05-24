@@ -32,7 +32,7 @@ function PersonalScheduleForm({
   const [quarter, setQuarter] = useState(
     {
       quarters: quarters,
-    }.quarters[0],
+    }.quarters[quarters.length - 1],
   );
 
   const quarterMap = {
