@@ -7,11 +7,9 @@ import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
-export default function AddToScheduleModal({ section, onAdd }) {
+export default function AddToScheduleModal({ quarter, section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
-
-  const localQuarter = localStorage.getItem("BasicSearch.Quarter");
 
   // Stryker disable all
   const {
@@ -37,7 +35,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
 
   //filter schedules to match the current quarter 
   const filteredSchedules = schedules.filter(
-    (schedule) => schedule.quarter === localQuarter
+    (schedule) => schedule.quarter === quarter
   );
 
   // Stryker disable all : tested manually, complicated to test
@@ -65,7 +63,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
                 </Form.Group>
               ) : (
                 <p>
-                  No personal schedules exist for quarter {yyyyqToQyy(localQuarter.toString())}.
+                  No personal schedules exist for quarter {yyyyqToQyy(quarter)}.
                   <br />
                   <Link to="/personalschedules/create">[Create One]</Link>
                 </p>
