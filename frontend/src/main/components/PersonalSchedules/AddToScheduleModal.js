@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 export default function AddToScheduleModal({ section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
+  const currentQuarter = localStorage.getItem("BasicSearch.Quarter"); //Change
 
   // Stryker disable all
   const {
@@ -31,6 +32,13 @@ export default function AddToScheduleModal({ section, onAdd }) {
     handleModalClose();
   };
   // Stryker disable all : tested manually, complicated to test
+
+  //Change
+  const filteringSchedules = schedules.filter(
+    (schedule) => schedule.quarter === currentQuarter
+  );
+  //Change
+  
   return (
     <>
       <Button variant="success" onClick={() => setShowModal(true)}>
@@ -43,13 +51,14 @@ export default function AddToScheduleModal({ section, onAdd }) {
         <Modal.Body>
           <Form>
             {
-              /* istanbul ignore next */ schedules.length > 0 ? (
+              /* istanbul ignore next */ filteringSchedules.length > 0 ? ( //Change /* istanbul ignore next */ schedules.length > 0 ? (
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
                     schedule={selectedSchedule}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
+                    filteringSchedules={filteringSchedules} //Change
                   />
                 </Form.Group>
               ) : (
