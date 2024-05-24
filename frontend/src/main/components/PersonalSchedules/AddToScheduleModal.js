@@ -19,7 +19,7 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
   } = useBackend(
     ["/api/personalschedules/all"],
     { method: "GET", url: "/api/personalschedules/all" },
-    []
+    [],
   );
   // Stryker restore all
 
@@ -34,7 +34,7 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
 
   //filter schedules to match the current quarter
   const filteredSchedules = schedules.filter(
-    (schedule) => schedule.quarter === quarter
+    (schedule) => schedule.quarter === quarter,
   );
 
   // Stryker disable all : tested manually, complicated to test

@@ -23,7 +23,7 @@ describe("PersonalScheduleSelector", () => {
         filteredSchedules={filteredSchedules}
         schedule="schedule1"
         setSchedule={() => {}}
-      />
+      />,
     );
     expect(screen.getByDisplayValue("F22 Schedule 1")).toBeInTheDocument();
   });
@@ -35,7 +35,7 @@ describe("PersonalScheduleSelector", () => {
         filteredSchedules={filteredSchedules}
         controlId="controlId"
         setSchedule={setSchedule}
-      />
+      />,
     );
     fireEvent.change(screen.getByLabelText("Schedule"), {
       target: { value: "schedule1" },
@@ -53,7 +53,7 @@ describe("PersonalScheduleSelector", () => {
         controlId="controlId"
         setSchedule={setSchedule}
         onChange={onChange}
-      />
+      />,
     );
     const selectElement = screen.getByLabelText("Schedule", {
       selector: "select",
@@ -74,7 +74,7 @@ describe("PersonalScheduleSelector", () => {
       <PersonalScheduleSelector
         filteredSchedules={emptyFilteredSchedules}
         setSchedule={`setSchedule`}
-      />
+      />,
     );
 
     // Assert that setSchedule is not called when schedules array is empty
@@ -85,7 +85,7 @@ describe("PersonalScheduleSelector", () => {
       <PersonalScheduleSelector
         filteredSchedules={filteredSchedules}
         setSchedule={setSchedule}
-      />
+      />,
     );
 
     // Assert that setSchedule is called with the first schedule id when schedules array is not empty

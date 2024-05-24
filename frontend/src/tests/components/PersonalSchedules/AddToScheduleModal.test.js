@@ -20,7 +20,7 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -30,7 +30,7 @@ describe("AddToScheduleModal", () => {
         <Router>
           <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
@@ -50,7 +50,7 @@ describe("AddToScheduleModal", () => {
         <Router>
           <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
@@ -66,7 +66,7 @@ describe("AddToScheduleModal", () => {
         setHasSchedules(false);
         return null;
       };
-    }
+    },
   );
 
   test("displays correct message when no schedules found", () => {
@@ -75,16 +75,16 @@ describe("AddToScheduleModal", () => {
         <Router>
           <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
     expect(
-      screen.getByText("No personal schedules exist for quarter F21.")
+      screen.getByText("No personal schedules exist for quarter F21."),
     ).toBeInTheDocument();
     expect(screen.getByText("[Create One]")).toHaveAttribute(
       "href",
-      "/personalschedules/create"
+      "/personalschedules/create",
     );
   });
 
@@ -98,7 +98,7 @@ describe("AddToScheduleModal", () => {
             section={"Stryker was here!"}
           />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
