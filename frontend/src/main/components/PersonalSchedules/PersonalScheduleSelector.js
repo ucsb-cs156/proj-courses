@@ -11,10 +11,11 @@ const PersonalScheduleSelector = ({
   onChange = null,
   label = "Schedule",
 }) => {
-  const localSearchSchedule = localStorage.getItem(controlId);
+  //const localSearchSchedule = localStorage.getItem(controlId);
 
   const [scheduleState, setScheduleState] = useState(
-    localSearchSchedule || schedule,
+    schedule,
+    //localSearchSchedule || schedule,
   );
 
   useEffect(() => {
