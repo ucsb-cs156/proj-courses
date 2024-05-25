@@ -6,6 +6,7 @@ import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+import { filterSchedulesByQuarter } from "main/utils/PersonalScheduleUtils";
 
 export default function AddToScheduleModal({ quarter, section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
@@ -33,9 +34,8 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
   };
 
   //filter schedules to match the current quarter
-  const filteredSchedules = schedules.filter(
-    (schedule) => schedule.quarter === quarter,
-  );
+
+  const filteredSchedules = filterSchedulesByQuarter(schedules, quarter);
 
   // Stryker disable all : tested manually, complicated to test
   return (
