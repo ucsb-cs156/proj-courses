@@ -130,7 +130,7 @@ describe("SingleQuarterSelector tests", () => {
     await waitFor(() => expect(useState).toBeCalledWith("20202"));
   });
 
-  test("when localstorage has no value, first element of quarter range is passed to useState", async () => {
+  test("when localstorage has no value, last element of quarter range is passed to useState", async () => {
     const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
