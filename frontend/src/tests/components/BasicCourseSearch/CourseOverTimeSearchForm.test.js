@@ -243,6 +243,104 @@ describe("CourseOverTimeSearchForm tests", () => {
     );
   });
 
+  test("when a course number with no suffix is typed and the form is submitted, the state updates correctly", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    const sampleReturnValue = {
+      sampleKey: "sampleValue",
+    };
+  
+    const fetchJSONSpy = jest.fn();
+    fetchJSONSpy.mockResolvedValue(sampleReturnValue);
+  
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  
+    const expectedFields = {
+      startQuarter: "20211",
+      endQuarter: "20214",
+      subject: "CMPSC",
+      courseNumber: "130",
+      courseSuf: "",
+    };
+  
+    const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
+    await screen.findByTestId(expectedKey);  // Replaces the waitFor + getByTestId
+  
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20211");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20214");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+    userEvent.type(selectCourseNumber, "CS130");
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+  
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+  
+    expect(fetchJSONSpy).toHaveBeenCalledWith(
+      expect.any(Object),
+      expectedFields,
+    );
+  });
+  
+  test("when a course number with no digits is typed, the state is updated correctly", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    const sampleReturnValue = {
+      sampleKey: "sampleValue",
+    };
+  
+    const fetchJSONSpy = jest.fn();
+    fetchJSONSpy.mockResolvedValue(sampleReturnValue);
+  
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  
+    const expectedFields = {
+      startQuarter: "20211",
+      endQuarter: "20214",
+      subject: "CMPSC",
+      courseNumber: "",
+      courseSuf: "",
+    };
+  
+    const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
+    await screen.findByTestId(expectedKey);  // Replaces the waitFor + getByTestId
+  
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20211");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20214");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+    userEvent.type(selectCourseNumber, "CSABC");
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+  
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+  
+    expect(fetchJSONSpy).toHaveBeenCalledWith(
+      expect.any(Object),
+      expectedFields,
+    );
+  });
+
   test("when I click submit, the right stuff happens", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     const sampleReturnValue = {
