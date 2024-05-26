@@ -13,8 +13,6 @@ import { Form } from "react-bootstrap";
 //  { yyyyq :"20221", qyy: "W22"},
 //  { yyyyq :"20222", qyy: "S22"}]
 
-// [{ yyyyq: "20242", qyy: "S24"}]
-
 function SingleQuarterDropdown({
   quarter,
   quarters,
