@@ -146,7 +146,7 @@ describe("SingleQuarterSelector tests", () => {
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("20201"));
+    await waitFor(() => expect(useState).toBeCalledWith("20224"));
   });
 
   test("when localstorage has no value, first element of quarter range is the default parameter", async () => {
@@ -165,7 +165,7 @@ describe("SingleQuarterSelector tests", () => {
     );
 
     await waitFor(() =>
-      expect(setQuarterStateSpy).toBeCalledWith("sqd1", "20201"),
+      expect(setQuarterStateSpy).toBeCalledWith("sqd1", "20224"),
     );
   });
 });
