@@ -39,7 +39,7 @@ describe("AdminJobsPage tests", () => {
     expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
     expect(await screen.findByText("Job Status")).toBeInTheDocument();
 
-    ["Test Job", "Update Courses Database", "Update Grade Info"].map(
+    ["Test Job", "Update Courses Database", "Update Grade Info", "Update Course Database by quarter range for one subject"].map(
       (jobName) => expect(screen.getByText(jobName)).toBeInTheDocument(),
     );
 
@@ -219,6 +219,37 @@ describe("AdminJobsPage tests", () => {
 
     expect(axiosMock.history.post[0].url).toBe(
       "/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=20212&end_quarterYYYYQ=20213",
+    );
+  });
+  test("user can submit the update grade data job", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Update Grade Info"),
+    ).toBeInTheDocument();
+
+    const updateCoursesButton = screen.getByText("Update Grade Info");
+    expect(updateCoursesButton).toBeInTheDocument();
+    updateCoursesButton.click();
+
+    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+
+    const submitButton = screen.getByTestId("uploadGradeData");
+
+    expect(submitButton).toBeInTheDocument();
+
+    submitButton.click();
+
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+    expect(axiosMock.history.post[0].url).toBe(
+      "/api/jobs/launch/uploadGradeData",
     );
   });
 });

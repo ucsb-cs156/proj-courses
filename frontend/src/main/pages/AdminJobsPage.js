@@ -10,6 +10,7 @@ import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 import UpdateCoursesByQuarterJobForm from "main/components/Jobs/UpdateCoursesByQuarterJobForm";
 import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCoursesByQuarterRangeJobForm";
+import UploadGradeDataJobForm from "main/components/Jobs/UploadGradeDataJobForm";
 
 const AdminJobsPage = () => {
   const refreshJobsIntervalMilliseconds = 5000;
@@ -48,6 +49,12 @@ const AdminJobsPage = () => {
     method: "POST",
   });
 
+  // ***** upload grades job *******
+  const objectToAxiosParamsUploadGradeDataJob = () => ({
+    url: `/api/jobs/launch/uploadGradeData`,
+    method: "POST",
+  });
+
   // Stryker disable all
   const updateCoursesJobMutation = useBackendMutation(
     objectToAxiosParamsUpdateCoursesJob,
@@ -65,6 +72,12 @@ const AdminJobsPage = () => {
     {},
     ["/api/jobs/all"],
   );
+
+  const uploadGradeDataMutation = useBackendMutation(
+    objectToAxiosParamsUploadGradeDataJob,
+    {},
+    ["/api/jobs/all"],
+  );
   // Stryker restore all
 
   const submitUpdateCoursesJob = async (data) => {
@@ -77,6 +90,10 @@ const AdminJobsPage = () => {
 
   const submitUpdateCoursesByQuarterRangeJob = async (data) => {
     updateCoursesByQuarterRangeJobMutation.mutate(data);
+  };
+
+  const submitUploadGradeDataJob = async (data) => {
+    uploadGradeDataMutation.mutate(data);
   };
 
   // Stryker disable all
@@ -113,6 +130,10 @@ const AdminJobsPage = () => {
       ),
     },
     {
+      name: "Update Course Database by quarter range for one subject",
+      form: <JobComingSoon />,
+    },
+    {
       name: "Update Courses Database by quarter range",
       form: (
         <UpdateCoursesByQuarterRangeJobForm
@@ -122,7 +143,11 @@ const AdminJobsPage = () => {
     },
     {
       name: "Update Grade Info",
-      form: <JobComingSoon />,
+      form: (
+        <UploadGradeDataJobForm
+          callback={submitUploadGradeDataJob}
+        />
+      ),
     },
   ];
 
