@@ -70,17 +70,17 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
 
   const handleCourseNumberOnChange = (event) => {
     const rawCourse = event.target.value;
-    if (rawCourse.match(/\d+/g) != null) {
-      const number = rawCourse.match(/\d+/g)[0];
+    const firstDigitIndex = rawCourse.search(/\d/);
+    if (firstDigitIndex !== -1) {
+      const strippedCourse = rawCourse.slice(firstDigitIndex);
+      const numberMatch = strippedCourse.match(/\d+/g);
+      const suffixMatch = strippedCourse.match(/[a-zA-Z]+/g);
+      const number = numberMatch ? numberMatch[0] : "";
+      const suffix = suffixMatch ? suffixMatch[0] : "";
       setCourseNumber(number);
-    } else {
-      setCourseNumber("");
-    }
-
-    if (rawCourse.match(/[a-zA-Z]+/g) != null) {
-      const suffix = rawCourse.match(/[a-zA-Z]+/g)[0];
       setCourseSuf(suffix);
     } else {
+      setCourseNumber("");
       setCourseSuf("");
     }
   };
