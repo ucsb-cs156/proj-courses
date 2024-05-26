@@ -139,14 +139,14 @@ describe("SingleQuarterSelector tests", () => {
 
     render(
       <SingleQuarterDropdown
-        quarters={quarterRange("20201", "20224")}
+        quarters={quarterRange("20201", "20234")}
         quarter={quarter}
         setQuarter={setQuarter}
         controlId="sqd1"
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("20224"));
+    await waitFor(() => expect(useState).toBeCalledWith("20234"));
   });
 
   test("when localstorage has no value, last element of quarter range is the default parameter", async () => {

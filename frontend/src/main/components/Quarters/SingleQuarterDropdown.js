@@ -24,11 +24,10 @@ function SingleQuarterDropdown({
   onChange = null,
   label = "Quarter",
 }) {
-
   const lastInd = quarters.length - 1;
 
   const localSearchQuarter = localStorage.getItem(controlId);
-  
+
   if (!localSearchQuarter) {
     localStorage.setItem(controlId, quarters[lastInd].yyyyq);
   }
