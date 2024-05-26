@@ -71,12 +71,22 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const handleCourseNumberOnChange = (event) => {
     const rawCourse = event.target.value;
     const firstDigitIndex = rawCourse.search(/\d/);
+    
     if (firstDigitIndex !== -1) {
       const strippedCourse = rawCourse.slice(firstDigitIndex);
       const numberMatch = strippedCourse.match(/\d+/g);
       const suffixMatch = strippedCourse.match(/[a-zA-Z]+/g);
-      const number = numberMatch ? numberMatch[0] : "";
-      const suffix = suffixMatch ? suffixMatch[0] : "";
+      
+      let number = "";
+      if (numberMatch) {
+        number = numberMatch[0];
+      }
+  
+      let suffix = "";
+      if (suffixMatch) {
+        suffix = suffixMatch[0];
+      }
+  
       setCourseNumber(number);
       setCourseSuf(suffix);
     } else {
@@ -84,6 +94,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
       setCourseSuf("");
     }
   };
+  
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
   return (
