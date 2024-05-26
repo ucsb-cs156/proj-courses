@@ -145,6 +145,57 @@ describe("CourseOverTimeSearchForm tests", () => {
     expect(selectCourseNumber.value).toBe("A");
   });
 
+  test("when a course number with letters before numbers is typed and the form is submitted, the state updates correctly", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    const sampleReturnValue = {
+      sampleKey: "sampleValue",
+    };
+
+    const fetchJSONSpy = jest.fn();
+    fetchJSONSpy.mockResolvedValue(sampleReturnValue);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedFields = {
+      startQuarter: "20211",
+      endQuarter: "20214",
+      subject: "CMPSC",
+      courseNumber: "130",
+      courseSuf: "A",
+    };
+
+    const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20211");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20214");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+    userEvent.type(selectCourseNumber, "CS130A");
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+
+    expect(fetchJSONSpy).toHaveBeenCalledWith(
+      expect.any(Object),
+      expectedFields,
+    );
+  });
+
   test("when I click submit, the right stuff happens", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     const sampleReturnValue = {
