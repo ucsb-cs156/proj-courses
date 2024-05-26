@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
-//import { useBackend } from "main/utils/useBackend";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 const PersonalScheduleSelector = ({
@@ -11,12 +10,7 @@ const PersonalScheduleSelector = ({
   onChange = null,
   label = "Schedule",
 }) => {
-  //const localSearchSchedule = localStorage.getItem(controlId);
-
-  const [scheduleState, setScheduleState] = useState(
-    schedule,
-    //localSearchSchedule || schedule,
-  );
+  const [scheduleState, setScheduleState] = useState(schedule);
 
   useEffect(() => {
     if (filteredSchedules && filteredSchedules.length > 0) {
