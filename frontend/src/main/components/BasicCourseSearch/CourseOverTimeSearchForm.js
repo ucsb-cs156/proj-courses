@@ -71,22 +71,12 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const handleCourseNumberOnChange = (event) => {
     const rawCourse = event.target.value;
     const firstDigitIndex = rawCourse.search(/\d/);
-
     if (firstDigitIndex !== -1) {
       const strippedCourse = rawCourse.slice(firstDigitIndex);
-      //const numberMatch = strippedCourse.match(/\d+/g);
+      const numberMatch = strippedCourse.match(/\d+/g);
       const suffixMatch = strippedCourse.match(/[a-zA-Z]+/g);
-
-      let number = "";
-      if (strippedCourse.match(/\d+/g)) {
-        number = strippedCourse.match(/\d+/g)[0];
-      }
-
-      let suffix = "";
-      if (suffixMatch) {
-        suffix = suffixMatch[0];
-      }
-
+      const number = numberMatch[0];
+      const suffix = suffixMatch ? suffixMatch[0] : "";
       setCourseNumber(number);
       setCourseSuf(suffix);
     } else {
