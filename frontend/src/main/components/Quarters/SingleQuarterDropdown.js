@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
-// import { useSystemInfo } from "main/utils/systemInfo";
 
 // controlId is used to remember the value for localStorage,
 // and for the testId, so it should be unique to at least any
