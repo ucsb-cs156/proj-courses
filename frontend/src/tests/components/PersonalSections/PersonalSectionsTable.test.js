@@ -229,7 +229,7 @@ describe("PersonalSectionsTable tests", () => {
     });
   });
 
-  personalSectionsFixtures.threePersonalSections.forEach((section, index) => {
+  personalSectionsFixtures.threePersonalSections.forEach((_, index) => {
     test(`Delete button is present for row ${index}`, async () => {
       const currentUser = currentUserFixtures.userOnly;
 
