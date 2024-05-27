@@ -1,4 +1,20 @@
 import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
+import { toast } from "react-toastify";
+
+export function onDeleteSuccess(message) {
+  console.log(message);
+  toast(message);
+}
+
+export function cellToAxiosParamsDelete(cell) {
+  return {
+    url: "/api/courses/user",
+    method: "DELETE",
+    params: {
+      id: cell.row.values.id,
+    },
+  };
+}
 
 export const convertToFraction = (en1, en2) => {
   return en1 != null && en2 != null ? `${en1}/${en2}` : "";
