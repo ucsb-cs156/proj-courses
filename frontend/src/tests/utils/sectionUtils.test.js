@@ -103,7 +103,7 @@ describe("section utils tests", () => {
     expect(formatDays(testTimeLocations1)).toBe("R F");
   });
 
-  test("formatTime test 3", () => {
+  test("formatTime test 1", () => {
     expect(formatTime(testTimeLocations)).toBe(
       "3:30 PM - 4:45 PM, 10:30 AM - 11:45 AM",
     );
@@ -112,6 +112,7 @@ describe("section utils tests", () => {
   test("formatInstructors test", () => {
     expect(formatInstructors(testInstructors)).toBe("HESPANHA J P, JOHN S");
   });
+
   test("formatLocation null test", () => {
     expect(formatLocation(null)).toBe("");
   });
