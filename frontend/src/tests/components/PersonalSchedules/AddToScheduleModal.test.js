@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
+
 describe("AddToScheduleModal", () => {
   let mockOnAdd;
 
@@ -76,10 +77,13 @@ describe("AddToScheduleModal", () => {
       </QueryClientProvider>,
     );
 
+    const testQuarter="S24";
+    global.localStorage.getItem=jest.fn(()=>testQuarter);
+
     fireEvent.click(screen.getByText("Add"));
 
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
+    expect(screen.getByText("There are no personal schedules for this quarter.")).toBeInTheDocument();
+    expect(screen.getByText("[Create Personal Schedule]")).toHaveAttribute(
       "href",
       "/personalschedules/create",
     );
@@ -94,10 +98,11 @@ describe("AddToScheduleModal", () => {
       </QueryClientProvider>,
     );
 
+
     fireEvent.click(screen.getByText("Add"));
 
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
+    expect(screen.getByText("There are no personal schedules for this quarter.")).toBeInTheDocument();
+    expect(screen.getByText("[Create Personal Schedule]")).toHaveAttribute(
       "href",
       "/personalschedules/create",
     );
@@ -139,8 +144,8 @@ describe("AddToScheduleModal", () => {
 
     fireEvent.click(screen.getByText("Add"));
 
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
+    expect(screen.getByText("There are no personal schedules for this quarter.")).toBeInTheDocument();
+    expect(screen.getByText("[Create Personal Schedule]")).toHaveAttribute(
       "href",
       "/personalschedules/create",
     );
