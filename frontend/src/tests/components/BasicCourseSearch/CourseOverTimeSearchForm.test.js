@@ -261,4 +261,25 @@ describe("CourseOverTimeSearchForm tests", () => {
       await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-3/),
     ).toHaveValue("20214");
   });
+  test("when I select a course number with the course area too, the course number just retains the number", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+    userEvent.type(selectCourseNumber, "CMPSC156");
+    
+    // we want course number to be just "156" 
+    expect(selectCourseNumber.value).toBe("156");
+  });
+
+
+
+
 });
