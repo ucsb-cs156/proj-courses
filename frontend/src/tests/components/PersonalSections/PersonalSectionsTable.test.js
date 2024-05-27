@@ -129,18 +129,44 @@ describe("PersonalSectionsTable tests", () => {
       expect(cell).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-courseId`)).toHaveTextContent("ECE 1A");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].enrollCode`)).toHaveTextContent("12583");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].section`)).toHaveTextContent("0100");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-title`)).toHaveTextContent("COMP ENGR SEMINAR");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-enrolled`)).toHaveTextContent("84/100");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-location`)).toHaveTextContent("BUCHN 1930");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].timeLocations[0].days`)).toHaveTextContent("M");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-time`)).toHaveTextContent("3:00 PM - 3:50 PM");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent("WANG L C");
-    expect(screen.getByTestId(`${testId}-cell-row-2-col-instructor`)).toHaveTextContent("STEPHANSON B, BUCKWALTER J");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-courseId`),
+    ).toHaveTextContent("ECE 1A");
+    expect(
+      screen.getByTestId(
+        `${testId}-cell-row-0-col-classSections[0].enrollCode`,
+      ),
+    ).toHaveTextContent("12583");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].section`),
+    ).toHaveTextContent("0100");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-title`),
+    ).toHaveTextContent("COMP ENGR SEMINAR");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-enrolled`),
+    ).toHaveTextContent("84/100");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-location`),
+    ).toHaveTextContent("BUCHN 1930");
+    expect(
+      screen.getByTestId(
+        `${testId}-cell-row-0-col-classSections[0].timeLocations[0].days`,
+      ),
+    ).toHaveTextContent("M");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-time`),
+    ).toHaveTextContent("3:00 PM - 3:50 PM");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
+    ).toHaveTextContent("WANG L C");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-instructor`),
+    ).toHaveTextContent("STEPHANSON B, BUCKWALTER J");
 
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
   });
@@ -218,7 +244,9 @@ describe("PersonalSectionsTable tests", () => {
         </QueryClientProvider>,
       );
 
-      const deleteButton = await screen.findByTestId(`${testId}-cell-row-${index}-col-Delete-button`);
+      const deleteButton = await screen.findByTestId(
+        `${testId}-cell-row-${index}-col-Delete-button`,
+      );
       expect(deleteButton).toBeInTheDocument();
       expect(deleteButton).toHaveClass("btn-danger");
     });
@@ -238,7 +266,9 @@ describe("PersonalSectionsTable tests", () => {
       </QueryClientProvider>,
     );
 
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
     fireEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));

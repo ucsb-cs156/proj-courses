@@ -13,11 +13,14 @@ import {
   formatTime,
 } from "main/utils/sectionUtils.js";
 
-export default function PersonalSectionsTable({ personalSections, currentUser }) {
+export default function PersonalSectionsTable({
+  personalSections,
+  currentUser,
+}) {
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    []
+    [],
   );
 
   const deleteCallback = async (cell) => {
@@ -46,7 +49,7 @@ export default function PersonalSectionsTable({ personalSections, currentUser })
       accessor: (row) =>
         convertToFraction(
           row.classSections[0].enrolledTotal,
-          row.classSections[0].maxEnroll
+          row.classSections[0].maxEnroll,
         ),
       id: "enrolled",
     },

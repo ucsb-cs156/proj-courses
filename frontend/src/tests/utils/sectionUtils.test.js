@@ -1,5 +1,8 @@
 import mockConsole from "jest-mock-console";
-import { onDeleteSuccess, cellToAxiosParamsDelete } from "main/utils/sectionUtils";
+import {
+  onDeleteSuccess,
+  cellToAxiosParamsDelete,
+} from "main/utils/sectionUtils";
 import {
   convertToFraction,
   formatLocation,
