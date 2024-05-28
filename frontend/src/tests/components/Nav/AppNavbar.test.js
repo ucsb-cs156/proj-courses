@@ -256,6 +256,11 @@ describe("AppNavbar tests", () => {
       </QueryClientProvider>,
     );
 
+    const coursesSearchButton = screen.getByTestId("UCSBCoursesSearch");
+    expect(coursesSearchButton).toHaveAttribute(
+      "style",
+      "background-color: rgb(52, 133, 155); padding: 5px 15px; border-radius: 8px;",
+    );
     expect(
       await screen.findByTestId("appnavbar-course-infos-dropdown"),
     ).toBeInTheDocument();
