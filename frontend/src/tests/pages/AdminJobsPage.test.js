@@ -39,9 +39,12 @@ describe("AdminJobsPage tests", () => {
     expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
     expect(await screen.findByText("Job Status")).toBeInTheDocument();
 
-    ["Test Job", "Update Courses Database", "Update Grade Info", "Update Course Database by quarter range for one subject"].map(
-      (jobName) => expect(screen.getByText(jobName)).toBeInTheDocument(),
-    );
+    [
+      "Test Job",
+      "Update Courses Database",
+      "Update Grade Info",
+      "Update Course Database by quarter range for one subject",
+    ].map((jobName) => expect(screen.getByText(jobName)).toBeInTheDocument());
 
     const testId = "JobsTable";
 
@@ -230,9 +233,7 @@ describe("AdminJobsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      await screen.findByText("Update Grade Info"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Update Grade Info")).toBeInTheDocument();
 
     const updateCoursesButton = screen.getByText("Update Grade Info");
     expect(updateCoursesButton).toBeInTheDocument();
