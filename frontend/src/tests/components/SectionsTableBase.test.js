@@ -1,7 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import SectionsTableBase from "main/components/SectionsTableBase";
-import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
-import {isLectureWithNoSections,handleAddToSchedule,handleLectureAddToSchedule} from "main/components/Sections/SectionsTable";
 
 import {
   oneLectureSectionWithNoDiscussion,
