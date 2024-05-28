@@ -2,61 +2,79 @@ package edu.ucsb.cs156.courses.config;
 
 import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 @Slf4j
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
   @Value("${app.admin.emails}")
-  private final List<String> adminEmails = new ArrayList<String>();
+  private final List<String> adminEmails = new ArrayList<>();
 
-  @Autowired UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests(authorize -> authorize.anyRequest().permitAll())
-        .exceptionHandling(
-            handlingConfigurer ->
-                handlingConfigurer.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
+  // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .exceptionHandling(handling -> handling.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
         .oauth2Login(
-            oauth2 ->
-                oauth2.userInfoEndpoint(
-                    userInfo -> userInfo.userAuthoritiesMapper(this.userAuthoritiesMapper())))
-        .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-        .logout(
-            logout ->
-                logout
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/"));
+            oauth2 -> oauth2.userInfoEndpoint(
+                userInfo -> userInfo.userAuthoritiesMapper(this.userAuthoritiesMapper())))
+        .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+        .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/"));
+    return http.build();
   }
 
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/h2-console/**");
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return web -> web.ignoring().requestMatchers("/h2-console/**");
   }
 
   private GrantedAuthoritiesMapper userAuthoritiesMapper() {
@@ -67,11 +85,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           authority -> {
             log.info("********** authority={}", authority);
             mappedAuthorities.add(authority);
-            if (OAuth2UserAuthority.class.isInstance(authority)) {
-              OAuth2UserAuthority oauth2UserAuthority = (OAuth2UserAuthority) authority;
+            if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
 
               Map<String, Object> userAttributes = oauth2UserAuthority.getAttributes();
               log.info("********** userAttributes={}", userAttributes);
+              mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
               String email = (String) userAttributes.get("email");
               if (isAdmin(email)) {
@@ -93,5 +111,55 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     Optional<User> u = userRepository.findByEmail(email);
     return u.isPresent() && u.get().isAdmin();
+  }
+}
+
+final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {
+  private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
+
+  @Override
+  public void handle(HttpServletRequest request, HttpServletResponse response,
+      Supplier<CsrfToken> deferredCsrfToken) {
+    /*
+     * Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection
+     * of
+     * the CsrfToken when it is rendered in the response body.
+     */
+    this.delegate.handle(request, response, deferredCsrfToken);
+  }
+
+  @Override
+  public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
+    /*
+     * If the request contains a request header, use
+     * CsrfTokenRequestAttributeHandler
+     * to resolve the CsrfToken. This applies when a single-page application
+     * includes
+     * the header value automatically, which was obtained via a cookie containing
+     * the
+     * raw CsrfToken.
+     */
+    if (StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
+      return super.resolveCsrfTokenValue(request, csrfToken);
+    }
+    /*
+     * In all other cases (e.g. if the request contains a request parameter), use
+     * XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
+     * when a server-side rendered form includes the _csrf request parameter as a
+     * hidden input.
+     */
+    return this.delegate.resolveCsrfTokenValue(request, csrfToken);
+  }
+}
+
+final class CsrfCookieFilter extends OncePerRequestFilter {
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+    CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+    // Render the token value to a cookie by causing the deferred token to be loaded
+    csrfToken.getToken();
+    filterChain.doFilter(request, response);
   }
 }

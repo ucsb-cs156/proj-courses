@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.3</version>
+        <version>3.1.1</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.ucsb.cs156</groupId>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-gateway-mvc</artifactId>
-            <version>3.0.1</version>
+            <version>4.1.3</version>
         </dependency>
         <dependency>
             <groupId>me.paulschwarz</groupId>
@@ -85,12 +85,12 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-
+         <!-- Spring Doc for Spring Boot 3 https://springdoc.org/ -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.7.0</version>
-        </dependency>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>   
 
         <dependency>
             <groupId>javax.validation</groupId>
@@ -189,6 +189,7 @@
                         <exclude>**/edu/ucsb/cs156/courses/controllers/FrontendController.*</exclude>
                         <exclude>**/edu/ucsb/cs156/courses/controllers/FrontendProxyController.*</exclude>
                         <exclude>**/edu/ucsb/cs156/courses/services/CurrentUserServiceImpl.*</exclude>
+                        <exclude>**/${app.packagePath}/services/GrantedAuthoritiesService.*</exclude>
                         <exclude>**/edu/ucsb/cs156/courses/CoursesApplication.*</exclude>
                     </excludes>
                 </configuration>
@@ -227,10 +228,15 @@
                         <param>edu.ucsb.cs156.courses.services.CurrentUserServiceImpl</param>
                         <param>edu.ucsb.cs156.courses.CoursesApplication</param>
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig</param>
+                        <param>${app.package}.config.SpaCsrfTokenRequestHandler</param>
+                        <param>${app.package}.config.CsrfCookieFilter</param>
+                        <param>${app.package}.services.GrantedAuthoritiesService</param>
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig.MyCsrfRequestMatcher</param>
                         <param>edu.ucsb.cs156.courses.config.SpringFoxConfig</param>
                     </excludedClasses>
-                    <excludedTestClasses></excludedTestClasses>
+                    <excludedTestClasses>
+                        <param>edu.ucsb.cs156.example.integration.*</param>
+                    </excludedTestClasses>
                     <outputFormats>
                         <outputFormat>HTML</outputFormat>
                         <outputFormat>CSV</outputFormat>
@@ -368,19 +374,19 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>3.0.0</version>
                         <executions>
-                            <execution>
-                                <phase>generate-resources</phase>
-                                <configuration>
-                                    <target>
-                                        <copy todir="${project.build.outputDirectory}/public">
-                                            <fileset dir="${project.basedir}/frontend/build" />
-                                        </copy>
-                                    </target>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
+                        <execution>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                            <target>
+                                <copy todir="${project.build.outputDirectory}/public">
+                                <fileset dir="${project.basedir}/frontend/build" />
+                                </copy>
+                            </target>
+                            </configuration>
+                            <goals>
+                            <goal>run</goal>
+                            </goals>
+                        </execution>
                         </executions>
                     </plugin>
                 </plugins>
