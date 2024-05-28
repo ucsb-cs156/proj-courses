@@ -69,7 +69,8 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   };
 
   const handleCourseNumberOnChange = (event) => {
-    const rawCourse = event.target.value;
+    const rawInput = event.target.value;
+    const rawCourse = rawInput.replace(/^[a-zA-Z]+/, '');
     if (rawCourse.match(/\d+/g) != null) {
       const number = rawCourse.match(/\d+/g)[0];
       setCourseNumber(number);
