@@ -211,7 +211,6 @@ export default function SectionsTable({ sections }) {
       Header: "Action",
       id: "action",
       disableGroupBy: true,
-      accessor: "section.enrollCode",
       // No need for accessor if it's purely for actions like expand/collapse
       Cell: ({ row }) => {
         // Stryker disable all : difficult to test modal interaction
