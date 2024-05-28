@@ -31,6 +31,7 @@ export default function AppNavbar({
             style={{ width: 80, height: 80, marginRight: 10 }}
           />
           <Navbar.Brand
+            data-testid="UCSBCoursesSearch"
             as={Link}
             to="/"
             style={{

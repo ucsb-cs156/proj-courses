@@ -241,6 +241,7 @@ describe("AppNavbar tests", () => {
   test("renders the Course History/Course Over Time menu correctly", async () => {
     const currentUser = currentUserFixtures.userOnly;
     const systemInfo = systemInfoFixtures.showingBoth;
+    
 
     const doLogin = jest.fn();
 
@@ -256,6 +257,15 @@ describe("AppNavbar tests", () => {
       </QueryClientProvider>,
     );
 
+    
+    expect(
+      await screen.getByTestId("UCSBCoursesSearch"),
+    ).toBeInTheDocument();
+    const coursesSearchButton = screen.getByTestId("UCSBCoursesSearch");
+    expect(coursesSearchButton).toHaveAttribute(
+      "style",
+      "background-color: rgb(52, 133, 155); padding: 5px 15px; border-radius: 8px;"
+    );
     expect(
       await screen.findByTestId("appnavbar-course-infos-dropdown"),
     ).toBeInTheDocument();
@@ -295,6 +305,8 @@ describe("AppNavbar tests", () => {
     expect(aElement).toBeInTheDocument();
     aElement?.click();
 
+
+    
     expect(
       await screen.findByTestId("appnavbar-course-over-time-instructor-search"),
     ).toBeInTheDocument();
