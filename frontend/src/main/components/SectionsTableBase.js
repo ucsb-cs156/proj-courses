@@ -72,9 +72,7 @@ export default function SectionsTableBase({
                         }}
                       >
                         {cell.isGrouped ? (
-                          <>
-                            {cell.render("Cell")}
-                          </>
+                          <>{cell.render("Cell")}</>
                         ) : cell.isAggregated ? (
                           cell.render("Aggregated")
                         ) : (

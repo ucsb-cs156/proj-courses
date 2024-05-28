@@ -30,9 +30,7 @@ export default function AppNavbar({
             alt=""
             style={{ width: 80, height: 80, marginRight: 10 }}
           />
-          <Navbar.Brand>
-            UCSB Courses Search
-          </Navbar.Brand>
+          <Navbar.Brand>UCSB Courses Search</Navbar.Brand>
 
           <Navbar.Toggle />
 
