@@ -60,7 +60,7 @@ public class PersonalSchedulesController extends ApiController {
         personalscheduleRepository
             .findByIdAndUser(id, currentUser)
             .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
- 
+
     return personalschedule;
   }
 
