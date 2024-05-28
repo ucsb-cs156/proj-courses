@@ -44,7 +44,7 @@ export default function AppNavbar({
             <Nav className="me-auto">
               {systemInfo?.springH2ConsoleEnabled && (
                 <>
-                  <Nav.Link href="/h2-console">H2Console </Nav.Link>
+                  <Nav.Link href="/h2-console/index.html">H2Console </Nav.Link>
                 </>
               )}
               {systemInfo?.showSwaggerUILink && (
