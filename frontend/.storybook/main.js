@@ -12,7 +12,7 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/preset-create-react-app",
-    'storybook-addon-mock',
+    'storybook-addon-mock/register',
   ],
   webpackFinal: async (config) => {
     config.plugins.push(new WebpackPluginFailBuildOnWarning());

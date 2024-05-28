@@ -5,8 +5,10 @@ import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
+import {filterSchedulesByQuarter} from "../../utils/PersonalScheduleUtils";
+import {yyyyqToQyy} from "../../utils/quarterUtilities";
 
-export default function AddToScheduleModal({ section, onAdd }) {
+export default function AddToScheduleModal({ section, onAdd, quarter }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
 
@@ -30,6 +32,10 @@ export default function AddToScheduleModal({ section, onAdd }) {
     onAdd(section, selectedSchedule);
     handleModalClose();
   };
+
+  // Filter the schedules by the given quarter
+    const filteredSchedules = filterSchedulesByQuarter(schedules, quarter);
+
   // Stryker disable all : tested manually, complicated to test
   return (
     <>
@@ -43,18 +49,19 @@ export default function AddToScheduleModal({ section, onAdd }) {
         <Modal.Body>
           <Form>
             {
-              /* istanbul ignore next */ schedules.length > 0 ? (
+              /* istanbul ignore next */ filteredSchedules.length > 0 ? (
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
                     schedule={selectedSchedule}
+                    filteredSchedules={filteredSchedules}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
                   />
                 </Form.Group>
               ) : (
                 <p>
-                  No schedules found.
+                  No schedules found for quarter {yyyyqToQyy(quarter)}.
                   <Link to="/personalschedules/create">Create a schedule</Link>
                 </p>
               )
