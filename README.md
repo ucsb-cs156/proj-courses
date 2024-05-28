@@ -1,59 +1,54 @@
 # proj-courses
 
-This repo contains the code for the CMPSC 156 legacy code project "Courses Search". 
+This repo contains the code for the CMPSC 156 legacy code project "Courses Search".
 
 The project provides a web application where users can search for UCSB courses in various ways.
 
-Users with a Google Account can also store past, current or future schedules of courses for particular quarters. 
+Users with a Google Account can also store past, current or future schedules of courses for particular quarters.
 
 # Deployments
 
-| Type | Link       | 
-|------|------------|
-| prod | <https://courses.dokku-00.cs.ucsb.edu/> | 
-| qa | <https://courses-qa.dokku-00.cs.ucsb.edu/>  | 
-
+| Type | Link                                       |
+| ---- | ------------------------------------------ |
+| prod | <https://courses.dokku-00.cs.ucsb.edu/>    |
+| qa   | <https://courses-qa.dokku-00.cs.ucsb.edu/> |
 
 # W24 Production Deployments
 
-
-| Team | Link       | 
-|------|------------|
-| w24-5pm-1 | <https://courses.dokku-05.cs.ucsb.edu/> | 
-| w24-5pm-2 | <https://courses.dokku-06.cs.ucsb.edu/>  | 
-| w24-5pm-3 | <https://courses.dokku-07.cs.ucsb.edu/>  | 
-| w24-5pm-4 | <https://courses.dokku-08.cs.ucsb.edu/>  | 
+| Team      | Link                                    |
+| --------- | --------------------------------------- |
+| w24-5pm-1 | <https://courses.dokku-05.cs.ucsb.edu/> |
+| w24-5pm-2 | <https://courses.dokku-06.cs.ucsb.edu/> |
+| w24-5pm-3 | <https://courses.dokku-07.cs.ucsb.edu/> |
+| w24-5pm-4 | <https://courses.dokku-08.cs.ucsb.edu/> |
 
 # W24 QA Deployments
 
-
-| Team | Link       | 
-|------|------------|
-| w24-5pm-1 | <https://courses-qa.dokku-05.cs.ucsb.edu/> | 
-| w24-5pm-2 | <https://courses-qa.dokku-06.cs.ucsb.edu/>  | 
-| w24-5pm-3 | <https://courses-qa.dokku-07.cs.ucsb.edu/>  | 
-| w24-5pm-4 | <https://courses-qa.dokku-08.cs.ucsb.edu/>  | 
-
+| Team      | Link                                       |
+| --------- | ------------------------------------------ |
+| w24-5pm-1 | <https://courses-qa.dokku-05.cs.ucsb.edu/> |
+| w24-5pm-2 | <https://courses-qa.dokku-06.cs.ucsb.edu/> |
+| w24-5pm-3 | <https://courses-qa.dokku-07.cs.ucsb.edu/> |
+| w24-5pm-4 | <https://courses-qa.dokku-08.cs.ucsb.edu/> |
 
 # Setup before running application
 
 Before running the application for the first time,
 you need to do the steps documented in [`docs/oauth.md`](docs/oauth.md).
 
-Otherwise, when you try to login for the first time, you 
+Otherwise, when you try to login for the first time, you
 will likely see an error such as:
 
 <img src="https://user-images.githubusercontent.com/1119017/149858436-c9baa238-a4f7-4c52-b995-0ed8bee97487.png" alt="Authorization Error; Error 401: invalid_client; The OAuth client was not found." width="400"/>
 
-
 # Getting Started on localhost
 
-* Open *two separate terminal windows*  
-* In the first window, start up the backend with:
-  ``` 
+- Open _two separate terminal windows_
+- In the first window, start up the backend with:
+  ```
   mvn spring-boot:run
   ```
-* In the second window:
+- In the second window:
   ```
   cd frontend
   npm install  # only on first run or when dependencies change
@@ -62,7 +57,7 @@ will likely see an error such as:
 
 Then, the app should be available on <http://localhost:8080>
 
-If it doesn't work at first, e.g. you have a blank page on  <http://localhost:8080>, give it a minute and a few page refreshes.  Sometimes it takes a moment for everything to settle in.
+If it doesn't work at first, e.g. you have a blank page on <http://localhost:8080>, give it a minute and a few page refreshes. Sometimes it takes a moment for everything to settle in.
 
 If you see the following on localhost, make sure that you also have the frontend code running in a separate window.
 
@@ -74,7 +69,7 @@ Failed to connect to the frontend server... On Dokku, be sure that PRODUCTION is
 
 On Heroku, you'll need to set the following configuration variable:
 
-* Using the Dokku CLI:
+- Using the Dokku CLI:
   ```
   dokku config:set <dokku app name> PRODUCTION=true
   ```
@@ -87,27 +82,40 @@ If you get the following message on Dokku, it probably means that you failed to 
 Failed to connect to the frontend server... On Dokku, be sure that PRODUCTION is defined.  On localhost, open a second terminal window, cd into frontend and type: npm install; npm start";
 ```
 
-Additional environment variables that are needed may be found in `.env.SAMPLE` 
+Additional environment variables that are needed may be found in `.env.SAMPLE`
 
-In particular, you will need a value for the `UCSB_API_KEY`.  This is documented in `docs/ucsb_api_key.md`
+In particular, you will need a value for the `UCSB_API_KEY`. This is documented in `docs/ucsb_api_key.md`
 
 # Accessing swagger
 
 To access the swagger API endpoints, use:
 
-* <http://localhost:8080/swagger-ui/index.html>
-
+- <http://localhost:8080/swagger-ui/index.html>
 
 # To run React Storybook
 
-* cd into frontend
-* use: npm run storybook
-* This should put the storybook on http://localhost:6006
-* Additional stories are added under frontend/src/stories
+- cd into frontend
+- use: npm run storybook
+- This should put the storybook on http://localhost:6006
+- Additional stories are added under frontend/src/stories
 
-* For documentation on React Storybook, see: https://storybook.js.org/
+- For documentation on React Storybook, see: https://storybook.js.org/
 
 # Accessing Database Console
 
-* On localhost only: <http://localhost:8080/h2-console>  See also: [docs/h2-console.md](docs/h2-console.md)
-* On Dokku: see: <https://ucsb-cs156.github.io/topics/dokku/postgres_command_line.html>
+- On localhost only: <http://localhost:8080/h2-console> See also: [docs/h2-console.md](docs/h2-console.md)
+- On Dokku: see: <https://ucsb-cs156.github.io/topics/dokku/postgres_command_line.html>
+
+# Integration Testing
+
+To run a particular integration test (e.g. only `HomePageWebIT.java`) use `-Dit.test=ClassName`, for example:
+
+```
+INTEGRATION=true mvn test-compile failsafe:integration-test -Dit.test=HomePageWebIT
+```
+
+or to see it run live:
+
+```
+INTEGRATION=true HEADLESS=false mvn test-compile failsafe:integration-test -Dit.test=HomePageWebIT
+```
