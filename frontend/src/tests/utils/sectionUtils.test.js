@@ -169,7 +169,7 @@ describe("section utils tests", () => {
 
       // assert
       expect(result).toEqual({
-        url: "/api/courses/user",
+        url: "/api/personalSections",
         method: "DELETE",
         params: { id: 17 },
       });

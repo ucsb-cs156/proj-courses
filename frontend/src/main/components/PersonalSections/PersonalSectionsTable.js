@@ -5,7 +5,6 @@ import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
 } from "main/utils/sectionUtils";
-import { hasRole } from "main/utils/currentUser";
 import {
   convertToFraction,
   formatInstructors,
@@ -13,14 +12,11 @@ import {
   formatTime,
 } from "main/utils/sectionUtils.js";
 
-export default function PersonalSectionsTable({
-  personalSections,
-  currentUser,
-}) {
+export default function PersonalSectionsTable({ personalSections }) {
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    [],
+    ["/api/personalSections/all"],
   );
 
   const deleteCallback = async (cell) => {
@@ -74,21 +70,17 @@ export default function PersonalSectionsTable({
     },
   ];
 
-  const columnsIfUser = [
+  const columnsWithButtons = [
     ...columns,
     ButtonColumn("Delete", "danger", deleteCallback, "PersonalSectionsTable"),
   ];
-
-  const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
-    ? columnsIfUser
-    : columnsIfUser;
 
   const testid = "PersonalSectionsTable";
 
   return (
     <OurTable
       data={personalSections}
-      columns={columnsToDisplay}
+      columns={columnsWithButtons}
       testid={testid}
     />
   );
