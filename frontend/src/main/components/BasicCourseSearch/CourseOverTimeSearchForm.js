@@ -59,13 +59,12 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const parsedCourseNumber = courseNumber.replace(/\D/g, "");
 
     fetchJSON(event, {
       startQuarter,
       endQuarter,
       subject,
-      courseNumber: parsedCourseNumber,
+      courseNumber,
       courseSuf
     });
   };
@@ -74,14 +73,13 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     const rawCourse = event.target.value;
     if (rawCourse.match(/\d+/) != null) {
       const number = rawCourse.match(/\d+/);// taking out all the letters in it, just in case user puts CMPSC156 as the course number
-      number = number.replace(/\D/g, ""); 
-
+      
       setCourseNumber(number);
     } else {
       setCourseNumber("");
     }
 
-    if (rawCourse.match(/[a-zA-Z]+/g) != null) {
+    if (rawCourse.match(/[a-zA-Z]+$/) != null) {
       const suffix = rawCourse.match(/[a-zA-Z]+$/);
       setCourseSuf(suffix);
     } else {
