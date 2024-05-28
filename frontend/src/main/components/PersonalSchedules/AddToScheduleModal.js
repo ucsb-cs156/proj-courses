@@ -5,13 +5,13 @@ import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
+import { schedulesFilter } from "main/utils/PersonalScheduleUtils";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
-export default function AddToScheduleModal({ section, onAdd }) {
+export default function AddToScheduleModal({ quarter, section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
-  const currentQuarter = localStorage.getItem("BasicSearch.Quarter"); //Change
 
-  // Stryker disable all
   const {
     data: schedules,
     error: _error,
@@ -21,8 +21,9 @@ export default function AddToScheduleModal({ section, onAdd }) {
     { method: "GET", url: "/api/personalschedules/all" },
     [],
   );
-  // Stryker restore all
 
+  const filteringSchedules = schedulesFilter(schedules, quarter);
+ 
   const handleModalClose = () => {
     setShowModal(false);
   };
@@ -31,13 +32,6 @@ export default function AddToScheduleModal({ section, onAdd }) {
     onAdd(section, selectedSchedule);
     handleModalClose();
   };
-  // Stryker disable all : tested manually, complicated to test
-
-  //Change
-  const filteringSchedules = schedules.filter(
-    (schedule) => schedule.quarter === currentQuarter
-  );
-  //Change
 
   return (
     <>
@@ -51,19 +45,19 @@ export default function AddToScheduleModal({ section, onAdd }) {
         <Modal.Body>
           <Form>
             {
-              /* istanbul ignore next */ filteringSchedules.length > 0 ? ( //Change /* istanbul ignore next */ schedules.length > 0 ? (
+              /* istanbul ignore next */ filteringSchedules.length > 0 ? (                
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
                     schedule={selectedSchedule}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
-                    filteringSchedules={filteringSchedules} //Change
+                    filteringSchedules={filteringSchedules}
                   />
                 </Form.Group>
               ) : (
                 <p>
-                  There are no personal schedules for this quarter.
+                  There are no personal schedules for {yyyyqToQyy(quarter)}.
                   <Link to="/personalschedules/create">[Create Personal Schedule]</Link>
                 </p>
               )
