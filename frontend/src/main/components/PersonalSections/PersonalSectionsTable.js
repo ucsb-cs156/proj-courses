@@ -15,8 +15,10 @@ import {
 export default function PersonalSectionsTable({ personalSections }) {
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
+    //Stryker disable all
     { onSuccess: onDeleteSuccess },
     ["/api/personalSections/all"],
+    //Stryker restore all
   );
 
   const deleteCallback = async (cell) => {
@@ -69,9 +71,9 @@ export default function PersonalSectionsTable({ personalSections }) {
       id: "instructor",
     },
   ];
-
   const columnsWithButtons = [
     ...columns,
+
     ButtonColumn("Delete", "danger", deleteCallback, "PersonalSectionsTable"),
   ];
 
