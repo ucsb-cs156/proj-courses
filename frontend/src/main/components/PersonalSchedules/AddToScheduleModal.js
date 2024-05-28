@@ -23,7 +23,7 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
   );
 
   const filteringSchedules = schedulesFilter(schedules, quarter);
- 
+
   const handleModalClose = () => {
     setShowModal(false);
   };
@@ -45,7 +45,7 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
         <Modal.Body>
           <Form>
             {
-              /* istanbul ignore next */ filteringSchedules.length > 0 ? (                
+              /* istanbul ignore next */ filteringSchedules.length > 0 ? (
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
@@ -58,7 +58,9 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
               ) : (
                 <p>
                   There are no personal schedules for {yyyyqToQyy(quarter)}.
-                  <Link to="/personalschedules/create">[Create Personal Schedule]</Link>
+                  <Link to="/personalschedules/create">
+                    [Create Personal Schedule]
+                  </Link>
                 </p>
               )
             }

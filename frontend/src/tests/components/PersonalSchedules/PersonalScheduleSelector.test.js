@@ -21,14 +21,14 @@ describe("PersonalScheduleSelector", () => {
 
   test("sets the initial schedule from the schedule prop", () => {
     render(
-      <PersonalScheduleSelector 
-      filteringSchedules={filteringSchedules}
-      schedule="schedule1" 
-      setSchedule={() => {}}  
+      <PersonalScheduleSelector
+        filteringSchedules={filteringSchedules}
+        schedule="schedule1"
+        setSchedule={() => {}}
       />,
     );
 
-  expect(screen.getByDisplayValue("S24 Schedule 1")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("S24 Schedule 1")).toBeInTheDocument();
   });
 
   test("updates the schedule state and calls setSchedule when a schedule is selected", () => {
@@ -73,17 +73,20 @@ describe("PersonalScheduleSelector", () => {
     const setSchedule = jest.fn();
 
     const { rerender } = render(
-      <PersonalScheduleSelector 
-      filteringSchedules={emptyfilteringSchedules}
-      setSchedule={`setSchedule`} />,
-
+      <PersonalScheduleSelector
+        filteringSchedules={emptyfilteringSchedules}
+        setSchedule={`setSchedule`}
+      />,
     );
 
     expect(setSchedule).not.toHaveBeenCalled();
 
-    rerender(<PersonalScheduleSelector 
-      filteringSchedules={filteringSchedules}
-      setSchedule={setSchedule} />);
+    rerender(
+      <PersonalScheduleSelector
+        filteringSchedules={filteringSchedules}
+        setSchedule={setSchedule}
+      />,
+    );
 
     expect(setSchedule).toHaveBeenCalledWith("schedule1");
   });

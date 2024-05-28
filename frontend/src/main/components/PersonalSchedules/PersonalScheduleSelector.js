@@ -36,7 +36,8 @@ const PersonalScheduleSelector = ({
         value={scheduleState}
         onChange={handleScheduleOnChange}
       >
-        {filteringSchedules && filteringSchedules.map((schedule) => ( 
+        {filteringSchedules &&
+          filteringSchedules.map((schedule) => (
             <option key={schedule.id} value={schedule.id}>
               {yyyyqToQyy(schedule.quarter)} {schedule.name}
             </option>
