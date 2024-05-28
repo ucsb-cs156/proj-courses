@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import PersonalScheduleSelector from "main/components/PersonalSchedules/PersonalScheduleSelector";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
-//jest.mock("main/utils/quarterUtilities.js");
 jest.mock("main/utils/quarterUtilities.js", () => ({
   yyyyqToQyy: jest.fn(),
 }));
@@ -38,14 +37,14 @@ describe("PersonalScheduleSelector", () => {
       <PersonalScheduleSelector
         controlId="controlId"
         setSchedule={setSchedule}
-        filteringSchedules={filteringSchedules} //Change
+        filteringSchedules={filteringSchedules}
       />,
     );
     fireEvent.change(screen.getByLabelText("Schedule"), {
-      target: { value: "schedule1" }, //Change
+      target: { value: "schedule1" },
     });
-    expect(localStorage.getItem("controlId")).toBe("schedule1"); //Change
-    expect(setSchedule).toHaveBeenCalledWith("schedule1"); //Change
+    expect(localStorage.getItem("controlId")).toBe("schedule1");
+    expect(setSchedule).toHaveBeenCalledWith("schedule1");
   });
 
   test("updates the schedule state, calls setSchedule, and calls onChange when a schedule is selected", () => {
@@ -56,16 +55,16 @@ describe("PersonalScheduleSelector", () => {
         controlId="controlId"
         setSchedule={setSchedule}
         onChange={onChange}
-        filteringSchedules={filteringSchedules} //Change
+        filteringSchedules={filteringSchedules}
       />,
     );
     const selectElement = screen.getByLabelText("Schedule", {
       selector: "select",
     });
-    fireEvent.change(selectElement, { target: { value: "schedule1" } }); //Change
+    fireEvent.change(selectElement, { target: { value: "schedule1" } });
 
-    expect(localStorage.getItem("controlId")).toBe("schedule1"); //Change
-    expect(setSchedule).toHaveBeenCalledWith("schedule1"); //Change
+    expect(localStorage.getItem("controlId")).toBe("schedule1");
+    expect(setSchedule).toHaveBeenCalledWith("schedule1");
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith(expect.any(Object));
   });
