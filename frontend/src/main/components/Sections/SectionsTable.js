@@ -189,7 +189,7 @@ export default function SectionsTable({ sections }) {
       Header: "Enroll Code",
       accessor: "section.enrollCode",
       disableGroupBy: true,
-      Cell: ({ cell: { value }}) => {
+      Cell: ({ cell: { value } }) => {
         return value;
       },
       aggregate: getFirstVal,
@@ -213,7 +213,7 @@ export default function SectionsTable({ sections }) {
       disableGroupBy: true,
       accessor: "section.enrollCode",
       // No need for accessor if it's purely for actions like expand/collapse
-      Cell: ({row}) => {
+      Cell: ({ row }) => {
         // Stryker disable all : difficult to test modal interaction
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
@@ -233,9 +233,13 @@ export default function SectionsTable({ sections }) {
         // Stryker restore all
       },
       aggregate: getFirstVal,
-      Aggregated: ({ cell: { value},row,column }) => /* istanbul ignore next */ {
+      Aggregated: ({
+        cell: { value },
+        row,
+        column,
+      }) => /* istanbul ignore next */ {
         const testId = `${testid}-cell-row-${row.index}-col-${column.id}-expand-symbols`;
-        console.log("Rendered cell with data-testid:", testId);  // Print the data-testid to the console
+        console.log("Rendered cell with data-testid:", testId); // Print the data-testid to the console
         if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
           return (
             <div className="d-flex align-items-center gap-2">
@@ -249,12 +253,9 @@ export default function SectionsTable({ sections }) {
           );
         } else {
           return (
-            <span
-            {...row.getToggleRowExpandedProps()}
-            data-testid={testId}
-          >
-            {row.isExpanded ? '➖' : '➕'}
-          </span>
+            <span {...row.getToggleRowExpandedProps()} data-testid={testId}>
+              {row.isExpanded ? "➖" : "➕"}
+            </span>
           );
         }
       },
