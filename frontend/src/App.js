@@ -66,7 +66,6 @@ function App() {
               path="/personalschedules/edit/:id"
               element={<PersonalSchedulesEditPage />}
             />
-
             <Route
               exact
               path="/personalschedules/details/:id"

@@ -30,7 +30,7 @@ export default function AppNavbar({
             alt=""
             style={{ width: 80, height: 80, marginRight: 10 }}
           />
-          <Navbar.Brand as={Link} to="/">
+          <Navbar.Brand>
             UCSB Courses Search
           </Navbar.Brand>
 
@@ -61,6 +61,11 @@ export default function AppNavbar({
                   data-testid="appnavbar-personalschedules-list"
                 >
                   Personal Schedules
+                </Nav.Link>
+              )}
+              {hasRole(currentUser, "ROLE_USER") && (
+                <Nav.Link href="/" data-testid="appnavbar-mainsearch-list">
+                  Main Search
                 </Nav.Link>
               )}
             </Nav>
