@@ -5,7 +5,6 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 const PersonalScheduleSelector = ({
   filteredSchedules,
   schedule,
-  quarter,
   setSchedule,
   controlId,
   onChange = null,
