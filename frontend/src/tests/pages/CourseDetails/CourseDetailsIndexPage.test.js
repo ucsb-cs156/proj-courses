@@ -101,6 +101,7 @@ describe("Course Details Index Page tests", () => {
     expect(screen.getByText("T R")).toBeInTheDocument();
     expect(screen.getByText("Time")).toBeInTheDocument();
     expect(screen.getByText("2:00 PM - 3:15 PM")).toBeInTheDocument();
+    expect(screen.getByText("Course Description")).toBeInTheDocument();
   });
 
   test("Calls Course Grade Distribution api correctly and displays correct information", async () => {
@@ -113,15 +114,23 @@ describe("Course Details Index Page tests", () => {
     );
     expect(screen.getByText("Bob Test1")).toBeInTheDocument();
     expect(screen.getByText("A-")).toBeInTheDocument();
+    expect(
+      screen.queryByText("No Course Grade Distribution Available"),
+    ).not.toBeInTheDocument();
   });
 
-  test("Displays no grade distribution correctly", async () => {
-    const queryClient2 = new QueryClient();
+  test("Displays no data correctly", async () => {
     axiosMock
-      .onGet("/api/gradehistory/search", {
-        params: { subjectArea: "CHEM", courseNumber: "184" },
+      .onGet("/api/sections/sectionsearch", {
+        params: { qtr: "20221", enrollCode: "06619" },
       })
       .reply(200, []);
+    axiosMock
+      .onGet("/api/gradehistory/search", {
+        params: { subjectArea: "", courseNumber: "" },
+      })
+      .reply(200, []);
+    const queryClient2 = new QueryClient();
     render(
       <QueryClientProvider client={queryClient2}>
         <MemoryRouter>
@@ -129,6 +138,10 @@ describe("Course Details Index Page tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    expect(
+      screen.queryByText("Course Details for CHEM 184 W22"),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Course Description")).not.toBeInTheDocument();
     expect(
       screen.getByText("No Course Grade Distribution Available"),
     ).toBeInTheDocument();

@@ -55,6 +55,7 @@ export default function CourseDetailsIndexPage() {
     },
   );
 
+  // Stryker restore all
   if (gradeData === undefined) {
     gradeData = [];
   }
@@ -70,7 +71,7 @@ export default function CourseDetailsIndexPage() {
 
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
         {moreDetails && <CourseDescriptionTable course={moreDetails} />}
-        {moreDetails && gradeData.length > 0 ? (
+        {moreDetails ? (
           <Fragment>
             <h5>Course Grade Distribution for {moreDetails.courseId}</h5>
             <CourseGradeDistTable gradeData={gradeData} />
