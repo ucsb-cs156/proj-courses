@@ -37,14 +37,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class PSCourseController extends ApiController {
 
-  @Autowired
-  PSCourseRepository coursesRepository;
-  @Autowired
-  PersonalScheduleRepository personalScheduleRepository;
-  @Autowired
-  UCSBCurriculumService ucsbCurriculumService;
-  @Autowired
-  ObjectMapper mapper;
+  @Autowired PSCourseRepository coursesRepository;
+  @Autowired PersonalScheduleRepository personalScheduleRepository;
+  @Autowired UCSBCurriculumService ucsbCurriculumService;
+  @Autowired ObjectMapper mapper;
 
   @Operation(summary = "List all courses (admin)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -85,8 +81,10 @@ public class PSCourseController extends ApiController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/admin")
   public PSCourse getCourseById_admin(@Parameter(name = "id") @RequestParam Long id) {
-    PSCourse courses = coursesRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
+    PSCourse courses =
+        coursesRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
     return courses;
   }
@@ -96,8 +94,10 @@ public class PSCourseController extends ApiController {
   @GetMapping("/user")
   public PSCourse getCourseById(@Parameter(name = "id") @RequestParam Long id) {
     User currentUser = getCurrentUser().getUser();
-    PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)
-        .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
+    PSCourse courses =
+        coursesRepository
+            .findByIdAndUser(id, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
     return courses;
   }
@@ -107,12 +107,14 @@ public class PSCourseController extends ApiController {
   @PostMapping("/post")
   public ArrayList<PSCourse> postCourses(
       @Parameter(name = "enrollCd") @RequestParam String enrollCd,
-      @Parameter(name = "psId") @RequestParam Long psId) throws JsonProcessingException {
+      @Parameter(name = "psId") @RequestParam Long psId)
+      throws JsonProcessingException {
     CurrentUser currentUser = getCurrentUser();
     log.info("currentUser={}", currentUser);
 
     PersonalSchedule checkPsId =
-        personalScheduleRepository.findByIdAndUser(psId, currentUser.getUser())
+        personalScheduleRepository
+            .findByIdAndUser(psId, currentUser.getUser())
             .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
 
     String body = ucsbCurriculumService.getAllSections(enrollCd, checkPsId.getQuarter());
@@ -130,8 +132,7 @@ public class PSCourseController extends ApiController {
       if (section.endsWith("00")) {
         String currentEnrollCd = classSection.path("enrollCode").asText();
         enrollCdPrimary = currentEnrollCd;
-        if (hasSecondary)
-          break;
+        if (hasSecondary) break;
       } else {
         hasSecondary = true;
       }
@@ -157,8 +158,9 @@ public class PSCourseController extends ApiController {
       PSCourse savedSecondary = coursesRepository.save(secondary);
       savedCourses.add(savedSecondary);
     } else if (hasSecondary) {
-      throw new IllegalArgumentException(enrollCd
-          + " is for a course with sections; please add a specific section and the lecture will be automatically added");
+      throw new IllegalArgumentException(
+          enrollCd
+              + " is for a course with sections; please add a specific section and the lecture will be automatically added");
     }
 
     PSCourse primary = new PSCourse();
@@ -174,8 +176,10 @@ public class PSCourseController extends ApiController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/admin")
   public Object deleteCourses_Admin(@Parameter(name = "id") @RequestParam Long id) {
-    PSCourse courses = coursesRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
+    PSCourse courses =
+        coursesRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
     coursesRepository.delete(courses);
 
@@ -188,11 +192,15 @@ public class PSCourseController extends ApiController {
   public Object deleteCourses(@Parameter(name = "id") @RequestParam Long id)
       throws JsonProcessingException {
     User currentUser = getCurrentUser().getUser();
-    PSCourse psCourse = coursesRepository.findByIdAndUser(id, currentUser)
-        .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
+    PSCourse psCourse =
+        coursesRepository
+            .findByIdAndUser(id, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
     long psId = psCourse.getPsId();
-    PersonalSchedule checkPsId = personalScheduleRepository.findByIdAndUser(psId, currentUser)
-        .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
+    PersonalSchedule checkPsId =
+        personalScheduleRepository
+            .findByIdAndUser(psId, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
 
     String body =
         ucsbCurriculumService.getAllSections(psCourse.getEnrollCd(), checkPsId.getQuarter());
@@ -211,23 +219,22 @@ public class PSCourseController extends ApiController {
       String currentEnrollCd = classSection.path("enrollCode").asText();
       Optional<PSCourse> currentPsCourse =
           coursesRepository.findByPsIdAndEnrollCd(psId, currentEnrollCd);
-      if (!currentPsCourse.isPresent())
-        continue;
+      if (!currentPsCourse.isPresent()) continue;
       Optional<Long> idOpt = Optional.of(currentPsCourse.get().getId());
-      if (section.endsWith("00"))
-        primaryId = idOpt;
-      else
-        secondaryId = idOpt;
+      if (section.endsWith("00")) primaryId = idOpt;
+      else secondaryId = idOpt;
       coursesRepository.delete(currentPsCourse.get());
     }
 
     if (primaryId.isPresent() && secondaryId.isPresent()) {
       if (primaryId.get() == id)
-        return genericMessage("PSCourse with id %s and matching secondary with id %s deleted"
-            .formatted(id, secondaryId.get()));
+        return genericMessage(
+            "PSCourse with id %s and matching secondary with id %s deleted"
+                .formatted(id, secondaryId.get()));
       else
-        return genericMessage("PSCourse with id %s and matching primary with id %s deleted"
-            .formatted(id, primaryId.get()));
+        return genericMessage(
+            "PSCourse with id %s and matching primary with id %s deleted"
+                .formatted(id, primaryId.get()));
     }
 
     return genericMessage("PSCourse with id %s deleted".formatted(id));
@@ -236,15 +243,24 @@ public class PSCourseController extends ApiController {
   @Operation(summary = "Delete a course with psid and enroll code (user)")
   @PreAuthorize("hasRole('ROLE_USER')")
   @DeleteMapping("/user/psid")
-  public Object deleteCourses_PSID(@Parameter(name = "enrollCd") @RequestParam String enrollCd,
-      @Parameter(name = "psId") @RequestParam Long psId) throws JsonProcessingException {
+  public Object deleteCourses_PSID(
+      @Parameter(name = "enrollCd") @RequestParam String enrollCd,
+      @Parameter(name = "psId") @RequestParam Long psId)
+      throws JsonProcessingException {
     User currentUser = getCurrentUser().getUser();
 
-    PSCourse psCourse = coursesRepository.findByPsIdAndEnrollCd(psId, enrollCd).orElseThrow(
-        () -> new EntityNotFoundException(PSCourse.class, "psId", psId, "enrollCode", enrollCd));
+    PSCourse psCourse =
+        coursesRepository
+            .findByPsIdAndEnrollCd(psId, enrollCd)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        PSCourse.class, "psId", psId, "enrollCode", enrollCd));
     long id = psCourse.getId();
-    PersonalSchedule checkPsId = personalScheduleRepository.findByIdAndUser(psId, currentUser)
-        .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
+    PersonalSchedule checkPsId =
+        personalScheduleRepository
+            .findByIdAndUser(psId, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
 
     String body =
         ucsbCurriculumService.getAllSections(psCourse.getEnrollCd(), checkPsId.getQuarter());
@@ -264,38 +280,37 @@ public class PSCourseController extends ApiController {
       String currentEnrollCd = classSection.path("enrollCode").asText();
       Optional<PSCourse> currentPsCourse =
           coursesRepository.findByPsIdAndEnrollCd(psId, currentEnrollCd);
-      if (!currentPsCourse.isPresent())
-        continue;
+      if (!currentPsCourse.isPresent()) continue;
       Optional<Long> idOpt = Optional.of(currentPsCourse.get().getId());
-      if (section.endsWith("00"))
-        primaryId = idOpt;
-      else
-        secondaryId = idOpt;
+      if (section.endsWith("00")) primaryId = idOpt;
+      else secondaryId = idOpt;
       coursesRepository.delete(currentPsCourse.get());
     }
 
     if (primaryId.isPresent() && secondaryId.isPresent()) {
       if (primaryId.get() == id)
-        return genericMessage("PSCourse with id %s and matching secondary with id %s deleted"
-            .formatted(id, secondaryId.get()));
+        return genericMessage(
+            "PSCourse with id %s and matching secondary with id %s deleted"
+                .formatted(id, secondaryId.get()));
       else
-        return genericMessage("PSCourse with id %s and matching primary with id %s deleted"
-            .formatted(id, primaryId.get()));
+        return genericMessage(
+            "PSCourse with id %s and matching primary with id %s deleted"
+                .formatted(id, primaryId.get()));
     }
 
     return genericMessage(
         "PSCourse with psId %s and enroll code %s deleted".formatted(psId, enrollCd));
   }
 
-
-
   @Operation(summary = "Update a single Course (admin)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("/admin")
-  public PSCourse putCourseById_admin(@Parameter(name = "id") @RequestParam Long id,
-      @RequestBody @Valid PSCourse incomingCourses) {
-    PSCourse courses = coursesRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
+  public PSCourse putCourseById_admin(
+      @Parameter(name = "id") @RequestParam Long id, @RequestBody @Valid PSCourse incomingCourses) {
+    PSCourse courses =
+        coursesRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
     courses.setEnrollCd(incomingCourses.getEnrollCd());
     courses.setPsId(incomingCourses.getPsId());
@@ -308,11 +323,13 @@ public class PSCourseController extends ApiController {
   @Operation(summary = "Update a single course (user)")
   @PreAuthorize("hasRole('ROLE_USER')")
   @PutMapping("/user")
-  public PSCourse putCoursesById(@Parameter(name = "id") @RequestParam Long id,
-      @RequestBody @Valid PSCourse incomingCourses) {
+  public PSCourse putCoursesById(
+      @Parameter(name = "id") @RequestParam Long id, @RequestBody @Valid PSCourse incomingCourses) {
     User currentUser = getCurrentUser().getUser();
-    PSCourse courses = coursesRepository.findByIdAndUser(id, currentUser)
-        .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
+    PSCourse courses =
+        coursesRepository
+            .findByIdAndUser(id, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, id));
 
     courses.setEnrollCd(incomingCourses.getEnrollCd());
     courses.setPsId(incomingCourses.getPsId());
