@@ -931,7 +931,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
             .andReturn();
 
     // assert
-    // verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
     verify(coursesRepository, times(2)).findByPsIdAndEnrollCd(1L, "08896");
     verify(coursesRepository, times(1)).delete(primary);
     Map<String, Object> json = responseToJson(response);
