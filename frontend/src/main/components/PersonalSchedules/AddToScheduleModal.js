@@ -61,8 +61,9 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
               ) : (
                 <p>
                   There are no personal schedules for {yyyyqToQyy(quarter)}.
-                  <Link to="/personalschedules/create">[Create Personal Schedule]
-</Link>
+                  <Link to="/personalschedules/create">
+                    [Create Personal Schedule]
+                  </Link>
                 </p>
               )
             }
