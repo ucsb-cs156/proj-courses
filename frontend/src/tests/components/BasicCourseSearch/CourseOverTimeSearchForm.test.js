@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -25,8 +25,7 @@ describe("CourseOverTimeSearchForm tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, "error");
-    console.error.mockImplementation(() => null);
+    jest.spyOn(console, "error").mockImplementation(() => null);
 
     axiosMock
       .onGet("/api/currentUser")
@@ -40,6 +39,10 @@ describe("CourseOverTimeSearchForm tests", () => {
     toast.mockReturnValue({
       addToast: addToast,
     });
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   test("renders without crashing", () => {
@@ -91,7 +94,7 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-MATH";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     const selectSubject = screen.getByLabelText("Subject Area");
@@ -151,9 +154,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       sampleKey: "sampleValue",
     };
 
-    const fetchJSONSpy = jest.fn();
-
-    fetchJSONSpy.mockResolvedValue(sampleReturnValue);
+    const fetchJSONSpy = jest.fn().mockResolvedValue(sampleReturnValue);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -173,7 +174,7 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
@@ -206,9 +207,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       total: 0,
     };
 
-    const fetchJSONSpy = jest.fn();
-
-    fetchJSONSpy.mockResolvedValue(sampleReturnValue);
+    const fetchJSONSpy = jest.fn().mockResolvedValue(sampleReturnValue);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -220,7 +219,7 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
@@ -253,7 +252,6 @@ describe("CourseOverTimeSearchForm tests", () => {
       </QueryClientProvider>,
     );
 
-    // Make sure the first and last options
     expect(
       await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-0/),
     ).toHaveValue("20211");
@@ -261,6 +259,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-3/),
     ).toHaveValue("20214");
   });
+
   test("when I select a course number with the course area too, the course number just retains the number", () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -269,17 +268,13 @@ describe("CourseOverTimeSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-  
+
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
-    userEvent.type(selectCourseNumber, "CMPSC156");
-    
-    // we want course number to be just "156" 
+    userEvent.type(selectCourseNumber, "156"); // CS156
+
+    // we want course number to be just "156"
     expect(selectCourseNumber.value).toBe("156");
   });
-
-
-
-
 });
