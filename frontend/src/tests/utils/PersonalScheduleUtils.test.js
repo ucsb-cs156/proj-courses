@@ -48,6 +48,4 @@ describe("PersonalScheduleUtils", () => {
       });
     });
   });
-
-
 });

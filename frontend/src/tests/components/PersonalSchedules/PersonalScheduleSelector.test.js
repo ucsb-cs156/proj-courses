@@ -12,8 +12,18 @@ describe("PersonalScheduleSelector", () => {
     localStorage.clear();
     useBackend.mockReturnValue({
       data: [
-        { id: "schedule1", quarter: "20221", name: "Schedule 1", description: "test1"},
-        { id: "schedule2", quarter: "20222", name: "Schedule 2", description: "test2"},
+        {
+          id: "schedule1",
+          quarter: "20221",
+          name: "Schedule 1",
+          description: "test1",
+        },
+        {
+          id: "schedule2",
+          quarter: "20222",
+          name: "Schedule 2",
+          description: "test2",
+        },
       ],
       error: null,
       status: "success",
@@ -22,8 +32,18 @@ describe("PersonalScheduleSelector", () => {
   });
 
   const filteredSchedules = [
-    { id: "schedule1", quarter: "20221", name: "Schedule 1", description: "test1"},
-    { id: "schedule2", quarter: "20222", name: "Schedule 2", description: "test2"},
+    {
+      id: "schedule1",
+      quarter: "20221",
+      name: "Schedule 1",
+      description: "test1",
+    },
+    {
+      id: "schedule2",
+      quarter: "20222",
+      name: "Schedule 2",
+      description: "test2",
+    },
   ];
 
   const emptySchedules = [];
@@ -31,21 +51,34 @@ describe("PersonalScheduleSelector", () => {
   test("sets the initial schedule from local storage", () => {
     localStorage.setItem("controlId", "schedule2");
     render(
-      <PersonalScheduleSelector filteredSchedules={filteredSchedules} controlId="controlId" setSchedule={() => {}} />,
+      <PersonalScheduleSelector
+        filteredSchedules={filteredSchedules}
+        controlId="controlId"
+        setSchedule={() => {}}
+      />,
     );
     expect(screen.getByDisplayValue("Q1 2022 Schedule 2")).toBeInTheDocument();
   });
 
   test("sets the initial schedule from the schedule prop", () => {
     render(
-      <PersonalScheduleSelector schedule="schedule1" filteredSchedules={filteredSchedules} setSchedule={() => {}} />,
+      <PersonalScheduleSelector
+        schedule="schedule1"
+        filteredSchedules={filteredSchedules}
+        setSchedule={() => {}}
+      />,
     );
     expect(screen.getByDisplayValue("Q1 2022 Schedule 1")).toBeInTheDocument();
   });
 
   test("calls setSchedule with the first schedule when schedules are loaded", () => {
     const setSchedule = jest.fn();
-    render(<PersonalScheduleSelector filteredSchedules={filteredSchedules} setSchedule={setSchedule} />);
+    render(
+      <PersonalScheduleSelector
+        filteredSchedules={filteredSchedules}
+        setSchedule={setSchedule}
+      />,
+    );
     expect(setSchedule).toHaveBeenCalledWith("schedule1");
   });
 
@@ -99,7 +132,10 @@ describe("PersonalScheduleSelector", () => {
 
     // Render the component with an empty schedules array
     const { rerender } = render(
-      <PersonalScheduleSelector filteredSchedules={emptySchedules} setSchedule={`setSchedule`} />,
+      <PersonalScheduleSelector
+        filteredSchedules={emptySchedules}
+        setSchedule={`setSchedule`}
+      />,
     );
 
     // Assert that setSchedule is not called when schedules array is empty
@@ -116,7 +152,12 @@ describe("PersonalScheduleSelector", () => {
     });
 
     // Rerender the component with the updated schedules array
-    rerender(<PersonalScheduleSelector filteredSchedules={filteredSchedules} setSchedule={setSchedule} />);
+    rerender(
+      <PersonalScheduleSelector
+        filteredSchedules={filteredSchedules}
+        setSchedule={setSchedule}
+      />,
+    );
 
     // Assert that setSchedule is called with the first schedule id when schedules array is not empty
     expect(setSchedule).toHaveBeenCalledWith("schedule1");

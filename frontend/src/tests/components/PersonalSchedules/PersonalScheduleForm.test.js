@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import {filterSchedulesByQuarter} from "../../../main/utils/PersonalScheduleUtils";
+import { filterSchedulesByQuarter } from "../../../main/utils/PersonalScheduleUtils";
 
 const mockedNavigate = jest.fn();
 
@@ -32,11 +32,11 @@ describe("PersonalScheduleForm tests", () => {
 
   test("renders correctly", async () => {
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm />
+        </Router>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText(/Name/)).toBeInTheDocument();
@@ -47,19 +47,19 @@ describe("PersonalScheduleForm tests", () => {
 
   test("renders correctly when passing in a PersonalSchedule", async () => {
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm
-                initialPersonalSchedule={
-                  personalSchedulesFixtures.onePersonalSchedule
-                }
-            />
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm
+            initialPersonalSchedule={
+              personalSchedulesFixtures.onePersonalSchedule
+            }
+          />
+        </Router>
+      </QueryClientProvider>,
     );
 
     expect(
-        await screen.findByTestId(/PersonalScheduleForm-id/),
+      await screen.findByTestId(/PersonalScheduleForm-id/),
     ).toBeInTheDocument();
     expect(screen.getByText(/Id/)).toBeInTheDocument();
     expect(screen.getByTestId(/PersonalScheduleForm-id/)).toHaveValue("1");
@@ -67,14 +67,14 @@ describe("PersonalScheduleForm tests", () => {
 
   test("Correct Error messages on missing input", async () => {
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm />
+        </Router>
+      </QueryClientProvider>,
     );
     expect(
-        await screen.findByTestId("PersonalScheduleForm-submit"),
+      await screen.findByTestId("PersonalScheduleForm-submit"),
     ).toBeInTheDocument();
     const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
@@ -88,15 +88,15 @@ describe("PersonalScheduleForm tests", () => {
     const mockSubmitAction = jest.fn();
 
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm submitAction={mockSubmitAction}/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm submitAction={mockSubmitAction} />
+        </Router>
+      </QueryClientProvider>,
     );
 
     expect(
-        await screen.findByTestId("PersonalScheduleForm-name"),
+      await screen.findByTestId("PersonalScheduleForm-name"),
     ).toBeInTheDocument();
 
     const name = screen.getByTestId("PersonalScheduleForm-name");
@@ -104,30 +104,30 @@ describe("PersonalScheduleForm tests", () => {
     const quarter = document.querySelector("#PersonalScheduleForm-quarter");
     const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
-    fireEvent.change(name, {target: {value: "test"}});
-    fireEvent.change(description, {target: {value: "test"}});
-    fireEvent.change(quarter, {target: {value: "20124"}});
+    fireEvent.change(name, { target: { value: "test" } });
+    fireEvent.change(description, { target: { value: "test" } });
+    fireEvent.change(quarter, { target: { value: "20124" } });
     fireEvent.click(submitButton);
 
     await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
 
     expect(screen.queryByText(/Name is required./)).not.toBeInTheDocument();
     expect(
-        screen.queryByText(/Description is required./),
+      screen.queryByText(/Description is required./),
     ).not.toBeInTheDocument();
     expect(quarter).toHaveValue("20154");
   });
 
   test("that navigate(-1) is called when Cancel is clicked", async () => {
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm />
+        </Router>
+      </QueryClientProvider>,
     );
     expect(
-        await screen.findByTestId("PersonalScheduleForm-cancel"),
+      await screen.findByTestId("PersonalScheduleForm-cancel"),
     ).toBeInTheDocument();
     const cancelButton = screen.getByTestId("PersonalScheduleForm-cancel");
 
@@ -147,15 +147,15 @@ describe("PersonalScheduleForm tests", () => {
     });
 
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm submitAction={mockSubmitAction}/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm submitAction={mockSubmitAction} />
+        </Router>
+      </QueryClientProvider>,
     );
 
     expect(
-        await screen.findByTestId("PersonalScheduleForm-name"),
+      await screen.findByTestId("PersonalScheduleForm-name"),
     ).toBeInTheDocument();
 
     const name = screen.getByTestId("PersonalScheduleForm-name");
@@ -163,37 +163,37 @@ describe("PersonalScheduleForm tests", () => {
     const quarter = document.querySelector("#PersonalScheduleForm-quarter");
     const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
-    fireEvent.change(name, {target: {value: "test"}});
-    fireEvent.change(description, {target: {value: "test"}});
-    fireEvent.change(quarter, {target: {value: "20124"}});
+    fireEvent.change(name, { target: { value: "test" } });
+    fireEvent.change(description, { target: { value: "test" } });
+    fireEvent.change(quarter, { target: { value: "20124" } });
     fireEvent.click(submitButton);
 
     await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
 
     expect(screen.queryByText(/Name is required./)).not.toBeInTheDocument();
     expect(
-        screen.queryByText(/Description is required./),
+      screen.queryByText(/Description is required./),
     ).not.toBeInTheDocument();
     expect(quarter).toHaveValue("20211");
   });
 
   test("Shows error message when name exceeds maximum length", async () => {
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm />
+        </Router>
+      </QueryClientProvider>,
     );
 
     const nameInput = screen.getByTestId("PersonalScheduleForm-name");
     const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
-    fireEvent.change(nameInput, {target: {value: "ThisNameIsWayTooLong"}});
+    fireEvent.change(nameInput, { target: { value: "ThisNameIsWayTooLong" } });
     fireEvent.click(submitButton);
 
     expect(
-        await screen.findByText("Max length 15 characters"),
+      await screen.findByText("Max length 15 characters"),
     ).toBeInTheDocument();
   });
 
@@ -206,7 +206,7 @@ describe("PersonalScheduleForm tests", () => {
         email: "phtcon@ucsb.edu",
         googleSub: "115856948234298493496",
         pictureUrl:
-            "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+          "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
         fullName: "Phill Conrad",
         givenName: "Phill",
         familyName: "Conrad",
@@ -220,15 +220,15 @@ describe("PersonalScheduleForm tests", () => {
       name: "Fall Courses",
     };
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm initialPersonalSchedule={content}/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm initialPersonalSchedule={content} />
+        </Router>
+      </QueryClientProvider>,
     );
     await waitFor(() => {
       expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
-          "F22",
+        "F22",
       );
     });
   });
@@ -242,7 +242,7 @@ describe("PersonalScheduleForm tests", () => {
         email: "phtcon@ucsb.edu",
         googleSub: "115856948234298493496",
         pictureUrl:
-            "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+          "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
         fullName: "Phill Conrad",
         givenName: "Phill",
         familyName: "Conrad",
@@ -256,15 +256,15 @@ describe("PersonalScheduleForm tests", () => {
       name: "Spring Courses",
     };
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm initialPersonalSchedule={content}/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm initialPersonalSchedule={content} />
+        </Router>
+      </QueryClientProvider>,
     );
     await waitFor(() => {
       expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
-          "S22",
+        "S22",
       );
     });
   });
@@ -278,7 +278,7 @@ describe("PersonalScheduleForm tests", () => {
         email: "phtcon@ucsb.edu",
         googleSub: "115856948234298493496",
         pictureUrl:
-            "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+          "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
         fullName: "Phill Conrad",
         givenName: "Phill",
         familyName: "Conrad",
@@ -292,28 +292,42 @@ describe("PersonalScheduleForm tests", () => {
       name: "M Courses",
     };
     render(
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <PersonalScheduleForm initialPersonalSchedule={content}/>
-          </Router>
-        </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm initialPersonalSchedule={content} />
+        </Router>
+      </QueryClientProvider>,
     );
     await waitFor(() => {
       expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
-          "M22",
+        "M22",
       );
     });
   });
 
   test("Filter function works correctly", async () => {
     const schedules = [
-      {id: "schedule1", quarter: "20221", name: "Schedule 1", description: "test1"},
-      {id: "schedule2", quarter: "20222", name: "Schedule 2", description: "test2"},
+      {
+        id: "schedule1",
+        quarter: "20221",
+        name: "Schedule 1",
+        description: "test1",
+      },
+      {
+        id: "schedule2",
+        quarter: "20222",
+        name: "Schedule 2",
+        description: "test2",
+      },
     ];
 
     expect(filterSchedulesByQuarter(schedules, "20221")).toEqual([
-        {id: "schedule1", quarter: "20221", name: "Schedule 1", description: "test1"},
+      {
+        id: "schedule1",
+        quarter: "20221",
+        name: "Schedule 1",
+        description: "test1",
+      },
     ]);
-
   });
 });

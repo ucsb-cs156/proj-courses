@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
-import {filterSchedulesByQuarter} from "../../utils/PersonalScheduleUtils";
+import { filterSchedulesByQuarter } from "../../utils/PersonalScheduleUtils";
 
 export default function AddToScheduleModal({ section, onAdd, quarter }) {
   const [showModal, setShowModal] = useState(false);
@@ -33,7 +33,7 @@ export default function AddToScheduleModal({ section, onAdd, quarter }) {
   };
 
   // Filter the schedules by the given quarter
-    const filteredSchedules = filterSchedulesByQuarter(schedules, quarter);
+  const filteredSchedules = filterSchedulesByQuarter(schedules, quarter);
 
   // Stryker disable all : tested manually, complicated to test
   return (
