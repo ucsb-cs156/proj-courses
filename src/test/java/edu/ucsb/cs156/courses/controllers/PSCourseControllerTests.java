@@ -1326,12 +1326,12 @@ public class PSCourseControllerTests extends ControllerTestCase {
   }
 
   // start of new test 8
-  /*
+  
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses__user_logged_in__delete_by_psid_course_that_does_not_exist() throws Exception {
     // arrange
-    User u = currentUserService.getCurrentUser().getUser();
+    // User u = currentUserService.getCurrentUser().getUser();
     when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08292"))).thenReturn(Optional.empty());
 
     // act
@@ -1342,10 +1342,10 @@ public class PSCourseControllerTests extends ControllerTestCase {
             .andReturn();
 
     // assert
-    verify(coursesRepository, times(1)).findByIdAndUser(1L, u);
+    verify(coursesRepository, times(1)).findByPsIdAndEnrollCd(1L, "08292");
     Map<String, Object> json = responseToJson(response);
-    assertEquals("PSCourse with psid 1 and enrollCode 08292 not found", json.get("message"));
-  }  */
+    assertEquals("PSCourse with psId 1 and enrollCode 08292 not found", json.get("message"));
+  }  
   // end of new test 8
 
   @WithMockUser(roles = {"USER"})
@@ -1373,6 +1373,32 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PersonalSchedule with id 1 not found", json.get("message"));
   } 
 
+  // start of new test 9
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void
+      api_courses__user_logged_in__delete_by_psid_course_with_personal_schedule_that_does_not_exist()
+          throws Exception {
+    // arrange
+    User u = currentUserService.getCurrentUser().getUser();
+    PSCourse course = PSCourse.builder().enrollCd("00000").psId(1L).user(u).id(1L).build();
+    when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("00000"))).thenReturn(Optional.of(course));
+    when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.empty());
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(delete("/api/courses/user/psid?enrollCd=00000&psId=1").with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+    // assert
+    verify(coursesRepository, times(1)).findByPsIdAndEnrollCd(1L, "00000");
+    verify(personalScheduleRepository, times(1)).findByIdAndUser(1L, u);
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("PersonalSchedule with id 1 not found", json.get("message"));
+  } 
+  // end of new test 9
 
 
   @WithMockUser(roles = {"USER"})
@@ -1397,6 +1423,31 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with id 31 not found", json.get("message"));
   }
+
+  // start of new test 10
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void api_courses__user_logged_in__cannot_delete_by_psid_delete_belonging_to_another_user()
+      throws Exception {
+    // arrange
+    //User u = currentUserService.getCurrentUser().getUser();
+    User otherUser = User.builder().id(98L).build();
+    PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(31L).build();
+    when(coursesRepository.findById(eq(31L))).thenReturn(Optional.of(ps1));
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(delete("/api/courses/user/psid?enrollCd=08250&psId=13").with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+    // assert
+    verify(coursesRepository, times(1)).findByPsIdAndEnrollCd(13L, "08250");
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("PSCourse with psId 13 and enrollCode 08250 not found", json.get("message"));
+  }
+  // end of new test 10
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
