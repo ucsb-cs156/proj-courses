@@ -19,11 +19,11 @@ export default function CourseOverTimeIndexPage() {
   });
 
   const onSuccess = (courses) => {
-    const sortedCourses = courses.sort((a, b) => b.courseInfo.quarter.localeCompare(a.courseInfo.quarter));
+    const sortedCourses = courses.sort((a, b) =>
+      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
+    );
     setCourseJSON(sortedCourses);
   };
-  
-
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
