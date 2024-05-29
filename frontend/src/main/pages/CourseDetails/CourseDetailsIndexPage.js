@@ -62,7 +62,6 @@ export default function CourseDetailsIndexPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <p>{`${subjectArea}+${courseNumber}`}</p>
         {moreDetails && moreDetails.courseId && (
           <h5>
             Course Details for {moreDetails.courseId} {yyyyqToQyy(qtr)}
