@@ -169,6 +169,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       subject: "CMPSC",
       courseNumber: "130",
       courseSuf: "A",
+      coursePre: "CS",
     };
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
@@ -186,7 +187,7 @@ describe("CourseOverTimeSearchForm tests", () => {
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
-    userEvent.type(selectCourseNumber, "130A");
+    userEvent.type(selectCourseNumber, "CS130A");
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
 
