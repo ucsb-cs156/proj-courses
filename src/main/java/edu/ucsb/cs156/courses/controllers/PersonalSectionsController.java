@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.entities.PSCourse;
@@ -14,9 +15,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
+import java.util.Iterator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,5 +61,48 @@ public class PersonalSectionsController extends ApiController {
       sections.add(course);
     }
     return sections;
+  }
+
+  @Operation(summary = "Delete a course with related lectures and sections")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @DeleteMapping("/delete")
+  public Object deleteSchedule(
+      @Parameter(name = "psId") @RequestParam Long psId,
+      @Parameter(name = "enrollCd") @RequestParam String enrollCd)
+      throws JsonProcessingException {
+    User currentUser = getCurrentUser().getUser();
+    PersonalSchedule ps =
+        personalScheduleRepository
+            .findByIdAndUser(psId, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
+
+    Iterable<PSCourse> courses = coursesRepository.findAllByPsId(psId);
+    ArrayList<String> relatedEnrollCodes = new ArrayList<>();
+    String body = ucsbCurriculumService.getAllSections(enrollCd, ps.getQuarter());
+
+    if (!body.equals("{\"error\": \"401: Unauthorized\"}")
+        && !body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")) {
+      Iterator<JsonNode> it = objectMapper.readTree(body).path("classSections").elements();
+      while (it.hasNext()) {
+        JsonNode classSection = it.next();
+        String sectionEnrollCd = classSection.path("enrollCode").asText();
+        relatedEnrollCodes.add(sectionEnrollCd);
+      }
+    }
+
+    boolean courseExist = false;
+    for (PSCourse course : courses) {
+      if (relatedEnrollCodes.contains(course.getEnrollCd())) {
+        courseExist = true;
+        coursesRepository.delete(course);
+      }
+    }
+    if (!courseExist) {
+      throw new EntityNotFoundException(PSCourse.class, "psId: " + psId + " enrollCd: " + enrollCd);
+    }
+
+    return genericMessage(
+        "Personal Schedule with psId %s and lectures and affiliated sections with enrollCd %s deleted"
+            .formatted(psId, enrollCd));
   }
 }

@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -108,5 +109,162 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
     expectedJson = "[" + expectedJson + "]";
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
+  }
+
+  // test for /api/personalSections/delete
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void api_deleteSchedule_user_logged_in_can_successfully_delete() throws Exception {
+    User u = currentUserService.getCurrentUser().getUser();
+    PersonalSchedule ps =
+        PersonalSchedule.builder()
+            .name("Test")
+            .description("Test Description")
+            .quarter("20221")
+            .user(u)
+            .id(1L)
+            .build();
+    PSCourse course = PSCourse.builder().id(1L).user(u).enrollCd("80300").psId(1L).build();
+    ArrayList<PSCourse> crs = new ArrayList<>();
+    crs.add(course);
+    when(personalscheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+    when(coursesRepository.findAllByPsId(eq(1L))).thenReturn(crs);
+    when(ucsbCurriculumService.getAllSections(eq("80300"), eq("20221")))
+        .thenReturn("{\"classSections\": [{\"enrollCode\": \"80300\"}]}");
+    MvcResult response =
+        mockMvc
+            .perform(
+                delete("/api/personalSections/delete")
+                    .param("psId", "1")
+                    .param("enrollCd", "80300")
+                    .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+    verify(coursesRepository, times(1)).delete(course);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(
+        "{\"message\":\"Personal Schedule with psId 1 and lectures and affiliated sections with enrollCd 80300 deleted\"}",
+        responseString);
+  }
+
+  // test for delete branch no schedule
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void api_deleteSchedule_user_logged_in_cannot_find_schedule() throws Exception {
+    User u = currentUserService.getCurrentUser().getUser();
+    when(personalscheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.empty());
+    MvcResult response =
+        mockMvc
+            .perform(
+                delete("/api/personalSections/delete")
+                    .param("psId", "1")
+                    .param("enrollCd", "80300")
+                    .with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+    String responseString = response.getResponse().getContentAsString();
+    boolean correct = responseString.contains("EntityNotFoundException");
+    assertEquals(true, correct);
+  }
+
+  // test for delete branch no course
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void api_deleteSchedule_user_logged_in_cannot_find_course() throws Exception {
+    User u = currentUserService.getCurrentUser().getUser();
+    PersonalSchedule ps =
+        PersonalSchedule.builder()
+            .name("Test")
+            .description("Test Description")
+            .quarter("20221")
+            .user(u)
+            .id(1L)
+            .build();
+    ArrayList<PSCourse> crs = new ArrayList<>();
+    String body = PersonalSectionsFixtures.ONE_COURSE;
+    when(personalscheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+    when(coursesRepository.findAllByPsId(eq(1L))).thenReturn(crs);
+    when(ucsbCurriculumService.getAllSections(eq("80300"), eq("20221"))).thenReturn(body);
+    MvcResult response =
+        mockMvc
+            .perform(
+                delete("/api/personalSections/delete")
+                    .param("psId", "1")
+                    .param("enrollCd", "80300")
+                    .with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+    String responseString = response.getResponse().getContentAsString();
+    boolean correct = responseString.contains("EntityNotFoundException");
+    assertEquals(true, correct);
+  }
+
+  // test for delete branch no enroll code
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void api_deleteSchedule_user_logged_in_cannot_find_enrollCd() throws Exception {
+    User u = currentUserService.getCurrentUser().getUser();
+    PersonalSchedule ps =
+        PersonalSchedule.builder()
+            .name("Test")
+            .description("Test Description")
+            .quarter("20221")
+            .user(u)
+            .id(1L)
+            .build();
+    PSCourse course = PSCourse.builder().id(1L).user(u).enrollCd("80300").psId(1L).build();
+    ArrayList<PSCourse> crs = new ArrayList<>();
+    crs.add(course);
+    when(personalscheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+    when(coursesRepository.findAllByPsId(eq(1L))).thenReturn(crs);
+    when(ucsbCurriculumService.getAllSections(eq("80300"), eq("20221")))
+        .thenReturn("{\"error\": \"Enroll code doesn't exist in that quarter.\"}");
+    MvcResult response =
+        mockMvc
+            .perform(
+                delete("/api/personalSections/delete")
+                    .param("psId", "1")
+                    .param("enrollCd", "80300")
+                    .with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+    verify(coursesRepository, times(0)).delete(course);
+    String responseString = response.getResponse().getContentAsString();
+    boolean correct = responseString.contains("EntityNotFoundException");
+    assertEquals(true, correct);
+  }
+
+  // test for branch 401 unauthorized
+  @WithMockUser(roles = {"USER"})
+  @Test
+  public void api_deleteSchedule_user_logged_in_unauthorized() throws Exception {
+    User u = currentUserService.getCurrentUser().getUser();
+    PersonalSchedule ps =
+        PersonalSchedule.builder()
+            .name("Test")
+            .description("Test Description")
+            .quarter("20221")
+            .user(u)
+            .id(1L)
+            .build();
+    PSCourse course = PSCourse.builder().id(1L).user(u).enrollCd("80300").psId(1L).build();
+    ArrayList<PSCourse> crs = new ArrayList<>();
+    crs.add(course);
+    when(personalscheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
+    when(coursesRepository.findAllByPsId(eq(1L))).thenReturn(crs);
+    when(ucsbCurriculumService.getAllSections(eq("80300"), eq("20221")))
+        .thenReturn("{\"error\": \"401: Unauthorized\"}");
+    MvcResult response =
+        mockMvc
+            .perform(
+                delete("/api/personalSections/delete")
+                    .param("psId", "1")
+                    .param("enrollCd", "80300")
+                    .with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+    String responseString = response.getResponse().getContentAsString();
+    boolean correct = responseString.contains("EntityNotFoundException");
+    assertEquals(true, correct);
   }
 }
