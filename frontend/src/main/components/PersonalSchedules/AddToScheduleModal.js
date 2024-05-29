@@ -61,7 +61,7 @@ export default function AddToScheduleModal({ section, onAdd, quarter }) {
                 </Form.Group>
               ) : (
                 <p>
-                  No schedules found for quarter {yyyyqToQyy(quarter)}.
+                  No schedules found.
                   <Link to="/personalschedules/create">Create a schedule</Link>
                 </p>
               )
