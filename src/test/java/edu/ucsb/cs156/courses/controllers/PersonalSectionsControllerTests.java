@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,8 +33,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(controllers = {PersonalSectionsController.class})
 @Import(TestConfig.class)
@@ -115,7 +114,7 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
   // test for /api/personalSections/delete
   @WithMockUser(roles = {"USER"})
   @Test
-  public void api_deleteSchedule_user_logged_in_can_successfully_delete() throws Exception{
+  public void api_deleteSchedule_user_logged_in_can_successfully_delete() throws Exception {
     User u = currentUserService.getCurrentUser().getUser();
     PersonalSchedule ps =
         PersonalSchedule.builder()
@@ -131,8 +130,7 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
     when(personalscheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
     when(coursesRepository.findAllByPsId(eq(1L))).thenReturn(crs);
     when(ucsbCurriculumService.getAllSections(eq("80300"), eq("20221")))
-        .thenReturn(
-            "{\"classSections\": [{\"enrollCode\": \"80300\"}]}");
+        .thenReturn("{\"classSections\": [{\"enrollCode\": \"80300\"}]}");
     MvcResult response =
         mockMvc
             .perform(
@@ -148,7 +146,7 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
         "{\"message\":\"Personal Schedule with psId 1 and lectures and affiliated sections with enrollCd 80300 deleted\"}",
         responseString);
   }
-  
+
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_deleteSchedule_user_logged_in_cannot_find_schedule() throws Exception {
@@ -158,13 +156,13 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
         mockMvc
             .perform(
                 delete("/api/personalSections/delete")
-                    .param("psId","1")
-                    .param("enrollCd","80300")
+                    .param("psId", "1")
+                    .param("enrollCd", "80300")
                     .with(csrf()))
             .andExpect(status().isNotFound())
             .andReturn();
     String responseString = response.getResponse().getContentAsString();
     boolean correct = responseString.contains("EntityNotFoundException");
     assertEquals(true, correct);
-  } 
+  }
 }
