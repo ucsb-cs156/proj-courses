@@ -24,12 +24,14 @@ export default function AppNavbar({
         data-testid="AppNavbar"
       >
         <Container>
-          <img
-            data-testid="AppNavbarImage"
-            src={headerImg}
-            alt=""
-            style={{ width: 80, height: 80, marginRight: 10 }}
-          />
+          <Link to="/">
+            <img
+              data-testid="AppNavbarImage"
+              src={headerImg}
+              alt=""
+              style={{ width: 80, height: 80, marginRight: 10 }}
+            />
+          </Link>
           <Navbar.Brand as={Link} to="/">
             UCSB Courses Search
           </Navbar.Brand>
