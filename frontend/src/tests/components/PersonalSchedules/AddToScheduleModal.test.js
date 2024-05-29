@@ -58,16 +58,6 @@ describe("AddToScheduleModal", () => {
     expect(mockOnAdd).toHaveBeenCalled();
   });
 
-  jest.mock(
-    "main/components/PersonalSchedules/PersonalScheduleSelector",
-    () => {
-      return ({ setHasSchedules }) => {
-        setHasSchedules(false);
-        return null;
-      };
-    },
-  );
-
   test("displays correct message when no schedules found", () => {
     render(
       <QueryClientProvider client={queryClient}>
