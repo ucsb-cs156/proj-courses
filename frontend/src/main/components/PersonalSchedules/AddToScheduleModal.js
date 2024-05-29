@@ -51,7 +51,6 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
               /* istanbul ignore next */ filteredSchedules.length > 0 ? (
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
-                  <p>quarter:{quarter}</p>
                   <PersonalScheduleSelector
                     filteredSchedules={filteredSchedules}
                     schedule={selectedSchedule}
