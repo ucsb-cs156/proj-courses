@@ -294,7 +294,7 @@ public class PSCourseController extends ApiController {
                 .formatted(id, primaryId.get()));
     }
 
-    return genericMessage("PSCourse with id %s deleted".formatted(id));
+    return genericMessage("PSCourse with psId %s and enroll code %s deleted".formatted(psId, enrollCd));
   }
 
 
