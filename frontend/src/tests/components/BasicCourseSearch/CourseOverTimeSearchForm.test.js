@@ -97,7 +97,9 @@ describe("CourseOverTimeSearchForm tests", () => {
     //   expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     // );
 
-    const expectedKey = await screen.findByTestId("CourseOverTimeSearch.Subject-option-MATH");
+    const expectedKey = await screen.findByTestId(
+      "CourseOverTimeSearch.Subject-option-MATH",
+    );
     expect(expectedKey).toBeInTheDocument();
 
     const selectSubject = screen.getByLabelText("Subject Area");
@@ -179,9 +181,10 @@ describe("CourseOverTimeSearchForm tests", () => {
     // await waitFor(() =>
     //   expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     // );
-    const expectedKey = await screen.findByTestId("CourseOverTimeSearch.Subject-option-CMPSC");
+    const expectedKey = await screen.findByTestId(
+      "CourseOverTimeSearch.Subject-option-CMPSC",
+    );
     expect(expectedKey).toBeInTheDocument();
-
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20211");
@@ -199,7 +202,10 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
 
-    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), expectedFields);
+    expect(fetchJSONSpy).toHaveBeenCalledWith(
+      expect.any(Object),
+      expectedFields,
+    );
   });
 
   test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
@@ -224,10 +230,10 @@ describe("CourseOverTimeSearchForm tests", () => {
     // await waitFor(() =>
     //   expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     // );
-    const expectedKey = await screen.findByTestId("CourseOverTimeSearch.Subject-option-CMPSC");
+    const expectedKey = await screen.findByTestId(
+      "CourseOverTimeSearch.Subject-option-CMPSC",
+    );
     expect(expectedKey).toBeInTheDocument();
-
-    
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20204");
@@ -279,7 +285,7 @@ describe("CourseOverTimeSearchForm tests", () => {
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
-    userEvent.type(selectCourseNumber, "156"); 
+    userEvent.type(selectCourseNumber, "156");
 
     // we want course number to be just "156"
     expect(selectCourseNumber.value).toBe("156");
