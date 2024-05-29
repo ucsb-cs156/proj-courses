@@ -6,7 +6,6 @@ import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
 import {filterSchedulesByQuarter} from "../../utils/PersonalScheduleUtils";
-import {yyyyqToQyy} from "../../utils/quarterUtilities";
 
 export default function AddToScheduleModal({ section, onAdd, quarter }) {
   const [showModal, setShowModal] = useState(false);

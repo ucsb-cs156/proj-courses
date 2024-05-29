@@ -17,7 +17,7 @@ const PersonalScheduleSelector = ({
   );
 
   useEffect(() => {
-    if (filteredSchedules.length > 0) {
+    if (filteredSchedules && filteredSchedules.length > 0) {
       setSchedule(filteredSchedules[0].id);
     }
   }, [filteredSchedules, setSchedule]);
