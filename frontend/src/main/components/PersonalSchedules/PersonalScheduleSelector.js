@@ -10,7 +10,6 @@ const PersonalScheduleSelector = ({
   onChange = null,
   label = "Schedule",
 }) => {
-  
   const [scheduleState, setScheduleState] = useState(schedule);
 
   useEffect(() => {
@@ -38,8 +37,7 @@ const PersonalScheduleSelector = ({
         onChange={handleScheduleOnChange}
       >
         {filteredSchedules &&
-          filteredSchedules
-           .map((schedule) => (
+          filteredSchedules.map((schedule) => (
             <option key={schedule.id} value={schedule.id}>
               {yyyyqToQyy(schedule.quarter)} {schedule.name}
             </option>

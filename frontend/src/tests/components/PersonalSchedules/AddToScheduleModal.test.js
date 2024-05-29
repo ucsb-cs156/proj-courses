@@ -79,7 +79,9 @@ describe("AddToScheduleModal", () => {
 
     fireEvent.click(screen.getByText("Add"));
 
-    expect(screen.getByText("There are no personal schedules for S24.")).toBeInTheDocument();
+    expect(
+      screen.getByText("There are no personal schedules for S24."),
+    ).toBeInTheDocument();
     expect(screen.getByText("[Create Personal Schedule]")).toHaveAttribute(
       "href",
       "/personalschedules/create",
@@ -90,7 +92,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} section={"Stryker was here!"} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            section={"Stryker was here!"}
+          />
         </Router>
       </QueryClientProvider>,
     );

@@ -12,11 +12,17 @@ describe("PersonalScheduleSelector", () => {
   ];
 
   const emptyFilteredSchedules = [];
-  beforeEach(() => {yyyyqToQyy.mockReturnValue("W24");});
+  beforeEach(() => {
+    yyyyqToQyy.mockReturnValue("W24");
+  });
 
   test("sets the initial schedule from the filtered schedule prop if quarters match", () => {
     render(
-      <PersonalScheduleSelector filteredSchedules={filteredSchedules} schedule="schedule1" setSchedule={() => {}} />,
+      <PersonalScheduleSelector
+        filteredSchedules={filteredSchedules}
+        schedule="schedule1"
+        setSchedule={() => {}}
+      />,
     );
 
     expect(screen.getByDisplayValue("W24 Schedule 1")).toBeInTheDocument();
@@ -34,7 +40,7 @@ describe("PersonalScheduleSelector", () => {
     fireEvent.change(screen.getByLabelText("Schedule"), {
       target: { value: "schedule1" },
     });
-    
+
     expect(localStorage.getItem("controlId")).toBe("schedule1");
     expect(setSchedule).toHaveBeenCalledWith("schedule1");
   });
@@ -76,7 +82,12 @@ describe("PersonalScheduleSelector", () => {
     expect(setSchedule).not.toHaveBeenCalled();
 
     // Rerender the component with the updated schedules array
-    rerender(<PersonalScheduleSelector filteredSchedules={filteredSchedules} setSchedule={setSchedule} />);
+    rerender(
+      <PersonalScheduleSelector
+        filteredSchedules={filteredSchedules}
+        setSchedule={setSchedule}
+      />,
+    );
 
     // Assert that setSchedule is called with the first schedule id when schedules array is not empty
     expect(setSchedule).toHaveBeenCalledWith("schedule1");

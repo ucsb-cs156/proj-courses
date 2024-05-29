@@ -11,7 +11,7 @@ import { filterSchedulesByQuarter } from "main/utils/PersonalScheduleUtils";
 export default function AddToScheduleModal({ quarter, section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
- 
+
   // Stryker disable all
   const {
     data: schedules,
@@ -34,7 +34,7 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
   };
 
   const filteredSchedules = filterSchedulesByQuarter(schedules, quarter);
-  
+
   // Stryker disable all : tested manually, complicated to test
   return (
     <>
@@ -63,7 +63,9 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
                 <p>
                   There are no personal schedules for {yyyyqToQyy(quarter)}.
                   <br />
-                  <Link to="/personalschedules/create">[Create Personal Schedule]</Link>
+                  <Link to="/personalschedules/create">
+                    [Create Personal Schedule]
+                  </Link>
                 </p>
               )
             }
