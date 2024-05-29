@@ -749,7 +749,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PSCourse with id 1 deleted", json.get("message"));
   }
 
-  // New test --- delete this comment after
   @WithMockUser(roles = {"USER"})
   @Test
   public void
@@ -787,8 +786,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PSCourse with psId 1 and enroll code 08896 deleted", json.get("message"));
   }
 
-  // End of new test ---- delete this comment after
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void
@@ -824,8 +821,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with id 1 deleted", json.get("message"));
   }
-
-  // start of new test 2 (delete later)
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -863,8 +858,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with psId 1 and enroll code 08896 deleted", json.get("message"));
   }
-
-  // end of new test 2
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -904,8 +897,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with id 1 deleted", json.get("message"));
   }
-
-  // start of new test 3
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -947,8 +938,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PSCourse with psId 1 and enroll code 08896 deleted", json.get("message"));
   }
 
-  // end of new test 3
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses__user_logged_in__delete_course__primary_with_no_secondary()
@@ -986,8 +975,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with id 1 deleted", json.get("message"));
   }
-
-  // start of new test 4
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -1027,8 +1014,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with psId 1 and enroll code 08896 deleted", json.get("message"));
   }
-
-  // end of new test 4
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -1073,8 +1058,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals(
         "PSCourse with id 1 and matching secondary with id 2 deleted", json.get("message"));
   }
-
-  // start of new test 5
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -1121,8 +1104,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
         "PSCourse with id 1 and matching secondary with id 2 deleted", json.get("message"));
   }
 
-  // end of new test 5
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses__user_logged_in__delete_course__secondary_with_primary()
@@ -1166,8 +1147,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PSCourse with id 2 and matching primary with id 1 deleted", json.get("message"));
   }
 
-  // start of new test 6
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses__user_logged_in__delete_by_psid_course__secondary_with_primary()
@@ -1185,7 +1164,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     PSCourse primary = PSCourse.builder().enrollCd("63370").psId(1L).user(u).id(1L).build();
     PSCourse secondary = PSCourse.builder().enrollCd("63388").psId(1L).user(u).id(2L).build();
 
-    // when(coursesRepository.findByIdAndUser(eq(2L), eq(u))).thenReturn(Optional.of(secondary));
     when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
     when(ucsbCurriculumService.getAllSections(eq("63388"), eq("20221")))
         .thenReturn(SectionFixtures.SECTION_JSON_CMPSC100);
@@ -1210,8 +1188,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with id 2 and matching primary with id 1 deleted", json.get("message"));
   }
-
-  // end of new test 6
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -1259,8 +1235,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
         "PSCourse with id 1 and matching secondary with id 2 deleted", json.get("message"));
   }
 
-  // start of new test 7
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void
@@ -1279,7 +1253,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     PSCourse primary = PSCourse.builder().enrollCd("08292").psId(1L).user(u).id(1L).build();
     PSCourse secondary = PSCourse.builder().enrollCd("08300").psId(1L).user(u).id(2L).build();
 
-    // when(coursesRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(primary));
     when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u))).thenReturn(Optional.of(ps));
     when(ucsbCurriculumService.getAllSections(eq("08292"), eq("20221")))
         .thenReturn(SectionFixtures.SECTION_JSON_CMPSC156_UNEXPECTED);
@@ -1308,8 +1281,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
         "PSCourse with id 1 and matching secondary with id 2 deleted", json.get("message"));
   }
 
-  // end of new test 7
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses__user_logged_in__delete_course_that_does_not_exist() throws Exception {
@@ -1330,14 +1301,11 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PSCourse with id 1 not found", json.get("message"));
   }
 
-  // start of new test 8
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses__user_logged_in__delete_by_psid_course_that_does_not_exist()
       throws Exception {
     // arrange
-    // User u = currentUserService.getCurrentUser().getUser();
     when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08292"))).thenReturn(Optional.empty());
 
     // act
@@ -1352,8 +1320,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with psId 1 and enrollCode 08292 not found", json.get("message"));
   }
-
-  // end of new test 8
 
   @WithMockUser(roles = {"USER"})
   @Test
@@ -1380,7 +1346,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PersonalSchedule with id 1 not found", json.get("message"));
   }
 
-  // start of new test 9
   @WithMockUser(roles = {"USER"})
   @Test
   public void
@@ -1407,8 +1372,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PersonalSchedule with id 1 not found", json.get("message"));
   }
 
-  // end of new test 9
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses__user_logged_in__cannot_delete_delete_belonging_to_another_user()
@@ -1432,13 +1395,11 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("PSCourse with id 31 not found", json.get("message"));
   }
 
-  // start of new test 10
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses__user_logged_in__cannot_delete_by_psid_delete_belonging_to_another_user()
       throws Exception {
     // arrange
-    // User u = currentUserService.getCurrentUser().getUser();
     User otherUser = User.builder().id(98L).build();
     PSCourse ps1 = PSCourse.builder().enrollCd("08250").psId(13L).user(otherUser).id(31L).build();
     when(coursesRepository.findById(eq(31L))).thenReturn(Optional.of(ps1));
@@ -1455,8 +1416,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     Map<String, Object> json = responseToJson(response);
     assertEquals("PSCourse with psId 13 and enrollCode 08250 not found", json.get("message"));
   }
-
-  // end of new test 10
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
