@@ -1,6 +1,7 @@
 import {
   onDeleteSuccess,
   cellToAxiosParamsDelete,
+  parseCourseId,
 } from "main/utils/CoursesUtils";
 import mockConsole from "jest-mock-console";
 
@@ -46,6 +47,15 @@ describe("CoursesUtils", () => {
         method: "DELETE",
         params: { id: 17 },
       });
+    });
+  });
+
+  test("parseCourseId tests", () => {
+    const courseId = "     CMPSC        130A      ";
+    const result = parseCourseId(courseId);
+    expect(result).toEqual({
+      subjectArea: "CMPSC",
+      courseNumber: "130A",
     });
   });
 });
