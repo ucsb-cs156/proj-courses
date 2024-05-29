@@ -240,13 +240,6 @@ public class PSCourseController extends ApiController {
     return genericMessage("PSCourse with id %s deleted".formatted(id));
   }
 
-
-
-
-
-
-
- 
   @Operation(summary = "Delete a course with psid and enroll code (user)")
   @PreAuthorize("hasRole('ROLE_USER')")
   @DeleteMapping("/user/psid")
@@ -256,21 +249,11 @@ public class PSCourseController extends ApiController {
       throws JsonProcessingException {
     User currentUser = getCurrentUser().getUser();
 
-    long id = 0;
-    Iterable<PSCourse> courses = coursesRepository.findAllByPsId(psId);
-    for (PSCourse myCourse : courses) {
-
-      if (myCourse.getEnrollCd().equals(enrollCd)) {
-        id = myCourse.getId();
-        break;
-      }
-    } 
-
-    PSCourse psCourse =
+    PSCourse psCourse = 
         coursesRepository
-            .findByIdAndUser(id, currentUser)
-            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, enrollCd));
-
+            .findByPsIdAndEnrollCd(psId, enrollCd)
+            .orElseThrow(() -> new EntityNotFoundException(PSCourse.class, "psId", psId, "enrollCode", enrollCd));
+    long id = psCourse.getId();
     PersonalSchedule checkPsId =
         personalScheduleRepository
             .findByIdAndUser(psId, currentUser)
@@ -281,7 +264,7 @@ public class PSCourseController extends ApiController {
     if (body.equals("{\"error\": \"401: Unauthorized\"}")
         || body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")) {
       coursesRepository.delete(psCourse);
-      return genericMessage("PSCourse with id %s deleted".formatted(id));
+      return genericMessage("PSCourse with psId %s and enroll code %s deleted".formatted(psId, enrollCd));
     }
 
     Iterator<JsonNode> it = mapper.readTree(body).path("classSections").elements();
