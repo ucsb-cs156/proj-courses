@@ -308,4 +308,4 @@ describe("CourseOverTimeSearchForm tests", () => {
       ).toHaveTextContent("CMPSC");
     });
   });
-  });
+});
