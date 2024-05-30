@@ -22,7 +22,7 @@ describe("UpdateGradeHistoryJobForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <UpdateCoursesJobForm />
+          <UpdateGradeHistoryJobForm />
         </Router>
       </QueryClientProvider>,
     );
@@ -34,5 +34,4 @@ describe("UpdateGradeHistoryJobForm tests", () => {
     springH2ConsoleEnabled: false,
     showSwaggerUILink: false,
   });
-
 });
