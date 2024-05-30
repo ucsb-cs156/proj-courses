@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import {
   oneQuarterCourse,
   twoQuarterCourse,
@@ -13,7 +12,6 @@ import {
   createCompleteGradeData,
   groupDataByQuarterAndInstructor,
 } from "main/components/GradeHistory/GradeHistoryGraph";
-import { Container } from "react-bootstrap";
 
 const mockedNavigate = jest.fn();
 
@@ -115,8 +113,6 @@ describe("Grade history tests", () => {
     fireEvent.mouseOver(element, { clientX: 200, clientY: 200 });
 
     expect(element).toBeVisible();
-    //const tooltipItems = element.querySelectorAll('recharts-tooltip-item');
-    //console.log(Array.from(tooltipItems).map(item => item.textContent));
   });
 });
 
