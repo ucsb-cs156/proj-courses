@@ -149,7 +149,7 @@ describe("SectionsTableBase tests", () => {
 
   test("renders rows with alternating background colors correctly", async () => {
     render(
-      <SectionsTableBase columns={columns} data={fiveSections} group={false} />,
+      <SectionsTableBase columns={columns} data={gigaSections} group={false} />,
     );
 
     // Check the background color of the first few rows
@@ -160,11 +160,18 @@ describe("SectionsTableBase tests", () => {
       screen
         .getByTestId("testid-cell-row-1-col-courseInfo.courseId")
         .closest("tr"),
-    
+      screen
+        .getByTestId("testid-cell-row-2-col-courseInfo.courseId")
+        .closest("tr"),
+      screen
+        .getByTestId("testid-cell-row-3-col-courseInfo.courseId")
+        .closest("tr"),
     ];
 
     // Expected background colors
     const expectedBackgroundColors = [
+      "rgb(227, 235, 252)", // #e3ebfc in RGB format
+      "rgb(255, 255, 255)", // #ffffff in RGB format
       "rgb(227, 235, 252)", // #e3ebfc in RGB format
       "rgb(255, 255, 255)", // #ffffff in RGB format
     ];
