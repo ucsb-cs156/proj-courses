@@ -1,8 +1,3 @@
-import mockConsole from "jest-mock-console";
-import {
-  onDeleteSuccess,
-  cellToAxiosParamsDelete,
-} from "main/utils/sectionUtils";
 import {
   convertToFraction,
   formatLocation,
@@ -12,8 +7,21 @@ import {
   formatInstructors,
   formatInfoLink,
   renderInfoLink,
+  onDeleteSuccess,
+  cellToAxiosParamsDelete,
 } from "main/utils/sectionUtils";
 import { oneSection } from "../../fixtures/sectionFixtures";
+import mockConsole from "jest-mock-console";
+import { toast } from "react-toastify";
+
+jest.mock("react-toastify", () => {
+  const originalModule = jest.requireActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: jest.fn(),
+  };
+});
 
 const testTimeLocations = [
   {
@@ -64,16 +72,6 @@ const testInstructors = [
   },
 ];
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
-  return {
-    __esModule: true,
-    ...originalModule,
-    toast: (x) => mockToast(x),
-  };
-});
-
 describe("section utils tests", () => {
   test("convertToFraction one null test 1", () => {
     expect(convertToFraction(null, "100")).toBe("");
@@ -103,7 +101,7 @@ describe("section utils tests", () => {
     expect(formatDays(testTimeLocations1)).toBe("R F");
   });
 
-  test("formatTime test 1", () => {
+  test("formatTime test 3", () => {
     expect(formatTime(testTimeLocations)).toBe(
       "3:30 PM - 4:45 PM, 10:30 AM - 11:45 AM",
     );
@@ -112,7 +110,6 @@ describe("section utils tests", () => {
   test("formatInstructors test", () => {
     expect(formatInstructors(testInstructors)).toBe("HESPANHA J P, JOHN S");
   });
-
   test("formatLocation null test", () => {
     expect(formatLocation(null)).toBe("");
   });
@@ -143,14 +140,11 @@ describe("section utils tests", () => {
 
   describe("onDeleteSuccess", () => {
     test("It puts the message on console.log and in a toast", () => {
-      // arrange
       const restoreConsole = mockConsole();
 
-      // act
       onDeleteSuccess("abc");
 
-      // assert
-      expect(mockToast).toHaveBeenCalledWith("abc");
+      expect(toast).toHaveBeenCalledWith("abc");
       expect(console.log).toHaveBeenCalled();
       const message = console.log.mock.calls[0][0];
       expect(message).toMatch("abc");
@@ -161,17 +155,24 @@ describe("section utils tests", () => {
 
   describe("cellToAxiosParamsDelete", () => {
     test("It returns the correct params", () => {
-      // arrange
-      const cell = { row: { values: { id: 17 } } };
+      const cell = {
+        row: {
+          values: {
+            "classSections[0].enrollCode": "12345",
+          },
+        },
+      };
+      const psId = 1;
 
-      // act
-      const result = cellToAxiosParamsDelete(cell);
+      const result = cellToAxiosParamsDelete({ cell, psId });
 
-      // assert
       expect(result).toEqual({
-        url: "/api/personalSections",
+        url: "/api/personalSections/delete",
         method: "DELETE",
-        params: { id: 17 },
+        params: {
+          psId: psId,
+          enrollCd: "12345",
+        },
       });
     });
   });
