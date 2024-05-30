@@ -146,6 +146,105 @@ export const coursesInLib = [
   },
 ];
 
+export const coursesInLibDifferentDate = [
+  {
+    _id: {
+      timestamp: 1684366765,
+      date: 1684366765000,
+    },
+    courseInfo: {
+      quarter: "20201",
+      courseId: "CHEM    184  -1",
+      title: "CHEM LITERATURE",
+      description:
+        "Lectures and exercises on the literature and other information resources of use in chemistry.",
+    },
+    section: {
+      enrollCode: "06619",
+      section: "0100",
+      session: null,
+      classClosed: null,
+      courseCancelled: null,
+      gradingOptionCode: null,
+      enrolledTotal: 19,
+      maxEnroll: 24,
+      secondaryStatus: null,
+      departmentApprovalRequired: false,
+      instructorApprovalRequired: false,
+      restrictionLevel: null,
+      restrictionMajor: null,
+      restrictionMajorPass: null,
+      restrictionMinor: null,
+      restrictionMinorPass: null,
+      concurrentCourses: ["CHEM    284  0100"],
+      timeLocations: [
+        {
+          room: "1312",
+          building: "LIB",
+          roomCapacity: null,
+          days: " T R   ",
+          beginTime: "14:00",
+          endTime: "15:15",
+        },
+      ],
+      instructors: [
+        {
+          instructor: "HUBER C F",
+          functionCode: "Teaching and in charge",
+        },
+      ],
+    },
+  },
+  {
+    _id: {
+      timestamp: 1684366772,
+      date: 1684366772000,
+    },
+    courseInfo: {
+      quarter: "20222",
+      courseId: "CHEM    284  -1",
+      title: "CHEMICAL LITERATURE",
+      description:
+        "Lectures and exercises on the literature and other   information resources of use in chemistry.",
+    },
+    section: {
+      enrollCode: "06817",
+      section: "0100",
+      session: null,
+      classClosed: null,
+      courseCancelled: null,
+      gradingOptionCode: null,
+      enrolledTotal: 2,
+      maxEnroll: 5,
+      secondaryStatus: null,
+      departmentApprovalRequired: false,
+      instructorApprovalRequired: false,
+      restrictionLevel: null,
+      restrictionMajor: null,
+      restrictionMajorPass: null,
+      restrictionMinor: null,
+      restrictionMinorPass: null,
+      concurrentCourses: ["CHEM    184  0100"],
+      timeLocations: [
+        {
+          room: "1312",
+          building: "LIB",
+          roomCapacity: null,
+          days: " T R   ",
+          beginTime: "14:00",
+          endTime: "15:15",
+        },
+      ],
+      instructors: [
+        {
+          instructor: "HUBER C F",
+          functionCode: "Teaching and in charge",
+        },
+      ],
+    },
+  },
+];
+
 export const oneBuilding = [["ARTS", "Arts Building"]];
 
 export const threeBuildings = [
