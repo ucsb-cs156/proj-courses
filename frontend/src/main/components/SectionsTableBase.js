@@ -32,7 +32,6 @@ export default function SectionsTableBase({
               <th
                 {...column.getHeaderProps()}
                 data-testid={`${testid}-header-${column.id}`}
-                // Stryker disable next-line ObjectLiteral
               >
                 {column.render("Header")}
               </th>
