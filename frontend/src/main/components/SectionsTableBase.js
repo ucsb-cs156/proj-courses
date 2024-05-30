@@ -57,11 +57,11 @@ export default function SectionsTableBase({
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                         // Stryker disable next-line ObjectLiteral
                         style={{
-                          background:
-                            cell.isGrouped || cell.isAggregated
-                              ? "inherit"
-                              : null,
-
+                          background: cell.isGrouped
+                            ? "inherit"
+                            : cell.isAggregated
+                            ? "inherit"
+                            : null,
                           color: cell.isGrouped
                             ? "#4a4f4f"
                             : cell.isAggregated
