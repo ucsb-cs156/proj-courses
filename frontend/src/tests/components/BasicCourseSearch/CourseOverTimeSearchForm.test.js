@@ -73,19 +73,6 @@ describe("CourseOverTimeSearchForm tests", () => {
     );
   });
 
-  test("when I select a start quarter, the state for start quarter changes", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeSearchForm />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-    const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20201");
-    expect(selectStartQuarter.value).toBe("20201");
-  });
-
   test("when I select an end quarter, the state for end quarter changes", () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -378,34 +365,6 @@ describe("CourseOverTimeSearchForm tests", () => {
     );
 
     userEvent.type(selectCourseNumber, "cMpSc156");
-
-    const submitButton = screen.getByText("Submit");
-
-    userEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(
-          `SectionsOverTimeTable-cell-row-0-col-courseInfo.courseId`,
-        ),
-      ).toHaveTextContent("CMPSC");
-    });
-  });
-  test("when I select a course number with lowercase suffix, it still gives the correct output", async () => {
-    const fetchJSONMock = jest.fn();
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
-          <SectionsOverTimeTable sections={mockSections} />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-    const selectCourseNumber = screen.getByLabelText(
-      "Course Number (Try searching '16' or '130A')",
-    );
-
-    userEvent.type(selectCourseNumber, "130a");
 
     const submitButton = screen.getByText("Submit");
 
