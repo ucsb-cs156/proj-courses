@@ -5,8 +5,9 @@ import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
+import { filterSchedulesByQuarter } from "../utils/PersonalScheduleUtils";
 
-export default function AddToScheduleModal({ section, onAdd }) {
+export default function AddToScheduleModal({ section, onAdd, quarter }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
 
@@ -22,6 +23,9 @@ export default function AddToScheduleModal({ section, onAdd }) {
   );
   // Stryker restore all
 
+  // Filter the schedules by the given quarter
+  const filteredSchedules = filterSchedulesByQuarter(schedules, quarter);
+
   const handleModalClose = () => {
     setShowModal(false);
   };
@@ -30,6 +34,7 @@ export default function AddToScheduleModal({ section, onAdd }) {
     onAdd(section, selectedSchedule);
     handleModalClose();
   };
+
   // Stryker disable all : tested manually, complicated to test
   return (
     <>
@@ -43,11 +48,12 @@ export default function AddToScheduleModal({ section, onAdd }) {
         <Modal.Body>
           <Form>
             {
-              /* istanbul ignore next */ schedules.length > 0 ? (
+              /* istanbul ignore next */ filteredSchedules.length > 0 ? (
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
                     schedule={selectedSchedule}
+                    filteredSchedules={filteredSchedules}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
                   />
