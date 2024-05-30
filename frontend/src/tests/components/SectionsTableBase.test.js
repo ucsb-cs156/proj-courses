@@ -151,30 +151,39 @@ describe("SectionsTableBase tests", () => {
     render(
       <SectionsTableBase columns={columns} data={fiveSections} group={false} />,
     );
-  
+
     // Check the background color of the first few rows
     const rows = [
-      screen.getByTestId("testid-cell-row-0-col-courseInfo.courseId").closest('tr'),
-      screen.getByTestId("testid-cell-row-1-col-courseInfo.courseId").closest('tr'),
-      screen.getByTestId("testid-cell-row-2-col-courseInfo.courseId").closest('tr'),
-      screen.getByTestId("testid-cell-row-3-col-courseInfo.courseId").closest('tr'),
-      screen.getByTestId("testid-cell-row-4-col-courseInfo.courseId").closest('tr')
+      screen
+        .getByTestId("testid-cell-row-0-col-courseInfo.courseId")
+        .closest("tr"),
+      screen
+        .getByTestId("testid-cell-row-1-col-courseInfo.courseId")
+        .closest("tr"),
+      screen
+        .getByTestId("testid-cell-row-2-col-courseInfo.courseId")
+        .closest("tr"),
+      screen
+        .getByTestId("testid-cell-row-3-col-courseInfo.courseId")
+        .closest("tr"),
+      screen
+        .getByTestId("testid-cell-row-4-col-courseInfo.courseId")
+        .closest("tr"),
     ];
-  
+
     // Expected background colors
     const expectedBackgroundColors = [
       "rgb(227, 235, 252)", // #e3ebfc in RGB format
       "rgb(255, 255, 255)", // #ffffff in RGB format
       "rgb(227, 235, 252)", // #e3ebfc in RGB format
       "rgb(255, 255, 255)", // #ffffff in RGB format
-      "rgb(227, 235, 252)"  // #e3ebfc in RGB format
+      "rgb(227, 235, 252)", // #e3ebfc in RGB format
     ];
-  
+
     // Verify the background colors for each row
     rows.forEach((row, index) => {
       const style = window.getComputedStyle(row);
       expect(style.backgroundColor).toBe(expectedBackgroundColors[index]);
     });
   });
-  
 });
