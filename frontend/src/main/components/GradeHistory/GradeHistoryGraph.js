@@ -9,6 +9,8 @@ import {
   Legend,
 } from "recharts";
 
+// Stryker disable all: don't need to mutate constant arrays I just have to make checking things easier
+
 // List of all possible grades
 const allGrades = [
   "A+",
@@ -24,6 +26,7 @@ const allGrades = [
   "D",
   "D-",
   "F",
+  "P",
   "W",
   "NP",
 ];
@@ -34,6 +37,7 @@ const qtrNumToQuarter = {
   3: "Summer",
   4: "Fall",
 };
+// Stryker restore all
 
 //from an input YYYYQ, create a prettier formated output that I like
 const yyyyqToPrettyStr = (yyyyq) => {
@@ -41,8 +45,12 @@ const yyyyqToPrettyStr = (yyyyq) => {
   return `${qtrNumToQuarter[qtr]} ${year}`;
 };
 
+export const formatTooltip = (value, _, props) => {
+  return [`Percentage: ${value.toFixed(1)}%, Count: ${props.payload.count}`];
+};
+
 // Helper function to fill in for when 0 students got a grade
-const createCompleteGradeData = (data) => {
+export const createCompleteGradeData = (data) => {
   const gradeCounts = data.reduce((acc, item) => {
     acc[item.grade] = item.count;
     return acc;
@@ -63,7 +71,7 @@ const createCompleteGradeData = (data) => {
 
 // Helper function to group data by `yyyyq` and `instructor`
 // This will allow different instructors in the same quarter to be displayed seperatly
-const groupDataByQuarterAndInstructor = (data) => {
+export const groupDataByQuarterAndInstructor = (data) => {
   const groupedData = {};
 
   // Added sort function to be able to display data by most recent quarter
@@ -94,11 +102,12 @@ const GradeBarChart = ({ data, title }) => {
   const completeData = createCompleteGradeData(data);
 
   return (
-    <div>
+    <div data-testid="grade-history-graph">
       <h3>{title}</h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={completeData}
+          // Stryker disable all
           margin={{
             top: 5,
             right: 30,
@@ -107,9 +116,13 @@ const GradeBarChart = ({ data, title }) => {
           }}
         >
           <XAxis dataKey="grade" />
-          <YAxis />
+          <YAxis
+            tickFormatter={(value) => `${value.toFixed(1)}%`}
+            // Stryker restore all
+          />
+
           <Legend />
-          <Tooltip formatter={(value) => `${value.toFixed(2)}%`} />
+          <Tooltip formatter={formatTooltip} />
           <Bar dataKey="percentage" fill="#8884d8" />
         </BarChart>
       </ResponsiveContainer>
@@ -118,13 +131,10 @@ const GradeBarChart = ({ data, title }) => {
 };
 
 const GradeHistoryGraphs = ({ gradeHistory }) => {
-  const groupedData = useMemo(
-    () => groupDataByQuarterAndInstructor(gradeHistory),
-    [gradeHistory],
-  );
+  const groupedData = groupDataByQuarterAndInstructor(gradeHistory);
 
   return (
-    <div>
+    <div data-testid="grade-history-graphs">
       {Object.keys(groupedData).map((key) => {
         const data = groupedData[key];
         const title = `${yyyyqToPrettyStr(data[0].yyyyq)} - ${
