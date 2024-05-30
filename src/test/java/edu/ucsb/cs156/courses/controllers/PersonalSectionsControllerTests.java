@@ -149,7 +149,8 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
     verify(coursesRepository, times(1)).delete(course2);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(
-        "{\"message\":\"Schedule with psId 13 and associated lectures with enrollCd 59501 deleted\"}",
+        "{\"message\":\"Schedule with psId 13 and associated lectures with enrollCd 59501"
+            + " deleted\"}",
         responseString);
   }
 
