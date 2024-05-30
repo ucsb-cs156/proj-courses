@@ -64,10 +64,11 @@ export default function SectionsTableBase({
                             : cell.isAggregated
                             ? "#FDB515" // UC Gold text for aggregated cells
                             : "#003262", // UC Blue text for regular cells
-                          fontWeight:
-                            cell.isGrouped || cell.isAggregated
-                              ? "bold"
-                              : "normal",
+                            fontWeight: cell.isGrouped
+                            ? "bold"
+                            : cell.isAggregated
+                            ? "bold"
+                            : "normal",
                         }}
                       >
                         {cell.isGrouped ? (
