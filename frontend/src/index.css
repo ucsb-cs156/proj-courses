@@ -23,12 +23,3 @@ code {
   background-color: #18335d;
   border-color: #34859b;
 }
-
-.table-hover tbody tr.hovered-row {
-  background-color: rgba(
-    174,
-    203,
-    223,
-    0.001
-  ) !important; /* Custom hover color */
-}
