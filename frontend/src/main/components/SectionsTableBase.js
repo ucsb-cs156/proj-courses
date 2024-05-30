@@ -1,4 +1,4 @@
-import React, { Fragment} from "react";
+import React, { Fragment } from "react";
 import { useTable, useGroupBy, useExpanded } from "react-table";
 import { Table } from "react-bootstrap";
 
@@ -49,9 +49,7 @@ export default function SectionsTableBase({
             <Fragment key={`row-${i}`}>
               {row.cells[0].isGrouped ||
               (!row.cells[0].isGrouped && row.allCells[3].value) ? (
-                <tr
-                  style={rowStyle}
-                >
+                <tr style={rowStyle}>
                   {row.cells.map((cell, _index) => {
                     return (
                       <td
