@@ -19,6 +19,7 @@
         <java.version>17</java.version>
         <app.package>edu.ucsb.cs156.courses</app.package>
         <app.packagePath>edu/ucsb/cs156/courses</app.packagePath>
+        <targetClasses>${targetClasses:edu.ucsb.cs156.*}</targetClasses>
     </properties>
     <dependencies>
         <dependency>
