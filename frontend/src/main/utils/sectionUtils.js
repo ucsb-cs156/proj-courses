@@ -112,6 +112,7 @@ export function onDeleteSuccess(message) {
 }
 
 export function cellToAxiosParamsDelete({cell, psId}) {
+  console.log(cell);
   const enrollCode = cell.row.values["classSections[0].enrollCode"];
   return {
     url: "/api/personalSections/delete",
