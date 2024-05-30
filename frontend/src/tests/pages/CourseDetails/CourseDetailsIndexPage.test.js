@@ -38,34 +38,34 @@ jest.mock("react-router-dom", () => {
 });
 
 class ResizeObserver {
-    constructor(callback) {
-      this.callback = callback;
-    }
-    observe() {
-      // Mock implementation of the observe method
-    }
-    unobserve() {
-      // Mock implementation of the unobserve method
-    }
-    disconnect() {
-      // Mock implementation of the disconnect method
-    }
+  constructor(callback) {
+    this.callback = callback;
   }
-  
-  window.ResizeObserver = ResizeObserver;
+  observe() {
+    // Mock implementation of the observe method
+  }
+  unobserve() {
+    // Mock implementation of the unobserve method
+  }
+  disconnect() {
+    // Mock implementation of the disconnect method
+  }
+}
 
-  jest.mock("recharts", () => {
-    const OriginalModule = jest.requireActual("recharts");
-  
-    return {
-      ...OriginalModule,
-      ResponsiveContainer: ({ height, children }) => (
-        <OriginalModule.ResponsiveContainer width={800} height={height}>
-          {children}
-        </OriginalModule.ResponsiveContainer>
-      ),
-    };
-  });
+window.ResizeObserver = ResizeObserver;
+
+jest.mock("recharts", () => {
+  const OriginalModule = jest.requireActual("recharts");
+
+  return {
+    ...OriginalModule,
+    ResponsiveContainer: ({ height, children }) => (
+      <OriginalModule.ResponsiveContainer width={800} height={height}>
+        {children}
+      </OriginalModule.ResponsiveContainer>
+    ),
+  };
+});
 
 describe("Course Details Index Page tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
@@ -135,7 +135,7 @@ describe("Course Details Index Page tests", () => {
     expect(screen.getByText("2:00 PM - 3:15 PM")).toBeInTheDocument();
   });
 
- test("Calls grade history api correctly and displays correct information", async () => {
+  test("Calls grade history api correctly and displays correct information", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
