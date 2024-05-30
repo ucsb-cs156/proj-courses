@@ -359,7 +359,7 @@ export const threeSectionsDiffQrts = [
         },
       ],
     },
-  }
+  },
 ];
 
 export const fiveSections = [
