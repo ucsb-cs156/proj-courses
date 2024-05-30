@@ -227,6 +227,141 @@ export const threeSections = [
   },
 ];
 
+export const threeSectionsDiffQrts = [
+  {
+    courseInfo: {
+      quarter: "20221",
+      courseId: "ECE       1A -1",
+      title: "COMP ENGR SEMINAR",
+      description:
+        "Introductory seminar to expose students to a broad range of topics in computer engineering.",
+    },
+    section: {
+      enrollCode: "12583",
+      section: "0100",
+      session: null,
+      classClosed: null,
+      courseCancelled: null,
+      gradingOptionCode: null,
+      enrolledTotal: 84,
+      maxEnroll: 100,
+      secondaryStatus: null,
+      departmentApprovalRequired: false,
+      instructorApprovalRequired: false,
+      restrictionLevel: null,
+      restrictionMajor: "+PRCME+CMPEN",
+      restrictionMajorPass: null,
+      restrictionMinor: null,
+      restrictionMinorPass: null,
+      concurrentCourses: [],
+      timeLocations: [
+        {
+          room: "1260",
+          building: "PHELP",
+          roomCapacity: "90",
+          days: "M W    ",
+          beginTime: "15:30",
+          endTime: "16:45",
+        },
+      ],
+      instructors: [
+        {
+          instructor: "HESPANHA J P",
+          functionCode: "Teaching and in charge",
+        },
+      ],
+    },
+  },
+  {
+    courseInfo: {
+      quarter: "20223",
+      courseId: "ECE       3A -1",
+      title: "COMPUTER ORGANIZATION",
+      description:
+        "Introduction to computer organization and architecture, including digital logic, instruction set architecture, memory hierarchy, and input/output systems.",
+    },
+    section: {
+      enrollCode: "12585",
+      section: "0300",
+      session: null,
+      classClosed: null,
+      courseCancelled: null,
+      gradingOptionCode: null,
+      enrolledTotal: 60,
+      maxEnroll: 70,
+      secondaryStatus: null,
+      departmentApprovalRequired: false,
+      instructorApprovalRequired: false,
+      restrictionLevel: null,
+      restrictionMajor: "+PRCME+CMPEN",
+      restrictionMajorPass: null,
+      restrictionMinor: null,
+      restrictionMinorPass: null,
+      concurrentCourses: [],
+      timeLocations: [
+        {
+          room: "2100",
+          building: "ENGR",
+          roomCapacity: "80",
+          days: "M W F  ",
+          beginTime: "13:00",
+          endTime: "13:50",
+        },
+      ],
+      instructors: [
+        {
+          instructor: "JOHNSON L",
+          functionCode: "Teaching and in charge",
+        },
+      ],
+    },
+  },
+  {
+    courseInfo: {
+      quarter: "20222",
+      courseId: "ECE       2A -1",
+      title: "DIGITAL LOGIC DESIGN",
+      description:
+        "Introduction to digital logic design, including combinational and sequential circuits, logic gates, and Boolean algebra.",
+    },
+    section: {
+      enrollCode: "12584",
+      section: "0200",
+      session: null,
+      classClosed: null,
+      courseCancelled: null,
+      gradingOptionCode: null,
+      enrolledTotal: 75,
+      maxEnroll: 80,
+      secondaryStatus: null,
+      departmentApprovalRequired: false,
+      instructorApprovalRequired: false,
+      restrictionLevel: null,
+      restrictionMajor: "+PRCME+CMPEN",
+      restrictionMajorPass: null,
+      restrictionMinor: null,
+      restrictionMinorPass: null,
+      concurrentCourses: [],
+      timeLocations: [
+        {
+          room: "1124",
+          building: "HFH",
+          roomCapacity: null,
+          days: "T R    ",
+          beginTime: "10:00",
+          endTime: "11:50",
+        },
+      ],
+      instructors: [
+        {
+          instructor: "SMITH J",
+          functionCode: "Teaching but not in charge",
+        },
+      ],
+    },
+  }
+];
+
 export const fiveSections = [
   {
     courseInfo: {
