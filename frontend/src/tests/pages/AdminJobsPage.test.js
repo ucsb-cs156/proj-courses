@@ -231,9 +231,7 @@ describe("AdminJobsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      await screen.findByText("Update Grade Info"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Update Grade Info")).toBeInTheDocument();
 
     const updateCoursesButton = screen.getByText("Update Grade Info");
     expect(updateCoursesButton).toBeInTheDocument();
@@ -249,7 +247,6 @@ describe("AdminJobsPage tests", () => {
     expect(axiosMock.history.post[0].url).toBe(
       "/api/jobs/launch/uploadGradeData",
     );
-    
 
     // const expectedKey = "BasicSearch.Subject-option-ANTH";
     // await waitFor(() =>

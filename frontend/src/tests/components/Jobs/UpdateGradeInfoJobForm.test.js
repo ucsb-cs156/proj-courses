@@ -48,9 +48,5 @@ describe("UpdateGradeInfoJobForm tests", () => {
         </Router>
       </QueryClientProvider>,
     );
-    
-
   });
-
-
 });
