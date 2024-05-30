@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity(name = "ucsb_subjects")
 public class UCSBSubject {
-  @Id
-  private String subjectCode;
+  @Id private String subjectCode;
   private String subjectTranslation;
   private String deptCode;
   private String collegeCode;
