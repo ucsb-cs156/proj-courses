@@ -367,6 +367,6 @@ describe("PersonalSchedulesEditPage tests", () => {
           quarter: "20221",
         }),
       ); // posted object
-    })
+    });
   });
 });
