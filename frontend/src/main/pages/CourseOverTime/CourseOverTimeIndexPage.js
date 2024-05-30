@@ -19,10 +19,7 @@ export default function CourseOverTimeIndexPage() {
   });
 
   const onSuccess = (courses) => {
-    const sortedCourses = courses.sort((a, b) =>
-      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
-    );
-    setCourseJSON(sortedCourses);
+    setCourseJSON(courses);
   };
 
   const mutation = useBackendMutation(
