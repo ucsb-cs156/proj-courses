@@ -41,9 +41,7 @@ export default function SectionsInstructorTableBase({
           prepareRow(row);
           return (
             <>
-              <tr 
-                {...row.getRowProps()}
-              >
+              <tr {...row.getRowProps()}>
                 {row.cells.map((cell, _index) => {
                   return (
                     <td

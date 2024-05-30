@@ -22,10 +22,10 @@ export default function SectionsTableBase({
       useGroupBy,
       useExpanded,
     );
-    const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
+  const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
 
-    const handleMouseEnter = (index) => setHoveredRowIndex(index);
-    const handleMouseLeave = () => setHoveredRowIndex(null);
+  const handleMouseEnter = (index) => setHoveredRowIndex(index);
+  const handleMouseLeave = () => setHoveredRowIndex(null);
   return (
     <Table {...getTableProps()} bordered hover className="table-hover">
       <thead key="thead">
@@ -47,7 +47,7 @@ export default function SectionsTableBase({
           prepareRow(row);
           const isHovered = i === hoveredRowIndex;
           const rowStyle = {
-            background: i % 2 === 0 ? "#e3ebfc" : "#ffffff" ,
+            background: i % 2 === 0 ? "#e3ebfc" : "#ffffff",
           };
           return (
             <Fragment key={`row-${i}`}>
@@ -57,7 +57,7 @@ export default function SectionsTableBase({
                   {...row.getRowProps()}
                   onMouseEnter={() => handleMouseEnter(i)}
                   onMouseLeave={handleMouseLeave}
-                  className={isHovered ? 'hovered-row' : ''}
+                  className={isHovered ? "hovered-row" : ""}
                   style={rowStyle}
                 >
                   {row.cells.map((cell, _index) => {
@@ -67,7 +67,10 @@ export default function SectionsTableBase({
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                         // Stryker disable next-line ObjectLiteral
                         style={{
-                          background: cell.isGrouped || cell.isAggregated ? "inherit" : null,
+                          background:
+                            cell.isGrouped || cell.isAggregated
+                              ? "inherit"
+                              : null,
 
                           color: cell.isGrouped
                             ? "#4a4f4f"
