@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import SectionsTableBase from "main/components/SectionsTableBase";
-
 import {
   oneLectureSectionWithNoDiscussion,
   gigaSections,
@@ -135,6 +134,14 @@ describe("SectionsTableBase tests", () => {
     render(
       <SectionsTableBase columns={columns} data={fiveSections} group={false} />,
     );
+
+    expect(screen.getByText("➕")).toBeInTheDocument();
+    expect(screen.queryByText("➖")).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId(
+        "testid-cell-row-1-col-courseInfo.courseId-expand-symbols",
+      ),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId("testid-cell-row-0-col-courseInfo.courseId"),
     ).toHaveAttribute(
