@@ -189,12 +189,43 @@ export default function SectionsTable({ sections }) {
       Header: "Enroll Code",
       accessor: "section.enrollCode",
       disableGroupBy: true,
-      Cell: ({ cell: { value } }) => {
-        return value;
+      Cell: ({ cell: { value }, row: { original } }) => {
+        // Stryker disable all : difficult to test modal interaction
+        /* istanbul ignore next : difficult to test modal interaction*/
+        if (isSection(original.section.section) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <span>{value}</span>
+              <AddToScheduleModal
+                section={original}
+                onAdd={(section, schedule) =>
+                  handleAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else {
+          return value;
+        }
+        // Stryker restore all
       },
       aggregate: getFirstVal,
       Aggregated: ({ cell: { value } }) => /* istanbul ignore next */ {
-        return `${value}`;
+        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <span>{value}</span>
+              <AddToScheduleModal
+                section={value}
+                onAdd={(section, schedule) =>
+                  handleLectureAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else {
+          return `${value}`;
+        }
       },
     },
     {
@@ -206,58 +237,6 @@ export default function SectionsTable({ sections }) {
 
       aggregate: getFirstVal,
       Aggregated: renderInfoLink,
-    },
-    {
-      Header: "Action",
-      id: "action",
-      disableGroupBy: true,
-      // No need for accessor if it's purely for actions like expand/collapse
-      Cell: ({ row }) => {
-        // Stryker disable all : difficult to test modal interaction
-        /* istanbul ignore next : difficult to test modal interaction*/
-        if (isSection(row.original.section.section) && currentUser.loggedIn) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <AddToScheduleModal
-                section={row.original}
-                onAdd={(section, schedule) =>
-                  handleAddToSchedule(section, schedule, mutation)
-                }
-              />
-            </div>
-          );
-        } else {
-          return null;
-        }
-        // Stryker restore all
-      },
-      aggregate: getFirstVal,
-      Aggregated: ({
-        cell: { value },
-        row,
-        column,
-      }) => /* istanbul ignore next */ {
-        const testId = `${testid}-cell-row-${row.index}-col-${column.id}-expand-symbols`;
-        console.log("Rendered cell with data-testid:", testId); // Print the data-testid to the console
-        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <AddToScheduleModal
-                section={value}
-                onAdd={(section, schedule) =>
-                  handleLectureAddToSchedule(section, schedule, mutation)
-                }
-              />
-            </div>
-          );
-        } else {
-          return (
-            <span {...row.getToggleRowExpandedProps()} data-testid={testId}>
-              {row.isExpanded ? "➖" : "➕"}
-            </span>
-          );
-        }
-      },
     },
   ];
 

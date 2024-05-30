@@ -72,7 +72,19 @@ export default function SectionsTableBase({
                         }}
                       >
                         {cell.isGrouped ? (
-                          <>{cell.render("Cell")}</>
+                          <>
+                            <span
+                              {...row.getToggleRowExpandedProps()}
+                              data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-expand-symbols`}
+                            >
+                              {row.subRows.length > 1
+                                ? row.isExpanded
+                                  ? "➖ "
+                                  : "➕ "
+                                : null}
+                            </span>{" "}
+                            {cell.render("Cell")}
+                          </>
                         ) : cell.isAggregated ? (
                           cell.render("Aggregated")
                         ) : (

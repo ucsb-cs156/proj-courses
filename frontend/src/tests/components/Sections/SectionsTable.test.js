@@ -12,8 +12,6 @@ import { useBackendMutation } from "main/utils/useBackend";
 
 const mockedNavigate = jest.fn();
 
-const colId = "action";
-
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
@@ -205,7 +203,6 @@ describe("Section tests", () => {
       "Instructor",
       "Enroll Code",
       "Info",
-      "Action",
     ];
     const expectedFields = [
       "quarter",
@@ -219,7 +216,6 @@ describe("Section tests", () => {
       "instructor",
       "section.enrollCode",
       "info",
-      "action",
     ];
     const testId = "SectionsTable";
 
@@ -234,7 +230,7 @@ describe("Section tests", () => {
     });
 
     const expandRow = screen.getByTestId(
-      `${testId}-cell-row-1-col-${colId}-expand-symbols`,
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
     );
     fireEvent.click(expandRow);
 
@@ -349,20 +345,20 @@ describe("Section tests", () => {
     const testId = "SectionsTable";
 
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-${colId}`),
-    ).toHaveTextContent("➕");
+      screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`),
+    ).toHaveTextContent("➕ MATH 3B");
     expect(
-      screen.getByTestId(`${testId}-cell-row-2-col-${colId}`),
-    ).toHaveTextContent("➕");
+      screen.getByTestId(`${testId}-cell-row-2-col-courseInfo.courseId`),
+    ).toHaveTextContent("➕ MATH 3B");
 
     const expandRow = screen.getByTestId(
-      `${testId}-cell-row-1-col-${colId}-expand-symbols`,
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
     );
     fireEvent.click(expandRow);
 
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-${colId}`),
-    ).toHaveTextContent("➖");
+      screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`),
+    ).toHaveTextContent("➖ MATH 3B");
   });
 
   test("First dropdown is different than last dropdown", () => {
@@ -377,7 +373,7 @@ describe("Section tests", () => {
     const testId = "SectionsTable";
 
     const expandRow = screen.getByTestId(
-      `${testId}-cell-row-1-col-${colId}-expand-symbols`,
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
     );
     fireEvent.click(expandRow);
 
@@ -401,7 +397,7 @@ describe("Section tests", () => {
     const testId = "SectionsTable";
 
     const expandRow = screen.getByTestId(
-      `${testId}-cell-row-1-col-${colId}-expand-symbols`,
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
     );
     fireEvent.click(expandRow);
 
@@ -431,7 +427,7 @@ describe("Section tests", () => {
     const testId = "SectionsTable";
 
     const expandRow = screen.getByTestId(
-      `${testId}-cell-row-1-col-${colId}-expand-symbols`,
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
     );
     fireEvent.click(expandRow);
 

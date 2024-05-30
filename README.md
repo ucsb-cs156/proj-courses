@@ -105,17 +105,3 @@ To access the swagger API endpoints, use:
 
 - On localhost only: <http://localhost:8080/h2-console> See also: [docs/h2-console.md](docs/h2-console.md)
 - On Dokku: see: <https://ucsb-cs156.github.io/topics/dokku/postgres_command_line.html>
-
-# Integration Testing
-
-To run a particular integration test (e.g. only `HomePageWebIT.java`) use `-Dit.test=ClassName`, for example:
-
-```
-INTEGRATION=true mvn test-compile failsafe:integration-test -Dit.test=HomePageWebIT
-```
-
-or to see it run live:
-
-```
-INTEGRATION=true HEADLESS=false mvn test-compile failsafe:integration-test -Dit.test=HomePageWebIT
-```

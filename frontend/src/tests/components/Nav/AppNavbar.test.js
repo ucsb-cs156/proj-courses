@@ -196,13 +196,14 @@ describe("AppNavbar tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Main Search")).toBeInTheDocument();
-    expect(
-      await screen.findByTestId("appnavbar-mainsearch-list"),
-    ).toBeInTheDocument();
     expect(await screen.findByText("Personal Schedules")).toBeInTheDocument();
     expect(
       await screen.findByTestId("appnavbar-personalschedules-list"),
+    ).toBeInTheDocument();
+
+    expect(await screen.findByText("Courses")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("appnavbar-courses-list"),
     ).toBeInTheDocument();
   });
 
