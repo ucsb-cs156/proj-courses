@@ -21,7 +21,7 @@ export default function SectionsInstructorTableBase({
     );
 
   return (
-    <Table {...getTableProps()} striped bordered hover>
+    <Table {...getTableProps()} bordered hover>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
@@ -41,7 +41,9 @@ export default function SectionsInstructorTableBase({
           prepareRow(row);
           return (
             <>
-              <tr {...row.getRowProps()}>
+              <tr 
+                {...row.getRowProps()}
+              >
                 {row.cells.map((cell, _index) => {
                   return (
                     <td
@@ -52,11 +54,11 @@ export default function SectionsInstructorTableBase({
                         background: isSection(
                           data[cell.row.index].section.section,
                         )
-                          ? "#9dbfbe"
-                          : "#34859b",
+                          ? "#ffffff"
+                          : "#e3ebfc",
                         color: isSection(data[cell.row.index].section.section)
                           ? "#000000"
-                          : "#effcf4",
+                          : "#4a4f4f",
                         fontWeight: isSection(
                           data[cell.row.index].section.section,
                         )

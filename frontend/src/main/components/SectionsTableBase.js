@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useTable, useGroupBy, useExpanded } from "react-table";
 import { Table } from "react-bootstrap";
 
@@ -22,9 +22,12 @@ export default function SectionsTableBase({
       useGroupBy,
       useExpanded,
     );
+    const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
 
+    const handleMouseEnter = (index) => setHoveredRowIndex(index);
+    const handleMouseLeave = () => setHoveredRowIndex(null);
   return (
-    <Table {...getTableProps()} striped bordered hover>
+    <Table {...getTableProps()} bordered hover className="table-hover">
       <thead key="thead">
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
@@ -42,11 +45,21 @@ export default function SectionsTableBase({
       <tbody {...getTableBodyProps()} key="tbody">
         {rows.map((row, i) => {
           prepareRow(row);
+          const isHovered = i === hoveredRowIndex;
+          const rowStyle = {
+            background: i % 2 === 0 ? "#e3ebfc" : "#ffffff" ,
+          };
           return (
             <Fragment key={`row-${i}`}>
               {row.cells[0].isGrouped ||
               (!row.cells[0].isGrouped && row.allCells[3].value) ? (
-                <tr {...row.getRowProps()}>
+                <tr
+                  {...row.getRowProps()}
+                  onMouseEnter={() => handleMouseEnter(i)}
+                  onMouseLeave={handleMouseLeave}
+                  className={isHovered ? 'hovered-row' : ''}
+                  style={rowStyle}
+                >
                   {row.cells.map((cell, _index) => {
                     return (
                       <td
@@ -54,16 +67,13 @@ export default function SectionsTableBase({
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                         // Stryker disable next-line ObjectLiteral
                         style={{
-                          background: cell.isGrouped
-                            ? "#34859b"
-                            : cell.isAggregated
-                            ? "#34859b"
-                            : "#9dbfbe",
+                          background: cell.isGrouped || cell.isAggregated ? "inherit" : null,
+
                           color: cell.isGrouped
-                            ? "#effcf4"
+                            ? "#4a4f4f"
                             : cell.isAggregated
-                            ? "#effcf4"
-                            : "#000000",
+                            ? "#4a4f4f"
+                            : "#4a4f4f",
                           fontWeight: cell.isGrouped
                             ? "bold"
                             : cell.isAggregated
