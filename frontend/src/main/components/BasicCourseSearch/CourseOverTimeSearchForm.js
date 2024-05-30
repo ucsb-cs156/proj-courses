@@ -67,49 +67,37 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   };
 
   const handleCourseNumberOnChange = (event) => {
-    let rawCourse = event.target.value;
-
+    const rawCourse = event.target.value;
     const inputtedSubject = rawCourse.match(/^[a-zA-Z]+/);
-    if (inputtedSubject != null) {
-      const upperSubject = inputtedSubject[0].toUpperCase();
-      if (upperSubject !== subject.toUpperCase()) {
-        if (
-          subject.toUpperCase() === "CMPSC" &&
-          (upperSubject === "CS" || upperSubject === "COMS")
-        ) {
-          if (rawCourse.match(/\d+/) != null) {
-            const number = rawCourse.match(/\d+/)[0];
-            setCourseNumber(number);
-          } else {
-            setCourseNumber("");
-          }
-          if (rawCourse.match(/[a-zA-Z]+$/) != null) {
-            const suffix = rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase();
 
-            setCourseSuf(suffix);
-          } else {
-            setCourseSuf("");
-          }
-          return;
-        } else {
-          setCourseNumber("");
-          setCourseSuf("");
-          return;
-        }
+    if (inputtedSubject) {
+      const upperSubject = inputtedSubject[0].toUpperCase();
+      if (
+        subject.toUpperCase() === upperSubject ||
+        (subject.toUpperCase() === "CMPSC" &&
+          (upperSubject === "CS" || upperSubject === "COMS"))
+      ) {
+        setCourseNumber(
+          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
+        );
+        setCourseSuf(
+          rawCourse.match(/[a-zA-Z]+$/)
+            ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
+            : "",
+        );
+      } else {
+        setCourseNumber("");
+        setCourseSuf("");
       }
+      return;
     }
-    if (rawCourse.match(/\d+/) != null) {
-      const number = rawCourse.match(/\d+/)[0];
-      setCourseNumber(number);
-    } else {
-      setCourseNumber("");
-    }
-    if (rawCourse.match(/[a-zA-Z]+$/) != null) {
-      const suffix = rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase();
-      setCourseSuf(suffix);
-    } else {
-      setCourseSuf("");
-    }
+    setCourseNumber(rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "");
+
+    setCourseSuf(
+      rawCourse.match(/[a-zA-Z]+$/)
+        ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
+        : "",
+    );
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
