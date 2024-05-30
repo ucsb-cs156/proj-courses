@@ -171,7 +171,7 @@ describe("PersonalSectionsTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
 
     fireEvent.click(deleteButton);
-    
+
     await waitFor(() =>
       expect(mockedMutate).toHaveBeenCalledWith({
         cell: expect.any(Object),
