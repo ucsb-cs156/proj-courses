@@ -144,9 +144,6 @@ describe("SectionsTableBase tests", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByTestId("testid-cell-row-0-col-courseInfo.courseId"),
-    ).toHaveAttribute(
-      "style",
-      "color: rgb(74, 79, 79); font-weight: bold;",
-    );
+    ).toHaveAttribute("style", "color: rgb(74, 79, 79); font-weight: bold;");
   });
 });
