@@ -1,3 +1,5 @@
+import mockConsole from "jest-mock-console";
+import { toast } from "react-toastify";
 import {
   convertToFraction,
   formatLocation,
@@ -7,8 +9,19 @@ import {
   formatInstructors,
   formatInfoLink,
   renderInfoLink,
+  onDeleteSuccess,
+  cellToAxiosParamsDelete,
 } from "main/utils/sectionUtils";
 import { oneSection } from "../../fixtures/sectionFixtures";
+
+jest.mock("react-toastify", () => {
+  const originalModule = jest.requireActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: jest.fn(),
+  };
+});
 
 const testTimeLocations = [
   {
@@ -123,5 +136,52 @@ describe("section utils tests", () => {
     });
     expect(view.props.children.props.style.color).toBe("white");
     expect(view.props.children.props.href).toBe("/coursedetails/20221/12583");
+  });
+
+  describe("onDeleteSuccess", () => {
+    test("It puts the message on console.log and in a toast", () => {
+      // arrange
+      const restoreConsole = mockConsole();
+
+      // act
+      onDeleteSuccess("abc");
+
+      // assert
+      expect(toast).toHaveBeenCalledWith("abc");
+      expect(console.log).toHaveBeenCalled();
+      const message = console.log.mock.calls[0][0];
+      expect(message).toMatch("abc");
+
+      restoreConsole();
+    });
+  });
+
+  describe("cellToAxiosParamsDelete", () => {
+    test("It returns the correct params", () => {
+      // arrange
+      //const cell = { row: { values: { "classSections[0].enrollCode": "80300"} } };
+      const psId = 1;
+      const cell = {
+        row: {
+          values: {
+            "classSections[0].enrollCode": "80300",
+          },
+        },
+      };
+      
+
+      // act
+      const result = cellToAxiosParamsDelete(cell, psId);
+
+      // assert
+      expect(result).toEqual({
+        url: "/api/personalSections/delete",
+        method: "DELETE",
+        params: {
+          psId: psId,
+          enrollCd: "80300",
+        },
+      });
+    });
   });
 });
