@@ -5,13 +5,13 @@ export function onDeleteSuccess(message) {
   toast(message);
 }
 
-export function cellToAxiosParamsDelete(cell) {
+export function cellToAxiosParamsDelete(enrollCd, psId) {
   return {
-    url: "/api/courses/use/psid",
+    url: "/api/courses/user/psid",
     method: "DELETE",
     params: {
-      psId: cell.row.values.psId,
-      enrollCd: cell.row.values.enrollCd
+      enrollCd: enrollCd,
+      psId: psId
     },
   };
 }
