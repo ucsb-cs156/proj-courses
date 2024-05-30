@@ -146,4 +146,16 @@ describe("SectionsTableBase tests", () => {
       screen.getByTestId("testid-cell-row-0-col-courseInfo.courseId"),
     ).toHaveAttribute("style", "color: rgb(74, 79, 79); font-weight: bold;");
   });
+
+  test("renders the second row with a white background correctly", async () => {
+    render(
+      <SectionsTableBase columns={columns} data={fiveSections} group={false} />,
+    );
+    const secondRowCell = screen.getByTestId(
+      "testid-cell-row-1-col-courseInfo.courseId",
+    );
+    const secondRow = secondRowCell.closest("tr");
+    const style = window.getComputedStyle(secondRow);
+    expect(style.backgroundColor).toBe("rgb(255, 255, 255)");
+  });
 });
