@@ -18,6 +18,11 @@ const queryClient = new QueryClient();
 describe("UpdateGradeHistoryJobForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
+  axiosMock.onGet("/api/systemInfo").reply(200, {
+    springH2ConsoleEnabled: false,
+    showSwaggerUILink: false,
+  });
+
   it("renders correctly", async () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -28,10 +33,5 @@ describe("UpdateGradeHistoryJobForm tests", () => {
     );
 
     expect(screen.getByText(/Update Grade History/)).toBeInTheDocument();
-  });
-
-  axiosMock.onGet("/api/systemInfo").reply(200, {
-    springH2ConsoleEnabled: false,
-    showSwaggerUILink: false,
   });
 });
