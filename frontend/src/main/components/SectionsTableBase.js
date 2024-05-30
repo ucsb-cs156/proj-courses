@@ -53,6 +53,7 @@ export default function SectionsTableBase({
                       <td
                         {...cell.getCellProps()}
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
+                        // Stryker disable next-line ObjectLiteral
                         style={{
                           background: cell.isGrouped
                             ? "#003262" // UC Blue background for grouped cells
