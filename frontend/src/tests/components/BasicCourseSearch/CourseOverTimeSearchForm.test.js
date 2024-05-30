@@ -280,7 +280,6 @@ describe("CourseOverTimeSearchForm tests", () => {
 
   test("when I select a course number with the course area too, the course number just retains the number", async () => {
     const fetchJSONMock = jest.fn();
-
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -294,6 +293,175 @@ describe("CourseOverTimeSearchForm tests", () => {
     );
 
     userEvent.type(selectCourseNumber, "CMPSC156");
+
+    const submitButton = screen.getByText("Submit");
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(
+          `SectionsOverTimeTable-cell-row-0-col-courseInfo.courseId`,
+        ),
+      ).toHaveTextContent("CMPSC");
+    });
+  });
+
+  test("when I select a course number with the course area too (lowercase), the course number just retains the number", async () => {
+    const fetchJSONMock = jest.fn();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
+          <SectionsOverTimeTable sections={mockSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+
+    userEvent.type(selectCourseNumber, "cmpsc 156");
+
+    const submitButton = screen.getByText("Submit");
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(
+          `SectionsOverTimeTable-cell-row-0-col-courseInfo.courseId`,
+        ),
+      ).toHaveTextContent("CMPSC");
+    });
+  });
+  test("when I select a course number with the course area too (except cs), the course number just retains the number", async () => {
+    const fetchJSONMock = jest.fn();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
+          <SectionsOverTimeTable sections={mockSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+
+    userEvent.type(selectCourseNumber, "cs156");
+
+    const submitButton = screen.getByText("Submit");
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(
+          `SectionsOverTimeTable-cell-row-0-col-courseInfo.courseId`,
+        ),
+      ).toHaveTextContent("CMPSC");
+    });
+  });
+  test("when I select a course number with the course area too (random casing), the course number just retains the number", async () => {
+    const fetchJSONMock = jest.fn();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
+          <SectionsOverTimeTable sections={mockSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+
+    userEvent.type(selectCourseNumber, "cMpSc156");
+
+    const submitButton = screen.getByText("Submit");
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(
+          `SectionsOverTimeTable-cell-row-0-col-courseInfo.courseId`,
+        ),
+      ).toHaveTextContent("CMPSC");
+    });
+  });
+  test("when I select a course number with lowercase suffix, it still gives the correct output", async () => {
+    const fetchJSONMock = jest.fn();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
+          <SectionsOverTimeTable sections={mockSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+
+    userEvent.type(selectCourseNumber, "130a");
+
+    const submitButton = screen.getByText("Submit");
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(
+          `SectionsOverTimeTable-cell-row-0-col-courseInfo.courseId`,
+        ),
+      ).toHaveTextContent("CMPSC");
+    });
+  });
+  test("when I select a course number with lowercase suffix, it still gives the correct output", async () => {
+    const fetchJSONMock = jest.fn();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
+          <SectionsOverTimeTable sections={mockSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+
+    userEvent.type(selectCourseNumber, "cmPsC         130a");
+
+    const submitButton = screen.getByText("Submit");
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(
+          `SectionsOverTimeTable-cell-row-0-col-courseInfo.courseId`,
+        ),
+      ).toHaveTextContent("CMPSC");
+    });
+  });
+  test("when I select a course number with the just number, the course number just retains the number", async () => {
+    const fetchJSONMock = jest.fn();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
+          <SectionsOverTimeTable sections={mockSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+
+    userEvent.type(selectCourseNumber, "156");
 
     const submitButton = screen.getByText("Submit");
 

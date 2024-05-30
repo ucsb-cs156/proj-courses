@@ -71,33 +71,40 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     const inputtedSubject = rawCourse.match(/^[a-zA-Z]+/);
 
     if (inputtedSubject) {
-      const upperSubject = inputtedSubject[0].toUpperCase();
-      if (
-        subject.toUpperCase() === upperSubject ||
-        (subject.toUpperCase() === "CMPSC" &&
-          (upperSubject === "CS" || upperSubject === "COMS"))
-      ) {
-        setCourseNumber(
-          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
-        );
+      const upperSubject = inputtedSubject[0].toUpperCase().replace(/s/g, "");
+      if (subject.toUpperCase() === upperSubject) {
         setCourseSuf(
           rawCourse.match(/[a-zA-Z]+$/)
             ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
             : "",
         );
+        setCourseNumber(
+          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
+        );
+      } else if (
+        subject.toUpperCase() === "CMPSC" &&
+        (upperSubject === "CS" || upperSubject === "COMS")
+      ) {
+        setCourseSuf(
+          rawCourse.match(/[a-zA-Z]+$/)
+            ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
+            : "",
+        );
+        setCourseNumber(
+          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
+        );
       } else {
         setCourseNumber("");
         setCourseSuf("");
+        return;
       }
-      return;
     }
-    setCourseNumber(rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "");
-
     setCourseSuf(
       rawCourse.match(/[a-zA-Z]+$/)
         ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
         : "",
     );
+    setCourseNumber(rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "");
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
