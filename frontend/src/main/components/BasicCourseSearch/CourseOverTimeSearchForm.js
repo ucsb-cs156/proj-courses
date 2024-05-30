@@ -72,27 +72,23 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     let rawCourse = event.target.value;
 
     const inputtedSubject = rawCourse.match(/^[a-zA-Z]+/);
-    // checking if inputted courseNumber has a subject, make sure its the right one
     if (inputtedSubject != null) {
       const upperSubject = inputtedSubject[0].toUpperCase();
-
       if (upperSubject !== subject.toUpperCase()) {
         if (
           subject.toUpperCase() === "CMPSC" &&
           (upperSubject === "CS" || upperSubject === "COMS")
         ) {
           if (rawCourse.match(/\d+/) != null) {
-            const number = rawCourse.match(/\d+/); // taking out all the letters in it, just in case user puts CMPSC156 as the course number
-
-            setCourseNumber(number + "");
+            const number = rawCourse.match(/\d+/);
+            setCourseNumber(number);
           } else {
             setCourseNumber("");
           }
-
           if (rawCourse.match(/[a-zA-Z]+$/) != null) {
             const suffix = rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase();
 
-            setCourseSuf(suffix + "");
+            setCourseSuf(suffix);
           } else {
             setCourseSuf("");
           }
@@ -103,19 +99,16 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
         }
       }
     }
-
     if (rawCourse.match(/\d+/) != null) {
-      const number = rawCourse.match(/\d+/); // taking out all the letters in it, just in case user puts CMPSC156 as the course number
+      const number = rawCourse.match(/\d+/);
 
-      setCourseNumber(number + "");
+      setCourseNumber(number);
     } else {
       setCourseNumber("");
     }
-
     if (rawCourse.match(/[a-zA-Z]+$/) != null) {
       const suffix = rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase();
-
-      setCourseSuf(suffix + "");
+      setCourseSuf(suffix);
     } else {
       setCourseSuf("");
     }
