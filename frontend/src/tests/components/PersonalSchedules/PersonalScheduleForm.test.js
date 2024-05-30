@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import { filterSchedulesByQuarter } from "../../../main/utils/PersonalScheduleUtils";
 
 const mockedNavigate = jest.fn();
 
@@ -329,5 +330,4 @@ describe("PersonalScheduleForm tests", () => {
       },
     ]);
   });
-  
 });

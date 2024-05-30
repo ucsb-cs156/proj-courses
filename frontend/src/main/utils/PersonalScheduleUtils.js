@@ -15,6 +15,7 @@ export function cellToAxiosParamsDelete(cell) {
   };
 }
 
+// returns an array of schedules that match the given quarter
 export function filterSchedulesByQuarter(schedules, quarter) {
   return schedules.filter((schedule) => schedule.quarter === quarter);
 }

@@ -91,7 +91,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} section={null} quarter={quarter} />
+          <AddToScheduleModal
+            section={null}
+            onAdd={mockOnAdd}
+            quarter={quarter}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -109,7 +113,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} section={"Stryker was here!"} quarter={quarter} />
+          <AddToScheduleModal
+            section={"Stryker was here!"}
+            onAdd={mockOnAdd}
+            quarter={quarter}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -134,7 +142,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} section={null} quarter={quarter} />
+          <AddToScheduleModal
+            section={null}
+            onAdd={mockOnAdd}
+            quarter={quarter}
+          />
         </Router>
       </QueryClientProvider>,
     );

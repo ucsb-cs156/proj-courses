@@ -4,7 +4,7 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 const PersonalScheduleSelector = ({
   schedule,
-  filteredSchedules, // Added line
+  filteredSchedules,
   setSchedule,
   controlId,
   onChange = null,
@@ -18,9 +18,9 @@ const PersonalScheduleSelector = ({
 
   useEffect(() => {
     if (filteredSchedules && filteredSchedules.length > 0) {
-      setSchedule(filteredSchedules[0].id); // Updated line
+      setSchedule(filteredSchedules[0].id);
     }
-  }, [filteredSchedules, setSchedule]); // Updated line
+  }, [filteredSchedules, setSchedule]);
 
   const handleScheduleOnChange = (event) => {
     const selectedSchedule = event.target.value;
@@ -40,8 +40,8 @@ const PersonalScheduleSelector = ({
         value={scheduleState}
         onChange={handleScheduleOnChange}
       >
-        {filteredSchedules && // Updated line
-          filteredSchedules.map((schedule) => ( // Updated line
+        {filteredSchedules &&
+          filteredSchedules.map((schedule) => (
             <option key={schedule.id} value={schedule.id}>
               {yyyyqToQyy(schedule.quarter)} {schedule.name}
             </option>
