@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-//import { allTheLevels } from "fixtures/levelsFixtures";
 import { quarterRange } from "main/utils/quarterUtilities";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
-//import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import { useBackend } from "main/utils/useBackend";
 
 const CourseOverTimeSearchForm = ({ fetchJSON }) => {
@@ -80,7 +78,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
           (upperSubject === "CS" || upperSubject === "COMS")
         ) {
           if (rawCourse.match(/\d+/) != null) {
-            const number = rawCourse.match(/\d+/);
+            const number = rawCourse.match(/\d+/)[0];
             setCourseNumber(number);
           } else {
             setCourseNumber("");
@@ -92,6 +90,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
           } else {
             setCourseSuf("");
           }
+          return;
         } else {
           setCourseNumber("");
           setCourseSuf("");
@@ -100,8 +99,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
       }
     }
     if (rawCourse.match(/\d+/) != null) {
-      const number = rawCourse.match(/\d+/);
-
+      const number = rawCourse.match(/\d+/)[0];
       setCourseNumber(number);
     } else {
       setCourseNumber("");
