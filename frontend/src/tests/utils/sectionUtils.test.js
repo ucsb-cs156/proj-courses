@@ -159,11 +159,13 @@ describe("section utils tests", () => {
   describe("cellToAxiosParamsDelete", () => {
     test("It returns the correct params", () => {
       // arrange
-      const cell = { row: { values: { "classSections[0].enrollCode": "80300"} } };
+      const cell = {
+        row: { values: { "classSections[0].enrollCode": "80300" } },
+      };
       const psId = 1;
-      
+
       // act
-      const result = cellToAxiosParamsDelete({cell, psId});
+      const result = cellToAxiosParamsDelete({ cell, psId });
 
       // assert
       expect(result).toEqual({

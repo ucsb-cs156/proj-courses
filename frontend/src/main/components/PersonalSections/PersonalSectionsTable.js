@@ -11,7 +11,11 @@ import {
 } from "main/utils/sectionUtils.js";
 import { hasRole } from "main/utils/currentUser";
 
-export default function PersonalSectionsTable({ personalSections,currentUser,psId,}) {
+export default function PersonalSectionsTable({
+  personalSections,
+  currentUser,
+  psId,
+}) {
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
@@ -75,7 +79,9 @@ export default function PersonalSectionsTable({ personalSections,currentUser,psI
 
   const testid = "PersonalSectionsTable";
 
-  const columnsToDisplay = hasRole(currentUser, "ROLE_USER")?columnsWithDelete:columns;
+  const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
+    ? columnsWithDelete
+    : columns;
   return (
     <OurTable
       data={personalSections}
