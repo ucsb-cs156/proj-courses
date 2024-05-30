@@ -29,8 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 public class UCSBCurriculumService {
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
@@ -41,13 +40,17 @@ public class UCSBCurriculumService {
     restTemplate = restTemplateBuilder.build();
   }
 
-  public static final String CURRICULUM_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
+  public static final String CURRICULUM_ENDPOINT =
+      "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
 
-  public static final String SUBJECTS_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/subjects";
+  public static final String SUBJECTS_ENDPOINT =
+      "https://api.ucsb.edu/students/lookups/v1/subjects";
 
-  public static final String SECTION_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v1/classsection/{quarter}/{enrollcode}";
+  public static final String SECTION_ENDPOINT =
+      "https://api.ucsb.edu/academics/curriculums/v1/classsection/{quarter}/{enrollcode}";
 
-  public static final String ALL_SECTIONS_ENDPOINT = "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
+  public static final String ALL_SECTIONS_ENDPOINT =
+      "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
@@ -59,15 +62,17 @@ public class UCSBCurriculumService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    String params = String.format(
-        "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
-        quarter, subjectArea, courseLevel, 1, 100, "true");
+    String params =
+        String.format(
+            "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
+            quarter, subjectArea, courseLevel, 1, 100, "true");
     String url = CURRICULUM_ENDPOINT + params;
 
     if (courseLevel.equals("A")) {
-      params = String.format(
-          "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
-          quarter, subjectArea, 1, 100, "true");
+      params =
+          String.format(
+              "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
+              quarter, subjectArea, 1, 100, "true");
       url = CURRICULUM_ENDPOINT + params;
     }
 
@@ -121,7 +126,8 @@ public class UCSBCurriculumService {
     MediaType contentType = null;
     HttpStatus statusCode = null;
     try {
-      ResponseEntity<String> re = restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);
+      ResponseEntity<String> re =
+          restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);
       contentType = re.getHeaders().getContentType();
       statusCode = (HttpStatus) re.getStatusCode();
       retVal = re.getBody();
@@ -133,8 +139,7 @@ public class UCSBCurriculumService {
   }
 
   /**
-   * This method retrieves exactly one section matching the enrollCode and quarter
-   * arguments, if
+   * This method retrieves exactly one section matching the enrollCode and quarter arguments, if
    * such a section exists.
    */
   public String getSection(String enrollCode, String quarter) {
@@ -151,11 +156,12 @@ public class UCSBCurriculumService {
 
     log.info("url=" + url);
 
-    String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-        .queryParam("quarter", "{quarter}")
-        .queryParam("enrollcode", "{enrollcode}")
-        .encode()
-        .toUriString();
+    String urlTemplate =
+        UriComponentsBuilder.fromHttpUrl(url)
+            .queryParam("quarter", "{quarter}")
+            .queryParam("enrollcode", "{enrollcode}")
+            .encode()
+            .toUriString();
 
     Map<String, String> params = new HashMap<>();
     params.put("quarter", quarter);
@@ -165,7 +171,8 @@ public class UCSBCurriculumService {
     MediaType contentType = null;
     HttpStatus statusCode = null;
     try {
-      ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
+      ResponseEntity<String> re =
+          restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
       contentType = re.getHeaders().getContentType();
       statusCode = (HttpStatus) re.getStatusCode();
       retVal = re.getBody();
@@ -182,10 +189,8 @@ public class UCSBCurriculumService {
   }
 
   /**
-   * This method retrieves all of the sections related to a certain enroll code.
-   * For example, if the
-   * enrollCode is for a discussion section, the lecture section and all related
-   * discussion sections
+   * This method retrieves all of the sections related to a certain enroll code. For example, if the
+   * enrollCode is for a discussion section, the lecture section and all related discussion sections
    * will also be returned.
    */
   public String getAllSections(String enrollCode, String quarter) {
@@ -202,11 +207,12 @@ public class UCSBCurriculumService {
 
     log.info("url=" + url);
 
-    String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-        .queryParam("quarter", "{quarter}")
-        .queryParam("enrollcode", "{enrollcode}")
-        .encode()
-        .toUriString();
+    String urlTemplate =
+        UriComponentsBuilder.fromHttpUrl(url)
+            .queryParam("quarter", "{quarter}")
+            .queryParam("enrollcode", "{enrollcode}")
+            .encode()
+            .toUriString();
 
     Map<String, String> params = new HashMap<>();
     params.put("quarter", quarter);
@@ -216,7 +222,8 @@ public class UCSBCurriculumService {
     MediaType contentType = null;
     HttpStatus statusCode = null;
     try {
-      ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
+      ResponseEntity<String> re =
+          restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
       contentType = re.getHeaders().getContentType();
       statusCode = (HttpStatus) re.getStatusCode();
       retVal = re.getBody();
@@ -242,7 +249,8 @@ public class UCSBCurriculumService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    String url = "https://api.ucsb.edu/academics/curriculums/v3/classsection/" + quarter + "/" + enrollCd;
+    String url =
+        "https://api.ucsb.edu/academics/curriculums/v3/classsection/" + quarter + "/" + enrollCd;
 
     log.info("url=" + url);
 

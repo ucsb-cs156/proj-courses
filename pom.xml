@@ -17,6 +17,8 @@
     <description>Starter for s22 courses search</description>
     <properties>
         <java.version>17</java.version>
+        <app.package>edu.ucsb.cs156.courses</app.package>
+        <app.packagePath>edu/ucsb/cs156/courses</app.packagePath>
     </properties>
     <dependencies>
         <dependency>
@@ -189,7 +191,6 @@
                         <exclude>**/edu/ucsb/cs156/courses/controllers/FrontendController.*</exclude>
                         <exclude>**/edu/ucsb/cs156/courses/controllers/FrontendProxyController.*</exclude>
                         <exclude>**/edu/ucsb/cs156/courses/services/CurrentUserServiceImpl.*</exclude>
-                        <exclude>**/${app.packagePath}/services/GrantedAuthoritiesService.*</exclude>
                         <exclude>**/edu/ucsb/cs156/courses/CoursesApplication.*</exclude>
                     </excludes>
                 </configuration>
@@ -230,7 +231,6 @@
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig</param>
                         <param>${app.package}.config.SpaCsrfTokenRequestHandler</param>
                         <param>${app.package}.config.CsrfCookieFilter</param>
-                        <param>${app.package}.services.GrantedAuthoritiesService</param>
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig.MyCsrfRequestMatcher</param>
                         <param>edu.ucsb.cs156.courses.config.SpringFoxConfig</param>
                     </excludedClasses>
