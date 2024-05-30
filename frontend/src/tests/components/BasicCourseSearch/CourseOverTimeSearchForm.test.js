@@ -20,7 +20,6 @@ jest.mock("react-toastify", () => ({
 
 describe("CourseOverTimeSearchForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
-
   const queryClient = new QueryClient();
   const addToast = jest.fn();
 
