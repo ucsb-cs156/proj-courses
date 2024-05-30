@@ -92,7 +92,7 @@ describe("Grade history tests", () => {
   });
 
   test("Correctly outputs data for one quarter", async () => {
-    const { container } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <GradeHistoryGraph gradeHistory={oneQuarterCourse} />
@@ -100,12 +100,19 @@ describe("Grade history tests", () => {
       </QueryClientProvider>,
     );
 
+    const gradeHistoryGraphsContainer = screen.getByTestId(
+      "grade-history-graphs",
+    );
+
     await waitFor(() => {
-      const bars = container.querySelectorAll(".recharts-rectangle");
+      const bars = gradeHistoryGraphsContainer.querySelectorAll(
+        ".recharts-rectangle",
+      );
       expect(bars.length).toBe(7);
     });
 
-    const allWrappers = container.querySelectorAll(".recharts-wrapper");
+    const allWrappers =
+      gradeHistoryGraphsContainer.querySelectorAll(".recharts-wrapper");
     expect(allWrappers).toHaveLength(1);
     const element = allWrappers[0];
     expect(element).toBeInTheDocument();
