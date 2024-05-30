@@ -5,7 +5,6 @@ import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
 } from "main/utils/PersonalSectionsUtils";
-import { hasRole } from "main/utils/currentUser";
 import {
   convertToFraction,
   formatInstructors,
@@ -13,8 +12,9 @@ import {
   formatTime,
 } from "main/utils/sectionUtils.js";
 
-export default function PersonalSectionsTable({ personalSections , currentUser }) {
-  // Stryker disable all : hard to test for query caching
+export default function PersonalSectionsTable({ personalSections, personalSchedule, showButtons = true, }) {
+  console.log(personalSchedule);
+ // Stryker disable all : hard to test for query caching
  const deleteMutation = useBackendMutation(
   cellToAxiosParamsDelete,
   { onSuccess: onDeleteSuccess },
@@ -23,9 +23,20 @@ export default function PersonalSectionsTable({ personalSections , currentUser }
 // Stryker restore all
 
 // Stryker disable next-line all : TODO try to make a good test for this
+// const deleteCallback = async (cell) => {
+//   deleteMutation.mutate(cell);
+// };
+
+// Stryker disable all : TODO try to make a good test for this
 const deleteCallback = async (cell) => {
-  deleteMutation.mutate(cell);
+  console.log(cell);
+  const psId = 3;
+  const enrollCd = "00653";
+  console.log(psId);
+  console.log(enrollCd);
+  deleteMutation.mutate(enrollCd, psId);
 };
+// Stryker restore all
 
   const columns = [
     {
@@ -72,16 +83,14 @@ const deleteCallback = async (cell) => {
       accessor: (row) => formatInstructors(row.classSections[0].instructors),
       id: "instructor",
     },
-  ];
+  ]; 
 
-  const columnsIfUser = [
+  const buttonColumns = [
     ...columns,
     ButtonColumn("Delete", "danger", deleteCallback, "PersonalSectionsTable"),
   ];
-
-  const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
-    ? columnsIfUser
-    : columns;
+  
+  const columnsToDisplay = showButtons ? buttonColumns : columns;
 
   const testid = "PersonalSectionsTable";
 
