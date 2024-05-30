@@ -18,7 +18,7 @@ export default {
 };
 
 const Template = (args) => {
-  return <UploadGradeDataJobForm {...args} />;
+  return <UpdateGradeHistoryJobForm {...args} />;
 };
 
 export const Default = Template.bind({});
