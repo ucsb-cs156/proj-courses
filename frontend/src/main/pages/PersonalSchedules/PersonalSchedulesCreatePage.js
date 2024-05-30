@@ -10,7 +10,7 @@ export default function PersonalSchedulesCreatePage() {
     method: "POST",
     params: {
       name: personalSchedule.name,
-      description: personalSchedule.description,
+      description: personalSchedule?.description || "",
       quarter: personalSchedule.quarter,
     },
   });
