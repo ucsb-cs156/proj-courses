@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { allTheSubjects } from "fixtures/subjectFixtures";
+import SectionsOverTimeTable from "main/components/Sections/SectionsOverTimeTable";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -22,6 +23,24 @@ describe("CourseOverTimeSearchForm tests", () => {
 
   const queryClient = new QueryClient();
   const addToast = jest.fn();
+
+  const mockSections = [
+    {
+      courseInfo: {
+        quarter: "20231",
+        courseId: "CMPSC156",
+        title: "Advanced Applications Programming",
+      },
+      section: {
+        section: "0100",
+        enrolledTotal: 30,
+        maxEnroll: 50,
+        timeLocations: [],
+        instructors: [],
+        enrollCode: "12345",
+      },
+    },
+  ];
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -91,11 +110,6 @@ describe("CourseOverTimeSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-
-    // const expectedKey = "CourseOverTimeSearch.Subject-option-MATH";
-    // await waitFor(() =>
-    //   expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    // );
 
     const expectedKey = await screen.findByTestId(
       "CourseOverTimeSearch.Subject-option-MATH",
@@ -177,10 +191,6 @@ describe("CourseOverTimeSearchForm tests", () => {
       courseSuf: "A",
     };
 
-    // const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
-    // await waitFor(() =>
-    //   expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    // );
     const expectedKey = await screen.findByTestId(
       "CourseOverTimeSearch.Subject-option-CMPSC",
     );
@@ -226,10 +236,6 @@ describe("CourseOverTimeSearchForm tests", () => {
       </QueryClientProvider>,
     );
 
-    // const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
-    // await waitFor(() =>
-    //   expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    // );
     const expectedKey = await screen.findByTestId(
       "CourseOverTimeSearch.Subject-option-CMPSC",
     );
@@ -273,21 +279,33 @@ describe("CourseOverTimeSearchForm tests", () => {
     ).toHaveValue("20214");
   });
 
-  test("when I select a course number with the course area too, the course number just retains the number", () => {
+  test("when I select a course number with the course area too, the course number just retains the number", async () => {
+    const fetchJSONMock = jest.fn();
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseOverTimeSearchForm />
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
+          <SectionsOverTimeTable sections={mockSections} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
-
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
-    userEvent.type(selectCourseNumber, "156");
 
-    // we want course number to be just "156"
-    expect(selectCourseNumber.value).toBe("156");
+    userEvent.type(selectCourseNumber, "CMPSC156");
+
+    const submitButton = screen.getByText("Submit");
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(
+          `SectionsOverTimeTable-cell-row-0-col-courseInfo.courseId`,
+        ),
+      ).toHaveTextContent("CMPSC");
+    });
   });
-});
+  });
