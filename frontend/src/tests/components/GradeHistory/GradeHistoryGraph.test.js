@@ -198,7 +198,6 @@ describe("groupDataByQuarterAndInstructor", () => {
 
     // Check that the keys of the grouped data are correct
     const keys = Object.keys(result);
-    console.log(result);
     expect(keys).toEqual([
       "20222-LOKSHTANOV D",
       "20221-SINGH A K",
