@@ -49,6 +49,32 @@ export function isLectureWithNoSections(enrollCode, sections) {
   return false;
 }
 
+export function isLectureWithSections(enrollCode, sections) {
+  // Find the section with the given enrollCode
+  const section = sections.find(
+    (section) => section.section.enrollCode === enrollCode,
+  );
+
+  if (section) {
+    // Extract the courseId and section number from the found section
+    const courseId = section.courseInfo.courseId;
+    const sectionNumberEnd = section.section.section.slice(2);
+
+    if (sectionNumberEnd === "00") {
+      // Filter all sections with the same courseId
+      // Stryker disable all
+      const courseSections = sections.filter(
+        (section) => section.courseInfo.courseId === courseId,
+      );
+      // Stryker restore all
+      // Check if there is only one section for the course
+      return courseSections.length > 1;
+    }
+  }
+
+  return false;
+}
+
 export const objectToAxiosParams = (data) => {
   return {
     url: "/api/courses/post",
@@ -189,44 +215,8 @@ export default function SectionsTable({ sections }) {
       Header: "Enroll Code",
       accessor: "section.enrollCode",
       disableGroupBy: true,
-      Cell: ({ cell: { value }, row: { original } }) => {
-        // Stryker disable all : difficult to test modal interaction
-        /* istanbul ignore next : difficult to test modal interaction*/
-        if (isSection(original.section.section) && currentUser.loggedIn) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <span>{value}</span>
-              <AddToScheduleModal
-                section={original}
-                onAdd={(section, schedule) =>
-                  handleAddToSchedule(section, schedule, mutation)
-                }
-              />
-            </div>
-          );
-        } else {
-          return value;
-        }
-        // Stryker restore all
-      },
       aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => /* istanbul ignore next */ {
-        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <span>{value}</span>
-              <AddToScheduleModal
-                section={value}
-                onAdd={(section, schedule) =>
-                  handleLectureAddToSchedule(section, schedule, mutation)
-                }
-              />
-            </div>
-          );
-        } else {
-          return `${value}`;
-        }
-      },
+      Aggregated: ({ cell: { value } }) => `${value}`,
     },
     {
       Header: "Info",
@@ -237,6 +227,59 @@ export default function SectionsTable({ sections }) {
 
       aggregate: getFirstVal,
       Aggregated: renderInfoLink,
+    },
+    {
+      Header: "Action",
+      id: "action",
+      accessor: "section.enrollCode",
+      disableGroupBy: true,
+      // No need for accessor if it's purely for actions like expand/collapse
+      Cell: ({ row }) => {
+        // Stryker disable all : difficult to test modal interaction
+        /* istanbul ignore next : difficult to test modal interaction*/
+        if (isSection(row.original.section.section) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <AddToScheduleModal
+                section={row.original}
+                onAdd={(section, schedule) =>
+                  handleAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else {
+          return null;
+        }
+        // Stryker restore all
+      },
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value }, row }) => /* istanbul ignore next */ {
+        const testId = `${testid}-cell-row-${row.index}-col-${value}-expand-symbols`;
+        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <AddToScheduleModal
+                section={value}
+                onAdd={(section, schedule) =>
+                  handleLectureAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else if (
+          !isLectureWithSections(value, sections) &&
+          currentUser.loggedIn
+        ) {
+          return null;
+        } else {
+          return (
+            <span {...row.getToggleRowExpandedProps()} data-testid={testId}>
+              {row.isExpanded ? "➖" : "➕"}
+            </span>
+          );
+        }
+      },
     },
   ];
 
