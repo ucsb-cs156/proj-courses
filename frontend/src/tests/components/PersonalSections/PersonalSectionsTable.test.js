@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
@@ -20,7 +20,7 @@ jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
-describe("UserTable tests", () => {
+describe("PersonalSectionsTable tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table with user not logged in", () => {
@@ -146,5 +146,37 @@ describe("UserTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-2-col-instructor`),
     ).toHaveTextContent("STEPHANSON B, BUCKWALTER J");
+  });
+
+  test("Delete button calls delete callback for user", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const psId = 1;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSectionsTable
+            personalSections={personalSectionsFixtures.threePersonalSections}
+            currentUser={currentUser}
+            psId={psId}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const deleteButton = screen.getByTestId(
+      `PersonalSectionsTable-cell-row-0-col-Delete-button`,
+    );
+    expect(deleteButton).toBeInTheDocument();
+    expect(deleteButton).toHaveClass("btn-danger");
+
+    fireEvent.click(deleteButton);
+
+    await waitFor(() =>
+      expect(mockedMutate).toHaveBeenCalledWith({
+        cell: expect.any(Object),
+        psId,
+      }),
+    );
   });
 });
