@@ -177,7 +177,7 @@ describe("UserTable tests", () => {
     );
 
     expect(
-      await screen.getByTestId(`${testId}-cell-row-0-col-courseId`),
+      await screen.findByTestId(`${testId}-cell-row-0-col-courseId`),
     ).toHaveTextContent("ECE 1A");
 
     const deleteButton = screen.getByTestId(
