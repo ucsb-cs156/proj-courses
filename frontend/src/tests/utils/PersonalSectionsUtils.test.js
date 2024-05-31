@@ -42,7 +42,7 @@ import {
   
         // assert
         expect(result).toEqual({
-          url: "/api/courses/user",
+          url: "/api/courses/user/psid",
           method: "DELETE",
           params: { enrollCd: "03452",
           psId: 3 },
