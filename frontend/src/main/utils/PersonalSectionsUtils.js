@@ -5,8 +5,8 @@ export function onDeleteSuccess(message) {
   toast(message);
 }
 
-export function cellToAxiosParamsDelete({cell: cell, psId: psId}) {
-    console.log("PS identifier " + psId);
+export function cellToAxiosParamsDelete({ cell: cell, psId: psId }) {
+  console.log("PS identifier " + psId);
   return {
     url: "/api/courses/user/psid",
     method: "DELETE",

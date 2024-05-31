@@ -159,7 +159,6 @@ describe("UserTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
-
   test("Delete button calls delete callback for ordinary user", async () => {
     const testId = "PersonalSectionsTable";
     const currentUser = currentUserFixtures.userOnly;
