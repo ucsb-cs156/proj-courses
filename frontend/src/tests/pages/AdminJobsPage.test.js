@@ -221,4 +221,33 @@ describe("AdminJobsPage tests", () => {
       "/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=20212&end_quarterYYYYQ=20213",
     );
   });
+  test("user can submit the update grade history job", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Update Grade History")).toBeInTheDocument();
+
+    const updateCoursesButton = screen.getByText("Update Grade History");
+    expect(updateCoursesButton).toBeInTheDocument();
+    updateCoursesButton.click();
+
+    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+
+    const submitButton = screen.getByTestId("updateGradeHistory");
+
+    expect(submitButton).toBeInTheDocument();
+
+    submitButton.click();
+
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+    expect(axiosMock.history.post[0].url).toBe(
+      "/api/jobs/launch/uploadGradeData",
+    );
+  });
 });

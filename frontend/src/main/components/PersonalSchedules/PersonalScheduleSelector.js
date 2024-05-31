@@ -3,18 +3,14 @@ import { Form } from "react-bootstrap";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 const PersonalScheduleSelector = ({
-  schedule,
   filteredSchedules,
+  schedule,
   setSchedule,
   controlId,
   onChange = null,
   label = "Schedule",
 }) => {
-  const localSearchSchedule = localStorage.getItem(controlId);
-
-  const [scheduleState, setScheduleState] = useState(
-    localSearchSchedule || schedule,
-  );
+  const [scheduleState, setScheduleState] = useState(schedule);
 
   useEffect(() => {
     if (filteredSchedules && filteredSchedules.length > 0) {

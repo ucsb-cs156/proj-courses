@@ -5,9 +5,10 @@ import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
-import { filterSchedulesByQuarter } from "../../utils/PersonalScheduleUtils";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+import { filterSchedulesByQuarter } from "main/utils/PersonalScheduleUtils";
 
-export default function AddToScheduleModal({ section, onAdd, quarter }) {
+export default function AddToScheduleModal({ quarter, section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
 
@@ -52,16 +53,21 @@ export default function AddToScheduleModal({ section, onAdd, quarter }) {
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
+                    filteredSchedules={filteredSchedules}
                     schedule={selectedSchedule}
                     filteredSchedules={filteredSchedules}
+                    quarter={quarter}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
                   />
                 </Form.Group>
               ) : (
                 <p>
-                  No schedules found.
-                  <Link to="/personalschedules/create">Create a schedule</Link>
+                  There are no personal schedules for {yyyyqToQyy(quarter)}.
+                  <br />
+                  <Link to="/personalschedules/create">
+                    [Create Personal Schedule]
+                  </Link>
                 </p>
               )
             }

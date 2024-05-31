@@ -75,8 +75,9 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
       const strippedCourse = rawCourse.slice(firstDigitIndex);
       const numberMatch = strippedCourse.match(/\d+/g);
       const suffixMatch = strippedCourse.match(/[a-zA-Z]+/g);
+
       const number = numberMatch[0];
-      const suffix = suffixMatch ? suffixMatch[0] : "";
+      const suffix = suffixMatch ? suffixMatch[0].toUpperCase() : "";
       setCourseNumber(number);
       setCourseSuf(suffix);
     } else {
