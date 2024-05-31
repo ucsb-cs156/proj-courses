@@ -199,7 +199,6 @@ export default function SectionsTable({ sections }) {
               <AddToScheduleModal
                 quarter={original.courseInfo.quarter}
                 section={original}
-                quarter={original.courseInfo.quarter}
                 onAdd={(section, schedule) =>
                   handleAddToSchedule(section, schedule, mutation)
                 }
