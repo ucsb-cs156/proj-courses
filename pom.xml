@@ -218,7 +218,7 @@
                     </historyOutputFile>
                     <verbose>true</verbose>
                     <targetClasses>
-                        <param>edu.ucsb.cs156.*</param>
+                         <param>${targetClasses}</param>
                     </targetClasses>
                     <targetTests>
                         <param>edu.ucsb.cs156.*</param>
