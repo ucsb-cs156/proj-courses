@@ -13,30 +13,37 @@ import {
 } from "main/utils/sectionUtils.js";
 import { hasRole } from "main/utils/currentUser";
 
-export default function PersonalSectionsTable({ personalSections, psId, currentUser }) {
- // Stryker disable all : hard to test for query caching
- const deleteMutation = useBackendMutation(
-  cellToAxiosParamsDelete,
-  { onSuccess: onDeleteSuccess },
-  [],
-);
-// Stryker restore all
-console.log(psId);
-// Stryker disable next-line all : TODO try to make a good test for this
-// const deleteCallback = async (cell) => {
-//   deleteMutation.mutate(cell);
-// };
+export default function PersonalSectionsTable({
+  personalSections,
+  psId,
+  currentUser,
+}) {
+  // Stryker disable all : hard to test for query caching
+  const deleteMutation = useBackendMutation(
+    cellToAxiosParamsDelete,
+    { onSuccess: onDeleteSuccess },
+    [],
+  );
+  // Stryker restore all
+  console.log(psId);
+  // Stryker disable next-line all : TODO try to make a good test for this
+  // const deleteCallback = async (cell) => {
+  //   deleteMutation.mutate(cell);
+  // };
 
-// Stryker disable all : TODO try to make a good test for this
-const deleteCallback = async (cell) => {
-  console.log(cell);
-  console.log(typeof cell);
-  console.log("MyPsid 1 " + psId);
-  console.log("Enroll code from details " + cell["row"]["values"]["classSections[0].enrollCode"]);
-  deleteMutation.mutate({cell: cell, psId: psId});
-  console.log("MyPsid 2 " + psId);
-};
-// Stryker restore all
+  // Stryker disable all : TODO try to make a good test for this
+  const deleteCallback = async (cell) => {
+    console.log(cell);
+    console.log(typeof cell);
+    console.log("MyPsid 1 " + psId);
+    console.log(
+      "Enroll code from details " +
+        cell["row"]["values"]["classSections[0].enrollCode"],
+    );
+    deleteMutation.mutate({ cell: cell, psId: psId });
+    console.log("MyPsid 2 " + psId);
+  };
+  // Stryker restore all
 
   const columns = [
     {
@@ -83,13 +90,13 @@ const deleteCallback = async (cell) => {
       accessor: (row) => formatInstructors(row.classSections[0].instructors),
       id: "instructor",
     },
-  ]; 
+  ];
 
   const columnsIfUser = [
     ...columns,
     ButtonColumn("Delete", "danger", deleteCallback, "PersonalSectionsTable"),
   ];
-  
+
   const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
     ? columnsIfUser
     : columns;
