@@ -32,23 +32,30 @@ export function isLectureWithNoSections(enrollCode, sections) {
     // Extract the courseId and section number from the found section
     const courseId = section.courseInfo.courseId;
     const sectionNumber = section.section.section;
+    const courseSections = sections.filter(
+      (section) => section.courseInfo.courseId === courseId,
+    );
+    const timeLocations = section.section.timeLocations;
 
     // Check if the section number is '0100', indicating a lecture
     if (sectionNumber === "0100") {
       // Filter all sections with the same courseId
       // Stryker disable all
-      const courseSections = sections.filter(
-        (section) => section.courseInfo.courseId === courseId,
-      );
       // Stryker restore all
       // Check if there is only one section for the course
       return courseSections.length === 1;
+    } else if (sectionNumber.slice(-2) === "00") {
+      // Check if the section has a location to make sure its a course
+      return (
+        courseSections.length === 1 &&
+        typeof timeLocations !== "undefined" &&
+        timeLocations.length === 1
+      );
     }
   }
 
   return false;
 }
-
 export function isLectureWithSections(enrollCode, sections) {
   // Find the section with the given enrollCode
   const section = sections.find(
@@ -115,7 +122,6 @@ export const onSuccess = (response) => {
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
-
   const { data: currentUser } = useCurrentUser();
 
   const mutation = useBackendMutation(
@@ -269,10 +275,7 @@ export default function SectionsTable({ sections }) {
               />
             </div>
           );
-        } else if (
-          !isLectureWithSections(value, sections) &&
-          currentUser.loggedIn
-        ) {
+        } else if (!isLectureWithSections(value, sections)) {
           return null;
         } else {
           return (
