@@ -25,23 +25,10 @@ export default function PersonalSectionsTable({
     [],
   );
   // Stryker restore all
-  console.log(psId);
-  // Stryker disable next-line all : TODO try to make a good test for this
-  // const deleteCallback = async (cell) => {
-  //   deleteMutation.mutate(cell);
-  // };
 
   // Stryker disable all : TODO try to make a good test for this
   const deleteCallback = async (cell) => {
-    console.log(cell);
-    console.log(typeof cell);
-    console.log("MyPsid 1 " + psId);
-    console.log(
-      "Enroll code from details " +
-        cell["row"]["values"]["classSections[0].enrollCode"],
-    );
     deleteMutation.mutate({ cell: cell, psId: psId });
-    console.log("MyPsid 2 " + psId);
   };
   // Stryker restore all
 
