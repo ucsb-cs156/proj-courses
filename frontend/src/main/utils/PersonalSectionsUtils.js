@@ -5,7 +5,7 @@ export function onDeleteSuccess(message) {
   toast(message);
 }
 
-export function cellToAxiosParamsDelete({ cell: cell, psId: psId }) {
+export function cellToAxiosParamsDelete({ cell, psId }) {
   return {
     url: "/api/courses/user/psid",
     method: "DELETE",
