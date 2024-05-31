@@ -55,7 +55,6 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
                   <PersonalScheduleSelector
                     filteredSchedules={filteredSchedules}
                     schedule={selectedSchedule}
-                    filteredSchedules={filteredSchedules}
                     quarter={quarter}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
