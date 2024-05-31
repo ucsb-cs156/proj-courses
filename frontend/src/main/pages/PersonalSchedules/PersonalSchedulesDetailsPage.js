@@ -55,9 +55,10 @@ export default function PersonalSchedulesDetailsPage() {
           />
         )}
         <p>
-          <h2>Sections in Personal Schedule</h2>
+          <h2>Sections in Personal Schedule 88</h2>
           {personalSection && (
-            <PersonalSectionsTable personalSections={personalSection} />
+            <PersonalSectionsTable personalSections={personalSection}
+            psId={id} />
           )}
         </p>
         {createButton()}

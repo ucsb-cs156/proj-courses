@@ -12,8 +12,7 @@ import {
   formatTime,
 } from "main/utils/sectionUtils.js";
 
-export default function PersonalSectionsTable({ personalSections, personalSchedule, showButtons = true, }) {
-  console.log(personalSchedule);
+export default function PersonalSectionsTable({ personalSections, psId, showButtons = true }) {
  // Stryker disable all : hard to test for query caching
  const deleteMutation = useBackendMutation(
   cellToAxiosParamsDelete,
@@ -21,7 +20,7 @@ export default function PersonalSectionsTable({ personalSections, personalSchedu
   [],
 );
 // Stryker restore all
-
+console.log(psId);
 // Stryker disable next-line all : TODO try to make a good test for this
 // const deleteCallback = async (cell) => {
 //   deleteMutation.mutate(cell);
@@ -30,11 +29,11 @@ export default function PersonalSectionsTable({ personalSections, personalSchedu
 // Stryker disable all : TODO try to make a good test for this
 const deleteCallback = async (cell) => {
   console.log(cell);
-  const psId = 3;
-  const enrollCd = "00653";
-  console.log(psId);
-  console.log(enrollCd);
-  deleteMutation.mutate(enrollCd, psId);
+  console.log(typeof cell);
+  console.log("MyPsid 1 " + psId);
+  console.log("Enroll code from details " + cell["row"]["values"]["classSections[0].enrollCode"]);
+  deleteMutation.mutate({cell: cell, psId: psId});
+  console.log("MyPsid 2 " + psId);
 };
 // Stryker restore all
 
