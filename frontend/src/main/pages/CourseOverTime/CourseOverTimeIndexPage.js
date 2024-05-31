@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CourseOverTimeSearchForm from "main/components/BasicCourseSearch/CourseOverTimeSearchForm";
@@ -19,7 +20,10 @@ export default function CourseOverTimeIndexPage() {
   });
 
   const onSuccess = (courses) => {
-    setCourseJSON(courses);
+    const sortedCourses = courses.sort((a, b) =>
+      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
+    );
+    setCourseJSON(sortedCourses);
   };
 
   const mutation = useBackendMutation(
