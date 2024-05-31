@@ -37,8 +37,6 @@ export default function CourseDetailsIndexPage() {
 
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
         {moreDetails && <CourseDescriptionTable course={moreDetails} />}
-        {moreDetails && <h5>Grade History for {moreDetails.courseId}</h5>}
-        {gradeData && <GradeHistoryTable grades={gradeData} />}
       </div>
     </BasicLayout>
   );
