@@ -247,10 +247,5 @@ describe("AdminJobsPage tests", () => {
     expect(axiosMock.history.post[0].url).toBe(
       "/api/jobs/launch/uploadGradeData",
     );
-
-    // const expectedKey = "BasicSearch.Subject-option-ANTH";
-    // await waitFor(() =>
-    //   expect(screen.getByTestId(expectedKey).toBeInTheDocument),
-    // );
   });
 });
