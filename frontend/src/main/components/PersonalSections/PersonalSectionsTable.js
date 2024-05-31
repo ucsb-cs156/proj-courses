@@ -11,8 +11,9 @@ import {
   formatLocation,
   formatTime,
 } from "main/utils/sectionUtils.js";
+import { hasRole } from "main/utils/currentUser";
 
-export default function PersonalSectionsTable({ personalSections, psId, showButtons = true }) {
+export default function PersonalSectionsTable({ personalSections, psId, currentUser }) {
  // Stryker disable all : hard to test for query caching
  const deleteMutation = useBackendMutation(
   cellToAxiosParamsDelete,
@@ -84,12 +85,14 @@ const deleteCallback = async (cell) => {
     },
   ]; 
 
-  const buttonColumns = [
+  const columnsIfUser = [
     ...columns,
     ButtonColumn("Delete", "danger", deleteCallback, "PersonalSectionsTable"),
   ];
   
-  const columnsToDisplay = showButtons ? buttonColumns : columns;
+  const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
+    ? columnsIfUser
+    : columns;
 
   const testid = "PersonalSectionsTable";
 

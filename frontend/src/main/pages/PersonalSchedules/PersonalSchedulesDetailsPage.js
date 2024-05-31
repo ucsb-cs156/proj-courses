@@ -4,9 +4,11 @@ import PersonalSchedulesTable from "main/components/PersonalSchedules/PersonalSc
 import PersonalSectionsTable from "main/components/PersonalSections/PersonalSectionsTable";
 import { useBackend, _useBackendMutation } from "main/utils/useBackend";
 import { Button } from "react-bootstrap";
+import { useCurrentUser } from "main/utils/currentUser";
 
 export default function PersonalSchedulesDetailsPage() {
   let { id } = useParams();
+  const currentUser = useCurrentUser();
 
   const {
     data: personalSchedule,
@@ -55,10 +57,11 @@ export default function PersonalSchedulesDetailsPage() {
           />
         )}
         <p>
-          <h2>Sections in Personal Schedule 88</h2>
+          <h2>Sections in Personal Schedule</h2>
           {personalSection && (
             <PersonalSectionsTable personalSections={personalSection}
-            psId={id} />
+            psId={id} 
+            currentUser={currentUser}/>
           )}
         </p>
         {createButton()}
