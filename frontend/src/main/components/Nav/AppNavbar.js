@@ -65,14 +65,6 @@ export default function AppNavbar({
                   Personal Schedules
                 </Nav.Link>
               )}
-              {hasRole(currentUser, "ROLE_USER") && (
-                <Nav.Link
-                  href="/courses/list"
-                  data-testid="appnavbar-courses-list"
-                >
-                  Courses
-                </Nav.Link>
-              )}
             </Nav>
 
             <Nav className="mr-auto">
