@@ -39,6 +39,7 @@
     "@stryker-mutator/jest-runner": "^6.4.2",
     "@testing-library/react-hooks": "^5.1.2",
     "axios-mock-adapter": "^1.19.0",
+    "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
     "eslint": "^8.14.0",
     "eslint-plugin-flowtype": "^8.0.3",
@@ -54,7 +55,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --coverage --watchAll=false",
-    "storybook": "start-storybook --docs -p 6006 -s public",
+    "storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider start-storybook --docs -p 6006 -s public",
     "build-storybook": "build-storybook --docs -s public",
     "check-format": "prettier --check \"src/**/*.{js,jsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\""

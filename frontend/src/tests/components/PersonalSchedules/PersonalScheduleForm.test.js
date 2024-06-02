@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import { filterSchedulesByQuarter } from "../../../main/utils/PersonalScheduleUtils";
 
 const mockedNavigate = jest.fn();
 
@@ -302,5 +303,31 @@ describe("PersonalScheduleForm tests", () => {
         "M22",
       );
     });
+  });
+
+  test("Filter function works correctly", async () => {
+    const schedules = [
+      {
+        id: "schedule1",
+        quarter: "20221",
+        name: "Schedule 1",
+        description: "test1",
+      },
+      {
+        id: "schedule2",
+        quarter: "20222",
+        name: "Schedule 2",
+        description: "test2",
+      },
+    ];
+
+    expect(filterSchedulesByQuarter(schedules, "20221")).toEqual([
+      {
+        id: "schedule1",
+        quarter: "20221",
+        name: "Schedule 1",
+        description: "test1",
+      },
+    ]);
   });
 });

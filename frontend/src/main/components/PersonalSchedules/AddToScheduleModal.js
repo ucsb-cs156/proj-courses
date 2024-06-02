@@ -33,6 +33,7 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
     handleModalClose();
   };
 
+  // Filter the schedules by the given quarter
   const filteredSchedules = filterSchedulesByQuarter(schedules, quarter);
 
   // Stryker disable all : tested manually, complicated to test
