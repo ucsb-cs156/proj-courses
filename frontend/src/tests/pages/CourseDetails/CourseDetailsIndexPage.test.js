@@ -3,12 +3,12 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-// import userEvent from "@testing-library/user-event";
 
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
+import { gradeDistFixtures } from "fixtures/courseGradeDistFixtures";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -35,6 +35,7 @@ jest.mock("react-router-dom", () => {
     },
   };
 });
+
 describe("Course Details Index Page tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
@@ -56,6 +57,11 @@ describe("Course Details Index Page tests", () => {
         params: { qtr: "20221", enrollCode: "06619" },
       })
       .reply(200, personalSectionsFixtures.singleSection);
+    axiosMock
+      .onGet("/api/gradehistory/search", {
+        params: { subjectArea: "CHEM", courseNumber: "184" },
+      })
+      .reply(200, gradeDistFixtures.threeGradeDist);
   });
 
   const queryClient = new QueryClient();
@@ -77,11 +83,10 @@ describe("Course Details Index Page tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    // await waitFor(() => {
+
     expect(
       screen.getByText("Course Details for CHEM 184 W22"),
     ).toBeInTheDocument();
-    // });
     expect(screen.getByText("Enroll Code")).toBeInTheDocument();
     expect(screen.getByText("06619")).toBeInTheDocument();
     expect(screen.getByText("Section")).toBeInTheDocument();
@@ -96,5 +101,49 @@ describe("Course Details Index Page tests", () => {
     expect(screen.getByText("T R")).toBeInTheDocument();
     expect(screen.getByText("Time")).toBeInTheDocument();
     expect(screen.getByText("2:00 PM - 3:15 PM")).toBeInTheDocument();
+    expect(screen.getByText("Course Description")).toBeInTheDocument();
+  });
+
+  test("Calls Course Grade Distribution api correctly and displays correct information", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseDetailsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(screen.getByText("Bob Test1")).toBeInTheDocument();
+    expect(screen.getByText("A-")).toBeInTheDocument();
+    expect(
+      screen.queryByText("No Course Grade Distribution Available"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("Displays no data correctly", async () => {
+    axiosMock
+      .onGet("/api/sections/sectionsearch", {
+        params: { qtr: "20221", enrollCode: "06619" },
+      })
+      .reply(200, []);
+    axiosMock
+      .onGet("/api/gradehistory/search", {
+        params: { subjectArea: "", courseNumber: "" },
+      })
+      .reply(200, []);
+    const queryClient2 = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient2}>
+        <MemoryRouter>
+          <CourseDetailsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(
+      screen.queryByText("Course Details for CHEM 184 W22"),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Course Description")).not.toBeInTheDocument();
+    expect(
+      screen.getByText("No Course Grade Distribution Available"),
+    ).toBeInTheDocument();
   });
 });
