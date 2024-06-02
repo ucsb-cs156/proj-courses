@@ -55,15 +55,15 @@ export default function SectionsTableBase({
                         // Stryker disable next-line ObjectLiteral
                         style={{
                           background: cell.isGrouped
-                            ? "#34859b"
+                            ? "#003262" // UC Blue background for grouped cells
                             : cell.isAggregated
-                            ? "#34859b"
-                            : "#9dbfbe",
+                            ? "#003262" // UC Blue background for aggregated cells
+                            : "#FDB515", // UC Gold background for regular cells
                           color: cell.isGrouped
-                            ? "#effcf4"
+                            ? "#FDB515" // UC Gold text for grouped cells
                             : cell.isAggregated
-                            ? "#effcf4"
-                            : "#000000",
+                            ? "#FDB515" // UC Gold text for aggregated cells
+                            : "#003262", // UC Blue text for regular cells
                           fontWeight: cell.isGrouped
                             ? "bold"
                             : cell.isAggregated
