@@ -16,8 +16,10 @@ code {
 }
 
 .btn-primary,
-.btn-primary:hover,
+.btn-primary:hover {
+  background-color: #2280bf;
+}
 .btn-primary:focus {
-  background-color: #34859b;
+  background-color: #18335d;
   border-color: #34859b;
 }
