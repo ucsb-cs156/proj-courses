@@ -261,6 +261,7 @@ export default function SectionsTable({ sections }) {
             <div className="d-flex align-items-center gap-2">
               <AddToScheduleModal
                 section={value}
+                quarter={sections[0].courseInfo.quarter}
                 onAdd={(section, schedule) =>
                   handleLectureAddToSchedule(section, schedule, mutation)
                 }
