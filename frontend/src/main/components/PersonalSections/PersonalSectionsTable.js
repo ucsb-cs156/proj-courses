@@ -1,13 +1,37 @@
 import React from "react";
-import OurTable from "main/components/OurTable";
+import OurTable, { ButtonColumn } from "main/components/OurTable";
+import { useBackendMutation } from "main/utils/useBackend";
+import {
+  cellToAxiosParamsDelete,
+  onDeleteSuccess,
+} from "main/utils/PersonalSectionsUtils";
 import {
   convertToFraction,
   formatInstructors,
   formatLocation,
   formatTime,
 } from "main/utils/sectionUtils.js";
+import { hasRole } from "main/utils/currentUser";
 
-export default function PersonalSectionsTable({ personalSections }) {
+export default function PersonalSectionsTable({
+  personalSections,
+  psId,
+  currentUser,
+}) {
+  // Stryker disable all : hard to test for query caching
+  const deleteMutation = useBackendMutation(
+    cellToAxiosParamsDelete,
+    { onSuccess: onDeleteSuccess },
+    [],
+  );
+  // Stryker restore all
+
+  // Stryker disable all : TODO try to make a good test for this
+  const deleteCallback = async (cell) => {
+    deleteMutation.mutate({ cell: cell, psId: psId });
+  };
+  // Stryker restore all
+
   const columns = [
     {
       Header: "Course ID",
@@ -55,9 +79,16 @@ export default function PersonalSectionsTable({ personalSections }) {
     },
   ];
 
-  const testid = "PersonalSectionsTable";
+  const columnsIfUser = [
+    ...columns,
+    ButtonColumn("Delete", "danger", deleteCallback, "PersonalSectionsTable"),
+  ];
 
-  const columnsToDisplay = columns;
+  const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
+    ? columnsIfUser
+    : columns;
+
+  const testid = "PersonalSectionsTable";
 
   return (
     <OurTable
