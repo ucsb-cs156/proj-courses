@@ -83,8 +83,157 @@ describe("isLectureWithNoSections", () => {
     const enrollCode = "12345";
     const sections = [
       {
-        courseInfo: { courseId: "COURSE1" },
+        courseInfo: { courseId: "COURSE1 -1" },
         section: { enrollCode: "67890", section: "0100" },
+      },
+      {
+        courseInfo: { courseId: "COURSE1 -2" },
+        section: { enrollCode: "67891", section: "0200" },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+  it("should return true when the section number ends in 00 and is not 0100 and has a location", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1 -1" },
+        section: {
+          enrollCode: "12345",
+          section: "22200",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+      {
+        courseInfo: { courseId: "COURSE1 -2" },
+        section: {
+          enrollCode: "12345",
+          section: "22201",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(true);
+  });
+  it("should return false when the section number ends in 00 and is not 0100 and does not have a location", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12345",
+          section: "0200",
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+  it("should return false when the section number does not end in 00", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12345",
+          section: "0201",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+  it("should return false when the section number ends in 00 and is not 0100 and has a section", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12345",
+          section: "0200",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12346",
+          section: "0201",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+  it("should return false when the section number ends in 00 and is not 0100 and has time locations not equal to one", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12345",
+          section: "0200",
+          timeLocations: [],
+        },
       },
     ];
 
