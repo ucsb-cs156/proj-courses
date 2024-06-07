@@ -178,7 +178,7 @@ describe("AppNavbar tests", () => {
     expect(screen.queryByTestId(/AppNavbarLocalhost/i)).toBeNull();
   });
 
-  test("renders Personal Schedules and Courses links correctly for regular logged in user", async () => {
+  test("renders Personal Schedules link correctly for regular logged in user", async () => {
     const currentUser = currentUserFixtures.userOnly;
     const systemInfo = systemInfoFixtures.showingBoth;
 
@@ -199,11 +199,6 @@ describe("AppNavbar tests", () => {
     expect(await screen.findByText("Personal Schedules")).toBeInTheDocument();
     expect(
       await screen.findByTestId("appnavbar-personalschedules-list"),
-    ).toBeInTheDocument();
-
-    expect(await screen.findByText("Courses")).toBeInTheDocument();
-    expect(
-      await screen.findByTestId("appnavbar-courses-list"),
     ).toBeInTheDocument();
   });
 

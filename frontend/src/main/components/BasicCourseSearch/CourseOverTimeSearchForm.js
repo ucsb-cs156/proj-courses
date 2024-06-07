@@ -56,6 +56,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   );
   const [courseNumber, setCourseNumber] = useState(localCourseNumber || "");
   const [courseSuf, setCourseSuf] = useState("");
+  const [coursePre, setCoursePre] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -65,6 +66,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
       subject,
       courseNumber,
       courseSuf,
+      coursePre,
     });
   };
 
@@ -77,11 +79,18 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
       setCourseNumber("");
     }
 
-    if (rawCourse.match(/[a-zA-Z]+/g) != null) {
-      const suffix = rawCourse.match(/[a-zA-Z]+/g)[0];
+    if (rawCourse.match(/[a-zA-Z]+$/g) != null) {
+      const suffix = rawCourse.match(/[a-zA-Z]+$/g)[0];
       setCourseSuf(suffix);
     } else {
       setCourseSuf("");
+    }
+
+    if (rawCourse.match(/^[a-zA-z]+/g) != null) {
+      const prefix = rawCourse.match(/^[a-zA-z]+/g)[0];
+      setCoursePre(prefix);
+    } else {
+      setCoursePre("");
     }
   };
 

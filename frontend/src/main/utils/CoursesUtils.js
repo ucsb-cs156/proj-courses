@@ -14,3 +14,12 @@ export function cellToAxiosParamsDelete(cell) {
     },
   };
 }
+
+// Example: courseId="CMPSC     130A     " => { subjectArea: "CMPSC", courseNumber: "130A" }
+export function parseCourseId(courseId) {
+  const splitCourseId = courseId.split(" ").filter((x) => x.length > 0);
+  return {
+    subjectArea: splitCourseId[0],
+    courseNumber: splitCourseId[1],
+  };
+}

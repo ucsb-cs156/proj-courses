@@ -9,15 +9,17 @@ const queryClient = new QueryClient();
 
 describe("AddToScheduleModal", () => {
   let mockOnAdd;
+  const quarter = "20214";
 
   beforeEach(() => {
     mockOnAdd = jest.fn();
+    // Define your localQuarter variable
   });
 
   test("renders without crashing", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal onAdd={mockOnAdd} />
+        <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
       </QueryClientProvider>,
     );
   });
@@ -26,7 +28,7 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} />
+          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
         </Router>
       </QueryClientProvider>,
     );
@@ -46,7 +48,7 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} />
+          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
         </Router>
       </QueryClientProvider>,
     );
@@ -71,33 +73,16 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} />
+          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
         </Router>
       </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
-
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
-      "href",
-      "/personalschedules/create",
-    );
-  });
-
-  test("displays correct message when no schedules found initially", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} section={null} />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    fireEvent.click(screen.getByText("Add"));
-
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
+    expect(
+      screen.getByText("No personal schedules exist for quarter F21."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("[Create One]")).toHaveAttribute(
       "href",
       "/personalschedules/create",
     );
@@ -107,7 +92,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} section={"Stryker was here!"} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            section={"Stryker was here!"}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -116,33 +105,5 @@ describe("AddToScheduleModal", () => {
     fireEvent.click(screen.getByText("Save Changes"));
 
     expect(mockOnAdd).toHaveBeenCalledWith("Stryker was here!", "");
-  });
-
-  jest.mock(
-    "main/components/PersonalSchedules/PersonalScheduleSelector",
-    () => {
-      return ({ setHasSchedules }) => {
-        setHasSchedules(false);
-        return null;
-      };
-    },
-  );
-
-  test("displays correct message when no schedules found on initial render", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal onAdd={mockOnAdd} section={null} />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    fireEvent.click(screen.getByText("Add"));
-
-    expect(screen.getByText("No schedules found.")).toBeInTheDocument();
-    expect(screen.getByText("Create a schedule")).toHaveAttribute(
-      "href",
-      "/personalschedules/create",
-    );
   });
 });
