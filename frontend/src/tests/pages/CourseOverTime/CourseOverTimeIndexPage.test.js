@@ -8,6 +8,7 @@ import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeInd
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { threeSections } from "fixtures/sectionFixtures";
+import { threeSectionsDifferentQuarters } from "fixtures/sectionFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
@@ -94,5 +95,48 @@ describe("CourseOverTimeIndexPage tests", () => {
     });
 
     expect(screen.getByText("ECE 1A")).toBeInTheDocument();
+  });
+
+  test("sorts courses in descending order by quarter", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock
+      .onGet("/api/public/courseovertime/search")
+      .reply(200, threeSectionsDifferentQuarters);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20211");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20221");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "ECE");
+    const enterCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+    userEvent.type(enterCourseNumber, "1");
+
+    const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("COMP ENGR SEMINAR")).toBeInTheDocument();
+    });
+
+    const rows = screen.getAllByRole("row");
+    const firstRowText = rows[1].textContent;
+    const secondRowText = rows[2].textContent;
+    const thirdRowText = rows[3].textContent;
+
+    expect(firstRowText).toContain("M21");
+    expect(secondRowText).toContain("S21");
+    expect(thirdRowText).toContain("W21");
   });
 });

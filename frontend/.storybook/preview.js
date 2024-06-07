@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
 export const parameters = {
-  actions: { argTypesRegex: "^on[A-Z].*" },
+    actions: { argTypesRegex: "^on[A-Z].*" },
 }
 
 const queryClient = new QueryClient();
@@ -16,11 +16,11 @@ const queryClient = new QueryClient();
 // e.g. the ones that rely on currentUser
 
 export const decorators = [
-  (Story) => (
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
-    </QueryClientProvider>
-  ),
+    (Story) => (
+        <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+                <Story />
+            </MemoryRouter>
+        </QueryClientProvider>
+    ),
 ];
