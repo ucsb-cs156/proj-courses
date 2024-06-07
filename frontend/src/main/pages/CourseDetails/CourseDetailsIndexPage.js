@@ -5,6 +5,7 @@ import { useBackend, _useBackendMutation } from "main/utils/useBackend";
 import CourseDetailsTable from "main/components/CourseDetails/CourseDetailsTable";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import CourseDescriptionTable from "main/components/Courses/CourseDescriptionTable";
+import GradeHistoryGraphs from "main/components/GradeHistory/GradeHistoryGraph";
 
 export default function CourseDetailsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
@@ -26,6 +27,33 @@ export default function CourseDetailsIndexPage() {
     },
   );
 
+  const courseId = moreDetails?.courseId.trim() || "";
+
+  let subjectArea = "";
+  let trimmedCourseNumber = "";
+
+  // Splitting on two spaces allows for courses with multiple word subject areas (i.e. AS AM) to be recognized
+  if (courseId) {
+    const splitArray = courseId.split("  ");
+    subjectArea = splitArray[0];
+    trimmedCourseNumber = splitArray[splitArray.length - 1].trim();
+  }
+
+  // Fetch Grade History Data
+  const { data: gradeHistory } = useBackend(
+    [
+      `/api/gradehistory/search?subjectArea=${subjectArea}&courseNumber=${trimmedCourseNumber}`,
+    ],
+    {
+      method: "GET",
+      url: "/api/gradehistory/search",
+      params: {
+        subjectArea: subjectArea,
+        courseNumber: trimmedCourseNumber,
+      },
+    },
+  );
+
   return (
     <BasicLayout>
       <div className="pt-2">
@@ -37,6 +65,7 @@ export default function CourseDetailsIndexPage() {
 
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
         {moreDetails && <CourseDescriptionTable course={moreDetails} />}
+        {gradeHistory && <GradeHistoryGraphs gradeHistory={gradeHistory} />}
       </div>
     </BasicLayout>
   );

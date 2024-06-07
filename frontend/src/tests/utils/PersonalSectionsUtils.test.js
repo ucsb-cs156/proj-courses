@@ -1,8 +1,7 @@
 import {
   onDeleteSuccess,
   cellToAxiosParamsDelete,
-  schedulesFilter,
-} from "main/utils/PersonalScheduleUtils";
+} from "main/utils/PersonalSectionsUtils";
 import mockConsole from "jest-mock-console";
 
 const mockToast = jest.fn();
@@ -15,7 +14,7 @@ jest.mock("react-toastify", () => {
   };
 });
 
-describe("PersonalScheduleUtils", () => {
+describe("CoursesUtils", () => {
   describe("onDeleteSuccess", () => {
     test("It puts the message on console.log and in a toast", () => {
       // arrange
@@ -36,32 +35,19 @@ describe("PersonalScheduleUtils", () => {
   describe("cellToAxiosParamsDelete", () => {
     test("It returns the correct params", () => {
       // arrange
-      const cell = { row: { values: { id: 17 } } };
-
+      const cell = {
+        row: { values: { "classSections[0].enrollCode": "03452" } },
+      };
+      const psId = 3;
       // act
-      const result = cellToAxiosParamsDelete(cell);
+      const result = cellToAxiosParamsDelete({ cell: cell, psId: psId });
 
       // assert
       expect(result).toEqual({
-        url: "/api/personalschedules",
+        url: "/api/courses/user/psid",
         method: "DELETE",
-        params: { id: 17 },
+        params: { enrollCd: "03452", psId: 3 },
       });
-    });
-  });
-
-  describe("schedulesFilter", () => {
-    test("schedulesFilter", () => {
-      // arrange
-      const schedules = [
-        { id: 1, quarter: "20241", name: "Schedule 1" },
-        { id: 2, quarter: "20242", name: "Schedule 2" },
-      ];
-
-      //assert
-      expect(schedulesFilter(schedules, "20241")).toEqual([
-        { id: 1, quarter: "20241", name: "Schedule 1" },
-      ]);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
@@ -69,11 +69,16 @@ describe("UserTable tests", () => {
   });
 
   test("Has the expected column headers and content", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const psId = 1;
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <PersonalSectionsTable
             personalSections={personalSectionsFixtures.threePersonalSections}
+            psId={psId}
+            currentUser={currentUser}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -146,5 +151,42 @@ describe("UserTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-2-col-instructor`),
     ).toHaveTextContent("STEPHANSON B, BUCKWALTER J");
+
+    const deleteButton = screen.getByTestId(
+      `PersonalSectionsTable-cell-row-0-col-Delete-button`,
+    );
+    expect(deleteButton).toBeInTheDocument();
+    expect(deleteButton).toHaveClass("btn-danger");
+  });
+
+  test("Delete button calls delete callback for ordinary user", async () => {
+    const testId = "PersonalSectionsTable";
+    const currentUser = currentUserFixtures.userOnly;
+    const psId = 1;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSectionsTable
+            personalSections={personalSectionsFixtures.threePersonalSections}
+            psId={psId}
+            currentUser={currentUser}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId(`${testId}-cell-row-0-col-courseId`),
+    ).toHaveTextContent("ECE 1A");
+
+    const deleteButton = screen.getByTestId(
+      `PersonalSectionsTable-cell-row-0-col-Delete-button`,
+    );
+    expect(deleteButton).toBeInTheDocument();
+
+    fireEvent.click(deleteButton);
+
+    await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
   });
 });

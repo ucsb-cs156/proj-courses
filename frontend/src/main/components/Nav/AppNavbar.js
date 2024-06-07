@@ -44,7 +44,7 @@ export default function AppNavbar({
             <Nav className="me-auto">
               {systemInfo?.springH2ConsoleEnabled && (
                 <>
-                  <Nav.Link href="/h2-console">H2Console </Nav.Link>
+                  <Nav.Link href="/h2-console/index.html">H2Console </Nav.Link>
                 </>
               )}
               {systemInfo?.showSwaggerUILink && (
@@ -63,6 +63,9 @@ export default function AppNavbar({
                   Personal Schedules
                 </Nav.Link>
               )}
+              <Nav.Link href="/" data-testid="appnavbar-mainsearch-list">
+                Main Search
+              </Nav.Link>
               {hasRole(currentUser, "ROLE_USER") && (
                 <Nav.Link
                   href="/courses/list"

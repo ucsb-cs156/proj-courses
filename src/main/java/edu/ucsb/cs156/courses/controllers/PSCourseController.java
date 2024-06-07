@@ -240,6 +240,68 @@ public class PSCourseController extends ApiController {
     return genericMessage("PSCourse with id %s deleted".formatted(id));
   }
 
+  @Operation(summary = "Delete a course with psid and enroll code (user)")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @DeleteMapping("/user/psid")
+  public Object deleteCourses_PSID(
+      @Parameter(name = "enrollCd") @RequestParam String enrollCd,
+      @Parameter(name = "psId") @RequestParam Long psId)
+      throws JsonProcessingException {
+    User currentUser = getCurrentUser().getUser();
+
+    PSCourse psCourse =
+        coursesRepository
+            .findByPsIdAndEnrollCd(psId, enrollCd)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        PSCourse.class, "psId", psId, "enrollCode", enrollCd));
+    long id = psCourse.getId();
+    PersonalSchedule checkPsId =
+        personalScheduleRepository
+            .findByIdAndUser(psId, currentUser)
+            .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, psId));
+
+    String body =
+        ucsbCurriculumService.getAllSections(psCourse.getEnrollCd(), checkPsId.getQuarter());
+    if (body.equals("{\"error\": \"401: Unauthorized\"}")
+        || body.equals("{\"error\": \"Enroll code doesn't exist in that quarter.\"}")) {
+      coursesRepository.delete(psCourse);
+      return genericMessage(
+          "PSCourse with psId %s and enroll code %s deleted".formatted(psId, enrollCd));
+    }
+
+    Iterator<JsonNode> it = mapper.readTree(body).path("classSections").elements();
+    Optional<Long> primaryId = Optional.empty();
+    Optional<Long> secondaryId = Optional.empty();
+    while (it.hasNext()) {
+      JsonNode classSection = it.next();
+      String section = classSection.path("section").asText();
+      String currentEnrollCd = classSection.path("enrollCode").asText();
+      Optional<PSCourse> currentPsCourse =
+          coursesRepository.findByPsIdAndEnrollCd(psId, currentEnrollCd);
+      if (!currentPsCourse.isPresent()) continue;
+      Optional<Long> idOpt = Optional.of(currentPsCourse.get().getId());
+      if (section.endsWith("00")) primaryId = idOpt;
+      else secondaryId = idOpt;
+      coursesRepository.delete(currentPsCourse.get());
+    }
+
+    if (primaryId.isPresent() && secondaryId.isPresent()) {
+      if (primaryId.get() == id)
+        return genericMessage(
+            "PSCourse with id %s and matching secondary with id %s deleted"
+                .formatted(id, secondaryId.get()));
+      else
+        return genericMessage(
+            "PSCourse with id %s and matching primary with id %s deleted"
+                .formatted(id, primaryId.get()));
+    }
+
+    return genericMessage(
+        "PSCourse with psId %s and enroll code %s deleted".formatted(psId, enrollCd));
+  }
+
   @Operation(summary = "Update a single Course (admin)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("/admin")

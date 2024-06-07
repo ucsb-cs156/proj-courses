@@ -40,7 +40,11 @@ export default function CourseOverTimeInstructorIndexPage() {
         <CourseOverTimeInstructorSearchForm
           fetchJSON={fetchCourseOverTimeJSON}
         />
-        <SectionsInstructorTable sections={courseJSON} />
+        <SectionsInstructorTable
+          sections={courseJSON.sort((a, b) =>
+            b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
+          )}
+        />
       </div>
     </BasicLayout>
   );

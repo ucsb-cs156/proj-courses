@@ -39,7 +39,11 @@ export default function CourseOverTimeBuildingsIndexPage() {
         <CourseOverTimeBuildingsSearchForm
           fetchJSON={fetchCourseOverTimeJSON}
         />
-        <SectionsTable sections={courseJSON} />
+        <SectionsTable
+          sections={courseJSON.sort((a, b) =>
+            b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
+          )}
+        />
       </div>
     </BasicLayout>
   );

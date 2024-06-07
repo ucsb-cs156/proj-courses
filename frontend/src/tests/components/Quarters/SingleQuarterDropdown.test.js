@@ -130,7 +130,7 @@ describe("SingleQuarterSelector tests", () => {
     await waitFor(() => expect(useState).toBeCalledWith("20202"));
   });
 
-  test("when localstorage has no value, first element of quarter range is passed to useState", async () => {
+  test("when localstorage has no value last element of quarter range is passed to useState", async () => {
     const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
@@ -139,17 +139,17 @@ describe("SingleQuarterSelector tests", () => {
 
     render(
       <SingleQuarterDropdown
-        quarters={quarterRange("20201", "20224")}
+        quarters={quarterRange("20201", "20234")}
         quarter={quarter}
         setQuarter={setQuarter}
         controlId="sqd1"
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("20201"));
+    await waitFor(() => expect(useState).toBeCalledWith("20234"));
   });
 
-  test("when localstorage has no value, first element of quarter range is the default parameter", async () => {
+  test("when localstorage has no value, last element of quarter range is the default parameter", async () => {
     const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
@@ -165,7 +165,7 @@ describe("SingleQuarterSelector tests", () => {
     );
 
     await waitFor(() =>
-      expect(setQuarterStateSpy).toBeCalledWith("sqd1", "20201"),
+      expect(setQuarterStateSpy).toBeCalledWith("sqd1", "20224"),
     );
   });
 });

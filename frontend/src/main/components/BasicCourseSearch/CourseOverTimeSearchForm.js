@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-//import { allTheLevels } from "fixtures/levelsFixtures";
 import { quarterRange } from "main/utils/quarterUtilities";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
-//import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import { useBackend } from "main/utils/useBackend";
 
 const CourseOverTimeSearchForm = ({ fetchJSON }) => {
@@ -70,19 +68,43 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
 
   const handleCourseNumberOnChange = (event) => {
     const rawCourse = event.target.value;
-    if (rawCourse.match(/\d+/g) != null) {
-      const number = rawCourse.match(/\d+/g)[0];
-      setCourseNumber(number);
-    } else {
-      setCourseNumber("");
-    }
+    const inputtedSubject = rawCourse.match(/^[a-zA-Z]+/);
 
-    if (rawCourse.match(/[a-zA-Z]+/g) != null) {
-      const suffix = rawCourse.match(/[a-zA-Z]+/g)[0];
-      setCourseSuf(suffix);
-    } else {
-      setCourseSuf("");
+    if (inputtedSubject) {
+      const upperSubject = inputtedSubject[0].toUpperCase().replace(/s/g, "");
+      if (subject.toUpperCase() === upperSubject) {
+        setCourseSuf(
+          rawCourse.match(/[a-zA-Z]+$/)
+            ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
+            : "",
+        );
+        setCourseNumber(
+          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
+        );
+      } else if (
+        subject.toUpperCase() === "CMPSC" &&
+        (upperSubject === "CS" || upperSubject === "COMS")
+      ) {
+        setCourseSuf(
+          rawCourse.match(/[a-zA-Z]+$/)
+            ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
+            : "",
+        );
+        setCourseNumber(
+          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
+        );
+      } else {
+        setCourseNumber("");
+        setCourseSuf("");
+        return;
+      }
     }
+    setCourseSuf(
+      rawCourse.match(/[a-zA-Z]+$/)
+        ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
+        : "",
+    );
+    setCourseNumber(rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "");
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better

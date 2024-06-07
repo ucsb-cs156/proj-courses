@@ -148,6 +148,12 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     expect(
       screen.getByTestId(`PersonalSectionsTable-cell-row-0-col-instructor`),
     ).toHaveTextContent("WANG L C");
+
+    const deleteButton = screen.getByTestId(
+      `PersonalSectionsTable-cell-row-0-col-Delete-button`,
+    );
+    expect(deleteButton).toBeInTheDocument();
+    expect(deleteButton).toHaveClass("btn-danger");
   });
 
   test("renders 'Back' button", () => {

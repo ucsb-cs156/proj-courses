@@ -7,10 +7,17 @@ import SectionsTable from "main/components/Sections/SectionsTable";
 import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
 import { handleAddToSchedule } from "main/components/Sections/SectionsTable";
 import { handleLectureAddToSchedule } from "main/components/Sections/SectionsTable";
-import { isLectureWithNoSections } from "main/components/Sections/SectionsTable";
+import {
+  isLectureWithNoSections,
+  isLectureWithSections,
+} from "main/components/Sections/SectionsTable";
 import { useBackendMutation } from "main/utils/useBackend";
 
 const mockedNavigate = jest.fn();
+
+const colId = "12591";
+const colId1 = "30395";
+const colId2 = "54692";
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -76,14 +83,261 @@ describe("isLectureWithNoSections", () => {
     const enrollCode = "12345";
     const sections = [
       {
-        courseInfo: { courseId: "COURSE1" },
+        courseInfo: { courseId: "COURSE1 -1" },
         section: { enrollCode: "67890", section: "0100" },
+      },
+      {
+        courseInfo: { courseId: "COURSE1 -2" },
+        section: { enrollCode: "67891", section: "0200" },
       },
     ];
 
     const result = isLectureWithNoSections(enrollCode, sections);
 
     expect(result).toBe(false);
+  });
+  it("should return true when the section number ends in 00 and is not 0100 and has a location", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1 -1" },
+        section: {
+          enrollCode: "12345",
+          section: "22200",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+      {
+        courseInfo: { courseId: "COURSE1 -2" },
+        section: {
+          enrollCode: "12345",
+          section: "22201",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(true);
+  });
+  it("should return false when the section number ends in 00 and is not 0100 and does not have a location", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12345",
+          section: "0200",
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+  it("should return false when the section number does not end in 00", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12345",
+          section: "0201",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+  it("should return false when the section number ends in 00 and is not 0100 and has a section", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12345",
+          section: "0200",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12346",
+          section: "0201",
+          timeLocations: [
+            {
+              room: "3505",
+              building: "PHELP",
+              roomCapacity: "60",
+              days: " T R   ",
+              beginTime: "08:00",
+              endTime: "09:15",
+            },
+          ],
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+  it("should return false when the section number ends in 00 and is not 0100 and has time locations not equal to one", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: {
+          enrollCode: "12345",
+          section: "0200",
+          timeLocations: [],
+        },
+      },
+    ];
+
+    const result = isLectureWithNoSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+});
+
+describe("isLectureWithSections", () => {
+  it("should return false when the section is a lecture with no other sections", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0100" },
+      },
+    ];
+
+    const result = isLectureWithSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+
+  it("should return false when the section is not a lecture", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0101" },
+      },
+    ];
+
+    const result = isLectureWithSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+
+  it("should return true when the section is a lecture but there are other sections", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0100" },
+      },
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "67890", section: "0101" },
+      },
+    ];
+
+    const result = isLectureWithSections(enrollCode, sections);
+
+    expect(result).toBe(true);
+  });
+
+  it("should return false when the section is not found", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "67890", section: "0100" },
+      },
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "67891", section: "0100" },
+      },
+    ];
+
+    const result = isLectureWithSections(enrollCode, sections);
+
+    expect(result).toBe(false);
+  });
+  it("should return false when section number does not end with '00'", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0101" },
+      },
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12346", section: "0102" },
+      },
+    ];
+
+    const result = isLectureWithSections(enrollCode, sections);
+    expect(result).toBe(false);
+  });
+  it("should return true when section number ends with '00' and there are multiple sections", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0100" },
+      },
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "67890", section: "0100" },
+      },
+    ];
+
+    const result = isLectureWithSections(enrollCode, sections);
+    expect(result).toBe(true);
   });
 });
 
@@ -277,6 +531,7 @@ describe("Section tests", () => {
       "Time",
       "Instructor",
       "Enroll Code",
+      "Action",
     ];
     const expectedFields = [
       "quarter",
@@ -289,6 +544,7 @@ describe("Section tests", () => {
       "time",
       "instructor",
       "section.enrollCode",
+      "action",
     ];
     const testId = "SectionsTable";
 
@@ -331,6 +587,7 @@ describe("Section tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-section.enrollCode`),
     ).toHaveTextContent("12583");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-action`)).toBeDefined();
   });
 
   test("Correctly groups separate lectures of the same class", async () => {
@@ -345,20 +602,20 @@ describe("Section tests", () => {
     const testId = "SectionsTable";
 
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`),
-    ).toHaveTextContent("➕ MATH 3B");
+      screen.getByTestId(`${testId}-cell-row-1-col-${colId1}-expand-symbols`),
+    ).toHaveTextContent("➕");
     expect(
-      screen.getByTestId(`${testId}-cell-row-2-col-courseInfo.courseId`),
-    ).toHaveTextContent("➕ MATH 3B");
+      screen.getByTestId(`${testId}-cell-row-2-col-${colId2}-expand-symbols`),
+    ).toHaveTextContent("➕");
 
     const expandRow = screen.getByTestId(
-      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
+      `${testId}-cell-row-1-col-${colId1}-expand-symbols`,
     );
     fireEvent.click(expandRow);
 
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`),
-    ).toHaveTextContent("➖ MATH 3B");
+      screen.getByTestId(`${testId}-cell-row-1-col-${colId1}-expand-symbols`),
+    ).toHaveTextContent("➖");
   });
 
   test("First dropdown is different than last dropdown", () => {
@@ -428,6 +685,43 @@ describe("Section tests", () => {
 
     const expandRow = screen.getByTestId(
       `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-1-col-info`)
+        .querySelector('a[href$="/coursedetails/20221/12591"]'),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-2-col-info`)
+        .querySelector('a[href$="/coursedetails/20221/12609"]'),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-3-col-info`)
+        .querySelector('a[href$="/coursedetails/20221/12617"]'),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-4-col-info`)
+        .querySelector('a[href$="/coursedetails/20221/12625"]'),
+    ).toBeInTheDocument();
+  });
+  test("action column renders", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsTable";
+
+    const expandRow = screen.getByTestId(
+      `${testId}-cell-row-1-col-${colId}-expand-symbols`,
     );
     fireEvent.click(expandRow);
 

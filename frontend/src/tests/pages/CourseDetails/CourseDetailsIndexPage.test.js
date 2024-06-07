@@ -9,6 +9,7 @@ import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexP
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
+import { oneQuarterCourse } from "fixtures/gradeHistoryFixtures";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -35,6 +36,37 @@ jest.mock("react-router-dom", () => {
     },
   };
 });
+
+class ResizeObserver {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe() {
+    // Mock implementation of the observe method
+  }
+  unobserve() {
+    // Mock implementation of the unobserve method
+  }
+  disconnect() {
+    // Mock implementation of the disconnect method
+  }
+}
+
+window.ResizeObserver = ResizeObserver;
+
+jest.mock("recharts", () => {
+  const OriginalModule = jest.requireActual("recharts");
+
+  return {
+    ...OriginalModule,
+    ResponsiveContainer: ({ height, children }) => (
+      <OriginalModule.ResponsiveContainer width={800} height={height}>
+        {children}
+      </OriginalModule.ResponsiveContainer>
+    ),
+  };
+});
+
 describe("Course Details Index Page tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
@@ -56,6 +88,11 @@ describe("Course Details Index Page tests", () => {
         params: { qtr: "20221", enrollCode: "06619" },
       })
       .reply(200, personalSectionsFixtures.singleSection);
+    axiosMock
+      .onGet("/api/gradehistory/search", {
+        params: { subjectArea: "CHEM", courseNumber: "184" },
+      })
+      .reply(200, oneQuarterCourse);
   });
 
   const queryClient = new QueryClient();
@@ -77,11 +114,11 @@ describe("Course Details Index Page tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    // await waitFor(() => {
+
     expect(
       screen.getByText("Course Details for CHEM 184 W22"),
     ).toBeInTheDocument();
-    // });
+
     expect(screen.getByText("Enroll Code")).toBeInTheDocument();
     expect(screen.getByText("06619")).toBeInTheDocument();
     expect(screen.getByText("Section")).toBeInTheDocument();
@@ -96,5 +133,17 @@ describe("Course Details Index Page tests", () => {
     expect(screen.getByText("T R")).toBeInTheDocument();
     expect(screen.getByText("Time")).toBeInTheDocument();
     expect(screen.getByText("2:00 PM - 3:15 PM")).toBeInTheDocument();
+  });
+
+  test("Calls grade history api correctly and displays correct information", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseDetailsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText("Fall 2009 - GONZALEZ T F")).toBeInTheDocument();
   });
 });

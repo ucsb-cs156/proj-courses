@@ -1,8 +1,8 @@
 package edu.ucsb.cs156.courses.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import java.time.ZonedDateTime;
-import javax.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -32,6 +32,7 @@ public class Job {
   // 1048576 is 2^20, which is the max size of a mediumtext in MySQL
   @Column(
       columnDefinition = "TEXT",
-      length = 1048576) // needed for long strings, i.e. log entries longer than 255 characters
+      length = 1048576) // needed for long strings, i.e. log entries longer than 255
+  // characters
   private String log;
 }

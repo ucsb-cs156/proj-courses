@@ -52,15 +52,15 @@ export default function SectionsOverTimeTableBase({
                         // Stryker disable next-line ObjectLiteral
                         style={{
                           background: cell.isGrouped
-                            ? "#34859b"
+                            ? "#cedefa"
                             : cell.isAggregated
-                            ? "#34859b"
+                            ? "#cedefa"
                             : "#9dbfbe",
                           color: cell.isGrouped
-                            ? "#effcf4"
+                            ? "#4a4f4f"
                             : cell.isAggregated
-                            ? "#effcf4"
-                            : "#000000",
+                            ? "#4a4f4f"
+                            : "#4a4f4f",
                           fontWeight: cell.isGrouped
                             ? "bold"
                             : cell.isAggregated
