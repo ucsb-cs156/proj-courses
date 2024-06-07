@@ -1,15 +1,15 @@
 # proj-courses
 
 This repo contains the code for the CMPSC 156 legacy code project "Courses Search". 
-
+ 
 The project provides a web application where users can search for UCSB courses in various ways.
 
 Users with a Google Account can also store past, current or future schedules of courses for particular quarters. 
 
 # Deployments
-
+ 
 | Type | Link       | 
-|------|------------|
+|------|------------| 
 | prod | <https://courses.dokku-00.cs.ucsb.edu/> | 
 | qa | <https://courses-qa.dokku-00.cs.ucsb.edu/>  | 
 
@@ -107,6 +107,29 @@ To access the swagger API endpoints, use:
 
 * For documentation on React Storybook, see: https://storybook.js.org/
 
+# Testing
+
+## Partial pitest runs
+
+This repo has support for partial pitest runs
+
+For example, to run pitest on just one class, use:
+
+```
+mvn pitest:mutationCoverage -DtargetClasses=edu.ucsb.cs156.courses.controllers.UCSBSectionsController
+```
+
+To run pitest on just one package, use:
+
+```
+mvn pitest:mutationCoverage -DtargetClasses=edu.ucsb.cs156.courses.controllers.*
+```
+
+To run full mutation test coverage, as usual, use:
+
+```
+mvn pitest:mutationCoverage
+```
 # Accessing Database Console
 
 * On localhost only: <http://localhost:8080/h2-console>  See also: [docs/h2-console.md](docs/h2-console.md)

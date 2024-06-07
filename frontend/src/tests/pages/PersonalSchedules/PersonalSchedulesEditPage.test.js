@@ -298,5 +298,75 @@ describe("PersonalSchedulesEditPage tests", () => {
         screen.queryByTestId(`${testId}-cell-row-0-col-id`),
       ).not.toBeInTheDocument();
     });
+    test("updates correctly without description", async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <PersonalSchedulesEditPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      await screen.findByTestId("PersonalScheduleForm-id");
+
+      const idField = screen.getByTestId("PersonalScheduleForm-id");
+      const nameField = screen.getByTestId("PersonalScheduleForm-name");
+      const descriptionField = screen.getByTestId(
+        "PersonalScheduleForm-description",
+      );
+      const quarterField = screen.getByTestId("PersonalScheduleForm-quarter");
+      const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
+
+      expect(idField).toBeInTheDocument();
+      expect(idField).toHaveValue("17");
+
+      expect(nameField).toBeInTheDocument();
+      expect(nameField).toHaveValue("CS156");
+
+      expect(descriptionField).toBeInTheDocument();
+      expect(descriptionField).toHaveValue("My Winter Courses");
+
+      expect(quarterField).toBeInTheDocument();
+
+      expect(quarterField).toHaveValue("W22");
+      expect(submitButton).toHaveTextContent("Update");
+
+      fireEvent.change(nameField, { target: { value: "Winter Courses" } });
+      fireEvent.change(descriptionField, {
+        target: { value: "" },
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => expect(mockToast).toBeCalled());
+      expect(mockToast).toBeCalledWith(
+        "PersonalSchedule Updated - id: 17 name: Winter Courses",
+      );
+
+      expect(mockNavigate).toBeCalledWith({ to: "/personalschedules/list" });
+
+      expect(axiosMock.history.put.length).toBe(1); // times called
+      expect(axiosMock.history.put[0].params).toEqual({ id: 17 });
+      expect(axiosMock.history.put[0].data).toBe(
+        JSON.stringify({
+          user: {
+            id: 1,
+            email: "phtcon@ucsb.edu",
+            googleSub: "115856948234298493496",
+            pictureUrl:
+              "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+            fullName: "Phill Conrad",
+            givenName: "Phill",
+            familyName: "Conrad",
+            emailVerified: true,
+            locale: "en",
+            hostedDomain: "ucsb.edu",
+            admin: true,
+          },
+          name: "Winter Courses",
+          description: "",
+          quarter: "20221",
+        }),
+      ); // posted object
+    });
   });
 });

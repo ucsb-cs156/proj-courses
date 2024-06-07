@@ -4,12 +4,12 @@ import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
 import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
-import JobComingSoon from "main/components/Jobs/JobComingSoon";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 import UpdateCoursesByQuarterJobForm from "main/components/Jobs/UpdateCoursesByQuarterJobForm";
 import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCoursesByQuarterRangeJobForm";
+import UpdateGradeInfoJobForm from "main/components/Jobs/UpdateGradeInfoJobForm";
 
 const AdminJobsPage = () => {
   const refreshJobsIntervalMilliseconds = 5000;
@@ -48,6 +48,11 @@ const AdminJobsPage = () => {
     method: "POST",
   });
 
+  const objectToAxiosParamsUpdateGradeInfoJob = () => ({
+    url: "/api/jobs/launch/uploadGradeData",
+    method: "POST",
+  });
+
   // Stryker disable all
   const updateCoursesJobMutation = useBackendMutation(
     objectToAxiosParamsUpdateCoursesJob,
@@ -65,6 +70,12 @@ const AdminJobsPage = () => {
     {},
     ["/api/jobs/all"],
   );
+
+  const updateGradeInfoJobMutation = useBackendMutation(
+    objectToAxiosParamsUpdateGradeInfoJob,
+    {},
+    ["/api/jobs/all"],
+  );
   // Stryker restore all
 
   const submitUpdateCoursesJob = async (data) => {
@@ -77,6 +88,10 @@ const AdminJobsPage = () => {
 
   const submitUpdateCoursesByQuarterRangeJob = async (data) => {
     updateCoursesByQuarterRangeJobMutation.mutate(data);
+  };
+
+  const submitUpdateGradeInfoJob = async (data) => {
+    updateGradeInfoJobMutation.mutate(data);
   };
 
   // Stryker disable all
@@ -122,7 +137,7 @@ const AdminJobsPage = () => {
     },
     {
       name: "Update Grade Info",
-      form: <JobComingSoon />,
+      form: <UpdateGradeInfoJobForm callback={submitUpdateGradeInfoJob} />,
     },
   ];
 

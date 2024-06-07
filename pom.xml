@@ -17,6 +17,7 @@
     <description>Starter for s22 courses search</description>
     <properties>
         <java.version>17</java.version>
+        <targetClasses>${targetClasses:edu.ucsb.cs156.*}</targetClasses>
     </properties>
     <dependencies>
         <dependency>
@@ -215,7 +216,7 @@
                     </historyOutputFile>
                     <verbose>true</verbose>
                     <targetClasses>
-                        <param>edu.ucsb.cs156.*</param>
+                        <param>${targetClasses}</param>
                     </targetClasses>
                     <targetTests>
                         <param>edu.ucsb.cs156.*</param>
