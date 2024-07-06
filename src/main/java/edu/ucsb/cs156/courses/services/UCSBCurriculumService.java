@@ -84,7 +84,7 @@ public class UCSBCurriculumService {
     try {
       ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
       contentType = re.getHeaders().getContentType();
-      statusCode = re.getStatusCode();
+      statusCode = (HttpStatus) re.getStatusCode();
       retVal = re.getBody();
     } catch (HttpClientErrorException e) {
       retVal = "{\"error\": \"401: Unauthorized\"}";
@@ -129,7 +129,7 @@ public class UCSBCurriculumService {
       ResponseEntity<String> re =
           restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);
       contentType = re.getHeaders().getContentType();
-      statusCode = re.getStatusCode();
+      statusCode = (HttpStatus) re.getStatusCode();
       retVal = re.getBody();
     } catch (HttpClientErrorException e) {
       retVal = "{\"error\": \"401: Unauthorized\"}";
@@ -174,7 +174,7 @@ public class UCSBCurriculumService {
       ResponseEntity<String> re =
           restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
       contentType = re.getHeaders().getContentType();
-      statusCode = re.getStatusCode();
+      statusCode = (HttpStatus) re.getStatusCode();
       retVal = re.getBody();
     } catch (HttpClientErrorException e) {
       retVal = "{\"error\": \"401: Unauthorized\"}";
@@ -225,7 +225,7 @@ public class UCSBCurriculumService {
       ResponseEntity<String> re =
           restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
       contentType = re.getHeaders().getContentType();
-      statusCode = re.getStatusCode();
+      statusCode = (HttpStatus) re.getStatusCode();
       retVal = re.getBody();
     } catch (HttpClientErrorException e) {
       retVal = "{\"error\": \"401: Unauthorized\"}";
@@ -260,7 +260,7 @@ public class UCSBCurriculumService {
     try {
       ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
       contentType = re.getHeaders().getContentType();
-      statusCode = re.getStatusCode();
+      statusCode = (HttpStatus) re.getStatusCode();
       retVal = re.getBody();
     } catch (HttpClientErrorException e) {
       retVal = "{\"error\": \"401: Unauthorized\"}";
