@@ -32,9 +32,42 @@ export function isLectureWithNoSections(enrollCode, sections) {
     // Extract the courseId and section number from the found section
     const courseId = section.courseInfo.courseId;
     const sectionNumber = section.section.section;
+    const courseSections = sections.filter(
+      (section) => section.courseInfo.courseId === courseId,
+    );
+    const timeLocations = section.section.timeLocations;
 
     // Check if the section number is '0100', indicating a lecture
     if (sectionNumber === "0100") {
+      // Filter all sections with the same courseId
+      // Stryker disable all
+      // Stryker restore all
+      // Check if there is only one section for the course
+      return courseSections.length === 1;
+    } else if (sectionNumber.slice(-2) === "00") {
+      // Check if the section has a location to make sure its a course
+      return (
+        courseSections.length === 1 &&
+        typeof timeLocations !== "undefined" &&
+        timeLocations.length === 1
+      );
+    }
+  }
+
+  return false;
+}
+export function isLectureWithSections(enrollCode, sections) {
+  // Find the section with the given enrollCode
+  const section = sections.find(
+    (section) => section.section.enrollCode === enrollCode,
+  );
+
+  if (section) {
+    // Extract the courseId and section number from the found section
+    const courseId = section.courseInfo.courseId;
+    const sectionNumberEnd = section.section.section.slice(2);
+
+    if (sectionNumberEnd === "00") {
       // Filter all sections with the same courseId
       // Stryker disable all
       const courseSections = sections.filter(
@@ -42,7 +75,7 @@ export function isLectureWithNoSections(enrollCode, sections) {
       );
       // Stryker restore all
       // Check if there is only one section for the course
-      return courseSections.length === 1;
+      return courseSections.length > 1;
     }
   }
 
@@ -89,7 +122,6 @@ export const onSuccess = (response) => {
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
-
   const { data: currentUser } = useCurrentUser();
 
   const mutation = useBackendMutation(
@@ -189,44 +221,8 @@ export default function SectionsTable({ sections }) {
       Header: "Enroll Code",
       accessor: "section.enrollCode",
       disableGroupBy: true,
-      Cell: ({ cell: { value }, row: { original } }) => {
-        // Stryker disable all : difficult to test modal interaction
-        /* istanbul ignore next : difficult to test modal interaction*/
-        if (isSection(original.section.section) && currentUser.loggedIn) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <span>{value}</span>
-              <AddToScheduleModal
-                section={original}
-                onAdd={(section, schedule) =>
-                  handleAddToSchedule(section, schedule, mutation)
-                }
-              />
-            </div>
-          );
-        } else {
-          return value;
-        }
-        // Stryker restore all
-      },
       aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => /* istanbul ignore next */ {
-        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <span>{value}</span>
-              <AddToScheduleModal
-                section={value}
-                onAdd={(section, schedule) =>
-                  handleLectureAddToSchedule(section, schedule, mutation)
-                }
-              />
-            </div>
-          );
-        } else {
-          return `${value}`;
-        }
-      },
+      Aggregated: ({ cell: { value } }) => `${value}`,
     },
     {
       Header: "Info",
@@ -237,6 +233,58 @@ export default function SectionsTable({ sections }) {
 
       aggregate: getFirstVal,
       Aggregated: renderInfoLink,
+    },
+    {
+      Header: "Action",
+      id: "action",
+      accessor: "section.enrollCode",
+      disableGroupBy: true,
+      // No need for accessor if it's purely for actions like expand/collapse
+      Cell: ({ row }) => {
+        // Stryker disable all : difficult to test modal interaction
+        /* istanbul ignore next : difficult to test modal interaction*/
+        if (isSection(row.original.section.section) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <AddToScheduleModal
+                section={row.original}
+                quarter={row.original.courseInfo.quarter}
+                onAdd={(section, schedule) =>
+                  handleAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else {
+          return null;
+        }
+        // Stryker restore all
+      },
+      aggregate: getFirstVal,
+      Aggregated: ({ cell: { value }, row }) => /* istanbul ignore next */ {
+        const testId = `${testid}-cell-row-${row.index}-col-${value}-expand-symbols`;
+        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <AddToScheduleModal
+                section={value}
+                quarter={sections[0].courseInfo.quarter}
+                onAdd={(section, schedule) =>
+                  handleLectureAddToSchedule(section, schedule, mutation)
+                }
+              />
+            </div>
+          );
+        } else if (!isLectureWithSections(value, sections)) {
+          return null;
+        } else {
+          return (
+            <span {...row.getToggleRowExpandedProps()} data-testid={testId}>
+              {row.isExpanded ? "➖" : "➕"}
+            </span>
+          );
+        }
+      },
     },
   ];
 
