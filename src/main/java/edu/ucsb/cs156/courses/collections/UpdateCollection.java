@@ -2,8 +2,6 @@ package edu.ucsb.cs156.courses.collections;
 
 import edu.ucsb.cs156.courses.documents.Update;
 
-import java.util.List;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
