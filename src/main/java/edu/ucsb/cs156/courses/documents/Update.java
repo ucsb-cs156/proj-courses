@@ -15,7 +15,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "updates")
 public class Update {
   private ObjectId _id;
-  private String subject_area;
-  private String quarter_yyyyq;
-  private LocalDateTime last_update;
+  private String subjectArea;
+  private String quarter;
+  private int saved;
+  private int updated;
+  private int errors;
+  private LocalDateTime lastUpdate;
 }
