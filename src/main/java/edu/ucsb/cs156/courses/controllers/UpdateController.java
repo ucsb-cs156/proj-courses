@@ -1,7 +1,6 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.documents.Update;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,33 +20,54 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/updates")
 @RestController
 public class UpdateController extends ApiController {
-    @Autowired
-    UpdateCollection updateCollection;
+  @Autowired UpdateCollection updateCollection;
 
-    @Autowired
-    ObjectMapper mapper;
+  @Autowired ObjectMapper mapper;
 
-    @Operation(summary = "Get updates for a subject area and quarter")
-    @GetMapping(value = "", produces = "application/json")
-    public Iterable<Update> getUpdates(
-            @Parameter(name = "subjectArea", description = "Course subject area code", example = "CMPSC", required = true) @RequestParam String subjectArea,
-            @Parameter(name = "quarter", description = "Quarter in yyyyq format", example = "20221", required = true) @RequestParam String quarter,
-            @Parameter(name = "page", description = "what page of the data", example = "0", required = true) @RequestParam int page,
-            @Parameter(name = "pageSize", description = "size of each page", example = "5", required = true) @RequestParam int pageSize) {
-        Iterable<Update> updates = null;
-        PageRequest pageRequest = PageRequest.of(page, pageSize, Direction.DESC, "lastUpdate");
+  @Operation(summary = "Get updates for a subject area and quarter")
+  @GetMapping(value = "", produces = "application/json")
+  public Iterable<Update> getUpdates(
+      @Parameter(
+              name = "subjectArea",
+              description = "Course subject area code",
+              example = "CMPSC",
+              required = true)
+          @RequestParam
+          String subjectArea,
+      @Parameter(
+              name = "quarter",
+              description = "Quarter in yyyyq format",
+              example = "20221",
+              required = true)
+          @RequestParam
+          String quarter,
+      @Parameter(
+              name = "page",
+              description = "what page of the data",
+              example = "0",
+              required = true)
+          @RequestParam
+          int page,
+      @Parameter(
+              name = "pageSize",
+              description = "size of each page",
+              example = "5",
+              required = true)
+          @RequestParam
+          int pageSize) {
+    Iterable<Update> updates = null;
+    PageRequest pageRequest = PageRequest.of(page, pageSize, Direction.DESC, "lastUpdate");
 
-        if (subjectArea.toUpperCase().equals("ALL") &&
-            quarter.toUpperCase().equals("ALL")) {
-            updates = updateCollection.findAll(pageRequest);
-        } else if (subjectArea.toUpperCase().equals("ALL")) {
-            updates = updateCollection.findByQuarter(quarter, pageRequest);
-        } else if (quarter.toUpperCase().equals("ALL")) {
-            updates = updateCollection.findBySubjectArea(subjectArea, pageRequest);
-        } else {
-            updates = updateCollection.findBySubjectAreaAndQuarter(subjectArea, quarter, pageRequest);
-        }
-        log.info("updates: {}", updates);
-        return updates;
+    if (subjectArea.toUpperCase().equals("ALL") && quarter.toUpperCase().equals("ALL")) {
+      updates = updateCollection.findAll(pageRequest);
+    } else if (subjectArea.toUpperCase().equals("ALL")) {
+      updates = updateCollection.findByQuarter(quarter, pageRequest);
+    } else if (quarter.toUpperCase().equals("ALL")) {
+      updates = updateCollection.findBySubjectArea(subjectArea, pageRequest);
+    } else {
+      updates = updateCollection.findBySubjectAreaAndQuarter(subjectArea, quarter, pageRequest);
     }
+    log.info("updates: {}", updates);
+    return updates;
+  }
 }
