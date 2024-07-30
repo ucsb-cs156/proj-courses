@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -15,7 +16,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "updates")
 public class Update {
   private ObjectId _id;
-  private String subject_area;
-  private String quarter_yyyyq;
-  private LocalDateTime last_update;
+  private String subjectArea;
+  private String quarter;
+  private int saved;
+  private int updated;
+  private int errors;
+  @LastModifiedDate
+  private LocalDateTime lastUpdate;
 }
