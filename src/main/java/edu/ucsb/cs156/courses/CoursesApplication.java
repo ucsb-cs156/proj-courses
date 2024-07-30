@@ -9,13 +9,16 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 @SpringBootApplication
 @EnableJpaAuditing(dateTimeProviderRef = "utcDateTimeProvider")
+@EnableMongoAuditing(dateTimeProviderRef = "utcDateTimeProvider")
 // enables automatic population of @CreatedDate and @LastModifiedDate
+
 @EnableAsync // for @Async annotation for JobsService
 public class CoursesApplication {
 

@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.jobs;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import java.util.ArrayList;
@@ -19,13 +20,16 @@ public class UpdateCourseDataJobFactory {
 
   @Autowired private UCSBSubjectRepository subjectRepository;
 
+  @Autowired private UpdateCollection updateCollection;
+
   public UpdateCourseDataJob createForSubjectAndQuarter(String subjectArea, String quarterYYYYQ) {
     return new UpdateCourseDataJob(
         quarterYYYYQ,
         quarterYYYYQ,
         List.of(subjectArea),
         curriculumService,
-        convertedSectionCollection);
+        convertedSectionCollection,
+        updateCollection);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
@@ -35,7 +39,8 @@ public class UpdateCourseDataJobFactory {
         end_quarterYYYYQ,
         List.of(subjectArea),
         curriculumService,
-        convertedSectionCollection);
+        convertedSectionCollection,
+        updateCollection);
   }
 
   private List<String> getAllSubjectCodes() {
@@ -53,7 +58,8 @@ public class UpdateCourseDataJobFactory {
         quarterYYYYQ,
         getAllSubjectCodes(),
         curriculumService,
-        convertedSectionCollection);
+        convertedSectionCollection,
+        updateCollection);
   }
 
   public UpdateCourseDataJob createForQuarterRange(
@@ -63,6 +69,7 @@ public class UpdateCourseDataJobFactory {
         end_quarterYYYYQ,
         getAllSubjectCodes(),
         curriculumService,
-        convertedSectionCollection);
+        convertedSectionCollection,
+        updateCollection);
   }
 }

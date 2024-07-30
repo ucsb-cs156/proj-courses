@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
@@ -26,6 +27,8 @@ public class UpdateCourseDataJobsTest {
 
   @Mock ConvertedSectionCollection convertedSectionCollection;
 
+  @Mock UpdateCollection updateCollection;
+
   Job jobStarted = Job.builder().build();
   JobContext ctx = new JobContext(null, jobStarted);
 
@@ -39,7 +42,7 @@ public class UpdateCourseDataJobsTest {
                 "20213",
                 List.of("CMPSC", "MATH"),
                 ucsbCurriculumService,
-                convertedSectionCollection));
+                convertedSectionCollection, updateCollection));
     doNothing().when(job).updateCourses(any(), any(), any());
 
     job.accept(ctx);
@@ -69,7 +72,7 @@ public class UpdateCourseDataJobsTest {
     // Act
     var job =
         new UpdateCourseDataJob(
-            "20211", "20211", List.of("CMPSC"), ucsbCurriculumService, convertedSectionCollection);
+            "20211", "20211", List.of("CMPSC"), ucsbCurriculumService, convertedSectionCollection, updateCollection);
     job.accept(ctx);
 
     // Assert
@@ -120,7 +123,7 @@ public class UpdateCourseDataJobsTest {
     // Act
     var job =
         new UpdateCourseDataJob(
-            "20211", "20211", List.of("MATH"), ucsbCurriculumService, convertedSectionCollection);
+            "20211", "20211", List.of("MATH"), ucsbCurriculumService, convertedSectionCollection, updateCollection);
     job.accept(ctx);
 
     // Assert
@@ -164,7 +167,7 @@ public class UpdateCourseDataJobsTest {
     // Act
     var job =
         new UpdateCourseDataJob(
-            "20211", "20211", List.of("MATH"), ucsbCurriculumService, convertedSectionCollection);
+            "20211", "20211", List.of("MATH"), ucsbCurriculumService, convertedSectionCollection, updateCollection);
     job.accept(ctx);
 
     // Assert
@@ -214,7 +217,7 @@ public class UpdateCourseDataJobsTest {
     // Act
     var job =
         new UpdateCourseDataJob(
-            "20211", "20211", List.of("MATH"), ucsbCurriculumService, convertedSectionCollection);
+            "20211", "20211", List.of("MATH"), ucsbCurriculumService,  convertedSectionCollection, updateCollection);
     job.accept(ctx);
 
     // Assert
