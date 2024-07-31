@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
+import edu.ucsb.cs156.courses.models.UCSBAPIQuarter;
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,9 +37,12 @@ public class UCSBCurriculumService {
 
   private RestTemplate restTemplate = new RestTemplate();
 
-  public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) {
+  public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) throws Exception {
     restTemplate = restTemplateBuilder.build();
   }
+
+  public static final String CURRENT_QUARTER_ENDPOINT =
+      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current";
 
   public static final String CURRICULUM_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
@@ -51,6 +55,39 @@ public class UCSBCurriculumService {
 
   public static final String ALL_SECTIONS_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
+
+  public UCSBAPIQuarter getCurrentQuarter() throws Exception {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("ucsb-api-version", "1.0");
+    headers.set("ucsb-api-key", this.apiKey);
+
+    HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+    String url = CURRENT_QUARTER_ENDPOINT;
+
+    log.info("url=" + url);
+
+    String retVal = "";
+    MediaType contentType = null;
+    HttpStatus statusCode = null;
+
+    ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+    contentType = re.getHeaders().getContentType();
+    statusCode = (HttpStatus) re.getStatusCode();
+    retVal = re.getBody();
+
+    log.info(
+        "json: {} contentType: {} statusCode: {} entity: {}",
+        retVal,
+        contentType,
+        statusCode,
+        entity);
+    UCSBAPIQuarter quarter = null;
+    quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);
+    return quarter;
+  }
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
