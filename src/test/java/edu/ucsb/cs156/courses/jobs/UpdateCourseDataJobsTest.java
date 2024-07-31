@@ -6,12 +6,15 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
+import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +29,13 @@ public class UpdateCourseDataJobsTest {
 
   @Mock ConvertedSectionCollection convertedSectionCollection;
 
+  @Mock UpdateCollection updateCollection;
+
   Job jobStarted = Job.builder().build();
   JobContext ctx = new JobContext(null, jobStarted);
 
   @Test
   void test_subject_and_quarter_range() throws Exception {
-
     var job =
         spy(
             new UpdateCourseDataJob(
@@ -39,7 +43,8 @@ public class UpdateCourseDataJobsTest {
                 "20213",
                 List.of("CMPSC", "MATH"),
                 ucsbCurriculumService,
-                convertedSectionCollection));
+                convertedSectionCollection,
+                updateCollection));
     doNothing().when(job).updateCourses(any(), any(), any());
 
     job.accept(ctx);
@@ -66,10 +71,19 @@ public class UpdateCourseDataJobsTest {
     when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20211"), eq("A")))
         .thenReturn(result);
 
+    LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+    Update update = new Update(null, "CMPSC", "20211", 14, 0, 0, someTime);
+    when(updateCollection.save(any())).thenReturn(update);
+
     // Act
     var job =
         new UpdateCourseDataJob(
-            "20211", "20211", List.of("CMPSC"), ucsbCurriculumService, convertedSectionCollection);
+            "20211",
+            "20211",
+            List.of("CMPSC"),
+            ucsbCurriculumService,
+            convertedSectionCollection,
+            updateCollection);
     job.accept(ctx);
 
     // Assert
@@ -79,7 +93,8 @@ public class UpdateCourseDataJobsTest {
                 Updating courses for [CMPSC 20211]
                 Found 14 sections
                 Storing in MongoDB Collection...
-                14 new sections saved, 0 sections updated, 0 errors
+                14 new sections saved, 0 sections updated, 0 errors, last update: 2022-03-05T15:50:10
+                Saved update: Update(_id=null, subjectArea=CMPSC, quarter=20211, saved=14, updated=0, errors=0, lastUpdate=2022-03-05T15:50:10)
                 Courses for [CMPSC 20211] have been updated""";
 
     assertEquals(expected, jobStarted.getLog());
@@ -117,10 +132,19 @@ public class UpdateCourseDataJobsTest {
             eq(section1.getCourseInfo().getQuarter()), eq(section1.getSection().getEnrollCode())))
         .thenReturn(emptyOptional);
 
+    LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+    Update update = new Update(null, "MATH", "20211", 2, 1, 0, someTime);
+    when(updateCollection.save(any())).thenReturn(update);
+
     // Act
     var job =
         new UpdateCourseDataJob(
-            "20211", "20211", List.of("MATH"), ucsbCurriculumService, convertedSectionCollection);
+            "20211",
+            "20211",
+            List.of("MATH"),
+            ucsbCurriculumService,
+            convertedSectionCollection,
+            updateCollection);
     job.accept(ctx);
 
     // Assert
@@ -130,7 +154,8 @@ public class UpdateCourseDataJobsTest {
                 Updating courses for [MATH 20211]
                 Found 3 sections
                 Storing in MongoDB Collection...
-                2 new sections saved, 1 sections updated, 0 errors
+                2 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
+                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=2, updated=1, errors=0, lastUpdate=2022-03-05T15:50:10)
                 Courses for [MATH 20211] have been updated""";
 
     assertEquals(expected, jobStarted.getLog());
@@ -161,10 +186,19 @@ public class UpdateCourseDataJobsTest {
             eq(section0.getCourseInfo().getQuarter()), eq(section0.getSection().getEnrollCode())))
         .thenThrow(new IllegalArgumentException("Testing Exception Handling!"));
 
+    LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+    Update update = new Update(null, "MATH", "20211", 0, 0, 1, someTime);
+    when(updateCollection.save(any())).thenReturn(update);
+
     // Act
     var job =
         new UpdateCourseDataJob(
-            "20211", "20211", List.of("MATH"), ucsbCurriculumService, convertedSectionCollection);
+            "20211",
+            "20211",
+            List.of("MATH"),
+            ucsbCurriculumService,
+            convertedSectionCollection,
+            updateCollection);
     job.accept(ctx);
 
     // Assert
@@ -175,7 +209,8 @@ public class UpdateCourseDataJobsTest {
                 Found 1 sections
                 Storing in MongoDB Collection...
                 Error saving section: Testing Exception Handling!
-                0 new sections saved, 0 sections updated, 1 errors
+                0 new sections saved, 0 sections updated, 1 errors, last update: 2022-03-05T15:50:10
+                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=0, errors=1, lastUpdate=2022-03-05T15:50:10)
                 Courses for [MATH 20211] have been updated""";
 
     assertEquals(expected, jobStarted.getLog());
@@ -211,10 +246,19 @@ public class UpdateCourseDataJobsTest {
     when(convertedSectionCollection.findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode)))
         .thenReturn(section0Optional);
 
+    LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+    Update update = new Update(null, "MATH", "20211", 0, 1, 1, someTime);
+    when(updateCollection.save(any())).thenReturn(update);
+
     // Act
     var job =
         new UpdateCourseDataJob(
-            "20211", "20211", List.of("MATH"), ucsbCurriculumService, convertedSectionCollection);
+            "20211",
+            "20211",
+            List.of("MATH"),
+            ucsbCurriculumService,
+            convertedSectionCollection,
+            updateCollection);
     job.accept(ctx);
 
     // Assert
@@ -224,7 +268,8 @@ public class UpdateCourseDataJobsTest {
                 Updating courses for [MATH 20211]
                 Found 1 sections
                 Storing in MongoDB Collection...
-                0 new sections saved, 1 sections updated, 0 errors
+                0 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
+                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)
                 Courses for [MATH 20211] have been updated""";
 
     assertEquals(expected, jobStarted.getLog());
