@@ -37,7 +37,7 @@ public class UCSBCurriculumService {
 
 <span class="fc" id="L38">  private RestTemplate restTemplate = new RestTemplate();</span>
 
-<span class="fc" id="L40">  public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) {</span>
+<span class="fc" id="L40">  public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) throws Exception {</span>
 <span class="fc" id="L41">    restTemplate = restTemplateBuilder.build();</span>
 <span class="fc" id="L42">  }</span>
 
@@ -56,7 +56,7 @@ public class UCSBCurriculumService {
   public static final String ALL_SECTIONS_ENDPOINT =
       &quot;https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}&quot;;
 
-  public UCSBAPIQuarter getCurrentQuarter() {
+  public UCSBAPIQuarter getCurrentQuarter() throws Exception {
 <span class="fc" id="L60">    HttpHeaders headers = new HttpHeaders();</span>
 <span class="fc" id="L61">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
 <span class="fc" id="L62">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
@@ -72,113 +72,107 @@ public class UCSBCurriculumService {
 <span class="fc" id="L72">    String retVal = &quot;&quot;;</span>
 <span class="fc" id="L73">    MediaType contentType = null;</span>
 <span class="fc" id="L74">    HttpStatus statusCode = null;</span>
-    try {
-<span class="fc" id="L76">      ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
-<span class="fc" id="L77">      contentType = re.getHeaders().getContentType();</span>
-<span class="fc" id="L78">      statusCode = (HttpStatus) re.getStatusCode();</span>
-<span class="fc" id="L79">      retVal = re.getBody();</span>
-<span class="nc" id="L80">    } catch (HttpClientErrorException e) {</span>
-<span class="nc" id="L81">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
-<span class="fc" id="L82">    }</span>
-<span class="fc" id="L83">    log.info(</span>
+
+<span class="fc" id="L76">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L77">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L78">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L79">    retVal = re.getBody();</span>
+
+<span class="fc" id="L81">    log.info(</span>
         &quot;json: {} contentType: {} statusCode: {} entity: {}&quot;,
         retVal,
         contentType,
         statusCode,
         entity);
-<span class="fc" id="L89">    UCSBAPIQuarter quarter = null;</span>
-    try {
-<span class="fc" id="L91">      quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);</span>
-<span class="nc" id="L92">    } catch (JsonProcessingException e) {</span>
-<span class="nc" id="L93">      log.error(&quot;Error parsing JSON&quot;, e);</span>
-<span class="fc" id="L94">    }</span>
-<span class="fc" id="L95">    return quarter;</span>
+<span class="fc" id="L87">    UCSBAPIQuarter quarter = null;</span>
+<span class="fc" id="L88">    quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);</span>
+<span class="fc" id="L89">    return quarter;</span>
   }
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) {
 
-<span class="fc" id="L100">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L101">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L102">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L103">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
-<span class="fc" id="L104">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L94">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L95">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L96">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L97">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L98">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L106">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+<span class="fc" id="L100">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
 
-<span class="fc" id="L108">    String params =</span>
-<span class="fc" id="L109">        String.format(</span>
+<span class="fc" id="L102">    String params =</span>
+<span class="fc" id="L103">        String.format(</span>
             &quot;?quarter=%s&amp;subjectCode=%s&amp;objLevelCode=%s&amp;pageNumber=%d&amp;pageSize=%d&amp;includeClassSections=%s&quot;,
-<span class="fc" id="L111">            quarter, subjectArea, courseLevel, 1, 100, &quot;true&quot;);</span>
-<span class="fc" id="L112">    String url = CURRICULUM_ENDPOINT + params;</span>
+<span class="fc" id="L105">            quarter, subjectArea, courseLevel, 1, 100, &quot;true&quot;);</span>
+<span class="fc" id="L106">    String url = CURRICULUM_ENDPOINT + params;</span>
 
-<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (courseLevel.equals(&quot;A&quot;)) {</span>
-<span class="fc" id="L115">      params =</span>
-<span class="fc" id="L116">          String.format(</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (courseLevel.equals(&quot;A&quot;)) {</span>
+<span class="fc" id="L109">      params =</span>
+<span class="fc" id="L110">          String.format(</span>
               &quot;?quarter=%s&amp;subjectCode=%s&amp;pageNumber=%d&amp;pageSize=%d&amp;includeClassSections=%s&quot;,
-<span class="fc" id="L118">              quarter, subjectArea, 1, 100, &quot;true&quot;);</span>
-<span class="fc" id="L119">      url = CURRICULUM_ENDPOINT + params;</span>
+<span class="fc" id="L112">              quarter, subjectArea, 1, 100, &quot;true&quot;);</span>
+<span class="fc" id="L113">      url = CURRICULUM_ENDPOINT + params;</span>
     }
 
-<span class="fc" id="L122">    log.info(&quot;url=&quot; + url);</span>
+<span class="fc" id="L116">    log.info(&quot;url=&quot; + url);</span>
 
-<span class="fc" id="L124">    String retVal = &quot;&quot;;</span>
-<span class="fc" id="L125">    MediaType contentType = null;</span>
-<span class="fc" id="L126">    HttpStatus statusCode = null;</span>
+<span class="fc" id="L118">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L119">    MediaType contentType = null;</span>
+<span class="fc" id="L120">    HttpStatus statusCode = null;</span>
     try {
-<span class="fc" id="L128">      ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
-<span class="fc" id="L129">      contentType = re.getHeaders().getContentType();</span>
-<span class="fc" id="L130">      statusCode = (HttpStatus) re.getStatusCode();</span>
-<span class="fc" id="L131">      retVal = re.getBody();</span>
-<span class="fc" id="L132">    } catch (HttpClientErrorException e) {</span>
-<span class="fc" id="L133">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
-<span class="fc" id="L134">    }</span>
-<span class="fc" id="L135">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
-<span class="fc" id="L136">    return retVal;</span>
+<span class="fc" id="L122">      ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L123">      contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L124">      statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L125">      retVal = re.getBody();</span>
+<span class="fc" id="L126">    } catch (HttpClientErrorException e) {</span>
+<span class="fc" id="L127">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
+<span class="fc" id="L128">    }</span>
+<span class="fc" id="L129">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L130">    return retVal;</span>
   }
 
   public List&lt;ConvertedSection&gt; getConvertedSections(
       String subjectArea, String quarter, String courseLevel) throws JsonProcessingException {
-<span class="fc" id="L141">    String json = getJSON(subjectArea, quarter, courseLevel);</span>
-<span class="fc" id="L142">    CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);</span>
-<span class="fc" id="L143">    List&lt;ConvertedSection&gt; result = coursePage.convertedSections();</span>
-<span class="fc" id="L144">    return result;</span>
+<span class="fc" id="L135">    String json = getJSON(subjectArea, quarter, courseLevel);</span>
+<span class="fc" id="L136">    CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);</span>
+<span class="fc" id="L137">    List&lt;ConvertedSection&gt; result = coursePage.convertedSections();</span>
+<span class="fc" id="L138">    return result;</span>
   }
 
   public String getSectionJSON(String subjectArea, String quarter, String courseLevel)
       throws JsonProcessingException {
-<span class="fc" id="L149">    List&lt;ConvertedSection&gt; l = getConvertedSections(subjectArea, quarter, courseLevel);</span>
+<span class="fc" id="L143">    List&lt;ConvertedSection&gt; l = getConvertedSections(subjectArea, quarter, courseLevel);</span>
 
-<span class="fc" id="L151">    String arrayToJson = objectMapper.writeValueAsString(l);</span>
+<span class="fc" id="L145">    String arrayToJson = objectMapper.writeValueAsString(l);</span>
 
-<span class="fc" id="L153">    return arrayToJson;</span>
+<span class="fc" id="L147">    return arrayToJson;</span>
   }
 
   public String getSubjectsJSON() {
 
-<span class="fc" id="L158">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L159">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L160">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L161">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
-<span class="fc" id="L162">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L152">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L153">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L154">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L155">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L156">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L164">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+<span class="fc" id="L158">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
 
-<span class="fc" id="L166">    log.info(&quot;url=&quot; + SUBJECTS_ENDPOINT);</span>
+<span class="fc" id="L160">    log.info(&quot;url=&quot; + SUBJECTS_ENDPOINT);</span>
 
-<span class="fc" id="L168">    String retVal = &quot;&quot;;</span>
-<span class="fc" id="L169">    MediaType contentType = null;</span>
-<span class="fc" id="L170">    HttpStatus statusCode = null;</span>
+<span class="fc" id="L162">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L163">    MediaType contentType = null;</span>
+<span class="fc" id="L164">    HttpStatus statusCode = null;</span>
     try {
-<span class="fc" id="L172">      ResponseEntity&lt;String&gt; re =</span>
-<span class="fc" id="L173">          restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);</span>
-<span class="fc" id="L174">      contentType = re.getHeaders().getContentType();</span>
-<span class="fc" id="L175">      statusCode = (HttpStatus) re.getStatusCode();</span>
-<span class="fc" id="L176">      retVal = re.getBody();</span>
-<span class="fc" id="L177">    } catch (HttpClientErrorException e) {</span>
-<span class="fc" id="L178">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
-<span class="fc" id="L179">    }</span>
-<span class="fc" id="L180">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
-<span class="fc" id="L181">    return retVal;</span>
+<span class="fc" id="L166">      ResponseEntity&lt;String&gt; re =</span>
+<span class="fc" id="L167">          restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L168">      contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L169">      statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L170">      retVal = re.getBody();</span>
+<span class="fc" id="L171">    } catch (HttpClientErrorException e) {</span>
+<span class="fc" id="L172">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
+<span class="fc" id="L173">    }</span>
+<span class="fc" id="L174">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L175">    return retVal;</span>
   }
 
   /**
@@ -187,48 +181,48 @@ public class UCSBCurriculumService {
    */
   public String getSection(String enrollCode, String quarter) {
 
-<span class="fc" id="L190">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L191">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L192">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L193">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
-<span class="fc" id="L194">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L184">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L185">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L186">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L187">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L188">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L196">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+<span class="fc" id="L190">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
 
-<span class="fc" id="L198">    String url = SECTION_ENDPOINT;</span>
+<span class="fc" id="L192">    String url = SECTION_ENDPOINT;</span>
 
-<span class="fc" id="L200">    log.info(&quot;url=&quot; + url);</span>
+<span class="fc" id="L194">    log.info(&quot;url=&quot; + url);</span>
 
-<span class="fc" id="L202">    String urlTemplate =</span>
-<span class="fc" id="L203">        UriComponentsBuilder.fromHttpUrl(url)</span>
-<span class="fc" id="L204">            .queryParam(&quot;quarter&quot;, &quot;{quarter}&quot;)</span>
-<span class="fc" id="L205">            .queryParam(&quot;enrollcode&quot;, &quot;{enrollcode}&quot;)</span>
-<span class="fc" id="L206">            .encode()</span>
-<span class="fc" id="L207">            .toUriString();</span>
+<span class="fc" id="L196">    String urlTemplate =</span>
+<span class="fc" id="L197">        UriComponentsBuilder.fromHttpUrl(url)</span>
+<span class="fc" id="L198">            .queryParam(&quot;quarter&quot;, &quot;{quarter}&quot;)</span>
+<span class="fc" id="L199">            .queryParam(&quot;enrollcode&quot;, &quot;{enrollcode}&quot;)</span>
+<span class="fc" id="L200">            .encode()</span>
+<span class="fc" id="L201">            .toUriString();</span>
 
-<span class="fc" id="L209">    Map&lt;String, String&gt; params = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L210">    params.put(&quot;quarter&quot;, quarter);</span>
-<span class="fc" id="L211">    params.put(&quot;enrollcode&quot;, enrollCode);</span>
+<span class="fc" id="L203">    Map&lt;String, String&gt; params = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L204">    params.put(&quot;quarter&quot;, quarter);</span>
+<span class="fc" id="L205">    params.put(&quot;enrollcode&quot;, enrollCode);</span>
 
-<span class="fc" id="L213">    String retVal = &quot;&quot;;</span>
-<span class="fc" id="L214">    MediaType contentType = null;</span>
-<span class="fc" id="L215">    HttpStatus statusCode = null;</span>
+<span class="fc" id="L207">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L208">    MediaType contentType = null;</span>
+<span class="fc" id="L209">    HttpStatus statusCode = null;</span>
     try {
-<span class="fc" id="L217">      ResponseEntity&lt;String&gt; re =</span>
-<span class="fc" id="L218">          restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);</span>
-<span class="fc" id="L219">      contentType = re.getHeaders().getContentType();</span>
-<span class="fc" id="L220">      statusCode = (HttpStatus) re.getStatusCode();</span>
-<span class="fc" id="L221">      retVal = re.getBody();</span>
-<span class="fc" id="L222">    } catch (HttpClientErrorException e) {</span>
-<span class="fc" id="L223">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
-<span class="fc" id="L224">    }</span>
+<span class="fc" id="L211">      ResponseEntity&lt;String&gt; re =</span>
+<span class="fc" id="L212">          restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);</span>
+<span class="fc" id="L213">      contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L214">      statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L215">      retVal = re.getBody();</span>
+<span class="fc" id="L216">    } catch (HttpClientErrorException e) {</span>
+<span class="fc" id="L217">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
+<span class="fc" id="L218">    }</span>
 
-<span class="fc bfc" id="L226" title="All 2 branches covered.">    if (retVal.equals(&quot;null&quot;)) {</span>
-<span class="fc" id="L227">      retVal = &quot;{\&quot;error\&quot;: \&quot;Enroll code doesn't exist in that quarter.\&quot;}&quot;;</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">    if (retVal.equals(&quot;null&quot;)) {</span>
+<span class="fc" id="L221">      retVal = &quot;{\&quot;error\&quot;: \&quot;Enroll code doesn't exist in that quarter.\&quot;}&quot;;</span>
     }
 
-<span class="fc" id="L230">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
-<span class="fc" id="L231">    return retVal;</span>
+<span class="fc" id="L224">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L225">    return retVal;</span>
   }
 
   /**
@@ -238,78 +232,78 @@ public class UCSBCurriculumService {
    */
   public String getAllSections(String enrollCode, String quarter) {
 
-<span class="fc" id="L241">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L242">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L243">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L244">    headers.set(&quot;ucsb-api-version&quot;, &quot;3.0&quot;);</span>
-<span class="fc" id="L245">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L235">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L236">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L237">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L238">    headers.set(&quot;ucsb-api-version&quot;, &quot;3.0&quot;);</span>
+<span class="fc" id="L239">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L247">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+<span class="fc" id="L241">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
 
-<span class="fc" id="L249">    String url = ALL_SECTIONS_ENDPOINT;</span>
+<span class="fc" id="L243">    String url = ALL_SECTIONS_ENDPOINT;</span>
 
-<span class="fc" id="L251">    log.info(&quot;url=&quot; + url);</span>
+<span class="fc" id="L245">    log.info(&quot;url=&quot; + url);</span>
 
-<span class="fc" id="L253">    String urlTemplate =</span>
-<span class="fc" id="L254">        UriComponentsBuilder.fromHttpUrl(url)</span>
-<span class="fc" id="L255">            .queryParam(&quot;quarter&quot;, &quot;{quarter}&quot;)</span>
-<span class="fc" id="L256">            .queryParam(&quot;enrollcode&quot;, &quot;{enrollcode}&quot;)</span>
-<span class="fc" id="L257">            .encode()</span>
-<span class="fc" id="L258">            .toUriString();</span>
+<span class="fc" id="L247">    String urlTemplate =</span>
+<span class="fc" id="L248">        UriComponentsBuilder.fromHttpUrl(url)</span>
+<span class="fc" id="L249">            .queryParam(&quot;quarter&quot;, &quot;{quarter}&quot;)</span>
+<span class="fc" id="L250">            .queryParam(&quot;enrollcode&quot;, &quot;{enrollcode}&quot;)</span>
+<span class="fc" id="L251">            .encode()</span>
+<span class="fc" id="L252">            .toUriString();</span>
 
-<span class="fc" id="L260">    Map&lt;String, String&gt; params = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L261">    params.put(&quot;quarter&quot;, quarter);</span>
-<span class="fc" id="L262">    params.put(&quot;enrollcode&quot;, enrollCode);</span>
+<span class="fc" id="L254">    Map&lt;String, String&gt; params = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L255">    params.put(&quot;quarter&quot;, quarter);</span>
+<span class="fc" id="L256">    params.put(&quot;enrollcode&quot;, enrollCode);</span>
 
-<span class="fc" id="L264">    String retVal = &quot;&quot;;</span>
-<span class="fc" id="L265">    MediaType contentType = null;</span>
-<span class="fc" id="L266">    HttpStatus statusCode = null;</span>
+<span class="fc" id="L258">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L259">    MediaType contentType = null;</span>
+<span class="fc" id="L260">    HttpStatus statusCode = null;</span>
     try {
-<span class="fc" id="L268">      ResponseEntity&lt;String&gt; re =</span>
-<span class="fc" id="L269">          restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);</span>
-<span class="fc" id="L270">      contentType = re.getHeaders().getContentType();</span>
-<span class="fc" id="L271">      statusCode = (HttpStatus) re.getStatusCode();</span>
-<span class="fc" id="L272">      retVal = re.getBody();</span>
-<span class="fc" id="L273">    } catch (HttpClientErrorException e) {</span>
-<span class="fc" id="L274">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
-<span class="fc" id="L275">    }</span>
+<span class="fc" id="L262">      ResponseEntity&lt;String&gt; re =</span>
+<span class="fc" id="L263">          restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);</span>
+<span class="fc" id="L264">      contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L265">      statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L266">      retVal = re.getBody();</span>
+<span class="fc" id="L267">    } catch (HttpClientErrorException e) {</span>
+<span class="fc" id="L268">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
+<span class="fc" id="L269">    }</span>
 
-<span class="fc bfc" id="L277" title="All 2 branches covered.">    if (retVal.equals(&quot;null&quot;)) {</span>
-<span class="fc" id="L278">      retVal = &quot;{\&quot;error\&quot;: \&quot;Enroll code doesn't exist in that quarter.\&quot;}&quot;;</span>
+<span class="fc bfc" id="L271" title="All 2 branches covered.">    if (retVal.equals(&quot;null&quot;)) {</span>
+<span class="fc" id="L272">      retVal = &quot;{\&quot;error\&quot;: \&quot;Enroll code doesn't exist in that quarter.\&quot;}&quot;;</span>
     }
 
-<span class="fc" id="L281">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
-<span class="fc" id="L282">    return retVal;</span>
+<span class="fc" id="L275">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L276">    return retVal;</span>
   }
 
   public String getJSONbyQtrEnrollCd(String quarter, String enrollCd) {
 
-<span class="fc" id="L287">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L288">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L289">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L290">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
-<span class="fc" id="L291">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L281">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L282">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L283">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L284">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L285">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L293">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+<span class="fc" id="L287">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
 
-<span class="fc" id="L295">    String url =</span>
+<span class="fc" id="L289">    String url =</span>
         &quot;https://api.ucsb.edu/academics/curriculums/v3/classsection/&quot; + quarter + &quot;/&quot; + enrollCd;
 
-<span class="fc" id="L298">    log.info(&quot;url=&quot; + url);</span>
+<span class="fc" id="L292">    log.info(&quot;url=&quot; + url);</span>
 
-<span class="fc" id="L300">    String retVal = &quot;&quot;;</span>
-<span class="fc" id="L301">    MediaType contentType = null;</span>
-<span class="fc" id="L302">    HttpStatus statusCode = null;</span>
+<span class="fc" id="L294">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L295">    MediaType contentType = null;</span>
+<span class="fc" id="L296">    HttpStatus statusCode = null;</span>
     try {
-<span class="fc" id="L304">      ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
-<span class="fc" id="L305">      contentType = re.getHeaders().getContentType();</span>
-<span class="fc" id="L306">      statusCode = (HttpStatus) re.getStatusCode();</span>
-<span class="fc" id="L307">      retVal = re.getBody();</span>
-<span class="fc" id="L308">    } catch (HttpClientErrorException e) {</span>
-<span class="fc" id="L309">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
-<span class="fc" id="L310">    }</span>
-<span class="fc" id="L311">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
-<span class="fc" id="L312">    return retVal;</span>
+<span class="fc" id="L298">      ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L299">      contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L300">      statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L301">      retVal = re.getBody();</span>
+<span class="fc" id="L302">    } catch (HttpClientErrorException e) {</span>
+<span class="fc" id="L303">      retVal = &quot;{\&quot;error\&quot;: \&quot;401: Unauthorized\&quot;}&quot;;</span>
+<span class="fc" id="L304">    }</span>
+<span class="fc" id="L305">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L306">    return retVal;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

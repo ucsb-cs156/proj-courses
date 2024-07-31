@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 
   @Operation(summary = &quot;Get dates for current quarter&quot;)
   @GetMapping(value = &quot;/currentQuarter&quot;, produces = &quot;application/json&quot;)
-  public UCSBAPIQuarter basicsearch() throws JsonProcessingException {
-<span class="nc" id="L37">    return ucsbCurriculumService.getCurrentQuarter();</span>
+  public UCSBAPIQuarter getCurrentQuarter() throws Exception {
+<span class="fc" id="L37">    return ucsbCurriculumService.getCurrentQuarter();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
