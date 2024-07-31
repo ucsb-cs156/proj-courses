@@ -1,7 +1,9 @@
 package edu.ucsb.cs156.courses.jobs;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
@@ -19,6 +21,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
   private List<String> subjects;
   private UCSBCurriculumService ucsbCurriculumService;
   private ConvertedSectionCollection convertedSectionCollection;
+  private UpdateCollection updateCollection;
 
   @Override
   public void accept(JobContext ctx) throws Exception {
@@ -29,6 +32,12 @@ public class UpdateCourseDataJob implements JobContextConsumer {
         updateCourses(ctx, quarterYYYYQ, subjectArea);
       }
     }
+  }
+
+  public Update updateUpdatesCollection(String quarterYYYYQ, String subjectArea, int saved, int updated, int errors) {
+    Update update = new Update(null, subjectArea, quarterYYYYQ, saved, updated, errors, null);
+    Update savedUpdate = updateCollection.save(update);
+    return savedUpdate;
   }
 
   public void updateCourses(JobContext ctx, String quarterYYYYQ, String subjectArea)
@@ -67,10 +76,13 @@ public class UpdateCourseDataJob implements JobContextConsumer {
       }
     }
 
+    Update savedUpdate = updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);
+
     ctx.log(
         String.format(
-            "%d new sections saved, %d sections updated, %d errors",
-            newSections, updatedSections, errors));
+            "%d new sections saved, %d sections updated, %d errors, last update: %s",
+            newSections, updatedSections, errors, savedUpdate.getLastUpdate()));
+    ctx.log("Saved update: " + savedUpdate);
     ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");
   }
 }
