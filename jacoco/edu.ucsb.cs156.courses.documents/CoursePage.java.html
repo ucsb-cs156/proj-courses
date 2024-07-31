@@ -51,19 +51,21 @@ public class CoursePage {
 <span class="fc bfc" id="L51" title="All 2 branches covered.">    for (Course c : this.getClasses()) {</span>
 <span class="fc bfc" id="L52" title="All 2 branches covered.">      for (Section section : c.getClassSections()) {</span>
 <span class="fc" id="L53">        int lectureNum = Integer.parseInt(section.getSection()) / 100;</span>
+
         CourseInfo courseInfo =
-<span class="fc" id="L55">            CourseInfo.builder()</span>
-<span class="fc" id="L56">                .quarter(c.getQuarter())</span>
-<span class="fc" id="L57">                .courseId(c.getCourseId() + &quot;-&quot; + Integer.toString(lectureNum))</span>
-<span class="fc" id="L58">                .title(c.getTitle())</span>
-<span class="fc" id="L59">                .description(c.getDescription())</span>
-<span class="fc" id="L60">                .build();</span>
+<span class="fc" id="L56">            CourseInfo.builder()</span>
+<span class="fc" id="L57">                .quarter(c.getQuarter())</span>
+<span class="fc" id="L58">                .courseId(c.getCourseId() + &quot;-&quot; + Integer.toString(lectureNum))</span>
+<span class="fc" id="L59">                .title(c.getTitle())</span>
+<span class="fc" id="L60">                .description(c.getDescription())</span>
+<span class="fc" id="L61">                .generalEducation(c.getGeneralEducation())</span>
+<span class="fc" id="L62">                .build();</span>
         ConvertedSection cs =
-<span class="fc" id="L62">            ConvertedSection.builder().courseInfo(courseInfo).section(section).build();</span>
-<span class="fc" id="L63">        result.add(cs);</span>
-<span class="fc" id="L64">      }</span>
-<span class="fc" id="L65">    }</span>
-<span class="fc" id="L66">    return result;</span>
+<span class="fc" id="L64">            ConvertedSection.builder().courseInfo(courseInfo).section(section).build();</span>
+<span class="fc" id="L65">        result.add(cs);</span>
+<span class="fc" id="L66">      }</span>
+<span class="fc" id="L67">    }</span>
+<span class="fc" id="L68">    return result;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
