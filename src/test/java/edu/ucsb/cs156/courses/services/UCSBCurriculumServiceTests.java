@@ -15,6 +15,8 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
+import edu.ucsb.cs156.courses.models.UCSBAPIQuarter;
+
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -41,6 +43,8 @@ public class UCSBCurriculumServiceTests {
   @Mock private RestTemplate restTemplate;
 
   @Autowired private UCSBCurriculumService ucs;
+
+  @Autowired private ObjectMapper objectMapper;
 
   @Test
   public void test_getJSON_success() throws Exception {
@@ -423,4 +427,26 @@ public class UCSBCurriculumServiceTests {
     String result = ucs.getAllSections(enrollCode, quarter);
     assertEquals(expectedResult, result);
   }
+
+
+  @Test
+  public void test_getCurrentQuarter() throws Exception {
+    UCSBAPIQuarter expectedResult = objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON, UCSBAPIQuarter.class);
+       
+    String expectedURL = UCSBCurriculumService.CURRENT_QUARTER_ENDPOINT;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON, MediaType.APPLICATION_JSON));
+
+    UCSBAPIQuarter result = ucs.getCurrentQuarter();
+
+    assertEquals(expectedResult, result);
+  }
+
+
 }
