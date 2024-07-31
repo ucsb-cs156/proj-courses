@@ -24,20 +24,20 @@ public class UpdateController extends ApiController {
 
   @Autowired ObjectMapper mapper;
 
-  @Operation(summary = "Get updates for a subject area and quarter")
+  @Operation(summary = "Get updates for a subject area and quarter (most recent first)")
   @GetMapping(value = "", produces = "application/json")
   public Iterable<Update> getUpdates(
       @Parameter(
               name = "subjectArea",
-              description = "Course subject area code",
-              example = "CMPSC",
+              description = "Course subject area code (e.g. CMPSC) or ALL for all subject areas",
+              example = "ALL",
               required = true)
           @RequestParam
           String subjectArea,
       @Parameter(
               name = "quarter",
-              description = "Quarter in yyyyq format",
-              example = "20221",
+              description = "Quarter in yyyyq format (e.g. 20221) or ALL for all quarters",
+              example = "ALL",
               required = true)
           @RequestParam
           String quarter,
