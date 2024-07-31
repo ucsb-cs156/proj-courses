@@ -25,11 +25,6 @@ public class CoursePageTests {
     assertEquals(1, cp.getPageNumber());
     assertEquals(10, cp.getPageSize());
     assertEquals(1, cp.getTotal());
-
-    List<ConvertedSection> cs = cp.convertedSections();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cs);
   }
 
   @Test
@@ -41,7 +36,7 @@ public class CoursePageTests {
 
     List<ConvertedSection> expected =
         objectMapper.readValue(
-            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B,
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
             new TypeReference<List<ConvertedSection>>() {});
 
     assertEquals(expected, convertedSections);

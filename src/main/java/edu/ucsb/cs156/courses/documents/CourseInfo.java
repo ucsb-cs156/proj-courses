@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.courses.documents;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class CourseInfo implements Cloneable {
   private String courseId;
   private String title;
   private String description;
+  private List<GeneralEducation> generalEducation;
 
   public Object clone() throws CloneNotSupportedException {
     CourseInfo newCourseInfo = (CourseInfo) super.clone();
