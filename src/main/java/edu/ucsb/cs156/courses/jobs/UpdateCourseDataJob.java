@@ -34,7 +34,8 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     }
   }
 
-  public Update updateUpdatesCollection(String quarterYYYYQ, String subjectArea, int saved, int updated, int errors) {
+  public Update updateUpdatesCollection(
+      String quarterYYYYQ, String subjectArea, int saved, int updated, int errors) {
     Update update = new Update(null, subjectArea, quarterYYYYQ, saved, updated, errors, null);
     Update savedUpdate = updateCollection.save(update);
     return savedUpdate;
@@ -76,7 +77,8 @@ public class UpdateCourseDataJob implements JobContextConsumer {
       }
     }
 
-    Update savedUpdate = updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);
+    Update savedUpdate =
+        updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);
 
     ctx.log(
         String.format(
