@@ -24,7 +24,7 @@ public class CourseInfoTests {
   public void test_clone() throws JsonProcessingException, CloneNotSupportedException {
     List<ConvertedSection> cs =
         mapper.readValue(
-            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B,
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
             new TypeReference<List<ConvertedSection>>() {});
     CourseInfo c1 = cs.get(0).getCourseInfo();
     CourseInfo c2 = (CourseInfo) c1.clone();
