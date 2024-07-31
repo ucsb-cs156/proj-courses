@@ -1,0 +1,14 @@
+edu.ucsb.cs156.courses
+edu.ucsb.cs156.courses.aop
+edu.ucsb.cs156.courses.collections
+edu.ucsb.cs156.courses.config
+edu.ucsb.cs156.courses.controllers
+edu.ucsb.cs156.courses.documents
+edu.ucsb.cs156.courses.entities
+edu.ucsb.cs156.courses.errors
+edu.ucsb.cs156.courses.jobs
+edu.ucsb.cs156.courses.models
+edu.ucsb.cs156.courses.repositories
+edu.ucsb.cs156.courses.services
+edu.ucsb.cs156.courses.services.jobs
+edu.ucsb.cs156.courses.utilities
