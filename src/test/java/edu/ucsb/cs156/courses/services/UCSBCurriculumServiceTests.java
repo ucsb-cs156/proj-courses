@@ -16,7 +16,6 @@ import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
 import edu.ucsb.cs156.courses.models.UCSBAPIQuarter;
-
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -428,11 +427,11 @@ public class UCSBCurriculumServiceTests {
     assertEquals(expectedResult, result);
   }
 
-
   @Test
   public void test_getCurrentQuarter() throws Exception {
-    UCSBAPIQuarter expectedResult = objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON, UCSBAPIQuarter.class);
-       
+    UCSBAPIQuarter expectedResult =
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON, UCSBAPIQuarter.class);
+
     String expectedURL = UCSBCurriculumService.CURRENT_QUARTER_ENDPOINT;
 
     this.mockRestServiceServer
@@ -447,6 +446,4 @@ public class UCSBCurriculumServiceTests {
 
     assertEquals(expectedResult, result);
   }
-
-
 }

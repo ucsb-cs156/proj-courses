@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.models.UCSBAPIQuarter;
-
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,9 +41,8 @@ public class UCSBCurriculumService {
     restTemplate = restTemplateBuilder.build();
   }
 
-
-  public static final String CURRENT_QUARTER_ENDPOINT=
-    "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current";
+  public static final String CURRENT_QUARTER_ENDPOINT =
+      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current";
 
   public static final String CURRICULUM_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
@@ -82,7 +80,12 @@ public class UCSBCurriculumService {
     } catch (HttpClientErrorException e) {
       retVal = "{\"error\": \"401: Unauthorized\"}";
     }
-    log.info("json: {} contentType: {} statusCode: {} entity: {}", retVal, contentType, statusCode, entity);
+    log.info(
+        "json: {} contentType: {} statusCode: {} entity: {}",
+        retVal,
+        contentType,
+        statusCode,
+        entity);
     UCSBAPIQuarter quarter = null;
     try {
       quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);

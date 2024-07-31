@@ -1,14 +1,11 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.ucsb.cs156.courses.models.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +33,7 @@ public class UCSBCurriculumController {
 
   @Operation(summary = "Get dates for current quarter")
   @GetMapping(value = "/currentQuarter", produces = "application/json")
-  public UCSBAPIQuarter basicsearch()
-      throws JsonProcessingException {
+  public UCSBAPIQuarter basicsearch() throws JsonProcessingException {
     return ucsbCurriculumService.getCurrentQuarter();
   }
 }
