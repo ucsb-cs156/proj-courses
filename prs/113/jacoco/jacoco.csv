@@ -24,7 +24,7 @@ courses,edu.ucsb.cs156.courses.documents,ConvertedSection,0,26,0,0,0,7,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,Instructor,0,3,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,Section,0,6,0,0,0,2,0,1,0,1
 courses,edu.ucsb.cs156.courses.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
-courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJob,0,187,0,8,0,45,0,7,0,3
+courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJob,0,187,0,8,0,46,0,7,0,3
 courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJobFactory,0,89,0,2,0,16,0,8,0,7
 courses,edu.ucsb.cs156.courses.jobs,UploadGradeDataJobFactory,0,11,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.jobs,UploadGradeDataJob,0,127,0,8,0,34,0,7,0,3
