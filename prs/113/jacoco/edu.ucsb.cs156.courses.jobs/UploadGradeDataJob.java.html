@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UploadGradeDataJob.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.jobs</a> &gt; <span class="el_source">UploadGradeDataJob.java</span></div><h1>UploadGradeDataJob.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.jobs;
+
+import edu.ucsb.cs156.courses.entities.GradeHistory;
+import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
+import edu.ucsb.cs156.courses.services.UCSBGradeHistoryServiceImpl;
+import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+public class UploadGradeDataJob implements JobContextConsumer {
+  @Getter private UCSBGradeHistoryServiceImpl ucsbGradeHistoryServiceImpl;
+  @Getter private GradeHistoryRepository gradeHistoryRepository;
+
+  @Override
+  public void accept(JobContext ctx) throws Exception {
+<span class="fc" id="L20">    ctx.log(&quot;Updating UCSB Grade History Data&quot;);</span>
+<span class="fc" id="L21">    List&lt;String&gt; urls = ucsbGradeHistoryServiceImpl.getUrls();</span>
+<span class="fc" id="L22">    GradeHistory previous = new GradeHistory();</span>
+<span class="fc" id="L23">    List&lt;GradeHistory&gt; results = null;</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">    for (String url : urls) {</span>
+<span class="fc" id="L25">      results = ucsbGradeHistoryServiceImpl.getGradeData(url);</span>
+<span class="fc" id="L26">      GradeHistory topRow = results.get(0);</span>
+<span class="fc" id="L27">      upsertAll(gradeHistoryRepository, results);</span>
+<span class="fc" id="L28">      logProgress(ctx, topRow, previous);</span>
+<span class="fc" id="L29">    }</span>
+
+<span class="fc" id="L31">    ctx.log(&quot;Finished updating UCSB Grade History Data&quot;);</span>
+<span class="fc" id="L32">  }</span>
+
+  private void logProgress(JobContext ctx, GradeHistory topRow, GradeHistory previous) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">    if (!topRow.getYyyyq().equals(previous.getYyyyq())) {</span>
+<span class="fc" id="L36">      ctx.log(&quot;Processing data for year: &quot; + topRow.getYyyyq());</span>
+<span class="fc" id="L37">      previous.setYyyyq(topRow.getYyyyq());</span>
+    }
+<span class="fc" id="L39">    ctx.log(&quot;Processing data for subjectArea: &quot; + topRow.getSubjectArea());</span>
+<span class="fc" id="L40">  }</span>
+
+  public static List&lt;GradeHistory&gt; upsertAll(
+      GradeHistoryRepository gradeHistoryRepository, List&lt;GradeHistory&gt; gradeHistories) {
+<span class="fc" id="L44">    List&lt;GradeHistory&gt; result = new ArrayList&lt;GradeHistory&gt;();</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">    for (GradeHistory gradeHistory : gradeHistories) {</span>
+<span class="fc" id="L46">      List&lt;GradeHistory&gt; query =</span>
+<span class="fc" id="L47">          gradeHistoryRepository.findByYyyyqAndCourseAndInstructorAndGrade(</span>
+<span class="fc" id="L48">              gradeHistory.getYyyyq(),</span>
+<span class="fc" id="L49">              gradeHistory.getCourse(),</span>
+<span class="fc" id="L50">              gradeHistory.getInstructor(),</span>
+<span class="fc" id="L51">              gradeHistory.getGrade());</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">      if (query.size() == 0) {</span>
+<span class="fc" id="L53">        gradeHistoryRepository.save(gradeHistory);</span>
+<span class="fc" id="L54">        result.add(gradeHistory);</span>
+      } else {
+<span class="fc" id="L56">        GradeHistory existing = query.get(0);</span>
+<span class="fc" id="L57">        existing.setCount(gradeHistory.getCount());</span>
+<span class="fc" id="L58">        existing = gradeHistoryRepository.save(existing);</span>
+<span class="fc" id="L59">        result.add(existing);</span>
+      }
+<span class="fc" id="L61">    }</span>
+<span class="fc" id="L62">    return result;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
