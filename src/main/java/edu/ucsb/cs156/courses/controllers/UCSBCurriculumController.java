@@ -33,7 +33,7 @@ public class UCSBCurriculumController {
 
   @Operation(summary = "Get dates for current quarter")
   @GetMapping(value = "/currentQuarter", produces = "application/json")
-  public UCSBAPIQuarter basicsearch() throws JsonProcessingException {
+  public UCSBAPIQuarter getCurrentQuarter() throws Exception {
     return ucsbCurriculumService.getCurrentQuarter();
   }
 }

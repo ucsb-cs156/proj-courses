@@ -37,7 +37,7 @@ public class UCSBCurriculumService {
 
   private RestTemplate restTemplate = new RestTemplate();
 
-  public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) {
+  public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) throws Exception {
     restTemplate = restTemplateBuilder.build();
   }
 
@@ -56,7 +56,7 @@ public class UCSBCurriculumService {
   public static final String ALL_SECTIONS_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
 
-  public UCSBAPIQuarter getCurrentQuarter() {
+  public UCSBAPIQuarter getCurrentQuarter() throws Exception {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -72,14 +72,12 @@ public class UCSBCurriculumService {
     String retVal = "";
     MediaType contentType = null;
     HttpStatus statusCode = null;
-    try {
-      ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-      contentType = re.getHeaders().getContentType();
-      statusCode = (HttpStatus) re.getStatusCode();
-      retVal = re.getBody();
-    } catch (HttpClientErrorException e) {
-      retVal = "{\"error\": \"401: Unauthorized\"}";
-    }
+
+    ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+    contentType = re.getHeaders().getContentType();
+    statusCode = (HttpStatus) re.getStatusCode();
+    retVal = re.getBody();
+
     log.info(
         "json: {} contentType: {} statusCode: {} entity: {}",
         retVal,
@@ -87,11 +85,7 @@ public class UCSBCurriculumService {
         statusCode,
         entity);
     UCSBAPIQuarter quarter = null;
-    try {
-      quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);
-    } catch (JsonProcessingException e) {
-      log.error("Error parsing JSON", e);
-    }
+    quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);
     return quarter;
   }
 
