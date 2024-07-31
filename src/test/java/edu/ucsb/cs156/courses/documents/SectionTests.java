@@ -24,7 +24,7 @@ public class SectionTests {
   public void test_clone() throws JsonProcessingException, CloneNotSupportedException {
     List<ConvertedSection> cs =
         mapper.readValue(
-            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B,
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
             new TypeReference<List<ConvertedSection>>() {});
     Section s1 = cs.get(0).getSection();
     Section s2 = (Section) s1.clone();

@@ -51,12 +51,14 @@ public class CoursePage {
     for (Course c : this.getClasses()) {
       for (Section section : c.getClassSections()) {
         int lectureNum = Integer.parseInt(section.getSection()) / 100;
+
         CourseInfo courseInfo =
             CourseInfo.builder()
                 .quarter(c.getQuarter())
                 .courseId(c.getCourseId() + "-" + Integer.toString(lectureNum))
                 .title(c.getTitle())
                 .description(c.getDescription())
+                .generalEducation(c.getGeneralEducation())
                 .build();
         ConvertedSection cs =
             ConvertedSection.builder().courseInfo(courseInfo).section(section).build();

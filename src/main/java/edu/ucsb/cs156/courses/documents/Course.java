@@ -21,5 +21,4 @@ public class Course {
   private String description;
   private List<Section> classSections;
   private List<GeneralEducation> generalEducation;
-  private FinalExam finalExam;
 }

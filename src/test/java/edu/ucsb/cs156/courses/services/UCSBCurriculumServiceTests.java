@@ -238,7 +238,7 @@ public class UCSBCurriculumServiceTests {
         ucs.getConvertedSections(subjectArea, quarter, level);
     List<ConvertedSection> expected =
         objectMapper.readValue(
-            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B,
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
             new TypeReference<List<ConvertedSection>>() {});
 
     assertEquals(expected, convertedSections);
@@ -273,7 +273,7 @@ public class UCSBCurriculumServiceTests {
             convertedSectionsString, new TypeReference<List<ConvertedSection>>() {});
     List<ConvertedSection> expected =
         objectMapper.readValue(
-            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH5B,
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
             new TypeReference<List<ConvertedSection>>() {});
 
     assertEquals(expected, convertedSections);
