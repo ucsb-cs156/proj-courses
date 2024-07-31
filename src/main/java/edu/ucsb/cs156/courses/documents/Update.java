@@ -21,7 +21,6 @@ public class Update {
   private int saved;
   private int updated;
   private int errors;
-  
-  @LastModifiedDate
-  private LocalDateTime lastUpdate;
+
+  @LastModifiedDate private LocalDateTime lastUpdate;
 }
