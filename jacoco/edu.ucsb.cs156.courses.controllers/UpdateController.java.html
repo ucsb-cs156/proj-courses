@@ -24,20 +24,20 @@ import org.springframework.web.bind.annotation.RestController;
 
   @Autowired ObjectMapper mapper;
 
-  @Operation(summary = &quot;Get updates for a subject area and quarter&quot;)
+  @Operation(summary = &quot;Get updates for a subject area and quarter (most recent first)&quot;)
   @GetMapping(value = &quot;&quot;, produces = &quot;application/json&quot;)
   public Iterable&lt;Update&gt; getUpdates(
       @Parameter(
               name = &quot;subjectArea&quot;,
-              description = &quot;Course subject area code&quot;,
-              example = &quot;CMPSC&quot;,
+              description = &quot;Course subject area code (e.g. CMPSC) or ALL for all subject areas&quot;,
+              example = &quot;ALL&quot;,
               required = true)
           @RequestParam
           String subjectArea,
       @Parameter(
               name = &quot;quarter&quot;,
-              description = &quot;Quarter in yyyyq format&quot;,
-              example = &quot;20221&quot;,
+              description = &quot;Quarter in yyyyq format (e.g. 20221) or ALL for all quarters&quot;,
+              example = &quot;ALL&quot;,
               required = true)
           @RequestParam
           String quarter,
