@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CourseUtilities.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.utilities</a> &gt; <span class="el_source">CourseUtilities.java</span></div><h1>CourseUtilities.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.utilities;
+
+/** static utility methods for dealing with courses */
+public class CourseUtilities {
+
+  // Utility class; this allows jacoco to be satisified that constructors are covered.
+  private CourseUtilities() {}
+
+  /**
+   * Given a subject area and course number, return a course id that is formatted similarly to the
+   * precise way that course numbers are formatted in UCSB's GOLD system.
+   *
+   * &lt;p&gt;That format has the subject area left justified in an 8 character field, followed by the
+   * course number right justified in a 3 character field, followed by the suffix (if any) left
+   * justified in a 2 character field.
+   *
+   * &lt;p&gt;However, we use this function to query rtora's CSV files with grade data, at
+   * https://github.com/rtora/UCSB_Grades/ in which this course id is trimmed, such that there are
+   * never ending spaces.
+   *
+   * &lt;p&gt;Therefore, we intentionally also trim the result course id in this function to properly
+   * query the CSV files. For example, CMPSC 130A would typically be written:
+   *
+   * &lt;p&gt;&quot;CMPSC 130A &quot;
+   *
+   * &lt;p&gt;but we return &quot;CMPSC 130A&quot; to query the CSV file.
+   *
+   * @param subjectArea subject area, such as CMPSC
+   * @param courseNumber course number, such as 130A
+   * @return formatted course number
+   */
+  public static String makeFormattedCourseId(String subjectArea, String courseNumber) {
+<span class="fc" id="L33">    String[] nums = courseNumber.split(&quot;[a-zA-Z]+&quot;);</span>
+<span class="fc" id="L34">    String[] suffs = courseNumber.split(&quot;[0-9]+&quot;);</span>
+<span class="fc" id="L35">    String result = &quot;&quot;;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">    if (suffs.length &lt; 2) { // no suffix</span>
+<span class="fc" id="L37">      result =</span>
+<span class="fc" id="L38">          String.format(&quot;%-8s&quot;, subjectArea) // 'CMPSC '</span>
+<span class="fc" id="L39">              + String.format(&quot;%3s&quot;, nums[0]) // ' 8'</span>
+      ;
+    } else {
+<span class="fc" id="L42">      result =</span>
+<span class="fc" id="L43">          String.format(&quot;%-8s&quot;, subjectArea) // 'CMPSC '</span>
+<span class="fc" id="L44">              + String.format(&quot;%3s&quot;, nums[0]) // ' 8'</span>
+<span class="fc" id="L45">              + String.format(&quot;%-2s&quot;, suffs[1]) // 'A '</span>
+      ;
+    }
+<span class="fc" id="L48">    return result.trim();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
