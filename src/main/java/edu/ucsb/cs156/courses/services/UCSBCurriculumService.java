@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
-import edu.ucsb.cs156.courses.models.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;

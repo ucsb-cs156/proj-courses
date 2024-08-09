@@ -1,7 +1,8 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import edu.ucsb.cs156.courses.models.UCSBAPIQuarter;
+
+import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import io.swagger.v3.oas.annotations.Operation;
