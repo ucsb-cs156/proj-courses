@@ -15,7 +15,8 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
-import edu.ucsb.cs156.courses.models.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

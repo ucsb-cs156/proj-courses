@@ -1,12 +1,21 @@
-package edu.ucsb.cs156.courses.models;
+package edu.ucsb.cs156.courses.entities;
 
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity(name = "ucsbapiquarter")
 public class UCSBAPIQuarter {
+  @Id  
   private String quarter; // example: 20243
   private String qyy; // example: M24
   private String name; // example: SUMMER 2024
