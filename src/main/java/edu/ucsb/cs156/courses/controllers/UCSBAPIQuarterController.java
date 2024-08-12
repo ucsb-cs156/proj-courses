@@ -3,14 +3,10 @@ package edu.ucsb.cs156.courses.controllers;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/public")
 @Slf4j
-public class UCSBAPIQuarterController extends ApiController  {
+public class UCSBAPIQuarterController extends ApiController {
 
   @Autowired UserRepository userRepository;
   @Autowired UCSBAPIQuarterService ucsbAPIQuarterService;

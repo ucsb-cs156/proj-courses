@@ -58,5 +58,4 @@ public class CoursesApplication {
     propsConfig.setIgnoreUnresolvablePlaceholders(true);
     return propsConfig;
   }
-
 }
