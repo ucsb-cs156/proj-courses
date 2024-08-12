@@ -2,11 +2,12 @@
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,25 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;UCSBCurriculumController&quot;)
 @RestController
 @RequestMapping(&quot;/api/public&quot;)
-<span class="fc" id="L20">public class UCSBCurriculumController {</span>
+<span class="fc" id="L21">@Slf4j</span>
+<span class="fc" id="L22">public class UCSBCurriculumController extends ApiController  {</span>
 
   @Autowired UserRepository userRepository;
   @Autowired UCSBCurriculumService ucsbCurriculumService;
 
+  @Operation(summary = &quot;Get course data for a given quarter, department, and level&quot;)
   @GetMapping(value = &quot;/basicsearch&quot;, produces = &quot;application/json&quot;)
-  public ResponseEntity&lt;String&gt; basicsearch(
+  public ResponseEntity&lt;String&gt; basicsearch (
       @RequestParam String qtr, @RequestParam String dept, @RequestParam String level)
-      throws JsonProcessingException {
+      throws Exception {
 
-<span class="fc" id="L30">    String body = ucsbCurriculumService.getJSON(dept, qtr, level);</span>
+<span class="fc" id="L33">    String body = ucsbCurriculumService.getJSON(dept, qtr, level);</span>
 
-<span class="fc" id="L32">    return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L35">    return ResponseEntity.ok().body(body);</span>
   }
 
-  @Operation(summary = &quot;Get dates for current quarter&quot;)
-  @GetMapping(value = &quot;/currentQuarter&quot;, produces = &quot;application/json&quot;)
-  public UCSBAPIQuarter getCurrentQuarter() throws Exception {
-<span class="fc" id="L38">    return ucsbCurriculumService.getCurrentQuarter();</span>
-  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
   @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
   @GetMapping(value = &quot;/all&quot;, produces = &quot;application/json&quot;)
   public ArrayList&lt;Course&gt; getSectionsByPsId(@Parameter(name = &quot;psId&quot;) @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
 <span class="fc" id="L43">    User us = getCurrentUser().getUser();</span>
 <span class="fc" id="L44">    PersonalSchedule ps =</span>
         personalScheduleRepository

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
   @GetMapping(value = &quot;/basicsearch&quot;, produces = &quot;application/json&quot;)
   public ResponseEntity&lt;String&gt; basicsearch(
       @RequestParam String qtr, @RequestParam String dept, @RequestParam String level)
-      throws JsonProcessingException {
+      throws Exception {
 
 <span class="fc" id="L28">    String body = ucsbCurriculumService.getSectionJSON(dept, qtr, level);</span>
 
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
   @GetMapping(value = &quot;/sectionsearch&quot;, produces = &quot;application/json&quot;)
   public ResponseEntity&lt;String&gt; sectionsearch(
-      @RequestParam String qtr, @RequestParam String enrollCode) {
+      @RequestParam String qtr, @RequestParam String enrollCode) throws Exception{
 
 <span class="fc" id="L37">    String body = ucsbCurriculumService.getSection(enrollCode, qtr);</span>
 

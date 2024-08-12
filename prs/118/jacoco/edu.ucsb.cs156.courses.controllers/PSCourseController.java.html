@@ -108,7 +108,7 @@ import org.springframework.web.bind.annotation.RestController;
   public ArrayList&lt;PSCourse&gt; postCourses(
       @Parameter(name = &quot;enrollCd&quot;) @RequestParam String enrollCd,
       @Parameter(name = &quot;psId&quot;) @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
 <span class="fc" id="L112">    CurrentUser currentUser = getCurrentUser();</span>
 <span class="fc" id="L113">    log.info(&quot;currentUser={}&quot;, currentUser);</span>
 
@@ -190,7 +190,7 @@ import org.springframework.web.bind.annotation.RestController;
   @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
   @DeleteMapping(&quot;/user&quot;)
   public Object deleteCourses(@Parameter(name = &quot;id&quot;) @RequestParam Long id)
-      throws JsonProcessingException {
+      throws Exception {
 <span class="fc" id="L194">    User currentUser = getCurrentUser().getUser();</span>
 <span class="fc" id="L195">    PSCourse psCourse =</span>
         coursesRepository
@@ -246,7 +246,7 @@ import org.springframework.web.bind.annotation.RestController;
   public Object deleteCourses_PSID(
       @Parameter(name = &quot;enrollCd&quot;) @RequestParam String enrollCd,
       @Parameter(name = &quot;psId&quot;) @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
 <span class="fc" id="L250">    User currentUser = getCurrentUser().getUser();</span>
 
 <span class="fc" id="L252">    PSCourse psCourse =</span>
