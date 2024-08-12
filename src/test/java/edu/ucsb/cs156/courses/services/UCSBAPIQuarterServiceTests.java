@@ -50,9 +50,35 @@ public class UCSBAPIQuarterServiceTests {
   @Autowired private ObjectMapper objectMapper;
 
   @Test
+  public void test_getStartQtrYYYYQ() {
+    assertEquals("20211", service.getStartQtrYYYYQ());
+  } // the value of app.startQtrYYYYQ is configured using @TestPropertySource
+
+  @Test
+  public void test_getEndQtrYYYYQ() {
+    assertEquals("20223", service.getEndQtrYYYYQ());
+  } // the value of app.endQtrYYYYQ is configured using @TestPropertySource
+
+  @Test
+  public void test_getCurrentQuarterYYYYQ() throws Exception {
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, MediaType.APPLICATION_JSON));
+
+    assertEquals("20243", service.getCurrentQuarterYYYYQ());
+  }
+
+  @Test
   public void test_getCurrentQuarter() throws Exception {
     UCSBAPIQuarter expectedResult =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M23, UCSBAPIQuarter.class);
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
 
@@ -63,7 +89,7 @@ public class UCSBAPIQuarterServiceTests {
         .andExpect(header("ucsb-api-version", "1.0"))
         .andExpect(header("ucsb-api-key", apiKey))
         .andRespond(
-            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M23, MediaType.APPLICATION_JSON));
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, MediaType.APPLICATION_JSON));
 
     UCSBAPIQuarter result = service.getCurrentQuarter();
 
@@ -73,7 +99,7 @@ public class UCSBAPIQuarterServiceTests {
   @Test
   public void test_getAllQuartersFromAPI() throws Exception {
     UCSBAPIQuarter sampleQuarter =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M23, UCSBAPIQuarter.class);
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     List<UCSBAPIQuarter> expectedResult = new ArrayList<UCSBAPIQuarter>();
     expectedResult.add(sampleQuarter);
@@ -97,7 +123,7 @@ public class UCSBAPIQuarterServiceTests {
   @Test
   public void test_getAllQuarters_preloaded() throws Exception {
     UCSBAPIQuarter sampleQuarter =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M23, UCSBAPIQuarter.class);
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     List<UCSBAPIQuarter> expectedResult = new ArrayList<UCSBAPIQuarter>();
     expectedResult.add(sampleQuarter);
@@ -117,7 +143,7 @@ public class UCSBAPIQuarterServiceTests {
     UCSBAPIQuarter W21 =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, UCSBAPIQuarter.class);
     UCSBAPIQuarter M23 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M23, UCSBAPIQuarter.class);
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     List<UCSBAPIQuarter> emptyList = new ArrayList<UCSBAPIQuarter>();
     List<UCSBAPIQuarter> expectedResult = new ArrayList<UCSBAPIQuarter>();
