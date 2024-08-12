@@ -108,7 +108,7 @@ public class PSCourseController extends ApiController {
   public ArrayList<PSCourse> postCourses(
       @Parameter(name = "enrollCd") @RequestParam String enrollCd,
       @Parameter(name = "psId") @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
     CurrentUser currentUser = getCurrentUser();
     log.info("currentUser={}", currentUser);
 
@@ -190,7 +190,7 @@ public class PSCourseController extends ApiController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @DeleteMapping("/user")
   public Object deleteCourses(@Parameter(name = "id") @RequestParam Long id)
-      throws JsonProcessingException {
+      throws Exception {
     User currentUser = getCurrentUser().getUser();
     PSCourse psCourse =
         coursesRepository
@@ -246,7 +246,7 @@ public class PSCourseController extends ApiController {
   public Object deleteCourses_PSID(
       @Parameter(name = "enrollCd") @RequestParam String enrollCd,
       @Parameter(name = "psId") @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
     User currentUser = getCurrentUser().getUser();
 
     PSCourse psCourse =

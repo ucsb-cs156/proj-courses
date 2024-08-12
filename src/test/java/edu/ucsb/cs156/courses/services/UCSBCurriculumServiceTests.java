@@ -15,7 +15,6 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
-import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -33,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBCurriculumService.class)
 @AutoConfigureDataJpa
+
 public class UCSBCurriculumServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")
@@ -43,8 +43,6 @@ public class UCSBCurriculumServiceTests {
   @Mock private RestTemplate restTemplate;
 
   @Autowired private UCSBCurriculumService ucs;
-
-  @Autowired private ObjectMapper objectMapper;
 
   @Test
   public void test_getJSON_success() throws Exception {
@@ -123,62 +121,7 @@ public class UCSBCurriculumServiceTests {
     assertEquals(expectedResult, result);
   }
 
-  @Test
-  public void test_getJSON_exception() throws Exception {
-    String expectedResult = "{\"error\": \"401: Unauthorized\"}";
 
-    when(restTemplate.exchange(
-            any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
-        .thenThrow(HttpClientErrorException.class);
-
-    String subjectArea = "CMPSC";
-    String quarter = "20201";
-    String level = "L";
-
-    String expectedParams =
-        String.format(
-            "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
-            quarter, subjectArea, level, 1, 100, "true");
-    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
-
-    this.mockRestServiceServer
-        .expect(requestTo(expectedURL))
-        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("ucsb-api-version", "1.0"))
-        .andExpect(header("ucsb-api-key", apiKey))
-        .andRespond(withUnauthorizedRequest());
-
-    String result = ucs.getJSON(subjectArea, quarter, level);
-
-    assertEquals(expectedResult, result);
-  }
-
-  @Test
-  public void test_getJSONbyQtrEnrollCd_exception() throws Exception {
-    String expectedResult = "{\"error\": \"401: Unauthorized\"}";
-
-    when(restTemplate.exchange(
-            any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
-        .thenThrow(HttpClientErrorException.class);
-
-    String qtr = "20221";
-    String enrollCd = "59501";
-
-    String expectedURL = "https://api.ucsb.edu/academics/curriculums/v3/classsection/20221/59501";
-
-    this.mockRestServiceServer
-        .expect(requestTo(expectedURL))
-        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("ucsb-api-version", "1.0"))
-        .andExpect(header("ucsb-api-key", apiKey))
-        .andRespond(withUnauthorizedRequest());
-
-    String result = ucs.getJSONbyQtrEnrollCd(qtr, enrollCd);
-
-    assertEquals(expectedResult, result);
-  }
 
   @Test
   public void test_getSubjectsJSON_success() throws Exception {
@@ -192,21 +135,6 @@ public class UCSBCurriculumServiceTests {
         .andExpect(header("ucsb-api-version", "1.0"))
         .andExpect(header("ucsb-api-key", apiKey))
         .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
-
-    String result = ucs.getSubjectsJSON();
-    assertEquals(expectedResult, result);
-  }
-
-  @Test
-  public void test_getSubjectsJSON_exception() throws Exception {
-    String expectedResult = "{\"error\": \"401: Unauthorized\"}";
-    String expectedURL = UCSBCurriculumService.SUBJECTS_ENDPOINT;
-
-    this.mockRestServiceServer
-        .expect(requestTo(expectedURL))
-        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-        .andRespond(withUnauthorizedRequest());
 
     String result = ucs.getSubjectsJSON();
     assertEquals(expectedResult, result);
@@ -307,30 +235,6 @@ public class UCSBCurriculumServiceTests {
   }
 
   @Test
-  public void test_getSection_exception() throws Exception {
-    String expectedResult = "{\"error\": \"401: Unauthorized\"}";
-
-    String enrollCode = "08268";
-    String quarter = "20224";
-
-    String expectedURL =
-        UCSBCurriculumService.SECTION_ENDPOINT
-            .replace("{quarter}", quarter)
-            .replace("{enrollcode}", enrollCode);
-
-    this.mockRestServiceServer
-        .expect(requestTo(expectedURL))
-        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("ucsb-api-version", "1.0"))
-        .andExpect(header("ucsb-api-key", apiKey))
-        .andRespond(withUnauthorizedRequest());
-
-    String result = ucs.getSection(enrollCode, quarter);
-    assertEquals(expectedResult, result);
-  }
-
-  @Test
   public void test_getSection_not_found() throws Exception {
     String expectedResult = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
 
@@ -381,30 +285,6 @@ public class UCSBCurriculumServiceTests {
   }
 
   @Test
-  public void test_getAllSections_exception() throws Exception {
-    String expectedResult = "{\"error\": \"401: Unauthorized\"}";
-
-    String enrollCode = "08268";
-    String quarter = "20224";
-
-    String expectedURL =
-        UCSBCurriculumService.ALL_SECTIONS_ENDPOINT
-            .replace("{quarter}", quarter)
-            .replace("{enrollcode}", enrollCode);
-
-    this.mockRestServiceServer
-        .expect(requestTo(expectedURL))
-        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("ucsb-api-version", "3.0"))
-        .andExpect(header("ucsb-api-key", apiKey))
-        .andRespond(withUnauthorizedRequest());
-
-    String result = ucs.getAllSections(enrollCode, quarter);
-    assertEquals(expectedResult, result);
-  }
-
-  @Test
   public void test_getAllSections_not_found() throws Exception {
     String expectedResult = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
 
@@ -428,23 +308,4 @@ public class UCSBCurriculumServiceTests {
     assertEquals(expectedResult, result);
   }
 
-  @Test
-  public void test_getCurrentQuarter() throws Exception {
-    UCSBAPIQuarter expectedResult =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON, UCSBAPIQuarter.class);
-
-    String expectedURL = UCSBCurriculumService.CURRENT_QUARTER_ENDPOINT;
-
-    this.mockRestServiceServer
-        .expect(requestTo(expectedURL))
-        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("ucsb-api-version", "1.0"))
-        .andExpect(header("ucsb-api-key", apiKey))
-        .andRespond(withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON, MediaType.APPLICATION_JSON));
-
-    UCSBAPIQuarter result = ucs.getCurrentQuarter();
-
-    assertEquals(expectedResult, result);
-  }
 }

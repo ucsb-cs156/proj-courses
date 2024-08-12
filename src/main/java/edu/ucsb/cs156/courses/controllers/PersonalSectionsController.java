@@ -39,7 +39,7 @@ public class PersonalSectionsController extends ApiController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping(value = "/all", produces = "application/json")
   public ArrayList<Course> getSectionsByPsId(@Parameter(name = "psId") @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
     User us = getCurrentUser().getUser();
     PersonalSchedule ps =
         personalScheduleRepository
