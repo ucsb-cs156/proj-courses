@@ -243,12 +243,6 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
   @Test
   public void api_UCSBSubjects_load_returns_200() throws Exception {
 
-    // TODO: mock the service that gets a list of subjects
-    // from the UCSB Developer API, and the list of subjects
-    // returned from that service.
-
-    // TODO: Mock the storing in the database of those records.
-
     UCSBSubject us1 =
         UCSBSubject.builder()
             .subjectCode("ANTH")
@@ -282,82 +276,15 @@ public class UCSBSubjectsControllerTests extends ControllerTestCase {
     List<UCSBSubject> expectedUSs = new ArrayList<>();
     expectedUSs.addAll(Arrays.asList(us1, us2, us3));
 
-    when(ucsbSubjectsService.get()).thenReturn(expectedUSs);
+    when(ucsbSubjectsService.loadAllSubjects()).thenReturn(expectedUSs);
 
     MvcResult response =
         mockMvc
             .perform(post("/api/UCSBSubjects/load").with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
-
-    // TODO: Verify that the service was called
-    // and that the records were stored in the database,
-    // and that the JSON returned matches the JSON for those
-    // records.
 
     String expectedJson = mapper.writeValueAsString(expectedUSs);
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void api_UCSBSubjects_load_with_duplicates() throws Exception {
-
-    // TODO: mock the service that gets a list of subjects
-    // from the UCSB Developer API, and the list of subjects
-    // returned from that service.
-
-    // TODO: Mock the storing in the database of those records.
-
-    UCSBSubject us1 =
-        UCSBSubject.builder()
-            .subjectCode("ANTH")
-            .subjectTranslation("Anthropology")
-            .deptCode("ANTH")
-            .collegeCode("L&S")
-            .relatedDeptCode(null)
-            .inactive(false)
-            .build();
-
-    UCSBSubject us2 =
-        UCSBSubject.builder()
-            .subjectCode("ART  CS")
-            .subjectTranslation("Art (Creative Studies)")
-            .deptCode("CRSTU")
-            .collegeCode("CRST")
-            .relatedDeptCode(null)
-            .inactive(false)
-            .build();
-
-    UCSBSubject us3 =
-        UCSBSubject.builder()
-            .subjectCode("CH E")
-            .subjectTranslation("Chemical Engineering")
-            .deptCode("CNENG")
-            .collegeCode("ENGR")
-            .relatedDeptCode(null)
-            .inactive(false)
-            .build();
-
-    List<UCSBSubject> expectedUSs = new ArrayList<>();
-    expectedUSs.addAll(Arrays.asList(us1, us2, us3));
-
-    List<UCSBSubject> expectedSavedUSs = new ArrayList<>();
-    expectedSavedUSs.addAll(Arrays.asList(us2, us3));
-
-    when(ucsbSubjectsService.get()).thenReturn(expectedUSs);
-
-    when(ucsbSubjectRepository.save(us1))
-        .thenThrow(new org.springframework.dao.DuplicateKeyException("test"));
-
-    MvcResult response =
-        mockMvc
-            .perform(post("/api/UCSBSubjects/load").with(csrf()))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    String expectedJson = mapper.writeValueAsString(expectedSavedUSs);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
   }

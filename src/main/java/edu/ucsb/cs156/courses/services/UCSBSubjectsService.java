@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBSubject;
+import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 public class UCSBSubjectsService {
 
   @Autowired private ObjectMapper mapper;
+  @Autowired private UCSBSubjectRepository subjectRepository;
 
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
@@ -51,5 +54,18 @@ public class UCSBSubjectsService {
         mapper.readValue(retBody, new TypeReference<List<UCSBSubject>>() {});
 
     return subjects;
+  }
+
+  public List<UCSBSubject> loadAllSubjects() throws JsonProcessingException {
+    List<UCSBSubject> subjects = this.get();
+    List<UCSBSubject> savedSubjects = new ArrayList<UCSBSubject>();
+
+    subjects.forEach(
+        (ucsbSubject) -> {
+          subjectRepository.save(ucsbSubject);
+          savedSubjects.add(ucsbSubject);
+        });
+    log.info("subjects={}", subjects);
+    return savedSubjects;
   }
 }

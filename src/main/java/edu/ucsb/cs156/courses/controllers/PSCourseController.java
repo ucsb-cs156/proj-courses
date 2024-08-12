@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.PSCourse;
@@ -108,7 +107,7 @@ public class PSCourseController extends ApiController {
   public ArrayList<PSCourse> postCourses(
       @Parameter(name = "enrollCd") @RequestParam String enrollCd,
       @Parameter(name = "psId") @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
     CurrentUser currentUser = getCurrentUser();
     log.info("currentUser={}", currentUser);
 
@@ -189,8 +188,7 @@ public class PSCourseController extends ApiController {
   @Operation(summary = "Delete a course (user)")
   @PreAuthorize("hasRole('ROLE_USER')")
   @DeleteMapping("/user")
-  public Object deleteCourses(@Parameter(name = "id") @RequestParam Long id)
-      throws JsonProcessingException {
+  public Object deleteCourses(@Parameter(name = "id") @RequestParam Long id) throws Exception {
     User currentUser = getCurrentUser().getUser();
     PSCourse psCourse =
         coursesRepository
@@ -246,7 +244,7 @@ public class PSCourseController extends ApiController {
   public Object deleteCourses_PSID(
       @Parameter(name = "enrollCd") @RequestParam String enrollCd,
       @Parameter(name = "psId") @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
     User currentUser = getCurrentUser().getUser();
 
     PSCourse psCourse =
