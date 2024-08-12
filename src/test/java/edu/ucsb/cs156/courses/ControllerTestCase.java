@@ -28,6 +28,6 @@ public abstract class ControllerTestCase {
   protected Map<String, Object> responseToJson(MvcResult result)
       throws UnsupportedEncodingException, JsonProcessingException {
     String responseString = result.getResponse().getContentAsString();
-    return mapper.readValue(responseString, new TypeReference<Map<String,Object>>(){});
+    return mapper.readValue(responseString, new TypeReference<Map<String, Object>>() {});
   }
 }

@@ -14,22 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 @RestClientTest(UCSBSubjectsService.class)
 @AutoConfigureDataJpa
-@ContextConfiguration(classes = {
-})
+@ContextConfiguration(classes = {})
 class UCSBSubjectsServiceTests {
 
-  @Autowired
-  private MockRestServiceServer mockRestServiceServer;
+  @Autowired private MockRestServiceServer mockRestServiceServer;
 
-  @Autowired
-  private UCSBSubjectsService ucsbSubjectsService;
+  @Autowired private UCSBSubjectsService ucsbSubjectsService;
 
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
@@ -46,8 +42,9 @@ class UCSBSubjectsServiceTests {
 
     String expectedURL = UCSBSubjectsService.ENDPOINT;
 
-    String expectedResult = String.format(
-        """
+    String expectedResult =
+        String.format(
+            """
             [
             {
               \"subjectCode\": \"%s\",
@@ -59,21 +56,22 @@ class UCSBSubjectsServiceTests {
             }
             ]
             """,
-        SUBJECTCODE,
-        SUBJECTTRANSLATION,
-        DEPTCODE,
-        COLLEGECODE,
-        RELATEDDEPTCODE,
-        INACTIVE.toString());
+            SUBJECTCODE,
+            SUBJECTTRANSLATION,
+            DEPTCODE,
+            COLLEGECODE,
+            RELATEDDEPTCODE,
+            INACTIVE.toString());
 
-    UCSBSubject expectedSubject = UCSBSubject.builder()
-        .subjectCode(SUBJECTCODE)
-        .subjectTranslation(SUBJECTTRANSLATION)
-        .deptCode(DEPTCODE)
-        .collegeCode(COLLEGECODE)
-        .relatedDeptCode(RELATEDDEPTCODE)
-        .inactive(INACTIVE)
-        .build();
+    UCSBSubject expectedSubject =
+        UCSBSubject.builder()
+            .subjectCode(SUBJECTCODE)
+            .subjectTranslation(SUBJECTTRANSLATION)
+            .deptCode(DEPTCODE)
+            .collegeCode(COLLEGECODE)
+            .relatedDeptCode(RELATEDDEPTCODE)
+            .inactive(INACTIVE)
+            .build();
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -93,8 +91,9 @@ class UCSBSubjectsServiceTests {
 
     String expectedURL = UCSBSubjectsService.ENDPOINT;
 
-    String expectedResult = String.format(
-        """
+    String expectedResult =
+        String.format(
+            """
                 [
                   {
                     \"subjectCode\": \"%s\",
@@ -106,21 +105,22 @@ class UCSBSubjectsServiceTests {
                   }
                 ]
             """,
-        SUBJECTCODE,
-        SUBJECTTRANSLATION,
-        DEPTCODE,
-        COLLEGECODE,
-        RELATEDDEPTCODE,
-        INACTIVE.toString());
+            SUBJECTCODE,
+            SUBJECTTRANSLATION,
+            DEPTCODE,
+            COLLEGECODE,
+            RELATEDDEPTCODE,
+            INACTIVE.toString());
 
-    UCSBSubject expectedSubject = UCSBSubject.builder()
-        .subjectCode(SUBJECTCODE)
-        .subjectTranslation(SUBJECTTRANSLATION)
-        .deptCode(DEPTCODE)
-        .collegeCode(COLLEGECODE)
-        .relatedDeptCode(RELATEDDEPTCODE)
-        .inactive(INACTIVE)
-        .build();
+    UCSBSubject expectedSubject =
+        UCSBSubject.builder()
+            .subjectCode(SUBJECTCODE)
+            .subjectTranslation(SUBJECTTRANSLATION)
+            .deptCode(DEPTCODE)
+            .collegeCode(COLLEGECODE)
+            .relatedDeptCode(RELATEDDEPTCODE)
+            .inactive(INACTIVE)
+            .build();
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -133,7 +133,5 @@ class UCSBSubjectsServiceTests {
     List<UCSBSubject> expectedList = new ArrayList<>();
     expectedList.addAll(Arrays.asList(expectedSubject));
     assertEquals(expectedList, actualResult);
-
   }
-
 }

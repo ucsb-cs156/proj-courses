@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.entities.PSCourse;

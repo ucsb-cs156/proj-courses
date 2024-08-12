@@ -1,13 +1,9 @@
 package edu.ucsb.cs156.courses.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +11,6 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
-
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -23,16 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBCurriculumService.class)
 @AutoConfigureDataJpa
-
 public class UCSBCurriculumServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")
@@ -120,8 +111,6 @@ public class UCSBCurriculumServiceTests {
 
     assertEquals(expectedResult, result);
   }
-
-
 
   @Test
   public void test_getSubjectsJSON_success() throws Exception {
@@ -307,5 +296,4 @@ public class UCSBCurriculumServiceTests {
     String result = ucs.getAllSections(enrollCode, quarter);
     assertEquals(expectedResult, result);
   }
-
 }

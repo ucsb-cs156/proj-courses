@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.PSCourse;
@@ -189,8 +188,7 @@ public class PSCourseController extends ApiController {
   @Operation(summary = "Delete a course (user)")
   @PreAuthorize("hasRole('ROLE_USER')")
   @DeleteMapping("/user")
-  public Object deleteCourses(@Parameter(name = "id") @RequestParam Long id)
-      throws Exception {
+  public Object deleteCourses(@Parameter(name = "id") @RequestParam Long id) throws Exception {
     User currentUser = getCurrentUser().getUser();
     PSCourse psCourse =
         coursesRepository
