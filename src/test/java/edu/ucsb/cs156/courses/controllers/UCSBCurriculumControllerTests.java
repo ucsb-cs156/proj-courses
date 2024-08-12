@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
@@ -23,8 +25,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @WebMvcTest(value = UCSBCurriculumController.class)
 @Import(SecurityConfig.class)
 @AutoConfigureDataJpa
-public class UCSBCurriculumControllerTests {
-  private ObjectMapper mapper = new ObjectMapper();
+public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
   @MockBean UserRepository userRepository;
 
@@ -32,7 +33,6 @@ public class UCSBCurriculumControllerTests {
 
   @MockBean private UCSBCurriculumService ucsbCurriculumService;
 
-  @Autowired private ObjectMapper objectMapper;
 
   @Test
   public void test_search() throws Exception {
@@ -53,24 +53,5 @@ public class UCSBCurriculumControllerTests {
     assertEquals(expectedResult, responseString);
   }
 
-  @Test
-  public void test_currentQuarter() throws Exception {
 
-    UCSBAPIQuarter expectedResult =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON, UCSBAPIQuarter.class);
-
-    String url = "/api/public/currentQuarter";
-
-    when(ucsbCurriculumService.getCurrentQuarter()).thenReturn(expectedResult);
-
-    MvcResult response =
-        mockMvc
-            .perform(get(url).contentType("application/json"))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    assertEquals(
-        expectedResult,
-        objectMapper.readValue(response.getResponse().getContentAsString(), UCSBAPIQuarter.class));
-  }
 }

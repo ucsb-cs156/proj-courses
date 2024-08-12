@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UCSBAPIQuarterRepository extends CrudRepository<UCSBAPIQuarter, String> {
   public Optional<UCSBAPIQuarter> findByQuarter(String quarter);
+  public List<UCSBAPIQuarter> findAll();
 }

@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "API to handle CRUD operations for UCSB Subjects database")
 @RequestMapping("/api/UCSBSubjects")
 @RestController
-public class UCSBSubjectsController extends ApiController implements ApplicationRunner {
+public class UCSBSubjectsController extends ApiController /* implements ApplicationRunner */{
   @Autowired UCSBSubjectRepository subjectRepository;
 
   @Autowired ObjectMapper mapper;
@@ -46,21 +46,7 @@ public class UCSBSubjectsController extends ApiController implements Application
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/load")
   public List<UCSBSubject> loadSubjects() throws JsonProcessingException {
-
-    List<UCSBSubject> subjects = ucsbSubjectsService.get();
-
-    List<UCSBSubject> savedSubjects = new ArrayList<UCSBSubject>();
-
-    subjects.forEach(
-        (ucsbSubject) -> {
-          try {
-            subjectRepository.save(ucsbSubject);
-            savedSubjects.add(ucsbSubject);
-          } catch (DuplicateKeyException dke) {
-            log.info("Skipping duplicate entity %s".formatted(ucsbSubject.getSubjectCode()));
-          }
-        });
-    log.info("subjects={}", subjects);
+    List<UCSBSubject> savedSubjects = ucsbSubjectsService.loadAllSubjects();
     return savedSubjects;
   }
 
@@ -98,15 +84,7 @@ public class UCSBSubjectsController extends ApiController implements Application
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/all")
   public Object deleteAllSubjects() {
-
     subjectRepository.deleteAll();
-
     return genericMessage("All UCSBSubject records deleted");
-  }
-
-  @Override
-  public void run(ApplicationArguments args) throws Exception {
-    loadSubjects();
-    log.info("Got all subjects on launch!");
   }
 }
