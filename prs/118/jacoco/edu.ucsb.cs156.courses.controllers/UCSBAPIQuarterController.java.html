@@ -3,14 +3,10 @@
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;UCSBAPIQuarterController&quot;)
 @RestController
 @RequestMapping(&quot;/api/public&quot;)
-<span class="fc" id="L24">@Slf4j</span>
-<span class="fc" id="L25">public class UCSBAPIQuarterController extends ApiController  {</span>
+<span class="fc" id="L20">@Slf4j</span>
+<span class="fc" id="L21">public class UCSBAPIQuarterController extends ApiController {</span>
 
   @Autowired UserRepository userRepository;
   @Autowired UCSBAPIQuarterService ucsbAPIQuarterService;
@@ -30,21 +26,21 @@ import org.springframework.web.bind.annotation.RestController;
   @Operation(summary = &quot;Get dates for current quarter&quot;)
   @GetMapping(value = &quot;/currentQuarter&quot;, produces = &quot;application/json&quot;)
   public UCSBAPIQuarter getCurrentQuarter() throws Exception {
-<span class="fc" id="L33">    return ucsbAPIQuarterService.getCurrentQuarter();</span>
+<span class="fc" id="L29">    return ucsbAPIQuarterService.getCurrentQuarter();</span>
   }
 
   @Operation(summary = &quot;Get dates for all quarters&quot;)
   @GetMapping(value = &quot;/allQuarters&quot;, produces = &quot;application/json&quot;)
   public List&lt;UCSBAPIQuarter&gt; getAllQuarters() throws Exception {
-<span class="fc" id="L39">    return ucsbAPIQuarterService.getAllQuarters();</span>
+<span class="fc" id="L35">    return ucsbAPIQuarterService.getAllQuarters();</span>
   }
 
   @Operation(summary = &quot;Load quarters into database from UCSB API&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @PostMapping(&quot;/loadQuarters&quot;)
   public List&lt;UCSBAPIQuarter&gt; loadQuarters() throws Exception {
-<span class="fc" id="L46">    List&lt;UCSBAPIQuarter&gt; savedQuarters = ucsbAPIQuarterService.loadAllQuarters();</span>
-<span class="fc" id="L47">    return savedQuarters;</span>
+<span class="fc" id="L42">    List&lt;UCSBAPIQuarter&gt; savedQuarters = ucsbAPIQuarterService.loadAllQuarters();</span>
+<span class="fc" id="L43">    return savedQuarters;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -5,14 +5,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,54 +19,54 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-<span class="fc" id="L24">@Slf4j</span>
+<span class="fc" id="L22">@Slf4j</span>
 @Service(&quot;UCSBSubjects&quot;)
 public class UCSBSubjectsService {
 
-  @Autowired
-  private ObjectMapper mapper;
-  @Autowired
-  private UCSBSubjectRepository subjectRepository;
+  @Autowired private ObjectMapper mapper;
+  @Autowired private UCSBSubjectRepository subjectRepository;
 
   @Value(&quot;${app.ucsb.api.consumer_key}&quot;)
   private String apiKey;
 
-  public static final String ENDPOINT = &quot;https://api.ucsb.edu/students/lookups/v1/subjects?includeInactive=false&quot;;
+  public static final String ENDPOINT =
+      &quot;https://api.ucsb.edu/students/lookups/v1/subjects?includeInactive=false&quot;;
 
   private final RestTemplate restTemplate;
 
-<span class="fc" id="L40">  public UCSBSubjectsService(RestTemplateBuilder restTemplateBuilder) {</span>
-<span class="fc" id="L41">    restTemplate = restTemplateBuilder.build();</span>
-<span class="fc" id="L42">  }</span>
+<span class="fc" id="L37">  public UCSBSubjectsService(RestTemplateBuilder restTemplateBuilder) {</span>
+<span class="fc" id="L38">    restTemplate = restTemplateBuilder.build();</span>
+<span class="fc" id="L39">  }</span>
 
   public List&lt;UCSBSubject&gt; get() throws JsonProcessingException {
 
-<span class="fc" id="L46">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L47">    headers.setAccept(List.of(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L48">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L49">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L43">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L44">    headers.setAccept(List.of(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L45">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L46">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L51">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
-<span class="fc" id="L52">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(ENDPOINT, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L48">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
+<span class="fc" id="L49">    ResponseEntity&lt;String&gt; re =</span>
+<span class="fc" id="L50">        restTemplate.exchange(ENDPOINT, HttpMethod.GET, entity, String.class);</span>
 
-<span class="fc" id="L54">    String retBody = re.getBody();</span>
-<span class="fc" id="L55">    List&lt;UCSBSubject&gt; subjects = mapper.readValue(retBody, new TypeReference&lt;List&lt;UCSBSubject&gt;&gt;() {</span>
-    });
+<span class="fc" id="L52">    String retBody = re.getBody();</span>
+<span class="fc" id="L53">    List&lt;UCSBSubject&gt; subjects =</span>
+<span class="fc" id="L54">        mapper.readValue(retBody, new TypeReference&lt;List&lt;UCSBSubject&gt;&gt;() {});</span>
 
-<span class="fc" id="L58">    return subjects;</span>
+<span class="fc" id="L56">    return subjects;</span>
   }
 
   public List&lt;UCSBSubject&gt; loadAllSubjects() throws JsonProcessingException {
-<span class="fc" id="L62">    List&lt;UCSBSubject&gt; subjects = this.get();</span>
-<span class="fc" id="L63">    List&lt;UCSBSubject&gt; savedSubjects = new ArrayList&lt;UCSBSubject&gt;();</span>
+<span class="fc" id="L60">    List&lt;UCSBSubject&gt; subjects = this.get();</span>
+<span class="fc" id="L61">    List&lt;UCSBSubject&gt; savedSubjects = new ArrayList&lt;UCSBSubject&gt;();</span>
 
-<span class="fc" id="L65">    subjects.forEach(</span>
+<span class="fc" id="L63">    subjects.forEach(</span>
         (ucsbSubject) -&gt; {
-<span class="fc" id="L67">          subjectRepository.save(ucsbSubject);</span>
-<span class="fc" id="L68">          savedSubjects.add(ucsbSubject);</span>
-<span class="fc" id="L69">        });</span>
-<span class="fc" id="L70">    log.info(&quot;subjects={}&quot;, subjects);</span>
-<span class="fc" id="L71">    return savedSubjects;</span>
+<span class="fc" id="L65">          subjectRepository.save(ucsbSubject);</span>
+<span class="fc" id="L66">          savedSubjects.add(ucsbSubject);</span>
+<span class="fc" id="L67">        });</span>
+<span class="fc" id="L68">    log.info(&quot;subjects={}&quot;, subjects);</span>
+<span class="fc" id="L69">    return savedSubjects;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
