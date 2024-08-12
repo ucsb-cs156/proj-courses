@@ -9,13 +9,9 @@ import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "API to handle CRUD operations for UCSB Subjects database")
 @RequestMapping("/api/UCSBSubjects")
 @RestController
-public class UCSBSubjectsController extends ApiController implements ApplicationRunner {
+public class UCSBSubjectsController extends ApiController /* implements ApplicationRunner */ {
   @Autowired UCSBSubjectRepository subjectRepository;
 
   @Autowired ObjectMapper mapper;
@@ -46,21 +42,7 @@ public class UCSBSubjectsController extends ApiController implements Application
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/load")
   public List<UCSBSubject> loadSubjects() throws JsonProcessingException {
-
-    List<UCSBSubject> subjects = ucsbSubjectsService.get();
-
-    List<UCSBSubject> savedSubjects = new ArrayList<UCSBSubject>();
-
-    subjects.forEach(
-        (ucsbSubject) -> {
-          try {
-            subjectRepository.save(ucsbSubject);
-            savedSubjects.add(ucsbSubject);
-          } catch (DuplicateKeyException dke) {
-            log.info("Skipping duplicate entity %s".formatted(ucsbSubject.getSubjectCode()));
-          }
-        });
-    log.info("subjects={}", subjects);
+    List<UCSBSubject> savedSubjects = ucsbSubjectsService.loadAllSubjects();
     return savedSubjects;
   }
 
@@ -98,15 +80,7 @@ public class UCSBSubjectsController extends ApiController implements Application
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/all")
   public Object deleteAllSubjects() {
-
     subjectRepository.deleteAll();
-
     return genericMessage("All UCSBSubject records deleted");
-  }
-
-  @Override
-  public void run(ApplicationArguments args) throws Exception {
-    loadSubjects();
-    log.info("Got all subjects on launch!");
   }
 }

@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.Course;
 import edu.ucsb.cs156.courses.entities.PSCourse;
@@ -39,7 +38,7 @@ public class PersonalSectionsController extends ApiController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping(value = "/all", produces = "application/json")
   public ArrayList<Course> getSectionsByPsId(@Parameter(name = "psId") @RequestParam Long psId)
-      throws JsonProcessingException {
+      throws Exception {
     User us = getCurrentUser().getUser();
     PersonalSchedule ps =
         personalScheduleRepository
