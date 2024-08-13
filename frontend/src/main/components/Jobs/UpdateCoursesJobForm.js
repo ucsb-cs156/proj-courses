@@ -7,8 +7,10 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import { useBackend } from "main/utils/useBackend";
+import IfStaleCheckBox from "main/components/Jobs/IfStaleCheckBox";
 
 const UpdateCoursesJobForm = ({ callback }) => {
+  const formId = "UpdateCoursesJobForm";
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
@@ -35,12 +37,11 @@ const UpdateCoursesJobForm = ({ callback }) => {
 
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
   const [subject, setSubject] = useState(localSubject || "ANTH");
+  const [ifStale, setIfStale] = useState(true);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("UpdateCoursesJobForm: quarter", quarter);
-    console.log("UpdateCoursesJobForm: subject", subject);
-    callback({ quarter, subject });
+    callback({ quarter, subject, ifStale });
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
@@ -53,7 +54,7 @@ const UpdateCoursesJobForm = ({ callback }) => {
               quarters={quarters}
               quarter={quarter}
               setQuarter={setQuarter}
-              controlId={"BasicSearch.Quarter"}
+              controlId={`${formId}.Quarter`}
             />
           </Col>
           <Col md="auto">
@@ -61,7 +62,14 @@ const UpdateCoursesJobForm = ({ callback }) => {
               subjects={subjects}
               subject={subject}
               setSubject={setSubject}
-              controlId={"BasicSearch.Subject"}
+              controlId={`${formId}.Subject`}
+            />
+          </Col>
+          <Col>
+            <IfStaleCheckBox
+              controlId={`${formId}.ifStale`}
+              ifStale={ifStale}
+              setIfStale={setIfStale}
             />
           </Col>
         </Row>
