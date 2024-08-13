@@ -19,6 +19,13 @@ describe("UpdateCoursesByQuarterRangeJobForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   it("renders correctly", async () => {
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: null, // use fallback value
+      endQtrYYYYQ: null, // use fallback value
+    });
+
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
@@ -48,17 +55,25 @@ describe("UpdateCoursesByQuarterRangeJobForm tests", () => {
 
     // Make sure the first and last options
     expect(
-      await screen.findByTestId(/BasicSearch.StartQuarter-option-0/),
+      await screen.findByTestId(
+        /UpdateCoursesByQuarterRangeJobForm.StartQuarter-option-0/,
+      ),
     ).toHaveValue("20211");
     expect(
-      await screen.findByTestId(/BasicSearch.StartQuarter-option-3/),
+      await screen.findByTestId(
+        /UpdateCoursesByQuarterRangeJobForm.StartQuarter-option-3/,
+      ),
     ).toHaveValue("20214");
 
     expect(
-      await screen.findByTestId(/BasicSearch.EndQuarter-option-0/),
+      await screen.findByTestId(
+        /UpdateCoursesByQuarterRangeJobForm.EndQuarter-option-0/,
+      ),
     ).toHaveValue("20211");
     expect(
-      await screen.findByTestId(/BasicSearch.EndQuarter-option-3/),
+      await screen.findByTestId(
+        /UpdateCoursesByQuarterRangeJobForm.EndQuarter-option-3/,
+      ),
     ).toHaveValue("20214");
   });
 });

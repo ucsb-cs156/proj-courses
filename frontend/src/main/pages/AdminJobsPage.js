@@ -34,17 +34,17 @@ const AdminJobsPage = () => {
   // ***** update courses job *******
 
   const objectToAxiosParamsUpdateCoursesJob = (data) => ({
-    url: `/api/jobs/launch/updateCourses?quarterYYYYQ=${data.quarter}&subjectArea=${data.subject}`,
+    url: `/api/jobs/launch/updateCourses?quarterYYYYQ=${data.quarter}&subjectArea=${data.subject}&ifStale=${data.ifStale}`,
     method: "POST",
   });
 
   const objectToAxiosParamsUpdateCoursesByQuarterJob = (data) => ({
-    url: `/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=${data.quarter}`,
+    url: `/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=${data.quarter}&ifStale=${data.ifStale}`,
     method: "POST",
   });
 
   const objectToAxiosParamsUpdateCoursesByQuarterRangeJob = (data) => ({
-    url: `/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=${data.startQuarter}&end_quarterYYYYQ=${data.endQuarter}`,
+    url: `/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=${data.startQuarter}&end_quarterYYYYQ=${data.endQuarter}&ifStale=${data.ifStale}`,
     method: "POST",
   });
 
