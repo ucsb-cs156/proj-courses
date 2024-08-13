@@ -67,7 +67,7 @@ public class JobsController extends ApiController {
       @Parameter(
               name = "ifStale",
               description = "true if job should only update when data is stale")
-          @RequestParam(defaultValue = "false")
+          @RequestParam(defaultValue = "true")
           Boolean ifStale) {
 
     log.info(
@@ -87,7 +87,12 @@ public class JobsController extends ApiController {
   @PostMapping("/launch/updateQuarterCourses")
   public Job launchUpdateCourseDataWithQuarterJob(
       @Parameter(name = "quarterYYYYQ", description = "quarter (YYYYQ format)") @RequestParam
-          String quarterYYYYQ) {
+          String quarterYYYYQ,
+      @Parameter(
+              name = "ifStale",
+              description = "true if job should only update when data is stale")
+          @RequestParam(defaultValue = "true")
+          Boolean ifStale) {
 
     var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);
 
@@ -103,7 +108,12 @@ public class JobsController extends ApiController {
           String start_quarterYYYYQ,
       @Parameter(name = "end_quarterYYYYQ", description = "end quarter (YYYYQ format)")
           @RequestParam
-          String end_quarterYYYYQ) {
+          String end_quarterYYYYQ,
+      @Parameter(
+              name = "ifStale",
+              description = "true if job should only update when data is stale")
+          @RequestParam(defaultValue = "true")
+          Boolean ifStale) {
 
     var job =
         updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);
@@ -123,7 +133,12 @@ public class JobsController extends ApiController {
           String start_quarterYYYYQ,
       @Parameter(name = "end_quarterYYYYQ", description = "end quarter (YYYYQ format)")
           @RequestParam
-          String end_quarterYYYYQ) {
+          String end_quarterYYYYQ,
+      @Parameter(
+              name = "ifStale",
+              description = "true if job should only update when data is stale")
+          @RequestParam(defaultValue = "true")
+          Boolean ifStale) {
 
     var job =
         updateCourseDataJobFactory.createForSubjectAndQuarterRange(
