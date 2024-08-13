@@ -14,10 +14,12 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
-@AllArgsConstructor
-@Getter
 @Builder
+@Getter
+@AllArgsConstructor
+@Slf4j
 public class UpdateCourseDataJob implements JobContextConsumer {
   private String start_quarterYYYYQ;
   private String end_quarterYYYYQ;
@@ -34,9 +36,13 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     for (Quarter quarter : quarters) {
       String quarterYYYYQ = quarter.getYYYYQ();
       for (String subjectArea : subjects) {
-        if (ifStale && !isStaleService.isStale(quarterYYYYQ, subjectArea)) {
-          ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
-          continue;
+        boolean isStale = isStaleService.isStale(subjectArea, quarterYYYYQ);
+        if (ifStale) {
+          if (!isStale) {
+
+            ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
+            continue;
+          }
         }
         updateCourses(ctx, quarterYYYYQ, subjectArea);
       }

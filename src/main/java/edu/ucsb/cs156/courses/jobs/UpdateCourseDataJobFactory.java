@@ -34,7 +34,20 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true);
+        false);
+  }
+
+  public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
+      String subjectArea, String quarterYYYYQ, boolean ifStale) {
+    return new UpdateCourseDataJob(
+        quarterYYYYQ,
+        quarterYYYYQ,
+        List.of(subjectArea),
+        curriculumService,
+        convertedSectionCollection,
+        updateCollection,
+        isStaleService,
+        ifStale);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
