@@ -50,6 +50,19 @@ public class UCSBAPIQuarterService {
   public static final String ALL_QUARTERS_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
 
+  public String getStartQtrYYYYQ() {
+    return startQtrYYYYQ;
+  }
+
+  public String getEndQtrYYYYQ() {
+    return endQtrYYYYQ;
+  }
+
+  public String getCurrentQuarterYYYYQ() throws Exception {
+    UCSBAPIQuarter quarter = getCurrentQuarter();
+    return quarter.getQuarter();
+  }
+
   public UCSBAPIQuarter getCurrentQuarter() throws Exception {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));

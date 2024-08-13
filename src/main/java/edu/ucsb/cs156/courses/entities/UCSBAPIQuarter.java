@@ -33,7 +33,7 @@ public class UCSBAPIQuarter {
   private LocalDateTime lastDayToAddGrad; // example: 2024-09-13T00:00:00
   private LocalDateTime lastDayThirdWeek; // example: null
 
-  public static final String SAMPLE_QUARTER_JSON_M23 =
+  public static final String SAMPLE_QUARTER_JSON_M24 =
       """
                 {
                     "quarter": "20243",
