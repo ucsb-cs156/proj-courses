@@ -12,6 +12,7 @@ import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import java.time.LocalDateTime;
@@ -31,6 +32,8 @@ public class UpdateCourseDataJobsTest {
 
   @Mock UpdateCollection updateCollection;
 
+  @Mock IsStaleService isStaleService;
+
   Job jobStarted = Job.builder().build();
   JobContext ctx = new JobContext(null, jobStarted);
 
@@ -38,13 +41,16 @@ public class UpdateCourseDataJobsTest {
   void test_subject_and_quarter_range() throws Exception {
     var job =
         spy(
-            new UpdateCourseDataJob(
-                "20211",
-                "20213",
-                List.of("CMPSC", "MATH"),
-                ucsbCurriculumService,
-                convertedSectionCollection,
-                updateCollection));
+            UpdateCourseDataJob.builder()
+                .start_quarterYYYYQ("20211")
+                .end_quarterYYYYQ("20213")
+                .subjects(List.of("CMPSC", "MATH"))
+                .ucsbCurriculumService(ucsbCurriculumService)
+                .convertedSectionCollection(convertedSectionCollection)
+                .updateCollection(updateCollection)
+                .isStaleService(isStaleService)
+                .ifStale(false)
+                .build());
     doNothing().when(job).updateCourses(any(), any(), any());
 
     job.accept(ctx);
@@ -83,7 +89,9 @@ public class UpdateCourseDataJobsTest {
             List.of("CMPSC"),
             ucsbCurriculumService,
             convertedSectionCollection,
-            updateCollection);
+            updateCollection,
+            isStaleService,
+            false);
     job.accept(ctx);
 
     // Assert
@@ -144,7 +152,9 @@ public class UpdateCourseDataJobsTest {
             List.of("MATH"),
             ucsbCurriculumService,
             convertedSectionCollection,
-            updateCollection);
+            updateCollection,
+            isStaleService,
+            false);
     job.accept(ctx);
 
     // Assert
@@ -198,7 +208,9 @@ public class UpdateCourseDataJobsTest {
             List.of("MATH"),
             ucsbCurriculumService,
             convertedSectionCollection,
-            updateCollection);
+            updateCollection,
+            isStaleService,
+            false);
     job.accept(ctx);
 
     // Assert
@@ -258,7 +270,9 @@ public class UpdateCourseDataJobsTest {
             List.of("MATH"),
             ucsbCurriculumService,
             convertedSectionCollection,
-            updateCollection);
+            updateCollection,
+            isStaleService,
+            false);
     job.accept(ctx);
 
     // Assert
@@ -277,5 +291,34 @@ public class UpdateCourseDataJobsTest {
     verify(convertedSectionCollection, times(1))
         .findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode));
     verify(convertedSectionCollection, times(1)).save(updatedSection);
+  }
+
+  @Test
+  void test_is_stale() throws Exception {
+
+    // Arrange
+
+    when(isStaleService.isStale(eq("20211"), eq("MATH"))).thenReturn(false);
+
+    // Act
+    var job =
+        new UpdateCourseDataJob(
+            "20211",
+            "20211",
+            List.of("MATH"),
+            ucsbCurriculumService,
+            convertedSectionCollection,
+            updateCollection,
+            isStaleService,
+            true);
+    job.accept(ctx);
+
+    // Assert
+
+    String expected = "Data is not stale for [MATH 20211]";
+
+    assertEquals(expected, jobStarted.getLog());
+
+    verify(isStaleService, times(1)).isStale(eq("20211"), eq("MATH"));
   }
 }
