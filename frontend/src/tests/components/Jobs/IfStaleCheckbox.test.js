@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import IfStaleCheckbox from "main/components/Jobs/IfStaleCheckBox";
