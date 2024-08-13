@@ -7,6 +7,7 @@ import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,8 @@ public class UpdateCourseDataJobFactoryTests {
   @MockBean UCSBSubjectRepository ucsbSubjectRepository;
 
   @MockBean UpdateCollection updateCollection;
+
+  @MockBean IsStaleService isStaleService;
 
   @Autowired UpdateCourseDataJobFactory factory;
 

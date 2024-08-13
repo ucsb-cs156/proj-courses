@@ -5,16 +5,19 @@ import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.models.Quarter;
+import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
+@Builder
 public class UpdateCourseDataJob implements JobContextConsumer {
   private String start_quarterYYYYQ;
   private String end_quarterYYYYQ;
@@ -22,6 +25,8 @@ public class UpdateCourseDataJob implements JobContextConsumer {
   private UCSBCurriculumService ucsbCurriculumService;
   private ConvertedSectionCollection convertedSectionCollection;
   private UpdateCollection updateCollection;
+  private IsStaleService isStaleService;
+  private boolean ifStale;
 
   @Override
   public void accept(JobContext ctx) throws Exception {
@@ -29,6 +34,10 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     for (Quarter quarter : quarters) {
       String quarterYYYYQ = quarter.getYYYYQ();
       for (String subjectArea : subjects) {
+        if (ifStale && !isStaleService.isStale(quarterYYYYQ, subjectArea)) {
+          ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
+          continue;
+        }
         updateCourses(ctx, quarterYYYYQ, subjectArea);
       }
     }
