@@ -42,7 +42,7 @@ public class UCSBAPIQuarterControllerTests extends ControllerTestCase {
   public void test_currentQuarter() throws Exception {
 
     UCSBAPIQuarter expectedResult =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M23, UCSBAPIQuarter.class);
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     String url = "/api/public/currentQuarter";
 
@@ -63,7 +63,7 @@ public class UCSBAPIQuarterControllerTests extends ControllerTestCase {
   public void test_allQuarters() throws Exception {
 
     UCSBAPIQuarter M23 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M23, UCSBAPIQuarter.class);
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     List<UCSBAPIQuarter> expectedResult = new ArrayList<UCSBAPIQuarter>();
     expectedResult.add(M23);
@@ -90,7 +90,7 @@ public class UCSBAPIQuarterControllerTests extends ControllerTestCase {
   public void test_loadQuarters() throws Exception {
 
     UCSBAPIQuarter M23 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M23, UCSBAPIQuarter.class);
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     List<UCSBAPIQuarter> expectedResult = new ArrayList<UCSBAPIQuarter>();
     expectedResult.add(M23);
