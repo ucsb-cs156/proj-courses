@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.jobs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
@@ -40,6 +41,19 @@ public class UpdateCourseDataJobFactoryTests {
     assertEquals(List.of("CMPSC"), job.getSubjects());
     assertEquals("20211", job.getStart_quarterYYYYQ());
     assertEquals("20211", job.getEnd_quarterYYYYQ());
+  }
+
+  @Test
+  void test_createForSubjectAndQuarterAndIfStale() {
+
+    // Act
+    UpdateCourseDataJob job = factory.createForSubjectAndQuarterAndIfStale("CMPSC", "20211", true);
+
+    // Assert
+    assertEquals(List.of("CMPSC"), job.getSubjects());
+    assertEquals("20211", job.getStart_quarterYYYYQ());
+    assertEquals("20211", job.getEnd_quarterYYYYQ());
+    assertTrue(job.isIfStale());
   }
 
   @Test
