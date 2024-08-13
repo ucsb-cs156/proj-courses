@@ -40,8 +40,9 @@ courses,edu.ucsb.cs156.courses.services,GrantedAuthoritiesService,0,21,0,0,0,7,0
 courses,edu.ucsb.cs156.courses.services,UCSBSubjectsService.new TypeReference() {...},0,6,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.services,UCSBGradeHistoryServiceImpl,0,205,0,6,0,51,0,11,0,8
 courses,edu.ucsb.cs156.courses.services,SystemInfoService,0,3,0,0,0,1,0,1,0,1
+courses,edu.ucsb.cs156.courses.services,UpdateService,0,38,0,2,0,9,0,3,0,2
 courses,edu.ucsb.cs156.courses.services,CurrentUserService,0,10,0,2,0,2,0,3,0,2
-courses,edu.ucsb.cs156.courses.services,IsStaleService,0,9,0,0,0,3,0,3,0,3
+courses,edu.ucsb.cs156.courses.services,IsStaleService,0,68,0,6,0,20,0,7,0,4
 courses,edu.ucsb.cs156.courses.services,UCSBAPIQuarterService.new TypeReference() {...},0,6,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.services,UCSBCurriculumService,0,570,0,6,0,117,0,12,0,9
 courses,edu.ucsb.cs156.courses.utilities,CourseUtilities,0,68,0,2,0,12,0,2,0,1
