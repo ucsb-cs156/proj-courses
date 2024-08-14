@@ -28,15 +28,11 @@ function SingleQuarterDropdown({
   if (!localSearchQuarter) {
     localStorage.setItem(controlId, quarters[lastInd].yyyyq);
   }
-
-  console.log("SingleQuarterDropdown quarterState", quarter.yyyyq);
-
+  
   const [quarterState, setQuarterState] = useState(
     // Stryker disable next-line all : not sure how to test/mock local storage
     quarter.yyyyq || localSearchQuarter || quarters[lastInd].yyyyq,
   );
-
-  console.log("SingleQuarterDropdown quarterState", quarterState);
 
   const handleQuarterOnChange = (event) => {
     const selectedQuarter = event.target.value;
