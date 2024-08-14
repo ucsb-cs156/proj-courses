@@ -35,6 +35,9 @@ describe("UpdateCoursesByQuarterRangeJobForm tests", () => {
     );
 
     expect(screen.getByText(/Update Courses/)).toBeInTheDocument();
+    expect(
+      screen.getByTestId(/UpdateCoursesByQuarterRangeJobForm.IfStale/),
+    ).toBeInTheDocument();
   });
 
   test("renders without crashing when fallback values are used", async () => {

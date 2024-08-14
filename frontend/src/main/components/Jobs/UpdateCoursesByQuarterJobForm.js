@@ -16,12 +16,7 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
   // Stryker enable OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
-
-  // Stryker disable all : not sure how to test/mock local storage
-  const localQuarter = localStorage.getItem("BasicSearch.Quarter");
-  // Stryker restore all
-
-  const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
+  const [quarter, setQuarter] = useState(quarters[0].yyyyq);
   const [ifStale, setIfStale] = useState(true);
 
   const handleSubmit = (event) => {
@@ -57,11 +52,7 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
             </Button>
           </Col>
           <Col>
-            <IfStaleCheckBox
-              controlId={"BasicSearch.IfStale"}
-              ifStale={ifStale}
-              setIfStale={setIfStale}
-            />
+            <IfStaleCheckBox ifStale={ifStale} setIfStale={setIfStale} />
           </Col>
         </Row>
       </Container>
