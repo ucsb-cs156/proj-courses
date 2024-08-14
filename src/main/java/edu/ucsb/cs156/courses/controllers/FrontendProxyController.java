@@ -11,7 +11,7 @@ import org.springframework.web.client.ResourceAccessException;
 @Profile("development")
 @RestController
 public class FrontendProxyController {
-  @GetMapping({"/", "/{path:^(?!api|oauth2|swagger-ui).*}/**"})
+  @GetMapping({"/", "/{path:^(?!api|oauth2|swagger-ui|h2-console).*}/**"})
   public ResponseEntity<?> proxy(ProxyExchange<byte[]> proxy) {
     String path = proxy.path("/");
     try {

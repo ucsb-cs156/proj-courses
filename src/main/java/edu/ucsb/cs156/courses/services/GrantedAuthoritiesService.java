@@ -16,7 +16,7 @@ public class GrantedAuthoritiesService {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     Authentication authentication = securityContext.getAuthentication();
     Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-    log.info("authorities={}", authorities);
+    log.trace("authorities={}", authorities);
     return authorities;
   }
 }

@@ -30,7 +30,7 @@ public class CurrentUserServiceImpl extends CurrentUserService {
 
   public CurrentUser getCurrentUser() {
     CurrentUser cu = CurrentUser.builder().user(this.getUser()).roles(this.getRoles()).build();
-    log.info("getCurrentUser returns {}", cu);
+    log.trace("getCurrentUser returns {}", cu);
     return cu;
   }
 
@@ -48,7 +48,7 @@ public class CurrentUserServiceImpl extends CurrentUserService {
     String hostedDomain = oAuthUser.getAttribute("hd");
 
     java.util.Map<java.lang.String, java.lang.Object> attrs = oAuthUser.getAttributes();
-    log.info("attrs={}", attrs);
+    log.trace("attrs={}", attrs);
 
     Optional<User> ou = userRepository.findByEmail(email);
     if (ou.isPresent()) {

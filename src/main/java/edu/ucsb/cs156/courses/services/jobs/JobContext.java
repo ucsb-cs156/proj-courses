@@ -12,8 +12,12 @@ public class JobContext {
   private Job job;
 
   public void log(String message) {
-    log.info("Job %s: %s".formatted(job.getId(), message));
-    String previousLog = job.getLog() == null ? "" : (job.getLog() + "\n");
+    this.logNoCR(message + "\n");
+  }
+
+  public void logNoCR(String message) {
+    log.trace("Job %s: %s".formatted(job.getId(), message.trim()));
+    String previousLog = job.getLog() == null ? "" : (job.getLog());
     job.setLog(previousLog + message);
     if (jobsRepository != null) jobsRepository.save(job);
   }

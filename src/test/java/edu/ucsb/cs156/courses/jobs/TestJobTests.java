@@ -29,9 +29,11 @@ public class TestJobTests {
 
     String expected =
         """
-            Hello World! from test job!
-            authentication is null
-            Goodbye from test job!""";
+        Hello World! from test job!
+        testing logNoCR testlogNoCR2 testlogNoCR3
+        authentication is null
+        Goodbye from test job!
+        """;
     // Assert
     assertEquals(expected, jobStarted.getLog());
   }
@@ -50,9 +52,11 @@ public class TestJobTests {
 
     String expected =
         """
-                Hello World! from test job!
-                authentication is not null
-                Goodbye from test job!""";
+        Hello World! from test job!
+        testing logNoCR testlogNoCR2 testlogNoCR3
+        authentication is not null
+        Goodbye from test job!
+        """;
     // Assert
     assertEquals(expected, jobStarted.getLog());
   }

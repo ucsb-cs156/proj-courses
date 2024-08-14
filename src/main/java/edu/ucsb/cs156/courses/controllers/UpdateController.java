@@ -67,7 +67,7 @@ public class UpdateController extends ApiController {
     } else {
       updates = updateCollection.findBySubjectAreaAndQuarter(subjectArea, quarter, pageRequest);
     }
-    log.info("updates: {}", updates);
+    log.trace("updates: {}", updates);
     return updates;
   }
 }

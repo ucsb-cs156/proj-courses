@@ -72,7 +72,7 @@ public class UCSBCurriculumService {
       url = CURRICULUM_ENDPOINT + params;
     }
 
-    log.info("url=" + url);
+    log.trace("url=" + url);
 
     String retVal = "";
     MediaType contentType = null;
@@ -83,7 +83,7 @@ public class UCSBCurriculumService {
     statusCode = (HttpStatus) re.getStatusCode();
     retVal = re.getBody();
 
-    log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+    log.trace("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
     return retVal;
   }
 
@@ -114,7 +114,7 @@ public class UCSBCurriculumService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    log.info("url=" + SUBJECTS_ENDPOINT);
+    log.trace("url=" + SUBJECTS_ENDPOINT);
 
     String retVal = "";
     MediaType contentType = null;
@@ -126,7 +126,7 @@ public class UCSBCurriculumService {
     statusCode = (HttpStatus) re.getStatusCode();
     retVal = re.getBody();
 
-    log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+    log.trace("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
     return retVal;
   }
 
@@ -146,7 +146,7 @@ public class UCSBCurriculumService {
 
     String url = SECTION_ENDPOINT;
 
-    log.info("url=" + url);
+    log.trace("url=" + url);
 
     Map<String, String> params = new HashMap<>();
     params.put("quarter", quarter);
@@ -166,7 +166,7 @@ public class UCSBCurriculumService {
       retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
     }
 
-    log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+    log.trace("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
     return retVal;
   }
 
@@ -187,7 +187,7 @@ public class UCSBCurriculumService {
 
     String url = ALL_SECTIONS_ENDPOINT;
 
-    log.info("url=" + url);
+    log.trace("url=" + url);
 
     Map<String, String> params = new HashMap<>();
     params.put("quarter", quarter);
@@ -207,7 +207,7 @@ public class UCSBCurriculumService {
       retVal = "{\"error\": \"Enroll code doesn't exist in that quarter.\"}";
     }
 
-    log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+    log.trace("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
     return retVal;
   }
 
@@ -224,7 +224,7 @@ public class UCSBCurriculumService {
     String url =
         "https://api.ucsb.edu/academics/curriculums/v3/classsection/" + quarter + "/" + enrollCd;
 
-    log.info("url=" + url);
+    log.trace("url=" + url);
 
     String retVal = "";
     MediaType contentType = null;
@@ -235,7 +235,7 @@ public class UCSBCurriculumService {
     statusCode = (HttpStatus) re.getStatusCode();
     retVal = re.getBody();
 
-    log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+    log.trace("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
     return retVal;
   }
 }

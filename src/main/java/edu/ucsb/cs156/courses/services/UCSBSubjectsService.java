@@ -65,7 +65,7 @@ public class UCSBSubjectsService {
           subjectRepository.save(ucsbSubject);
           savedSubjects.add(ucsbSubject);
         });
-    log.info("subjects={}", subjects);
+    log.trace("subjects={}", subjects);
     return savedSubjects;
   }
 }

@@ -30,7 +30,7 @@ public class MockCurrentUserServiceImpl extends CurrentUserServiceImpl {
     org.springframework.security.core.userdetails.User user = null;
 
     if (principal instanceof org.springframework.security.core.userdetails.User) {
-      log.info("principal instance of org.springframework.security.core.userdetails.User");
+      log.trace("principal instance of org.springframework.security.core.userdetails.User");
       user = (org.springframework.security.core.userdetails.User) principal;
       googleSub = "fake_" + user.getUsername();
       email = user.getUsername() + "@example.org";
@@ -59,14 +59,14 @@ public class MockCurrentUserServiceImpl extends CurrentUserServiceImpl {
             .id(1L)
             .build();
 
-    log.info("************** ALERT **********************");
-    log.info("************* MOCK USER********************");
-    log.info("authentication={}", authentication);
-    log.info("securityContext={}", securityContext);
-    log.info("principal={}", principal);
-    log.info("user (spring security) ={}", user);
-    log.info("u (our custom user entity)={}", u);
-    log.info("************** END ALERT ******************");
+    log.trace("************** ALERT **********************");
+    log.trace("************* MOCK USER********************");
+    log.trace("authentication={}", authentication);
+    log.trace("securityContext={}", securityContext);
+    log.trace("principal={}", principal);
+    log.trace("user (spring security) ={}", user);
+    log.trace("u (our custom user entity)={}", u);
+    log.trace("************** END ALERT ******************");
 
     return u;
   }

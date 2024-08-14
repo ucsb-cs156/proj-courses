@@ -30,23 +30,33 @@ public class UpdateCourseDataJob implements JobContextConsumer {
   private IsStaleService isStaleService;
   private boolean ifStale;
 
+  public String subjectsAsString(List<String> subjects) {
+    if (subjects.size() <= 1)
+      return subjects.toString();
+    else
+      return "[" + subjects.get(0) + " ... " + subjects.get(subjects.size()-1) + "]";
+  }
+
   @Override
   public void accept(JobContext ctx) throws Exception {
+    ctx.log("Updating course data from [" + start_quarterYYYYQ + "] to [" + end_quarterYYYYQ + "] for " + subjectsAsString(subjects));
+    if (ifStale) {
+      ctx.log("Only updating stale data");
+    }
+    ctx.logNoCR("Updating:");
     List<Quarter> quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);
     for (Quarter quarter : quarters) {
       String quarterYYYYQ = quarter.getYYYYQ();
       for (String subjectArea : subjects) {
         boolean isStale = isStaleService.isStale(subjectArea, quarterYYYYQ);
-        if (ifStale) {
-          if (!isStale) {
-
-            ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
-            continue;
-          }
+        if (ifStale && !isStale) {
+          continue;
         }
         updateCourses(ctx, quarterYYYYQ, subjectArea);
       }
     }
+    ctx.log("");
+    ctx.log("Done updating course data from [" + start_quarterYYYYQ + "] to [" + end_quarterYYYYQ + "] for " + subjectsAsString(subjects));
   }
 
   public Update updateUpdatesCollection(
@@ -58,13 +68,10 @@ public class UpdateCourseDataJob implements JobContextConsumer {
 
   public void updateCourses(JobContext ctx, String quarterYYYYQ, String subjectArea)
       throws Exception {
-    ctx.log("Updating courses for [" + subjectArea + " " + quarterYYYYQ + "]");
+    ctx.logNoCR(" [" + subjectArea + " " + quarterYYYYQ + "]");
 
     List<ConvertedSection> convertedSections =
         ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ, "A");
-
-    ctx.log("Found " + convertedSections.size() + " sections");
-    ctx.log("Storing in MongoDB Collection...");
 
     int newSections = 0;
     int updatedSections = 0;
@@ -87,19 +94,11 @@ public class UpdateCourseDataJob implements JobContextConsumer {
           newSections++;
         }
       } catch (Exception e) {
-        ctx.log("Error saving section: " + e.getMessage());
+        ctx.log(" Error saving section: " + e.getMessage());
         errors++;
       }
     }
 
-    Update savedUpdate =
-        updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);
-
-    ctx.log(
-        String.format(
-            "%d new sections saved, %d sections updated, %d errors, last update: %s",
-            newSections, updatedSections, errors, savedUpdate.getLastUpdate()));
-    ctx.log("Saved update: " + savedUpdate);
-    ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");
+    updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);
   }
 }

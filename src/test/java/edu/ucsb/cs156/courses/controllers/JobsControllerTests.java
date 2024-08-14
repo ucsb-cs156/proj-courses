@@ -164,6 +164,13 @@ public class JobsControllerTests extends ControllerTestCase {
 
     User user = currentUserService.getUser();
 
+    String logContents1 = 
+        """
+        Hello World! from test job!
+        testing logNoCR testlogNoCR2 testlogNoCR3
+        authentication is not null
+        """;
+
     Job jobStarted =
         Job.builder()
             .id(0L)
@@ -171,8 +178,16 @@ public class JobsControllerTests extends ControllerTestCase {
             .createdAt(null)
             .updatedAt(null)
             .status("running")
-            .log("Hello World! from test job!\nauthentication is not null")
+            .log(logContents1)
             .build();
+
+    String logContents2 = 
+        """
+        Hello World! from test job!
+        testing logNoCR testlogNoCR2 testlogNoCR3
+        authentication is not null
+        Goodbye from test job!
+        """;
 
     Job jobCompleted =
         Job.builder()
@@ -181,7 +196,7 @@ public class JobsControllerTests extends ControllerTestCase {
             .createdAt(null)
             .updatedAt(null)
             .status("complete")
-            .log("Hello World! from test job!\nauthentication is not null\nGoodbye from test job!")
+            .log(logContents2)
             .build();
 
     when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobCompleted);
@@ -201,10 +216,10 @@ public class JobsControllerTests extends ControllerTestCase {
 
     await()
         .atMost(1, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(3)).save(eq(jobStarted)));
+        .untilAsserted(() -> verify(jobsRepository, times(6)).save(eq(jobStarted)));
     await()
         .atMost(10, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(5)).save(eq(jobCompleted)));
+        .untilAsserted(() -> verify(jobsRepository, times(8)).save(eq(jobCompleted)));
   }
 
   @WithMockUser(roles = {"ADMIN"})
@@ -215,6 +230,13 @@ public class JobsControllerTests extends ControllerTestCase {
 
     User user = currentUserService.getUser();
 
+    String logContents1 = 
+        """
+        Hello World! from test job!
+        testing logNoCR testlogNoCR2 testlogNoCR3
+        authentication is not null
+        """;
+
     Job jobStarted =
         Job.builder()
             .id(0L)
@@ -222,9 +244,16 @@ public class JobsControllerTests extends ControllerTestCase {
             .createdAt(null)
             .updatedAt(null)
             .status("running")
-            .log("Hello World! from test job!\nauthentication is not null")
+            .log(logContents1)
             .build();
 
+    String logContents2 = 
+        """
+        Hello World! from test job!
+        testing logNoCR testlogNoCR2 testlogNoCR3
+        authentication is not null
+        Fail!
+        """;
     Job jobFailed =
         Job.builder()
             .id(0L)
@@ -232,7 +261,7 @@ public class JobsControllerTests extends ControllerTestCase {
             .createdAt(null)
             .updatedAt(null)
             .status("error")
-            .log("Hello World! from test job!\nauthentication is not null\nFail!")
+            .log(logContents2)
             .build();
 
     when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobFailed);
@@ -251,11 +280,11 @@ public class JobsControllerTests extends ControllerTestCase {
 
     await()
         .atMost(1, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(3)).save(eq(jobStarted)));
+        .untilAsserted(() -> verify(jobsRepository, times(6)).save(eq(jobStarted)));
 
     await()
         .atMost(10, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(4)).save(eq(jobFailed)));
+        .untilAsserted(() -> verify(jobsRepository, times(7)).save(eq(jobFailed)));
   }
 
   @WithMockUser(roles = {"ADMIN"})
@@ -272,7 +301,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     // assert
     String responseString = response.getResponse().getContentAsString();
-    log.info("responseString={}", responseString);
+    log.trace("responseString={}", responseString);
     Job jobReturned = objectMapper.readValue(responseString, Job.class);
 
     assertNotNull(jobReturned.getStatus());
@@ -290,7 +319,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     // assert
     String responseString = response.getResponse().getContentAsString();
-    log.info("responseString={}", responseString);
+    log.trace("responseString={}", responseString);
     Job jobReturned = objectMapper.readValue(responseString, Job.class);
 
     assertNotNull(jobReturned.getStatus());
@@ -310,7 +339,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     // assert
     String responseString = response.getResponse().getContentAsString();
-    log.info("responseString={}", responseString);
+    log.trace("responseString={}", responseString);
     Job jobReturned = objectMapper.readValue(responseString, Job.class);
 
     assertNotNull(jobReturned.getStatus());
@@ -331,7 +360,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     // assert
     String responseString = response.getResponse().getContentAsString();
-    log.info("responseString={}", responseString);
+    log.trace("responseString={}", responseString);
     Job jobReturned = objectMapper.readValue(responseString, Job.class);
 
     assertNotNull(jobReturned.getStatus());
@@ -349,7 +378,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     // assert
     String responseString = response.getResponse().getContentAsString();
-    log.info("responseString={}", responseString);
+    log.trace("responseString={}", responseString);
     Job jobReturned = objectMapper.readValue(responseString, Job.class);
 
     assertNotNull(jobReturned.getStatus());

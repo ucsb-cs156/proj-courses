@@ -74,7 +74,7 @@ public class UCSBAPIQuarterService {
 
     String url = CURRENT_QUARTER_ENDPOINT;
 
-    log.info("url=" + url);
+    log.trace("url=" + url);
 
     String retVal = "";
     MediaType contentType = null;
@@ -85,7 +85,7 @@ public class UCSBAPIQuarterService {
     statusCode = (HttpStatus) re.getStatusCode();
     retVal = re.getBody();
 
-    log.info(
+    log.trace(
         "json: {} contentType: {} statusCode: {} entity: {}",
         retVal,
         contentType,
@@ -115,7 +115,7 @@ public class UCSBAPIQuarterService {
 
     String url = ALL_QUARTERS_ENDPOINT;
 
-    log.info("url=" + url);
+    log.trace("url=" + url);
 
     String retVal = "";
     MediaType contentType = null;
@@ -126,7 +126,7 @@ public class UCSBAPIQuarterService {
     statusCode = (HttpStatus) re.getStatusCode();
     retVal = re.getBody();
 
-    log.info(
+    log.trace(
         "json: {} contentType: {} statusCode: {} entity: {}",
         retVal,
         contentType,
@@ -153,7 +153,7 @@ public class UCSBAPIQuarterService {
             savedQuarters.add(quarter);
           }
         });
-    log.info("savedQuarters.size={}", savedQuarters.size());
+    log.trace("savedQuarters.size={}", savedQuarters.size());
     return savedQuarters;
   }
 }

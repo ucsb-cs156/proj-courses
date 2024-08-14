@@ -171,7 +171,7 @@ public class UploadGradeDataJobTests {
     // Assert
 
     String expected =
-        """
+            """
             Updating UCSB Grade History Data
             Processing data for year: 20204
             Processing data for subjectArea: CMPSC
@@ -179,7 +179,8 @@ public class UploadGradeDataJobTests {
             Processing data for year: 20211
             Processing data for subjectArea: CMPSC
             Processing data for subjectArea: CMPTGCS
-            Finished updating UCSB Grade History Data""";
+            Finished updating UCSB Grade History Data
+            """;
 
     assertEquals(expected, jobStarted.getLog());
   }

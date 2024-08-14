@@ -84,7 +84,7 @@ public class PersonalSchedulesController extends ApiController {
       @Parameter(name = "description") @RequestParam String description,
       @Parameter(name = "quarter") @RequestParam String quarter) {
     CurrentUser currentUser = getCurrentUser();
-    log.info("currentUser={}", currentUser);
+    log.trace("currentUser={}", currentUser);
 
     // Checks length of name parameter (length should be 15 chars or less, nonzero)
     if (name.length() > 15) {

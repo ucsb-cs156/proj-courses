@@ -42,7 +42,7 @@ public class UCSBGradeHistoryServiceImpl implements UCSBGradeHistoryService {
   @Override
   public List<String> getUrls() throws Exception {
 
-    log.info("getting data from {}", API_ENDPOINT);
+    log.trace("getting data from {}", API_ENDPOINT);
 
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(List.of(MediaType.APPLICATION_JSON));
@@ -71,7 +71,7 @@ public class UCSBGradeHistoryServiceImpl implements UCSBGradeHistoryService {
 
   @Override
   public List<GradeHistory> getGradeData(String url) throws Exception {
-    log.info("getting data from {}", url);
+    log.trace("getting data from {}", url);
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(List.of(MediaType.APPLICATION_JSON));
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -85,7 +85,7 @@ public class UCSBGradeHistoryServiceImpl implements UCSBGradeHistoryService {
   @Override
   public List<GradeHistory> parse(Reader reader) throws Exception {
     List<GradeHistory> gradeHistoryList = new ArrayList<GradeHistory>();
-    log.info("Parsing CSV file with grade history... ");
+    log.trace("Parsing CSV file with grade history... ");
     CSVReader csvReader = new CSVReader(reader);
     csvReader.skip(1);
     List<String[]> myEntries = csvReader.readAll();
@@ -99,7 +99,7 @@ public class UCSBGradeHistoryServiceImpl implements UCSBGradeHistoryService {
               .grade(row[4])
               .count(Integer.parseInt(row[5]))
               .build();
-      log.info("Parsed: " + gradeHistory.toString());
+      log.trace("Parsed: " + gradeHistory.toString());
       gradeHistoryList.add(gradeHistory);
     }
     csvReader.close();

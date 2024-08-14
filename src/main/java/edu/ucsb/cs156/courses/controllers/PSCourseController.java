@@ -109,7 +109,7 @@ public class PSCourseController extends ApiController {
       @Parameter(name = "psId") @RequestParam Long psId)
       throws Exception {
     CurrentUser currentUser = getCurrentUser();
-    log.info("currentUser={}", currentUser);
+    log.trace("currentUser={}", currentUser);
 
     PersonalSchedule checkPsId =
         personalScheduleRepository

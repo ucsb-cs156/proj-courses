@@ -17,12 +17,18 @@ import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -48,21 +54,25 @@ public class SecurityConfig {
   @Value("${app.admin.emails}")
   private final List<String> adminEmails = new ArrayList<>();
 
-  @Autowired UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
   // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  
     http.exceptionHandling(
             handling -> handling.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
+        .headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin())) // for h2-console
         .oauth2Login(
             oauth2 ->
                 oauth2.userInfoEndpoint(
                     userInfo -> userInfo.userAuthoritiesMapper(this.userAuthoritiesMapper())))
         .csrf(
-            csrf ->
-                csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+            csrf -> csrf
+                .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .logout(
@@ -73,10 +83,10 @@ public class SecurityConfig {
     return http.build();
   }
 
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return web -> web.ignoring().requestMatchers("/h2-console/**");
-  }
+  // @Bean
+  // public WebSecurityCustomizer webSecurityCustomizer() {
+  // return web -> web.ignoring().requestMatchers("/h2-console/**");
+  // }
 
   private GrantedAuthoritiesMapper userAuthoritiesMapper() {
     return (authorities) -> {
@@ -84,12 +94,12 @@ public class SecurityConfig {
 
       authorities.forEach(
           authority -> {
-            log.info("********** authority={}", authority);
+            log.trace("********** authority={}", authority);
             mappedAuthorities.add(authority);
             if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
 
               Map<String, Object> userAttributes = oauth2UserAuthority.getAttributes();
-              log.info("********** userAttributes={}", userAttributes);
+              log.trace("********** userAttributes={}", userAttributes);
               mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
               String email = (String) userAttributes.get("email");
