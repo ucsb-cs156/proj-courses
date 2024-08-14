@@ -21,6 +21,7 @@ const IfStaleCheckBox = ({
       <Form.Check
         type="checkbox"
         id={controlId}
+        data-testid={controlId}
         defaultChecked={ifStale}
         onChange={handleOnChange}
       ></Form.Check>
