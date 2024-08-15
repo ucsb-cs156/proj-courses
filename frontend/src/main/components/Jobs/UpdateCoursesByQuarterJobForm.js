@@ -16,7 +16,7 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
   // Stryker enable OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
-  const [quarter, setQuarter] = useState(quarters[0].yyyyq);
+  const [quarter, setQuarter] = useState(null);
   const [ifStale, setIfStale] = useState(true);
 
   const handleSubmit = (event) => {

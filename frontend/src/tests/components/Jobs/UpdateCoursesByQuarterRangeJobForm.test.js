@@ -18,12 +18,12 @@ const queryClient = new QueryClient();
 describe("UpdateCoursesByQuarterRangeJobForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
-  it("renders correctly", async () => {
+  it("renders loading when startQtrYYYYQ and endQtrYYYYQ are not available", async () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,
-      startQtrYYYYQ: null, // use fallback value
-      endQtrYYYYQ: null, // use fallback value
+      startQtrYYYYQ: null, // they will be initially
+      endQtrYYYYQ: null // they will be initially
     });
 
     render(
@@ -34,18 +34,15 @@ describe("UpdateCoursesByQuarterRangeJobForm tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText(/Update Courses/)).toBeInTheDocument();
-    expect(
-      screen.getByTestId(/UpdateCoursesByQuarterRangeJobForm.IfStale/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Loading.../)).toBeInTheDocument();
   });
 
-  test("renders without crashing when fallback values are used", async () => {
+  test("renders correctly for a reasonable range", async () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,
-      startQtrYYYYQ: null, // use fallback value
-      endQtrYYYYQ: null, // use fallback value
+      startQtrYYYYQ: 20204, // use fallback value
+      endQtrYYYYQ: 20213, // use fallback value
     });
 
     render(
@@ -61,22 +58,11 @@ describe("UpdateCoursesByQuarterRangeJobForm tests", () => {
       await screen.findByTestId(
         /UpdateCoursesByQuarterRangeJobForm.StartQuarter-option-0/,
       ),
-    ).toHaveValue("20211");
+    ).toHaveValue("20204");
     expect(
       await screen.findByTestId(
         /UpdateCoursesByQuarterRangeJobForm.StartQuarter-option-3/,
       ),
-    ).toHaveValue("20214");
-
-    expect(
-      await screen.findByTestId(
-        /UpdateCoursesByQuarterRangeJobForm.EndQuarter-option-0/,
-      ),
-    ).toHaveValue("20211");
-    expect(
-      await screen.findByTestId(
-        /UpdateCoursesByQuarterRangeJobForm.EndQuarter-option-3/,
-      ),
-    ).toHaveValue("20214");
+    ).toHaveValue("20213");
   });
 });

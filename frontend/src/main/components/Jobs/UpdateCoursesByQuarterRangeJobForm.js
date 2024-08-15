@@ -12,10 +12,13 @@ const UpdateCoursesByQuarterRangeJobForm = ({ callback }) => {
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
-  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
-  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+  const startQtr = systemInfo?.startQtrYYYYQ;
+  const endQtr = systemInfo?.endQtrYYYYQ;
   // Stryker enable OptionalChaining
 
+  if (!startQtr || !endQtr) {
+    return <p>Loading...</p>;
+  }
   const quarters = quarterRange(startQtr, endQtr);
 
   // Stryker disable all : not sure how to test/mock local storage
@@ -26,7 +29,7 @@ const UpdateCoursesByQuarterRangeJobForm = ({ callback }) => {
     localStartQuarter || quarters[0].yyyyq,
   );
   const [endQuarter, setEndQuarter] = useState(
-    localEndQuarter || quarters[0].yyyyq,
+    localEndQuarter || quarters[quarters.length-1].yyyyq,
   );
   const [ifStale, setIfStale] = useState(true);
 

@@ -60,30 +60,6 @@ describe("SingleQuarterSelector tests", () => {
     expect(setQuarter).toBeCalledWith("20213");
   });
 
-  test("if I pass a non-null onChange, it gets called when the value changes", async () => {
-    const onChange = jest.fn();
-    render(
-      <SingleQuarterDropdown
-        quarters={quarterRange("20211", "20222")}
-        quarter={quarter}
-        setQuarter={setQuarter}
-        controlId="sqd1"
-        label="Select Quarter"
-        onChange={onChange}
-      />,
-    );
-
-    expect(await screen.findByLabelText("Select Quarter")).toBeInTheDocument();
-    const selectQuarter = screen.getByLabelText("Select Quarter");
-    userEvent.selectOptions(selectQuarter, "20213");
-    await waitFor(() => expect(setQuarter).toBeCalledWith("20213"));
-    await waitFor(() => expect(onChange).toBeCalledTimes(1));
-
-    // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
-    const event = onChange.mock.calls[0][0];
-    expect(event.target.value).toBe("20213");
-  });
-
   test("default label is Quarter", async () => {
     render(
       <SingleQuarterDropdown
@@ -121,7 +97,7 @@ describe("SingleQuarterSelector tests", () => {
     render(
       <SingleQuarterDropdown
         quarters={quarterRange("20201", "20224")}
-        quarter={quarter}
+        quarter={null}
         setQuarter={setQuarter}
         controlId="sqd1"
       />,
@@ -140,7 +116,7 @@ describe("SingleQuarterSelector tests", () => {
     render(
       <SingleQuarterDropdown
         quarters={quarterRange("20201", "20234")}
-        quarter={quarter}
+        quarter={null}
         setQuarter={setQuarter}
         controlId="sqd1"
       />,
@@ -167,5 +143,44 @@ describe("SingleQuarterSelector tests", () => {
     await waitFor(() =>
       expect(setQuarterStateSpy).toBeCalledWith("sqd1", "20224"),
     );
+  });
+
+  test("when quarter range is empty, renders 'loading'", async () => {
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+
+    const setQuarterStateSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    render(
+      <SingleQuarterDropdown
+        quarters={[]}
+        quarter={quarter}
+        setQuarter={setQuarter}
+        controlId="sqd1"
+      />,
+    );
+
+    await waitFor(() =>
+      expect(screen.getByText(/Loading.../)).toBeInTheDocument(),
+    );
+  });
+
+  test("when quarter is null, and local storage is null renders final quarter", async () => {
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+
+    const setQuarterStateSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    render(
+      <SingleQuarterDropdown
+        quarters={quarterRange("20201", "20224")}
+        quarter={null}
+        setQuarter={setQuarter}
+        controlId="sqd1"
+      />,
+    );
+
+    await waitFor(() => expect(useState).toBeCalledWith("20224"));
+   
   });
 });

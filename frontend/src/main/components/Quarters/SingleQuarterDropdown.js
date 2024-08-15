@@ -14,36 +14,36 @@ import { Form } from "react-bootstrap";
 //  { yyyyq :"20222", qyy: "S22"}]
 
 function SingleQuarterDropdown({
-  quarter,
-  quarters,
-  setQuarter,
-  controlId,
-  onChange = null,
+  quarter, // initial value (can be null)
+  quarters, // list of quarters
+  setQuarter, // setState function to set the quarter
+  controlId, // used for testid and localStorage
   label = "Quarter",
 }) {
+
+
   const lastInd = quarters.length - 1;
 
   const localSearchQuarter = localStorage.getItem(controlId);
 
-  if (!localSearchQuarter) {
+  if (!localSearchQuarter && quarters.length > 0) {
     localStorage.setItem(controlId, quarters[lastInd].yyyyq);
   }
 
-  const [quarterState, setQuarterState] = useState(
-    // Stryker disable next-line all : not sure how to test/mock local storage
-    quarter.yyyyq || localSearchQuarter || quarters[lastInd].yyyyq,
-  );
+  const quarterToUse = (quarter == null) ? (localSearchQuarter === null ? quarters[lastInd].yyyyq : localSearchQuarter) : quarter;
+  const [quarterState, setQuarterState] = useState(quarterToUse);
 
   const handleQuarterOnChange = (event) => {
     const selectedQuarter = event.target.value;
     localStorage.setItem(controlId, selectedQuarter);
     setQuarterState(selectedQuarter);
     setQuarter(selectedQuarter);
-    if (onChange != null) {
-      onChange(event);
-    }
   };
 
+
+  if (quarters.length === 0) {
+    return <p>Loading...</p>;
+  }
   return (
     <Form.Group controlId={controlId}>
       <Form.Label>{label}</Form.Label>
