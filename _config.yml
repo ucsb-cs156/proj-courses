@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-issue125","number":126,"title":"Pc issue125","url":"https://github.com/ucsb-cs156/proj-courses/pull/126"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-issue127","number":128,"title":"pc - add methods in jobs controller to delete all jobs or delete job …","url":"https://github.com/ucsb-cs156/proj-courses/pull/128"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-issue125","number":126,"title":"Pc issue125","url":"https://github.com/ucsb-cs156/proj-courses/pull/126"}]
