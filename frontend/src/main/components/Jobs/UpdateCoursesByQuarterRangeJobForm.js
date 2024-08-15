@@ -5,8 +5,10 @@ import { quarterRange } from "main/utils/quarterUtilities";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
+import IfStaleCheckBox from "main/components/Jobs/IfStaleCheckBox";
 
 const UpdateCoursesByQuarterRangeJobForm = ({ callback }) => {
+  const formId = "UpdateCoursesByQuarterRangeJobForm";
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
@@ -26,10 +28,11 @@ const UpdateCoursesByQuarterRangeJobForm = ({ callback }) => {
   const [endQuarter, setEndQuarter] = useState(
     localEndQuarter || quarters[0].yyyyq,
   );
+  const [ifStale, setIfStale] = useState(true);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    callback({ startQuarter, endQuarter });
+    callback({ startQuarter, endQuarter, ifStale });
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
@@ -45,7 +48,7 @@ const UpdateCoursesByQuarterRangeJobForm = ({ callback }) => {
               quarters={quarters}
               quarter={startQuarter}
               setQuarter={setStartQuarter}
-              controlId={"BasicSearch.StartQuarter"}
+              controlId={`${formId}.StartQuarter`}
               label={"Start Quarter"}
             />
           </Col>
@@ -54,8 +57,15 @@ const UpdateCoursesByQuarterRangeJobForm = ({ callback }) => {
               quarters={quarters}
               quarter={endQuarter}
               setQuarter={setEndQuarter}
-              controlId={"BasicSearch.EndQuarter"}
+              controlId={`${formId}.EndQuarter`}
               label={"End Quarter"}
+            />
+          </Col>
+          <Col>
+            <IfStaleCheckBox
+              controlId={`${formId}.IfStale`}
+              ifStale={ifStale}
+              setIfStale={setIfStale}
             />
           </Col>
         </Row>

@@ -12,6 +12,7 @@ import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import java.time.LocalDateTime;
@@ -24,12 +25,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateCourseDataJobsTest {
+public class UpdateCourseDataJobTests {
   @Mock UCSBCurriculumService ucsbCurriculumService;
 
   @Mock ConvertedSectionCollection convertedSectionCollection;
 
   @Mock UpdateCollection updateCollection;
+
+  @Mock IsStaleService isStaleService;
 
   Job jobStarted = Job.builder().build();
   JobContext ctx = new JobContext(null, jobStarted);
@@ -38,13 +41,16 @@ public class UpdateCourseDataJobsTest {
   void test_subject_and_quarter_range() throws Exception {
     var job =
         spy(
-            new UpdateCourseDataJob(
-                "20211",
-                "20213",
-                List.of("CMPSC", "MATH"),
-                ucsbCurriculumService,
-                convertedSectionCollection,
-                updateCollection));
+            UpdateCourseDataJob.builder()
+                .start_quarterYYYYQ("20211")
+                .end_quarterYYYYQ("20213")
+                .subjects(List.of("CMPSC", "MATH"))
+                .ucsbCurriculumService(ucsbCurriculumService)
+                .convertedSectionCollection(convertedSectionCollection)
+                .updateCollection(updateCollection)
+                .isStaleService(isStaleService)
+                .ifStale(false)
+                .build());
     doNothing().when(job).updateCourses(any(), any(), any());
 
     job.accept(ctx);
@@ -83,7 +89,9 @@ public class UpdateCourseDataJobsTest {
             List.of("CMPSC"),
             ucsbCurriculumService,
             convertedSectionCollection,
-            updateCollection);
+            updateCollection,
+            isStaleService,
+            false);
     job.accept(ctx);
 
     // Assert
@@ -144,7 +152,9 @@ public class UpdateCourseDataJobsTest {
             List.of("MATH"),
             ucsbCurriculumService,
             convertedSectionCollection,
-            updateCollection);
+            updateCollection,
+            isStaleService,
+            false);
     job.accept(ctx);
 
     // Assert
@@ -198,7 +208,9 @@ public class UpdateCourseDataJobsTest {
             List.of("MATH"),
             ucsbCurriculumService,
             convertedSectionCollection,
-            updateCollection);
+            updateCollection,
+            isStaleService,
+            false);
     job.accept(ctx);
 
     // Assert
@@ -258,7 +270,9 @@ public class UpdateCourseDataJobsTest {
             List.of("MATH"),
             ucsbCurriculumService,
             convertedSectionCollection,
-            updateCollection);
+            updateCollection,
+            isStaleService,
+            false);
     job.accept(ctx);
 
     // Assert
@@ -277,5 +291,100 @@ public class UpdateCourseDataJobsTest {
     verify(convertedSectionCollection, times(1))
         .findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode));
     verify(convertedSectionCollection, times(1)).save(updatedSection);
+  }
+
+  @Test
+  void test_if_stale_and_is_stale() throws Exception {
+
+    // Arrange
+
+    when(isStaleService.isStale(eq("MATH"), eq("20211"))).thenReturn(true);
+
+    String coursePageJson = CoursePageFixtures.COURSE_PAGE_JSON_MATH3B;
+    CoursePage coursePage = CoursePage.fromJSON(coursePageJson);
+
+    List<ConvertedSection> convertedSections = coursePage.convertedSections();
+
+    List<ConvertedSection> listWithUpdatedSection = new ArrayList<>();
+
+    ConvertedSection section0 = convertedSections.get(0);
+    String quarter = section0.getCourseInfo().getQuarter();
+    String enrollCode = section0.getSection().getEnrollCode();
+
+    int oldEnrollment = section0.getSection().getEnrolledTotal();
+
+    ConvertedSection updatedSection = (ConvertedSection) section0.clone();
+    updatedSection.getCourseInfo().setTitle("New Title");
+    updatedSection.getSection().setEnrolledTotal(oldEnrollment + 1);
+    listWithUpdatedSection.add(updatedSection);
+
+    Optional<ConvertedSection> section0Optional = Optional.of(section0);
+
+    when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
+        .thenReturn(listWithUpdatedSection);
+    when(convertedSectionCollection.findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode)))
+        .thenReturn(section0Optional);
+
+    LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+    Update update = new Update(null, "MATH", "20211", 0, 1, 1, someTime);
+    when(updateCollection.save(any())).thenReturn(update);
+
+    // Act
+    var job =
+        new UpdateCourseDataJob(
+            "20211",
+            "20211",
+            List.of("MATH"),
+            ucsbCurriculumService,
+            convertedSectionCollection,
+            updateCollection,
+            isStaleService,
+            true);
+    job.accept(ctx);
+
+    // Assert
+
+    String expected =
+        """
+                Updating courses for [MATH 20211]
+                Found 1 sections
+                Storing in MongoDB Collection...
+                0 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
+                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)
+                Courses for [MATH 20211] have been updated""";
+
+    assertEquals(expected, jobStarted.getLog());
+
+    verify(convertedSectionCollection, times(1))
+        .findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode));
+    verify(convertedSectionCollection, times(1)).save(updatedSection);
+  }
+
+  @Test
+  void test_if_stale_and_is_not_stale() throws Exception {
+
+    // Arrange
+
+    when(isStaleService.isStale(eq("MATH"), eq("20211"))).thenReturn(false);
+
+    // Act
+    var job =
+        new UpdateCourseDataJob(
+            "20211",
+            "20211",
+            List.of("MATH"),
+            ucsbCurriculumService,
+            convertedSectionCollection,
+            updateCollection,
+            isStaleService,
+            true);
+    job.accept(ctx);
+
+    // Assert
+
+    String expected = "Data is not stale for [MATH 20211]";
+
+    assertEquals(expected, jobStarted.getLog());
+    verify(isStaleService, times(1)).isStale(eq("MATH"), eq("20211"));
   }
 }

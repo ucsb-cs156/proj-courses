@@ -63,6 +63,10 @@ describe("AdminJobsPage tests", () => {
   });
 
   test("user can submit a test job", async () => {
+    axiosMock
+      .onPost("/api/jobs/launch/testjob?fail=false&sleepMs=0")
+      .reply(200, {});
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -96,6 +100,12 @@ describe("AdminJobsPage tests", () => {
   });
 
   test("user can submit the update course data job", async () => {
+    axiosMock
+      .onPost(
+        "/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH&ifStale=true",
+      )
+      .reply(200, {});
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -112,16 +122,15 @@ describe("AdminJobsPage tests", () => {
     expect(updateCoursesButton).toBeInTheDocument();
     updateCoursesButton.click();
 
-    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
-
+    expect(await screen.findByTestId("updateCourses")).toBeInTheDocument();
     const submitButton = screen.getByTestId("updateCourses");
 
-    const expectedKey = "BasicSearch.Subject-option-ANTH";
+    const expectedKey = "UpdateCoursesJobForm.Subject-option-ANTH";
     await waitFor(() =>
       expect(screen.getByTestId(expectedKey).toBeInTheDocument),
     );
 
-    const selectQuarter = screen.getByLabelText("Quarter");
+    const selectQuarter = screen.getByTestId("UpdateCoursesJobForm.Quarter");
     userEvent.selectOptions(selectQuarter, "20211");
     const selectSubject = screen.getByLabelText("Subject Area");
     expect(selectSubject).toBeInTheDocument();
@@ -134,11 +143,15 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
     expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH",
+      "/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH&ifStale=true",
     );
   });
 
   test("user can submit the update course data by quarter job", async () => {
+    const url =
+      "/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20222&ifStale=true";
+    axiosMock.onPost(url).reply(200, {});
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -157,29 +170,29 @@ describe("AdminJobsPage tests", () => {
     expect(updateCoursesButton).toBeInTheDocument();
     updateCoursesButton.click();
 
-    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
-
     const submitButton = screen.getByTestId("updateCoursesByQuarter");
+    expect(
+      await screen.findByTestId("updateCoursesByQuarter"),
+    ).toBeInTheDocument();
 
-    const expectedKey = "BasicSearch.Subject-option-ANTH";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    const selectQuarter = screen.getByTestId(
+      "UpdateCoursesByQuarterJobForm.Quarter",
     );
-
-    const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20211");
+    userEvent.selectOptions(selectQuarter, "20222");
     expect(submitButton).toBeInTheDocument();
 
     submitButton.click();
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
-    expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20211",
-    );
+    expect(axiosMock.history.post[0].url).toBe(url);
   });
 
   test("user can submit the update course data by quarter range job", async () => {
+    const url =
+      "/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=20212&end_quarterYYYYQ=20213&ifStale=true";
+    axiosMock.onPost(url).reply(200, {});
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -198,14 +211,10 @@ describe("AdminJobsPage tests", () => {
     expect(updateCoursesButton).toBeInTheDocument();
     updateCoursesButton.click();
 
-    expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
-
     const submitButton = screen.getByTestId("updateCoursesByQuarterRange");
-
-    const expectedKey = "BasicSearch.Subject-option-ANTH";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
-    );
+    expect(
+      await screen.findByTestId("updateCoursesByQuarterRange"),
+    ).toBeInTheDocument();
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
     userEvent.selectOptions(selectStartQuarter, "20212");
@@ -217,12 +226,13 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
-    expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=20212&end_quarterYYYYQ=20213",
-    );
+    expect(axiosMock.history.post[0].url).toBe(url);
   });
 
   test("user can submit update grade info", async () => {
+    const url = "/api/jobs/launch/uploadGradeData";
+    axiosMock.onPost(url).reply(200, {});
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -243,9 +253,6 @@ describe("AdminJobsPage tests", () => {
     submitGradeButton.click();
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
-
-    expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/uploadGradeData",
-    );
+    expect(axiosMock.history.post[0].url).toBe(url);
   });
 });

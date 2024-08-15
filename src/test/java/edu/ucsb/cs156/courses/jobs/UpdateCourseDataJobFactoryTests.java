@@ -1,12 +1,14 @@
 package edu.ucsb.cs156.courses.jobs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,8 @@ public class UpdateCourseDataJobFactoryTests {
 
   @MockBean UpdateCollection updateCollection;
 
+  @MockBean IsStaleService isStaleService;
+
   @Autowired UpdateCourseDataJobFactory factory;
 
   @Test
@@ -37,6 +41,19 @@ public class UpdateCourseDataJobFactoryTests {
     assertEquals(List.of("CMPSC"), job.getSubjects());
     assertEquals("20211", job.getStart_quarterYYYYQ());
     assertEquals("20211", job.getEnd_quarterYYYYQ());
+  }
+
+  @Test
+  void test_createForSubjectAndQuarterAndIfStale() {
+
+    // Act
+    UpdateCourseDataJob job = factory.createForSubjectAndQuarterAndIfStale("CMPSC", "20211", true);
+
+    // Assert
+    assertEquals(List.of("CMPSC"), job.getSubjects());
+    assertEquals("20211", job.getStart_quarterYYYYQ());
+    assertEquals("20211", job.getEnd_quarterYYYYQ());
+    assertTrue(job.isIfStale());
   }
 
   @Test
