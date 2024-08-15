@@ -12,9 +12,11 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +46,25 @@ public class JobsController extends ApiController {
   public Iterable<Job> allJobs() {
     Iterable<Job> jobs = jobsRepository.findAll();
     return jobs;
+  }
+
+  @Operation(summary = "Delete all job records")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @DeleteMapping("/all")
+  public Map<String, String> deleteAllJobs() {
+    jobsRepository.deleteAll();
+    return Map.of("message", "All jobs deleted");
+  }
+
+  @Operation(summary = "Delete specific job record")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @DeleteMapping("")
+  public Map<String, String> deleteAllJobs(@Parameter(name = "id") @RequestParam Long id) {
+    if (!jobsRepository.existsById(id)) {
+      return Map.of("message", String.format("Job with id %d not found", id));
+    }
+    jobsRepository.deleteById(id);
+    return Map.of("message", String.format("Job with id %d deleted", id));
   }
 
   @Operation(summary = "Launch Test Job (click fail if you want to test exception handling)")

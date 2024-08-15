@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,6 +27,7 @@ import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +84,74 @@ public class JobsControllerTests extends ControllerTestCase {
 
     verify(jobsRepository, times(1)).findAll();
     String expectedJson = mapper.writeValueAsString(expectedJobs);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_delete_all_jobs() throws Exception {
+
+    doNothing().when(jobsRepository).deleteAll();
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(delete("/api/jobs/all").with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+
+    verify(jobsRepository, times(1)).deleteAll();
+    String expectedJson = mapper.writeValueAsString(Map.of("message", "All jobs deleted"));
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_delete_specific_job() throws Exception {
+
+    // arrange
+
+    when(jobsRepository.existsById(eq(1L))).thenReturn(true);
+    doNothing().when(jobsRepository).deleteById(eq(1L));
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(delete("/api/jobs?id=1").with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+
+    verify(jobsRepository, times(1)).deleteById(eq(1L));
+    String expectedJson = mapper.writeValueAsString(Map.of("message", "Job with id 1 deleted"));
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_gets_reasonable_error_when_deleting_non_existing_job() throws Exception {
+
+    // arrange
+
+    when(jobsRepository.existsById(eq(2L))).thenReturn(false);
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(delete("/api/jobs?id=2").with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+
+    verify(jobsRepository, times(1)).existsById(eq(2L));
+    String expectedJson = mapper.writeValueAsString(Map.of("message", "Job with id 2 not found"));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
   }
