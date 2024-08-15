@@ -12,6 +12,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
 @RestController
+@Slf4j
 public class JobsController extends ApiController {
   @Autowired private JobsRepository jobsRepository;
 
@@ -61,9 +63,21 @@ public class JobsController extends ApiController {
   public Job launchUpdateCourseDataJob(
       @Parameter(name = "quarterYYYYQ", description = "quarter (YYYYQ format)") @RequestParam
           String quarterYYYYQ,
-      @Parameter(name = "subject area") @RequestParam String subjectArea) {
+      @Parameter(name = "subjectArea") @RequestParam String subjectArea,
+      @Parameter(
+              name = "ifStale",
+              description = "true if job should only update when data is stale")
+          @RequestParam(defaultValue = "true")
+          Boolean ifStale) {
 
-    var job = updateCourseDataJobFactory.createForSubjectAndQuarter(subjectArea, quarterYYYYQ);
+    log.info(
+        "launchUpdateCourseDataJob: quarterYYYYQ={}, subjectArea={}, ifStale={}",
+        quarterYYYYQ,
+        subjectArea,
+        ifStale);
+    var job =
+        updateCourseDataJobFactory.createForSubjectAndQuarterAndIfStale(
+            subjectArea, quarterYYYYQ, ifStale);
 
     return jobService.runAsJob(job);
   }
@@ -73,7 +87,12 @@ public class JobsController extends ApiController {
   @PostMapping("/launch/updateQuarterCourses")
   public Job launchUpdateCourseDataWithQuarterJob(
       @Parameter(name = "quarterYYYYQ", description = "quarter (YYYYQ format)") @RequestParam
-          String quarterYYYYQ) {
+          String quarterYYYYQ,
+      @Parameter(
+              name = "ifStale",
+              description = "true if job should only update when data is stale")
+          @RequestParam(defaultValue = "true")
+          Boolean ifStale) {
 
     var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);
 
@@ -89,7 +108,12 @@ public class JobsController extends ApiController {
           String start_quarterYYYYQ,
       @Parameter(name = "end_quarterYYYYQ", description = "end quarter (YYYYQ format)")
           @RequestParam
-          String end_quarterYYYYQ) {
+          String end_quarterYYYYQ,
+      @Parameter(
+              name = "ifStale",
+              description = "true if job should only update when data is stale")
+          @RequestParam(defaultValue = "true")
+          Boolean ifStale) {
 
     var job =
         updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);
@@ -109,7 +133,12 @@ public class JobsController extends ApiController {
           String start_quarterYYYYQ,
       @Parameter(name = "end_quarterYYYYQ", description = "end quarter (YYYYQ format)")
           @RequestParam
-          String end_quarterYYYYQ) {
+          String end_quarterYYYYQ,
+      @Parameter(
+              name = "ifStale",
+              description = "true if job should only update when data is stale")
+          @RequestParam(defaultValue = "true")
+          Boolean ifStale) {
 
     var job =
         updateCourseDataJobFactory.createForSubjectAndQuarterRange(

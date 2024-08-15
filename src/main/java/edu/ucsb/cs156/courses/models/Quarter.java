@@ -45,7 +45,7 @@ public class Quarter {
         this.yyyyq = yyyyqToInt(s);
         return;
       default:
-        throw new IllegalArgumentException("Quarter shoudl be in QYY or YYYYQ format");
+        throw new IllegalArgumentException("Quarter should be in QYY or YYYYQ format");
     }
   }
 

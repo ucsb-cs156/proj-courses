@@ -3,6 +3,7 @@ package edu.ucsb.cs156.courses.jobs;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,8 @@ public class UpdateCourseDataJobFactory {
 
   @Autowired private UpdateCollection updateCollection;
 
+  @Autowired private IsStaleService isStaleService;
+
   public UpdateCourseDataJob createForSubjectAndQuarter(String subjectArea, String quarterYYYYQ) {
     return new UpdateCourseDataJob(
         quarterYYYYQ,
@@ -29,7 +32,22 @@ public class UpdateCourseDataJobFactory {
         List.of(subjectArea),
         curriculumService,
         convertedSectionCollection,
-        updateCollection);
+        updateCollection,
+        isStaleService,
+        false);
+  }
+
+  public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
+      String subjectArea, String quarterYYYYQ, boolean ifStale) {
+    return new UpdateCourseDataJob(
+        quarterYYYYQ,
+        quarterYYYYQ,
+        List.of(subjectArea),
+        curriculumService,
+        convertedSectionCollection,
+        updateCollection,
+        isStaleService,
+        ifStale);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
@@ -40,7 +58,9 @@ public class UpdateCourseDataJobFactory {
         List.of(subjectArea),
         curriculumService,
         convertedSectionCollection,
-        updateCollection);
+        updateCollection,
+        isStaleService,
+        true);
   }
 
   private List<String> getAllSubjectCodes() {
@@ -59,7 +79,9 @@ public class UpdateCourseDataJobFactory {
         getAllSubjectCodes(),
         curriculumService,
         convertedSectionCollection,
-        updateCollection);
+        updateCollection,
+        isStaleService,
+        true);
   }
 
   public UpdateCourseDataJob createForQuarterRange(
@@ -70,6 +92,8 @@ public class UpdateCourseDataJobFactory {
         getAllSubjectCodes(),
         curriculumService,
         convertedSectionCollection,
-        updateCollection);
+        updateCollection,
+        isStaleService,
+        true);
   }
 }

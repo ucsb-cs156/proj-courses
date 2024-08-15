@@ -5,6 +5,7 @@ import { quarterRange } from "main/utils/quarterUtilities";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
+import IfStaleCheckBox from "main/components/Jobs/IfStaleCheckBox";
 
 const UpdateCoursesByQuarterJobForm = ({ callback }) => {
   const { data: systemInfo } = useSystemInfo();
@@ -15,16 +16,12 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
   // Stryker enable OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
-
-  // Stryker disable all : not sure how to test/mock local storage
-  const localQuarter = localStorage.getItem("BasicSearch.Quarter");
-  // Stryker restore all
-
-  const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
+  const [quarter, setQuarter] = useState(quarters[0].yyyyq);
+  const [ifStale, setIfStale] = useState(true);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    callback({ quarter });
+    callback({ quarter, ifStale });
   };
 
   // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
@@ -40,7 +37,7 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
               quarters={quarters}
               quarter={quarter}
               setQuarter={setQuarter}
-              controlId={"BasicSearch.Quarter"}
+              controlId={"UpdateCoursesByQuarterJobForm.Quarter"}
             />
           </Col>
         </Row>
@@ -53,6 +50,9 @@ const UpdateCoursesByQuarterJobForm = ({ callback }) => {
             >
               Update Courses
             </Button>
+          </Col>
+          <Col>
+            <IfStaleCheckBox ifStale={ifStale} setIfStale={setIfStale} />
           </Col>
         </Row>
       </Container>

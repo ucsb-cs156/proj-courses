@@ -48,6 +48,7 @@ function SingleQuarterDropdown({
     <Form.Group controlId={controlId}>
       <Form.Label>{label}</Form.Label>
       <Form.Control
+        data-testid={controlId}
         as="select"
         value={quarterState}
         onChange={handleQuarterOnChange}
