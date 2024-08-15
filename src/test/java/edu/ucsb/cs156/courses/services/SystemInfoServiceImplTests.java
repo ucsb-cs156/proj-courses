@@ -17,7 +17,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value = SystemInfoServiceImpl.class)
-@TestPropertySource("classpath:application-development.properties")
+@TestPropertySource(
+    locations = "classpath:application-development.properties",
+    properties = {"spring.main.banner-mode=off"})
 class SystemInfoServiceImplTests {
 
   @Autowired private SystemInfoService systemInfoService;

@@ -16,11 +16,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 @RestClientTest(UCSBSubjectsService.class)
 @AutoConfigureDataJpa
 @ContextConfiguration(classes = {})
+@TestPropertySource(properties = {"spring.main.banner-mode=off"})
 class UCSBSubjectsServiceTests {
 
   @Autowired private MockRestServiceServer mockRestServiceServer;

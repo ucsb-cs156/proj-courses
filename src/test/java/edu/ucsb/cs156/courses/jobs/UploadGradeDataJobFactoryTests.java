@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
 @RestClientTest(UploadGradeDataJobFactory.class)
 @AutoConfigureDataJpa
+@TestPropertySource(properties = {"spring.main.banner-mode=off"})
 public class UploadGradeDataJobFactoryTests {
 
   @MockBean GradeHistoryRepository gradeHistoryRepository;

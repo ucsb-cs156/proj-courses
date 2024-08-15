@@ -17,10 +17,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value = UpdateService.class)
+@TestPropertySource(properties = {"spring.main.banner-mode=off"})
 public class UpdateServiceTests {
   @MockBean private UpdateCollection updateCollection;
   @Autowired private UpdateService updateService;

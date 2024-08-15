@@ -27,7 +27,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
       "app.startQtrYYYYQ=20211",
       "app.endQtrYYYYQ=20223",
       "app.ucsb.api.consumer_key=fakeApiKey",
-      "app.courseDataStaleThresholdMinutes=1440"
+      "app.courseDataStaleThresholdMinutes=1440",
+      "spring.main.banner-mode=off"
     })
 class IsStaleServiceTests {
 

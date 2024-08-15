@@ -11,11 +11,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @ActiveProfiles("test")
 @Import(TestConfig.class)
+@TestPropertySource(properties = {"spring.main.banner-mode=off"})
 public abstract class ControllerTestCase {
   @Autowired public CurrentUserService currentUserService;
 

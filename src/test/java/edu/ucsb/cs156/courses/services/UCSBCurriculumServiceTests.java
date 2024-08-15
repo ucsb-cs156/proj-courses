@@ -19,11 +19,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBCurriculumService.class)
 @AutoConfigureDataJpa
+@TestPropertySource(properties = {"spring.main.banner-mode=off"})
 public class UCSBCurriculumServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")

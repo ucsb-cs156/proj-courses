@@ -18,9 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
 @RestClientTest(UploadGradeDataJob.class)
 @AutoConfigureDataJpa
+@TestPropertySource(properties = {"spring.main.banner-mode=off"})
 public class UploadGradeDataJobTests {
 
   @MockBean GradeHistoryRepository gradeHistoryRepository;

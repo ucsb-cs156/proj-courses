@@ -23,8 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.TestPropertySource;
 
 @ExtendWith(MockitoExtension.class)
+@TestPropertySource(properties = {"spring.main.banner-mode=off"})
 public class UpdateCourseDataJobTests {
   @Mock UCSBCurriculumService ucsbCurriculumService;
 
@@ -152,9 +154,8 @@ public class UpdateCourseDataJobTests {
             eq(section1.getCourseInfo().getQuarter()), eq(section1.getSection().getEnrollCode())))
         .thenReturn(emptyOptional);
 
-    LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
-    Update update = new Update(null, "MATH", "20211", 2, 1, 0, someTime);
-    when(updateCollection.save(any())).thenReturn(update);
+    Update update = new Update(null, "MATH", "20211", 2, 1, 0, null);
+    when(updateCollection.save(eq(update))).thenReturn(update);
 
     // Act
     var job =
@@ -179,6 +180,7 @@ public class UpdateCourseDataJobTests {
             """;
 
     assertEquals(expected, jobStarted.getLog());
+    verify(updateCollection, times(1)).save(eq(update));
   }
 
   @Test
@@ -197,18 +199,14 @@ public class UpdateCourseDataJobTests {
 
     listWithOneSection.add(section0);
 
-    Optional<ConvertedSection> section0Optional = Optional.of(section0);
-    Optional<ConvertedSection> emptyOptional = Optional.empty();
-
     when(ucsbCurriculumService.getConvertedSections(eq("MATH"), eq("20211"), eq("A")))
         .thenReturn(listWithOneSection);
     when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
             eq(section0.getCourseInfo().getQuarter()), eq(section0.getSection().getEnrollCode())))
         .thenThrow(new IllegalArgumentException("Testing Exception Handling!"));
 
-    LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
-    Update update = new Update(null, "MATH", "20211", 0, 0, 1, someTime);
-    when(updateCollection.save(any())).thenReturn(update);
+    Update update = new Update(null, "MATH", "20211", 0, 0, 1, null);
+    when(updateCollection.save(eq(update))).thenReturn(update);
 
     // Act
     var job =
@@ -233,6 +231,7 @@ public class UpdateCourseDataJobTests {
             Done updating course data from [20211] to [20211] for [MATH]
             """;
     assertEquals(expected, jobStarted.getLog());
+    verify(updateCollection, times(1)).save(eq(update));
   }
 
   @Test
@@ -396,5 +395,19 @@ public class UpdateCourseDataJobTests {
 
     assertEquals(expected, jobStarted.getLog());
     verify(isStaleService, times(1)).isStale(eq("MATH"), eq("20211"));
+  }
+
+  @Test
+  void test_updateUpdatesCollection() {
+    // Arrange
+    Update update = new Update(null, "MATH", "20211", 14, 0, 0, null);
+    when(updateCollection.save(eq(update))).thenReturn(update);
+
+    // Act
+    var job = UpdateCourseDataJob.builder().updateCollection(updateCollection).build();
+    var result = job.updateUpdatesCollection("20211", "MATH", 14, 0, 0);
+
+    // Assert
+    assertEquals(update, result);
   }
 }

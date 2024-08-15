@@ -22,12 +22,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(value = CourseOverTimeInstructorController.class)
 @Import(SecurityConfig.class)
 @AutoConfigureDataJpa
+@TestPropertySource(properties = {"spring.main.banner-mode=off"})
 public class CourseOverTimeInstructorControllerTests {
   private ObjectMapper mapper = new ObjectMapper();
 
