@@ -31,15 +31,19 @@ public class UpdateCourseDataJob implements JobContextConsumer {
   private boolean ifStale;
 
   public String subjectsAsString(List<String> subjects) {
-    if (subjects.size() <= 1)
-      return subjects.toString();
-    else
-      return "[" + subjects.get(0) + " ... " + subjects.get(subjects.size()-1) + "]";
+    if (subjects.size() <= 1) return subjects.toString();
+    else return "[" + subjects.get(0) + " ... " + subjects.get(subjects.size() - 1) + "]";
   }
 
   @Override
   public void accept(JobContext ctx) throws Exception {
-    ctx.log("Updating course data from [" + start_quarterYYYYQ + "] to [" + end_quarterYYYYQ + "] for " + subjectsAsString(subjects));
+    ctx.log(
+        "Updating course data from ["
+            + start_quarterYYYYQ
+            + "] to ["
+            + end_quarterYYYYQ
+            + "] for "
+            + subjectsAsString(subjects));
     if (ifStale) {
       ctx.log("Only updating stale data");
     }
@@ -56,7 +60,13 @@ public class UpdateCourseDataJob implements JobContextConsumer {
       }
     }
     ctx.log("");
-    ctx.log("Done updating course data from [" + start_quarterYYYYQ + "] to [" + end_quarterYYYYQ + "] for " + subjectsAsString(subjects));
+    ctx.log(
+        "Done updating course data from ["
+            + start_quarterYYYYQ
+            + "] to ["
+            + end_quarterYYYYQ
+            + "] for "
+            + subjectsAsString(subjects));
   }
 
   public Update updateUpdatesCollection(

@@ -171,7 +171,7 @@ public class UploadGradeDataJobTests {
     // Assert
 
     String expected =
-            """
+        """
             Updating UCSB Grade History Data
             Processing data for year: 20204
             Processing data for subjectArea: CMPSC

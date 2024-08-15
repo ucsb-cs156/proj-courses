@@ -164,7 +164,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     User user = currentUserService.getUser();
 
-    String logContents1 = 
+    String logContents1 =
         """
         Hello World! from test job!
         testing logNoCR testlogNoCR2 testlogNoCR3
@@ -181,7 +181,7 @@ public class JobsControllerTests extends ControllerTestCase {
             .log(logContents1)
             .build();
 
-    String logContents2 = 
+    String logContents2 =
         """
         Hello World! from test job!
         testing logNoCR testlogNoCR2 testlogNoCR3
@@ -230,7 +230,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     User user = currentUserService.getUser();
 
-    String logContents1 = 
+    String logContents1 =
         """
         Hello World! from test job!
         testing logNoCR testlogNoCR2 testlogNoCR3
@@ -247,7 +247,7 @@ public class JobsControllerTests extends ControllerTestCase {
             .log(logContents1)
             .build();
 
-    String logContents2 = 
+    String logContents2 =
         """
         Hello World! from test job!
         testing logNoCR testlogNoCR2 testlogNoCR3
