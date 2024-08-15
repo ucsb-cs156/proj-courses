@@ -15,7 +15,7 @@ courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeInstructorController,0,
 courses,edu.ucsb.cs156.courses.controllers,UpdateController,0,73,0,8,0,13,0,7,0,3
 courses,edu.ucsb.cs156.courses.controllers,SystemInfoController,0,7,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeController,0,89,0,2,0,15,0,4,0,3
-courses,edu.ucsb.cs156.courses.controllers,JobsController,0,76,0,0,0,17,0,8,0,8
+courses,edu.ucsb.cs156.courses.controllers,JobsController,0,99,0,0,0,21,0,9,0,9
 courses,edu.ucsb.cs156.courses.controllers,UCSBSubjectsController,0,73,0,0,0,17,0,9,0,9
 courses,edu.ucsb.cs156.courses.documents,Course,0,4,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,CoursePage,0,96,0,4,0,24,0,5,0,3
@@ -25,8 +25,8 @@ courses,edu.ucsb.cs156.courses.documents,ConvertedSection,0,26,0,0,0,7,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,Instructor,0,3,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,Section,0,6,0,0,0,2,0,1,0,1
 courses,edu.ucsb.cs156.courses.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
-courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJob,0,187,0,8,0,46,0,7,0,3
-courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJobFactory,0,89,0,2,0,16,0,8,0,7
+courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJob,0,208,0,12,0,52,0,10,0,4
+courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJobFactory,0,118,0,2,0,18,0,9,0,8
 courses,edu.ucsb.cs156.courses.jobs,UploadGradeDataJobFactory,0,11,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.jobs,UploadGradeDataJob,0,127,0,8,0,34,0,7,0,3
 courses,edu.ucsb.cs156.courses.errors,EntityNotFoundException,0,47,0,0,0,8,0,2,0,2

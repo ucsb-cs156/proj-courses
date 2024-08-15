@@ -12,6 +12,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;Jobs&quot;)
 @RequestMapping(&quot;/api/jobs&quot;)
 @RestController
-<span class="fc" id="L26">public class JobsController extends ApiController {</span>
+<span class="fc" id="L27">@Slf4j</span>
+<span class="fc" id="L28">public class JobsController extends ApiController {</span>
   @Autowired private JobsRepository jobsRepository;
 
   @Autowired private ConvertedSectionCollection convertedSectionCollection;
@@ -40,8 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @GetMapping(&quot;/all&quot;)
   public Iterable&lt;Job&gt; allJobs() {
-<span class="fc" id="L43">    Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
-<span class="fc" id="L44">    return jobs;</span>
+<span class="fc" id="L45">    Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
+<span class="fc" id="L46">    return jobs;</span>
   }
 
   @Operation(summary = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
@@ -51,8 +53,8 @@ import org.springframework.web.bind.annotation.RestController;
       @Parameter(name = &quot;fail&quot;) @RequestParam Boolean fail,
       @Parameter(name = &quot;sleepMs&quot;) @RequestParam Integer sleepMs) {
 
-<span class="fc" id="L54">    TestJob testJob = TestJob.builder().fail(fail).sleepMs(sleepMs).build();</span>
-<span class="fc" id="L55">    return jobService.runAsJob(testJob);</span>
+<span class="fc" id="L56">    TestJob testJob = TestJob.builder().fail(fail).sleepMs(sleepMs).build();</span>
+<span class="fc" id="L57">    return jobService.runAsJob(testJob);</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data&quot;)
@@ -61,11 +63,23 @@ import org.springframework.web.bind.annotation.RestController;
   public Job launchUpdateCourseDataJob(
       @Parameter(name = &quot;quarterYYYYQ&quot;, description = &quot;quarter (YYYYQ format)&quot;) @RequestParam
           String quarterYYYYQ,
-      @Parameter(name = &quot;subject area&quot;) @RequestParam String subjectArea) {
+      @Parameter(name = &quot;subjectArea&quot;) @RequestParam String subjectArea,
+      @Parameter(
+              name = &quot;ifStale&quot;,
+              description = &quot;true if job should only update when data is stale&quot;)
+          @RequestParam(defaultValue = &quot;true&quot;)
+          Boolean ifStale) {
 
-<span class="fc" id="L66">    var job = updateCourseDataJobFactory.createForSubjectAndQuarter(subjectArea, quarterYYYYQ);</span>
+<span class="fc" id="L73">    log.info(</span>
+        &quot;launchUpdateCourseDataJob: quarterYYYYQ={}, subjectArea={}, ifStale={}&quot;,
+        quarterYYYYQ,
+        subjectArea,
+        ifStale);
+<span class="fc" id="L78">    var job =</span>
+<span class="fc" id="L79">        updateCourseDataJobFactory.createForSubjectAndQuarterAndIfStale(</span>
+<span class="fc" id="L80">            subjectArea, quarterYYYYQ, ifStale);</span>
 
-<span class="fc" id="L68">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L82">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data using Quarter&quot;)
@@ -73,11 +87,16 @@ import org.springframework.web.bind.annotation.RestController;
   @PostMapping(&quot;/launch/updateQuarterCourses&quot;)
   public Job launchUpdateCourseDataWithQuarterJob(
       @Parameter(name = &quot;quarterYYYYQ&quot;, description = &quot;quarter (YYYYQ format)&quot;) @RequestParam
-          String quarterYYYYQ) {
+          String quarterYYYYQ,
+      @Parameter(
+              name = &quot;ifStale&quot;,
+              description = &quot;true if job should only update when data is stale&quot;)
+          @RequestParam(defaultValue = &quot;true&quot;)
+          Boolean ifStale) {
 
-<span class="fc" id="L78">    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);</span>
+<span class="fc" id="L97">    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);</span>
 
-<span class="fc" id="L80">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L99">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data for range of quarters&quot;)
@@ -89,12 +108,17 @@ import org.springframework.web.bind.annotation.RestController;
           String start_quarterYYYYQ,
       @Parameter(name = &quot;end_quarterYYYYQ&quot;, description = &quot;end quarter (YYYYQ format)&quot;)
           @RequestParam
-          String end_quarterYYYYQ) {
+          String end_quarterYYYYQ,
+      @Parameter(
+              name = &quot;ifStale&quot;,
+              description = &quot;true if job should only update when data is stale&quot;)
+          @RequestParam(defaultValue = &quot;true&quot;)
+          Boolean ifStale) {
 
-<span class="fc" id="L94">    var job =</span>
-<span class="fc" id="L95">        updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);</span>
+<span class="fc" id="L118">    var job =</span>
+<span class="fc" id="L119">        updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);</span>
 
-<span class="fc" id="L97">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L121">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(
@@ -109,21 +133,26 @@ import org.springframework.web.bind.annotation.RestController;
           String start_quarterYYYYQ,
       @Parameter(name = &quot;end_quarterYYYYQ&quot;, description = &quot;end quarter (YYYYQ format)&quot;)
           @RequestParam
-          String end_quarterYYYYQ) {
+          String end_quarterYYYYQ,
+      @Parameter(
+              name = &quot;ifStale&quot;,
+              description = &quot;true if job should only update when data is stale&quot;)
+          @RequestParam(defaultValue = &quot;true&quot;)
+          Boolean ifStale) {
 
-<span class="fc" id="L114">    var job =</span>
-<span class="fc" id="L115">        updateCourseDataJobFactory.createForSubjectAndQuarterRange(</span>
+<span class="fc" id="L143">    var job =</span>
+<span class="fc" id="L144">        updateCourseDataJobFactory.createForSubjectAndQuarterRange(</span>
             subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
 
-<span class="fc" id="L118">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L147">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to update grade history&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @PostMapping(&quot;/launch/uploadGradeData&quot;)
   public Job launchUploadGradeData() {
-<span class="fc" id="L125">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
-<span class="fc" id="L126">    return jobService.runAsJob(updateGradeDataJob);</span>
+<span class="fc" id="L154">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
+<span class="fc" id="L155">    return jobService.runAsJob(updateGradeDataJob);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
