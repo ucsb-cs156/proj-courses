@@ -3,51 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "=v16.20.0"
+    "node": "=v20.16.0"
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.8.3",
-    "axios": "^0.21.1",
-    "babel-loader": "8.1.0",
-    "bootstrap": "^5.0.0-beta3",
-    "history": "^5.2.0",
-    "react": "^17.0.1",
-    "react-bootstrap": "^2.0.0-alpha.0",
-    "react-dom": "^17.0.1",
-    "react-hook-form": "^7.27.0",
-    "react-json-view": "^1.21.3",
-    "react-query": "^3.12.2",
-    "react-router-bootstrap": "^0.25.0",
-    "react-router-dom": "^6.0.0-beta.0",
-    "react-scripts": "5.0.0",
-    "react-table": "^7.7.0",
-    "react-toastify": "^8.1.1",
+    "@microlink/react-json-view": "^1.23.1",
+    "axios": "^1.7.3",
+    "bootstrap": "^5.3.3",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.4",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.52.2",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.26.1",
+    "react-table": "^7.8.0",
+    "react-toastify": "^10.0.5",
     "recharts": "^2.12.7",
-    "web-vitals": "^1.1.1"
-  },
-  "devDependencies": {
-    "@storybook/addon-actions": "^6.2.7",
-    "@storybook/addon-essentials": "^6.2.7",
-    "@storybook/addon-links": "^6.2.7",
-    "@storybook/builder-webpack5": "^6.4.18",
-    "@storybook/manager-webpack5": "^6.4.18",
-    "@storybook/node-logger": "^6.2.7",
-    "@storybook/preset-create-react-app": "^4.0.0",
-    "@storybook/react": "^6.2.7",
-    "@stryker-mutator/core": "^6.4.2",
-    "@stryker-mutator/jest-runner": "^6.4.2",
-    "@testing-library/react-hooks": "^5.1.2",
-    "axios-mock-adapter": "^1.19.0",
-    "env-cmd": "^10.1.0",
-    "eslint": "^8.14.0",
-    "eslint-plugin-flowtype": "^8.0.3",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-react-hooks": "^4.2.1-rc.0-next-64223fed8-20220210",
-    "jest-mock-console": "^1.1.0",
-    "prettier": "^3.0.3",
-    "react-test-renderer": "^17.0.2"
+    "save-dev": "^0.0.1-security"
   },
   "scripts": {
     "start": "env-cmd -f ../.env  -e development react-scripts start",
@@ -79,6 +50,9 @@
     ]
   },
   "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(axios)/)"
+    ],
     "resetMocks": true,
     "collectCoverageFrom": [
       "src/main/**/*.{js,jsx,ts,tsx}"
@@ -95,5 +69,20 @@
       "text",
       "lcov"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "axios-mock-adapter": "^2.0.0",
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "jest-mock-console": "^2.0.0",
+    "prettier": "^3.3.3",
+    "react-scripts": "^5.0.1",
+    "react-test-renderer": "^18.3.1"
   }
 }

@@ -20,7 +20,6 @@ export function useSystemInfo() {
     },
     {
       initialData: {
-        initialData: true,
         springH2ConsoleEnabled: false,
         showSwaggerUILink: false,
         startQtrYYYYQ: "20221",

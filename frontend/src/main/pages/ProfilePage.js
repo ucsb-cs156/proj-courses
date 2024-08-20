@@ -4,7 +4,7 @@ import RoleBadge from "main/components/Profile/RoleBadge";
 import { useCurrentUser } from "main/utils/currentUser";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 
-import ReactJson from "react-json-view";
+import ReactJson from "@microlink/react-json-view";
 const ProfilePage = () => {
   const { data: currentUser } = useCurrentUser();
 

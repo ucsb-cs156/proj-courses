@@ -1,6 +1,6 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import ReactJson from "react-json-view";
+import ReactJson from "@microlink/react-json-view";
 import { useSystemInfo } from "main/utils/systemInfo";
 
 const DeveloperPage = () => {

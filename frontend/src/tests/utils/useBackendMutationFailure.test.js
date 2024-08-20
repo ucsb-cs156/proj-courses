@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "react-query";
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, waitFor } from "@testing-library/react";
 import mockConsole from "jest-mock-console";
 
 import axios from "axios";
@@ -63,7 +63,7 @@ describe("utils/useBackend tests", () => {
         );
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useBackendMutation(objectToAxiosParams, { onSuccess }),
         { wrapper },
       );

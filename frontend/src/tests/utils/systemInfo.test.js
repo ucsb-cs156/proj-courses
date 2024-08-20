@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useSystemInfo } from "main/utils/systemInfo";
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, waitFor} from "@testing-library/react";
 import mockConsole from "jest-mock-console";
 
 import axios from "axios";
@@ -28,13 +28,12 @@ describe("utils/systemInfo tests", () => {
 
       const restoreConsole = mockConsole();
 
-      const { result, waitFor } = renderHook(() => useSystemInfo(), {
+      const { result } = renderHook(() => useSystemInfo(), {
         wrapper,
       });
       await waitFor(() => result.current.isSuccess);
 
       expect(result.current.data).toEqual({
-        initialData: true,
         springH2ConsoleEnabled: false,
         showSwaggerUILink: false,
         startQtrYYYYQ: "20221",
@@ -65,7 +64,7 @@ describe("utils/systemInfo tests", () => {
         .onGet("/api/systemInfo")
         .reply(200, systemInfoFixtures.showingBoth);
 
-      const { result, waitFor } = renderHook(() => useSystemInfo(), {
+      const { result } = renderHook(() => useSystemInfo(), {
         wrapper,
       });
 
@@ -87,7 +86,7 @@ describe("utils/systemInfo tests", () => {
       axiosMock.onGet("/api/systemInfo").reply(404);
 
       const restoreConsole = mockConsole();
-      const { result, waitFor } = renderHook(() => useSystemInfo(), {
+      const { result } = renderHook(() => useSystemInfo(), {
         wrapper,
       });
 
