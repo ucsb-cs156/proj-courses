@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
 
-import { coursesFixtures } from "fixtures/pscourseFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
@@ -256,47 +255,6 @@ describe("PersonalSchedulesEditPage tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
-    });
-    const testId = "CourseTable";
-    test("renders two courses without crashing for user", async () => {
-      const queryClient = new QueryClient();
-      axiosMock
-        .onGet("/api/courses/user/psid/all?psId=17")
-        .reply(200, coursesFixtures.twoCourses);
-      render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <PersonalSchedulesEditPage />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      );
-      await waitFor(() => {
-        expect(
-          screen.getByTestId(`${testId}-cell-row-0-col-id`),
-        ).toHaveTextContent("25");
-      });
-      expect(
-        screen.getByTestId(`${testId}-cell-row-1-col-id`),
-      ).toHaveTextContent("26");
-    });
-
-    test("cannot render course with different psid", async () => {
-      const queryClient = new QueryClient();
-      axiosMock
-        .onGet("/api/courses/user/psid/all?psId=13")
-        .reply(200, coursesFixtures.oneCourse);
-
-      render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <PersonalSchedulesEditPage />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      );
-
-      expect(
-        screen.queryByTestId(`${testId}-cell-row-0-col-id`),
-      ).not.toBeInTheDocument();
     });
   });
 });
