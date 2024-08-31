@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -55,13 +54,15 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.exceptionHandling(
             handling -> handling.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
+        .headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin())) // for h2-console
         .oauth2Login(
             oauth2 ->
                 oauth2.userInfoEndpoint(
                     userInfo -> userInfo.userAuthoritiesMapper(this.userAuthoritiesMapper())))
         .csrf(
             csrf ->
-                csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
@@ -73,23 +74,18 @@ public class SecurityConfig {
     return http.build();
   }
 
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return web -> web.ignoring().requestMatchers("/h2-console/**");
-  }
-
   private GrantedAuthoritiesMapper userAuthoritiesMapper() {
     return (authorities) -> {
       Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 
       authorities.forEach(
           authority -> {
-            log.info("********** authority={}", authority);
+            log.trace("********** authority={}", authority);
             mappedAuthorities.add(authority);
             if (authority instanceof OAuth2UserAuthority oauth2UserAuthority) {
 
               Map<String, Object> userAttributes = oauth2UserAuthority.getAttributes();
-              log.info("********** userAttributes={}", userAttributes);
+              log.trace("********** userAttributes={}", userAttributes);
               mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
               String email = (String) userAttributes.get("email");
