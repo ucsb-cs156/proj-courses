@@ -18,9 +18,6 @@ import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSche
 import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailsPage";
 import SectionSearchesIndexPage from "main/pages/SectionSearches/SectionSearchesIndexPage";
 
-import CoursesIndexPage from "main/pages/Courses/PSCourseIndexPage";
-import CoursesCreatePage from "main/pages/Courses/PSCourseCreatePage";
-
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
 
@@ -68,13 +65,6 @@ function App() {
               exact
               path="/personalschedules/edit/:id"
               element={<PersonalSchedulesEditPage />}
-            />
-
-            <Route exact path="/courses/list" element={<CoursesIndexPage />} />
-            <Route
-              exact
-              path="/courses/create"
-              element={<CoursesCreatePage />}
             />
             <Route
               exact
