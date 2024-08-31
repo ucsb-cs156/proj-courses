@@ -61,36 +61,6 @@ jobs:
           name: javadoc
           path: ${{ env.destination }}
   
-  build-storybook-main:
-    name: b - Storybook (main)
-    runs-on: ubuntu-latest
-    needs: [initialize]
-    env:
-      destination: frontend/storybook_static   
-
-    steps:
-    - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
-      with:
-        node-version-file: 'frontend/package.json'
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
-
-    - name: Build Storybook for main branch
-      working-directory: frontend
-      continue-on-error: true
-      run: | # Install npm packages and build the Storybook files
-        npm install
-        npx build-storybook --docs -o storybook_static
-
-    - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
-      with:
-          name: storybook
-          path: ${{ env.destination }}
   
   build-jacoco-main:
     name: c - Jacoco (main)
@@ -306,53 +276,6 @@ jobs:
         name: prs-${{ matrix.value.number }}-javadoc
         path: ${{ env.destination }}
     
-  b-build-storybook-for-each-pr:
-    name: b - Storybook (${{ matrix.value.number }}, ${{ matrix.value.headRefName }})
-    runs-on: ubuntu-latest
-    needs: [initialize]
-    if: ${{ needs.initialize.outputs.pull_requests != '[]' && needs.initialize.outputs.pull_requests != '' }}
-
-    strategy:
-      matrix:
-        value: ${{ fromJSON(needs.initialize.outputs.pull_requests)}}
-
-    steps:
-    - name: Debugging Output
-      run: |
-        echo "matrix.value: ${{ matrix.value }}"
-        echo "matrix.value.url: ${{ matrix.value.url }}"
-        echo "matrix.value.author: ${{ matrix.value.author }}"
-        echo "matrix.value.number: ${{ matrix.value.number }}"
-        echo "matrix.value.title:  ${{ matrix.value.title }}"
-        echo "matrix.value.headRefName:  ${{ matrix.value.headRefName }}"
-
-    - name: Checkout repo
-      uses: actions/checkout@v3.5.2
-      with:
-        ref: ${{ matrix.value.headRefName }}
-        fetch-depth: 1
-        token: ${{ github.token }}
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
-      with:
-        node-version-file: 'frontend/package.json'
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
-
-    - name: Build Storybook for PR branch
-      working-directory: frontend
-      continue-on-error: true
-      run: | # Install npm packages and build the Storybook files
-        npm install
-        npx build-storybook --docs -o storybook_static_${{ matrix.value.number }}
- 
-    - name: Upload Storybook to Artifacts
-      if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
-      with:
-        name: prs-${{ matrix.value.number }}-storybook
-        path: frontend/storybook_static_${{ matrix.value.number }} 
 
   c-build-jacoco-for-each-pr:
     name: c - Jacoco (${{ matrix.value.number }}, ${{ matrix.value.headRefName }})
