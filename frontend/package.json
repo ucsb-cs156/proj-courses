@@ -1,70 +1,40 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "proj-courses-frontend",
+  "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "=v16.20.0"
+    "node": "=v20.17.0"
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.8.3",
-    "axios": "^0.21.1",
-    "babel-loader": "8.1.0",
-    "bootstrap": "^5.0.0-beta3",
-    "history": "^5.2.0",
-    "react": "^17.0.1",
-    "react-bootstrap": "^2.0.0-alpha.0",
-    "react-dom": "^17.0.1",
-    "react-hook-form": "^7.27.0",
-    "react-json-view": "^1.21.3",
-    "react-query": "^3.12.2",
-    "react-router-bootstrap": "^0.25.0",
-    "react-router-dom": "^6.0.0-beta.0",
-    "react-scripts": "5.0.0",
-    "react-table": "^7.7.0",
-    "react-toastify": "^8.1.1",
+    "@jest/core": "^29.7.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.4",
+    "bootstrap": "^5.3.3",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.4",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
+    "react-inspector": "^6.0.2",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.26.1",
+    "react-scripts": "5.0.1",
+    "react-table": "^7.8.0",
+    "react-toastify": "^10.0.5",
+    "react18-json-view": "^0.2.8",
     "recharts": "^2.12.7",
-    "web-vitals": "^1.1.1"
-  },
-  "devDependencies": {
-    "@storybook/addon-actions": "^6.2.7",
-    "@storybook/addon-essentials": "^6.2.7",
-    "@storybook/addon-links": "^6.2.7",
-    "@storybook/builder-webpack5": "^6.4.18",
-    "@storybook/manager-webpack5": "^6.4.18",
-    "@storybook/node-logger": "^6.2.7",
-    "@storybook/preset-create-react-app": "^4.0.0",
-    "@storybook/react": "^6.2.7",
-    "@stryker-mutator/core": "^6.4.2",
-    "@stryker-mutator/jest-runner": "^6.4.2",
-    "@testing-library/react-hooks": "^5.1.2",
-    "axios-mock-adapter": "^1.19.0",
-    "env-cmd": "^10.1.0",
-    "eslint": "^8.14.0",
-    "eslint-plugin-flowtype": "^8.0.3",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-react-hooks": "^4.2.1-rc.0-next-64223fed8-20220210",
-    "jest-mock-console": "^1.1.0",
-    "prettier": "^3.0.3",
-    "react-test-renderer": "^17.0.2"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "env-cmd -f ../.env  -e development react-scripts start",
-    "build": "env-cmd -f ../.env --silent react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "coverage": "react-scripts test --coverage --watchAll=false",
-    "storybook": "start-storybook --docs -p 6006 -s public",
-    "build-storybook": "build-storybook --docs -s public",
+    "coverage": "react-scripts test --watchAll=false --coverage; echo \"Coverage report is available at file://`pwd`/coverage/lcov-report/index.html\"",
     "check-format": "prettier --check \"src/**/*.{js,jsx}\"",
-    "format": "prettier --write \"src/**/*.{js,jsx}\""
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "format": "prettier --write \"src/**/*.{js,jsx}\"",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "browserslist": {
     "production": [
@@ -78,22 +48,93 @@
       "last 1 safari version"
     ]
   },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@chromatic-com/storybook": "^1.7.0",
+    "@eslint/js": "^9.9.0",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/addon-interactions": "^8.2.9",
+    "@storybook/addon-links": "^8.2.9",
+    "@storybook/addon-onboarding": "^8.2.9",
+    "@storybook/blocks": "^8.2.9",
+    "@storybook/preset-create-react-app": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-webpack5": "^8.2.9",
+    "@storybook/test": "^8.2.9",
+    "@stryker-mutator/jest-runner": "^8.5.0",
+    "@testing-library/react": "^16.0.0",
+    "axios-mock-adapter": "^2.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-storybook": "^0.8.0",
+    "globals": "^15.9.0",
+    "jest-mock-console": "^2.0.0",
+    "msw": "^2.3.5",
+    "msw-storybook-addon": "^2.0.3",
+    "nyc": "^17.0.0",
+    "prettier": "^3.3.3",
+    "prop-types": "^15.8.1",
+    "storybook": "^8.2.9",
+    "typescript-eslint": "^8.2.0",
+    "webpack": "^5.93.0"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 80,
+    "statements": 80,
+    "branches": 80,
+    "functions": 80,
+    "reporter": [
+      "html",
+      "text-summary"
+    ]
+  },
   "jest": {
-    "resetMocks": true,
+    "moduleNameMapper": {
+      "^axios$": "axios/dist/node/axios.cjs"
+    },
     "collectCoverageFrom": [
       "src/main/**/*.{js,jsx,ts,tsx}"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      }
-    },
-    "coverageReporters": [
-      "text",
-      "lcov"
     ]
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "plugin:storybook/recommended"
+    ],
+    "env": {
+      "browser": true
+    },
+    "rules": {
+      "no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_|",
+          "varsIgnorePattern": "(^_)|(^React$)"
+        }
+      ],
+      "react/react-in-jsx-scope": "off",
+      "react/jsx-uses-react": "off",
+      "react/prop-types": "off",
+      "react/no-unescaped-entities": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "(^_)|(^React$)"
+        }
+      ]
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
   }
 }

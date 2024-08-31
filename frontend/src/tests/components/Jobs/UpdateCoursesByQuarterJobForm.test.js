@@ -45,7 +45,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
       await screen.findByTestId(
         /UpdateCoursesByQuarterJobForm.Quarter-option-0/,
       ),
-    ).toHaveValue("20201");
+    ).toHaveValue("20221");
     expect(
       await screen.findByTestId(
         /UpdateCoursesByQuarterJobForm.Quarter-option-3/,
@@ -73,7 +73,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
       await screen.findByTestId(
         /UpdateCoursesByQuarterJobForm.Quarter-option-0/,
       ),
-    ).toHaveValue("20211");
+    ).toHaveValue("20201");
     expect(
       await screen.findByTestId(
         /UpdateCoursesByQuarterJobForm.Quarter-option-3/,
@@ -110,7 +110,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
       await screen.findByTestId(
         /UpdateCoursesByQuarterJobForm.Quarter-option-0/,
       ),
-    ).toHaveValue("20191");
+    ).toHaveValue("20211");
     expect(
       await screen.findByTestId(
         /UpdateCoursesByQuarterJobForm.Quarter-option-3/,
@@ -148,15 +148,15 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
       await screen.findByTestId(
         /UpdateCoursesByQuarterJobForm.Quarter-option-0/,
       ),
-    ).toHaveValue("20181");
+    ).toHaveValue("20191");
 
     expect(getItemSpy).toHaveBeenCalledWith(
       "UpdateCoursesByQuarterJobForm.Quarter",
     );
 
-    expect(screen.getByRole("option", { name: /W18/i }).selected).toBeTruthy();
-    expect(screen.queryByRole("option", { name: /S18/i }).selected).toBeFalsy();
-    expect(screen.queryByRole("option", { name: /M18/i }).selected).toBeFalsy();
-    expect(screen.queryByRole("option", { name: /F18/i }).selected).toBeFalsy();
+    expect(screen.queryByRole("option", { name: /W19/i }).selected).toBeFalsy();
+    expect(screen.queryByRole("option", { name: /S19/i }).selected).toBeFalsy();
+    expect(screen.queryByRole("option", { name: /M19/i }).selected).toBeFalsy();
+    expect(screen.getByRole("option", { name: /F19/i }).selected).toBeTruthy();
   });
 });

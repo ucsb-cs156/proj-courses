@@ -4,7 +4,7 @@ import RoleBadge from "main/components/Profile/RoleBadge";
 import { useCurrentUser } from "main/utils/currentUser";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 
-import ReactJson from "react-json-view";
+import { Inspector } from "react-inspector";
 const ProfilePage = () => {
   const { data: currentUser } = useCurrentUser();
 
@@ -32,7 +32,7 @@ const ProfilePage = () => {
         </Col>
       </Row>
       <Row className="text-left">
-        <ReactJson src={currentUser.root} />
+        <Inspector data={currentUser.root} />
       </Row>
     </BasicLayout>
   );

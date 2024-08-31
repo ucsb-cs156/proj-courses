@@ -54,18 +54,18 @@ export default function SectionsOverTimeTableBase({
                           background: cell.isGrouped
                             ? "#cedefa"
                             : cell.isAggregated
-                            ? "#cedefa"
-                            : "#9dbfbe",
+                              ? "#cedefa"
+                              : "#9dbfbe",
                           color: cell.isGrouped
                             ? "#4a4f4f"
                             : cell.isAggregated
-                            ? "#4a4f4f"
-                            : "#4a4f4f",
+                              ? "#4a4f4f"
+                              : "#4a4f4f",
                           fontWeight: cell.isGrouped
                             ? "bold"
                             : cell.isAggregated
-                            ? "bold"
-                            : "normal",
+                              ? "bold"
+                              : "normal",
                         }}
                       >
                         {cell.isGrouped ? (
