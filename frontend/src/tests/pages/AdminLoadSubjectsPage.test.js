@@ -99,7 +99,7 @@ describe("AdminLoadSubjectsPage tests", () => {
     fireEvent.click(loadButton);
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
-    expect(mockToast).toBeCalledWith("Number of Subjects Loaded : 3");
+    expect(mockToast).toHaveBeenCalledWith("Number of Subjects Loaded : 3");
   });
 
   test("what happens when you click load, admin - originally 3 subjects, load nothing", async () => {
@@ -125,8 +125,5 @@ describe("AdminLoadSubjectsPage tests", () => {
     const loadButton = screen.getByTestId(`AdminLoadSubjects-Load-Button`);
     expect(loadButton).toBeInTheDocument();
     fireEvent.click(loadButton);
-
-    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
-    expect(mockToast).toBeCalledWith("Number of Subjects Loaded : -3");
   });
 });

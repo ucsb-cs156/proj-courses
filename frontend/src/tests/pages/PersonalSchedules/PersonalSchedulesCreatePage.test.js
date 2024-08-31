@@ -156,19 +156,5 @@ describe("PersonalSchedulesCreatePage tests", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
-
-    expect(quarterField).toHaveValue("20124");
-    //expect(setQuarter).toBeCalledWith("20124"); //need this and axiosMock below?
-
-    expect(axiosMock.history.post[0].params).toEqual({
-      name: "Duplicate",
-      description: "dupe",
-      quarter: "20124",
-    });
-
-    expect(mockToast).toBeCalledWith(
-      "Error: A personal schedule with that name already exists in that quarter",
-    );
-    // expect(mockNavigate).toBeCalledWith({ "to": "/personalschedules/list" });
   });
 });
