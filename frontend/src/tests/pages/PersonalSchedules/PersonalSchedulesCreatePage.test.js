@@ -84,17 +84,14 @@ describe("PersonalSchedulesCreatePage tests", () => {
     const descriptionField = screen.getByTestId(
       "PersonalScheduleForm-description",
     );
-    //const quarterField = document.querySelector("#PersonalScheduleForm-quarter");
     const quarterField = document.querySelector(
       "#PersonalScheduleForm-quarter",
     );
-    //const selectQuarter = getByLabelText("Quarter")
     const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
     fireEvent.change(nameField, { target: { value: "SampName" } });
     fireEvent.change(descriptionField, { target: { value: "desc" } });
     fireEvent.change(quarterField, { target: { value: "20124" } });
-    //userEvent.selectOptions(selectQuarter, "20124");
 
     expect(submitButton).toBeInTheDocument();
 
@@ -103,7 +100,6 @@ describe("PersonalSchedulesCreatePage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
     expect(quarterField).toHaveValue("20124");
-    //expect(setQuarter).toBeCalledWith("20124"); //need this and axiosMock below?
 
     expect(axiosMock.history.post[0].params).toEqual({
       name: "SampName",
@@ -111,10 +107,54 @@ describe("PersonalSchedulesCreatePage tests", () => {
       quarter: "20124",
     });
 
-    expect(mockToast).toBeCalledWith(
+    expect(mockToast).toHaveBeenCalledWith(
       "New personalSchedule Created - id: 17 name: SampName",
     );
-    expect(mockNavigate).toBeCalledWith({ to: "/personalschedules/list" });
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: "/personalschedules/list",
+    });
+  });
+
+  test("when the backend returns an error, user gets toast with error message", async () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onPost("/api/personalschedules/post")
+      .reply(500, { message: "The backend is in a mood today" });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesCreatePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("PersonalScheduleForm-name"),
+    ).toBeInTheDocument();
+
+    const nameField = screen.getByTestId("PersonalScheduleForm-name");
+    const descriptionField = screen.getByTestId(
+      "PersonalScheduleForm-description",
+    );
+    const quarterField = document.querySelector(
+      "#PersonalScheduleForm-quarter",
+    );
+    const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
+
+    fireEvent.change(nameField, { target: { value: "SampName" } });
+    fireEvent.change(descriptionField, { target: { value: "desc" } });
+    fireEvent.change(quarterField, { target: { value: "20124" } });
+
+    expect(submitButton).toBeInTheDocument();
+
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+    expect(mockToast).toHaveBeenCalledWith(
+      "Error: The backend is in a mood today",
+    );
   });
 
   test("filling the form with a duplicate personal schedule returns an error", async () => {
