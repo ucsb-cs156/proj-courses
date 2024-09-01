@@ -37,11 +37,11 @@ ThreeSubjects.parameters = {
   msw: mswMocks,
 };
 
-export const ThreeSubjectsUser = Template.bind({});
-ThreeSubjectsUser.args = {
+export const ThreeSubjectsAdminUser = Template.bind({});
+ThreeSubjectsAdminUser.args = {
   personalSchedules: personalScheduleFixtures.threePersonalSchedules,
   currentUser: currentUserFixtures.adminUser,
 };
-ThreeSubjectsUser.parameters = {
+ThreeSubjectsAdminUser.parameters = {
   msw: mswMocks,
 };
