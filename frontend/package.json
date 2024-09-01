@@ -34,7 +34,8 @@
     "check-format": "prettier --check \"src/**/*.{js,jsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic run --project-token=$(grep CHROMATIC_PROJECT_TOKEN= ../.env  | sed -e s/CHROMATIC_PROJECT_TOKEN=// ) --exit-once-uploaded"
   },
   "browserslist": {
     "production": [
@@ -69,7 +70,7 @@
     "eslint-plugin-storybook": "^0.8.0",
     "globals": "^15.9.0",
     "jest-mock-console": "^2.0.0",
-    "msw": "^2.3.5",
+    "msw": "^2.4.1",
     "msw-storybook-addon": "^2.0.3",
     "nyc": "^17.0.0",
     "prettier": "^3.3.3",
