@@ -5,8 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { initialize, mswLoader } from 'msw-storybook-addon'
 
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { MemoryRouter, useLocation } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,16 @@ const queryClient = new QueryClient();
 initialize()
 
 export const decorators = [
+  (Story) => {
+    const location = useLocation();
+    useEffect(() => {
+      if (location.pathname !== "/") {
+        toast("Would navigate to: " + location.pathname);
+      }
+    }, [location]);
+
+    return <Story />;
+  },
   (Story) => (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
@@ -37,7 +48,6 @@ const preview = {
   },
   loaders: [mswLoader]
 };
-
 
 
 export default preview;
