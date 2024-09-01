@@ -2,7 +2,7 @@ import React from "react";
 
 import JobsTable from "main/components/Jobs/JobsTable";
 import jobsFixtures from "fixtures/jobsFixtures";
-import systemInfoFixtures from "fixtures/systemInfoFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
