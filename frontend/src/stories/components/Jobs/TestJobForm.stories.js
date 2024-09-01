@@ -3,7 +3,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
 import TestJobForm from "main/components/Jobs/TestJobForm";
-import systemInfoFixtures from "fixtures/systemInfoFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 export default {
   title: "components/Jobs/TestJobForm",
