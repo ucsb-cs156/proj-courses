@@ -14,11 +14,11 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
       - name: Setup Node.js
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v4
         with:
           node-version-file: 'frontend/package.json'
           cache: 'npm'
