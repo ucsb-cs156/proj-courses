@@ -4,12 +4,12 @@ import CourseOverTimeSearchForm from "main/components/BasicCourseSearch/CourseOv
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
 
 export default {
   title: "components/BasicCourseSearch/CourseOverTimeSearch",
-  component: CourseOverTimeSearchForm
+  component: CourseOverTimeSearchForm,
 };
 
 const Template = (args) => {
@@ -22,7 +22,7 @@ Default.args = {
   submitText: "Create",
   fetchJSON: (_event, data) => {
     toast(`Submit was clicked, data=${JSON.stringify(data)}`);
-  }
+  },
 };
 Default.parameters = {
   msw: [
@@ -36,5 +36,5 @@ Default.parameters = {
         status: 200,
       });
     }),
-  ]
-}
+  ],
+};

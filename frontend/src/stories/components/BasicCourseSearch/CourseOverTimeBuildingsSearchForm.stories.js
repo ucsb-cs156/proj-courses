@@ -1,12 +1,12 @@
 import CourseOverTimeSearchBuildingsForm from "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
 
 export default {
   title: "components/BasicCourseSearch/CourseOverTimeBuildingsSearch",
-  component: CourseOverTimeSearchBuildingsForm
+  component: CourseOverTimeSearchBuildingsForm,
 };
 
 const Template = (args) => {
@@ -29,4 +29,3 @@ Default.parameters = {
     }),
   ],
 };
-
