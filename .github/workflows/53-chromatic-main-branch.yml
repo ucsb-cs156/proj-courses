@@ -1,0 +1,67 @@
+# Creates/Resets the gh-pages branch to the intended start state
+
+name: "53-chromatic-main-branch: Update chromatic when main branch changes"
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - frontend/**
+      - .github/workflows/53-chromatic-main-branch.yml
+
+env:
+  GH_TOKEN: ${{ github.token }}
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs: 
+  build-chromatic-main:
+    name: Chromatic(main branch)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: './frontend/package.json'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        working-directory: ./frontend
+        # ⚠️ See your package manager's documentation for the correct command to install dependencies in a CI environment.
+        run: npm ci
+      - name: Run Chromatic
+        id: run_chromatic
+        uses: chromaui/action@latest
+        with:
+          # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: frontend
+      - name: Echo output
+        run: |
+          echo "Chromatic URL: ${{ steps.run_chromatic.outputs.url }}"
+          echo "Chromatic build ID: ${{ steps.run_chromatic.outputs.storybookUrl }}"
+
+      - name: Build redirect file
+        working-directory: frontend
+        run: | # Create a redirect file to redirect to the storybook online
+          mkdir -p chromatic_static
+          echo "<meta http-equiv=refresh content=0;url=${{steps.run_chromatic.outputs.storybookUrl}}>" > chromatic_static/index.html
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+            branch: gh-pages # The branch the action should deploy to.
+            folder: frontend/chromatic_static # source
+            clean: true # Automatically remove deleted files from the deploy branch
+            target-folder: chromatic # destination 
+       
+     
+   
