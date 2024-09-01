@@ -32,7 +32,8 @@ Default.args = {
   submitText: "Create",
   fetchJSON: (_event, data) => {
     toast(`Submit was clicked, data=${JSON.stringify(data)}`);
-  }};
+  },
+};
 Default.parameters = {
-  msw: mswHandlers
+  msw: mswHandlers,
 };
