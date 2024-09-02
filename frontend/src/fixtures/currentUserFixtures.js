@@ -135,10 +135,7 @@ const currentUserFixtures = {
   },
   loggedOut: {
     loggedIn: false,
-    root: {
-      user: {},
-      rolesList: [],
-    },
+    root: null,
   },
 };
 

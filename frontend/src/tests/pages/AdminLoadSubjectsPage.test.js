@@ -7,7 +7,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
-import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
+import AdminLoadSubjectsPage from "main/pages/Admin/AdminLoadSubjectsPage";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
