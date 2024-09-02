@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
 
 export default {
-  title: "pages/CourseOverTimeInstructorIndexPage",
+  title: "pages/CourseOverTime/CourseOverTimeInstructorIndexPage",
   component: CourseOverTimeInstructorIndexPage,
 };
 
