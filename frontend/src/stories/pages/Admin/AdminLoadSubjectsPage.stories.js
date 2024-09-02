@@ -1,5 +1,5 @@
 import React from "react";
-import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
+import AdminLoadSubjectsPage from "main/pages/Admin/AdminLoadSubjectsPage";
 import jobsFixtures from "fixtures/jobsFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";

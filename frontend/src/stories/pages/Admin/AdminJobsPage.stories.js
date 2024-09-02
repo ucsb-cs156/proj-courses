@@ -1,6 +1,6 @@
 import React from "react";
 
-import AdminJobsPage from "main/pages/AdminJobsPage";
+import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import jobsFixtures from "fixtures/jobsFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";

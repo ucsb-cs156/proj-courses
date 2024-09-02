@@ -22,6 +22,9 @@ LoggedOut.parameters = {
         status: 200,
       });
     }),
+    http.get("/api/currentUser", () => {
+      return HttpResponse.status(403); // returns 403 when not logged in
+    }),
   ],
 };
 
@@ -32,6 +35,9 @@ LoggedOutShowingH2AndSwagger.parameters = {
       return HttpResponse.json(systemInfoFixtures.showingBoth, {
         status: 200,
       });
+    }),
+    http.get("/api/currentUser", () => {
+      return HttpResponse.status(403); // returns 403 when not logged in
     }),
   ],
 };

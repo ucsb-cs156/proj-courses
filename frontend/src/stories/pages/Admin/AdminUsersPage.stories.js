@@ -1,6 +1,6 @@
 import React from "react";
 
-import AdminUsersPage from "main/pages/AdminUsersPage";
+import AdminUsersPage from "main/pages/Admin/AdminUsersPage";
 
 import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
