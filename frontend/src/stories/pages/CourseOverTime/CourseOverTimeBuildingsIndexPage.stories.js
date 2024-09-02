@@ -4,7 +4,6 @@ import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOv
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { coursesInLib } from "fixtures/buildingFixtures";
-// import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
 
 export default {

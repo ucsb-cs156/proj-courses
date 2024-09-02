@@ -5,7 +5,6 @@ import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { coursesFixtures } from "fixtures/courseFixtures";
 
-// import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
 
 export default {
