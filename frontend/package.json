@@ -136,5 +136,8 @@
         "version": "detect"
       }
     }
+  },
+  "overrides": {
+    "react-refresh": "0.14.2"
   }
 }
