@@ -16,7 +16,6 @@ export function useCurrentUser() {
         }
         response.data = { ...response.data, rolesList: rolesList };
         const returnValue = { loggedIn: true, root: response.data };
-        console.log("useCurrentUser: ", returnValue);
         return returnValue;
       } catch (e) {
         console.error("Error invoking axios.get: ", e);
