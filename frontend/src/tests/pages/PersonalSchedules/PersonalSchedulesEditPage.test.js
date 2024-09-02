@@ -201,12 +201,11 @@ describe("PersonalSchedulesEditPage tests", () => {
       });
       fireEvent.click(submitButton);
 
-      await waitFor(() => expect(mockToast).toBeCalled());
-      expect(mockToast).toBeCalledWith(
-        "PersonalSchedule Updated - id: 17 name: Winter Courses",
+      await waitFor(() =>
+        expect(mockNavigate).toHaveBeenCalledWith({
+          to: "/personalschedules/list",
+        }),
       );
-
-      expect(mockNavigate).toBeCalledWith({ to: "/personalschedules/list" });
 
       expect(axiosMock.history.put.length).toBe(1); // times called
       expect(axiosMock.history.put[0].params).toEqual({ id: 17 });

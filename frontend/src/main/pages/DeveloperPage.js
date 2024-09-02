@@ -1,6 +1,6 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import ReactJson from "react-json-view";
+import { Inspector } from "react-inspector";
 import { useSystemInfo } from "main/utils/systemInfo";
 
 const DeveloperPage = () => {
@@ -9,7 +9,7 @@ const DeveloperPage = () => {
     <BasicLayout>
       <h2>Github Branch Information</h2>
       <p>The following SystemInfo is displayed in a JSON file.</p>
-      <ReactJson src={systemInfo} />
+      <Inspector data={systemInfo} />
     </BasicLayout>
   );
 };

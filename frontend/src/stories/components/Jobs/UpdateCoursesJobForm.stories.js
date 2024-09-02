@@ -4,25 +4,12 @@ import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
+import { toast } from "react-toastify";
+import { http, HttpResponse } from "msw";
+
 export default {
   title: "components/Jobs/UpdateCoursesJobForm",
   component: UpdateCoursesJobForm,
-  parameters: {
-    mockData: [
-      {
-        url: "/api/UCSBSubjects/all",
-        method: "GET",
-        status: 200,
-        response: ucsbSubjectsFixtures.threeSubjects,
-      },
-      {
-        url: "/api/systemInfo",
-        method: "GET",
-        status: 200,
-        response: systemInfoFixtures.showingBoth,
-      },
-    ],
-  },
 };
 
 const Template = (args) => {
@@ -33,6 +20,21 @@ export const Default = Template.bind({});
 
 Default.args = {
   callback: (data) => {
-    console.log("Submit was clicked, data=", data);
+    toast(`Submit was clicked, data=${JSON.stringify(data)}`);
   },
+};
+
+Default.parameters = {
+  msw: [
+    http.get("/api/systemInfo", () => {
+      return HttpResponse.json(systemInfoFixtures.showingBoth, {
+        status: 200,
+      });
+    }),
+    http.get("/api/UCSBSubjects/all", () => {
+      return HttpResponse.json(ucsbSubjectsFixtures.threeSubjects, {
+        status: 200,
+      });
+    }),
+  ],
 };

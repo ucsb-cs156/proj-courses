@@ -8,7 +8,7 @@ import { useCurrentUser } from "main/utils/currentUser";
 
 export default function PersonalSchedulesDetailsPage() {
   let { id } = useParams();
-  const currentUser = useCurrentUser();
+  const { data: currentUser } = useCurrentUser();
 
   const {
     data: personalSchedule,

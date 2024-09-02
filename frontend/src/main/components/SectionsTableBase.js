@@ -60,18 +60,18 @@ export default function SectionsTableBase({
                           background: cell.isGrouped
                             ? "inherit"
                             : cell.isAggregated
-                            ? "inherit"
-                            : null,
+                              ? "inherit"
+                              : null,
                           color: cell.isGrouped
                             ? "#4a4f4f"
                             : cell.isAggregated
-                            ? "#4a4f4f"
-                            : "#4a4f4f",
+                              ? "#4a4f4f"
+                              : "#4a4f4f",
                           fontWeight: cell.isGrouped
                             ? "bold"
                             : cell.isAggregated
-                            ? "bold"
-                            : "normal",
+                              ? "bold"
+                              : "normal",
                         }}
                       >
                         {cell.isGrouped ? (

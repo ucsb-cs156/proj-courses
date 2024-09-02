@@ -1,6 +1,7 @@
 import React from "react";
 
 import RoleBadge from "main/components/Profile/RoleBadge";
+import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
 export default {
   title: "components/Profile/RoleBadge",
@@ -11,9 +12,14 @@ const Template = (args) => {
   return <RoleBadge {...args} />;
 };
 
-export const noRole = Template.bind({});
+export const User = Template.bind({});
+User.args = {
+  role: "ROLE_USER",
+  currentUser: currentUserFixtures.userOnly,
+};
 
-export const admin = Template.bind({});
-admin.args = {
-  role: "admin",
+export const Admin = Template.bind({});
+Admin.args = {
+  role: "ROLE_ADMIN",
+  currentUser: currentUserFixtures.adminUser,
 };
