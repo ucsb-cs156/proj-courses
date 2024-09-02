@@ -47,11 +47,9 @@ export default function PersonalSchedulesEditPage() {
     },
   });
 
-  const onSuccess = () => {};
-
   const mutation = useBackendMutation(
     objectToAxiosParams,
-    { onSuccess },
+    { },
     // Stryker disable next-line all : hard to set up test for caching
     [`/api/personalschedules/id=${id}`],
   );
@@ -66,7 +64,6 @@ export default function PersonalSchedulesEditPage() {
     return <Navigate to="/personalschedules/list" />;
   }
 
-  console.log("personalSchedule", personalSchedule);
   return (
     <BasicLayout>
       <div className="pt-2">
