@@ -49,7 +49,7 @@ export default function PersonalSchedulesEditPage() {
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
-    { },
+    {},
     // Stryker disable next-line all : hard to set up test for caching
     [`/api/personalschedules/id=${id}`],
   );
