@@ -133,6 +133,13 @@ const currentUserFixtures = {
       ],
     },
   },
+  loggedOut: {
+    loggedIn: false,
+    root: {
+      user: {},
+      rolesList: [],
+    },
+  },
 };
 
 export { currentUserFixtures, apiCurrentUserFixtures };
