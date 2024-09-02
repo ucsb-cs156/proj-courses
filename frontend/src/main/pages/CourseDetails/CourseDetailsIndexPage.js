@@ -10,8 +10,6 @@ import GradeHistoryGraphs from "main/components/GradeHistory/GradeHistoryGraph";
 export default function CourseDetailsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   let { qtr, enrollCode } = useParams();
-  console.log("CourseDetailsIndexPage qtr", qtr);
-  console.log("CourseDetailsIndexPage enrollCode", enrollCode);
   const {
     data: moreDetails,
     _error,
@@ -55,8 +53,6 @@ export default function CourseDetailsIndexPage() {
       },
     },
   );
-
-  console.log("moreDetails", moreDetails);
 
   return (
     <BasicLayout>
