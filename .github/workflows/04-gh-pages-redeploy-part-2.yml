@@ -9,7 +9,7 @@ on:
 env:
   GH_TOKEN: ${{ github.token }}
   javadoc_dest: target/site/apidocs
-  storybook_dest: frontend/storybook_static
+  chromatic_dest: frontend/chromatic_static
   jacoco_dest: target/site/jacoco
   pitest_dest: target/pit-reports
   coverage_dest: frontend/coverage/lcov-report
@@ -126,24 +126,24 @@ jobs:
         clean: true # Automatically remove deleted files from the deploy branch
         target-folder: javadoc # The folder that we serve our files from
 
-    - name: b-storybook Make directory in case it doesn't exist
-      run: mkdir -p ${{ env.storybook_dest }}
-    - name: b-storybook Download artifact
+    - name: b-chromatic Make directory in case it doesn't exist
+      run: mkdir -p ${{ env.chromatic_dest }}
+    - name: b-chromatic Download artifact
       uses: dawidd6/action-download-artifact@v2.27.0
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
-        name: storybook
-        path: ${{ env.storybook_dest }}
+        name: chromatic
+        path: ${{ env.chromatic_dest }}
         check_artifacts: true
         if_no_artifact_found: error
-    - name: b-storybook Deploy Storybook (Main) 🚀
+    - name: b-chromatic Deploy chromatic (Main) 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages # The branch the action should deploy to.
-        folder:  ${{ env.storybook_dest}} # The folder where the files come from
+        folder:  ${{ env.chromatic_dest}} # The folder where the files come from
         clean: true # Automatically remove deleted files from the deploy branch
-        target-folder: storybook # The folder that we serve our files from
+        target-folder: chromatic # The folder that we serve our files from
 
     - name: c-jacoco Make directory in case it doesn't exist
       run: mkdir -p ${{ env.jacoco_dest }}
@@ -263,26 +263,26 @@ jobs:
         clean: true # Automatically remove deleted files from the deploy branch
         target-folder: prs/${{ matrix.value.number }}/javadoc # The folder that we serve our files from
 
-    - name: b-storybook Make directory in case it doesn't exist
-      run: mkdir -p ${{ env.storybook_dest }}
+    - name: b-chromatic Make directory in case it doesn't exist
+      run: mkdir -p ${{ env.chromatic_dest }}
 
-    - name:  b-storybook Download artifact
+    - name:  b-chromatic Download artifact
       uses: dawidd6/action-download-artifact@v2.27.0
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
-        name: prs-${{ matrix.value.number }}-storybook
-        path: ${{ env.storybook_dest }}
+        name: prs-${{ matrix.value.number }}-chromatic
+        path: ${{ env.chromatic_dest }}
         check_artifacts: true
         if_no_artifact_found: error
 
-    - name:  b-storybook Deploy Storybook (PR ${{ matrix.value.number }}) 🚀
+    - name:  b-chromatic Deploy chromatic (PR ${{ matrix.value.number }}) 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages # The branch the action should deploy to.
-        folder: ${{ env.storybook_dest }} # The folder where we put the files
+        folder: ${{ env.chromatic_dest }} # The folder where we put the files
         clean: true # Automatically remove deleted files from the deploy branch
-        target-folder: prs/${{ matrix.value.number }}/storybook # The folder that we serve our files from
+        target-folder: prs/${{ matrix.value.number }}/chromatic # The folder that we serve our files from
 
     - name: c-jacoco Make directory in case it doesn't exist
       run: mkdir -p ${{ env.jacoco_dest }}

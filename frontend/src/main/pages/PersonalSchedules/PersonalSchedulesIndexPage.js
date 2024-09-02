@@ -7,7 +7,7 @@ import { useCurrentUser } from "main/utils/currentUser";
 import { Button } from "react-bootstrap";
 
 export default function PersonalSchedulesIndexPage() {
-  const currentUser = useCurrentUser();
+  const { data: currentUser } = useCurrentUser();
 
   const {
     data: personalSchedules,

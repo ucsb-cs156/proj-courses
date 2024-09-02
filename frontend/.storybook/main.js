@@ -1,21 +1,20 @@
-const WebpackPluginFailBuildOnWarning = require("./webpack-plugin-fail-build-on-warning");
-
-module.exports = {
-  core: {
-    builder: 'webpack5',
-  },
-  "stories": [
-    "../src/**/*.stories.mdx",
-    "../src/**/*.stories.@(js|jsx|ts|tsx)"
-  ],
-  "addons": [
+/** @type { import('@storybook/react-webpack5').StorybookConfig } */
+const config = {
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  addons: [
+    "@storybook/preset-create-react-app",
+    "@storybook/addon-onboarding",
     "@storybook/addon-links",
     "@storybook/addon-essentials",
-    "@storybook/preset-create-react-app",
-    'storybook-addon-mock',
+    "@chromatic-com/storybook",
+    "@storybook/addon-interactions",
+    "storybook-addon-remix-react-router",
+    "@storybook/addon-queryparams"
   ],
-  webpackFinal: async (config) => {
-    config.plugins.push(new WebpackPluginFailBuildOnWarning());
-    return config;
-  }
-}
+  framework: {
+    name: "@storybook/react-webpack5",
+    options: {},
+  },
+  staticDirs: ["../public"],
+};
+export default config;

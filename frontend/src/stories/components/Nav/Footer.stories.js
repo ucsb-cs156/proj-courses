@@ -3,7 +3,7 @@ import React from "react";
 import Footer from "main/components/Nav/Footer";
 
 export default {
-  title: "layouts/BasicLayout/Footer",
+  title: "components/Nav/Footer",
   component: Footer,
 };
 

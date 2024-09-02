@@ -1,21 +1,12 @@
-import React from "react";
-
 import CourseOverTimeSearchBuildingsForm from "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+
+import { toast } from "react-toastify";
+import { http, HttpResponse } from "msw";
 
 export default {
   title: "components/BasicCourseSearch/CourseOverTimeBuildingsSearch",
   component: CourseOverTimeSearchBuildingsForm,
-  parameters: {
-    mockData: [
-      {
-        url: "/api/systemInfo",
-        method: "GET",
-        status: 200,
-        response: systemInfoFixtures.showingBoth,
-      },
-    ],
-  },
 };
 
 const Template = (args) => {
@@ -26,6 +17,15 @@ export const Default = Template.bind({});
 
 Default.args = {
   fetchJSON: (_event, data) => {
-    console.log("Submit was clicked, data=", data);
+    toast(`Submit was clicked, data=${JSON.stringify(data)}`);
   },
+};
+Default.parameters = {
+  msw: [
+    http.get("/api/systemInfo", () => {
+      return HttpResponse.json(systemInfoFixtures.showingBothStartAndEndQtr, {
+        status: 200,
+      });
+    }),
+  ],
 };

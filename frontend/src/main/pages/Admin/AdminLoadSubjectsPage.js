@@ -22,11 +22,8 @@ export default function AdminLoadSubjectsPage() {
     method: "POST",
   });
 
-  var subjectsCount = subjects.length;
-
   const onSuccess = (subjects) => {
-    toast(`Number of Subjects Loaded : ${subjects.length - subjectsCount}`);
-    subjectsCount = subjects.length;
+    toast(`Number of Subjects Loaded : ${subjects.length}`);
   };
 
   const mutation = useBackendMutation(

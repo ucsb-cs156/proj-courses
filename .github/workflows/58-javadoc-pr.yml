@@ -7,8 +7,7 @@ on:
     branches: [ main ]
     paths:
       - 'src/**'
-      - 'pom.xml'  
-      - '.github/workflows/58-javadoc-pr.yml'  
+      - 'pom.xml'    
       
 env:
   GH_TOKEN: ${{ github.token }}

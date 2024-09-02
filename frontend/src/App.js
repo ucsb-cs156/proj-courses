@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CourseDescriptionIndexPage from "main/pages/CourseDescriptions/CourseDescriptionIndexPage";
 import ProfilePage from "main/pages/ProfilePage";
-import AdminUsersPage from "main/pages/AdminUsersPage";
-import AdminLoadSubjectsPage from "main/pages/AdminLoadSubjectsPage";
-import AdminPersonalSchedulesPage from "main/pages/AdminPersonalSchedulePage";
-import AdminJobsPage from "main/pages/AdminJobsPage";
+import AdminUsersPage from "main/pages/Admin/AdminUsersPage";
+import AdminLoadSubjectsPage from "main/pages/Admin/AdminLoadSubjectsPage";
+import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import DeveloperPage from "main/pages/DeveloperPage"; // route from /developer to DeveloperPage
 
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
@@ -39,11 +38,6 @@ function App() {
               exact
               path="/admin/loadsubjects"
               element={<AdminLoadSubjectsPage />}
-            />
-            <Route
-              exact
-              path="/admin/personalschedule"
-              element={<AdminPersonalSchedulesPage />}
             />
             <Route path="/admin/jobs" element={<AdminJobsPage />} />
             <Route path="/developer" element={<DeveloperPage />} />

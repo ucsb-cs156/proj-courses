@@ -1,12 +1,12 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useCurrentUser, useLogout, hasRole } from "main/utils/currentUser";
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, waitFor } from "@testing-library/react";
 import {
   apiCurrentUserFixtures,
   currentUserFixtures,
 } from "fixtures/currentUserFixtures";
 import mockConsole from "jest-mock-console";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 import { useNavigate } from "react-router-dom";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
@@ -34,7 +34,7 @@ describe("utils/currentUser tests", () => {
 
       const restoreConsole = mockConsole();
 
-      const { result, waitFor } = renderHook(() => useCurrentUser(), {
+      const { result } = renderHook(() => useCurrentUser(), {
         wrapper,
       });
       await waitFor(() => result.current.isSuccess);
@@ -72,7 +72,7 @@ describe("utils/currentUser tests", () => {
         .onGet("/api/systemInfo")
         .reply(200, systemInfoFixtures.showingNeither);
 
-      const { result, waitFor } = renderHook(() => useCurrentUser(), {
+      const { result } = renderHook(() => useCurrentUser(), {
         wrapper,
       });
 
@@ -94,7 +94,7 @@ describe("utils/currentUser tests", () => {
       axiosMock.onGet("/api/currentUser").reply(404);
 
       const restoreConsole = mockConsole();
-      const { result, waitFor } = renderHook(() => useCurrentUser(), {
+      const { result } = renderHook(() => useCurrentUser(), {
         wrapper,
       });
 
@@ -104,7 +104,11 @@ describe("utils/currentUser tests", () => {
       expect(errorMessage).toMatch(/Error invoking axios.get:/);
       restoreConsole();
 
-      expect(result.current.data).toEqual({ loggedIn: false, root: null });
+      expect(result.current.data).toEqual({
+        initialData: true,
+        loggedIn: false,
+        root: null,
+      });
       queryClient.clear();
     });
 
@@ -121,7 +125,7 @@ describe("utils/currentUser tests", () => {
       axiosMock.onGet("/api/currentUser").reply(200, apiResult);
 
       const restoreConsole = mockConsole();
-      const { result, waitFor } = renderHook(() => useCurrentUser(), {
+      const { result } = renderHook(() => useCurrentUser(), {
         wrapper,
       });
 
@@ -156,7 +160,7 @@ describe("utils/currentUser tests", () => {
 
       const resetQueriesSpy = jest.spyOn(queryClient, "resetQueries");
 
-      const { result, waitFor } = renderHook(() => useLogout(), { wrapper });
+      const { result } = renderHook(() => useLogout(), { wrapper });
 
       act(() => {
         expect(useNavigate).toHaveBeenCalled();

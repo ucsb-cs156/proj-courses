@@ -133,6 +133,10 @@ const currentUserFixtures = {
       ],
     },
   },
+  loggedOut: {
+    loggedIn: false,
+    root: null,
+  },
 };
 
 export { currentUserFixtures, apiCurrentUserFixtures };

@@ -15,11 +15,7 @@ export default function PersonalSchedulesCreatePage() {
     },
   });
 
-  const onSuccess = (personalSchedule) => {
-    toast(
-      `New personalSchedule Created - id: ${personalSchedule.id} name: ${personalSchedule.name}`,
-    );
-  };
+  const onSuccess = () => {};
 
   const onError = (error) => {
     toast(`Error: ${error.response.data.message}`);
