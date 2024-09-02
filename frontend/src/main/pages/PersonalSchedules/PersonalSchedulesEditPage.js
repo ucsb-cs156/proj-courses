@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import PersonalScheduleForm from "main/components/PersonalSchedules/PersonalScheduleForm";
 import { Navigate } from "react-router-dom";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
-import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 
 export default function PersonalSchedulesEditPage() {
@@ -48,12 +47,7 @@ export default function PersonalSchedulesEditPage() {
     },
   });
 
-  const onSuccess = (personalSchedule) => {
-    toast(
-      `PersonalSchedule Updated - id: ${personalSchedule.id} name: ${personalSchedule.name}`,
-    );
-    console.log(personalSchedule.quarter);
-  };
+  const onSuccess = () => {};
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
@@ -72,6 +66,7 @@ export default function PersonalSchedulesEditPage() {
     return <Navigate to="/personalschedules/list" />;
   }
 
+  console.log("personalSchedule", personalSchedule);
   return (
     <BasicLayout>
       <div className="pt-2">

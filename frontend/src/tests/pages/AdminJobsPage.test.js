@@ -6,7 +6,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
-import AdminJobsPage from "main/pages/AdminJobsPage";
+import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import jobsFixtures from "fixtures/jobsFixtures";

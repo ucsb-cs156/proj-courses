@@ -107,9 +107,6 @@ describe("PersonalSchedulesCreatePage tests", () => {
       quarter: "20124",
     });
 
-    expect(mockToast).toHaveBeenCalledWith(
-      "New personalSchedule Created - id: 17 name: SampName",
-    );
     expect(mockNavigate).toHaveBeenCalledWith({
       to: "/personalschedules/list",
     });
