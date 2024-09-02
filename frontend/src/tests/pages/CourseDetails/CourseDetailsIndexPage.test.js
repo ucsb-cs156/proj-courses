@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-// import userEvent from "@testing-library/user-event";
 
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";

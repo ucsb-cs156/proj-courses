@@ -8,7 +8,8 @@ const config = {
     "@storybook/addon-essentials",
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
-    "storybook-addon-remix-react-router"
+    "storybook-addon-remix-react-router",
+    "@storybook/addon-queryparams"
   ],
   framework: {
     name: "@storybook/react-webpack5",
