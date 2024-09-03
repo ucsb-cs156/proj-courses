@@ -31,6 +31,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<SectionSearchesIndexPage />} />
         <Route exact path="/profile" element={<ProfilePage />} />
+        <Route path="/developer" element={<DeveloperPage />} />
         {hasRole(currentUser, "ROLE_ADMIN") && (
           <>
             <Route exact path="/admin/users" element={<AdminUsersPage />} />
@@ -40,7 +41,6 @@ function App() {
               element={<AdminLoadSubjectsPage />}
             />
             <Route path="/admin/jobs" element={<AdminJobsPage />} />
-            <Route path="/developer" element={<DeveloperPage />} />
           </>
         )}
         {hasRole(currentUser, "ROLE_USER") && (

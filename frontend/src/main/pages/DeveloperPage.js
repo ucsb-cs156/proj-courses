@@ -10,6 +10,7 @@ const DeveloperPage = () => {
       <h2>Github Branch Information</h2>
       <p>The following SystemInfo is displayed in a JSON file.</p>
       <Inspector data={systemInfo} />
+      <Inspector data={{ env: process.env }} />
     </BasicLayout>
   );
 };
