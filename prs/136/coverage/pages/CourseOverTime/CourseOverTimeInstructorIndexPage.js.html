@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.55% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -122,10 +122,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -134,22 +133,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -157,8 +146,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -175,7 +175,7 @@ export default function CourseOverTimeInstructorIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
 &nbsp;
-  const objectToAxiosParams = <span class="fstat-no" title="function not covered" >(q</span>uery) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  const objectToAxiosParams = (query) =&gt; ({
     url: "/api/public/courseovertime/instructorsearch",
     params: {
       startQtr: query.startQuarter,
@@ -185,8 +185,8 @@ export default function CourseOverTimeInstructorIndexPage() {
     },
   });
 &nbsp;
-  const onSuccess = <span class="fstat-no" title="function not covered" >(c</span>ourses) =&gt; {
-<span class="cstat-no" title="statement not covered" >    setCourseJSON(courses);</span>
+  const onSuccess = (courses) =&gt; {
+    setCourseJSON(courses);
   };
 &nbsp;
   const mutation = useBackendMutation(
@@ -196,8 +196,8 @@ export default function CourseOverTimeInstructorIndexPage() {
     [],
   );
 &nbsp;
-  async function <span class="fstat-no" title="function not covered" >fetchCourseOverTimeJSON(</span>_event, query) {
-<span class="cstat-no" title="statement not covered" >    mutation.mutate(query);</span>
+  async function fetchCourseOverTimeJSON(_event, query) {
+    mutation.mutate(query);
   }
 &nbsp;
   return (
@@ -208,8 +208,8 @@ export default function CourseOverTimeInstructorIndexPage() {
           fetchJSON={fetchCourseOverTimeJSON}
         /&gt;
         &lt;SectionsInstructorTable
-          sections={courseJSON.sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt;
-<span class="cstat-no" title="statement not covered" >            b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),</span>
+          sections={courseJSON.sort((a, b) =&gt;
+            b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
           )}
         /&gt;
       &lt;/div&gt;
@@ -223,7 +223,7 @@ export default function CourseOverTimeInstructorIndexPage() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-09-03T23:18:26.838Z
+                at 2024-09-04T02:10:32.952Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/15</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -126,23 +126,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -152,20 +139,33 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -182,7 +182,7 @@ import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 &nbsp;
 export default function PersonalSchedulesCreatePage() {
-  const objectToAxiosParams = <span class="fstat-no" title="function not covered" >(p</span>ersonalSchedule) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  const objectToAxiosParams = (personalSchedule) =&gt; ({
     url: "/api/personalschedules/post",
     method: "POST",
     params: {
@@ -192,10 +192,10 @@ export default function PersonalSchedulesCreatePage() {
     },
   });
 &nbsp;
-  const onSuccess = <span class="fstat-no" title="function not covered" >()</span> =&gt; {};
+  const onSuccess = () =&gt; {};
 &nbsp;
-  const onError = <span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; {
-<span class="cstat-no" title="statement not covered" >    toast(`Error: ${error.response.data.message}`);</span>
+  const onError = (error) =&gt; {
+    toast(`Error: ${error.response.data.message}`);
   };
 &nbsp;
   const mutation = useBackendMutation(
@@ -207,18 +207,18 @@ export default function PersonalSchedulesCreatePage() {
 &nbsp;
   const { isSuccess } = mutation;
 &nbsp;
-  const onSubmit = <span class="fstat-no" title="function not covered" >as</span>ync (data) =&gt; {
-    const quarter = <span class="cstat-no" title="statement not covered" >{</span>
-      quarter: localStorage["PersonalScheduleForm-quarter"],
+  const onSubmit = async (data) =&gt; {
+    const quarter = {
+      quarter: JSON.parse(localStorage.getItem("PersonalScheduleForm-quarter")),
     };
-<span class="cstat-no" title="statement not covered" >    console.log(quarter);</span>
-    const dataFinal = <span class="cstat-no" title="statement not covered" >Object.assign(data, quarter);</span>
-<span class="cstat-no" title="statement not covered" >    console.log(dataFinal);</span>
-<span class="cstat-no" title="statement not covered" >    mutation.mutate(dataFinal);</span>
+    console.log(quarter);
+    const dataFinal = Object.assign(data, quarter);
+    console.log(dataFinal);
+    mutation.mutate(dataFinal);
   };
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (isSuccess) {
-<span class="cstat-no" title="statement not covered" >    return &lt;Navigate to="/personalschedules/list" /&gt;;</span>
+  if (isSuccess) {
+    return &lt;Navigate to="/personalschedules/list" /&gt;;
   }
 &nbsp;
   return (
@@ -238,7 +238,7 @@ export default function PersonalSchedulesCreatePage() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-09-03T23:18:26.838Z
+                at 2024-09-04T02:10:32.952Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

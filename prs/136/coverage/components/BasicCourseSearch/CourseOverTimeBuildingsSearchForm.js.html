@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -156,35 +156,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">44x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -242,32 +242,32 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) =&gt; {
   const quarters = standardQuarterRange();
 &nbsp;
   // Stryker disable all : not sure how to test/mock local storage
-  const localStartQuarter = <span class="cstat-no" title="statement not covered" >localStorage.getItem(</span>
+  const localStartQuarter = localStorage.getItem(
     "CourseOverTimeBuildingsSearch.StartQuarter",
   );
-  const localEndQuarter = <span class="cstat-no" title="statement not covered" >localStorage.getItem(</span>
+  const localEndQuarter = localStorage.getItem(
     "CourseOverTimeBuildingsSearch.EndQuarter",
   );
-  const localBuildingCode = <span class="cstat-no" title="statement not covered" >localStorage.getItem(</span>
+  const localBuildingCode = localStorage.getItem(
     "CourseOverTimeBuildingsSearch.BuildingCode",
   );
 &nbsp;
-  const [startQuarter, setStartQuarter] = <span class="cstat-no" title="statement not covered" >useState(</span>
+  const [startQuarter, setStartQuarter] = useState(
     localStartQuarter || quarters[0].yyyyq,
   );
-  const [endQuarter, setEndQuarter] = <span class="cstat-no" title="statement not covered" >useState(</span>
+  const [endQuarter, setEndQuarter] = useState(
     localEndQuarter || quarters[0].yyyyq,
   );
-  const [buildingCode, setBuildingCode] = <span class="cstat-no" title="statement not covered" >useState(localBuildingCode || {});</span>
+  const [buildingCode, setBuildingCode] = useState(localBuildingCode || {});
 &nbsp;
   // Stryker restore all
 &nbsp;
-  const handleSubmit = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    event.preventDefault();</span>
-<span class="cstat-no" title="statement not covered" >    fetchJSON(event, { startQuarter, endQuarter, buildingCode });</span>
+  const handleSubmit = (event) =&gt; {
+    event.preventDefault();
+    fetchJSON(event, { startQuarter, endQuarter, buildingCode });
   };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;Form onSubmit={handleSubmit}&gt;
       &lt;Container&gt;
         &lt;Row&gt;
@@ -319,7 +319,7 @@ export default CourseOverTimeBuildingsSearchForm;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-09-03T23:18:26.838Z
+                at 2024-09-04T02:10:32.952Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
