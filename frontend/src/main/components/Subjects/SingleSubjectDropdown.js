@@ -1,6 +1,6 @@
 import { compareValues } from "main/utils/sortHelper";
-import React, { useState } from "react";
 import { Form } from "react-bootstrap";
+import useLocalStorage from "main/utils/useLocalStorage";
 
 const SingleSubjectDropdown = ({
   subjects,
@@ -10,15 +10,10 @@ const SingleSubjectDropdown = ({
   onChange = null,
   label = "Subject Area",
 }) => {
-  const localSearchSubject = localStorage.getItem(controlId);
-
-  const [subjectState, setSubjectState] = useState(
-    // Stryker disable next-line all : not sure how to test/mock local storage
-    localSearchSubject || subject,
-  );
+  const [subjectState, setSubjectState] = useLocalStorage(controlId, subject);
+  console.log("subjectState=", subjectState, " subjects=", subjects);
 
   const handleSubjectOnChange = (event) => {
-    localStorage.setItem(controlId, event.target.value);
     setSubjectState(event.target.value);
     setSubject(event.target.value);
     if (onChange != null) {
