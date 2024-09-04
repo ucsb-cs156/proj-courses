@@ -3,7 +3,7 @@ FROM bellsoft/liberica-openjdk-alpine:17.0.2
 
 WORKDIR /app
 
-ENV NODE_VERSION=16.20.0
+ENV NODE_VERSION=20.17.0
 RUN apk add curl
 RUN apk add bash
 RUN apk add maven
@@ -22,6 +22,9 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 COPY . /home/app
 
+ARG REACT_APP_START_QTR   
+ARG REACT_APP_END_QTR   
+ARG REACT_APP_SOURCE_REPO
 ENV PRODUCTION=true
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
 
