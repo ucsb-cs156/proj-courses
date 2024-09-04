@@ -18,11 +18,13 @@ jest.mock("react-toastify", () => ({
 
 describe("CourseOverTimeBuildingsSearchForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
+  const previousEnv = process.env;
 
   const queryClient = new QueryClient();
   const addToast = jest.fn();
 
   beforeEach(() => {
+    process.env = {};
     jest.clearAllMocks();
     jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
@@ -41,6 +43,10 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     });
   });
 
+  afterEach(() => {
+    process.env = previousEnv;
+  });
+
   test("renders without crashing", () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -52,6 +58,10 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   });
 
   test("when I select a start quarter, the state for start quarter changes", () => {
+    process.env = {
+      REACT_APP_START_QTR: "20194",
+      REACT_APP_END_QTR: "20214",
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -65,6 +75,10 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   });
 
   test("when I select an end quarter, the state for end quarter changes", () => {
+    process.env = {
+      REACT_APP_START_QTR: "20194",
+      REACT_APP_END_QTR: "20214",
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -144,6 +158,10 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   });
 
   test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
+    process.env = {
+      REACT_APP_START_QTR: "20194",
+      REACT_APP_END_QTR: "20214",
+    };
     const sampleReturnValue = {
       sampleKey: "sampleValue",
       total: 0,

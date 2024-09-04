@@ -1,22 +1,15 @@
 import { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-import { quarterRange } from "main/utils/quarterUtilities";
+import { standardQuarterRange } from "main/utils/quarterUtilities";
 
-import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import IfStaleCheckBox from "main/components/Jobs/IfStaleCheckBox";
 
 const UpdateCoursesByQuarterRangeJobForm = ({ callback }) => {
   const formId = "UpdateCoursesByQuarterRangeJobForm";
-  const { data: systemInfo } = useSystemInfo();
 
-  // Stryker disable OptionalChaining
-  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
-  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker enable OptionalChaining
-
-  const quarters = quarterRange(startQtr, endQtr);
+  const quarters = standardQuarterRange();
 
   // Stryker disable all : not sure how to test/mock local storage
   const localStartQuarter = localStorage.getItem("BasicSearch.StartQuarter");

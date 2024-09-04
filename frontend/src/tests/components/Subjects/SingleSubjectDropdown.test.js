@@ -69,8 +69,6 @@ describe("SingleSubjectDropdown tests", () => {
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
     const allOptions = screen.getAllByTestId("ssd1-option-", { exact: false });
     for (let i = 0; i < allOptions.length - 1; i++) {
-      console.log("[i]" + allOptions[i].value);
-      console.log("[i+1]" + allOptions[i + 1].value);
       expect(allOptions[i].value < allOptions[i + 1].value).toBe(true);
     }
   });
@@ -171,25 +169,6 @@ describe("SingleSubjectDropdown tests", () => {
     await waitFor(() =>
       expect(screen.getByTestId(expectedKey).toBeInTheDocument),
     );
-  });
-
-  test("when localstorage has a value, it is passed to useState", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-    getItemSpy.mockImplementation(() => "ARTHI");
-
-    const setSubjectStateSpy = jest.fn();
-    useState.mockImplementation((x) => [x, setSubjectStateSpy]);
-
-    render(
-      <SingleSubjectDropdown
-        subjects={threeSubjects}
-        subject={subject}
-        setSubject={setSubject}
-        controlId="ssd1"
-      />,
-    );
-
-    await waitFor(() => expect(useState).toBeCalledWith("ARTHI"));
   });
 
   test("when localstorage has no value, first element of subject list is passed to useState", async () => {

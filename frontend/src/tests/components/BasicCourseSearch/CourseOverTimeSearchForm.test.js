@@ -19,6 +19,7 @@ jest.mock("react-toastify", () => ({
 }));
 
 describe("CourseOverTimeSearchForm tests", () => {
+  const previousEnv = process.env;
   const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
   const addToast = jest.fn();
@@ -42,6 +43,7 @@ describe("CourseOverTimeSearchForm tests", () => {
   ];
 
   beforeEach(() => {
+    process.env = {};
     jest.clearAllMocks();
     jest.spyOn(console, "error").mockImplementation(() => null);
 
@@ -60,6 +62,7 @@ describe("CourseOverTimeSearchForm tests", () => {
   });
 
   afterEach(() => {
+    process.env = previousEnv;
     cleanup();
   });
 
@@ -71,9 +74,14 @@ describe("CourseOverTimeSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    expect(screen.getByText("Start Quarter")).toBeInTheDocument();
   });
 
   test("when I select an end quarter, the state for end quarter changes", () => {
+    process.env = {
+      REACT_APP_START_QTR: "20194",
+      REACT_APP_END_QTR: "20214",
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -205,6 +213,10 @@ describe("CourseOverTimeSearchForm tests", () => {
   });
 
   test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
+    process.env = {
+      REACT_APP_START_QTR: "20194",
+      REACT_APP_END_QTR: "20214",
+    };
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
 
     const sampleReturnValue = {
@@ -275,10 +287,13 @@ describe("CourseOverTimeSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
-
     userEvent.type(selectCourseNumber, "CMPSC156");
 
     const submitButton = screen.getByText("Submit");
@@ -304,6 +319,9 @@ describe("CourseOverTimeSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
@@ -332,10 +350,12 @@ describe("CourseOverTimeSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
-
     userEvent.type(selectCourseNumber, "cs156");
 
     const submitButton = screen.getByText("Submit");
@@ -360,10 +380,12 @@ describe("CourseOverTimeSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
-
     userEvent.type(selectCourseNumber, "cMpSc156");
 
     const submitButton = screen.getByText("Submit");
@@ -392,6 +414,9 @@ describe("CourseOverTimeSearchForm tests", () => {
       "Course Number (Try searching '16' or '130A')",
     );
 
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+
     userEvent.type(selectCourseNumber, "cmPsC         130a");
 
     const submitButton = screen.getByText("Submit");
@@ -406,7 +431,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       ).toHaveTextContent("CMPSC");
     });
   });
-  test("when I select a course number with the just number, the course number just retains the number", async () => {
+  test("when I select a course number with just the course number, just retains the number", async () => {
     const fetchJSONMock = jest.fn();
     render(
       <QueryClientProvider client={queryClient}>
@@ -416,10 +441,12 @@ describe("CourseOverTimeSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+
     const selectCourseNumber = screen.getByLabelText(
       "Course Number (Try searching '16' or '130A')",
     );
-
     userEvent.type(selectCourseNumber, "156");
 
     const submitButton = screen.getByText("Submit");
@@ -433,5 +460,26 @@ describe("CourseOverTimeSearchForm tests", () => {
         ),
       ).toHaveTextContent("CMPSC");
     });
+  });
+
+  test("when I select a course number but the subject area doesn't match, it doesn't take it", async () => {
+    const fetchJSONMock = jest.fn();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm fetchJSON={fetchJSONMock} />
+          <SectionsOverTimeTable sections={mockSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "MATH");
+
+    const selectCourseNumber = screen.getByLabelText(
+      "Course Number (Try searching '16' or '130A')",
+    );
+    userEvent.type(selectCourseNumber, "CMPSC156");
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
   });
 });

@@ -25,8 +25,10 @@ jest.mock("react-toastify", () => {
 
 describe("CourseOverTimeBuildingsIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
+  const processEnvBackup = process.env;
 
   beforeEach(() => {
+    process.env = {};
     axiosMock.resetHistory();
     axiosMock
       .onGet("/api/currentUser")
@@ -36,8 +38,16 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
       .reply(200, systemInfoFixtures.showingNeither);
   });
 
+  afterEach(() => {
+    process.env = processEnvBackup;
+  });
+
   const queryClient = new QueryClient();
   test("renders without crashing", () => {
+    process.env = {
+      REACT_APP_START_QTR: "20204",
+      REACT_APP_END_QTR: "20222",
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -45,9 +55,16 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    expect(
+      screen.getByText("Welcome to the UCSB Course History Search!"),
+    ).toBeInTheDocument();
   });
 
   test("calls UCSB Course over time search api correctly with correct response", async () => {
+    process.env = {
+      REACT_APP_START_QTR: "20204",
+      REACT_APP_END_QTR: "20222",
+    };
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch")
       .reply(200, coursesInLib);
@@ -93,6 +110,10 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
   });
 
   test("calls UCSB Course over time search api correctly with correctly sorted data", async () => {
+    process.env = {
+      REACT_APP_START_QTR: "20194",
+      REACT_APP_END_QTR: "20222",
+    };
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch")
       .reply(200, coursesInLibDifferentDate);

@@ -14,8 +14,13 @@ import jobsFixtures from "fixtures/jobsFixtures";
 describe("AdminJobsPage tests", () => {
   const queryClient = new QueryClient();
   const axiosMock = new AxiosMockAdapter(axios);
+  const saveProcessEnv = process.env;
 
   beforeEach(() => {
+    process.env = {
+      REACT_APP_START_QTR: "20193",
+      REACT_APP_END_QTR: "20244",
+    };
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -26,6 +31,10 @@ describe("AdminJobsPage tests", () => {
       .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+  });
+
+  afterEach(() => {
+    process.env = saveProcessEnv;
   });
 
   test("renders without crashing", async () => {

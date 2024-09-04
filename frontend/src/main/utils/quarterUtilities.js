@@ -84,6 +84,12 @@ const quarterRange = (beginYYYYQStr, endYYYYQStr) => {
   return quarterList;
 };
 
+const standardQuarterRange = () => {
+  const startQtr = process.env.REACT_APP_START_QTR || "20211";
+  const endQtr = process.env.REACT_APP_END_QTR || "20214";
+  return quarterRange(startQtr, endQtr);
+};
+
 export {
   fromFormat,
   toFormat,
@@ -92,5 +98,6 @@ export {
   toNumericYYYYQ,
   nextQuarter,
   quarterRange,
+  standardQuarterRange,
   qtrNumToQuarter,
 };

@@ -32,7 +32,7 @@ export default function PersonalSchedulesCreatePage() {
 
   const onSubmit = async (data) => {
     const quarter = {
-      quarter: localStorage["PersonalScheduleForm-quarter"],
+      quarter: JSON.parse(localStorage.getItem("PersonalScheduleForm-quarter")),
     };
     console.log(quarter);
     const dataFinal = Object.assign(data, quarter);

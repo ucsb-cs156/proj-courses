@@ -18,6 +18,8 @@ jest.mock("react-router-dom", () => ({
 
 describe("PersonalScheduleForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
+  const originalEnv = process.env;
+
   beforeEach(() => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
@@ -27,9 +29,14 @@ describe("PersonalScheduleForm tests", () => {
     });
   });
 
+  afterEach(() => {
+    process.env = originalEnv;
+  });
+
   const queryClient = new QueryClient();
 
-  test("renders correctly", async () => {
+  test("renders correctly with backup values when process.env values not available", async () => {
+    process.env = {};
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
@@ -42,7 +49,40 @@ describe("PersonalScheduleForm tests", () => {
     expect(screen.getByText(/Description/)).toBeInTheDocument();
     expect(screen.getByText(/Quarter/)).toBeInTheDocument();
     expect(screen.getByText(/Create/)).toBeInTheDocument();
-    expect(screen.getByText("S22")).toBeInTheDocument();
+    // expect default values from standardQuarterRange
+    expect(screen.getByText("W21")).toBeInTheDocument();
+    expect(screen.getByText("S21")).toBeInTheDocument();
+    expect(screen.getByText("M21")).toBeInTheDocument();
+    expect(screen.getByText("F21")).toBeInTheDocument();
+    process.env = originalEnv; // restore original env
+  });
+
+  test("renders correctly when process.env values are available", async () => {
+    process.env = {
+      ...originalEnv,
+      REACT_APP_START_QTR: "20234",
+      REACT_APP_END_QTR: "20243",
+    };
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Name/)).toBeInTheDocument();
+    expect(screen.getByText(/Description/)).toBeInTheDocument();
+    expect(screen.getByText(/Quarter/)).toBeInTheDocument();
+    expect(screen.getByText(/Create/)).toBeInTheDocument();
+    expect(screen.queryByText("W21")).not.toBeInTheDocument();
+    expect(screen.getByText("F23")).toBeInTheDocument();
+    expect(screen.getByText("W24")).toBeInTheDocument();
+    expect(screen.getByText("S24")).toBeInTheDocument();
+    expect(screen.getByText("M24")).toBeInTheDocument();
+    expect(screen.queryByText("F24")).not.toBeInTheDocument();
+
+    process.env = originalEnv; // restore original env
   });
 
   test("renders correctly when passing in a PersonalSchedule", async () => {
@@ -85,6 +125,12 @@ describe("PersonalScheduleForm tests", () => {
   });
 
   test("No Error messages on good input", async () => {
+    process.env = {
+      ...originalEnv,
+      REACT_APP_START_QTR: "20234",
+      REACT_APP_END_QTR: "20243",
+    };
+
     const mockSubmitAction = jest.fn();
 
     render(
@@ -106,7 +152,7 @@ describe("PersonalScheduleForm tests", () => {
 
     fireEvent.change(name, { target: { value: "test" } });
     fireEvent.change(description, { target: { value: "test" } });
-    fireEvent.change(quarter, { target: { value: "20124" } });
+    fireEvent.change(quarter, { target: { value: "20241" } });
     fireEvent.click(submitButton);
 
     await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
@@ -115,7 +161,7 @@ describe("PersonalScheduleForm tests", () => {
     expect(
       screen.queryByText(/Description is required./),
     ).not.toBeInTheDocument();
-    expect(quarter).toHaveValue("20154");
+    expect(quarter).toHaveValue("20241");
   });
 
   test("that navigate(-1) is called when Cancel is clicked", async () => {
@@ -228,7 +274,7 @@ describe("PersonalScheduleForm tests", () => {
     );
     await waitFor(() => {
       expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
-        "F22",
+        "20224",
       );
     });
   });
@@ -264,12 +310,16 @@ describe("PersonalScheduleForm tests", () => {
     );
     await waitFor(() => {
       expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
-        "S22",
+        "20222",
       );
     });
   });
 
   test("Form has initialPersonalSchedule content with Summer quarter", async () => {
+    process.env = {
+      REACT_APP_START_QTR: "20204",
+      REACT_APP_END_QTR: "20244",
+    };
     const queryClient = new QueryClient();
     const content = {
       id: 17,
@@ -300,7 +350,7 @@ describe("PersonalScheduleForm tests", () => {
     );
     await waitFor(() => {
       expect(screen.getByTestId("PersonalScheduleForm-quarter")).toHaveValue(
-        "M22",
+        "20223",
       );
     });
   });

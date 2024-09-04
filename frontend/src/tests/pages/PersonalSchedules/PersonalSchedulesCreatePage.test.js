@@ -7,6 +7,7 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import mockConsole from "jest-mock-console";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -33,8 +34,10 @@ jest.mock("react-router-dom", () => {
 
 describe("PersonalSchedulesCreatePage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
+  const saveProcessEnv = process.env;
 
   beforeEach(() => {
+    process.env = {};
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -43,6 +46,10 @@ describe("PersonalSchedulesCreatePage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
+  });
+
+  afterEach(() => {
+    process.env = saveProcessEnv;
   });
 
   test("renders without crashing", () => {
@@ -54,9 +61,13 @@ describe("PersonalSchedulesCreatePage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    expect(
+      screen.getByText("Create New Personal Schedule"),
+    ).toBeInTheDocument();
   });
 
   test("when you fill in the form and hit submit, it makes a request to the backend", async () => {
+    process.env = { REACT_APP_START_QTR: "20121", REACT_APP_END_QTR: "20134" };
     const queryClient = new QueryClient();
     const personalSchedule = {
       id: 17,
@@ -113,6 +124,8 @@ describe("PersonalSchedulesCreatePage tests", () => {
   });
 
   test("when the backend returns an error, user gets toast with error message", async () => {
+    const restoreConsole = mockConsole();
+
     const queryClient = new QueryClient();
     axiosMock
       .onPost("/api/personalschedules/post")
@@ -152,6 +165,7 @@ describe("PersonalSchedulesCreatePage tests", () => {
     expect(mockToast).toHaveBeenCalledWith(
       "Error: The backend is in a mood today",
     );
+    restoreConsole();
   });
 
   test("filling the form with a duplicate personal schedule returns an error", async () => {
