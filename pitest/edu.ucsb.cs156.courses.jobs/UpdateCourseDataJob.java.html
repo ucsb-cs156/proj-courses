@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+
+
+<h1>UpdateCourseDataJob.java</h1>
+
+<table class="src">
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_1'/>
+1
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_1'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>package edu.ucsb.cs156.courses.jobs;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_2'/>
+2
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_2'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_3'/>
+3
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_3'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_4'/>
+4
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_4'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.collections.UpdateCollection;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_5'/>
+5
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_5'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.documents.ConvertedSection;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_6'/>
+6
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_6'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.documents.Update;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_7'/>
+7
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_7'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.models.Quarter;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_8'/>
+8
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_8'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.services.IsStaleService;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_9'/>
+9
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_9'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.services.UCSBCurriculumService;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_10'/>
+10
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_10'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.services.jobs.JobContext;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_11'/>
+11
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_11'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_12'/>
+12
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_12'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import java.util.List;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_13'/>
+13
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_13'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import java.util.Optional;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_14'/>
+14
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_14'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import lombok.AllArgsConstructor;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_15'/>
+15
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_15'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import lombok.Builder;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_16'/>
+16
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_16'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import lombok.Getter;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_17'/>
+17
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_17'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import lombok.extern.slf4j.Slf4j;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_18'/>
+18
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_18'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_19'/>
+19
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_19'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>@Builder</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_20'/>
+20
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_20'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>@Getter</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_21'/>
+21
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_21'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>@AllArgsConstructor</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_22'/>
+22
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_22'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>@Slf4j</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_23'/>
+23
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_23'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>public class UpdateCourseDataJob implements JobContextConsumer {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_24'/>
+24
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_24'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>  private String start_quarterYYYYQ;</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_25'/>
+25
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_25'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>  private String end_quarterYYYYQ;</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_26'/>
+26
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_26'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>  private List&#60;String&#62; subjects;</span></pre></td></tr>
+
+<tr>
+<td class='uncovered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_27'/>
+27
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_27'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='uncovered'><pre><span  class=''>  private UCSBCurriculumService ucsbCurriculumService;</span></pre></td></tr>
+
+<tr>
+<td class='uncovered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_28'/>
+28
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_28'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='uncovered'><pre><span  class=''>  private ConvertedSectionCollection convertedSectionCollection;</span></pre></td></tr>
+
+<tr>
+<td class='uncovered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_29'/>
+29
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_29'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='uncovered'><pre><span  class=''>  private UpdateCollection updateCollection;</span></pre></td></tr>
+
+<tr>
+<td class='uncovered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_30'/>
+30
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_30'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='uncovered'><pre><span  class=''>  private IsStaleService isStaleService;</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_31'/>
+31
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_31'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>  private boolean ifStale;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_32'/>
+32
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_32'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_33'/>
+33
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_33'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>  @Override</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_34'/>
+34
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_34'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>  public void accept(JobContext ctx) throws Exception {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_35'/>
+35
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_35'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    List&#60;Quarter&#62; quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_36'/>
+36
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_36'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    for (Quarter quarter : quarters) {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_37'/>
+37
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_37'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>      String quarterYYYYQ = quarter.getYYYYQ();</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_38'/>
+38
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_38'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>      for (String subjectArea : subjects) {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_39'/>
+39
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_39'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        boolean isStale = isStaleService.isStale(subjectArea, quarterYYYYQ);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_40'/>
+40
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_40'>1</a>
+<span>
+1. accept : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        if (ifStale) {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_41'/>
+41
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_41'>1</a>
+<span>
+1. accept : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>          if (!isStale) {</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_42'/>
+42
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_42'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_43'/>
+43
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_43'>1</a>
+<span>
+1. accept : removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            ctx.log(&#34;Data is not stale for [&#34; + subjectArea + &#34; &#34; + quarterYYYYQ + &#34;]&#34;);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_44'/>
+44
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_44'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>            continue;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_45'/>
+45
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_45'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>          }</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_46'/>
+46
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_46'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        }</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_47'/>
+47
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_47'>1</a>
+<span>
+1. accept : removed call to edu/ucsb/cs156/courses/jobs/UpdateCourseDataJob::updateCourses &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        updateCourses(ctx, quarterYYYYQ, subjectArea);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_48'/>
+48
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_48'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>      }</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_49'/>
+49
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_49'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_50'/>
+50
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_50'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>  }</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_51'/>
+51
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_51'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_52'/>
+52
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_52'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>  public Update updateUpdatesCollection(</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_53'/>
+53
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_53'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>      String quarterYYYYQ, String subjectArea, int saved, int updated, int errors) {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_54'/>
+54
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_54'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    Update update = new Update(null, subjectArea, quarterYYYYQ, saved, updated, errors, null);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_55'/>
+55
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_55'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    Update savedUpdate = updateCollection.save(update);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_56'/>
+56
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_56'>1</a>
+<span>
+1. updateUpdatesCollection : replaced return value with null for edu/ucsb/cs156/courses/jobs/UpdateCourseDataJob::updateUpdatesCollection &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>    return savedUpdate;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_57'/>
+57
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_57'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>  }</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_58'/>
+58
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_58'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_59'/>
+59
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_59'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>  public void updateCourses(JobContext ctx, String quarterYYYYQ, String subjectArea)</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_60'/>
+60
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_60'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>      throws Exception {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_61'/>
+61
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_61'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>    ctx.log(&#34;Updating courses for [&#34; + subjectArea + &#34; &#34; + quarterYYYYQ + &#34;]&#34;);</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_62'/>
+62
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_62'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_63'/>
+63
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_63'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    List&#60;ConvertedSection&#62; convertedSections =</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_64'/>
+64
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_64'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ, &#34;A&#34;);</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_65'/>
+65
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_65'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_66'/>
+66
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_66'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>    ctx.log(&#34;Found &#34; + convertedSections.size() + &#34; sections&#34;);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_67'/>
+67
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_67'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>    ctx.log(&#34;Storing in MongoDB Collection...&#34;);</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_68'/>
+68
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_68'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_69'/>
+69
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_69'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    int newSections = 0;</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_70'/>
+70
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_70'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    int updatedSections = 0;</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_71'/>
+71
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_71'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    int errors = 0;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_72'/>
+72
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_72'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_73'/>
+73
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_73'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    for (ConvertedSection section : convertedSections) {</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_74'/>
+74
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_74'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>      try {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_75'/>
+75
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_75'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        String quarter = section.getCourseInfo().getQuarter();</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_76'/>
+76
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_76'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        String enrollCode = section.getSection().getEnrollCode();</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_77'/>
+77
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_77'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        Optional&#60;ConvertedSection&#62; optionalSection =</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_78'/>
+78
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_78'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>            convertedSectionCollection.findOneByQuarterAndEnrollCode(quarter, enrollCode);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_79'/>
+79
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_79'>1</a>
+<span>
+1. updateCourses : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        if (optionalSection.isPresent()) {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_80'/>
+80
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_80'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>          ConvertedSection existingSection = optionalSection.get();</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_81'/>
+81
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_81'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/documents/ConvertedSection::setCourseInfo &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>          existingSection.setCourseInfo(section.getCourseInfo());</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_82'/>
+82
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_82'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/documents/ConvertedSection::setSection &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>          existingSection.setSection(section.getSection());</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_83'/>
+83
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_83'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>          convertedSectionCollection.save(existingSection);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_84'/>
+84
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_84'>1</a>
+<span>
+1. updateCourses : Changed increment from 1 to -1 &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>          updatedSections++;</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_85'/>
+85
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_85'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        } else {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_86'/>
+86
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_86'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>          convertedSectionCollection.save(section);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_87'/>
+87
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_87'>1</a>
+<span>
+1. updateCourses : Changed increment from 1 to -1 &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>          newSections++;</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_88'/>
+88
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_88'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        }</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_89'/>
+89
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_89'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>      } catch (Exception e) {</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_90'/>
+90
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_90'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        ctx.log(&#34;Error saving section: &#34; + e.getMessage());</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_91'/>
+91
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_91'>1</a>
+<span>
+1. updateCourses : Changed increment from 1 to -1 &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        errors++;</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_92'/>
+92
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_92'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>      }</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_93'/>
+93
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_93'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_94'/>
+94
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_94'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_95'/>
+95
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_95'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    Update savedUpdate =</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_96'/>
+96
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_96'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_97'/>
+97
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_97'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_98'/>
+98
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_98'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>    ctx.log(</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_99'/>
+99
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_99'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        String.format(</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_100'/>
+100
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_100'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>            &#34;%d new sections saved, %d sections updated, %d errors, last update: %s&#34;,</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_101'/>
+101
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_101'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>            newSections, updatedSections, errors, savedUpdate.getLastUpdate()));</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_102'/>
+102
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_102'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>    ctx.log(&#34;Saved update: &#34; + savedUpdate);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_103'/>
+103
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_103'>1</a>
+<span>
+1. updateCourses : removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>    ctx.log(&#34;Courses for [&#34; + subjectArea + &#34; &#34; + quarterYYYYQ + &#34;] have been updated&#34;);</span></pre></td></tr>
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_104'/>
+104
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_104'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>  }</span></pre></td></tr>
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile@9426c9a5_105'/>
+105
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_105'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>}</span></pre></td></tr>
+
+
+
+<tr><td></td><td></td><td><h2>Mutations</h2></td></tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_40'>40</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_40'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>accept<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_if_stale_and_is_not_stale()]</span></span> negated conditional &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_41'>41</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_41'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>accept<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_if_stale_and_is_not_stale()]</span></span> negated conditional &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_43'>43</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_43'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>accept<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_if_stale_and_is_not_stale()]</span></span> removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_47'>47</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_47'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>accept<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> removed call to edu/ucsb/cs156/courses/jobs/UpdateCourseDataJob::updateCourses &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_56'>56</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_56'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateUpdatesCollection<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> replaced return value with null for edu/ucsb/cs156/courses/jobs/UpdateCourseDataJob::updateUpdatesCollection &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_61'>61</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_61'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_66'>66</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_66'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_67'>67</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_67'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_79'>79</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_79'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_success()]</span></span> negated conditional &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_81'>81</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_81'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_updating_to_new_values()]</span></span> removed call to edu/ucsb/cs156/courses/documents/ConvertedSection::setCourseInfo &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_82'>82</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_82'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_updating_to_new_values()]</span></span> removed call to edu/ucsb/cs156/courses/documents/ConvertedSection::setSection &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_84'>84</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_84'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_updates()]</span></span> Changed increment from 1 to -1 &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_87'>87</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_87'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_success()]</span></span> Changed increment from 1 to -1 &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_90'>90</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_90'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_91'>91</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_91'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> Changed increment from 1 to -1 &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_98'>98</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_98'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_102'>102</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_102'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile@9426c9a5_103'>103</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile@9426c9a5_103'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>updateCourses<br/><b>Killed by : </b>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()]</span></span> removed call to edu/ucsb/cs156/courses/services/jobs/JobContext::log &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+</table>
+
+
+<h2>Active mutators</h2>
+<ul>
+<li class='mutator'>CONDITIONALS_BOUNDARY</li>
+<li class='mutator'>EMPTY_RETURNS</li>
+<li class='mutator'>FALSE_RETURNS</li>
+<li class='mutator'>INCREMENTS</li>
+<li class='mutator'>INVERT_NEGS</li>
+<li class='mutator'>MATH</li>
+<li class='mutator'>NEGATE_CONDITIONALS</li>
+<li class='mutator'>NULL_RETURNS</li>
+<li class='mutator'>PRIMITIVE_RETURNS</li>
+<li class='mutator'>TRUE_RETURNS</li>
+<li class='mutator'>VOID_METHOD_CALLS</li>
+
+</ul>
+
+<h2>Tests examined</h2>
+<ul>
+<li>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_errors()] (9 ms)</li><li>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_success()] (11 ms)</li><li>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_log_output_with_updates()] (9 ms)</li><li>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_updating_to_new_values()] (8 ms)</li><li>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_if_stale_and_is_stale()] (18 ms)</li><li>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_if_stale_and_is_not_stale()] (2 ms)</li><li>edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests.[engine:junit-jupiter]/[class:edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobTests]/[method:test_subject_and_quarter_range()] (66 ms)</li>
+</ul>
+
+<br/>
+
+Report generated by <a href='https://pitest.org'>PIT</a> 1.17.0
+
+</body>
+</html>
