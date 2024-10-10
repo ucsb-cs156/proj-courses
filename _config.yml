@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-REACT_APP-vars","number":136,"title":"pc - fix bugs with quarter selectors ","url":"https://github.com/ucsb-cs156/proj-courses/pull/136"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-java-21","number":137,"title":"pc - update to java 21","url":"https://github.com/ucsb-cs156/proj-courses/pull/137"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-REACT_APP-vars","number":136,"title":"pc - fix bugs with quarter selectors ","url":"https://github.com/ucsb-cs156/proj-courses/pull/136"}]
