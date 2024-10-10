@@ -29,7 +29,7 @@ jobs:
       pull_requests: ${{ steps.get-prs.outputs.pull_requests }}
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
     - name: Get Pull Requests from Github api
       id: get-prs
       run: |
@@ -47,7 +47,7 @@ jobs:
 
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
     - name: Append name of site to _config.yml
       run: | 
           CONFIG_YML=frontend/docs-index/_config.yml
@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: setup - Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 1
     - name: setup - Setup Node.js
@@ -240,7 +240,7 @@ jobs:
 
     steps:
     - name: a-javadoc Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
 
     - name: a-javadoc Make directory in case it doesn't exist
       run: mkdir -p ${{ env.javadoc_dest }}
