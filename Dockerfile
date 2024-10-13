@@ -1,9 +1,9 @@
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.2
+FROM bellsoft/liberica-openjdk-alpine:21
 
 WORKDIR /app
 
-ENV NODE_VERSION=16.20.0
+ENV NODE_VERSION=20.17.0
 RUN apk add curl
 RUN apk add bash
 RUN apk add maven
