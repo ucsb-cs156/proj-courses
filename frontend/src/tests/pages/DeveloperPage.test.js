@@ -39,5 +39,9 @@ describe("DeveloperPage tests", () => {
         "The following SystemInfo is displayed in a JSON file.",
       ),
     ).toBeInTheDocument();
+    expect(
+      await screen.findByText("springH2ConsoleEnabled"),
+    ).toBeInTheDocument();
+    expect(await screen.findByText("env")).toBeInTheDocument();
   });
 });
