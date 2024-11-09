@@ -57,13 +57,13 @@ jobs:
       run: mvn pitest:mutationCoverage -DmutationThreshold=100 
     - name: Upload Pitest History to Artifacts
       if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: pitest-${{env.branch_name}}-history.bin
         path: target/pit-history/history.bin
     - name: Upload Pitest Report to Artifacts
       if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: pitest
         path: target/pit-reports/* 

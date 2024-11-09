@@ -19,7 +19,7 @@ jobs:
 
     steps:
       
-      - uses: szenius/set-timezone@v1.2
+      - uses: szenius/set-timezone@v2.0
         with:
           timezoneLinux: "America/Los_Angeles"
       - uses: actions/checkout@v4
@@ -54,6 +54,12 @@ jobs:
 
       # Modified from https://stackoverflow.com/a/74268200
 
+      - name: Upload stryker incremental file to Artifacts
+        if: always() # always upload artifacts, even if tests fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: stryker-incremental-${{env.pr_number}}.json
+          path: frontend/history/stryker-incremental-${{env.pr_number}}.json
       - name: Run stryker on changed files
         id: changed-files
         run: | 
