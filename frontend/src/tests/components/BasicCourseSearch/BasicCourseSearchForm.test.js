@@ -32,7 +32,7 @@ describe("BasicCourseSearchForm tests", () => {
     process.env = originalEnv;
   });
 
-  test.only("renders with correct defaults selected", async () => {
+  test("renders with correct defaults selected", async () => {
     process.env = {
       REACT_APP_START_QTR: "20204",
       REACT_APP_END_QTR: "20224",
@@ -62,6 +62,30 @@ describe("BasicCourseSearchForm tests", () => {
 
     const selectLevel = screen.getByLabelText("Course Level");
     expect(selectLevel.value).toBe("U");
+  });
+
+  test("renders correct fallback when list of subjects is empty", async () => {
+    process.env = {
+      REACT_APP_START_QTR: "20204",
+      REACT_APP_END_QTR: "20224",
+    };
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <BasicCourseSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("BasicSearch.Subject-option-ANTH"),
+      ).toBeInTheDocument();
+    });
+    const selectSubject = screen.getByLabelText("Subject Area");
+    expect(selectSubject.value).toBe("ANTH");
   });
 
   test("when I select a quarter, the state for quarter changes", () => {
