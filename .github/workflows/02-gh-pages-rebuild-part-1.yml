@@ -60,7 +60,8 @@ jobs:
       with:
           name: javadoc
           path: ${{ env.destination }}
-  
+          overwrite: true
+
   build-chromatic-main:
     name: b - Chromatic (main)
     runs-on: ubuntu-latest
@@ -109,7 +110,8 @@ jobs:
       with:
           name: chromatic
           path: ${{ env.destination }}
-  
+          overwrite: true
+
   build-jacoco-main:
     name: c - Jacoco (main)
     runs-on: ubuntu-latest
@@ -137,6 +139,7 @@ jobs:
       with:
           name: jacoco
           path: ${{ env.destination }}
+          overwrite: true
 
   build-pitest-main:
     name: d - Pitest (main)
@@ -191,12 +194,14 @@ jobs:
       with:
         name: pitest-main-history.bin
         path: ${{ env.history_destination}}/history.bin
+        overwrite: true
 
     - name: Upload to artifacts
       uses: actions/upload-artifact@v4
       with:
           name: pitest
           path: ${{ env.destination }}
+          overwrite: true
 
   build-coverage-main:
     name: e - Coverage (main)
@@ -206,7 +211,7 @@ jobs:
     env:
       destination: frontend/coverage/lcov-report
     steps:
-    - uses: szenius/set-timezone@v1.2
+    - uses: szenius/set-timezone@v2.0
       with:
         timezoneLinux: "America/Los_Angeles"
     - uses: actions/checkout@v4
@@ -229,6 +234,7 @@ jobs:
       with:
         name: coverage
         path: ${{ env.destination }}
+        overwrite: true
 
   build-stryker-main:
     name: f - Stryker (main)
@@ -237,7 +243,7 @@ jobs:
     needs: [initialize]
    
     steps:
-    - uses: szenius/set-timezone@v1.2
+    - uses: szenius/set-timezone@v2.0
       with:
         timezoneLinux: "America/Los_Angeles"
     - uses: actions/checkout@v4
@@ -279,6 +285,7 @@ jobs:
       with:
         name: stryker-incremental-main.json
         path: frontend/history
+        overwrite: true
 
     - name: Upload report to Artifacts
       if: always() # always upload artifacts, even if tests fail
@@ -286,6 +293,7 @@ jobs:
       with:
         name: stryker
         path: frontend/reports/mutation/mutation.html
+        overwrite: true
 
   a-build-javadoc-for-each-pr:
     name: a - Javadoc (${{ matrix.value.number }}, ${{ matrix.value.headRefName }})
@@ -323,12 +331,16 @@ jobs:
       with:
         name: prs-${{ matrix.value.number }}-javadoc
         path: ${{ env.destination }}
+        overwrite: true
     
   b-build-chromatic-for-each-pr:
     name: b - Chromatic (${{ matrix.value.number }}, ${{ matrix.value.headRefName }})
     runs-on: ubuntu-latest
     needs: [initialize]
     if: ${{ needs.initialize.outputs.pull_requests != '[]' && needs.initialize.outputs.pull_requests != '' }}
+
+    env:
+      destination: frontend/prs/${{ matrix.value.number }}/chromatic  
 
     strategy:
       matrix:
@@ -375,21 +387,18 @@ jobs:
           echo "Chromatic build ID: ${{ steps.run_chromatic.outputs.storybookUrl }}"
 
     - name: Build redirect files
-      working-directory: frontend
       run: | # Create redirect files to redirect to the storybook online
-          mkdir -p chromatic_static
-          echo "<meta http-equiv=refresh content=0;url=${{steps.run_chromatic.outputs.storybookUrl}}>" > chromatic_static_${{ matrix.value.number }}/index.html
-          echo "<meta http-equiv=refresh content=0;url=${{steps.run_chromatic.outputs.url}}>" > chromatic_static_${{ matrix.value.number }}/build.html
+          mkdir -p ${{ env.destination }}
+          echo "<meta http-equiv=refresh content=0;url=${{steps.run_chromatic.outputs.storybookUrl}}>" > ${{ env.destination }}/index.html
+          echo "<meta http-equiv=refresh content=0;url=${{steps.run_chromatic.outputs.url}}>" > ${{ env.destination }}/build.html
 
     - name: Upload Chromatic to artifacts
       uses: actions/upload-artifact@v4
       with:
           name: prs-${{ matrix.value.number }}-chromatic
           path: ${{ env.destination }}
+          overwrite: true
   
-
-
-
   c-build-jacoco-for-each-pr:
     name: c - Jacoco (${{ matrix.value.number }}, ${{ matrix.value.headRefName }})
     runs-on: ubuntu-latest
@@ -426,7 +435,8 @@ jobs:
       with:
           name: prs-${{ matrix.value.number }}-jacoco
           path: target/site/jacoco
-
+          overwrite: true
+ 
   d-build-pitest-for-each-pr:
     name: d - Pitest (${{ matrix.value.number }}, ${{ matrix.value.headRefName }})
     runs-on: ubuntu-latest
@@ -498,12 +508,14 @@ jobs:
       with:
         name: pitest-${{ matrix.value.number }}-history.bin
         path: ${{ env.history_destination}}/history.bin
+        overwrite: true
 
     - name: Upload to artifacts
       uses: actions/upload-artifact@v4
       with:
           name: prs-${{ matrix.value.number }}-pitest
           path: ${{ env.destination }}
+          overwrite: true
 
   e-build-coverage-for-each-pr:
     name: e - Coverage (${{ matrix.value.number }}, ${{ matrix.value.headRefName }})
@@ -549,6 +561,7 @@ jobs:
       with:
         name: prs-${{ matrix.value.number }}-coverage
         path: ${{ env.destination }}
+        overwrite: true
 
 
   f-build-stryker-for-each-pr:
@@ -568,7 +581,7 @@ jobs:
         value: ${{ fromJSON(needs.initialize.outputs.pull_requests)}}
 
     steps:
-    - uses: szenius/set-timezone@v1.2
+    - uses: szenius/set-timezone@v2.0
       with:
         timezoneLinux: "America/Los_Angeles"
     - name: Checkout repo
@@ -612,8 +625,11 @@ jobs:
       with:
         name: stryker-incremental-${{ matrix.value.number }}.json
         path: ${{ env.history_destination }}
+        overwrite: true
+      
     - name: Upload to artifacts
       uses: actions/upload-artifact@v4
       with:
         name: prs-${{ matrix.value.number }}-stryker
         path: ${{ env.destination }}/mutation.html
+        overwrite: true

@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 80
 
     steps:
-      - uses: szenius/set-timezone@v1.2
+      - uses: szenius/set-timezone@v2.0
         with:
           timezoneLinux: "America/Los_Angeles"
       - uses: actions/checkout@v4
@@ -51,7 +51,7 @@ jobs:
 
       - name: Upload stryker report to Artifacts
         if: always() # always upload artifacts, even if tests fail
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: stryker-report
           path: frontend/reports/mutation/*
