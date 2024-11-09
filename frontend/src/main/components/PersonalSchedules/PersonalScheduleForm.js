@@ -3,7 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
-import { standardQuarterRange } from "main/utils/quarterUtilities";
+import { standardQuarterRange, yyyyqToQyy } from "main/utils/quarterUtilities";
 
 function PersonalScheduleForm({
   initialPersonalSchedule,
@@ -27,13 +27,6 @@ function PersonalScheduleForm({
       quarters: quarters,
     }.quarters[quarters.length - 1],
   );
-
-  const quarterMap = {
-    1: "W",
-    2: "S",
-    3: "M",
-    4: "F",
-  };
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>
@@ -94,10 +87,7 @@ function PersonalScheduleForm({
             id="quarter"
             type="text"
             {...register("quarter")}
-            value={
-              quarterMap[initialPersonalSchedule.quarter.substring(4, 5)] +
-              initialPersonalSchedule.quarter.substring(2, 4)
-            }
+            value={yyyyqToQyy(initialPersonalSchedule.quarter)}
             disabled
           />
         </Form.Group>
