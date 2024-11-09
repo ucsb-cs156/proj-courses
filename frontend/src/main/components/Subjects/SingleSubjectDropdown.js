@@ -11,7 +11,6 @@ const SingleSubjectDropdown = ({
   label = "Subject Area",
 }) => {
   const [subjectState, setSubjectState] = useLocalStorage(controlId, subject);
-  console.log("subjectState=", subjectState, " subjects=", subjects);
 
   const handleSubjectOnChange = (event) => {
     setSubjectState(event.target.value);
