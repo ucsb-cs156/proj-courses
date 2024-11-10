@@ -5,12 +5,12 @@ import { useSystemInfo } from "main/utils/systemInfo";
 
 const DeveloperPage = () => {
   const { data: systemInfo } = useSystemInfo();
+  const env = process.env;
   return (
     <BasicLayout>
-      <h2>Github Branch Information</h2>
-      <p>The following SystemInfo is displayed in a JSON file.</p>
-      <Inspector data={systemInfo} />
-      <Inspector data={{ env: process.env }} />
+      <h2>Developer Page</h2>
+      <Inspector data={systemInfo} name={"systemInfo"} />
+      <Inspector data={env} name={"env"} />
     </BasicLayout>
   );
 };

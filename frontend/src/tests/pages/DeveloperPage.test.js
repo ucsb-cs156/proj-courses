@@ -31,17 +31,8 @@ describe("DeveloperPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    expect(
-      await screen.findByText("Github Branch Information"),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText(
-        "The following SystemInfo is displayed in a JSON file.",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText("springH2ConsoleEnabled"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Developer Page")).toBeInTheDocument();
+    expect(await screen.findByText("systemInfo")).toBeInTheDocument();
     expect(await screen.findByText("env")).toBeInTheDocument();
   });
 });
