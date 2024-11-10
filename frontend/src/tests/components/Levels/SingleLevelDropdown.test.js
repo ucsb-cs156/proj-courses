@@ -26,13 +26,6 @@ describe("SingleLevelDropdown tests", () => {
         controlId="sld1"
       />,
     );
-    // expect(screen.getByText("Course Level")).toBeInTheDocument();
-
-    // await waitFor(() => {
-    //   expect(screen.getByTestId("sld1-option-U")).toBeInTheDocument();
-    // });
-    // const selectSubject = screen.getByLabelText("Course Level");
-    // expect(selectSubject.value).toBe("U");
   });
 
   test("when I select an level, the value changes", async () => {
