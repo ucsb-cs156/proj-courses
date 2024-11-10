@@ -153,9 +153,15 @@
 <a name='L88'></a><a href='#L88'>88</a>
 <a name='L89'></a><a href='#L89'>89</a>
 <a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -174,11 +180,6 @@
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">38x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">38x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -187,6 +188,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">32x</span>
@@ -202,11 +219,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,13 +226,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -256,12 +272,11 @@ import {
 } from "main/utils/sectionUtils.js";
 &nbsp;
 export default function SectionsInstructorTable({ sections }) {
-  // Stryker enable all
-  // Stryker disable BooleanLiteral
   const columns = [
     {
       Header: "Quarter",
       accessor: (row) =&gt; yyyyqToQyy(row.courseInfo.quarter),
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
       id: "quarter",
       Cell: ({ cell: { value } }) =&gt; value,
@@ -269,17 +284,20 @@ export default function SectionsInstructorTable({ sections }) {
     {
       Header: "Course ID",
       accessor: "courseInfo.courseId",
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
       Cell: ({ cell: { value } }) =&gt; value.substring(0, value.length - 2),
     },
     {
       Header: "Title",
       accessor: "courseInfo.title",
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
     },
     {
       Header: "Status",
       accessor: (row) =&gt; formatStatus(row.section),
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
       id: "status",
     },
@@ -287,36 +305,42 @@ export default function SectionsInstructorTable({ sections }) {
       Header: "Enrolled",
       accessor: (row) =&gt;
         convertToFraction(row.section.enrolledTotal, row.section.maxEnroll),
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
       id: "enrolled",
     },
     {
       Header: "Location",
       accessor: (row) =&gt; formatLocation(row.section.timeLocations),
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
       id: "location",
     },
     {
       Header: "Days",
       accessor: (row) =&gt; formatDays(row.section.timeLocations),
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
       id: "days",
     },
     {
       Header: "Time",
       accessor: (row) =&gt; formatTime(row.section.timeLocations),
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
       id: "time",
     },
     {
       Header: "Instructor",
       accessor: (row) =&gt; formatInstructors(row.section.instructors),
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
       id: "instructor",
     },
     {
       Header: "Enroll Code",
       accessor: "section.enrollCode",
+      // Stryker disable next-line BooleanLiteral : TODO: Write a test that will check for whether this is set to true
       disableGroupBy: true,
     },
   ];
@@ -340,7 +364,7 @@ export default function SectionsInstructorTable({ sections }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-11-09T23:49:14.891Z
+                at 2024-11-10T03:45:53.910Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
