@@ -23,7 +23,7 @@ describe("DeveloperPage tests", () => {
       .reply(200, systemInfoFixtures.showingNeither);
   });
 
-  test("renders without crashing", async () => {
+  test("renders correctly", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -34,5 +34,20 @@ describe("DeveloperPage tests", () => {
     expect(await screen.findByText("Developer Page")).toBeInTheDocument();
     expect(await screen.findByText("systemInfo")).toBeInTheDocument();
     expect(await screen.findByText("env")).toBeInTheDocument();
+  });
+
+  test("renders correctly when overrideEnv passed", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <DeveloperPage overrideEnv={{ foo: "bar" }} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(await screen.findByText("Developer Page")).toBeInTheDocument();
+    expect(await screen.findByText("systemInfo")).toBeInTheDocument();
+    expect(await screen.findByText("env")).toBeInTheDocument();
+    expect(await screen.findByText("foo")).toBeInTheDocument();
+    expect(await screen.findByText(/bar/)).toBeInTheDocument();
   });
 });

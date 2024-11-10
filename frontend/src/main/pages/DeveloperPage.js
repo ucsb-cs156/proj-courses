@@ -3,9 +3,10 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Inspector } from "react-inspector";
 import { useSystemInfo } from "main/utils/systemInfo";
 
-const DeveloperPage = ({ process = process }) => {
+const DeveloperPage = ({ overrideEnv }) => {
   const { data: systemInfo } = useSystemInfo();
-  const env = process.env;
+
+  const env = overrideEnv ? overrideEnv : process.env;
   return (
     <BasicLayout>
       <h2>Developer Page</h2>
