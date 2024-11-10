@@ -2,7 +2,6 @@ import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 import { allTheLevels } from "fixtures/levelsFixtures";
 import { standardQuarterRange } from "main/utils/quarterUtilities";
-import { useEffect } from "react";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
@@ -34,13 +33,6 @@ const BasicCourseSearchForm = ({ fetchJSON }) => {
   );
 
   const [level, setLevel] = useLocalStorage("BasicSearch.Level", "U");
-
-  // When the subjects are loaded, set the default subject to the first subject
-  useEffect(() => {
-    if (subjects.length > 0) {
-      setSubject(subjects[0].subjectCode);
-    }
-  }, [subjects, setSubject]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
