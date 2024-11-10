@@ -3,7 +3,7 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Inspector } from "react-inspector";
 import { useSystemInfo } from "main/utils/systemInfo";
 
-const DeveloperPage = () => {
+const DeveloperPage = ({ process = process }) => {
   const { data: systemInfo } = useSystemInfo();
   const env = process.env;
   return (
