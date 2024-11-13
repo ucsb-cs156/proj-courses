@@ -1,0 +1,417 @@
+name: "82-kanban-slack-update.yml"
+
+# Instructions to set up the workflow can be found here:
+# <https://ucsb-cs156.github.io/topics/github_actions/workflow_82.html>
+
+on:
+  schedule:
+    - cron: "0 17 * * *"  # Run at 9:00 AM PST / 5:00 PM UTC
+  workflow_dispatch:  # Allows manual triggering
+
+env:
+  PAT: ${{ secrets.PAT }}
+  TEAM_TO_CHANNEL: ${{vars.TEAM_TO_CHANNEL}}
+  TEAM: ${{ github.repository }}
+  ORG_NAME: ${{ github.repository_owner }}
+  COLUMNS: "Todo, In Progress, In Review, Done"
+  END_DATE: "2024-11-13"  # Set the end date for the workflow
+
+jobs:
+
+  # This job checks if the current date is before the END_DATE
+  check_date:
+    name: Check Date
+    runs-on: ubuntu-latest
+    outputs:
+      continue: ${{ steps.check_date.outputs.continue }}
+    steps:
+      - name: Check if current date is before END_DATE
+        id: check_date
+        run: |
+          current_date=$(date +%Y-%m-%d)
+          end_date="${{ env.END_DATE }}"
+          if [[ "$current_date" > "$end_date" ]]; then
+            echo "Current date is after $end_date. Stopping workflow."
+            echo "continue=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Current date is before $end_date. Continuing workflow."
+            echo "continue=true" >> "$GITHUB_OUTPUT"
+          fi
+          OWNER=${{ github.repository_owner }}
+          if [[ "$OWNER" == "ucsb-cs156" ]]; then
+            echo "This workflow should not run on repos in the ucsb-cs156 organization"
+            echo "continue=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [[ -f "$GITHUB_OUTPUT" ]]; then
+            echo "Contents of $GITHUB_OUTPUT:"
+            cat "$GITHUB_OUTPUT"
+          fi
+        
+  # This job extracts the team name from the repository name
+  # The team name is used to find the project ID for the team
+  # It does this by extracting the last 6 characters of the repository name
+  # Then sets the team name as an output for the next job
+  get_team_name:
+    name: Get Team Name 
+    runs-on: ubuntu-latest
+    needs: check_date
+    if: needs.check_date.outputs.continue == 'true'
+    outputs:
+      team: ${{ steps.find_team.outputs.team }}
+    steps:
+      - name: Extract Team Name from Repo
+        id: find_team
+        run: |
+          REPO=${{ github.repository }}
+          TEAM_NAME="${REPO: -6}"
+          echo "team=${TEAM_NAME}" >> "$GITHUB_OUTPUT"
+          
+  # This job finds the project ID for the team based on the team name
+  # It finds the last updated project that contains the team name in the title
+  # Then sets the project ID as an output for the next job
+  get_project_id:
+    name: Find Last Updated Project ID for Team
+    runs-on: ubuntu-latest
+    needs: get_team_name
+    if: needs.check_date.outputs.continue == 'true'
+    outputs:
+      project_id: ${{ steps.find_project.outputs.project_id }}
+      project_data: ${{ steps.output_query.outputs.project_data }}
+      issue_counts: ${{ steps.count_issues.outputs.issue_counts }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Debugging Output
+        run: |
+          echo "needs.get_team_name.outputs.team=${{needs.get_team_name.outputs.team}}"
+          echo "github.repository_owner=${{ github.repository_owner }}"
+      - name: Fetch Project ID
+        id: find_project
+        shell: pwsh
+        run: |
+          $query = @"
+          {
+            organization(login: "${{ github.repository_owner }}") {
+              projectsV2(first: 100) {
+                nodes {
+                  id
+                  title
+                  updatedAt
+                }
+              }
+            }
+          }
+          "@
+          $headers = @{
+              Authorization = "Bearer ${{ secrets.PAT }}"
+              "Content-Type" = "application/json"
+          }
+          $body = @{ query = $query } | ConvertTo-Json
+          $response = Invoke-WebRequest -Uri "https://api.github.com/graphql" -Method Post -Headers $headers -Body $body
+          Write-Host "Projects JSON Output: $($response.Content)"
+          
+          $projectID = ($response.Content | ConvertFrom-Json).data.organization.projectsV2.nodes | Where-Object { $_.title -like "*${{ needs.get_team_name.outputs.team }}*" } | Select-Object -First 1 -ExpandProperty id
+          
+          if (-not $projectID) {
+              Write-Host "No project found for team ${{ needs.get_team_name.outputs.team }}."
+              exit 1
+          }
+          
+          Write-Host "Found Project ID: $projectID"
+          echo "project_id=$projectID"
+          echo $projectID >> project_id.txt
+          ls project_id.txt
+          cat project_id.txt
+          pwd
+       
+      - name: Output GraphQL Query Result
+        id: output_query
+        shell: pwsh
+        env:
+          PAT: ${{ secrets.PAT }}
+          PROJECT_ID: ${{ steps.get_project_id_from_file.outputs.project_id }}
+        run: |
+          dir
+          $PROJECT_ID = ( Get-Content -Path project_id.txt )
+          $TOKEN = $env:PAT
+          $query = @"
+          {
+            node(id: "$PROJECT_ID") {
+              ... on ProjectV2 {
+                items(first: 100) {
+                  nodes {
+                    id
+                    fieldValues(first: 100) {
+                      nodes {
+                        ... on ProjectV2ItemFieldSingleSelectValue {
+                          field {
+                            ... on ProjectV2Field {
+                              name
+                            }
+                          }
+                          name
+                        }
+                        ... on ProjectV2ItemFieldTextValue {
+                          field {
+                            ... on ProjectV2Field {
+                              name
+                            }
+                          }
+                          text
+                        }
+                      }
+                    }
+                    content {
+                      ... on Issue {
+                        title
+                        assignees(first: 10) {
+                          nodes {
+                            login
+                          }
+                        }
+                      }
+                      ... on PullRequest {
+                        title
+                        assignees(first: 10) {
+                          nodes {
+                            login
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          "@
+          $headers = @{
+              Authorization = "Bearer $TOKEN"
+              "Content-Type" = "application/json"
+          }
+          $body = @{ query = $query } | ConvertTo-Json
+          $response = Invoke-WebRequest -Uri "https://api.github.com/graphql" -Method Post -Headers $headers -Body $body
+          Write-Host $response.Content
+          echo "project_data=$($response.Content)" >> $GITHUB_OUTPUT
+          echo "$($response.Content)" >> project_data.json
+          ls project_data.json
+          cat project_data.json
+
+      - name: Count Issues by Column and Assignee
+        id: count_issues
+        shell: pwsh
+        env:
+          project_data: ${{ needs.get_project_id.outputs.project_data }}
+          columns: ${{ env.COLUMNS }}
+        run: |
+          $data = ( Get-Content -Path project_data.json ) | ConvertFrom-Json
+          Write-Host "Project Data JSON: $($data | ConvertTo-Json -Depth 10)"
+          $issueCounts = @{}
+          $columns = $env:columns -split ", "
+          foreach ($item in $data.data.node.items.nodes) {
+            Write-Host "Processing item: $($item.id)"
+            $columnField = $item.fieldValues.nodes | Where-Object { $columns -contains $_.name }
+            if ($null -ne $columnField) {
+              Write-Host "Found column field: $($columnField | ConvertTo-Json -Depth 10)"
+              $column = $columnField.name
+              Write-Host "Processing column: $column"
+              if ($null -ne $column) {
+                $assignees = $item.content.assignees.nodes | Select-Object -ExpandProperty login
+                if ($assignees.Count -eq 0) {
+                  $assignees = @("UNASSIGNED")
+                }
+                foreach ($assignee in $assignees) {
+                  Write-Host "Processing assignee: $assignee"
+                  if (-not $issueCounts.ContainsKey($column)) {
+                    $issueCounts[$column] = @{}
+                  }
+                  if (-not $issueCounts[$column].ContainsKey($assignee)) {
+                    $issueCounts[$column][$assignee] = 0
+                  }
+                  $issueCounts[$column][$assignee]++
+                }
+              }
+            } else {
+              Write-Host "No column field found for item: $($item.id)"
+            }
+          }
+          foreach ($column in $issueCounts.Keys) {
+            Write-Host "Column: $column"
+            foreach ($assignee in $issueCounts[$column].Keys) {
+              Write-Host "  Assignee: $assignee, Count: $($issueCounts[$column][$assignee])"
+            }
+          }
+          $issueCountsJson = $issueCounts | ConvertTo-Json -Depth 10
+          Write-Host "Issue Counts JSON: $issueCountsJson"  # Debugging: Output the issue counts JSON
+          $issueCountsJson | Out-File issue_counts.json
+          echo "issue_counts=${issueCountsJson}" >> $GITHUB_OUTPUT
+          Write-Host "Issue count process completed"
+      - name: Upload issue counts
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue_counts
+          path: issue_counts.json
+          overwrite: true
+
+
+
+  # This job generates an ASCII table from the issue counts
+  # It does this by parsing the issue counts JSON and formatting it into an ASCII table
+  # Then sets the ASCII table as an output for the next job
+  # Also uploads the ASCII table as an artifact for debugging
+  generate_ascii_table:
+    name: Generate ASCII Table
+    runs-on: ubuntu-latest
+    needs: get_project_id
+    if: needs.check_date.outputs.continue == 'true'
+    outputs:
+      ascii_table: ${{ steps.generate_table.outputs.ascii_table }}
+    steps:
+      - name: Download issue counts
+        uses: actions/download-artifact@v4
+        with:
+          name: issue_counts
+
+      - name: Generate ASCII Table
+        id: generate_table
+        shell: pwsh
+        env:
+          columns: ${{ env.COLUMNS }}
+        run: |
+          $issueCounts = Get-Content issue_counts.json
+          if (-not $issueCounts) {
+            Write-Host "ISSUE_COUNTS is empty or not set"
+            exit 1
+          }
+          $issueCounts = $issueCounts | ConvertFrom-Json
+
+          # Collect all assignees and track unassigned issues
+          $assignees = @{}
+          $unassignedCounts = @{}
+          foreach ($column in $issueCounts.PSObject.Properties.Name) {
+            $unassignedCounts[$column] = 0
+            foreach ($assignee in $issueCounts.$column.PSObject.Properties.Name) {
+              if ($assignee -eq "UNASSIGNED") {
+                $unassignedCounts[$column] += $issueCounts.$column.$assignee
+              } else {
+                if (-not $assignees.ContainsKey($assignee)) {
+                  $assignees[$assignee] = @{}
+                }
+                $assignees[$assignee][$column] = $issueCounts.$column.$assignee
+              }
+            }
+          }
+
+          # Define the column names and fixed widths
+          $columns = $env:columns -split ", "
+          $columnWidths = @(18, 3, 3, 3, 3)  # Fixed widths for each column
+
+          # Left align the text within each cell
+          function LeftAlignText($text, $width) {
+            $text = [string]$text  # Ensure $text is treated as a string
+            $padding = " " * [math]::Max(0, $width - $text.Length)
+            return $text + $padding
+          }
+
+          # Generate the table header with left-aligned text
+          $header = "| login            |"
+          foreach ($column in $columns) {
+            $header += " " + $column.Substring(0, 4) + " |"
+          }
+
+
+          # Define the separator with exact dash counts for each column
+          $separator = "|------------------|"
+          foreach ($width in $columnWidths[1..$columnWidths.Length]) {
+            $separator += "------|"
+          }
+
+          # Construct the full table
+          $table = "$header`n$separator`n"
+
+          # Generate the table rows
+          foreach ($assignee in $assignees.Keys) {
+            $row = "| " + (LeftAlignText $assignee 17) + "|"
+            foreach ($column in $columns) {
+              $count = if ($assignees[$assignee].ContainsKey($column)) { "$($assignees[$assignee][$column])" } else { "0" }
+              $leftAlignedCount = printf "%4s" $count
+              $row += " $leftAlignedCount |"
+
+            }
+            $table += "$row`n"
+          }
+
+          # Add the unassigned row
+          $unassignedRow = "| " + (LeftAlignText "UNASSIGNED" 17) + "|"
+          foreach ($column in $columns) {
+            $unassignedCount = $unassignedCounts[$column]
+            $leftAlignedUnassignedCount = printf "%4s" $unassignedCount
+            $unassignedRow += " $leftAlignedUnassignedCount |"
+          }
+          $table += "$unassignedRow`n"
+
+          Write-Host "ASCII Table:`n$table"
+          $table | Out-File ascii_table.txt
+          echo "ascii_table=${table}" >> $GITHUB_OUTPUT
+
+      - name: Upload ASCII Table
+        uses: actions/upload-artifact@v4
+        with:
+          name: ascii_table
+          path: ascii_table.txt
+          overwrite: true
+
+
+  send-to-slack:
+    name: Send Report to Slack
+    runs-on: ubuntu-latest
+    needs: [generate_ascii_table, get_team_name]
+    if: needs.check_date.outputs.continue == 'true'
+    steps:
+      - name: Download ASCII Table
+        uses: actions/download-artifact@v4
+        with:
+          name: ascii_table
+
+      - name: Read ASCII Table
+        id: read_ascii_table
+        run: |
+          table=$(cat ascii_table.txt)
+          echo "ASCII Table Content:"
+          printf "%s\n" "$table"  # Use printf for better handling of multiline text
+          echo "$table" > ascii_table_content.txt
+          echo "ascii_table_content<<EOF" >> $GITHUB_ENV
+          cat ascii_table_content.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      #This step is used to debug the environment variables and Slack text
+      #because the GitHub Actions runner does not support multiline environment variables
+      #The ASCII table content is set as an environment variable for use in the Slack message
+      #therefore, the ASCII table content is written to a file and then read back to set the environment variable
+      #The ASCII table content is also printed for debugging purposes
+      - name: Debug Environment Variables
+        run: |
+          echo "TEAM_TO_CHANNEL: ${{ env.TEAM_TO_CHANNEL }}"
+          echo "TEAM: ${{ env.TEAM }}"
+          echo "ORG_NAME: ${{ env.ORG_NAME }}"
+          echo "Slack Channel: ${{ fromJSON(env.TEAM_TO_CHANNEL)[needs.get_team_name.outputs.team] }}"
+          echo "ASCII Table:"
+          cat ascii_table_content.txt
+      #This step is used to debug the Slack text that will be sent to the Slack channel
+      - name: Debug Slack Text
+        run: |
+          table=$(cat ascii_table.txt)
+          echo "Slack Text:"
+          printf "📋 *Kanban Board Status* ✔️\n"
+          printf '```\n%s\n```\n' "$table"
+      #This step sends the report to the Slack channel associated with the team
+      - name: Send Report to Slack
+        uses: archive/github-actions-slack@v2.9.0
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: ${{ fromJSON(env.TEAM_TO_CHANNEL)[needs.get_team_name.outputs.team] }}
+          slack-text: |
+            📋 *Kanban Board Status* ✔️
+            ```
+            ${{ env.ascii_table_content }}
+            ```
