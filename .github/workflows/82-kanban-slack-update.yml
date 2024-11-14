@@ -5,7 +5,7 @@ name: "82-kanban-slack-update.yml"
 
 on:
   schedule:
-    - cron: "0 17 * * *"  # Run at 9:00 AM PST / 5:00 PM UTC
+    - cron: "0 0,17 * * *"  # 0,17 UTC are 4pm and 9am Pacific Time
   workflow_dispatch:  # Allows manual triggering
 
 env:
@@ -14,7 +14,7 @@ env:
   TEAM: ${{ github.repository }}
   ORG_NAME: ${{ github.repository_owner }}
   COLUMNS: "Todo, In Progress, In Review, Done"
-  END_DATE: "2024-11-13"  # Set the end date for the workflow
+  END_DATE: "2024-12-13"  # Set the end date for the workflow
 
 jobs:
 
