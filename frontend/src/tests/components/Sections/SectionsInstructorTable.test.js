@@ -3,7 +3,6 @@ import { fiveSections, sixSections } from "fixtures/sectionOverTimeFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import SectionsInstructorTable from "main/components/Sections/SectionsInstructorTable";
-// import SectionsInstructorTable, { columns } from "main/components/Sections/SectionsInstructorTable";
 
 const mockedNavigate = jest.fn();
 
