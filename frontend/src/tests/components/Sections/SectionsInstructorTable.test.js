@@ -225,10 +225,11 @@ describe("Section tests", () => {
         <MemoryRouter>
           <SectionsInstructorTable sections={[]} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    const tableColumns = SectionsInstructorTable({ sections: [] }).props.columns;
+    const tableColumns = SectionsInstructorTable({ sections: [] }).props
+      .columns;
 
     tableColumns.forEach((column) => {
       expect(column.disableGroupBy).toBe(true);
