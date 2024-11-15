@@ -3,6 +3,7 @@ import { fiveSections, sixSections } from "fixtures/sectionOverTimeFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import SectionsInstructorTable from "main/components/Sections/SectionsInstructorTable";
+// import SectionsInstructorTable, { columns } from "main/components/Sections/SectionsInstructorTable";
 
 const mockedNavigate = jest.fn();
 
@@ -216,5 +217,21 @@ describe("Section tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-4-col-status`),
     ).toHaveTextContent("Open");
+  });
+
+  test("Each column has disableGroupBy set to true", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsInstructorTable sections={[]} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const tableColumns = SectionsInstructorTable({ sections: [] }).props.columns;
+
+    tableColumns.forEach((column) => {
+      expect(column.disableGroupBy).toBe(true);
+    });
   });
 });
