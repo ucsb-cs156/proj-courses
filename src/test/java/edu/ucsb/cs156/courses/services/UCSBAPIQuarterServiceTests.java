@@ -11,6 +11,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,26 +29,30 @@ import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBAPIQuarterService.class)
 @AutoConfigureDataJpa
-@TestPropertySource(
-    properties = {
-      "app.startQtrYYYYQ=20211",
-      "app.endQtrYYYYQ=20223",
-      "app.ucsb.api.consumer_key=fakeApiKey"
-    })
+@TestPropertySource(properties = {
+    "app.startQtrYYYYQ=20211",
+    "app.endQtrYYYYQ=20223",
+    "app.ucsb.api.consumer_key=fakeApiKey"
+})
 public class UCSBAPIQuarterServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
 
-  @Autowired private MockRestServiceServer mockRestServiceServer;
+  @Autowired
+  private MockRestServiceServer mockRestServiceServer;
 
-  @Mock private RestTemplate restTemplate;
+  @Mock
+  private RestTemplate restTemplate;
 
-  @MockBean private UCSBAPIQuarterRepository ucsbApiQuarterRepository;
+  @MockBean
+  private UCSBAPIQuarterRepository ucsbApiQuarterRepository;
 
-  @Autowired private UCSBAPIQuarterService service;
+  @Autowired
+  private UCSBAPIQuarterService service;
 
-  @Autowired private ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @Test
   public void test_getStartQtrYYYYQ() {
@@ -58,6 +63,24 @@ public class UCSBAPIQuarterServiceTests {
   public void test_getEndQtrYYYYQ() {
     assertEquals("20223", service.getEndQtrYYYYQ());
   } // the value of app.endQtrYYYYQ is configured using @TestPropertySource
+
+  @Test
+  public void test_getActiveQuarterList() throws Exception {
+
+    String currentQ = "20243";
+    String endQ = "20251";
+
+    List<Quarter> expected = Quarter.quarterList(currentQ, endQ);
+    ArrayList<String> expectedResult = new ArrayList<>();
+    for (Quarter quarter : expected) {
+      expectedResult.add(quarter.getYYYYQ());
+    }
+
+    ArrayList<String> actualResult = service.getActiveQuarterList();
+
+    assertEquals(expectedResult, actualResult);
+
+  }
 
   @Test
   public void test_getCurrentQuarterYYYYQ() throws Exception {
@@ -77,8 +100,8 @@ public class UCSBAPIQuarterServiceTests {
 
   @Test
   public void test_getCurrentQuarter() throws Exception {
-    UCSBAPIQuarter expectedResult =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
+    UCSBAPIQuarter expectedResult = objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24,
+        UCSBAPIQuarter.class);
 
     String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
 
@@ -98,8 +121,7 @@ public class UCSBAPIQuarterServiceTests {
 
   @Test
   public void test_getAllQuartersFromAPI() throws Exception {
-    UCSBAPIQuarter sampleQuarter =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
+    UCSBAPIQuarter sampleQuarter = objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     List<UCSBAPIQuarter> expectedResult = new ArrayList<UCSBAPIQuarter>();
     expectedResult.add(sampleQuarter);
@@ -122,8 +144,7 @@ public class UCSBAPIQuarterServiceTests {
 
   @Test
   public void test_getAllQuarters_preloaded() throws Exception {
-    UCSBAPIQuarter sampleQuarter =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
+    UCSBAPIQuarter sampleQuarter = objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     List<UCSBAPIQuarter> expectedResult = new ArrayList<UCSBAPIQuarter>();
     expectedResult.add(sampleQuarter);
@@ -138,12 +159,9 @@ public class UCSBAPIQuarterServiceTests {
 
   @Test
   public void test_getAllQuarters_empty() throws Exception {
-    UCSBAPIQuarter F20 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_F20, UCSBAPIQuarter.class);
-    UCSBAPIQuarter W21 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, UCSBAPIQuarter.class);
-    UCSBAPIQuarter M23 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
+    UCSBAPIQuarter F20 = objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_F20, UCSBAPIQuarter.class);
+    UCSBAPIQuarter W21 = objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, UCSBAPIQuarter.class);
+    UCSBAPIQuarter M23 = objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
     List<UCSBAPIQuarter> emptyList = new ArrayList<UCSBAPIQuarter>();
     List<UCSBAPIQuarter> expectedResult = new ArrayList<UCSBAPIQuarter>();
