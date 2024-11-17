@@ -171,7 +171,7 @@ describe("PersonalScheduleForm tests", () => {
     await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
 
     expect(screen.queryByText(/Name is required./)).not.toBeInTheDocument();
-    
+
     expect(
       screen.queryByText(/Description is required./),
     ).not.toBeInTheDocument();
