@@ -6,6 +6,7 @@ import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,8 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UCSBAPIQuarterController extends ApiController {
 
-  @Autowired UserRepository userRepository;
-  @Autowired UCSBAPIQuarterService ucsbAPIQuarterService;
+  @Autowired
+  UserRepository userRepository;
+  @Autowired
+  UCSBAPIQuarterService ucsbAPIQuarterService;
 
   @Operation(summary = "Get dates for current quarter")
   @GetMapping(value = "/currentQuarter", produces = "application/json")
@@ -41,5 +44,11 @@ public class UCSBAPIQuarterController extends ApiController {
   public List<UCSBAPIQuarter> loadQuarters() throws Exception {
     List<UCSBAPIQuarter> savedQuarters = ucsbAPIQuarterService.loadAllQuarters();
     return savedQuarters;
+  }
+
+  @Operation(summary = "Get list of YYYQ codes from current quarter to end quarter")
+  @GetMapping(value = "/activeQuarters", produces = "application/json")
+  public ArrayList<String> getActiveQuarterList() throws Exception {
+    return ucsbAPIQuarterService.getActiveQuarterList();
   }
 }
