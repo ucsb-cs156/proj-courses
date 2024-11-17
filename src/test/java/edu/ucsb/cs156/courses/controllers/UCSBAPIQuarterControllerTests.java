@@ -111,4 +111,31 @@ public class UCSBAPIQuarterControllerTests extends ControllerTestCase {
             response.getResponse().getContentAsString(),
             new TypeReference<List<UCSBAPIQuarter>>() {}));
   }
+
+@Test   
+public void test_getActiveQuarters() throws Exception {
+    // Arrange: Define the expected result
+    ArrayList<String> expectedResult = new ArrayList<>();
+    expectedResult.add("20244");
+    expectedResult.add("20251");
+
+    String url = "/api/public/activeQuarters";
+
+    // Mock the service method
+    when(ucsbAPIQuarterService.getActiveQuarterList()).thenReturn(expectedResult);
+
+    // Act: Call the endpoint
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // Assert: Compare the actual and expected results
+    assertEquals(
+        objectMapper.writeValueAsString(expectedResult), // Convert expectedResult to JSON string
+        response.getResponse().getContentAsString() // Get actual JSON response from endpoint
+    );
+}
+
 }

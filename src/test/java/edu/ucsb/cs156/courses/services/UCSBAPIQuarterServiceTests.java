@@ -11,6 +11,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,6 +176,33 @@ public class UCSBAPIQuarterServiceTests {
 
     assertEquals(expectedResult, actualResult);
   }
+  @Test
+  public void test_getActiveQuarterList() throws Exception {
+      // Arrange: Mock start and end quarters
+      String startQuarter = "20244";
+      String endQuarter = "20251";
+
+      List<Quarter> mockQuarterList = new ArrayList<>();
+      mockQuarterList.add(new Quarter("20244"));
+      mockQuarterList.add(new Quarter("20245"));
+      mockQuarterList.add(new Quarter("20251"));
+
+      // Mock dependencies
+      when(service.getCurrentQuarterYYYYQ()).thenReturn(startQuarter);
+      when(service.getEndQtrYYYYQ()).thenReturn(endQuarter);
+      when(Quarter.quarterList(startQuarter, endQuarter)).thenReturn(mockQuarterList);
+
+      // Act: Call the service method
+      ArrayList<String> result = service.getActiveQuarterList();
+
+      // Assert: Verify the result matches expected values
+      ArrayList<String> expected = new ArrayList<>();
+      expected.add("20244");
+      expected.add("20245");
+      expected.add("20251");
+
+      assertEquals(expected, result);
+  }
 
   @Test
   public void test_quarterYYYYQInRange_20211_true() {
@@ -188,7 +216,7 @@ public class UCSBAPIQuarterServiceTests {
 
   @Test
   public void test_quarterYYYYQInRange_20222_true() {
-    assertEquals(true, service.quarterYYYYQInRange("20222"));
+      assertEquals(true, service.quarterYYYYQInRange("20222"));
   }
 
   @Test
@@ -210,4 +238,6 @@ public class UCSBAPIQuarterServiceTests {
   public void test_quarterYYYYQInRange_20231_false() {
     assertEquals(false, service.quarterYYYYQInRange("20231"));
   }
+  
+
 }
