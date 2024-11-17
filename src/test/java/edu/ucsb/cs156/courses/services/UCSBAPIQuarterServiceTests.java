@@ -14,9 +14,12 @@ import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -176,33 +179,6 @@ public class UCSBAPIQuarterServiceTests {
 
     assertEquals(expectedResult, actualResult);
   }
-  @Test
-  public void test_getActiveQuarterList() throws Exception {
-      // Arrange: Mock start and end quarters
-      String startQuarter = "20244";
-      String endQuarter = "20251";
-
-      List<Quarter> mockQuarterList = new ArrayList<>();
-      mockQuarterList.add(new Quarter("20244"));
-      mockQuarterList.add(new Quarter("20245"));
-      mockQuarterList.add(new Quarter("20251"));
-
-      // Mock dependencies
-      when(service.getCurrentQuarterYYYYQ()).thenReturn(startQuarter);
-      when(service.getEndQtrYYYYQ()).thenReturn(endQuarter);
-      when(Quarter.quarterList(startQuarter, endQuarter)).thenReturn(mockQuarterList);
-
-      // Act: Call the service method
-      ArrayList<String> result = service.getActiveQuarterList();
-
-      // Assert: Verify the result matches expected values
-      ArrayList<String> expected = new ArrayList<>();
-      expected.add("20244");
-      expected.add("20245");
-      expected.add("20251");
-
-      assertEquals(expected, result);
-  }
 
   @Test
   public void test_quarterYYYYQInRange_20211_true() {
@@ -216,7 +192,7 @@ public class UCSBAPIQuarterServiceTests {
 
   @Test
   public void test_quarterYYYYQInRange_20222_true() {
-      assertEquals(true, service.quarterYYYYQInRange("20222"));
+    assertEquals(true, service.quarterYYYYQInRange("20222"));
   }
 
   @Test
@@ -238,6 +214,39 @@ public class UCSBAPIQuarterServiceTests {
   public void test_quarterYYYYQInRange_20231_false() {
     assertEquals(false, service.quarterYYYYQInRange("20231"));
   }
-  
 
+  @Test
+  public void test_getActiveQuarterList() throws Exception {
+    String startQuarter = "20211";
+    String endQuarter = "20214";
+    List<Quarter> mockQuarters =
+        Arrays.asList(
+            new Quarter("20211"), new Quarter("20212"), new Quarter("20213"), new Quarter("20214"));
+
+    when(service.getCurrentQuarterYYYYQ()).thenReturn(startQuarter);
+    when(service.getEndQtrYYYYQ()).thenReturn(endQuarter);
+
+    this.mockRestServiceServer
+        .expect(requestTo("https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current"))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, MediaType.APPLICATION_JSON));
+
+    try (MockedStatic<Quarter> quarterMock = Mockito.mockStatic(Quarter.class)) {
+      quarterMock
+          .when(() -> Quarter.quarterList(startQuarter, endQuarter))
+          .thenReturn(mockQuarters);
+
+      ArrayList<String> activeQuarters = service.getActiveQuarterList();
+
+      assertEquals(4, activeQuarters.size());
+      assertEquals("20211", activeQuarters.get(0));
+      assertEquals("20212", activeQuarters.get(1));
+      assertEquals("20213", activeQuarters.get(2));
+      assertEquals("20214", activeQuarters.get(3));
+    }
+  }
 }

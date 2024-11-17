@@ -51,6 +51,9 @@ public class UCSBAPIQuarterService {
   public static final String ALL_QUARTERS_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
 
+  public static final String END_QUARTER_ENDPOINT =
+      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end";
+
   public String getStartQtrYYYYQ() {
     return startQtrYYYYQ;
   }
@@ -166,11 +169,9 @@ public class UCSBAPIQuarterService {
     List<Quarter> quarterObjects = Quarter.quarterList(startQuarter, endQuarter);
 
     for (Quarter quarter : quarterObjects) {
-        activeQuarters.add(quarter.getYYYYQ());
+      activeQuarters.add(quarter.getYYYYQ());
     }
 
     return activeQuarters;
-}
-
-
+  }
 }

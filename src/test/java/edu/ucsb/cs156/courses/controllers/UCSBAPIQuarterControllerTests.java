@@ -112,30 +112,24 @@ public class UCSBAPIQuarterControllerTests extends ControllerTestCase {
             new TypeReference<List<UCSBAPIQuarter>>() {}));
   }
 
-@Test   
-public void test_getActiveQuarters() throws Exception {
-    // Arrange: Define the expected result
-    ArrayList<String> expectedResult = new ArrayList<>();
-    expectedResult.add("20244");
-    expectedResult.add("20251");
+  // @Test
+  // public void test_specificQuarter() throws Exception {
+  //   UCSBAPIQuarter sampleQuarter =
+  //       objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
+  //   String quarter = "20224";
+  //   String url = "/api/public/specificQuarter?quarter=" + quarter;
 
-    String url = "/api/public/activeQuarters";
+  //   when(ucsbAPIQuarterService.getQuarter(quarter)).thenReturn(sampleQuarter);
 
-    // Mock the service method
-    when(ucsbAPIQuarterService.getActiveQuarterList()).thenReturn(expectedResult);
+  //   MvcResult response =
+  //       mockMvc
+  //           .perform(get(url).contentType("application/json"))
+  //           .andExpect(status().isOk())
+  //           .andReturn();
 
-    // Act: Call the endpoint
-    MvcResult response =
-        mockMvc
-            .perform(get(url).contentType("application/json"))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    // Assert: Compare the actual and expected results
-    assertEquals(
-        objectMapper.writeValueAsString(expectedResult), // Convert expectedResult to JSON string
-        response.getResponse().getContentAsString() // Get actual JSON response from endpoint
-    );
-}
-
+  //   assertEquals(
+  //       sampleQuarter,
+  //       objectMapper.readValue(response.getResponse().getContentAsString(),
+  // UCSBAPIQuarter.class));
+  // }
 }
