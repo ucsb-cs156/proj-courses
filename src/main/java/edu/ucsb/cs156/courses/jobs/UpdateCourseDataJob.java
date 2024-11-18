@@ -66,9 +66,9 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     //ctx.log("Found " + convertedSections.size() + " sections");
     //ctx.log("Storing in MongoDB Collection...");
 
-    int newSections = 0;
-    int updatedSections = 0;
-    int errors = 0;
+    //int newSections = 0;
+    //int updatedSections = 0;
+    //int errors = 0;
 
     for (ConvertedSection section : convertedSections) {
       try {
@@ -81,14 +81,14 @@ public class UpdateCourseDataJob implements JobContextConsumer {
           existingSection.setCourseInfo(section.getCourseInfo());
           existingSection.setSection(section.getSection());
           convertedSectionCollection.save(existingSection);
-          updatedSections++;
+          //updatedSections++;
         } else {
           convertedSectionCollection.save(section);
-          newSections++;
+          //newSections++;
         }
       } catch (Exception e) {
         //ctx.log("Error saving section: " + e.getMessage());
-        errors++;
+        //errors++;
       }
     }
 /* 
