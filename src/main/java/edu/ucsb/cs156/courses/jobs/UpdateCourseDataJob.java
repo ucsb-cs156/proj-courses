@@ -40,7 +40,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
         if (ifStale) {
           if (!isStale) {
 
-            ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
+            //ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
             continue;
           }
         }
@@ -63,8 +63,8 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     List<ConvertedSection> convertedSections =
         ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ, "A");
 
-    ctx.log("Found " + convertedSections.size() + " sections");
-    ctx.log("Storing in MongoDB Collection...");
+    //ctx.log("Found " + convertedSections.size() + " sections");
+    //ctx.log("Storing in MongoDB Collection...");
 
     int newSections = 0;
     int updatedSections = 0;
@@ -87,19 +87,20 @@ public class UpdateCourseDataJob implements JobContextConsumer {
           newSections++;
         }
       } catch (Exception e) {
-        ctx.log("Error saving section: " + e.getMessage());
+        //ctx.log("Error saving section: " + e.getMessage());
         errors++;
       }
     }
-
+/* 
     Update savedUpdate =
         updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);
-
+    
     ctx.log(
         String.format(
             "%d new sections saved, %d sections updated, %d errors, last update: %s",
             newSections, updatedSections, errors, savedUpdate.getLastUpdate()));
     ctx.log("Saved update: " + savedUpdate);
-    ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");
+    ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");*/
+
   }
 }
