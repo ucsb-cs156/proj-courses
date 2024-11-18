@@ -81,7 +81,8 @@ describe("PersonalScheduleForm tests", () => {
     fireEvent.click(submitButton);
 
     expect(await screen.findByText(/Name is required./)).toBeInTheDocument();
-    expect(screen.getByText(/Description is required./)).toBeInTheDocument();
+    // Made description optional
+    // expect(screen.getByText(/Description is required./)).toBeInTheDocument();
   });
 
   test("No Error messages on good input", async () => {
