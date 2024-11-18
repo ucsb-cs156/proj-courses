@@ -81,8 +81,8 @@ public class PersonalSchedulesController extends ApiController {
   @PostMapping("/post")
   public PersonalSchedule postSchedule(
       @Parameter(name = "name") @RequestParam String name,
-      @Parameter(name = "description", required = false) @RequestParam(required = false) String description,
-      @Parameter(name = "quarter") @RequestParam String quarter) {
+      @Parameter(name = "quarter") @RequestParam String quarter,
+      @Parameter(name = "description") Optional<String> description) {
     CurrentUser currentUser = getCurrentUser();
     log.info("currentUser={}", currentUser);
 
@@ -94,7 +94,7 @@ public class PersonalSchedulesController extends ApiController {
     PersonalSchedule personalschedule = new PersonalSchedule();
     personalschedule.setUser(currentUser.getUser());
     personalschedule.setName(name);
-    personalschedule.setDescription(description != null ? description : "");
+    personalschedule.setDescription(description.orElse(""));
     personalschedule.setQuarter(quarter);
 
     Optional<PersonalSchedule> existCheck =
