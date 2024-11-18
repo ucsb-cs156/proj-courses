@@ -23,7 +23,10 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
   const queryClient = new QueryClient();
   const addToast = jest.fn();
 
+  const restoreProcessEnv = process.env;
+
   beforeEach(() => {
+    process.env = {};
     jest.clearAllMocks();
     localStorage.clear();
     jest.spyOn(console, "error");
@@ -43,7 +46,15 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     });
   });
 
+  afterEach(() => {
+    process.env = restoreProcessEnv;
+  });
+
   test("renders without crashing", () => {
+    process.env = {
+      REACT_APP_START_QTR: "20201",
+      REACT_APP_END_QTR: "20214",
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -54,6 +65,10 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
   });
 
   test("when I select a start quarter, the state for start quarter changes", () => {
+    process.env = {
+      REACT_APP_START_QTR: "20191",
+      REACT_APP_END_QTR: "20214",
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -67,6 +82,10 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
   });
 
   test("when I select an end quarter, the state for end quarter changes", () => {
+    process.env = {
+      REACT_APP_START_QTR: "20191",
+      REACT_APP_END_QTR: "20214",
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -160,6 +179,10 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
   });
 
   test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
+    process.env = {
+      REACT_APP_START_QTR: "20191",
+      REACT_APP_END_QTR: "20214",
+    };
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
 
     const sampleReturnValue = {

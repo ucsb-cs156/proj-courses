@@ -23,7 +23,7 @@ describe("DeveloperPage tests", () => {
       .reply(200, systemInfoFixtures.showingNeither);
   });
 
-  test("renders without crashing", async () => {
+  test("renders correctly", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -31,13 +31,23 @@ describe("DeveloperPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    expect(
-      await screen.findByText("Github Branch Information"),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText(
-        "The following SystemInfo is displayed in a JSON file.",
-      ),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Developer Page")).toBeInTheDocument();
+    expect(await screen.findByText("systemInfo")).toBeInTheDocument();
+    expect(await screen.findByText("env")).toBeInTheDocument();
+  });
+
+  test("renders correctly when overrideEnv passed", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <DeveloperPage overrideEnv={{ foo: "bar" }} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(await screen.findByText("Developer Page")).toBeInTheDocument();
+    expect(await screen.findByText("systemInfo")).toBeInTheDocument();
+    expect(await screen.findByText("env")).toBeInTheDocument();
+    expect(await screen.findByText("foo")).toBeInTheDocument();
+    expect(await screen.findByText(/bar/)).toBeInTheDocument();
   });
 });

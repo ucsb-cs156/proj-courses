@@ -3,21 +3,14 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
-import { quarterRange } from "main/utils/quarterUtilities";
-
-import { useSystemInfo } from "main/utils/systemInfo";
+import { standardQuarterRange, yyyyqToQyy } from "main/utils/quarterUtilities";
 
 function PersonalScheduleForm({
   initialPersonalSchedule,
   submitAction,
   buttonLabel = "Create",
 }) {
-  const { data: systemInfo } = useSystemInfo();
-  // Stryker disable OptionalChaining
-  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
-  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker enable OptionalChaining
-  const quarters = quarterRange(startQtr, endQtr);
+  const quarters = standardQuarterRange();
 
   // Stryker disable all
   const {
@@ -34,13 +27,6 @@ function PersonalScheduleForm({
       quarters: quarters,
     }.quarters[quarters.length - 1],
   );
-
-  const quarterMap = {
-    1: "W",
-    2: "S",
-    3: "M",
-    4: "F",
-  };
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>
@@ -101,10 +87,7 @@ function PersonalScheduleForm({
             id="quarter"
             type="text"
             {...register("quarter")}
-            value={
-              quarterMap[initialPersonalSchedule.quarter.substring(4, 5)] +
-              initialPersonalSchedule.quarter.substring(2, 4)
-            }
+            value={yyyyqToQyy(initialPersonalSchedule.quarter)}
             disabled
           />
         </Form.Group>

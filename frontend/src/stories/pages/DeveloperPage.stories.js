@@ -11,7 +11,7 @@ export default {
   component: DeveloperPage,
 };
 
-const Template = () => <DeveloperPage />;
+const Template = () => <DeveloperPage overrideEnv={{}} />;
 
 export const Default = Template.bind({});
 Default.parameters = {
