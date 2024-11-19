@@ -244,8 +244,8 @@ export default function SectionsTable({ sections }) {
       accessor: "section.enrollCode",
       disableGroupBy: true,
       // No need for accessor if it's purely for actions like expand/collapse
+      // Stryker disable all : difficult to test modal interaction
       Cell: ({ row }) => {
-        // Stryker disable all : difficult to test modal interaction
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
           return (
