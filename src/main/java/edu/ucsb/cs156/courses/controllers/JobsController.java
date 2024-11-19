@@ -65,9 +65,10 @@ public class JobsController extends ApiController {
       @Parameter(name = "id", description = "ID of the job") @RequestParam Long id) 
       throws JsonProcessingException {
 
-    Job job = jobsRepository
-        .findById(id)
-        .orElseThrow(() -> new EntityNotFoundException(Job.class, id));
+    Job job = 
+      jobsRepository
+          .findById(id)
+          .orElseThrow(() -> new EntityNotFoundException(Job.class, id));
 
     return job;
 }
