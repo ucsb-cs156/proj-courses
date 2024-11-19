@@ -33,19 +33,27 @@ public class UpdateCourseDataJob implements JobContextConsumer {
   @Override
   public void accept(JobContext ctx) throws Exception {
     List<Quarter> quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);
+    int totalUpdatesSkipped = 0;
     for (Quarter quarter : quarters) {
       String quarterYYYYQ = quarter.getYYYYQ();
       for (String subjectArea : subjects) {
         boolean isStale = isStaleService.isStale(subjectArea, quarterYYYYQ);
-        if (ifStale) {
-          if (!isStale) {
-
-            ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
-            continue;
-          }
+        if (ifStale && !isStale) {
+          totalUpdatesSkipped++;
+          continue;
         }
+        // if (ifStale) {
+        //   if (!isStale) {
+
+        //     ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
+        //     continue;
+        //   }
+        // }
         updateCourses(ctx, quarterYYYYQ, subjectArea);
       }
+    }
+    if (totalUpdatesSkipped > 0) {
+      ctx.log(totalUpdatesSkipped + " course updates were skipped as they were not stale.");
     }
   }
 
@@ -63,8 +71,8 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     List<ConvertedSection> convertedSections =
         ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ, "A");
 
-    ctx.log("Found " + convertedSections.size() + " sections");
-    ctx.log("Storing in MongoDB Collection...");
+    // ctx.log("Found " + convertedSections.size() + " sections");
+    // ctx.log("Storing in MongoDB Collection...");
 
     int newSections = 0;
     int updatedSections = 0;
@@ -99,7 +107,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
         String.format(
             "%d new sections saved, %d sections updated, %d errors, last update: %s",
             newSections, updatedSections, errors, savedUpdate.getLastUpdate()));
-    ctx.log("Saved update: " + savedUpdate);
-    ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");
+    // ctx.log("Saved update: " + savedUpdate);
+    // ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");
   }
 }
