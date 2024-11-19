@@ -1,8 +1,10 @@
 package edu.ucsb.cs156.courses.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.jobs.TestJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJob;
@@ -22,8 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
@@ -62,16 +62,14 @@ public class JobsController extends ApiController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("")
   public Job getJobLogById(
-      @Parameter(name = "id", description = "ID of the job") @RequestParam Long id) 
+      @Parameter(name = "id", description = "ID of the job") @RequestParam Long id)
       throws JsonProcessingException {
 
-    Job job = 
-      jobsRepository
-          .findById(id)
-          .orElseThrow(() -> new EntityNotFoundException(Job.class, id));
+    Job job =
+        jobsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Job.class, id));
 
     return job;
-}
+  }
 
   @Operation(summary = "Delete specific job record")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
