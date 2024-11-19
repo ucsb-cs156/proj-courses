@@ -11,15 +11,11 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
-import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -141,6 +137,27 @@ public class UCSBAPIQuarterServiceTests {
   }
 
   @Test
+  public void test_getActiveQuarterList() throws Exception {
+    UCSBAPIQuarter sampleCurrent =
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, UCSBAPIQuarter.class);
+    String expectedJSON = objectMapper.writeValueAsString(sampleCurrent);
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedJSON, MediaType.APPLICATION_JSON));
+
+    List<String> expectedResult =
+        List.of("20211", "20212", "20213", "20214", "20221", "20222", "20223");
+    List<String> actualResult = service.getActiveQuarterList();
+
+    assertEquals(expectedResult, actualResult);
+  }
+
+  @Test
   public void test_getAllQuarters_empty() throws Exception {
     UCSBAPIQuarter F20 =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_F20, UCSBAPIQuarter.class);
@@ -213,40 +230,5 @@ public class UCSBAPIQuarterServiceTests {
   @Test
   public void test_quarterYYYYQInRange_20231_false() {
     assertEquals(false, service.quarterYYYYQInRange("20231"));
-  }
-
-  @Test
-  public void test_getActiveQuarterList() throws Exception {
-    String startQuarter = "20211";
-    String endQuarter = "20214";
-    List<Quarter> mockQuarters =
-        Arrays.asList(
-            new Quarter("20211"), new Quarter("20212"), new Quarter("20213"), new Quarter("20214"));
-
-    when(service.getCurrentQuarterYYYYQ()).thenReturn(startQuarter);
-    when(service.getEndQtrYYYYQ()).thenReturn(endQuarter);
-
-    this.mockRestServiceServer
-        .expect(requestTo("https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current"))
-        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("ucsb-api-version", "1.0"))
-        .andExpect(header("ucsb-api-key", apiKey))
-        .andRespond(
-            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, MediaType.APPLICATION_JSON));
-
-    try (MockedStatic<Quarter> quarterMock = Mockito.mockStatic(Quarter.class)) {
-      quarterMock
-          .when(() -> Quarter.quarterList(startQuarter, endQuarter))
-          .thenReturn(mockQuarters);
-
-      ArrayList<String> activeQuarters = service.getActiveQuarterList();
-
-      assertEquals(4, activeQuarters.size());
-      assertEquals("20211", activeQuarters.get(0));
-      assertEquals("20212", activeQuarters.get(1));
-      assertEquals("20213", activeQuarters.get(2));
-      assertEquals("20214", activeQuarters.get(3));
-    }
   }
 }

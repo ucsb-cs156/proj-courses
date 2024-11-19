@@ -161,8 +161,8 @@ public class UCSBAPIQuarterService {
     return savedQuarters;
   }
 
-  public ArrayList<String> getActiveQuarterList() throws Exception {
-    ArrayList<String> activeQuarters = new ArrayList<>();
+  public List<String> getActiveQuarterList() throws Exception {
+    List<String> activeQuarters = new ArrayList<>();
     String startQuarter = getCurrentQuarterYYYYQ();
     String endQuarter = getEndQtrYYYYQ();
 
