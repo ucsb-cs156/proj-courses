@@ -442,16 +442,19 @@ describe("Section tests", () => {
 
     const onError = useBackendMutation.mock.calls[0][1].onError;
     const error = {
-        response: {
-            data: {
-                message: "You already have a section of this course on your personal schedule; to add this one instead, drop the other one first."
-            }
-        }
+      response: {
+        data: {
+          message:
+            "You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
+        },
+      },
     };
 
     onError(error);
 
-    expect(toast).toHaveBeenCalledWith("Error: You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.");
+    expect(toast).toHaveBeenCalledWith(
+      "Error: You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
+    );
   });
 
   test("renders without crashing for empty table", () => {
