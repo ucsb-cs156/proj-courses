@@ -18,7 +18,6 @@ import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -101,12 +100,14 @@ public class UpdateCourseDataJobTests {
         //         Updating courses for [CMPSC 20211]
         //         Found 14 sections
         //         Storing in MongoDB Collection...
-        //         14 new sections saved, 0 sections updated, 0 errors, last update: 2022-03-05T15:50:10
-        //         Saved update: Update(_id=null, subjectArea=CMPSC, quarter=20211, saved=14, updated=0, errors=0, lastUpdate=2022-03-05T15:50:10)
+        //         14 new sections saved, 0 sections updated, 0 errors, last update:
+        // 2022-03-05T15:50:10
+        //         Saved update: Update(_id=null, subjectArea=CMPSC, quarter=20211, saved=14,
+        // updated=0, errors=0, lastUpdate=2022-03-05T15:50:10)
         //         Courses for [CMPSC 20211] have been updated""";
         """
-        Starting update for [CMPSC 20211]
-        Completed update for [CMPSC 20211]: 14 new, 0 updated, 0 errors.
+        Updating courses for [CMPSC 20211]
+        14 new sections saved, 0 sections updated, 0 errors, last update: 2022-03-05T15:50:10
         """;
 
     assertEquals(expected, jobStarted.getLog());
@@ -227,12 +228,15 @@ public class UpdateCourseDataJobTests {
         //         Found 1 sections
         //         Storing in MongoDB Collection...
         //         Error saving section: Testing Exception Handling!
-        //         0 new sections saved, 0 sections updated, 1 errors, last update: 2022-03-05T15:50:10
-        //         Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=0, errors=1, lastUpdate=2022-03-05T15:50:10)
+        //         0 new sections saved, 0 sections updated, 1 errors, last update:
+        // 2022-03-05T15:50:10
+        //         Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0,
+        // updated=0, errors=1, lastUpdate=2022-03-05T15:50:10)
         //         Courses for [MATH 20211] have been updated""";
         """
-        Starting update for [MATH 20211]
-        Completed update for [MATH 20211]: 0 new, 0 updated, 1 errors.
+        Updating courses for [MATH 20211]
+        Error saving section: Testing Exception Handling!
+        0 new sections saved, 0 sections updated, 1 errors, last update: 2022-03-05T15:50:10
         """;
 
     assertEquals(expected, jobStarted.getLog());
@@ -363,12 +367,14 @@ public class UpdateCourseDataJobTests {
         //         Updating courses for [MATH 20211]
         //         Found 1 sections
         //         Storing in MongoDB Collection...
-        //         0 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
-        //         Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)
+        //         0 new sections saved, 1 sections updated, 0 errors, last update:
+        // 2022-03-05T15:50:10
+        //         Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0,
+        // updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)
         //         Courses for [MATH 20211] have been updated""";
         """
-            Starting update for [MATH 20211]
-            Completed update for [MATH 20211]: 2 new, 1 updated, 0 errors.
+            Updating courses for [MATH 20211]
+            2 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
             """;
 
     assertEquals(expected, jobStarted.getLog());
