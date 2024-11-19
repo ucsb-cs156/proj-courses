@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
+
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
 @RestController
@@ -55,6 +58,20 @@ public class JobsController extends ApiController {
     jobsRepository.deleteAll();
     return Map.of("message", "All jobs deleted");
   }
+
+  @Operation(summary = "Get a specific Job Log by ID if it is in the database")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("")
+  public Job getJobLogById(
+      @Parameter(name = "id", description = "ID of the job") @RequestParam Long id) 
+      throws JsonProcessingException {
+
+    Job job = jobsRepository
+        .findById(id)
+        .orElseThrow(() -> new EntityNotFoundException(Job.class, id));
+
+    return job;
+}
 
   @Operation(summary = "Delete specific job record")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
