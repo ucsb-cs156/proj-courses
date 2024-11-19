@@ -28,6 +28,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
-import java.util.Optional;
 
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
@@ -93,54 +93,46 @@ public class JobsControllerTests extends ControllerTestCase {
   @Test
   public void api_getJobLogById__admin_logged_in__returns_job_by_id() throws Exception {
 
-      // arrange
-      
-      Job job = Job.builder()
-              .id(1L)
-              .status("completed")
-              .log("This is a test job log.")
-              .build();
+    // arrange
 
-      when(jobsRepository.findById(eq(1L))).thenReturn(Optional.of(job));
+    Job job = Job.builder().id(1L).status("completed").log("This is a test job log.").build();
 
-      // act
+    when(jobsRepository.findById(eq(1L))).thenReturn(Optional.of(job));
 
-      MvcResult response = mockMvc
-              .perform(get("/api/jobs?id=1"))
-              .andExpect(status().isOk())
-              .andReturn();
+    // act
 
-      // assert
+    MvcResult response =
+        mockMvc.perform(get("/api/jobs?id=1")).andExpect(status().isOk()).andReturn();
 
-      verify(jobsRepository, times(1)).findById(1L);
-      String expectedJson = mapper.writeValueAsString(job);
-      String responseString = response.getResponse().getContentAsString();
-      assertEquals(expectedJson, responseString);
+    // assert
+
+    verify(jobsRepository, times(1)).findById(1L);
+    String expectedJson = mapper.writeValueAsString(job);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
   }
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
-  public void api_getJobLogById__admin_logged_in__returns_not_found_for_missing_job() throws Exception {
+  public void api_getJobLogById__admin_logged_in__returns_not_found_for_missing_job()
+      throws Exception {
 
-      // arrange
+    // arrange
 
-      when(jobsRepository.findById(eq(2L))).thenReturn(Optional.empty());
+    when(jobsRepository.findById(eq(2L))).thenReturn(Optional.empty());
 
-      // act
+    // act
 
-      MvcResult response = mockMvc
-              .perform(get("/api/jobs?id=2"))
-              .andExpect(status().isNotFound())
-              .andReturn();
+    MvcResult response =
+        mockMvc.perform(get("/api/jobs?id=2")).andExpect(status().isNotFound()).andReturn();
 
-      // assert
+    // assert
 
-      verify(jobsRepository, times(1)).findById(2L);
-      Map<String, Object> json = responseToJson(response);
-      assertEquals("EntityNotFoundException", json.get("type"));
-      assertEquals("Job with id 2 not found", json.get("message"));
+    verify(jobsRepository, times(1)).findById(2L);
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("EntityNotFoundException", json.get("type"));
+    assertEquals("Job with id 2 not found", json.get("message"));
   }
-
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
