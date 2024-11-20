@@ -245,6 +245,7 @@ const mutation = useBackendMutation(
       aggregate: getFirstVal,
       Aggregated: renderInfoLink,
     },
+    // Stryker disable all : difficult to test modal interaction but we should try in future work
     {
       Header: "Action",
       id: "action",
@@ -252,7 +253,6 @@ const mutation = useBackendMutation(
       disableGroupBy: true,
       // No need for accessor if it's purely for actions like expand/collapse
       Cell: ({ row }) => {
-        // Stryker disable all : difficult to test modal interaction
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
           return (
@@ -269,7 +269,6 @@ const mutation = useBackendMutation(
         } else {
           return null;
         }
-        // Stryker restore all
       },
       aggregate: getFirstVal,
       Aggregated: ({ cell: { value }, row }) => /* istanbul ignore next */ {
@@ -298,6 +297,8 @@ const mutation = useBackendMutation(
       },
     },
   ];
+
+  // Stryker enable all
 
   const testid = "SectionsTable";
 
