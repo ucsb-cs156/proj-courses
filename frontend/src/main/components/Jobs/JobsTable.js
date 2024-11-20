@@ -4,8 +4,27 @@ import OurTable, {
   DateColumn,
 } from "main/components/OurTable";
 
+// import { useNavigate } from "react-router-dom";
+
 export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
+
+  const truncateLog = (log) => {
+    const lines = log.split("\n")
+    if (lines.length > 10) {
+      return lines.slice(0,10).join("\n") + "\n..."
+    }
+    return log;
+  };
+
+  // let navigate = useNavigate();
+
+  // const navigateCallback = (cell) => {
+  //   let id = cell.row.original.id
+  //   let path =`/admin/jobs/${id}`; 
+  //   navigate(path);
+  // };
+
 
   const columns = [
     {
@@ -18,7 +37,8 @@ export default function JobsTable({ jobs }) {
       Header: "Status",
       accessor: "status",
     },
-    PlaintextColumn("Log", (cell) => cell.row.original.log),
+    PlaintextColumn("Log", (cell) => truncateLog(cell.row.original.log)),
+    // ButtonColumn("Detailed Logs", "primary", navigateCallback)
   ];
 
   const sortees = React.useMemo(
