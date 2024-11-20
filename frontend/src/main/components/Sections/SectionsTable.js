@@ -120,9 +120,7 @@ export const onSuccess = (response) => {
 };
 
 const onError = (error) => {
-  toast(
-    `Error: ${error.response.data.message}`,
-  );
+  toast(`Error: ${error.response.data.message}`);
 };
 
 export default function SectionsTable({ sections }) {

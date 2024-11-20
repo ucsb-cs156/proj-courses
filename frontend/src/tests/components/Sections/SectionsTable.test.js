@@ -445,9 +445,10 @@ describe("Section tests", () => {
     const mockResponse = {
       response: {
         data: {
-          message: "You already have a section of this course on your personal schedule; to add this one instead, drop the other one first."
-        }
-      }
+          message:
+            "You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
+        },
+      },
     };
     onError(mockResponse);
 
