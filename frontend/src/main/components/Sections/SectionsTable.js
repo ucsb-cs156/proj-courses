@@ -93,6 +93,7 @@ export const objectToAxiosParams = (data) => {
   };
 };
 
+
 export const handleAddToSchedule = (section, schedule, mutation) => {
   // Execute the mutation with the provided data
   const dataFinal = {
@@ -124,12 +125,22 @@ export default function SectionsTable({ sections }) {
   // Stryker disable BooleanLiteral
   const { data: currentUser } = useCurrentUser();
 
-  const mutation = useBackendMutation(
-    objectToAxiosParams,
-    { onSuccess },
-    // Stryker disable next-line all : hard to set up test for caching
-    ["/api/courses/user/all"],
-  );
+const mutation = useBackendMutation(
+  objectToAxiosParams,
+  {
+    onSuccess: (response) => {
+      toast.success(`Section added successfully: ${response.enrollCd}`);
+    },
+    onError: (error) => {
+      if (error.response?.data === "duplicate section") {
+        toast.error("This section is already in your schedule.");
+      } else {
+        toast.error("An error occurred while adding the section.");
+      }
+    },
+  },
+  ["/api/courses/user/all"] 
+);
 
   const columns = [
     {

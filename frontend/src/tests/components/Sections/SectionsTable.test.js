@@ -747,3 +747,27 @@ describe("Section tests", () => {
     ).toBeInTheDocument();
   });
 });
+
+
+test("Shows error toast for duplicate section error", async () => {
+  const mockMutate = jest.fn((_, { onError }) => {
+    onError({ response: { status: 409, data: "duplicate section" } });
+  });
+
+  const mockMutation = { mutate: mockMutate };
+  useBackendMutation.mockReturnValue(mockMutation);
+
+  render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <SectionsTable sections={[]} />
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+
+  fireEvent.click(screen.getByText("Add to Schedule"));
+
+  await waitFor(() =>
+    expect(toast.error).toHaveBeenCalledWith("This section is already in your schedule.")
+  );
+});

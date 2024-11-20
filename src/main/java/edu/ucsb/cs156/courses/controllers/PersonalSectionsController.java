@@ -59,3 +59,21 @@ public class PersonalSectionsController extends ApiController {
     return sections;
   }
 }
+
+@PostMapping("/api/courses/post")
+public ResponseEntity<?> addSectionToPersonalSchedule(@RequestBody Map<String, String> body) {
+    Long psId = Long.valueOf(body.get("psId"));
+    String enrollCd = body.get("enrollCd");
+
+    if (coursesRepository.existsByPsIdAndEnrollCd(psId, enrollCd)) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("duplicate section");
+    }
+
+    PSCourse newCourse = PSCourse.builder()
+            .psId(psId)
+            .enrollCd(enrollCd)
+            .build();
+
+    coursesRepository.save(newCourse);
+    return ResponseEntity.ok(newCourse);
+}
