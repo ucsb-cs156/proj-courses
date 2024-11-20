@@ -84,14 +84,16 @@ function PersonalScheduleForm({
           data-testid="PersonalScheduleForm-description"
           id="description"
           type="text"
-          isInvalid={Boolean(errors.description)}
+          // Made description optional
+          /* isInvalid={Boolean(errors.description)}
           {...register("description", {
             required: "Description is required.",
-          })}
+          })} */
+          {...register("description")}
         />
-        <Form.Control.Feedback type="invalid">
+        {/* <Form.Control.Feedback type="invalid">
           {errors.description?.message}
-        </Form.Control.Feedback>
+        </Form.Control.Feedback> */}
       </Form.Group>
       {initialPersonalSchedule ? (
         <Form.Group className="mb-3">
