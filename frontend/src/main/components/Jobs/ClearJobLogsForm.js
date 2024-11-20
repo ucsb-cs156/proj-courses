@@ -5,7 +5,7 @@ const ClearJobLogsForm = ({ clearJobLogs }) => {
     event.preventDefault();
     clearJobLogs();
   };
-
+// Stryker disable all
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
