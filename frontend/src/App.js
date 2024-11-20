@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CourseDescriptionIndexPage from "main/pages/CourseDescriptions/CourseDescriptionIndexPage";
 import ProfilePage from "main/pages/ProfilePage";
 import AdminUsersPage from "main/pages/Admin/AdminUsersPage";
+import AdminUpdatesPage from "main/pages/Admin/AdminUpdatesPage";
 import AdminLoadSubjectsPage from "main/pages/Admin/AdminLoadSubjectsPage";
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import DeveloperPage from "main/pages/DeveloperPage"; // route from /developer to DeveloperPage
@@ -34,6 +35,7 @@ function App() {
         {hasRole(currentUser, "ROLE_ADMIN") && (
           <>
             <Route exact path="/admin/users" element={<AdminUsersPage />} />
+            <Route exact path="/admin/updates" element={<AdminUpdatesPage />} />
             <Route
               exact
               path="/admin/loadsubjects"
