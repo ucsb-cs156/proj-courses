@@ -875,4 +875,201 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     assertEquals(
         "A personal schedule with that name already exists in that quarter", json.get("message"));
   }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void cannot_edit_two_personal_schedules_to_have_same_name_and_quarter_with_diff_ids()
+      throws Exception {
+    // arrange
+
+    User thisUser = currentUserService.getCurrentUser().getUser();
+
+    PersonalSchedule existingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("uniquedescription1")
+            .quarter("20222")
+            .user(thisUser)
+            .id(0L)
+            .build();
+    PersonalSchedule conflictingNameSchedule =
+        PersonalSchedule.builder()
+            .name("ConflictingName")
+            .description("uniquedescription2")
+            .quarter("20222")
+            .user(thisUser)
+            .id(1L)
+            .build();
+    PersonalSchedule editedNameSchedule =
+        PersonalSchedule.builder()
+            .name("ConflictingName")
+            .description("uniquedescription1")
+            .quarter("20222")
+            .user(thisUser)
+            .id(0L)
+            .build();
+
+    when(personalscheduleRepository.findByIdAndUser(0L, thisUser))
+        .thenReturn(Optional.of(existingSchedule));
+    when(personalscheduleRepository.findByUserAndNameAndQuarter(
+            thisUser, "ConflictingName", "20222"))
+        .thenReturn(Optional.of(conflictingNameSchedule));
+    String requestBody = mapper.writeValueAsString(editedNameSchedule);
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/personalschedules?id=0")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    Map<String, Object> json = responseToJson(response);
+    assertEquals(
+        "A personal schedule with that name already exists in that quarter", json.get("message"));
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void cannot_edit_two_personal_schedules_to_have_same_name_and_quarter_with_diff_ids_admin()
+      throws Exception {
+    // arrange
+    User thisUser = currentUserService.getCurrentUser().getUser();
+    PersonalSchedule existingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("uniquedescription1")
+            .quarter("20222")
+            .user(thisUser)
+            .id(0L)
+            .build();
+    PersonalSchedule conflictingNameSchedule =
+        PersonalSchedule.builder()
+            .name("ConflictingName")
+            .description("uniquedescription2")
+            .quarter("20222")
+            .user(thisUser)
+            .id(1L)
+            .build();
+    PersonalSchedule editedNameSchedule =
+        PersonalSchedule.builder()
+            .name("ConflictingName")
+            .description("uniquedescription1")
+            .quarter("20222")
+            .user(thisUser)
+            .id(0L)
+            .build();
+
+    when(personalscheduleRepository.findById(0L)).thenReturn(Optional.of(existingSchedule));
+    when(personalscheduleRepository.findByUserAndNameAndQuarter(
+            thisUser, "ConflictingName", "20222"))
+        .thenReturn(Optional.of(conflictingNameSchedule));
+    String requestBody = mapper.writeValueAsString(editedNameSchedule);
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/personalschedules/admin?id=0")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    Map<String, Object> json = responseToJson(response);
+    assertEquals(
+        "A personal schedule with that name already exists in that quarter", json.get("message"));
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void can_edit_two_personal_schedules_to_have_same_name_and_quarter_with_same_ids()
+      throws Exception {
+    // arrange
+    User thisUser = currentUserService.getCurrentUser().getUser();
+
+    PersonalSchedule existingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("uniquedescription1")
+            .quarter("20222")
+            .user(thisUser)
+            .id(0L)
+            .build();
+    PersonalSchedule editedDescSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("uniquedescription2")
+            .quarter("20222")
+            .user(thisUser)
+            .id(0L)
+            .build();
+
+    when(personalscheduleRepository.findByIdAndUser(0L, thisUser))
+        .thenReturn(Optional.of(existingSchedule));
+    when(personalscheduleRepository.findByUserAndNameAndQuarter(thisUser, "TestName", "20222"))
+        .thenReturn(Optional.of(existingSchedule));
+    String requestBody = mapper.writeValueAsString(editedDescSchedule);
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/personalschedules?id=0")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+    // assert
+    verify(personalscheduleRepository, times(1)).save(editedDescSchedule);
+    assertEquals(response.getResponse().getContentAsString(), requestBody);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void can_edit_two_personal_schedules_to_have_same_name_and_quarter_with_same_ids_admin()
+      throws Exception {
+    // arrange
+    User thisUser = currentUserService.getCurrentUser().getUser();
+    PersonalSchedule existingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("uniquedescription1")
+            .quarter("20222")
+            .user(thisUser)
+            .id(0L)
+            .build();
+    PersonalSchedule editedDescSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("uniquedescription2")
+            .quarter("20222")
+            .user(thisUser)
+            .id(0L)
+            .build();
+
+    when(personalscheduleRepository.findById(0L)).thenReturn(Optional.of(existingSchedule));
+    when(personalscheduleRepository.findByUserAndNameAndQuarter(thisUser, "TestName", "20222"))
+        .thenReturn(Optional.of(existingSchedule));
+    String requestBody = mapper.writeValueAsString(editedDescSchedule);
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/personalschedules/admin?id=0")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+    // assert
+    verify(personalscheduleRepository, times(1)).save(editedDescSchedule);
+    assertEquals(response.getResponse().getContentAsString(), requestBody);
+  }
 }
