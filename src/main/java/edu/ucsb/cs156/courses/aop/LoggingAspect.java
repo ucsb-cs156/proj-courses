@@ -50,6 +50,9 @@ public class LoggingAspect {
                             request.getRequestURI(),
                             joinPoint.getSignature().getName(),
                             declaringTypeName));
+                if (request.getQueryString() != null) {
+                  log.info("===== Query String: %s".formatted(request.getQueryString()));
+                }
               }
             });
   }
