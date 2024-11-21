@@ -364,6 +364,5 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             true);
     job.accept(ctx);
-
   }
 }
