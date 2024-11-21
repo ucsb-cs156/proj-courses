@@ -7,6 +7,14 @@ import OurTable, {
 export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
 
+  const truncateLog = (log) => {
+    const lines = log.split("\n");
+    if (lines.length > 10) {
+      return lines.slice(0, 10).join("\n") + "\n...";
+    }
+    return log;
+  };
+
   const columns = [
     {
       Header: "id",
@@ -18,7 +26,7 @@ export default function JobsTable({ jobs }) {
       Header: "Status",
       accessor: "status",
     },
-    PlaintextColumn("Log", (cell) => cell.row.original.log),
+    PlaintextColumn("Log", (cell) => truncateLog(cell.row.original.log)),
   ];
 
   const sortees = React.useMemo(
