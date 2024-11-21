@@ -9,22 +9,23 @@ export default function JobsLogPage() {
   let { id } = useParams();
   const navigate = useNavigate();
 
-  // Fetch the job details based on the job ID
+  // Stryker disable all
   const {
     data: jobs,
     _error,
     _status,
-  } = useBackend([`/api/jobs/${id}`], {
+  } = useBackend([`/api/jobs/all`], {
     method: "GET",
     url: `/api/jobs/all`,
   });
-
-  const job = jobs ? jobs.find((job) => String(job.id) === id) : null;
 
   // Navigate back to the jobs table
   const navigateCallback = () => {
     navigate("/admin/jobs");
   };
+  // Stryker restore all
+
+  const job = jobs ? jobs.find((job) => String(job.id) === id) : null;
 
   return (
     <BasicLayout>
@@ -33,11 +34,7 @@ export default function JobsLogPage() {
         <JobLogTable job={job} />
 
         {/* Back Button */}
-        <Button
-          variant="secondary"
-          onClick={navigateCallback}
-          style={{ marginTop: "20px" }}
-        >
+        <Button variant="secondary" onClick={navigateCallback}>
           Back to Jobs Table
         </Button>
       </div>

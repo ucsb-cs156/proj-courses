@@ -93,4 +93,20 @@ describe("JobsLogPage tests", () => {
     expect(await screen.findByText("Log line 2")).toBeInTheDocument();
     expect(await screen.findByText("Log line 3")).toBeInTheDocument();
   });
+
+  test("renders invalid job correctly", async () => {
+    axiosMock.onGet("/api/jobs/all").reply(200, [mockJob]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/admin/jobs/logs/999"]}>
+          <Routes>
+            <Route path="/admin/jobs/logs/:id" element={<JobsLogPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Job not found.")).toBeInTheDocument();
+  });
 });
