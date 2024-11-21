@@ -23,6 +23,8 @@ import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseO
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
+
+import JobsLogPage from "main/pages/Jobs/JobsLogPage";
 function App() {
   const { data: currentUser } = useCurrentUser();
 
@@ -93,6 +95,10 @@ function App() {
           element={<CourseDetailsIndexPage />}
         />
       </Routes>
+      <Routes>
+        <Route path="/admin/jobs/logs/:id" element={<JobsLogPage />} />
+      </Routes>
+      ;
     </BrowserRouter>
   );
 }
