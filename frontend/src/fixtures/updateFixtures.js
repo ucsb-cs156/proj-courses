@@ -2,7 +2,7 @@ const updateFixtures = {
   oneUpdate: [
     {
       subjectArea: "ECON",
-      quarter: "W23",
+      quarter: "20221",
       saved: 0,
       updated: 0,
       errors: 0,
@@ -13,7 +13,7 @@ const updateFixtures = {
   threeUpdates: [
     {
       subjectArea: "EARTH",
-      quarter: "W23",
+      quarter: "20231",
       saved: 0,
       updated: 0,
       errors: 0,
@@ -22,7 +22,7 @@ const updateFixtures = {
 
     {
       subjectArea: "CMPSC",
-      quarter: "W23",
+      quarter: "20242",
       saved: 1,
       updated: 3,
       errors: 0,
@@ -31,7 +31,7 @@ const updateFixtures = {
 
     {
       subjectArea: "PSTAT",
-      quarter: "W23",
+      quarter: "20214",
       saved: 3,
       updated: 8,
       errors: 2,
