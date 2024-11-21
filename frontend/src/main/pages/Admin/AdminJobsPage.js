@@ -132,7 +132,7 @@ const AdminJobsPage = () => {
     },
     {
       name: "Clear Job Logs",
-      form: <ClearJobLogsForm clearJobLogs={clearJobLogs} />,
+      form: <ClearJobLogsForm callback={clearJobLogs} />,
     },
     {
       name: "Update Courses Database",
