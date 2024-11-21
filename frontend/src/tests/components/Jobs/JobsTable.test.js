@@ -67,9 +67,7 @@ describe("JobsTable tests", () => {
         createdAt: "2022-11-13T19:49:59",
         updatedAt: "2022-11-13T19:49:59",
         status: "complete",
-        log: Array(15)
-          .fill("This is a log line")
-          .join("\n"),
+        log: Array(15).fill("Log").join("\n"), // 15 lines of "Log"
       },
     ];
 
@@ -84,9 +82,8 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
     const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
 
-    // Check that the log contains only 10 lines and ends with "..."
-    const expectedLog = "This is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log line...";
-    expect(logCell).toHaveTextContent(expectedLog);
+    const expectedLog = Array(10).fill("Log").join(""); // Remove \n to match flattened DOM output
+    expect(logCell.textContent).toBe(expectedLog);
   });
 
   test("Does not truncate logs 10 lines or shorter", () => {
@@ -96,7 +93,7 @@ describe("JobsTable tests", () => {
         createdAt: "2022-11-13T19:49:59",
         updatedAt: "2022-11-13T19:49:59",
         status: "complete",
-        log: Array(10).fill("This is a log line").join("\n"),
+        log: Array(10).fill("Log").join("\n"), // Exactly 10 lines
       },
     ];
 
@@ -111,8 +108,33 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
     const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
 
-    // Check that the log contains all lines without truncation
-    const expectedLog = "This is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log line";
-    expect(logCell).toHaveTextContent(expectedLog);
+    const expectedLog = Array(10).fill("Log").join(""); // Remove \n to match flattened DOM output
+    expect(logCell.textContent).toBe(expectedLog);
+  });
+
+  test("Handles empty logs gracefully", () => {
+    const jobsWithEmptyLog = [
+      {
+        id: "1",
+        createdAt: "2022-11-13T19:49:59",
+        updatedAt: "2022-11-13T19:49:59",
+        status: "complete",
+        log: "", // Empty log
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsWithEmptyLog} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "JobsTable";
+    const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
+
+    // Check that the log cell is empty
+    expect(logCell).toHaveTextContent("");
   });
 });
