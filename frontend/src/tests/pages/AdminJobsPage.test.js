@@ -273,7 +273,7 @@ describe("AdminJobsPage tests", () => {
     expect(clearJobLogsButton).toBeInTheDocument();
     clearJobLogsButton.click();
 
-    const submitClearJobLogsButton = screen.getByTestId("clearJobsSubmit");
+    const submitClearJobLogsButton = screen.getByTestId("clearJobLogsButn");
     expect(submitClearJobLogsButton).toBeInTheDocument();
     submitClearJobLogsButton.click();
 
