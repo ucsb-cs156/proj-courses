@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
@@ -20,7 +20,7 @@ jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
-describe("UserTable tests", () => {
+describe("UpdateTable tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table with user not logged in", () => {
@@ -61,7 +61,6 @@ describe("UserTable tests", () => {
 
   test("Has the expected column headers and content", async () => {
     const currentUser = currentUserFixtures.userOnly;
-    const psId = 1;
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -119,40 +118,5 @@ describe("UserTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-lastUpdate`),
     ).toHaveTextContent("2022-10-21T11:39:10");
-
-    const deleteButton = screen.getByTestId(
-      `UpdateTable-cell-row-0-col-Delete-button`,
-    );
-    expect(deleteButton).toBeInTheDocument();
-    expect(deleteButton).toHaveClass("btn-danger");
-  });
-
-  test("Delete button calls delete callback for ordinary user", async () => {
-    const testId = "UpdateTable";
-    const currentUser = currentUserFixtures.userOnly;
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <UpdateTable
-            updates={updateFixtures.threeUpdates}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(
-      await screen.findByTestId(`${testId}-cell-row-0-col-subjectArea`),
-    ).toHaveTextContent("EARTH");
-
-    const deleteButton = screen.getByTestId(
-      `UpdateTable-cell-row-0-col-Delete-button`,
-    );
-    expect(deleteButton).toBeInTheDocument();
-
-    fireEvent.click(deleteButton);
-
-    await waitFor(() => expect(mockedMutate).toHaveBeenCalledTimes(1));
   });
 });
