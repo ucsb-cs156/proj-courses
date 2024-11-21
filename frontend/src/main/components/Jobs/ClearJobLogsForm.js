@@ -1,9 +1,9 @@
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-const ClearJobLogsForm = ({ clearJobLogs }) => {
+const ClearJobLogsForm = ({ callback }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
-    clearJobLogs();
+    callback();
   };
   // Stryker disable all
   return (

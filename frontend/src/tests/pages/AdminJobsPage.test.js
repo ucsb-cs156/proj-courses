@@ -256,8 +256,8 @@ describe("AdminJobsPage tests", () => {
     expect(axiosMock.history.post[0].url).toBe(url);
   });
   test("user can clear job logs", async () => {
-    const url = "/api/jobs/clear";
-    axiosMock.onPost(url).reply(200, {});
+    const url = "/api/jobs/all";
+    axiosMock.onDelete(url).reply(200, {});
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -273,12 +273,11 @@ describe("AdminJobsPage tests", () => {
     expect(clearJobLogsButton).toBeInTheDocument();
     clearJobLogsButton.click();
 
-    const submitClearJobLogButton = screen.getByTestId("clearJobLogsButn");
-    expect(submitClearJobLogButton).toBeInTheDocument();
+    const submitClearJobLogsButton = screen.getByTestId("clearJobsSubmit");
+    expect(submitClearJobLogsButton).toBeInTheDocument();
+    submitClearJobLogsButton.click();
 
-    submitClearJobLogButton.click();
-
-    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
-    expect(axiosMock.history.post[0].url).toBe(url);
+    await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
+    expect(axiosMock.history.delete[0].url).toBe(url);
   });
 });
