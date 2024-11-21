@@ -60,4 +60,59 @@ describe("JobsTable tests", () => {
       screen.getByTestId(`JobsTable-header-id-sort-carets`),
     ).toHaveTextContent("🔽");
   });
+  test("Truncates logs longer than 10 lines", () => {
+    const jobsWithLongLog = [
+      {
+        id: "1",
+        createdAt: "2022-11-13T19:49:59",
+        updatedAt: "2022-11-13T19:49:59",
+        status: "complete",
+        log: Array(15)
+          .fill("This is a log line")
+          .join("\n"),
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsWithLongLog} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "JobsTable";
+    const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
+
+    // Check that the log contains only 10 lines and ends with "..."
+    const expectedLog = "This is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log line...";
+    expect(logCell).toHaveTextContent(expectedLog);
+  });
+
+  test("Does not truncate logs 10 lines or shorter", () => {
+    const jobsWithShortLog = [
+      {
+        id: "1",
+        createdAt: "2022-11-13T19:49:59",
+        updatedAt: "2022-11-13T19:49:59",
+        status: "complete",
+        log: Array(10).fill("This is a log line").join("\n"),
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsWithShortLog} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "JobsTable";
+    const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
+
+    // Check that the log contains all lines without truncation
+    const expectedLog = "This is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log lineThis is a log line";
+    expect(logCell).toHaveTextContent(expectedLog);
+  });
 });
