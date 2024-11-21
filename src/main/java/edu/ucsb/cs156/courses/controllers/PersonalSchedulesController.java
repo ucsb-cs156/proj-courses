@@ -162,7 +162,14 @@ public class PersonalSchedulesController extends ApiController {
     personalschedule.setName(incomingSchedule.getName());
     personalschedule.setDescription(incomingSchedule.getDescription());
     personalschedule.setQuarter(incomingSchedule.getQuarter());
+    Optional<PersonalSchedule> existCheck =
+        personalscheduleRepository.findByUserAndNameAndQuarter(
+            currentUser, personalschedule.getName(), personalschedule.getQuarter());
 
+    if (existCheck.isPresent() && !(existCheck.get().getId() == id)) {
+      throw new IllegalArgumentException(
+          "A personal schedule with that name already exists in that quarter");
+    }
     personalscheduleRepository.save(personalschedule);
 
     return personalschedule;
@@ -184,7 +191,14 @@ public class PersonalSchedulesController extends ApiController {
     personalschedule.setName(incomingSchedule.getName());
     personalschedule.setDescription(incomingSchedule.getDescription());
     personalschedule.setQuarter(incomingSchedule.getQuarter());
+    Optional<PersonalSchedule> existCheck =
+        personalscheduleRepository.findByUserAndNameAndQuarter(
+            personalschedule.getUser(), personalschedule.getName(), personalschedule.getQuarter());
 
+    if (existCheck.isPresent() && !(existCheck.get().getId() == id)) {
+      throw new IllegalArgumentException(
+          "A personal schedule with that name already exists in that quarter");
+    }
     personalscheduleRepository.save(personalschedule);
 
     return personalschedule;
