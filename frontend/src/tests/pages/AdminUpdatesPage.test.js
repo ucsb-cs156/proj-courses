@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import AdminUpdatesPage from "main/pages/Admin/AdminUpdatesPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -56,5 +56,6 @@ describe("AdminUpdatesPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    await screen.findAllByText("Updates page not yet implemented");
   });
 });
