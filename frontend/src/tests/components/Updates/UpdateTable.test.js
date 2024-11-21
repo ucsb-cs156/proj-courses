@@ -29,10 +29,7 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdateTable
-            updates={[]}
-            currentUser={currentUser}
-          />
+          <UpdateTable updates={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -44,10 +41,7 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdateTable
-            updates={[]}
-            currentUser={currentUser}
-          />
+          <UpdateTable updates={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -59,10 +53,7 @@ describe("UserTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdateTable
-            updates={[]}
-            currentUser={currentUser}
-          />
+          <UpdateTable updates={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -114,9 +105,7 @@ describe("UserTable tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-subjectArea`),
     ).toHaveTextContent("EARTH");
     expect(
-      screen.getByTestId(
-        `${testId}-cell-row-0-col-quarter`,
-      ),
+      screen.getByTestId(`${testId}-cell-row-0-col-quarter`),
     ).toHaveTextContent("W23");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-saved`),

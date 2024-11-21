@@ -9,9 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 
 export default function UpdateTable({
-    updates,
-    currentUser,
-    testIdPrefix = "UpdateTable",
+  updates,
+  currentUser,
+  testIdPrefix = "UpdateTable",
 }) {
   const navigate = useNavigate();
 
@@ -59,14 +59,14 @@ export default function UpdateTable({
     },
   ];
 
-//   const columnsIfUser = [
-//     ...columns,
-//     ButtonColumn("Delete", "danger", deleteCallback, "UpdateTable"),
-//   ];
+  //   const columnsIfUser = [
+  //     ...columns,
+  //     ButtonColumn("Delete", "danger", deleteCallback, "UpdateTable"),
+  //   ];
 
-//   const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN")
-//     ? columnsIfUser
-//     : columns;
+  //   const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN")
+  //     ? columnsIfUser
+  //     : columns;
 
   const columnsIfAdmin = [
     ...columns,
@@ -79,10 +79,6 @@ export default function UpdateTable({
     : columns;
 
   return (
-    <OurTable
-      data={updates}
-      columns={columnsToDisplay}
-      testid={testIdPrefix}
-    />
+    <OurTable data={updates} columns={columnsToDisplay} testid={testIdPrefix} />
   );
 }
