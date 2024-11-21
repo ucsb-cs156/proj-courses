@@ -30,13 +30,14 @@ export default function JobsLogPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Job Log Details</h1>
-        <JobLogTable job={job} />
-
         {/* Back Button */}
         <Button variant="secondary" onClick={navigateCallback}>
           Back to Jobs Table
         </Button>
+
+        <h1>Job Log Details</h1>
+        <JobLogTable job={job} />
+
       </div>
     </BasicLayout>
   );
