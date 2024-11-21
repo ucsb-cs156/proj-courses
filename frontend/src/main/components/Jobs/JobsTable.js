@@ -9,10 +9,7 @@ export default function JobsTable({ jobs }) {
 
   const truncateLog = (log) => {
     const lines = log.split("\n");
-    if (lines.length > 10) {
-      return lines.slice(0, 10).join("\n") + "\n...";
-    }
-    return log;
+    return lines.slice(0, 10).join("\n");
   };
 
   const columns = [
