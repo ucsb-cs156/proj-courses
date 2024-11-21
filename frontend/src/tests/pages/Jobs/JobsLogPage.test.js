@@ -1,10 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
-import userEvent from "@testing-library/user-event";
 
 import JobsLogPage from "main/pages/Jobs/JobsLogPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";

@@ -36,7 +36,6 @@ describe("JobsLogTable tests", () => {
       "#",
       "Log Line",
     ];
-    const testId = "JobsTable";
 
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
