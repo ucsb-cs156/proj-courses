@@ -37,7 +37,6 @@ export default function JobsLogPage() {
 
         <h1>Job Log Details</h1>
         <JobLogTable job={job} />
-
       </div>
     </BasicLayout>
   );
