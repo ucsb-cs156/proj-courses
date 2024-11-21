@@ -1,7 +1,5 @@
 import React from "react";
-import OurTable, {
-  DateColumn,
-} from "main/components/OurTable";
+import OurTable, { DateColumn } from "main/components/OurTable";
 import { Link } from "react-router-dom";
 
 export default function JobsTable({ jobs }) {
@@ -26,7 +24,7 @@ export default function JobsTable({ jobs }) {
     {
       Header: "Log",
       id: "log",
-      Cell: ({cell}) => {
+      Cell: ({ cell }) => {
         const log = cell.row.original.log;
         const id = cell.row.original.id;
         const truncatedLog = truncateLog(log);
@@ -34,14 +32,20 @@ export default function JobsTable({ jobs }) {
           <div>
             <pre>{truncatedLog}</pre>
             {log.split("\n").length > 10 && (
-              <Link to={`/admin/jobs/logs/${id}`} date-testid={`${testid}-see-entire-log-${id}`}>
-                [See entire log]
-              </Link>
+              <div>
+                <pre>...</pre>
+                <Link
+                  to={`/admin/jobs/logs/${id}`}
+                  date-testid={`${testid}-see-entire-log-${id}`}
+                >
+                  [See entire log]
+                </Link>
+              </div>
             )}
           </div>
         );
-      }
-    }
+      },
+    },
   ];
 
   const sortees = React.useMemo(
