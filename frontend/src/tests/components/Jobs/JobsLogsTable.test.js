@@ -85,7 +85,7 @@ describe("JobsLogTable tests", () => {
     ).toHaveTextContent("Goodbye from test job!");
   });
 
-  test("Has the expected column headers and content", () => {
+  test("Has the expected column headers and content for empty log", () => {
     const emptyJob = {
       id: 1,
       createdAt: "2022-11-13T19:49:58.097465-08:00",
