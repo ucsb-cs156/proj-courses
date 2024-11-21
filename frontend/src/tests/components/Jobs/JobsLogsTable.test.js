@@ -26,7 +26,16 @@ describe("JobsLogTable tests", () => {
       </QueryClientProvider>,
     );
 
-    const expectedHeaders = ["ID", "Created", "Updated", "Status", "Field", "Value", "#", "Log Line"];
+    const expectedHeaders = [
+      "ID",
+      "Created",
+      "Updated",
+      "Status",
+      "Field",
+      "Value",
+      "#",
+      "Log Line",
+    ];
     const testId = "JobsTable";
 
     expectedHeaders.forEach((headerText) => {
@@ -34,30 +43,30 @@ describe("JobsLogTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId("JobLogTable-cell-row-0-col-field")).toHaveTextContent(
-      "ID",
-    );
-    expect(screen.getByTestId("JobLogTable-cell-row-0-col-value")).toHaveTextContent(
-      "1",
-    );
-    expect(screen.getByTestId("JobLogTable-cell-row-1-col-field")).toHaveTextContent(
-      "Created",
-    );
-    expect(screen.getByTestId("JobLogTable-cell-row-1-col-value")).toHaveTextContent(
-      "11/13/2022, 7:49:58 PM",
-    );
-    expect(screen.getByTestId("JobLogTable-cell-row-2-col-field")).toHaveTextContent(
-      "Updated",
-    );
-    expect(screen.getByTestId("JobLogTable-cell-row-2-col-value")).toHaveTextContent(
-      "11/13/2022, 7:49:59 PM",
-    );
-    expect(screen.getByTestId("JobLogTable-cell-row-3-col-field")).toHaveTextContent(
-      "Status",
-    );
-    expect(screen.getByTestId("JobLogTable-cell-row-3-col-value")).toHaveTextContent(
-      "complete",
-    );
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-0-col-field"),
+    ).toHaveTextContent("ID");
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-0-col-value"),
+    ).toHaveTextContent("1");
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-1-col-field"),
+    ).toHaveTextContent("Created");
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-1-col-value"),
+    ).toHaveTextContent("11/13/2022, 7:49:58 PM");
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-2-col-field"),
+    ).toHaveTextContent("Updated");
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-2-col-value"),
+    ).toHaveTextContent("11/13/2022, 7:49:59 PM");
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-3-col-field"),
+    ).toHaveTextContent("Status");
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-3-col-value"),
+    ).toHaveTextContent("complete");
 
     expect(
       screen.getByTestId("JobLogTable-cell-row-0-col-index"),
@@ -68,12 +77,11 @@ describe("JobsLogTable tests", () => {
     ).toHaveTextContent("Hello World! from test job");
 
     expect(
-        screen.getByTestId("JobLogTable-cell-row-1-col-index"),
-      ).toHaveTextContent("2");
-  
-      expect(
-        screen.getByTestId("JobLogTable-cell-row-1-col-logLine"),
-      ).toHaveTextContent("Goodbye from test job!");
+      screen.getByTestId("JobLogTable-cell-row-1-col-index"),
+    ).toHaveTextContent("2");
 
+    expect(
+      screen.getByTestId("JobLogTable-cell-row-1-col-logLine"),
+    ).toHaveTextContent("Goodbye from test job!");
   });
 });
