@@ -358,12 +358,5 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             true);
     job.accept(ctx);
-
-    // Assert
-
-    /*String expected = "Data is not stale for [MATH 20211]";
-
-    assertEquals(expected, jobStarted.getLog());
-    verify(isStaleService, times(1)).isStale(eq("MATH"), eq("20211"));*/
   }
 }
