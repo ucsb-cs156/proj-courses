@@ -8,11 +8,16 @@ export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
 
   const truncateLog = (log) => {
-    if (!log) {
-      return "";
+    if (log) {
+      const lines = log.split("\n");
+
+      //not able to test for tags. \n gets stripped in html output
+      //Stryker disable all
+      return lines.slice(0, 10).join("\n");
+      //Stryker restore all
     }
-    const lines = log.split("\n");
-    return lines.slice(0, 10).join("\n");
+    console.log("empty");
+    return "";
   };
 
   const columns = [

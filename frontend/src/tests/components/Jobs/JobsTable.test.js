@@ -119,7 +119,7 @@ describe("JobsTable tests", () => {
         createdAt: "2022-11-13T19:49:59",
         updatedAt: "2022-11-13T19:49:59",
         status: "complete",
-        log: "", // Empty log
+        log: null, // Empty log
       },
     ];
 
