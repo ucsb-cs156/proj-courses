@@ -75,7 +75,7 @@ describe("SingleSubjectDropdown tests", () => {
     }
   });
 
-  test('renders "ALL" option when showAll is true', async() => {
+  test('renders "ALL" option when showAll is true', async () => {
     render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
@@ -85,22 +85,28 @@ describe("SingleSubjectDropdown tests", () => {
         showAll={true}
       />,
     );
-  
+
     const allOption = screen.queryByTestId("ssd1-option-all");
     expect(allOption).toBeInTheDocument();
     expect(allOption).toHaveValue("ALL");
     expect(allOption).toHaveTextContent("ALL");
-    
+
     // ensure other options are present
-    const firstSubjectAreaOption = await screen.findByTestId("ssd1-option-ANTH");
+    const firstSubjectAreaOption =
+      await screen.findByTestId("ssd1-option-ANTH");
     expect(firstSubjectAreaOption).toBeInTheDocument();
     expect(firstSubjectAreaOption).toHaveTextContent("ANTH");
 
-    const secondSubjectAreaOption = await screen.findByTestId("ssd1-option-ART--CS");
+    const secondSubjectAreaOption = await screen.findByTestId(
+      "ssd1-option-ART--CS",
+    );
     expect(secondSubjectAreaOption).toBeInTheDocument();
-    expect(secondSubjectAreaOption).toHaveTextContent("ART CS - Art (Creative Studies")
+    expect(secondSubjectAreaOption).toHaveTextContent(
+      "ART CS - Art (Creative Studies",
+    );
 
-    const thirdSubjectAreaOption = await screen.findByTestId("ssd1-option-ARTHI");
+    const thirdSubjectAreaOption =
+      await screen.findByTestId("ssd1-option-ARTHI");
     expect(thirdSubjectAreaOption).toBeInTheDocument();
     expect(thirdSubjectAreaOption).toHaveTextContent("ARTHI");
   });
@@ -115,7 +121,7 @@ describe("SingleSubjectDropdown tests", () => {
         showAll={false} // already false by default, so just visual
       />,
     );
-  
+
     const allOption = screen.queryByTestId("ssd1-option-all");
     expect(allOption).not.toBeInTheDocument();
   });
@@ -163,7 +169,7 @@ describe("SingleSubjectDropdown tests", () => {
     expect(setSubject).toBeCalledWith("ARTHI");
   });
 
-  test('when I select "ALL" option, value changes to "ALL"', async() => {
+  test('when I select "ALL" option, value changes to "ALL"', async () => {
     render(
       <SingleSubjectDropdown
         subjects={threeSubjects}
@@ -173,9 +179,9 @@ describe("SingleSubjectDropdown tests", () => {
         showAll={true}
       />,
     );
-    
+
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
-    
+
     const selectQuarter = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectQuarter, "ALL");
     expect(setSubject).toBeCalledWith("ALL");
@@ -222,7 +228,7 @@ describe("SingleSubjectDropdown tests", () => {
     expect(event.target.value).toBe("ARTHI");
   });
 
-  test('onChange is called when value is "ALL"', async() => {
+  test('onChange is called when value is "ALL"', async () => {
     const onChange = jest.fn();
     render(
       <SingleSubjectDropdown
