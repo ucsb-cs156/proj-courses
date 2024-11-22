@@ -31,7 +31,7 @@ export default function JobsTable({ jobs }) {
     },
     {
       Header: "Log",
-      id: "log",
+      id: "Log",
       Cell: ({ cell }) => {
         const log = cell.row.original.log;
         const id = cell.row.original.id;
@@ -39,7 +39,7 @@ export default function JobsTable({ jobs }) {
         return (
           <div>
             <pre>{truncatedLog}</pre>
-            {log.split("\n").length > 10 && (
+            {log && log.split("\n").length > 10 && (
               <div>
                 <pre>...</pre>
                 <Link

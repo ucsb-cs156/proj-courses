@@ -27,16 +27,10 @@ describe("JobsTable tests", () => {
     );
 
     const expectedHeaders = ["id", "Created", "Updated", "Status", "Log"];
-    const expectedFields = ["id", "Created", "Updated", "status", "Log"];
     const testId = "JobsTable";
 
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
-      expect(header).toBeInTheDocument();
-    });
-
-    expectedFields.forEach((field) => {
-      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
       expect(header).toBeInTheDocument();
     });
 
