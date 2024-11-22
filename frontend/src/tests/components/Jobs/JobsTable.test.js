@@ -7,7 +7,7 @@ import jobsFixtures from "fixtures/jobsFixtures";
 describe("JobsTable tests", () => {
   const queryClient = new QueryClient();
 
-  test("renders without crashing for empty table", () => {
+  test("renders without crashing for empty table", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

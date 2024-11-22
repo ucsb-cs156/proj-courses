@@ -8,6 +8,9 @@ export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
 
   const truncateLog = (log) => {
+    if (!log) {
+      return "";
+    }
     const lines = log.split("\n");
     return lines.slice(0, 10).join("\n");
   };
