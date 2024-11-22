@@ -63,6 +63,27 @@ public class UCSBAPIQuarterService {
     return quarter.getQuarter();
   }
 
+  public static ArrayList<UCSBAPIQuarter> getActiveQuarterList() {
+    List<UCSBAPIQuarter> result = new ArrayList<UCSBAPIQuarter>();
+
+    int startInt = UCSBAPIQuarter.yyyyqToInt(getStartQtrYYYYQ());
+    int endInt = UCSBAPIQuarter.yyyyqToInt(getEndQtrYYYYQ());
+
+    if (startInt < endInt) {
+      for (UCSBAPIQuarter iter = new UCSBAPIQuarter(startInt); iter.getValue() <= endInt; iter.increment()) {
+        UCSBAPIQuarter q = new UCSBAPIQuarter(iter.getValue());
+        result.add(q);
+      }
+    }
+    if (startInt >= endInt) {
+      for (UCSBAPIQuarter iter = new UCSBAPIQuarter(startInt); iter.getValue() >= endInt; iter.decrement()) {
+        UCSBAPIQuarter q = new UCSBAPIQuarter(iter.getValue());
+        result.add(q);
+      }
+    }
+    return result;
+  }
+
   public UCSBAPIQuarter getCurrentQuarter() throws Exception {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
