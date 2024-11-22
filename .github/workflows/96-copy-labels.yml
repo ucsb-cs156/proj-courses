@@ -1,0 +1,48 @@
+name: 96 - Copy labels
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  SOURCE_REPO: ucsb-cs156/labelmaker
+on:
+  workflow_dispatch:
+jobs:
+  get-labels:
+    name: Get Labels
+    runs-on: ubuntu-latest
+    outputs:
+      LABELS: ${{ steps.get-labels.outputs.LABELS }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get labels from source repo
+        id: get-labels
+        continue-on-error: true
+        run: |
+           gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/${{env.SOURCE_REPO}}/labels > labels.json
+
+           echo "cat labels.json output follows"
+           cat labels.json
+           echo "cat labels.json output done"
+
+           LABELS=`cat labels.json`
+           echo "LABELS=${LABELS}"
+           echo "LABELS=$LABELS" >> $GITHUB_OUTPUT
+
+  create-labels:
+    name: Create Label (${{ matrix.value.name }}, ${{ matrix.value.color }}, ${{ matrix.value.description }})
+    runs-on: ubuntu-latest
+    needs: [get-labels]   
+    if: ${{ needs.get-labels.outputs.LABELS != '[]' && needs.get-labels.outputs.LABELS != '' }}
+
+    strategy:
+      matrix:
+        value: ${{ fromJSON(needs.get-labels.outputs.LABELS) }}    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create labels in destination repo
+        continue-on-error: true
+        run: |
+          gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{github.repository}}/labels  -f "name=${{ matrix.value.name }}" -f "description=${{matrix.value.description}}" -f "color=${{matrix.value.color}}" 
