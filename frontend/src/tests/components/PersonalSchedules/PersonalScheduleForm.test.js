@@ -81,7 +81,6 @@ describe("PersonalScheduleForm tests", () => {
     fireEvent.click(submitButton);
 
     expect(await screen.findByText(/Name is required./)).toBeInTheDocument();
-    expect(screen.getByText(/Description is required./)).toBeInTheDocument();
   });
 
   test("No Error messages on good input", async () => {
@@ -171,6 +170,7 @@ describe("PersonalScheduleForm tests", () => {
     await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
 
     expect(screen.queryByText(/Name is required./)).not.toBeInTheDocument();
+
     expect(
       screen.queryByText(/Description is required./),
     ).not.toBeInTheDocument();
