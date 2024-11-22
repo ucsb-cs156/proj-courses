@@ -319,9 +319,6 @@ describe("PersonalSchedulesEditPage tests", () => {
       const descriptionField = screen.getByTestId(
         "PersonalScheduleForm-description",
       );
-      const quarterField = document.querySelector(
-        "#PersonalScheduleForm-quarter",
-      );
       const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
 
       fireEvent.change(nameField, { target: { value: "W22b" } });
