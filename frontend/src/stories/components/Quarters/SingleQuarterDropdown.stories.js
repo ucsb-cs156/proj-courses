@@ -28,12 +28,30 @@ OneQuarter.args = {
   quarters: quarterRange("20211", "20211"),
 };
 
+export const OneQuarterWithShowAll = Template.bind({});
+OneQuarterWithShowAll.args = {
+  quarters: quarterRange("20211", "20211"),
+  showAll: true,
+};
+
 export const ThreeQuarters = Template.bind({});
 ThreeQuarters.args = {
   quarters: quarterRange("20204", "20212"),
 };
 
+export const ThreeQuartersWithShowAll = Template.bind({});
+ThreeQuartersWithShowAll.args = {
+  quarters: quarterRange("20204", "20212"),
+  showAll: true,
+};
+
 export const ManyQuarters = Template.bind({});
 ManyQuarters.args = {
   quarters: quarterRange("20081", "20213"),
+};
+
+export const ManyQuartersWithShowAll = Template.bind({});
+ManyQuartersWithShowAll.args = {
+  quarters: quarterRange("20081", "20213"),
+  showAll: true,
 };
