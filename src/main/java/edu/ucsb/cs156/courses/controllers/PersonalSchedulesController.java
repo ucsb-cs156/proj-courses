@@ -160,8 +160,8 @@ public class PersonalSchedulesController extends ApiController {
             .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
 
     Optional<PersonalSchedule> duplicateCheck =
-    personalscheduleRepository.findByUserAndNameAndQuarter(
-        currentUser, incomingSchedule.getName(), incomingSchedule.getQuarter());
+        personalscheduleRepository.findByUserAndNameAndQuarter(
+            currentUser, incomingSchedule.getName(), incomingSchedule.getQuarter());
 
     if (duplicateCheck.isPresent() && (duplicateCheck.get().getId() != id)) {
       throw new IllegalArgumentException(
