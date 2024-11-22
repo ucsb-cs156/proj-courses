@@ -76,7 +76,8 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
     const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
 
-    const expectedLog = Array(10).fill("Log").join("\n") + "...[See entire log]"; 
+    const expectedLog =
+      Array(10).fill("Log").join("\n") + "...[See entire log]";
     expect(logCell.textContent).toBe(expectedLog);
   });
 
@@ -102,7 +103,7 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
     const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
 
-    const expectedLog = Array(10).fill("Log").join("\n"); 
+    const expectedLog = Array(10).fill("Log").join("\n");
     expect(logCell.textContent).toBe(expectedLog);
   });
 
