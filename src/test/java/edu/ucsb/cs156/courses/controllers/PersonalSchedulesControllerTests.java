@@ -875,4 +875,50 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     assertEquals(
         "A personal schedule with that name already exists in that quarter", json.get("message"));
   }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void cannot_edit_personal_schedule_to_same_name_and_quarter() throws Exception {
+    User thisUser = currentUserService.getCurrentUser().getUser();
+
+    // Create a personal schedule already in the database
+    PersonalSchedule existingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("Existing description")
+            .quarter("20222")
+            .user(thisUser)
+            .id(1L)
+            .build();
+    when(personalscheduleRepository.findByIdAndUser(1L, thisUser))
+        .thenReturn(Optional.of(existingSchedule));
+
+    // Create an incoming schedule with the same name and quarter
+    PersonalSchedule incomingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName") // Same name
+            .description("New description")
+            .quarter("20222") // Same quarter
+            .user(thisUser)
+            .build();
+
+    // Mock the repository to simulate a duplicate schedule already existing
+    when(personalscheduleRepository.findByUserAndNameAndQuarter(thisUser, "TestName", "20222"))
+        .thenReturn(Optional.of(existingSchedule));
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/personalschedules?id=1")
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"name\":\"TestName\", \"description\":\"New description\", \"quarter\":\"20222\"}"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    Map<String, Object> json = responseToJson(response);
+    assertEquals(
+        "A personal schedule with that name already exists in that quarter", json.get("message"));
+  }
 }

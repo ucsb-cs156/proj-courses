@@ -163,7 +163,7 @@ public class PersonalSchedulesController extends ApiController {
         personalscheduleRepository.findByUserAndNameAndQuarter(
             currentUser, incomingSchedule.getName(), incomingSchedule.getQuarter());
 
-    if (duplicateCheck.isPresent() && (duplicateCheck.get().getId() != id)) {
+    if (duplicateCheck.isPresent()) {
       throw new IllegalArgumentException(
           "A personal schedule with that name already exists in that quarter");
     }
