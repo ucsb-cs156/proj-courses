@@ -48,7 +48,7 @@ describe("JobsTable tests", () => {
     ).toHaveTextContent("complete");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
-    ).toHaveTextContent("Hello World! from test job!Goodbye from test job!");
+    ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
 
     expect(
       screen.getByTestId(`JobsTable-header-id-sort-carets`),
@@ -76,7 +76,7 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
     const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
 
-    const expectedLog = Array(10).fill("Log").join(""); // Remove \n to match flattened DOM output
+    const expectedLog = Array(10).fill("Log").join("\n") + "...[See entire log]"; 
     expect(logCell.textContent).toBe(expectedLog);
   });
 
@@ -102,7 +102,7 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
     const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
 
-    const expectedLog = Array(10).fill("Log").join(""); // Remove \n to match flattened DOM output
+    const expectedLog = Array(10).fill("Log").join("\n"); 
     expect(logCell.textContent).toBe(expectedLog);
   });
 
