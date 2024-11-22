@@ -5,11 +5,11 @@ const ClearJobLogsForm = ({ callback }) => {
     event.preventDefault();
     callback();
   };
-  // Stryker disable all
+
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
-        <Row style={{ paddingTop: 8, paddingBottom: 8 }}>
+        <Row>
           <Col md="auto">
             <Button
               variant="danger"
