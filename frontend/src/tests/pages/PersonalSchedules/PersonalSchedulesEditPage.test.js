@@ -300,7 +300,6 @@ describe("PersonalSchedulesEditPage tests", () => {
           "A personal schedule with that name already exists in that quarter",
       };
 
-      // Mock the duplicate name error
       axiosMock.onPut("/api/personalschedules").reply(404, error);
 
       render(
