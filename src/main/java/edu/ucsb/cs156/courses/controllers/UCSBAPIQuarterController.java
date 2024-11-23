@@ -29,6 +29,12 @@ public class UCSBAPIQuarterController extends ApiController {
     return ucsbAPIQuarterService.getCurrentQuarter();
   }
 
+  @Operation(summary = "Get active quarters between start and end quarters")
+  @GetMapping(value = "/activeQuarters", produces = "application/json")
+  public List<String> activeQuarters() throws Exception {
+    return ucsbAPIQuarterService.getActiveQuarterList();
+  }
+
   @Operation(summary = "Get dates for all quarters")
   @GetMapping(value = "/allQuarters", produces = "application/json")
   public List<UCSBAPIQuarter> getAllQuarters() throws Exception {
