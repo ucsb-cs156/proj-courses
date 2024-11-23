@@ -7,6 +7,7 @@ import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import edu.ucsb.cs156.courses.models.Quarter;
 
 /** Service object that wraps the UCSB Academic Curriculum API */
 @Service
@@ -50,6 +52,9 @@ public class UCSBAPIQuarterService {
   public static final String ALL_QUARTERS_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
 
+  public static final String END_QUARTER_ENDPOINT =
+      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end";
+
   public String getStartQtrYYYYQ() {
     return startQtrYYYYQ;
   }
@@ -63,24 +68,17 @@ public class UCSBAPIQuarterService {
     return quarter.getQuarter();
   }
 
-  public static ArrayList<UCSBAPIQuarter> getActiveQuarterList() {
-    List<UCSBAPIQuarter> result = new ArrayList<UCSBAPIQuarter>();
+  public List<String> getActiveQuarterList() throws Exception {
+    String start = getCurrentQuarterYYYYQ();
+    String end = getEndQtrYYYYQ();
 
-    int startInt = UCSBAPIQuarter.yyyyqToInt(getStartQtrYYYYQ());
-    int endInt = UCSBAPIQuarter.yyyyqToInt(getEndQtrYYYYQ());
-
-    if (startInt < endInt) {
-      for (UCSBAPIQuarter iter = new UCSBAPIQuarter(startInt); iter.getValue() <= endInt; iter.increment()) {
-        UCSBAPIQuarter q = new UCSBAPIQuarter(iter.getValue());
-        result.add(q);
-      }
+    List<Quarter> quartersInOrder = Quarter.quarterList(start, end);
+    List<String> result = new ArrayList<String>();
+    
+    for (Quarter quarter : quartersInOrder) {
+      result.add(quarter.getYYYYQ());
     }
-    if (startInt >= endInt) {
-      for (UCSBAPIQuarter iter = new UCSBAPIQuarter(startInt); iter.getValue() >= endInt; iter.decrement()) {
-        UCSBAPIQuarter q = new UCSBAPIQuarter(iter.getValue());
-        result.add(q);
-      }
-    }
+    
     return result;
   }
 

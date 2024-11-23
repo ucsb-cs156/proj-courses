@@ -43,10 +43,9 @@ public class UCSBAPIQuarterController extends ApiController {
     return savedQuarters;
   }
 
-  @Operation(summary = "Get a list of active quarters")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PostMapping("/getActiveQuarterList", produces = "application/json")
-  public List<UCSBAPIQuarter> getActiveQuarterList() throw Exception {
+  @Operation(summary = "Get a list of all active quarters")
+  @GetMapping(value = "/activeQuarters", produces = "application/json")
+  public List<String> activeQuarters() throws Exception {
     return ucsbAPIQuarterService.getActiveQuarterList();
   }
 }
