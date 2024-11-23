@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
-import UpdateGradeInfoForm from "main/components/Jobs/UpdateGradeInfoForm";
+import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import axios from "axios";
@@ -15,19 +15,19 @@ jest.mock("react-router-dom", () => ({
 
 const queryClient = new QueryClient();
 
-describe("UpdateGradeInfoForm tests", () => {
+describe("ClearJobsForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   it("renders correctly", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <UpdateGradeInfoForm />
+          <SingleButtonJobForm text={"Button"} />
         </Router>
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText(/Update Grades/)).toBeInTheDocument();
+    expect(screen.getByText(/Button/)).toBeInTheDocument();
   });
 
   test("renders without crashing when fallback values are used", async () => {
@@ -39,14 +39,12 @@ describe("UpdateGradeInfoForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <UpdateGradeInfoForm />
+          <SingleButtonJobForm />
         </Router>
       </QueryClientProvider>,
     );
 
     // Make sure the first and last options
-    expect(
-      await screen.findByTestId("updateGradeInfoSubmit"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Button")).toBeInTheDocument();
   });
 });

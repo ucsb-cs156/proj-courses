@@ -1,6 +1,6 @@
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-const ClearJobsForm = ({ callback }) => {
+const SingeButtonJobForm = ({ callback, text }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     callback();
@@ -15,9 +15,9 @@ const ClearJobsForm = ({ callback }) => {
             <Button
               variant="primary"
               type="submit"
-              data-testid="clearJobsSubmit"
+              data-testid="singleButtonJobForm-Submit"
             >
-              Clear
+              {text || "Button"}
             </Button>
           </Col>
         </Row>
@@ -26,4 +26,4 @@ const ClearJobsForm = ({ callback }) => {
   );
 };
 
-export default ClearJobsForm;
+export default SingeButtonJobForm;

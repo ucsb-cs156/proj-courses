@@ -4,8 +4,7 @@ import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
 import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
-import ClearJobsForm from "main/components/Jobs/ClearJobsForm";
-import UpdateGradeInfoForm from "main/components/Jobs/UpdateGradeInfoForm";
+import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
@@ -133,7 +132,7 @@ const AdminJobsPage = () => {
     },
     {
       name: "Clear Job Logs",
-      form: <ClearJobsForm callback={clearJobs} />,
+      form: <SingleButtonJobForm callback={clearJobs} text={"Clear"} />,
     },
     {
       name: "Update Courses Database",
@@ -157,7 +156,12 @@ const AdminJobsPage = () => {
     },
     {
       name: "Update Grade Info",
-      form: <UpdateGradeInfoForm callback={submitUpdateGradeInfoJob} />,
+      form: (
+        <SingleButtonJobForm
+          callback={submitUpdateGradeInfoJob}
+          text={"Update Grades"}
+        />
+      ),
     },
   ];
 
