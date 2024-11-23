@@ -115,6 +115,12 @@ export default function AppNavbar({
                     Users
                   </NavDropdown.Item>
                   <NavDropdown.Item
+                    href="/admin/updates"
+                    data-testid="appnavbar-admin-updates"
+                  >
+                    Updates
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
                     href="/admin/personalschedule"
                     data-testid="appnavbar-admin-personalschedule"
                   >
