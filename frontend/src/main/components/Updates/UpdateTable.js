@@ -2,10 +2,7 @@ import React from "react";
 import OurTable from "main/components/OurTable";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
-export default function UpdateTable({
-  updates,
-  testIdPrefix = "UpdateTable",
-}) {
+export default function UpdateTable({ updates, testIdPrefix = "UpdateTable" }) {
   const columns = [
     {
       Header: "Subject Area",
@@ -36,7 +33,5 @@ export default function UpdateTable({
     },
   ];
 
-  return (
-    <OurTable data={updates} columns={columns} testid={testIdPrefix} />
-  );
+  return <OurTable data={updates} columns={columns} testid={testIdPrefix} />;
 }
