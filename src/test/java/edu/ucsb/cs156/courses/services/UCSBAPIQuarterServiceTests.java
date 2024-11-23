@@ -137,6 +137,27 @@ public class UCSBAPIQuarterServiceTests {
   }
 
   @Test
+  public void test_getActiveQuarterList() throws Exception {
+    UCSBAPIQuarter sampleCurrent =
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, UCSBAPIQuarter.class);
+    String expectedJSON = objectMapper.writeValueAsString(sampleCurrent);
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedJSON, MediaType.APPLICATION_JSON));
+
+    List<String> expectedResult =
+        List.of("20211", "20212", "20213", "20214", "20221", "20222", "20223");
+    List<String> actualResult = service.getActiveQuarterList();
+
+    assertEquals(expectedResult, actualResult);
+  }
+
+  @Test
   public void test_getAllQuarters_empty() throws Exception {
     UCSBAPIQuarter F20 =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_F20, UCSBAPIQuarter.class);
