@@ -40,6 +40,7 @@ function App() {
               element={<AdminLoadSubjectsPage />}
             />
             <Route path="/admin/jobs" element={<AdminJobsPage />} />
+            <Route path="/admin/updates" element={<AdminUpdatesPage />} />
             <Route path="/developer" element={<DeveloperPage />} />
           </>
         )}
