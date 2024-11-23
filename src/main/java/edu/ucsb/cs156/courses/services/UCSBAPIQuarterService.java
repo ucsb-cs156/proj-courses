@@ -3,11 +3,11 @@ package edu.ucsb.cs156.courses.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import edu.ucsb.cs156.courses.models.Quarter;
 
 /** Service object that wraps the UCSB Academic Curriculum API */
 @Service
@@ -74,11 +73,11 @@ public class UCSBAPIQuarterService {
 
     List<Quarter> quartersInOrder = Quarter.quarterList(start, end);
     List<String> result = new ArrayList<String>();
-    
+
     for (Quarter quarter : quartersInOrder) {
       result.add(quarter.getYYYYQ());
     }
-    
+
     return result;
   }
 
