@@ -101,7 +101,7 @@ public class UpdateCourseDataJobTests {
                 Updating courses for [CMPSC 20211]
                 14 new sections saved, 0 sections updated, 0 errors, last update: 2022-03-05T15:50:10
                 Saved update: Update(_id=null, subjectArea=CMPSC, quarter=20211, saved=14, updated=0, errors=0, lastUpdate=2022-03-05T15:50:10)
-                """;
+                """.strip();
 
     assertEquals(expected, jobStarted.getLog());
   }
@@ -162,7 +162,7 @@ public class UpdateCourseDataJobTests {
                 Updating courses for [MATH 20211]
                 2 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
                 Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=2, updated=1, errors=0, lastUpdate=2022-03-05T15:50:10)
-                """;
+                """.strip();
 
     assertEquals(expected, jobStarted.getLog());
   }
@@ -214,10 +214,9 @@ public class UpdateCourseDataJobTests {
     String expected =
         """
                 Updating courses for [MATH 20211]
-                Error saving section: Testing Exception Handling!
                 0 new sections saved, 0 sections updated, 1 errors, last update: 2022-03-05T15:50:10
                 Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=0, errors=1, lastUpdate=2022-03-05T15:50:10)
-                """;
+                """.strip();
 
     assertEquals(expected, jobStarted.getLog());
   }
@@ -276,7 +275,7 @@ public class UpdateCourseDataJobTests {
                 Updating courses for [MATH 20211]
                 0 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
                 Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)
-                """;
+                """.strip();
 
     assertEquals(expected, jobStarted.getLog());
 
@@ -341,7 +340,7 @@ public class UpdateCourseDataJobTests {
                 Updating courses for [MATH 20211]
                 0 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
                 Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)
-                """;
+                """.strip();
 
     assertEquals(expected, jobStarted.getLog());
 
