@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import JobsTable from "main/components/Jobs/JobsTable";
 import jobsFixtures from "fixtures/jobsFixtures";
+import { truncateLines } from "main/components/Jobs/JobsTable";
 
 describe("JobsTable tests", () => {
   const queryClient = new QueryClient();
@@ -136,5 +137,22 @@ describe("JobsTable tests", () => {
 
     // Check that the log cell is empty
     expect(logCell).toHaveTextContent("");
+  });
+  test("truncates lines to a maximum of 10", () => {
+    const lines = Array(15).fill("Log");
+    const result = truncateLines(lines);
+    expect(result).toBe("Log\nLog\nLog\nLog\nLog\nLog\nLog\nLog\nLog\nLog");
+  });
+
+  test("returns all lines if 10 or fewer", () => {
+    const lines = Array(5).fill("Log");
+    const result = truncateLines(lines);
+    expect(result).toBe("Log\nLog\nLog\nLog\nLog");
+  });
+
+  test("returns an empty string for an empty array", () => {
+    const lines = [];
+    const result = truncateLines(lines);
+    expect(result).toBe("");
   });
 });

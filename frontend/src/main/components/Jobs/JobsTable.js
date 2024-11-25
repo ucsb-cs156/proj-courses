@@ -4,19 +4,18 @@ import OurTable, {
   DateColumn,
 } from "main/components/OurTable";
 
+export function truncateLines(lines) {
+  return lines.slice(0, 10).join("\n");
+}
+
 export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
 
   const truncateLog = (log) => {
     if (log) {
       const lines = log.split("\n");
-
-      //not able to test for tags. \n gets stripped in html output
-      //Stryker disable all
-      return lines.slice(0, 10).join("\n");
-      //Stryker restore all
+      return truncateLines(lines);
     }
-    console.log("empty");
     return "";
   };
 
