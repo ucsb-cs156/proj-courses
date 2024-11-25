@@ -119,6 +119,10 @@ export const onSuccess = (response) => {
   );
 };
 
+const onError = (error) => {
+  toast(`Error: ${error.response.data.message}`);
+};
+
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
@@ -126,7 +130,7 @@ export default function SectionsTable({ sections }) {
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
-    { onSuccess },
+    { onSuccess, onError },
     // Stryker disable next-line all : hard to set up test for caching
     ["/api/courses/user/all"],
   );
@@ -241,6 +245,7 @@ export default function SectionsTable({ sections }) {
       accessor: "section.enrollCode",
       disableGroupBy: true,
       // No need for accessor if it's purely for actions like expand/collapse
+      // Stryker disable all : difficult to test modal interaction
       Cell: ({ row }) => {
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
