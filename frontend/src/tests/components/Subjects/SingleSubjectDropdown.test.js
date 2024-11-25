@@ -75,6 +75,72 @@ describe("SingleSubjectDropdown tests", () => {
     }
   });
 
+  test('renders "ALL" option when showAll is true', async () => {
+    render(
+      <SingleSubjectDropdown
+        subjects={threeSubjects}
+        subject={subject}
+        setSubject={setSubject}
+        controlId="ssd1"
+        showAll={true}
+      />,
+    );
+
+    const allOption = screen.queryByTestId("ssd1-option-all");
+    expect(allOption).toBeInTheDocument();
+    expect(allOption).toHaveValue("ALL");
+    expect(allOption).toHaveTextContent("ALL");
+
+    // ensure other options are present
+    const firstSubjectAreaOption =
+      await screen.findByTestId("ssd1-option-ANTH");
+    expect(firstSubjectAreaOption).toBeInTheDocument();
+    expect(firstSubjectAreaOption).toHaveTextContent("ANTH");
+
+    const secondSubjectAreaOption = await screen.findByTestId(
+      "ssd1-option-ART--CS",
+    );
+    expect(secondSubjectAreaOption).toBeInTheDocument();
+    expect(secondSubjectAreaOption).toHaveTextContent(
+      "ART CS - Art (Creative Studies",
+    );
+
+    const thirdSubjectAreaOption =
+      await screen.findByTestId("ssd1-option-ARTHI");
+    expect(thirdSubjectAreaOption).toBeInTheDocument();
+    expect(thirdSubjectAreaOption).toHaveTextContent("ARTHI");
+  });
+
+  test('"ALL" option is not available when showAll is false', () => {
+    render(
+      <SingleSubjectDropdown
+        subjects={threeSubjects}
+        subject={subject}
+        setSubject={setSubject}
+        controlId="ssd1"
+        showAll={false} // already false by default, so just visual
+      />,
+    );
+
+    const allOption = screen.queryByTestId("ssd1-option-all");
+    expect(allOption).not.toBeInTheDocument();
+  });
+
+  test('"ALL" option is not available by default when showAll is not passed', () => {
+    render(
+      <SingleSubjectDropdown
+        subjects={threeSubjects}
+        subject={subject}
+        setSubject={setSubject}
+        controlId="ssd15"
+        // showAll is not passed, should default to false
+      />,
+    );
+
+    const allOption = screen.queryByTestId("ssd15-option-all");
+    expect(allOption).not.toBeInTheDocument();
+  });
+
   test("sorts and puts hyphens in testids", () => {
     render(
       <SingleSubjectDropdown
@@ -101,6 +167,24 @@ describe("SingleSubjectDropdown tests", () => {
     const selectQuarter = screen.getByLabelText("Subject Area");
     userEvent.selectOptions(selectQuarter, "ARTHI");
     expect(setSubject).toBeCalledWith("ARTHI");
+  });
+
+  test('when I select "ALL" option, value changes to "ALL"', async () => {
+    render(
+      <SingleSubjectDropdown
+        subjects={threeSubjects}
+        subject={subject}
+        setSubject={setSubject}
+        controlId="ssd1"
+        showAll={true}
+      />,
+    );
+
+    expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
+
+    const selectQuarter = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectQuarter, "ALL");
+    expect(setSubject).toBeCalledWith("ALL");
   });
 
   test("out of order subjects is sorted by subjectCode", async () => {
@@ -142,6 +226,30 @@ describe("SingleSubjectDropdown tests", () => {
     // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
     const event = onChange.mock.calls[0][0];
     expect(event.target.value).toBe("ARTHI");
+  });
+
+  test('onChange is called when value is "ALL"', async () => {
+    const onChange = jest.fn();
+    render(
+      <SingleSubjectDropdown
+        subjects={threeSubjects}
+        subject={subject}
+        setSubject={setSubject}
+        controlId="ssd1"
+        showAll={true}
+        onChange={onChange}
+      />,
+    );
+
+    expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
+
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "ALL");
+    await waitFor(() => expect(setSubject).toBeCalledWith("ALL"));
+    await waitFor(() => expect(onChange).toBeCalledTimes(1));
+
+    const event = onChange.mock.calls[0][0];
+    expect(event.target.value).toBe("ALL");
   });
 
   test("default label is Subject Area", async () => {
