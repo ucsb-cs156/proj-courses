@@ -255,4 +255,26 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(axiosMock.history.post[0].url).toBe(url);
   });
+
+  test("user can purge all jobs in the JobsTable", async () => {
+    axiosMock.onDelete("/api/jobs/all").reply(200, {});
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Purge Job Log")).toBeInTheDocument();
+
+    const purgeAllLogsButton = screen.getByText("Purge Job Log");
+    expect(purgeAllLogsButton).toBeInTheDocument();
+    purgeAllLogsButton.click();
+
+    await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
+
+    expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
+  });
 });
