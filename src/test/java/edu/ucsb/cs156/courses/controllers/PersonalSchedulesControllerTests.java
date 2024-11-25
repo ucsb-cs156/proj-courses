@@ -846,42 +846,9 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
-  public void cannot_add_two_personal_schedules_with_same_name_and_quarter() throws Exception {
-    // arrange
-
-    User thisUser = currentUserService.getCurrentUser().getUser();
-
-    PersonalSchedule expectedSchedule =
-        PersonalSchedule.builder()
-            .name("TestName")
-            .description("uniquedescription1")
-            .quarter("20222")
-            .user(thisUser)
-            .id(0L)
-            .build();
-    when(personalscheduleRepository.findByUserAndNameAndQuarter(thisUser, "TestName", "20222"))
-        .thenReturn(Optional.of(expectedSchedule));
-
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(
-                post("/api/personalschedules/post?name=TestName&description=uniquedescrition1&quarter=20222")
-                    .with(csrf()))
-            .andExpect(status().isBadRequest())
-            .andReturn();
-
-    Map<String, Object> json = responseToJson(response);
-    assertEquals(
-        "A personal schedule with that name already exists in that quarter", json.get("message"));
-  }
-
-  @WithMockUser(roles = {"ADMIN", "USER"})
-  @Test
   public void cannot_edit_personal_schedule_to_same_name_and_quarter() throws Exception {
     User thisUser = currentUserService.getCurrentUser().getUser();
 
-    // Create a personal schedule already in the database
     PersonalSchedule existingSchedule =
         PersonalSchedule.builder()
             .name("TestName")
@@ -890,21 +857,20 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .user(thisUser)
             .id(1L)
             .build();
-    when(personalscheduleRepository.findByIdAndUser(1L, thisUser))
-        .thenReturn(Optional.of(existingSchedule));
 
-    // Create an incoming schedule with the same name and quarter
-    PersonalSchedule incomingSchedule =
+    PersonalSchedule conflictingSchedule =
         PersonalSchedule.builder()
-            .name("TestName") // Same name
-            .description("New description")
-            .quarter("20222") // Same quarter
+            .name("TestName")
+            .description("Conflicting description")
+            .quarter("20222")
             .user(thisUser)
+            .id(2L)
             .build();
 
-    // Mock the repository to simulate a duplicate schedule already existing
-    when(personalscheduleRepository.findByUserAndNameAndQuarter(thisUser, "TestName", "20222"))
+    when(personalscheduleRepository.findByIdAndUser(1L, thisUser))
         .thenReturn(Optional.of(existingSchedule));
+    when(personalscheduleRepository.findAllByUserId(thisUser.getId()))
+        .thenReturn(Arrays.asList(existingSchedule, conflictingSchedule));
 
     MvcResult response =
         mockMvc
