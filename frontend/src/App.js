@@ -4,6 +4,7 @@ import ProfilePage from "main/pages/ProfilePage";
 import AdminUsersPage from "main/pages/Admin/AdminUsersPage";
 import AdminLoadSubjectsPage from "main/pages/Admin/AdminLoadSubjectsPage";
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
+import AdminUpdatesPage from "main/pages/Admin/AdminUpdatesPage";
 import DeveloperPage from "main/pages/DeveloperPage"; // route from /developer to DeveloperPage
 
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
@@ -40,6 +41,7 @@ function App() {
               element={<AdminLoadSubjectsPage />}
             />
             <Route path="/admin/jobs" element={<AdminJobsPage />} />
+            <Route path="/admin/updates" element={<AdminUpdatesPage />} />
             <Route path="/developer" element={<DeveloperPage />} />
           </>
         )}
