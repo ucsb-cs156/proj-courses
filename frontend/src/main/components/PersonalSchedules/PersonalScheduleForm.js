@@ -86,7 +86,7 @@ function PersonalScheduleForm({
           type="text"
           isInvalid={Boolean(errors.description)}
           {...register("description", {
-            required: "Description is required.",
+            
           })}
         />
         <Form.Control.Feedback type="invalid">
