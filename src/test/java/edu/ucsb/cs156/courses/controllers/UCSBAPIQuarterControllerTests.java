@@ -130,21 +130,4 @@ public class UCSBAPIQuarterControllerTests extends ControllerTestCase {
         objectMapper.readValue(
             response.getResponse().getContentAsString(), new TypeReference<List<String>>() {}));
   }
-
-  //   @Test
-  //   public void test_getActiveQuarterList_S20_F19_1() throws Exception {
-  //     ArrayList<UCSBAPIQuarter> expected = new ArrayList<UCSBAPIQuarter>();
-  //     expected.add(new Quarter("S20"));
-  //     assertEquals(expected, Quarter.quarterList("20202", "20202"));
-  //   }
-
-  //   @Test
-  //   public void test_getActiveQuarterList_F19_S20() throws Exception {
-  //     List<Quarter> expected = new ArrayList<Quarter>();
-  //     expected.add(new Quarter("F19"));
-  //     expected.add(new Quarter("W20"));
-  //     expected.add(new Quarter("S20"));
-
-  //     assertEquals(expected, Quarter.quarterList("20194", "20202"));
-  //   }
 }
