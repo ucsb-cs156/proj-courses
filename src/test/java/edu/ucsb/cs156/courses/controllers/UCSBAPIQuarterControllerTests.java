@@ -111,4 +111,23 @@ public class UCSBAPIQuarterControllerTests extends ControllerTestCase {
             response.getResponse().getContentAsString(),
             new TypeReference<List<UCSBAPIQuarter>>() {}));
   }
+
+  @Test
+  public void test_activeQuarters() throws Exception {
+
+    String url = "/api/public/activeQuarters";
+    List<String> activeQuarters = List.of("20243");
+    when(ucsbAPIQuarterService.getActiveQuarterList()).thenReturn(activeQuarters);
+
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    assertEquals(
+        activeQuarters,
+        objectMapper.readValue(
+            response.getResponse().getContentAsString(), new TypeReference<List<String>>() {}));
+  }
 }
