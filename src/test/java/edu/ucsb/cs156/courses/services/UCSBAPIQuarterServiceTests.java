@@ -11,6 +11,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,39 @@ public class UCSBAPIQuarterServiceTests {
   public void test_getEndQtrYYYYQ() {
     assertEquals("20223", service.getEndQtrYYYYQ());
   } // the value of app.endQtrYYYYQ is configured using @TestPropertySource
+
+  @Test
+  public void test_getActiveQuarterList() throws Exception {
+
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, MediaType.APPLICATION_JSON));
+
+    List<Quarter> Quarters = new ArrayList<>();
+    Quarters.add(new Quarter("20211"));
+    Quarters.add(new Quarter("20212"));
+    Quarters.add(new Quarter("20213"));
+    Quarters.add(new Quarter("20214"));
+    Quarters.add(new Quarter("20221"));
+    Quarters.add(new Quarter("20222"));
+    Quarters.add(new Quarter("20223"));
+
+    ArrayList<String> activeQuarters = service.getActiveQuarterList();
+
+    ArrayList<String> expectedQuarters = new ArrayList<>();
+    for (Quarter q : Quarters) {
+      expectedQuarters.add(q.getYYYYQ());
+    }
+
+    assertEquals(expectedQuarters, activeQuarters);
+  }
 
   @Test
   public void test_getCurrentQuarterYYYYQ() throws Exception {
