@@ -41,6 +41,7 @@ export default function SectionsOverTimeTable({ sections }) {
       aggregate: getCourseId,
       Aggregated: ({ cell: { value } }) => `${value}`,
 
+      // Stryker disable next-line ArrowFunction: factor out and test the arrow function separately
       Cell: ({ cell: { value } }) => value.substring(0, value.length - 2),
     },
     {
