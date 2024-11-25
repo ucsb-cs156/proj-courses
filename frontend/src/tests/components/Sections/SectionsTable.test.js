@@ -426,6 +426,38 @@ describe("Section tests", () => {
     );
   });
 
+  test("calls onError when mutation is not successful and calls toast with correct parameters", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Call the onError function
+    const onError = useBackendMutation.mock.calls[0][1].onError;
+    const mockResponse = {
+      response: {
+        data: {
+          message:
+            "You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
+        },
+      },
+    };
+    onError(mockResponse);
+
+    // Verify that toast was called with the correct parameters
+    expect(toast).toHaveBeenCalledWith(
+      "Error: You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
+    );
+  });
+
   test("renders without crashing for empty table", () => {
     render(
       <QueryClientProvider client={queryClient}>
