@@ -8,6 +8,9 @@ import { Form } from "react-bootstrap";
 // quarter and setQuarter should be values returned
 // by a parent component's setState
 
+// showAll is defaulted to false, to ensure the "ALL" option
+// doesn't showdown to pre-existing dropdowns
+
 // quarters is an array of objects in this format
 // [{ yyyyq :"20214", qyy: "F21"},
 //  { yyyyq :"20221", qyy: "W22"},
@@ -20,6 +23,7 @@ function SingleQuarterDropdown({
   controlId,
   onChange = null,
   label = "Quarter",
+  showAll = false,
 }) {
   const lastInd = quarters.length - 1;
 
@@ -53,6 +57,11 @@ function SingleQuarterDropdown({
         value={quarterState}
         onChange={handleQuarterOnChange}
       >
+        {showAll && (
+          <option data-testid={`${controlId}-option-all`} value="ALL">
+            ALL
+          </option>
+        )}
         {quarters.map(function (object, i) {
           const key = `${controlId}-option-${i}`;
           return (
