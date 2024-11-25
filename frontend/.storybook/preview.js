@@ -1,8 +1,8 @@
 import "../src/index.css";
 import "bootstrap/dist/css/bootstrap.css";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 
-import { initialize, mswLoader } from "msw-storybook-addon";
+import { initialize, mswLoader } from 'msw-storybook-addon'
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -12,9 +12,9 @@ import { useEffect } from "react";
 const queryClient = new QueryClient();
 
 // Initialize MSW
-initialize();
+initialize()
 
-// For conditional decorators trick, see: https://github.com/storybookjs/storybook/issues/23237#issuecomment-1611351405
+// For conditional decorators trick, see: https://github.com/storybookjs/storybook/issues/23237#issuecomment-1611351405 
 // Decorators are applied in order; the innermost decorator is applied first.
 // Here, if suppressMemoryRouter is true, then the MemoryRouter decorator is not applied,
 // and we don't use the useLocation hook to show a toast message when navigate is called.
@@ -34,27 +34,24 @@ export const decorators = [
     }
   },
   (Story) => {
-    return (
-      <>
-        <ToastContainer />
-        <Story />
-      </>
+    return (<>
+      <ToastContainer />
+      <Story />
+    </>
     );
   },
-  (Story, Context) =>
-    Context.args?.suppressMemoryRouter ? (
-      <Story />
-    ) : (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
-    ),
+  (Story, Context) => (
+    Context.args?.suppressMemoryRouter ?
+      <Story /> :
+      <MemoryRouter><Story /></MemoryRouter>
+  ),
   (Story) => (
     <QueryClientProvider client={queryClient}>
       <Story />
-    </QueryClientProvider>
+    </QueryClientProvider >
   ),
 ];
+
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -66,7 +63,8 @@ const preview = {
       },
     },
   },
-  loaders: [mswLoader],
+  loaders: [mswLoader]
 };
+
 
 export default preview;
