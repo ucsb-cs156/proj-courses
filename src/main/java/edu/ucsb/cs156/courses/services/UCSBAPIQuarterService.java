@@ -3,6 +3,7 @@ package edu.ucsb.cs156.courses.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +50,9 @@ public class UCSBAPIQuarterService {
 
   public static final String ALL_QUARTERS_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
+
+  public static final String END_QUARTER_ENDPOINT =
+      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end";
 
   public String getStartQtrYYYYQ() {
     return startQtrYYYYQ;
@@ -155,5 +159,19 @@ public class UCSBAPIQuarterService {
         });
     log.info("savedQuarters.size={}", savedQuarters.size());
     return savedQuarters;
+  }
+
+  public List<String> getActiveQuarterList() throws Exception {
+    List<String> activeQuarters = new ArrayList<>();
+    String startQuarter = getCurrentQuarterYYYYQ();
+    String endQuarter = getEndQtrYYYYQ();
+
+    List<Quarter> quarterObjects = Quarter.quarterList(startQuarter, endQuarter);
+
+    for (Quarter quarter : quarterObjects) {
+      activeQuarters.add(quarter.getYYYYQ());
+    }
+
+    return activeQuarters;
   }
 }
