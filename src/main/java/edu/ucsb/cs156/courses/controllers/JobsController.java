@@ -1,8 +1,10 @@
 package edu.ucsb.cs156.courses.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
 import edu.ucsb.cs156.courses.jobs.TestJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJob;
@@ -54,6 +56,19 @@ public class JobsController extends ApiController {
   public Map<String, String> deleteAllJobs() {
     jobsRepository.deleteAll();
     return Map.of("message", "All jobs deleted");
+  }
+
+  @Operation(summary = "Get a specific Job Log by ID if it is in the database")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("")
+  public Job getJobLogById(
+      @Parameter(name = "id", description = "ID of the job") @RequestParam Long id)
+      throws JsonProcessingException {
+
+    Job job =
+        jobsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Job.class, id));
+
+    return job;
   }
 
   @Operation(summary = "Delete specific job record")
