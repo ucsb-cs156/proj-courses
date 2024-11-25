@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { fiveSections, gigaSections } from "fixtures/sectionFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -436,6 +436,41 @@ describe("Section tests", () => {
     );
   });
 
+  test("backend error message", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const onError = useBackendMutation.mock.calls[0][1].onError;
+    const error = {
+      response: {
+        data: {
+          message:
+            "A section from this class already exists in your schedule. Please remove it to add a new one.",
+        },
+      },
+    };
+
+    onError(error);
+
+
+
+
+
+    expect(toast).toHaveBeenCalledWith(
+      "Error: A section from this class already exists in your schedule. Please remove it to add a new one.",
+    );
+  });
+
   test("Has the expected cell values when expanded", () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -746,28 +781,6 @@ describe("Section tests", () => {
         .querySelector('a[href$="/coursedetails/20221/12625"]'),
     ).toBeInTheDocument();
   });
+
 });
 
-
-test("Shows error toast for duplicate section error", async () => {
-  const mockMutate = jest.fn((_, { onError }) => {
-    onError({ response: { status: 409, data: "duplicate section" } });
-  });
-
-  const mockMutation = { mutate: mockMutate };
-  useBackendMutation.mockReturnValue(mockMutation);
-
-  render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        <SectionsTable sections={[]} />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
-
-  fireEvent.click(screen.getByText("Add to Schedule"));
-
-  await waitFor(() =>
-    expect(toast.error).toHaveBeenCalledWith("This section is already in your schedule.")
-  );
-});

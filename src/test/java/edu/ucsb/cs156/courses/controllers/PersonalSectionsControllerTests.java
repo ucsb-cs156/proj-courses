@@ -111,26 +111,3 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
   }
 }
 
-@WithMockUser(roles = {"USER"})
-@Test
-public void api_courses_post__duplicate_section__returns_409() throws Exception {
-    when(coursesRepository.existsByPsIdAndEnrollCd(eq(13L), eq("59501"))).thenReturn(true);
-
-
-    MvcResult response = mockMvc
-        .perform(post("/api/courses/post")
-            .contentType("application/json")
-            .content(
-                """
-                {
-                  "psId": 13,
-                  "enrollCd": "59501"
-                }
-                """))
-        .andExpect(status().isConflict())
-        .andReturn();
-
-    String actual = response.getResponse().getContentAsString();
-    assertEquals("duplicate section", actual);
-    verify(coursesRepository, times(1)).existsByPsIdAndEnrollCd(eq(13L), eq("59501"));
-}

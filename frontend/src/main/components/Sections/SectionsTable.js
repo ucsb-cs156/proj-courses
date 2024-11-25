@@ -93,7 +93,6 @@ export const objectToAxiosParams = (data) => {
   };
 };
 
-
 export const handleAddToSchedule = (section, schedule, mutation) => {
   // Execute the mutation with the provided data
   const dataFinal = {
@@ -120,27 +119,21 @@ export const onSuccess = (response) => {
   );
 };
 
+const onError = (error) => {
+  toast(`Error: ${error.response.data.message}`);
+};
+
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
   const { data: currentUser } = useCurrentUser();
 
-const mutation = useBackendMutation(
-  objectToAxiosParams,
-  {
-    onSuccess: (response) => {
-      toast.success(`Section added successfully: ${response.enrollCd}`);
-    },
-    onError: (error) => {
-      if (error.response?.data === "duplicate section") {
-        toast.error("This section is already in your schedule.");
-      } else {
-        toast.error("An error occurred while adding the section.");
-      }
-    },
-  },
-  ["/api/courses/user/all"] 
-);
+  const mutation = useBackendMutation(
+    objectToAxiosParams,
+    { onSuccess, onError },
+    // Stryker disable next-line all : hard to set up test for caching
+    ["/api/courses/user/all"],
+  );
 
   const columns = [
     {
@@ -253,6 +246,7 @@ const mutation = useBackendMutation(
       disableGroupBy: true,
       // No need for accessor if it's purely for actions like expand/collapse
       Cell: ({ row }) => {
+     
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
           return (
@@ -269,6 +263,7 @@ const mutation = useBackendMutation(
         } else {
           return null;
         }
+      
       },
       aggregate: getFirstVal,
       Aggregated: ({ cell: { value }, row }) => /* istanbul ignore next */ {
@@ -298,8 +293,7 @@ const mutation = useBackendMutation(
     },
   ];
 
-  // Stryker enable all
-
+   // Stryker enable all
   const testid = "SectionsTable";
 
   const columnsToDisplay = columns;
