@@ -410,12 +410,13 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
     // assert
     Map<String, Object> json = responseToJson(response);
-    assertEquals("A section from this class already exists in your schedule. Please remove it to add a new one.", json.get("message"));
+    assertEquals(
+        "A section from this class already exists in your schedule. Please remove it to add a new one.",
+        json.get("message"));
     assertEquals("IllegalArgumentException", json.get("type"));
   }
 
   @WithMockUser
-
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses_post__user_logged_in__primary_enroll_code_has_one_secondary()

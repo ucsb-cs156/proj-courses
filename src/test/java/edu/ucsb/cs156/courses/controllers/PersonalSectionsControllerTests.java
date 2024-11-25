@@ -110,4 +110,3 @@ public class PersonalSectionsControllerTests extends ControllerTestCase {
     assertEquals(expectedJson, responseString);
   }
 }
-
