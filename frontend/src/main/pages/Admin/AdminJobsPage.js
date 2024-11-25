@@ -2,6 +2,7 @@ import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
+import { Button } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import UpdateGradeInfoForm from "main/components/Jobs/UpdateGradeInfoForm";
@@ -29,6 +30,25 @@ const AdminJobsPage = () => {
 
   const submitTestJob = async (data) => {
     testJobMutation.mutate(data);
+  };
+
+  // purge job
+
+  const objectToAxiosParamsPurgeJobLog = () => ({
+    url: "/api/jobs/all",
+    method: "DELETE",
+  });
+
+  // Stryker disable all
+  const purgeJobLogMutation = useBackendMutation(
+    objectToAxiosParamsPurgeJobLog,
+    {},
+    ["/api/jobs/all"],
+  );
+  // Stryker restore all
+
+  const purgeJobLog = async () => {
+    purgeJobLogMutation.mutate();
   };
 
   // ***** update courses job *******
@@ -156,6 +176,9 @@ const AdminJobsPage = () => {
       <h2 className="p-3">Job Status</h2>
 
       <JobsTable jobs={jobs} />
+      <Button variant="danger" onClick={purgeJobLog} data-testid="purgeJobLog">
+        Purge Job Log
+      </Button>
     </BasicLayout>
   );
 };
