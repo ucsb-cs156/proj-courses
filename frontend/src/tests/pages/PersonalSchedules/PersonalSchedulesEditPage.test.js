@@ -73,7 +73,6 @@ describe("PersonalSchedulesEditPage tests", () => {
     });
   });
 
-  
   describe("tests where backend is working normally", () => {
     const axiosMock = new AxiosMockAdapter(axios);
 
