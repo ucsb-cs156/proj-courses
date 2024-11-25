@@ -426,6 +426,37 @@ describe("Section tests", () => {
     );
   });
 
+  test("when error is received from backend, toast message error is displayed correctly", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const onError = useBackendMutation.mock.calls[0][1].onError;
+    const error = {
+      response: {
+        data: {
+          message:
+            "You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
+        },
+      },
+    };
+
+    onError(error);
+
+    expect(toast).toHaveBeenCalledWith(
+      "Error: You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
+    );
+  });
+
   test("renders without crashing for empty table", () => {
     render(
       <QueryClientProvider client={queryClient}>
