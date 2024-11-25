@@ -28,6 +28,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,51 @@ public class JobsControllerTests extends ControllerTestCase {
     String expectedJson = mapper.writeValueAsString(expectedJobs);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void api_getJobLogById__admin_logged_in__returns_job_by_id() throws Exception {
+
+    // arrange
+
+    Job job = Job.builder().id(1L).status("completed").log("This is a test job log.").build();
+
+    when(jobsRepository.findById(eq(1L))).thenReturn(Optional.of(job));
+
+    // act
+
+    MvcResult response =
+        mockMvc.perform(get("/api/jobs?id=1")).andExpect(status().isOk()).andReturn();
+
+    // assert
+
+    verify(jobsRepository, times(1)).findById(1L);
+    String expectedJson = mapper.writeValueAsString(job);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void api_getJobLogById__admin_logged_in__returns_not_found_for_missing_job()
+      throws Exception {
+
+    // arrange
+
+    when(jobsRepository.findById(eq(2L))).thenReturn(Optional.empty());
+
+    // act
+
+    MvcResult response =
+        mockMvc.perform(get("/api/jobs?id=2")).andExpect(status().isNotFound()).andReturn();
+
+    // assert
+
+    verify(jobsRepository, times(1)).findById(2L);
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("EntityNotFoundException", json.get("type"));
+    assertEquals("Job with id 2 not found", json.get("message"));
   }
 
   @WithMockUser(roles = {"ADMIN"})
