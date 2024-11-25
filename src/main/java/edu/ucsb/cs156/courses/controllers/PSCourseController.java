@@ -170,7 +170,7 @@ public class PSCourseController extends ApiController {
     PSCourse savedPrimary = coursesRepository.save(primary);
     savedCourses.add(savedPrimary);
     return savedCourses;
-  
+  }
 
   @Operation(summary = "Delete a course (admin)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
