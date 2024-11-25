@@ -1,10 +1,7 @@
 import React from "react";
 
 import UpdateTable from "main/components/Updates/UpdateTable";
-import {
-  oneUpdate,
-  threeUpdates,
-} from "fixtures/updateFixtures";
+import { oneUpdate, threeUpdates } from "fixtures/updateFixtures";
 
 export default {
   title: "components/Updates/UpdateTable",
@@ -30,5 +27,5 @@ OneUpdate.args = {
 export const ThreeUpdates = Template.bind({});
 
 ThreeUpdates.args = {
-    updates: threeUpdates,
-  };
+  updates: threeUpdates,
+};
