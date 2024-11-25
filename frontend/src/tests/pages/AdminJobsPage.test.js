@@ -241,16 +241,15 @@ describe("AdminJobsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Update Grades")).toBeInTheDocument();
+    expect(await screen.findByText("Update Grade Info")).toBeInTheDocument();
 
-    const updateGradeButton = screen.getByText("Update Grade Info");
+    const dropDownButton = screen.getByText("Update Grade Info");
+    expect(dropDownButton).toBeInTheDocument();
+    dropDownButton.click();
+
+    const updateGradeButton = screen.getByText("Update Grades");
     expect(updateGradeButton).toBeInTheDocument();
     updateGradeButton.click();
-
-    const submitGradeButton = screen.getByTestId("updateGradeInfoSubmit");
-    expect(submitGradeButton).toBeInTheDocument();
-
-    submitGradeButton.click();
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(axiosMock.history.post[0].url).toBe(url);
@@ -274,7 +273,7 @@ describe("AdminJobsPage tests", () => {
     expect(dropDownButton).toBeInTheDocument();
     dropDownButton.click();
 
-    const clearJobsButton = screen.getByTestId("clearJobsSubmit");
+    const clearJobsButton = screen.getByText("Clear");
     expect(clearJobsButton).toBeInTheDocument();
     clearJobsButton.click();
 
