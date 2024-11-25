@@ -416,7 +416,6 @@ public class PSCourseControllerTests extends ControllerTestCase {
     assertEquals("IllegalArgumentException", json.get("type"));
   }
 
-  @WithMockUser
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_courses_post__user_logged_in__primary_enroll_code_has_one_secondary()
