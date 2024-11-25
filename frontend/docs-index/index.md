@@ -1,4 +1,3 @@
-
 <!-- markdownlint-disable MD033 MD041 -->
 <!-- disabling MD033 allows inline html -->
 <!-- disabling MD041 allows starting with something other than an H1 -->
@@ -12,8 +11,8 @@ table, th, td {
 tbody tr:nth-child(even) {background-color: #f2f2f2;}
 </style>
 
-* Source Repo: <https://github.com/{{site.repo}}>
-* Github Actions: <https://github.com/{{site.repo}}/actions>
+- Source Repo: <https://github.com/{{site.repo}}>
+- Github Actions: <https://github.com/{{site.repo}}/actions>
 
 ## Documentation
 
@@ -130,12 +129,12 @@ tbody tr:nth-child(even) {background-color: #f2f2f2;}
 
 If links in the PR tables don't work, note the following:
 
-* Backend links may not be updated for PRs that do not touch the backend code.
-* Frontend links may not be updated for PRs that do not touch the frontend code.
-* If a link doesn't work when you expect that it should, check that the appropriate [Github Actions](https://github.com/{{site.repo}}/actions) workflow completed successfully.
-* You can also check the contents of the [gh-pages branch of this repo](https://github.com/{{site.repo}}/tree/gh-pages) to see if they were updated with the appropriate directory.
-* Note that the pitest runs that are triggered by PRs and by workflow 2 compute
-  incremental pitest results based on stored history.  It is rare, but this may
+- Backend links may not be updated for PRs that do not touch the backend code.
+- Frontend links may not be updated for PRs that do not touch the frontend code.
+- If a link doesn't work when you expect that it should, check that the appropriate [Github Actions](https://github.com/{{site.repo}}/actions) workflow completed successfully.
+- You can also check the contents of the [gh-pages branch of this repo](https://github.com/{{site.repo}}/tree/gh-pages) to see if they were updated with the appropriate directory.
+- Note that the pitest runs that are triggered by PRs and by workflow 2 compute
+  incremental pitest results based on stored history. It is rare, but this may
   occasionally be different from the results when doing a full pitest run from
   scratch, which is done every time a push is made to the main branch (for example,
   when merging a PR).

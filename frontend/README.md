@@ -2,24 +2,23 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-
 ## Commands
 
-| Command           | What it does                                       |
-|-------------------|----------------------------------------------------|
-| `npm install`     | Run first time, and anytime `package.json` changes |
-| `npm start`       | Start application on `http://localhost:3000`       |
-| `npm test`        | Run tests                                          |
-| `npm run build`   | Build production ready app in `build` folder       |
-| `npm run coverage` |  Compute test coverage; <br /> report is in `coverage/lcov-report/index.html`  |
-| `npx stryker run` | Run Mutation testing; <br /> report is in `reports/mutation/html/index.html`    |
+| Command            | What it does                                                                 |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `npm install`      | Run first time, and anytime `package.json` changes                           |
+| `npm start`        | Start application on `http://localhost:3000`                                 |
+| `npm test`         | Run tests                                                                    |
+| `npm run build`    | Build production ready app in `build` folder                                 |
+| `npm run coverage` | Compute test coverage; <br /> report is in `coverage/lcov-report/index.html` |
+| `npx stryker run`  | Run Mutation testing; <br /> report is in `reports/mutation/html/index.html` |
 
 There is more information on some of these later in the README file.
 
 ## Directory structures
 
 | folder                   | explanation                                      |
-|--------------------------|--------------------------------------------------|
+| ------------------------ | ------------------------------------------------ |
 | `.storybook/`            | configuration files related to Storybook         |
 | `src/`                   | JavaScript source files                          |
 | `src/fixtures/`          | Sample data for storybook and testing            |
@@ -36,11 +35,11 @@ There is more information on some of these later in the README file.
 | `src/tests/components`   | - Tests for components                           |
 | `src/tests/pages`        | - Tests for pages                                |
 | `src/tests/utils`        | - Tests for utils                                |
-| `src/App.js`                 | Top level routing of pages                       |
-| `src/index.css`              | Main CSS file for application                    |
-| `src/index.js`               | Main file for applicaiton, context for `<App />` |
-| `src/reportWebVitals.js`     |                                                  |
-| `src/setupTests.js`          | setup for jest testing                           |
+| `src/App.js`             | Top level routing of pages                       |
+| `src/index.css`          | Main CSS file for application                    |
+| `src/index.js`           | Main file for applicaiton, context for `<App />` |
+| `src/reportWebVitals.js` |                                                  |
+| `src/setupTests.js`      | setup for jest testing                           |
 | `.babelrc`               | Setup for Babel (transpiler for ES6 -> JS)       |
 | `.env-cmdrc.json`        |                                                  |
 | `.eslintignore`          | What issues will be ignored by ESLint            |
@@ -50,7 +49,6 @@ There is more information on some of these later in the README file.
 | `package.json`           | Specfication/Configuration of node project       |
 | `README.md`              | This file (documentation)                        |
 | `stryker.conf.json`      | Configuration of Stryker mutation testing        |
-
 
 ## More information on various commands
 
@@ -78,5 +76,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-

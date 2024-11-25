@@ -246,7 +246,6 @@ export default function SectionsTable({ sections }) {
       disableGroupBy: true,
       // No need for accessor if it's purely for actions like expand/collapse
       Cell: ({ row }) => {
-     
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
           return (
@@ -263,7 +262,6 @@ export default function SectionsTable({ sections }) {
         } else {
           return null;
         }
-      
       },
       aggregate: getFirstVal,
       Aggregated: ({ cell: { value }, row }) => /* istanbul ignore next */ {
@@ -293,7 +291,7 @@ export default function SectionsTable({ sections }) {
     },
   ];
 
-   // Stryker enable all
+  // Stryker enable all
   const testid = "SectionsTable";
 
   const columnsToDisplay = columns;

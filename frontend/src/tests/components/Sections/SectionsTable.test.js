@@ -462,10 +462,6 @@ describe("Section tests", () => {
 
     onError(error);
 
-
-
-
-
     expect(toast).toHaveBeenCalledWith(
       "Error: A section from this class already exists in your schedule. Please remove it to add a new one.",
     );
@@ -781,6 +777,4 @@ describe("Section tests", () => {
         .querySelector('a[href$="/coursedetails/20221/12625"]'),
     ).toBeInTheDocument();
   });
-
 });
-
