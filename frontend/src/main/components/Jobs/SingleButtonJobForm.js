@@ -1,6 +1,6 @@
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-const UpdateGradeInfoForm = ({ callback }) => {
+const SingeButtonJobForm = ({ callback, text }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     callback();
@@ -15,9 +15,9 @@ const UpdateGradeInfoForm = ({ callback }) => {
             <Button
               variant="primary"
               type="submit"
-              data-testid="updateGradeInfoSubmit"
+              data-testid="singleButtonJobForm-Submit"
             >
-              Update Grades
+              {text || "Button"}
             </Button>
           </Col>
         </Row>
@@ -26,4 +26,4 @@ const UpdateGradeInfoForm = ({ callback }) => {
   );
 };
 
-export default UpdateGradeInfoForm;
+export default SingeButtonJobForm;

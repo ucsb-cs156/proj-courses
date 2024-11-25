@@ -217,4 +217,21 @@ describe("Section tests", () => {
       screen.getByTestId(`${testId}-cell-row-4-col-status`),
     ).toHaveTextContent("Open");
   });
+
+  test("Each column has disableGroupBy set to true", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsInstructorTable sections={[]} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const tableColumns = SectionsInstructorTable({ sections: [] }).props
+      .columns;
+
+    tableColumns.forEach((column) => {
+      expect(column.disableGroupBy).toBe(true);
+    });
+  });
 });
