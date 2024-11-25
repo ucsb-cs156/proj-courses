@@ -5,6 +5,7 @@ import { useBackend } from "main/utils/useBackend";
 import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import UpdateGradeInfoForm from "main/components/Jobs/UpdateGradeInfoForm";
+import ClearJobLogsForm from "main/components/Jobs/ClearJobLogsForm";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
@@ -33,6 +34,11 @@ const AdminJobsPage = () => {
 
   // ***** update courses job *******
 
+  const objectToAxiosParamsClearJobLogs = () => ({
+    url: "/api/jobs/all",
+    method: "DELETE",
+  });
+
   const objectToAxiosParamsUpdateCoursesJob = (data) => ({
     url: `/api/jobs/launch/updateCourses?quarterYYYYQ=${data.quarter}&subjectArea=${data.subject}&ifStale=${data.ifStale}`,
     method: "POST",
@@ -54,6 +60,11 @@ const AdminJobsPage = () => {
   });
 
   // Stryker disable all
+  const clearJobLogsMutation = useBackendMutation(
+    objectToAxiosParamsClearJobLogs,
+    {},
+    ["/api/jobs/all"],
+  );
   const updateCoursesJobMutation = useBackendMutation(
     objectToAxiosParamsUpdateCoursesJob,
     {},
@@ -77,6 +88,10 @@ const AdminJobsPage = () => {
     ["/api/jobs/all"],
   );
   // Stryker restore all
+
+  const clearJobLogs = async () => {
+    clearJobLogsMutation.mutate();
+  };
 
   const submitUpdateCoursesJob = async (data) => {
     updateCoursesJobMutation.mutate(data);
@@ -114,6 +129,10 @@ const AdminJobsPage = () => {
     {
       name: "Test Job",
       form: <TestJobForm submitAction={submitTestJob} />,
+    },
+    {
+      name: "Clear Job Logs",
+      form: <ClearJobLogsForm callback={clearJobLogs} />,
     },
     {
       name: "Update Courses Database",
