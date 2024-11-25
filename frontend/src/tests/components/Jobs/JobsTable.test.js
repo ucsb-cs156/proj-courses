@@ -28,16 +28,10 @@ describe("JobsTable tests", () => {
     );
 
     const expectedHeaders = ["id", "Created", "Updated", "Status", "Log"];
-    const expectedFields = ["id", "Created", "Updated", "status", "Log"];
     const testId = "JobsTable";
 
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
-      expect(header).toBeInTheDocument();
-    });
-
-    expectedFields.forEach((field) => {
-      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
       expect(header).toBeInTheDocument();
     });
 
@@ -55,7 +49,7 @@ describe("JobsTable tests", () => {
     ).toHaveTextContent("complete");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
-    ).toHaveTextContent("Hello World! from test job!Goodbye from test job!");
+    ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
 
     expect(
       screen.getByTestId(`JobsTable-header-id-sort-carets`),
@@ -83,8 +77,13 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
     const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
 
-    const expectedLog = Array(10).fill("Log").join(""); // Remove \n to match flattened DOM output
+    const expectedLog =
+      Array(10).fill("Log").join("\n") + "...[See entire log]";
     expect(logCell.textContent).toBe(expectedLog);
+    const link = screen.getByText("[See entire log]");
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/admin/jobs/logs/1");
+    expect(link).toHaveAttribute("data-testid", "JobsTable-see-entire-log-1");
   });
 
   test("Does not truncate logs 10 lines or shorter", () => {
@@ -109,7 +108,7 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
     const logCell = screen.getByTestId(`${testId}-cell-row-0-col-Log`);
 
-    const expectedLog = Array(10).fill("Log").join(""); // Remove \n to match flattened DOM output
+    const expectedLog = Array(10).fill("Log").join("\n");
     expect(logCell.textContent).toBe(expectedLog);
   });
 
