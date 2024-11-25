@@ -4,8 +4,20 @@ import OurTable, {
   DateColumn,
 } from "main/components/OurTable";
 
+export function truncateLines(lines) {
+  return lines.slice(0, 10).join("\n");
+}
+
 export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
+
+  const truncateLog = (log) => {
+    if (log) {
+      const lines = log.split("\n");
+      return truncateLines(lines);
+    }
+    return "";
+  };
 
   const columns = [
     {
@@ -18,7 +30,7 @@ export default function JobsTable({ jobs }) {
       Header: "Status",
       accessor: "status",
     },
-    PlaintextColumn("Log", (cell) => cell.row.original.log),
+    PlaintextColumn("Log", (cell) => truncateLog(cell.row.original.log)),
   ];
 
   const sortees = React.useMemo(
