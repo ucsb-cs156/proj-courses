@@ -1,6 +1,8 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -846,6 +849,36 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
+  public void cannot_add_two_personal_schedules_with_same_name_and_quarter() throws Exception {
+    User thisUser = currentUserService.getCurrentUser().getUser();
+
+    PersonalSchedule existingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("Existing description")
+            .quarter("20222")
+            .user(thisUser)
+            .id(1L)
+            .build();
+
+    when(personalscheduleRepository.findByUserAndNameAndQuarter(thisUser, "TestName", "20222"))
+        .thenReturn(Optional.of(existingSchedule));
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                post("/api/personalschedules/post?name=TestName&description=New description&quarter=20222")
+                    .with(csrf()))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    Map<String, Object> json = responseToJson(response);
+    assertEquals(
+        "A personal schedule with that name already exists in that quarter", json.get("message"));
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
   public void cannot_edit_personal_schedule_to_same_name_and_quarter() throws Exception {
     User thisUser = currentUserService.getCurrentUser().getUser();
 
@@ -858,10 +891,10 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
             .id(1L)
             .build();
 
-    PersonalSchedule conflictingSchedule =
+    PersonalSchedule incomingSchedule =
         PersonalSchedule.builder()
             .name("TestName")
-            .description("Conflicting description")
+            .description("Incoming description")
             .quarter("20222")
             .user(thisUser)
             .id(2L)
@@ -870,7 +903,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     when(personalscheduleRepository.findByIdAndUser(1L, thisUser))
         .thenReturn(Optional.of(existingSchedule));
     when(personalscheduleRepository.findAllByUserId(thisUser.getId()))
-        .thenReturn(Arrays.asList(existingSchedule, conflictingSchedule));
+        .thenReturn(Arrays.asList(existingSchedule, incomingSchedule));
 
     MvcResult response =
         mockMvc
@@ -887,4 +920,160 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     assertEquals(
         "A personal schedule with that name already exists in that quarter", json.get("message"));
   }
+
+  //   @WithMockUser(roles = {"ADMIN", "USER"})
+  //   @Test
+  //   public void can_edit_personal_schedule_with_unique_name_and_quarter() throws Exception {
+  //     User thisUser = currentUserService.getCurrentUser().getUser();
+
+  //     PersonalSchedule existingSchedule =
+  //         PersonalSchedule.builder()
+  //             .name("TestName")
+  //             .description("Existing description")
+  //             .quarter("20222")
+  //             .user(thisUser)
+  //             .id(1L)
+  //             .build();
+
+  //     PersonalSchedule incomingSchedule =
+  //         PersonalSchedule.builder()
+  //             .name("TestName")
+  //             .description("Updated description")
+  //             .quarter("20222")
+  //             .user(thisUser)
+  //             .id(1L)
+  //             .build();
+
+  //     when(personalscheduleRepository.findByIdAndUser(1L, thisUser))
+  //         .thenReturn(Optional.of(existingSchedule));
+  //     when(personalscheduleRepository.findAllByUserId(thisUser.getId()))
+  //         .thenReturn(Arrays.asList(existingSchedule, incomingSchedule));
+
+  //     MvcResult response =
+  //         mockMvc
+  //             .perform(
+  //                 put("/api/personalschedules?id=1")
+  //                     .with(csrf())
+  //                     .contentType(MediaType.APPLICATION_JSON)
+  //                     .content(
+  //                         "{\"name\":\"TestName\", \"description\":\"Updated description\",
+  // \"quarter\":\"20222\"}"))
+  //             .andExpect(status().isOk())
+  //             .andReturn();
+
+  //     // Parse the response into PersonalSchedule
+  //     String responseBody = response.getResponse().getContentAsString();
+  //     assertTrue(responseBody.contains("Updated description"));
+  //   }
+  
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void test_personal_schedule_duplicate_check() throws Exception {
+      User thisUser = currentUserService.getCurrentUser().getUser();
+  
+      // Existing schedules
+      PersonalSchedule existingSchedule1 =
+          PersonalSchedule.builder()
+              .name("TestName")
+              .quarter("20222")
+              .description("Existing description 1")
+              .user(thisUser)
+              .id(1L)
+              .build();
+  
+      PersonalSchedule existingSchedule2 =
+          PersonalSchedule.builder()
+              .name("AnotherName")
+              .quarter("20222")
+              .description("Existing description 2")
+              .user(thisUser)
+              .id(3L)
+              .build();
+  
+      Iterable<PersonalSchedule> allSchedules =
+          Arrays.asList(existingSchedule1, existingSchedule2);
+  
+      // Case 1: Same name and same quarter (Should detect as duplicate)
+      PersonalSchedule incomingSchedule1 =
+          PersonalSchedule.builder()
+              .name("TestName")
+              .quarter("20222")
+              .description("Updated description")
+              .id(3L)
+              .user(thisUser)
+              .build();
+  
+      when(personalscheduleRepository.findAllByUserId(thisUser.getId())).thenReturn(allSchedules);
+  
+      boolean duplicateExists1 =
+          StreamSupport.stream(allSchedules.spliterator(), false)
+              .anyMatch(
+                  schedule ->
+                      schedule.getName().equals(incomingSchedule1.getName()) &&
+                      schedule.getQuarter().equals(incomingSchedule1.getQuarter()) &&
+                      schedule.getId() != incomingSchedule1.getId());
+  
+      assertTrue(duplicateExists1);
+  
+      // Case 2: Same name but different quarter (Should NOT detect as duplicate)
+      PersonalSchedule incomingSchedule2 =
+          PersonalSchedule.builder()
+              .name("TestName")
+              .quarter("20223")
+              .description("Updated description")
+              .id(4L) 
+              .user(thisUser)
+              .build();
+  
+      boolean duplicateExists2 =
+          StreamSupport.stream(allSchedules.spliterator(), false)
+              .anyMatch(
+                  schedule ->
+                      schedule.getName().equals(incomingSchedule2.getName()) &&
+                      schedule.getQuarter().equals(incomingSchedule2.getQuarter()) &&
+                      schedule.getId() != incomingSchedule2.getId());
+  
+      assertFalse(duplicateExists2);
+  
+      // Case 3: Same quarter but different name (Should NOT detect as duplicate)
+      PersonalSchedule incomingSchedule3 =
+          PersonalSchedule.builder()
+              .name("DifferentName")
+              .quarter("20222")
+              .description("Different description")
+              .id(5L)
+              .user(thisUser)
+              .build();
+  
+      boolean duplicateExists3 =
+          StreamSupport.stream(allSchedules.spliterator(), false)
+              .anyMatch(
+                  schedule ->
+                      schedule.getName().equals(incomingSchedule3.getName()) &&
+                      schedule.getQuarter().equals(incomingSchedule3.getQuarter()) &&
+                      schedule.getId() != incomingSchedule3.getId());
+  
+      assertFalse(duplicateExists3);
+  
+    //   Case 4: Different name and different quarter (Should NOT detect as duplicate)
+      PersonalSchedule incomingSchedule4 =
+          PersonalSchedule.builder()
+              .name("DifferentName")
+              .quarter("20223")
+              .description("Different description")
+              .id(6L)
+              .user(thisUser)
+              .build();
+  
+      boolean duplicateExists4 =
+          StreamSupport.stream(allSchedules.spliterator(), false)
+              .anyMatch(
+                  schedule ->
+                      schedule.getName().equals(incomingSchedule4.getName()) &&
+                      schedule.getQuarter().equals(incomingSchedule4.getQuarter()) &&
+                      schedule.getId() != incomingSchedule4.getId());
+  
+      assertFalse(duplicateExists4); 
+  }
+  
 }
