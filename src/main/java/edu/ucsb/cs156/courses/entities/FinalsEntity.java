@@ -20,6 +20,5 @@ public class FinalsEntity {
   private String comments;
   private LocalDateTime finalExamStart;
   private LocalDateTime finalExamEnd;
-  @LastModifiedDate
-  private LocalDateTime lastModified;
+  @LastModifiedDate private LocalDateTime lastModified;
 }
