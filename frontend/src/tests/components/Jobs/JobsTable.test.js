@@ -80,6 +80,10 @@ describe("JobsTable tests", () => {
     const expectedLog =
       Array(10).fill("Log").join("\n") + "...[See entire log]";
     expect(logCell.textContent).toBe(expectedLog);
+    const link = screen.getByText("[See entire log]");
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/admin/jobs/logs/1");
+    expect(link).toHaveAttribute("data-testid", "JobsTable-see-entire-log-1");
   });
 
   test("Does not truncate logs 10 lines or shorter", () => {

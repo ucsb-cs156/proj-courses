@@ -30,7 +30,6 @@ export default function JobsTable({ jobs }) {
     },
     {
       Header: "Log",
-      id: "Log",
       Cell: ({ cell }) => {
         const log = cell.row.original.log;
         const id = cell.row.original.id;
@@ -43,7 +42,7 @@ export default function JobsTable({ jobs }) {
                 <pre>...</pre>
                 <Link
                   to={`/admin/jobs/logs/${id}`}
-                  date-testid={`${testid}-see-entire-log-${id}`}
+                  data-testid={`${testid}-see-entire-log-${id}`}
                 >
                   [See entire log]
                 </Link>
