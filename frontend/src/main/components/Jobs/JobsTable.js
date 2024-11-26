@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import OurTable, {
-  PlaintextColumn,
+  //PlaintextColumn,
   DateColumn,
 } from "main/components/OurTable";
 
@@ -18,7 +19,28 @@ export default function JobsTable({ jobs }) {
       Header: "Status",
       accessor: "status",
     },
-    PlaintextColumn("Log", (cell) => cell.row.original.log),
+    {
+      Header: "Log",
+      accessor: "log",
+      Cell: ({ cell }) => {
+        const log = cell.row.original.log;
+        const logLines = log ? log.split("\n") : [];
+        if (logLines.length > 1) {
+          return (
+            <div>
+              {logLines.slice(0, 10).join("\n")}
+              <span>...</span>
+              <br />
+              <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
+                See entire log
+              </Link>
+            </div>
+          );
+        } else {
+          return <pre>{log}</pre>;
+        }
+      },
+    },
   ];
 
   const sortees = React.useMemo(
