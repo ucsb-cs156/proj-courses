@@ -339,6 +339,22 @@ describe("isLectureWithSections", () => {
     const result = isLectureWithSections(enrollCode, sections);
     expect(result).toBe(true);
   });
+  it("does not include unrelated sections in the courseSections array", () => {
+    const enrollCode = "12345";
+    const sections = [
+      {
+        courseInfo: { courseId: "COURSE1" },
+        section: { enrollCode: "12345", section: "0100" },
+      },
+      {
+        courseInfo: { courseId: "COURSE2" },
+        section: { enrollCode: "67890", section: "0100" },
+      },
+    ];
+
+    const result = isLectureWithSections(enrollCode, sections);
+    expect(result).toBe(false);
+  });
 });
 
 describe("handleAddToSchedule", () => {
