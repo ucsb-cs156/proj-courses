@@ -6,11 +6,11 @@ name: "13-backend-incremental-pitest: Java Mutation Testing (Pitest)"
 on:
   workflow_dispatch:
   pull_request:
-    paths: [src/**, pom.xml, lombok.config]
+    paths: [src/**, pom.xml, lombok.config, .github/workflows/13-backend-incremental-pitest.yml]
   push:
     branches: [ main ]
-    paths: [src/**, pom.xml, lombok.config]
-
+    paths: [src/**, pom.xml, lombok.config, .github/workflows/13-backend-incremental-pitest.yml]
+    
 env:
     # See: https://github.com/actions/setup-java#supported-distributions
     JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }} 
