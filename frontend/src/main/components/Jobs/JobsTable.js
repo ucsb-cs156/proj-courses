@@ -1,9 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import OurTable, {
   //PlaintextColumn,
   DateColumn,
 } from "main/components/OurTable";
+import { Link } from "react-router-dom"; 
 
 export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
@@ -25,23 +25,28 @@ export default function JobsTable({ jobs }) {
       Cell: ({ cell }) => {
         const log = cell.row.original.log;
         const logLines = log ? log.split("\n") : [];
-        if (logLines.length > 10) {
-          return (
-            <div>
-              {logLines.slice(0, 10).join("\n")}
-              <span>...</span>
-              <br />
-              <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
-                See entire log
-              </Link>
+        return (
+          <div data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}>
+            {logLines.length > 10 ? (
+              <>
+                {logLines.slice(0, 10).join("\n")}
+                <span>...</span>
+                <br />
+                <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
+                  See entire log
+                </Link>
+              </>
+            ) : (
+              <pre>{log}</pre>
+            )}
             </div>
           );
-        } else {
-          return <pre>{log}</pre>;
-        }
+        },
       },
-    },
-  ];
+    ];
+
+
+
 
   const sortees = React.useMemo(
     () => [

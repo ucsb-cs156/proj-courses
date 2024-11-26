@@ -54,7 +54,7 @@ describe("JobsTable tests", () => {
     ).toHaveTextContent("complete");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
-    ).toHaveTextContent("Hello World! from test job!Goodbye from test job!");
+    ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
 
     expect(
       screen.getByTestId(`JobsTable-header-id-sort-carets`),
