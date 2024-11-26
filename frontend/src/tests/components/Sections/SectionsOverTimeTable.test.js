@@ -309,4 +309,36 @@ describe("Section tests", () => {
         .querySelector('a[href$="/coursedetails/20221/12625"]'),
     ).toBeInTheDocument();
   });
+
+  test("Course ID's are correct", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsOverTimeTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const testId = "SectionsOverTimeTable";
+
+    const expandRow = screen.getByTestId(
+      `${testId}-cell-row-1-col-quarter-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`),
+    ).toHaveTextContent("ECE 5");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`),
+    ).toHaveTextContent("ECE 5");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-courseInfo.courseId`),
+    ).toHaveTextContent("ECE 5");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-3-col-courseInfo.courseId`),
+    ).toHaveTextContent("ECE 5");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-4-col-courseInfo.courseId`),
+    ).toHaveTextContent("ECE 5");
+  });
 });
