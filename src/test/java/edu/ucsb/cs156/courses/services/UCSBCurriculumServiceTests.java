@@ -296,4 +296,70 @@ public class UCSBCurriculumServiceTests {
     String result = ucs.getAllSections(enrollCode, quarter);
     assertEquals(expectedResult, result);
   }
+  
+  @Test
+  public void test_getFinalsInfo_success() throws Exception {
+    String expectedResult = "{\"expectedResult\": \"finals info\"}";
+
+    String enrollCode = "67421";
+    String quarter = "20251";
+
+    String expectedParams = "?quarter=" + quarter + "&enrollCode=" + enrollCode;
+    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "3.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+    String result = ucs.getFinalsInfo(quarter, enrollCode);
+
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  public void test_getFinalsInfo_notFound() throws Exception {
+    String expectedResult = "{\"error\": \"Finals information not found.\"}";
+
+    String enrollCode = "99999"; // Example enroll code that does not exist
+    String quarter = "20251";
+
+    String expectedParams = "?quarter=" + quarter + "&enrollCode=" + enrollCode;
+    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "3.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess("null", MediaType.APPLICATION_JSON)); // Simulating a not found response
+
+    String result = ucs.getFinalsInfo(quarter, enrollCode);
+
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  public void test_getFinalsInfo_errorResponse() throws Exception {
+    String expectedResult = "{\"error\": \"401: Unauthorized\"}";
+
+    String enrollCode = "67421";
+    String quarter = "20251";
+
+    String expectedParams = "?quarter=" + quarter + "&enrollCode=" + enrollCode;
+    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "3.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON)); // Simulating an error response
+
+    String result = ucs.getFinalsInfo(quarter, enrollCode);
+
+    assertEquals(expectedResult, result);
+  }
 }
