@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,6 +159,22 @@ public class PersonalSchedulesController extends ApiController {
         personalscheduleRepository
             .findByIdAndUser(id, currentUser)
             .orElseThrow(() -> new EntityNotFoundException(PersonalSchedule.class, id));
+
+    Iterable<PersonalSchedule> allSchedules =
+        personalscheduleRepository.findAllByUserId(currentUser.getId());
+
+    boolean hasDuplicate =
+        StreamSupport.stream(allSchedules.spliterator(), false)
+            .anyMatch(
+                schedule ->
+                    schedule.getName().equals(incomingSchedule.getName())
+                        && schedule.getQuarter().equals(incomingSchedule.getQuarter())
+                        && schedule.getId() != personalschedule.getId());
+
+    if (hasDuplicate) {
+      throw new IllegalArgumentException(
+          "A personal schedule with that name already exists in that quarter");
+    }
 
     personalschedule.setName(incomingSchedule.getName());
     personalschedule.setDescription(incomingSchedule.getDescription());
