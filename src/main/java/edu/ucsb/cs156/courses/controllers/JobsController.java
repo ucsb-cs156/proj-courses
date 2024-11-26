@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
@@ -175,4 +178,16 @@ public class JobsController extends ApiController {
     UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();
     return jobService.runAsJob(updateGradeDataJob);
   }
+
+  @Operation(summary = "Get job logs")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("/logs/{jobId}")
+  public Map<String, String> getJobLog(@Parameter(name = "jobId") @PathVariable Long jobId) {
+      Job job = jobsRepository.findById(jobId)
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
+
+      // Assuming 'getLog' method returns the log output as a string
+      return Map.of("log", job.getLog());
+  }
+  
 }
