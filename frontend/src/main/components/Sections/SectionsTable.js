@@ -292,6 +292,7 @@ export default function SectionsTable({ sections }) {
   ];
 
   // Stryker enable all
+
   const testid = "SectionsTable";
 
   const columnsToDisplay = columns;
