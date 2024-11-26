@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -919,70 +918,38 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
-  public void test_personal_schedule_duplicate_check() throws Exception {
+  public void cannot_edit_personal_schedule_duplicate_id_should_not_count_as_duplicate()
+      throws Exception {
     User thisUser = currentUserService.getCurrentUser().getUser();
 
-    PersonalSchedule existingSchedule1 =
+    PersonalSchedule existingSchedule =
         PersonalSchedule.builder()
             .name("TestName")
             .quarter("20222")
-            .description("Existing description 1")
+            .description("Existing description")
             .user(thisUser)
             .id(1L)
             .build();
 
-    PersonalSchedule existingSchedule2 =
-        PersonalSchedule.builder()
-            .name("TestName")
-            .quarter("20223")
-            .description("Existing description 2")
-            .user(thisUser)
-            .id(2L)
-            .build();
+    when(personalscheduleRepository.findByIdAndUser(1L, thisUser))
+        .thenReturn(Optional.of(existingSchedule));
+    when(personalscheduleRepository.findAllByUserId(thisUser.getId()))
+        .thenReturn(Arrays.asList(existingSchedule));
 
-    Iterable<PersonalSchedule> allSchedules = Arrays.asList(existingSchedule1, existingSchedule2);
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/personalschedules?id=1")
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"name\":\"TestName\", \"description\":\"Updated description\", \"quarter\":\"20222\"}"))
+            .andExpect(status().isOk())
+            .andReturn();
 
-    when(personalscheduleRepository.findAllByUserId(thisUser.getId())).thenReturn(allSchedules);
-
-    // Test all 8 cases using the helper method
-    assertDuplicateCount("TestName", "20222", 3L, 1L, 1, allSchedules, thisUser);
-    assertDuplicateCount("TestName", "20224", 4L, 4L, 0, allSchedules, thisUser);
-    assertDuplicateCount("DifferentName", "20222", 5L, 5L, 0, allSchedules, thisUser);
-    assertDuplicateCount("DifferentName", "20223", 6L, 6L, 0, allSchedules, thisUser);
-    assertDuplicateCount("TestName", "20222", 1L, 1L, 0, allSchedules, thisUser);
-    assertDuplicateCount("TestName", "20224", 1L, 1L, 0, allSchedules, thisUser);
-    assertDuplicateCount("DifferentName", "20222", 1L, 1L, 0, allSchedules, thisUser);
-    assertDuplicateCount("DifferentName", "20223", 1L, 1L, 0, allSchedules, thisUser);
-  }
-
-  // Helper method for counting duplicates based on schedule name, quarter, incoming ID, and
-  // expected count
-  private void assertDuplicateCount(
-      String name,
-      String quarter,
-      long incomingId,
-      long idToCompare,
-      long expectedCount,
-      Iterable<PersonalSchedule> allSchedules,
-      User thisUser) {
-    PersonalSchedule incomingSchedule =
-        PersonalSchedule.builder()
-            .name(name)
-            .quarter(quarter)
-            .description("Updated description")
-            .id(incomingId)
-            .user(thisUser)
-            .build();
-
-    long duplicateCount =
-        StreamSupport.stream(allSchedules.spliterator(), false)
-            .filter(
-                schedule ->
-                    schedule.getName().equals(incomingSchedule.getName())
-                        && schedule.getQuarter().equals(incomingSchedule.getQuarter())
-                        && schedule.getId() != incomingSchedule.getId())
-            .count();
-
-    assertEquals(expectedCount, duplicateCount);
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("TestName", json.get("name"));
+    assertEquals("Updated description", json.get("description"));
+    assertEquals("20222", json.get("quarter"));
   }
 }

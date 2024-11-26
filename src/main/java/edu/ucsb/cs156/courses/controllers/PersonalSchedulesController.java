@@ -163,16 +163,15 @@ public class PersonalSchedulesController extends ApiController {
     Iterable<PersonalSchedule> allSchedules =
         personalscheduleRepository.findAllByUserId(currentUser.getId());
 
-    long duplicateCount =
+    boolean hasDuplicate =
         StreamSupport.stream(allSchedules.spliterator(), false)
-            .filter(
+            .anyMatch(
                 schedule ->
-                    schedule.getId() != incomingSchedule.getId()
-                        && schedule.getName().equals(incomingSchedule.getName())
-                        && schedule.getQuarter().equals(incomingSchedule.getQuarter()))
-            .count();
+                    schedule.getName().equals(incomingSchedule.getName())
+                        && schedule.getQuarter().equals(incomingSchedule.getQuarter())
+                        && schedule.getId() != personalschedule.getId());
 
-    if (duplicateCount > 0) {
+    if (hasDuplicate) {
       throw new IllegalArgumentException(
           "A personal schedule with that name already exists in that quarter");
     }
