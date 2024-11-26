@@ -156,6 +156,14 @@ const AdminJobsPage = () => {
       <h2 className="p-3">Job Status</h2>
 
       <JobsTable jobs={jobs} />
+
+      <div className="mt-3">
+        <button
+          className="btn btn-danger"
+        >
+          {"Purge Job Log"}
+        </button>
+      </div>
     </BasicLayout>
   );
 };
