@@ -436,6 +436,37 @@ describe("Section tests", () => {
     );
   });
 
+  test("backend error message", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const onError = useBackendMutation.mock.calls[0][1].onError;
+    const error = {
+      response: {
+        data: {
+          message:
+            "A section from this class already exists in your schedule. Please remove it to add a new one.",
+        },
+      },
+    };
+
+    onError(error);
+
+    expect(toast).toHaveBeenCalledWith(
+      "Error: A section from this class already exists in your schedule. Please remove it to add a new one.",
+    );
+  });
+
   test("Has the expected cell values when expanded", () => {
     render(
       <QueryClientProvider client={queryClient}>

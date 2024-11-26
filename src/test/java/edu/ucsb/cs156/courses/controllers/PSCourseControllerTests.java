@@ -410,7 +410,9 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
     // assert
     Map<String, Object> json = responseToJson(response);
-    assertEquals("class exists in schedule", json.get("message"));
+    assertEquals(
+        "A section from this class already exists in your schedule. Please remove it to add a new one.",
+        json.get("message"));
     assertEquals("IllegalArgumentException", json.get("type"));
   }
 

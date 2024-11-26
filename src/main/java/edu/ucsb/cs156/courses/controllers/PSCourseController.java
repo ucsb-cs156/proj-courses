@@ -143,7 +143,8 @@ public class PSCourseController extends ApiController {
     }
 
     if (coursesRepository.findByPsIdAndEnrollCd(psId, enrollCdPrimary).isPresent()) {
-      throw new IllegalArgumentException("class exists in schedule");
+      throw new IllegalArgumentException(
+          "A section from this class already exists in your schedule. Please remove it to add a new one.");
     }
 
     ArrayList<PSCourse> savedCourses = new ArrayList<>();
