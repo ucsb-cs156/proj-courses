@@ -31,4 +31,16 @@ public class UCSBCurriculumController extends ApiController {
 
     return ResponseEntity.ok().body(body);
   }
+
+  // Backend for final exam info, similar to the above operation:
+  @Operation(summary = "Get final exam information for a given quarter and course enrollment code")
+  @GetMapping(value = "/finalsInfo", produces = "application/json")
+  public ResponseEntity<String> finalsInfo(
+      @RequestParam String quarterYYYYQ, @RequestParam String enrollCd)
+      throws Exception { // Looks for quarter and code
+
+    String body = ucsbCurriculumService.getFinalsInfo(quarterYYYYQ, enrollCd);
+
+    return ResponseEntity.ok().body(body);
+  }
 }
