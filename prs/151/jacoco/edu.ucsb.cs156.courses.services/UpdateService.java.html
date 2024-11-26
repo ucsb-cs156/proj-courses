@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.services</a> &gt; <span class="el_source">UpdateService.java</span></div><h1>UpdateService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.services;
+
+import edu.ucsb.cs156.courses.collections.UpdateCollection;
+import edu.ucsb.cs156.courses.documents.Update;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+
+@Service(&quot;UpdateService&quot;)
+@ConfigurationProperties
+<span class="fc" id="L16">public class UpdateService {</span>
+  /**
+   * Get the last update for a given subject area and quarter
+   *
+   * @param updateCollection
+   * @param subjectArea
+   * @param quarterYYYYQ
+   * @return the last update
+   * @throws Exception
+   */
+  @Autowired private UpdateCollection updateCollection;
+
+  public Optional&lt;LocalDateTime&gt; getLastUpdate(String subjectArea, String quarterYYYYQ)
+      throws Exception {
+
+<span class="fc" id="L31">    PageRequest pageRequest_0_1_DESC_lastUpdate =</span>
+<span class="fc" id="L32">        PageRequest.of(0, 1, Direction.DESC, &quot;lastUpdate&quot;);</span>
+
+<span class="fc" id="L34">    Page&lt;Update&gt; updatePage =</span>
+<span class="fc" id="L35">        updateCollection.findBySubjectAreaAndQuarter(</span>
+            subjectArea, quarterYYYYQ, pageRequest_0_1_DESC_lastUpdate);
+<span class="fc bfc" id="L37" title="All 2 branches covered.">    if (updatePage.getTotalElements() == 0) {</span>
+<span class="fc" id="L38">      return Optional.empty();</span>
+    }
+<span class="fc" id="L40">    Update update = updatePage.getContent().get(0);</span>
+<span class="fc" id="L41">    return Optional.of(update.getLastUpdate());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
