@@ -304,8 +304,10 @@ public class UCSBCurriculumServiceTests {
     String enrollCode = "67421";
     String quarter = "20251";
 
-    String expectedParams = "?quarter=" + quarter + "&enrollCode=" + enrollCode;
-    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
+    String expectedURL =
+        UCSBCurriculumService.FINALS_ENDPOINT
+            .replace("{quarter}", quarter)
+            .replace("{enrollcode}", enrollCode);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -326,8 +328,10 @@ public class UCSBCurriculumServiceTests {
     String enrollCode = "99999"; // Example enroll code that does not exist
     String quarter = "20251";
 
-    String expectedParams = "?quarter=" + quarter + "&enrollCode=" + enrollCode;
-    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
+    String expectedURL =
+        UCSBCurriculumService.FINALS_ENDPOINT
+            .replace("{quarter}", quarter)
+            .replace("{enrollcode}", enrollCode);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -349,8 +353,10 @@ public class UCSBCurriculumServiceTests {
     String enrollCode = "67421";
     String quarter = "20251";
 
-    String expectedParams = "?quarter=" + quarter + "&enrollCode=" + enrollCode;
-    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
+    String expectedURL =
+        UCSBCurriculumService.FINALS_ENDPOINT
+            .replace("{quarter}", quarter)
+            .replace("{enrollcode}", enrollCode);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
