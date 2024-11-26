@@ -42,11 +42,12 @@ public class JobService {
   }
 
   public String getLongJob(Long jobId) {
-    Job job = jobsRepository
+    Job job =
+        jobsRepository
             .findById(jobId)
             .orElseThrow(() -> new IllegalArgumentException("Job not found"));
 
     String log = job.getLog();
     return log != null ? log : "";
-}
+  }
 }

@@ -3,7 +3,7 @@ import OurTable, {
   //PlaintextColumn,
   DateColumn,
 } from "main/components/OurTable";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
 
 export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
@@ -39,14 +39,11 @@ export default function JobsTable({ jobs }) {
             ) : (
               <pre>{log}</pre>
             )}
-            </div>
-          );
-        },
+          </div>
+        );
       },
-    ];
-
-
-
+    },
+  ];
 
   const sortees = React.useMemo(
     () => [
