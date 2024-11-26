@@ -158,11 +158,7 @@ const AdminJobsPage = () => {
       <JobsTable jobs={jobs} />
 
       <div className="mt-3">
-        <button
-          className="btn btn-danger"
-        >
-          {"Purge Job Log"}
-        </button>
+        <button className="btn btn-danger">{"Purge Job Log"}</button>
       </div>
     </BasicLayout>
   );
