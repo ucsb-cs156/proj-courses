@@ -25,7 +25,7 @@ export default function JobsTable({ jobs }) {
       Cell: ({ cell }) => {
         const log = cell.row.original.log;
         const logLines = log ? log.split("\n") : [];
-        if (logLines.length > 1) {
+        if (logLines.length > 10) {
           return (
             <div>
               {logLines.slice(0, 10).join("\n")}
