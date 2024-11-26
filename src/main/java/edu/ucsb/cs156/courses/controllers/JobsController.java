@@ -124,10 +124,9 @@ public class JobsController extends ApiController {
   @Operation(summary = "Get long job logs")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/logs/{id}")
-  public String getJobLogs(
-    @Parameter(name = "id", description = "Job ID") @PathVariable Long id) {
+  public String getJobLogs(@Parameter(name = "id", description = "Job ID") @PathVariable Long id) {
 
-      return jobService.getLongJob(id);
+    return jobService.getLongJob(id);
   }
 
   @Operation(summary = "Launch Job to Update Course Data for range of quarters")
