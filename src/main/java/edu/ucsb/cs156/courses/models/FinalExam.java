@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FinalExam {
-    private Boolean hasFinals;
-    private String comments;
-    private String examDay;
-    private String examDate;
-    private String beginTime;
-    private String endTime;
+  private Boolean hasFinals;
+  private String comments;
+  private String examDay;
+  private String examDate;
+  private String beginTime;
+  private String endTime;
 }
