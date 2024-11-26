@@ -6,11 +6,15 @@ name: "10-backend-unit: Java Unit tests"
 on:
   workflow_dispatch:
   pull_request:
-    paths: [src/**, pom.xml, lombok.config]
+    paths: [src/**, pom.xml, lombok.config, .github/workflows/10-backend-unit.yml]
   push:
     branches: [ main ]
-    paths: [src/**, pom.xml, lombok.config]
+    paths: [src/**, pom.xml, lombok.config, .github/workflows/10-backend-unit.yml]
 
+env:
+    # See: https://github.com/actions/setup-java#supported-distributions
+    JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }} 
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,10 +23,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
-         distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
+         distribution: ${{ env.JAVA_DISTRIBUTION }} 
          java-version-file: ./.java-version
+         cache: 'maven'
+         cache-dependency-path: 'pom.xml' 
   
     - name: Build with Maven
       env:
