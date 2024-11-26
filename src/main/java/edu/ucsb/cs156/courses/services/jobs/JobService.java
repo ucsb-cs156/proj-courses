@@ -40,4 +40,26 @@ public class JobService {
     job.setStatus("complete");
     jobsRepository.save(job);
   }
+
+  public String getLongJob(Long jobId, int page, int size) {
+    Job job =
+        jobsRepository
+            .findById(jobId)
+            .orElseThrow(() -> new IllegalArgumentException("Job not found"));
+
+    String[] logLines = job.getLog() != null ? job.getLog().split("\n") : new String[0];
+    int start = page * size;
+    int end = Math.min(start + size, logLines.length);
+
+    if (start >= logLines.length) {
+      return "";
+    }
+
+    StringBuilder logPage = new StringBuilder();
+    for (int i = start; i < end; i++) {
+      logPage.append(logLines[i]).append("\n");
+    }
+
+    return logPage.toString();
+  }
 }

@@ -5,6 +5,7 @@ import AdminUsersPage from "main/pages/Admin/AdminUsersPage";
 import AdminUpdatesPage from "main/pages/Admin/AdminUpdatesPage";
 import AdminLoadSubjectsPage from "main/pages/Admin/AdminLoadSubjectsPage";
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
+import JobLogPage from "main/pages/Admin/JobLogPage";
 import DeveloperPage from "main/pages/DeveloperPage"; // route from /developer to DeveloperPage
 
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
@@ -42,6 +43,7 @@ function App() {
               element={<AdminLoadSubjectsPage />}
             />
             <Route path="/admin/jobs" element={<AdminJobsPage />} />
+            <Route path="/admin/jobs/logs/:id" element={<JobLogPage />} />
             <Route path="/developer" element={<DeveloperPage />} />
           </>
         )}
