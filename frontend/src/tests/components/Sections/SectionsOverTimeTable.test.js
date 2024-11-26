@@ -237,6 +237,30 @@ describe("Section tests", () => {
     ).toHaveTextContent("21/21");
   });
 
+  test("Dropdown has correct courseID", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsOverTimeTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsOverTimeTable";
+
+    const expandRow = screen.getByTestId(
+      `${testId}-cell-row-1-col-quarter-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-courseInfo.courseId`),
+    ).toHaveTextContent("ECE 5");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-courseInfo.courseId`),
+    ).toHaveTextContent("ECE 5");
+  });
+
   test("Status utility identifies each type of status", () => {
     render(
       <QueryClientProvider client={queryClient}>
