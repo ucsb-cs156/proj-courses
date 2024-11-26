@@ -874,6 +874,43 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
+  public void can_edit_personal_schedule_duplicate_id_should_not_count_as_duplicate()
+      throws Exception {
+    User thisUser = currentUserService.getCurrentUser().getUser();
+
+    PersonalSchedule existingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .quarter("20222")
+            .description("Existing description")
+            .user(thisUser)
+            .id(1L)
+            .build();
+
+    when(personalscheduleRepository.findByIdAndUser(1L, thisUser))
+        .thenReturn(Optional.of(existingSchedule));
+    when(personalscheduleRepository.findAllByUserId(thisUser.getId()))
+        .thenReturn(Arrays.asList(existingSchedule));
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/personalschedules?id=1")
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"name\":\"TestName\", \"description\":\"Updated description\", \"quarter\":\"20222\"}"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("TestName", json.get("name"));
+    assertEquals("Updated description", json.get("description"));
+    assertEquals("20222", json.get("quarter"));
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
   public void cannot_edit_personal_schedule_to_same_name_and_quarter() throws Exception {
     User thisUser = currentUserService.getCurrentUser().getUser();
 
@@ -918,15 +955,14 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
-  public void cannot_edit_personal_schedule_duplicate_id_should_not_count_as_duplicate()
-      throws Exception {
+  public void can_edit_personal_schedule_to_same_name_and_diff_quarter() throws Exception {
     User thisUser = currentUserService.getCurrentUser().getUser();
 
     PersonalSchedule existingSchedule =
         PersonalSchedule.builder()
             .name("TestName")
-            .quarter("20222")
             .description("Existing description")
+            .quarter("20222")
             .user(thisUser)
             .id(1L)
             .build();
@@ -943,13 +979,49 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
-                        "{\"name\":\"TestName\", \"description\":\"Updated description\", \"quarter\":\"20222\"}"))
+                        "{\"name\":\"TestName\", \"description\":\"New description\", \"quarter\":\"20223\"}"))
             .andExpect(status().isOk())
             .andReturn();
 
     Map<String, Object> json = responseToJson(response);
     assertEquals("TestName", json.get("name"));
-    assertEquals("Updated description", json.get("description"));
+    assertEquals("New description", json.get("description"));
+    assertEquals("20223", json.get("quarter"));
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void can_edit_personal_schedule_to_diff_name_and_same_quarter() throws Exception {
+    User thisUser = currentUserService.getCurrentUser().getUser();
+
+    PersonalSchedule existingSchedule =
+        PersonalSchedule.builder()
+            .name("TestName")
+            .description("Existing description")
+            .quarter("20222")
+            .user(thisUser)
+            .id(1L)
+            .build();
+
+    when(personalscheduleRepository.findByIdAndUser(1L, thisUser))
+        .thenReturn(Optional.of(existingSchedule));
+    when(personalscheduleRepository.findAllByUserId(thisUser.getId()))
+        .thenReturn(Arrays.asList(existingSchedule));
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/personalschedules?id=1")
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"name\":\"DifferentName\", \"description\":\"New description\", \"quarter\":\"20222\"}"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("DifferentName", json.get("name"));
+    assertEquals("New description", json.get("description"));
     assertEquals("20222", json.get("quarter"));
   }
 }
