@@ -817,7 +817,6 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_schedules__user_logged_in__can_post_15_char_name() throws Exception {
-    // arrange
     User thisUser = currentUserService.getCurrentUser().getUser();
 
     PersonalSchedule expectedSchedule =
@@ -831,7 +830,6 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
     when(personalscheduleRepository.save(eq(expectedSchedule))).thenReturn(expectedSchedule);
 
-    // act
     MvcResult response =
         mockMvc
             .perform(
@@ -924,109 +922,61 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void test_personal_schedule_duplicate_check() throws Exception {
-    User thisUser = currentUserService.getCurrentUser().getUser();
+      User thisUser = currentUserService.getCurrentUser().getUser();
+  
+      PersonalSchedule existingSchedule1 =
+          PersonalSchedule.builder()
+              .name("TestName")
+              .quarter("20222")
+              .description("Existing description 1")
+              .user(thisUser)
+              .id(1L)
+              .build();
+  
+      PersonalSchedule existingSchedule2 =
+          PersonalSchedule.builder()
+              .name("TestName")
+              .quarter("20223")
+              .description("Existing description 2")
+              .user(thisUser)
+              .id(2L)
+              .build();
 
-    // Existing schedules
-    PersonalSchedule existingSchedule1 =
-        PersonalSchedule.builder()
-            .name("TestName")
-            .quarter("20222")
-            .description("Existing description 1")
-            .user(thisUser)
-            .id(1L)
-            .build();
-
-    PersonalSchedule existingSchedule2 =
-        PersonalSchedule.builder()
-            .name("AnotherName")
-            .quarter("20222")
-            .description("Existing description 2")
-            .user(thisUser)
-            .id(3L)
-            .build();
-
-    Iterable<PersonalSchedule> allSchedules = Arrays.asList(existingSchedule1, existingSchedule2);
-
-    // Case 1: Same name and same quarter (Should detect as duplicate)
-    PersonalSchedule incomingSchedule1 =
-        PersonalSchedule.builder()
-            .name("TestName")
-            .quarter("20222")
-            .description("Updated description")
-            .id(3L)
-            .user(thisUser)
-            .build();
-
-    when(personalscheduleRepository.findAllByUserId(thisUser.getId())).thenReturn(allSchedules);
-
-    boolean duplicateExists1 =
-        StreamSupport.stream(allSchedules.spliterator(), false)
-            .anyMatch(
-                schedule ->
-                    schedule.getName().equals(incomingSchedule1.getName())
-                        && schedule.getQuarter().equals(incomingSchedule1.getQuarter())
-                        && schedule.getId() != incomingSchedule1.getId());
-
-    assertTrue(duplicateExists1);
-
-    // Case 2: Same name but different quarter (Should NOT detect as duplicate)
-    PersonalSchedule incomingSchedule2 =
-        PersonalSchedule.builder()
-            .name("TestName")
-            .quarter("20223")
-            .description("Updated description")
-            .id(4L)
-            .user(thisUser)
-            .build();
-
-    boolean duplicateExists2 =
-        StreamSupport.stream(allSchedules.spliterator(), false)
-            .anyMatch(
-                schedule ->
-                    schedule.getName().equals(incomingSchedule2.getName())
-                        && schedule.getQuarter().equals(incomingSchedule2.getQuarter())
-                        && schedule.getId() != incomingSchedule2.getId());
-
-    assertFalse(duplicateExists2);
-
-    // Case 3: Same quarter but different name (Should NOT detect as duplicate)
-    PersonalSchedule incomingSchedule3 =
-        PersonalSchedule.builder()
-            .name("DifferentName")
-            .quarter("20222")
-            .description("Different description")
-            .id(5L)
-            .user(thisUser)
-            .build();
-
-    boolean duplicateExists3 =
-        StreamSupport.stream(allSchedules.spliterator(), false)
-            .anyMatch(
-                schedule ->
-                    schedule.getName().equals(incomingSchedule3.getName())
-                        && schedule.getQuarter().equals(incomingSchedule3.getQuarter())
-                        && schedule.getId() != incomingSchedule3.getId());
-
-    assertFalse(duplicateExists3);
-
-    //   Case 4: Different name and different quarter (Should NOT detect as duplicate)
-    PersonalSchedule incomingSchedule4 =
-        PersonalSchedule.builder()
-            .name("DifferentName")
-            .quarter("20223")
-            .description("Different description")
-            .id(6L)
-            .user(thisUser)
-            .build();
-
-    boolean duplicateExists4 =
-        StreamSupport.stream(allSchedules.spliterator(), false)
-            .anyMatch(
-                schedule ->
-                    schedule.getName().equals(incomingSchedule4.getName())
-                        && schedule.getQuarter().equals(incomingSchedule4.getQuarter())
-                        && schedule.getId() != incomingSchedule4.getId());
-
-    assertFalse(duplicateExists4);
+      Iterable<PersonalSchedule> allSchedules =
+          Arrays.asList(existingSchedule1, existingSchedule2);
+  
+      when(personalscheduleRepository.findAllByUserId(thisUser.getId())).thenReturn(allSchedules);
+  
+      // Test all 8 cases using the helper method
+      assertDuplicateCount("TestName", "20222", 3L, 1L, 1, allSchedules, thisUser);
+      assertDuplicateCount("TestName", "20224", 4L, 4L, 0, allSchedules, thisUser);
+      assertDuplicateCount("DifferentName", "20222", 5L, 5L, 0, allSchedules, thisUser);
+      assertDuplicateCount("DifferentName", "20223", 6L, 6L, 0, allSchedules, thisUser);
+      assertDuplicateCount("TestName", "20222", 1L, 1L, 0, allSchedules, thisUser);
+      assertDuplicateCount("TestName", "20224", 1L, 1L, 0, allSchedules, thisUser);
+      assertDuplicateCount("DifferentName", "20222", 1L, 1L, 0, allSchedules, thisUser);
+      assertDuplicateCount("DifferentName", "20223", 1L, 1L, 0, allSchedules, thisUser);
   }
+  
+  // Helper method for counting duplicates based on schedule name, quarter, incoming ID, and expected count
+  private void assertDuplicateCount(String name, String quarter, long incomingId, long idToCompare, long expectedCount, Iterable<PersonalSchedule> allSchedules, User thisUser) {
+      PersonalSchedule incomingSchedule = 
+          PersonalSchedule.builder()
+              .name(name)
+              .quarter(quarter)
+              .description("Updated description")
+              .id(incomingId)
+              .user(thisUser)
+              .build();
+  
+      long duplicateCount = StreamSupport.stream(allSchedules.spliterator(), false)
+          .filter(schedule ->
+              schedule.getName().equals(incomingSchedule.getName()) &&
+              schedule.getQuarter().equals(incomingSchedule.getQuarter()) &&
+              schedule.getId() != incomingSchedule.getId())
+          .count();
+  
+      assertEquals(expectedCount, duplicateCount);
+  }
+  
 }
