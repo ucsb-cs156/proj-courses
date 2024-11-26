@@ -242,9 +242,7 @@ public class UCSBCurriculumService {
     return retVal;
   }
 
-  /**
-   * This method retrieves the final exam information related to a certain enroll code. 
-   */
+  /** This method retrieves the final exam information related to a certain enroll code. */
   public String getFinalsInfo(String quarter, String enrollCd) throws Exception {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
