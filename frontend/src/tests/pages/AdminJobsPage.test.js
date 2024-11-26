@@ -255,4 +255,19 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(axiosMock.history.post[0].url).toBe(url);
   });
+
+  test("renders the Purge Job Log button", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const purgeButton = await screen.findByTestId("purgeJobLogButton");
+    expect(purgeButton).toBeInTheDocument();
+
+    expect(purgeButton).toHaveTextContent("Purge Job Log");
+  });
 });
