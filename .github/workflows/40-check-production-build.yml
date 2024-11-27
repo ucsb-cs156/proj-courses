@@ -10,6 +10,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+      # See: https://github.com/actions/setup-java#supported-distributions
+      JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }} 
+
 jobs:
   build:
 
@@ -17,6 +21,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
+    - run: |
+        echo env.JAVA_DISTRIBUTION=${{ env.JAVA_DISTRIBUTION }}
     - uses: szenius/set-timezone@v2.0
       with:
         timezoneLinux: "America/Los_Angeles"
@@ -24,8 +30,10 @@ jobs:
     - name: Set up Java (version from .java-version file)
       uses: actions/setup-java@v3
       with:
-         distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
+         distribution: ${{ env.JAVA_DISTRIBUTION }} 
          java-version-file: ./.java-version
+         cache: 'maven'
+         cache-dependency-path: 'pom.xml' 
   
     - name: Build with Maven
       env:
