@@ -40,8 +40,6 @@ export function isLectureWithNoSections(enrollCode, sections) {
     // Check if the section number is '0100', indicating a lecture
     if (sectionNumber === "0100") {
       // Filter all sections with the same courseId
-      // Stryker disable all
-      // Stryker restore all
       // Check if there is only one section for the course
       return courseSections.length === 1;
     } else if (sectionNumber.slice(-2) === "00") {
@@ -69,11 +67,10 @@ export function isLectureWithSections(enrollCode, sections) {
 
     if (sectionNumberEnd === "00") {
       // Filter all sections with the same courseId
-      // Stryker disable all
+
       const courseSections = sections.filter(
         (section) => section.courseInfo.courseId === courseId,
       );
-      // Stryker restore all
       // Check if there is only one section for the course
       return courseSections.length > 1;
     }
@@ -124,7 +121,6 @@ const onError = (error) => {
 };
 
 export default function SectionsTable({ sections }) {
-  // Stryker restore all
   // Stryker disable BooleanLiteral
   const { data: currentUser } = useCurrentUser();
 

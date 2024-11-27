@@ -28,6 +28,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -353,5 +354,60 @@ public class JobsControllerTests extends ControllerTestCase {
     Job jobReturned = objectMapper.readValue(responseString, Job.class);
 
     assertNotNull(jobReturned.getStatus());
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_query_job_by_id() throws Exception {
+    // Arrange
+    Job job1 =
+        Job.builder()
+            .id(1L) // Make sure the job has an ID
+            .log("this is job 1")
+            .build();
+
+    when(jobsRepository.findById(1L))
+        .thenReturn(Optional.of(job1)); // Ensure you're using Optional for findById
+
+    // Act
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/jobs/logs/{jobId}", 1L)) // Use the correct URL with the job ID
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // Assert
+    verify(jobsRepository, times(1))
+        .findById(1L); // Verify that findById(1L) was called, not findAll
+    String expectedJson =
+        mapper.writeValueAsString(Map.of("log", "this is job 1")); // Expected response
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(
+        expectedJson, responseString); // Compare the response with the expected log content
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_cannot_query_nonexistent_job_id() throws Exception {
+    // Arrange
+    long nonexistentJobId = 999L; // This job ID does not exist in the repository
+
+    // Mock the repository call to return an empty Optional, simulating a nonexistent job
+    when(jobsRepository.findById(nonexistentJobId)).thenReturn(Optional.empty());
+
+    // Act
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/jobs/logs/{jobId}", nonexistentJobId))
+            .andExpect(status().isNotFound()) // Expect 404 Not Found status
+            .andReturn();
+
+    // Assert
+    verify(jobsRepository, times(1))
+        .findById(nonexistentJobId); // Verify findById was called once with the nonexistent job ID
+    String responseString = response.getResponse().getContentAsString();
+    assertNotNull(
+        responseString.contains(
+            "Job not found")); // Check that the response contains an error message
   }
 }

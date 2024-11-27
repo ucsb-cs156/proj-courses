@@ -15,13 +15,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
@@ -174,5 +177,18 @@ public class JobsController extends ApiController {
   public Job launchUploadGradeData() {
     UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();
     return jobService.runAsJob(updateGradeDataJob);
+  }
+
+  @Operation(summary = "Get job logs")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("/logs/{jobId}")
+  public Map<String, String> getJobLog(@Parameter(name = "jobId") @PathVariable Long jobId) {
+    Job job =
+        jobsRepository
+            .findById(jobId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
+
+    // Assuming 'getLog' method returns the log output as a string
+    return Map.of("log", job.getLog());
   }
 }
