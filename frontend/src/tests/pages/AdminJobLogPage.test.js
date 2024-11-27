@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -33,7 +33,7 @@ describe("AdminJobLogPage tests", () => {
             <Route path="/admin/jobs/logs/:id" element={<AdminJobLogPage />} />
           </Routes>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByText("Back to Job List")).toBeInTheDocument();
@@ -52,12 +52,11 @@ describe("AdminJobLogPage tests", () => {
             <Route path="/admin/jobs/logs/:id" element={<AdminJobLogPage />} />
           </Routes>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    await waitFor(() =>
-      expect(screen.getByText("Sample job log content")).toBeInTheDocument()
-    );
+    const logContent = await screen.findByText("Sample job log content");
+    expect(logContent).toBeInTheDocument();
   });
 
   test("displays 'Loading...' text when job logs are not yet available", async () => {
@@ -72,7 +71,7 @@ describe("AdminJobLogPage tests", () => {
             <Route path="/admin/jobs/logs/:id" element={<AdminJobLogPage />} />
           </Routes>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // Ensure that loading text is shown when no data is returned
@@ -91,7 +90,7 @@ describe("AdminJobLogPage tests", () => {
             <Route path="/admin/jobs/logs/:id" element={<AdminJobLogPage />} />
           </Routes>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const backButton = screen.getByText("Back to Job List");
@@ -117,12 +116,10 @@ describe("AdminJobLogPage tests", () => {
             <Route path="/admin/jobs/logs/:id" element={<AdminJobLogPage />} />
           </Routes>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    await waitFor(() =>
-      expect(screen.getByText("Sample job log content")).toBeInTheDocument()
-    );
+    const logContent = await screen.findByText("Sample job log content");
+    expect(logContent).toBeInTheDocument();
   });
-
 });

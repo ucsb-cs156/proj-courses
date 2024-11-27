@@ -60,4 +60,118 @@ describe("JobsTable tests", () => {
       screen.getByTestId(`JobsTable-header-id-sort-carets`),
     ).toHaveTextContent("🔽");
   });
+
+  test("renders short logs correctly", () => {
+    const jobsWithShortLog = [
+      {
+        id: 1,
+        createdAt: "2023-11-01T12:00:00Z",
+        updatedAt: "2023-11-01T12:30:00Z",
+        status: "pending",
+        log: "Single line log",
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsWithShortLog} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
+    expect(logCell).toHaveTextContent("Single line log");
+  });
+
+  test("renders long logs and handles truncation", () => {
+    const jobsWithLongLog = [
+      {
+        id: 2,
+        createdAt: "2023-11-01T12:00:00Z",
+        updatedAt: "2023-11-01T12:30:00Z",
+        status: "in-progress",
+        log: "Line \n".repeat(15), // Long log of 15 lines
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsWithLongLog} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
+    const logText = "Line Line Line Line Line Line Line Line Line Line"; // 15 lines
+    expect(logCell).toHaveTextContent(logText.slice(0, 10)); // The first 10 lines
+
+    // Check that the "See entire log" link is present
+    const link = screen.getByRole("link", { name: /See entire log/i });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/admin/jobs/logs/2");
+  });
+
+  test("does not show 'See entire log' for logs of exactly 10 lines", () => {
+    const jobsWithExact10Lines = [
+      {
+        id: 2,
+        createdAt: "2023-11-01T12:00:00Z",
+        updatedAt: "2023-11-01T12:30:00Z",
+        status: "in-progress",
+        log: "Line \n".repeat(9), // Exactly 10 lines
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsWithExact10Lines} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
+    expect(logCell).toHaveTextContent(
+      "Line Line Line Line Line Line Line Line Line",
+    );
+
+    // The 'See entire log' link should NOT be present because the log is exactly 10 lines
+    const link = screen.queryByRole("link", { name: /See entire log/i });
+    expect(link).not.toBeInTheDocument();
+  });
+
+  test("displays 'No logs available' when log is empty or null", () => {
+    const jobsWithEmptyLog = [
+      {
+        id: 3,
+        createdAt: "2023-11-01T12:00:00Z",
+        updatedAt: "2023-11-01T12:30:00Z",
+        status: "complete",
+        log: null,
+      },
+      {
+        id: 4,
+        createdAt: "2023-11-01T12:00:00Z",
+        updatedAt: "2023-11-01T12:30:00Z",
+        status: "complete",
+        log: "",
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsWithEmptyLog} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const logCell1 = screen.getByTestId("JobsTable-cell-row-0-col-Log");
+    const logCell2 = screen.getByTestId("JobsTable-cell-row-1-col-Log");
+
+    expect(logCell1).toHaveTextContent("No logs available");
+    expect(logCell2).toHaveTextContent("No logs available");
+  });
 });
