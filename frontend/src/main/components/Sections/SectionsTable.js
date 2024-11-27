@@ -114,9 +114,15 @@ export const handleLectureAddToSchedule = (section, schedule, mutation) => {
 };
 
 export const onSuccess = (response) => {
-  toast(
-    `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
-  );
+  if (response.length < 3) {
+    toast(
+      `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
+    );
+  } else {
+    toast(
+      `Course ${response[0].enrollCd} replaced old section ${response[2].enrollCd} with new section ${response[1].enrollCd}`,
+    );
+  }
 };
 
 export const onError = (error) => {
