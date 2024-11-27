@@ -40,7 +40,6 @@ public class UpdateCourseDataJob implements JobContextConsumer {
         if (ifStale) {
           if (!isStale) {
 
-            ctx.log("Data is not stale for [" + subjectArea + " " + quarterYYYYQ + "]");
             continue;
           }
         }
@@ -63,9 +62,6 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     List<ConvertedSection> convertedSections =
         ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ, "A");
 
-    ctx.log("Found " + convertedSections.size() + " sections");
-    ctx.log("Storing in MongoDB Collection...");
-
     int newSections = 0;
     int updatedSections = 0;
     int errors = 0;
@@ -87,7 +83,6 @@ public class UpdateCourseDataJob implements JobContextConsumer {
           newSections++;
         }
       } catch (Exception e) {
-        ctx.log("Error saving section: " + e.getMessage());
         errors++;
       }
     }
@@ -99,7 +94,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
         String.format(
             "%d new sections saved, %d sections updated, %d errors, last update: %s",
             newSections, updatedSections, errors, savedUpdate.getLastUpdate()));
+
     ctx.log("Saved update: " + savedUpdate);
-    ctx.log("Courses for [" + subjectArea + " " + quarterYYYYQ + "] have been updated");
   }
 }
