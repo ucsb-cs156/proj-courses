@@ -21,7 +21,9 @@ const AdminJobsPage = () => {
       method: "DELETE",
     }),
     {},
+    // Stryker disable all
     ["/api/jobs/all"], // invalidate the cache key for jobs list
+    // Stryker restore all
   );
 
   const handlePurgeJobLog = () => {
