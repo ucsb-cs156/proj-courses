@@ -17,6 +17,10 @@ jest.mock("react-router-dom", () => ({
 describe("AdminJobLogPage tests", () => {
   const queryClient = new QueryClient();
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test("renders the AdminJobLogPage with back button and header", async () => {
     useBackend.mockReturnValue({
       data: "Sample job log content",
@@ -95,4 +99,30 @@ describe("AdminJobLogPage tests", () => {
 
     expect(mockNavigate).toHaveBeenCalledWith("/admin/jobs");
   });
+
+  test("ensures correct URL and method are used", async () => {
+    useBackend.mockImplementationOnce((url, options) => {
+      expect(url).toEqual([`/api/jobs/logs/1`]);
+      expect(options).toEqual({
+        method: "GET",
+        url: `/api/jobs/logs/1`,
+      });
+      return { data: "Sample job log content" };
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/admin/jobs/logs/1"]}>
+          <Routes>
+            <Route path="/admin/jobs/logs/:id" element={<AdminJobLogPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByText("Sample job log content")).toBeInTheDocument()
+    );
+  });
+
 });
