@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { useBackend } from "main/utils/useBackend";
 
-const JobLogPage = () => {
+const AdminJobLogPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -25,4 +25,4 @@ const JobLogPage = () => {
   );
 };
 
-export default JobLogPage;
+export default AdminJobLogPage;
