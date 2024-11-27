@@ -304,10 +304,8 @@ public class UCSBCurriculumServiceTests {
     String enrollCode = "67421";
     String quarter = "20251";
 
-    String expectedURL =
-        UCSBCurriculumService.FINALS_ENDPOINT
-            .replace("{quarter}", quarter)
-            .replace("{enrollcode}", enrollCode);
+    String expectedParams = String.format("?quarter=%s&enrollCode=%s", quarter, enrollCode);
+    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))

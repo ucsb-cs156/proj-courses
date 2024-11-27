@@ -49,7 +49,7 @@ public class UCSBCurriculumService {
       "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
 
   public static final String FINALS_ENDPOINT =
-      "https://api.ucsb.edu/academics/curriculums/v3/finals/{quarter}/{enrollcode}";
+      "https://api.ucsb.edu/academics/curriculums/v3/finals";
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
 
@@ -249,7 +249,9 @@ public class UCSBCurriculumService {
     headers.set("ucsb-api-key", this.apiKey);
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
-    String url = "https://api.ucsb.edu/academics/curriculums/v3/finals/" + quarter + "/" + enrollCd;
+
+    String params = String.format("?quarter=%s&enrollCode=%s", quarter, enrollCd);
+    String url = FINALS_ENDPOINT + params;
 
     log.info("url=" + url);
 
