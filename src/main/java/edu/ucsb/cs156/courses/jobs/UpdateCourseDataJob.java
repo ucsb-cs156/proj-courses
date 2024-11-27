@@ -91,9 +91,9 @@ public class UpdateCourseDataJob implements JobContextConsumer {
         updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);
 
     ctx.log(
-      String.format(
-          "%d new sections saved, %d sections updated, %d errors, last update: %s",
-          newSections, updatedSections, errors, savedUpdate.getLastUpdate()));
+        String.format(
+            "%d new sections saved, %d sections updated, %d errors, last update: %s",
+            newSections, updatedSections, errors, savedUpdate.getLastUpdate()));
 
     ctx.log("Saved update: " + savedUpdate);
   }
