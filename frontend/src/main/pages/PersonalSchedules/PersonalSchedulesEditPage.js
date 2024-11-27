@@ -43,7 +43,9 @@ export default function PersonalSchedulesEditPage() {
     data: {
       user: personalSchedule.user,
       name: personalSchedule.name,
-      description: personalSchedule.description,
+      ...(personalSchedule.description && {
+        description: personalSchedule.description,
+      }),
       quarter: personalSchedule.quarter,
     },
   });
