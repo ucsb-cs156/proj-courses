@@ -1,6 +1,5 @@
 import React from "react";
 import OurTable, {
-  //PlaintextColumn,
   DateColumn,
 } from "main/components/OurTable";
 import { Link } from "react-router-dom";
