@@ -1,7 +1,5 @@
 import React from "react";
-import OurTable, {
-  DateColumn,
-} from "main/components/OurTable";
+import OurTable, { DateColumn } from "main/components/OurTable";
 import { Link } from "react-router-dom";
 
 export default function JobsTable({ jobs }) {
@@ -23,12 +21,20 @@ export default function JobsTable({ jobs }) {
       accessor: "log",
       Cell: ({ cell }) => {
         const log = cell.row.original.log;
-        const logLines = log ? log.split("\n") : [];
+        if (!log) {
+          return (
+            <div data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}>
+              No logs available
+            </div>
+          );
+        }
+        const logLines = log.split("\n");
+        const truncatedLog = logLines.slice(0, 10).join("\n");
         return (
           <div data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}>
             {logLines.length > 10 ? (
               <>
-                {logLines.slice(0, 10).join("\n")}
+                {truncatedLog}
                 <span>...</span>
                 <br />
                 <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
