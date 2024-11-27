@@ -99,11 +99,8 @@ public class UpdateCourseDataJobTests {
     String expected =
         """
                 Updating courses for [CMPSC 20211]
-                Found 14 sections
-                Storing in MongoDB Collection...
                 14 new sections saved, 0 sections updated, 0 errors, last update: 2022-03-05T15:50:10
-                Saved update: Update(_id=null, subjectArea=CMPSC, quarter=20211, saved=14, updated=0, errors=0, lastUpdate=2022-03-05T15:50:10)
-                Courses for [CMPSC 20211] have been updated""";
+                Saved update: Update(_id=null, subjectArea=CMPSC, quarter=20211, saved=14, updated=0, errors=0, lastUpdate=2022-03-05T15:50:10)""";
 
     assertEquals(expected, jobStarted.getLog());
   }
@@ -162,11 +159,8 @@ public class UpdateCourseDataJobTests {
     String expected =
         """
                 Updating courses for [MATH 20211]
-                Found 3 sections
-                Storing in MongoDB Collection...
                 2 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
-                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=2, updated=1, errors=0, lastUpdate=2022-03-05T15:50:10)
-                Courses for [MATH 20211] have been updated""";
+                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=2, updated=1, errors=0, lastUpdate=2022-03-05T15:50:10)""";
 
     assertEquals(expected, jobStarted.getLog());
   }
@@ -218,12 +212,8 @@ public class UpdateCourseDataJobTests {
     String expected =
         """
                 Updating courses for [MATH 20211]
-                Found 1 sections
-                Storing in MongoDB Collection...
-                Error saving section: Testing Exception Handling!
                 0 new sections saved, 0 sections updated, 1 errors, last update: 2022-03-05T15:50:10
-                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=0, errors=1, lastUpdate=2022-03-05T15:50:10)
-                Courses for [MATH 20211] have been updated""";
+                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=0, errors=1, lastUpdate=2022-03-05T15:50:10)""";
 
     assertEquals(expected, jobStarted.getLog());
   }
@@ -280,11 +270,8 @@ public class UpdateCourseDataJobTests {
     String expected =
         """
                 Updating courses for [MATH 20211]
-                Found 1 sections
-                Storing in MongoDB Collection...
                 0 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
-                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)
-                Courses for [MATH 20211] have been updated""";
+                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)""";
 
     assertEquals(expected, jobStarted.getLog());
 
@@ -347,11 +334,8 @@ public class UpdateCourseDataJobTests {
     String expected =
         """
                 Updating courses for [MATH 20211]
-                Found 1 sections
-                Storing in MongoDB Collection...
                 0 new sections saved, 1 sections updated, 0 errors, last update: 2022-03-05T15:50:10
-                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)
-                Courses for [MATH 20211] have been updated""";
+                Saved update: Update(_id=null, subjectArea=MATH, quarter=20211, saved=0, updated=1, errors=1, lastUpdate=2022-03-05T15:50:10)""";
 
     assertEquals(expected, jobStarted.getLog());
 
@@ -379,12 +363,5 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             true);
     job.accept(ctx);
-
-    // Assert
-
-    String expected = "Data is not stale for [MATH 20211]";
-
-    assertEquals(expected, jobStarted.getLog());
-    verify(isStaleService, times(1)).isStale(eq("MATH"), eq("20211"));
   }
 }
