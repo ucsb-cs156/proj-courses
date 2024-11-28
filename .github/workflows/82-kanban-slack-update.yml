@@ -14,7 +14,7 @@ env:
   TEAM: ${{ github.repository }}
   ORG_NAME: ${{ github.repository_owner }}
   COLUMNS: "Todo, In Progress, In Review, Done"
-  END_DATE: "2024-12-13"  # Set the end date for the workflow
+  END_DATE: "2024-11-27"  # Set the end date for the workflow
 
 jobs:
 
