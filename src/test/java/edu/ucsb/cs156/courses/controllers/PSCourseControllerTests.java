@@ -626,6 +626,76 @@ public class PSCourseControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"USER"})
   @Test
+  public void api_courses_post__user_logged_in__replaces_previous_secondary_section()
+      throws Exception {
+
+    User u = currentUserService.getCurrentUser().getUser();
+
+    PersonalSchedule personalSchedule =
+        PersonalSchedule.builder()
+            .name("Test Schedule")
+            .description("Testing hasPreviousSecondary")
+            .quarter("20221")
+            .user(u)
+            .id(1L)
+            .build();
+
+    when(personalScheduleRepository.findByIdAndUser(eq(1L), eq(u)))
+        .thenReturn(Optional.of(personalSchedule));
+
+    when(ucsbCurriculumService.getAllSections(eq("08326"), eq("20221")))
+        .thenReturn(SectionFixtures.SECTION_JSON_CMPSC156_UNEXPECTED_REVERSED);
+
+    PSCourse existingSecondaryCourse =
+        PSCourse.builder().enrollCd("08300").psId(1L).user(u).id(100L).build();
+
+    when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08300")))
+        .thenReturn(Optional.of(existingSecondaryCourse));
+
+    when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08326"))).thenReturn(Optional.empty());
+
+    when(coursesRepository.findByPsIdAndEnrollCd(eq(1L), eq("08292"))).thenReturn(Optional.empty());
+
+    PSCourse updatedSecondaryCourse =
+        PSCourse.builder().enrollCd("08326").psId(1L).user(u).id(100L).build();
+
+    when(coursesRepository.save(eq(existingSecondaryCourse))).thenReturn(updatedSecondaryCourse);
+
+    PSCourse primaryCourse = PSCourse.builder().enrollCd("08292").psId(1L).user(u).id(0L).build();
+
+    when(coursesRepository.save(eq(primaryCourse))).thenReturn(primaryCourse);
+
+    PSCourse oldSection = new PSCourse();
+    oldSection.setUser(u);
+    oldSection.setEnrollCd("08300");
+    oldSection.setPsId(1L);
+    oldSection.setId(0L);
+
+    ArrayList<PSCourse> expectedCourses = new ArrayList<>();
+    expectedCourses.add(primaryCourse);
+    expectedCourses.add(updatedSecondaryCourse);
+    expectedCourses.add(oldSection);
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                post("/api/courses/post")
+                    .param("enrollCd", "08326")
+                    .param("psId", "1")
+                    .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    verify(coursesRepository, times(2)).findByPsIdAndEnrollCd(eq(1L), eq("08300"));
+    verify(coursesRepository, times(1)).save(updatedSecondaryCourse);
+
+    String expectedJson = mapper.writeValueAsString(expectedCourses);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"USER"})
+  @Test
   public void apiCoursesUserCreatesCourseWithInvalidEnrollCd() throws Exception {
     // arrange
     User u = currentUserService.getCurrentUser().getUser();

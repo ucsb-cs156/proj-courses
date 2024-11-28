@@ -427,6 +427,33 @@ describe("Section tests", () => {
     );
   });
 
+  test("calls onSuccess when mutation is successful for replacement and calls toasy with correct parameters", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const onSuccess = useBackendMutation.mock.calls[0][1].onSuccess;
+    const mockResponse = [
+      { id: 1, enrollCd: "1234" },
+      { id: 2, enrollCd: "5678" },
+      { id: 3, enrollCd: "9012" },
+    ];
+    onSuccess(mockResponse);
+
+    expect(toast).toHaveBeenCalledWith(
+      "Course 1234 replaced old section 9012 with new section 5678",
+    );
+  });
+
   test("calls onError when mutation throws an error and calls toast with correct parameters", () => {
     const mockMutate = jest.fn();
     const mockMutation = { mutate: mockMutate };
