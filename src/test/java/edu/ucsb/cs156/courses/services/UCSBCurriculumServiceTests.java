@@ -296,4 +296,26 @@ public class UCSBCurriculumServiceTests {
     String result = ucs.getAllSections(enrollCode, quarter);
     assertEquals(expectedResult, result);
   }
+
+  @Test
+  public void test_getFinalsInfo_success() throws Exception {
+    String expectedResult = "{\"expectedResult\": \"finals info\"}";
+
+    String enrollCode = "67421";
+    String quarter = "20251";
+
+    String expectedParams = String.format("?quarter=%s&enrollCode=%s", quarter, enrollCode);
+    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "3.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+    String result = ucs.getFinalsInfo(quarter, enrollCode);
+
+    assertEquals(expectedResult, result);
+  }
 }
