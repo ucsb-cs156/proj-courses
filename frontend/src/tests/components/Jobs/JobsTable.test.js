@@ -104,13 +104,37 @@ describe("JobsTable tests", () => {
     );
 
     const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
-    const logText = "Line Line Line Line Line Line Line Line Line Line"; // 15 lines
-    expect(logCell).toHaveTextContent(logText.slice(0, 10)); // The first 10 lines
+    const truncatedLog = jobsWithLongLog[0].log.split("\n").slice(0, 10).join("");
 
-    // Check that the "See entire log" link is present
+    expect(logCell).toHaveTextContent(truncatedLog.replace(/\n/g, ""));
+
     const link = screen.getByRole("link", { name: /See entire log/i });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/admin/jobs/logs/2");
+  });
+
+  test("renders long logs and handles truncation (snapshot)", () => {
+    const queryClient = new QueryClient();
+    const jobsWithLongLog = [
+      {
+        id: 2,
+        createdAt: "2023-11-01T12:00:00Z",
+        updatedAt: "2023-11-01T12:30:00Z",
+        status: "in-progress",
+        log: "Line \n".repeat(15)
+      },
+    ];
+  
+    const { asFragment } = render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsWithLongLog} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+  
+    const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
+    expect(logCell).toMatchSnapshot();
   });
 
   test("does not show 'See entire log' for logs of exactly 10 lines", () => {
@@ -120,7 +144,7 @@ describe("JobsTable tests", () => {
         createdAt: "2023-11-01T12:00:00Z",
         updatedAt: "2023-11-01T12:30:00Z",
         status: "in-progress",
-        log: "Line \n".repeat(9), // Exactly 10 lines
+        log: "Line \n".repeat(9), 
       },
     ];
 
@@ -137,7 +161,7 @@ describe("JobsTable tests", () => {
       "Line Line Line Line Line Line Line Line Line",
     );
 
-    // The 'See entire log' link should NOT be present because the log is exactly 10 lines
+    // The 'See entire log' link should NOT be present
     const link = screen.queryByRole("link", { name: /See entire log/i });
     expect(link).not.toBeInTheDocument();
   });

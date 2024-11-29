@@ -34,7 +34,7 @@ export default function JobsTable({ jobs }) {
           <div data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}>
             {logLines.length > 10 ? (
               <>
-                {truncatedLog}
+                <pre>{truncatedLog}</pre>
                 <span>...</span>
                 <br />
                 <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
