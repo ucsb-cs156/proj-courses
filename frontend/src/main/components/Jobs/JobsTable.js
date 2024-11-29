@@ -1,6 +1,7 @@
 import React from "react";
 import OurTable, { DateColumn } from "main/components/OurTable";
 import { Link } from "react-router-dom";
+import Plaintext from "../Utils/Plaintext";
 
 export default function JobsTable({ jobs }) {
   const testid = "JobsTable";
@@ -34,7 +35,7 @@ export default function JobsTable({ jobs }) {
           <div data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}>
             {logLines.length > 10 ? (
               <>
-                <pre>{truncatedLog}</pre>
+                <Plaintext text={truncatedLog} />
                 <span>...</span>
                 <br />
                 <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
