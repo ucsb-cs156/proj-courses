@@ -104,7 +104,10 @@ describe("JobsTable tests", () => {
     );
 
     const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
-    const truncatedLog = jobsWithLongLog[0].log.split("\n").slice(0, 10).join("");
+    const truncatedLog = jobsWithLongLog[0].log
+      .split("\n")
+      .slice(0, 10)
+      .join("");
 
     expect(logCell).toHaveTextContent(truncatedLog.replace(/\n/g, ""));
 
@@ -121,18 +124,18 @@ describe("JobsTable tests", () => {
         createdAt: "2023-11-01T12:00:00Z",
         updatedAt: "2023-11-01T12:30:00Z",
         status: "in-progress",
-        log: "Line \n".repeat(15)
+        log: "Line \n".repeat(15),
       },
     ];
-  
-    const { asFragment } = render(
+
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <JobsTable jobs={jobsWithLongLog} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-  
+
     const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
     expect(logCell).toMatchSnapshot();
   });
@@ -144,7 +147,7 @@ describe("JobsTable tests", () => {
         createdAt: "2023-11-01T12:00:00Z",
         updatedAt: "2023-11-01T12:30:00Z",
         status: "in-progress",
-        log: "Line \n".repeat(9), 
+        log: "Line \n".repeat(9),
       },
     ];
 
