@@ -255,4 +255,42 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(axiosMock.history.post[0].url).toBe(url);
   });
+
+  test("renders the Purge Job Log button", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const purgeButton = await screen.findByTestId("purgeJobLogButton");
+    expect(purgeButton).toBeInTheDocument();
+
+    expect(purgeButton).toHaveTextContent("Purge Job Log");
+  });
+
+  test("clicking the Purge Job Log button triggers DELETE /api/jobs/all", async () => {
+    axiosMock
+      .onDelete("/api/jobs/all")
+      .reply(200, { message: "All jobs deleted" });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const purgeButton = await screen.findByTestId("purgeJobLogButton");
+    expect(purgeButton).toBeInTheDocument();
+
+    fireEvent.click(purgeButton);
+
+    await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
+
+    expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
+  });
 });

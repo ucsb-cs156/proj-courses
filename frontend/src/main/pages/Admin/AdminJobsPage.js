@@ -14,6 +14,22 @@ import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCours
 const AdminJobsPage = () => {
   const refreshJobsIntervalMilliseconds = 5000;
 
+  // purge job log API call
+  const purgeJobLogMutation = useBackendMutation(
+    () => ({
+      url: "/api/jobs/all",
+      method: "DELETE",
+    }),
+    {},
+    // Stryker disable all
+    ["/api/jobs/all"], // invalidate the cache key for jobs list
+    // Stryker restore all
+  );
+
+  const handlePurgeJobLog = () => {
+    purgeJobLogMutation.mutate();
+  };
+
   // test job
 
   const objectToAxiosParamsTestJob = (data) => ({
@@ -156,6 +172,16 @@ const AdminJobsPage = () => {
       <h2 className="p-3">Job Status</h2>
 
       <JobsTable jobs={jobs} />
+
+      <div className="mt-3">
+        <button
+          className="btn btn-danger"
+          data-testid="purgeJobLogButton"
+          onClick={handlePurgeJobLog}
+        >
+          {"Purge Job Log"}
+        </button>
+      </div>
     </BasicLayout>
   );
 };
