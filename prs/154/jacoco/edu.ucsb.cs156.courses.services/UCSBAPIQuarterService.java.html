@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UCSBAPIQuarterService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.services</a> &gt; <span class="el_source">UCSBAPIQuarterService.java</span></div><h1>UCSBAPIQuarterService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.services;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.models.Quarter;
+import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+/** Service object that wraps the UCSB Academic Curriculum API */
+@Service
+<span class="fc" id="L26">@Slf4j</span>
+public class UCSBAPIQuarterService {
+
+  @Value(&quot;${app.startQtrYYYYQ:20221}&quot;)
+  private String startQtrYYYYQ;
+
+  @Value(&quot;${app.endQtrYYYYQ:20222}&quot;)
+  private String endQtrYYYYQ;
+
+  @Autowired private ObjectMapper objectMapper;
+
+  @Autowired UCSBAPIQuarterRepository ucsbApiQuarterRepository;
+
+  @Value(&quot;${app.ucsb.api.consumer_key}&quot;)
+  private String apiKey;
+
+<span class="fc" id="L42">  private RestTemplate restTemplate = new RestTemplate();</span>
+
+<span class="fc" id="L44">  public UCSBAPIQuarterService(RestTemplateBuilder restTemplateBuilder) throws Exception {</span>
+<span class="fc" id="L45">    restTemplate = restTemplateBuilder.build();</span>
+<span class="fc" id="L46">  }</span>
+
+  public static final String CURRENT_QUARTER_ENDPOINT =
+      &quot;https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current&quot;;
+
+  public static final String ALL_QUARTERS_ENDPOINT =
+      &quot;https://api.ucsb.edu/academics/quartercalendar/v1/quarters&quot;;
+
+  public static final String END_QUARTER_ENDPOINT =
+      &quot;https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end&quot;;
+
+  public String getStartQtrYYYYQ() {
+<span class="fc" id="L58">    return startQtrYYYYQ;</span>
+  }
+
+  public String getEndQtrYYYYQ() {
+<span class="fc" id="L62">    return endQtrYYYYQ;</span>
+  }
+
+  public String getCurrentQuarterYYYYQ() throws Exception {
+<span class="fc" id="L66">    UCSBAPIQuarter quarter = getCurrentQuarter();</span>
+<span class="fc" id="L67">    return quarter.getQuarter();</span>
+  }
+
+  public UCSBAPIQuarter getCurrentQuarter() throws Exception {
+<span class="fc" id="L71">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L72">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L73">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L74">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L75">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L77">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L79">    String url = CURRENT_QUARTER_ENDPOINT;</span>
+
+<span class="fc" id="L81">    log.info(&quot;url=&quot; + url);</span>
+
+<span class="fc" id="L83">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L84">    MediaType contentType = null;</span>
+<span class="fc" id="L85">    HttpStatus statusCode = null;</span>
+
+<span class="fc" id="L87">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L88">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L89">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L90">    retVal = re.getBody();</span>
+
+<span class="fc" id="L92">    log.info(</span>
+        &quot;json: {} contentType: {} statusCode: {} entity: {}&quot;,
+        retVal,
+        contentType,
+        statusCode,
+        entity);
+<span class="fc" id="L98">    UCSBAPIQuarter quarter = null;</span>
+<span class="fc" id="L99">    quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);</span>
+<span class="fc" id="L100">    return quarter;</span>
+  }
+
+  public List&lt;UCSBAPIQuarter&gt; getAllQuarters() throws Exception {
+<span class="fc" id="L104">    List&lt;UCSBAPIQuarter&gt; quarters = ucsbApiQuarterRepository.findAll();</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">    if (quarters.isEmpty()) {</span>
+<span class="fc" id="L106">      quarters = this.loadAllQuarters();</span>
+    }
+<span class="fc" id="L108">    return quarters;</span>
+  }
+
+  public List&lt;UCSBAPIQuarter&gt; getAllQuartersFromAPI() throws Exception {
+<span class="fc" id="L112">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L113">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L114">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L115">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L116">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L118">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L120">    String url = ALL_QUARTERS_ENDPOINT;</span>
+
+<span class="fc" id="L122">    log.info(&quot;url=&quot; + url);</span>
+
+<span class="fc" id="L124">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L125">    MediaType contentType = null;</span>
+<span class="fc" id="L126">    HttpStatus statusCode = null;</span>
+
+<span class="fc" id="L128">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L129">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L130">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L131">    retVal = re.getBody();</span>
+
+<span class="fc" id="L133">    log.info(</span>
+        &quot;json: {} contentType: {} statusCode: {} entity: {}&quot;,
+        retVal,
+        contentType,
+        statusCode,
+        entity);
+<span class="fc" id="L139">    List&lt;UCSBAPIQuarter&gt; quarters = null;</span>
+<span class="fc" id="L140">    quarters = objectMapper.readValue(retVal, new TypeReference&lt;List&lt;UCSBAPIQuarter&gt;&gt;() {});</span>
+<span class="fc" id="L141">    return quarters;</span>
+  }
+
+  public boolean quarterYYYYQInRange(String quarterYYYYQ) {
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    boolean dateGEStart = quarterYYYYQ.compareTo(startQtrYYYYQ) &gt;= 0;</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">    boolean dateLEEnd = quarterYYYYQ.compareTo(endQtrYYYYQ) &lt;= 0;</span>
+<span class="fc bfc" id="L147" title="All 4 branches covered.">    return (dateGEStart &amp;&amp; dateLEEnd);</span>
+  }
+
+  public List&lt;UCSBAPIQuarter&gt; loadAllQuarters() throws Exception {
+<span class="fc" id="L151">    List&lt;UCSBAPIQuarter&gt; quarters = this.getAllQuartersFromAPI();</span>
+<span class="fc" id="L152">    List&lt;UCSBAPIQuarter&gt; savedQuarters = new ArrayList&lt;UCSBAPIQuarter&gt;();</span>
+<span class="fc" id="L153">    quarters.forEach(</span>
+        (quarter) -&gt; {
+<span class="fc bfc" id="L155" title="All 2 branches covered.">          if (quarterYYYYQInRange(quarter.getQuarter())) {</span>
+<span class="fc" id="L156">            ucsbApiQuarterRepository.save(quarter);</span>
+<span class="fc" id="L157">            savedQuarters.add(quarter);</span>
+          }
+<span class="fc" id="L159">        });</span>
+<span class="fc" id="L160">    log.info(&quot;savedQuarters.size={}&quot;, savedQuarters.size());</span>
+<span class="fc" id="L161">    return savedQuarters;</span>
+  }
+
+  public List&lt;String&gt; getActiveQuarterList() throws Exception {
+<span class="fc" id="L165">    List&lt;String&gt; activeQuarters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L166">    String startQuarter = getCurrentQuarterYYYYQ();</span>
+<span class="fc" id="L167">    String endQuarter = getEndQtrYYYYQ();</span>
+
+<span class="fc" id="L169">    List&lt;Quarter&gt; quarterObjects = Quarter.quarterList(startQuarter, endQuarter);</span>
+
+<span class="fc bfc" id="L171" title="All 2 branches covered.">    for (Quarter quarter : quarterObjects) {</span>
+<span class="fc" id="L172">      activeQuarters.add(quarter.getYYYYQ());</span>
+<span class="fc" id="L173">    }</span>
+
+<span class="fc" id="L175">    return activeQuarters;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
