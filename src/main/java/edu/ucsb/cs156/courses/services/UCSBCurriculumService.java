@@ -48,6 +48,9 @@ public class UCSBCurriculumService {
   public static final String ALL_SECTIONS_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
 
+  public static final String FINALS_ENDPOINT =
+      "https://api.ucsb.edu/academics/curriculums/v3/finals";
+
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
 
     HttpHeaders headers = new HttpHeaders();
@@ -229,6 +232,32 @@ public class UCSBCurriculumService {
     String retVal = "";
     MediaType contentType = null;
     HttpStatus statusCode = null;
+
+    ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+    contentType = re.getHeaders().getContentType();
+    statusCode = (HttpStatus) re.getStatusCode();
+    retVal = re.getBody();
+
+    log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+    return retVal;
+  }
+
+  public String getFinalsInfo(String quarter, String enrollCd) throws Exception {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    headers.set("ucsb-api-version", "3.0");
+    headers.set("ucsb-api-key", this.apiKey);
+
+    HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+    String params = String.format("?quarter=%s&enrollCode=%s", quarter, enrollCd);
+    String url = FINALS_ENDPOINT + params;
+
+    log.info("url=" + url);
+
+    String retVal;
+    MediaType contentType;
+    HttpStatus statusCode;
 
     ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     contentType = re.getHeaders().getContentType();

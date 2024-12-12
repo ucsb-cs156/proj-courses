@@ -24,10 +24,11 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-jest.mock("react-toastify", () => ({
-  toast: jest.fn(),
-}));
-
+jest.mock("react-toastify", () => {
+  const toast = jest.fn();
+  toast.error = jest.fn();
+  return { toast };
+});
 jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: jest.fn(),
 }));
@@ -426,7 +427,65 @@ describe("Section tests", () => {
     );
   });
 
+
+  test("calls onSuccess when mutation is successful for replacement and calls toasy with correct parameters", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const onSuccess = useBackendMutation.mock.calls[0][1].onSuccess;
+    const mockResponse = [
+      { id: 1, enrollCd: "1234" },
+      { id: 2, enrollCd: "5678" },
+      { id: 3, enrollCd: "9012" },
+    ];
+    onSuccess(mockResponse);
+
+    expect(toast).toHaveBeenCalledWith(
+      "Course 1234 replaced old section 9012 with new section 5678",
+    );
+  });
+
+  test("calls onError when mutation throws an error and calls toast with correct parameters", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Call the onSuccess function
+    const onError = useBackendMutation.mock.calls[0][1].onError;
+    const mockResponse = {
+      response: {
+        data: {
+          message: "class exists in schedule",
+        },
+      },
+    };
+    onError(mockResponse);
+
+    // Verify that toast was called with the correct parameters
+    expect(toast.error).toHaveBeenCalledWith("class exists in schedule");
+  });
+
   test("when error is received from backend, toast message error is displayed correctly", () => {
+
     const mockMutate = jest.fn();
     const mockMutation = { mutate: mockMutate };
 
@@ -441,20 +500,38 @@ describe("Section tests", () => {
     );
 
     const onError = useBackendMutation.mock.calls[0][1].onError;
-    const error = {
+
+    const mockError = {}; // No response or message
+    onError(mockError);
+
+    expect(toast.error).toHaveBeenCalledWith("An unexpected error occurred");
+  });
+
+  test("onError displays default message when error.response.data is undefined", () => {
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const onError = useBackendMutation.mock.calls[0][1].onError;
+
+    const mockError = {
       response: {
-        data: {
-          message:
-            "You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
-        },
+        data: undefined,
       },
     };
 
-    onError(error);
+    onError(mockError);
 
-    expect(toast).toHaveBeenCalledWith(
-      "Error: You already have a section of this course on your personal schedule; to add this one instead, drop the other one first.",
-    );
+    expect(toast.error).toHaveBeenCalledWith("An unexpected error occurred");
   });
 
   test("renders without crashing for empty table", () => {

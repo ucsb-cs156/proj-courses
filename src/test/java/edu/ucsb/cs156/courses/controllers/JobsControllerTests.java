@@ -11,6 +11,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -153,6 +154,39 @@ public class JobsControllerTests extends ControllerTestCase {
     String expectedJson = mapper.writeValueAsString(Map.of("message", "All jobs deleted"));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_getJobLogs_admin_can_get_job_log() throws Exception {
+    // Arrange
+    Long jobId = 1L;
+    String jobLog = "This is a job log";
+    Job job = Job.builder().build();
+    job.setLog(jobLog);
+    when(jobsRepository.findById(jobId)).thenReturn(Optional.of(job));
+
+    // Act & Assert
+    mockMvc
+        .perform(get("/api/jobs/logs/{id}", jobId))
+        .andExpect(status().isOk())
+        .andExpect(content().string(jobLog));
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_getJobLogs_admin_can_get_empty_log() throws Exception {
+    // Arrange
+    Long jobId = 2L;
+    Job job = Job.builder().build();
+    job.setLog("");
+    when(jobsRepository.findById(jobId)).thenReturn(Optional.of(job));
+
+    // Act & Assert
+    mockMvc
+        .perform(get("/api/jobs/logs/{id}", jobId))
+        .andExpect(status().isOk())
+        .andExpect(content().string(""));
   }
 
   @WithMockUser(roles = {"ADMIN"})

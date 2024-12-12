@@ -43,14 +43,19 @@ export default function PersonalSchedulesEditPage() {
     data: {
       user: personalSchedule.user,
       name: personalSchedule.name,
-      description: personalSchedule.description,
+      ...(personalSchedule.description && {
+        description: personalSchedule.description,
+      }),
       quarter: personalSchedule.quarter,
     },
   });
+
   const onSuccess = () => {};
+
   const onError = (error) => {
     toast(`Error: ${error.response.data.message}`);
   };
+
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess, onError },
