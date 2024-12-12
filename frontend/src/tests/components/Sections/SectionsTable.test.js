@@ -427,7 +427,6 @@ describe("Section tests", () => {
     );
   });
 
-
   test("calls onSuccess when mutation is successful for replacement and calls toasy with correct parameters", () => {
     const mockMutate = jest.fn();
     const mockMutation = { mutate: mockMutate };
@@ -485,7 +484,6 @@ describe("Section tests", () => {
   });
 
   test("when error is received from backend, toast message error is displayed correctly", () => {
-
     const mockMutate = jest.fn();
     const mockMutation = { mutate: mockMutate };
 
