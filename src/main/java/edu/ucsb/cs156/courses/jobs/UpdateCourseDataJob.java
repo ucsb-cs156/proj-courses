@@ -82,7 +82,6 @@ public class UpdateCourseDataJob implements JobContextConsumer {
           newSections++;
         }
       } catch (Exception e) {
-        ctx.log("Error saving section: " + e.getMessage());
         errors++;
       }
     }
@@ -94,6 +93,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
         String.format(
             "%d new sections saved, %d sections updated, %d errors, last update: %s",
             newSections, updatedSections, errors, savedUpdate.getLastUpdate()));
+
     ctx.log("Saved update: " + savedUpdate);
   }
 }

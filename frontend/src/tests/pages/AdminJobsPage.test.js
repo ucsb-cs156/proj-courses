@@ -59,7 +59,7 @@ describe("AdminJobsPage tests", () => {
     ).toHaveTextContent("complete");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
-    ).toHaveTextContent("Hello World! from test job!Goodbye from test job!");
+    ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
   });
 
   test("user can submit a test job", async () => {
@@ -255,9 +255,8 @@ describe("AdminJobsPage tests", () => {
     expect(axiosMock.history.post[0].url).toBe(url);
   });
 
-  test("user can clear jobs", async () => {
-    const url = "/api/jobs/all";
-    axiosMock.onDelete(url).reply(200, {});
+  test("user can purge all jobs in the JobsTable", async () => {
+    axiosMock.onDelete("/api/jobs/all").reply(200, {});
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -267,17 +266,14 @@ describe("AdminJobsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Clear Job Logs")).toBeInTheDocument();
+    expect(await screen.findByText("Purge Job Log")).toBeInTheDocument();
 
-    const dropDownButton = screen.getByText("Clear Job Logs");
-    expect(dropDownButton).toBeInTheDocument();
-    dropDownButton.click();
-
-    const clearJobsButton = screen.getByText("Clear");
-    expect(clearJobsButton).toBeInTheDocument();
-    clearJobsButton.click();
+    const purgeAllLogsButton = screen.getByText("Purge Job Log");
+    expect(purgeAllLogsButton).toBeInTheDocument();
+    purgeAllLogsButton.click();
 
     await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
-    expect(axiosMock.history.delete[0].url).toBe(url);
+
+    expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
   });
 });

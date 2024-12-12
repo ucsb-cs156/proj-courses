@@ -154,6 +154,55 @@ describe("PersonalSchedulesCreatePage tests", () => {
     );
   });
 
+  test("optional description works correctly", async () => {
+    const queryClient = new QueryClient();
+    const personalSchedule = {
+      id: 17,
+      name: "Student Name",
+      description: "",
+      quarter: "20222",
+    };
+
+    axiosMock
+      .onPost("/api/personalschedules/post")
+      .reply(202, personalSchedule);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesCreatePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const nameField = screen.getByTestId("PersonalScheduleForm-name");
+    const descriptionField = screen.getByTestId(
+      "PersonalScheduleForm-description",
+    );
+    const quarterField = document.querySelector(
+      "#PersonalScheduleForm-quarter",
+    );
+    const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
+
+    fireEvent.change(nameField, { target: { value: "Student Name" } });
+    fireEvent.change(descriptionField, { target: { value: "" } }); // Empty
+    fireEvent.change(quarterField, { target: { value: "20222" } });
+
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+    expect(axiosMock.history.post[0].params).toEqual({
+      name: "Student Name",
+      description: "",
+      quarter: "20222",
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: "/personalschedules/list",
+    });
+  });
+
   test("filling the form with a duplicate personal schedule returns an error", async () => {
     const queryClient = new QueryClient();
     const error = {

@@ -43,9 +43,9 @@ public class UCSBAPIQuarterController extends ApiController {
     return savedQuarters;
   }
 
-  @Operation(summary = "Get list of active quarters")
+  @Operation(summary = "Get a list of all active quarters")
   @GetMapping(value = "/activeQuarters", produces = "application/json")
   public List<String> activeQuarters() throws Exception {
-    return ucsbAPIQuarterService.getActiveQuarters();
+    return ucsbAPIQuarterService.getActiveQuarterList();
   }
 }
