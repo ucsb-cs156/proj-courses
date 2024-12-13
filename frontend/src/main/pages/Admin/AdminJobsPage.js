@@ -51,12 +51,6 @@ const AdminJobsPage = () => {
     purgeJobLogMutation.mutate();
   };
 
-  // ***** update courses job *******
-  const objectToAxiosParamsClearJobs = () => ({
-    url: "/api/jobs/all",
-    method: "DELETE",
-  });
-
   const objectToAxiosParamsUpdateCoursesJob = (data) => ({
     url: `/api/jobs/launch/updateCourses?quarterYYYYQ=${data.quarter}&subjectArea=${data.subject}&ifStale=${data.ifStale}`,
     method: "POST",
@@ -78,12 +72,6 @@ const AdminJobsPage = () => {
   });
 
   // Stryker disable all
-
-  const clearJobsMutation = useBackendMutation(
-    objectToAxiosParamsClearJobs,
-    {},
-    ["/api/jobs/all"],
-  );
 
   const updateCoursesJobMutation = useBackendMutation(
     objectToAxiosParamsUpdateCoursesJob,
@@ -109,10 +97,6 @@ const AdminJobsPage = () => {
     ["/api/jobs/all"],
   );
   // Stryker restore all
-
-  const clearJobs = async () => {
-    clearJobsMutation.mutate();
-  };
 
   const submitUpdateCoursesJob = async (data) => {
     updateCoursesJobMutation.mutate(data);
@@ -150,10 +134,6 @@ const AdminJobsPage = () => {
     {
       name: "Test Job",
       form: <TestJobForm submitAction={submitTestJob} />,
-    },
-    {
-      name: "Clear Job Logs",
-      form: <SingleButtonJobForm callback={clearJobs} text={"Clear"} />,
     },
     {
       name: "Update Courses Database",
