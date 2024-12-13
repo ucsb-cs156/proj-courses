@@ -131,10 +131,6 @@ export const onError = (error) => {
   toast.error(message);
 };
 
-const onError = (error) => {
-  toast(`Error: ${error.response.data.message}`);
-};
-
 export default function SectionsTable({ sections }) {
   // Stryker restore all
   // Stryker disable BooleanLiteral
