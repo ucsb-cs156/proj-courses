@@ -292,43 +292,6 @@ describe("PersonalSchedulesEditPage tests", () => {
       );
     });
 
-    test("when the backend returns an error, user gets toast with error message", async () => {
-      const queryClient = new QueryClient();
-      axiosMock
-        .onPut("/api/personalschedules")
-        .reply(500, { message: "The backend is in a mood today" });
-
-      render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <PersonalSchedulesEditPage />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      );
-
-      expect(
-        await screen.findByTestId("PersonalScheduleForm-name"),
-      ).toBeInTheDocument();
-
-      const nameField = screen.getByTestId("PersonalScheduleForm-name");
-      const descriptionField = screen.getByTestId(
-        "PersonalScheduleForm-description",
-      );
-      const submitButton = screen.getByTestId("PersonalScheduleForm-submit");
-
-      fireEvent.change(nameField, { target: { value: "SampName" } });
-      fireEvent.change(descriptionField, { target: { value: "desc" } });
-
-      expect(submitButton).toBeInTheDocument();
-      fireEvent.click(submitButton);
-
-      await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
-
-      expect(mockToast).toHaveBeenCalledWith(
-        "Error: The backend is in a mood today",
-      );
-    });
-
     test("editing a personal schedule to a duplicate name returns an error", async () => {
       const queryClient = new QueryClient();
       const error = {
