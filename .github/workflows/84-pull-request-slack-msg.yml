@@ -11,11 +11,12 @@
 #   (or maybe refactor this into a repository secret? )
 # (6) To test, merge a PR.
 
-name: "82-pull-request-slack-msg: Send a slack message whenever there's a pull request"
+name: "84-pull-request-slack-msg: Send a slack message whenever there's a pull request"
 on:
-  pull_request:
-    types:
-      - closed
+  workflow_dispatch:
+  # pull_request:
+  #   types:
+  #     - closed
 
 
 env:

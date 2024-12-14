@@ -44,6 +44,43 @@ describe("SingleQuarterSelector tests", () => {
     );
   });
 
+  test('renders "ALL" option when showAll is true', async () => {
+    render(
+      <SingleQuarterDropdown
+        quarters={quarterRange("20211", "20211")}
+        quarter={quarter}
+        setQuarter={setQuarter}
+        controlId="sqd1"
+        showAll={true}
+      />,
+    );
+
+    const allOption = await screen.findByTestId("sqd1-option-all");
+    expect(allOption).toBeInTheDocument();
+    expect(allOption).toHaveValue("ALL");
+    expect(allOption).toHaveTextContent("ALL");
+
+    // ensure other options are present
+    const firstQuarterOption = screen.getByTestId("sqd1-option-0");
+    expect(firstQuarterOption).toBeInTheDocument();
+    expect(firstQuarterOption).toHaveValue("20211");
+  });
+
+  test('"ALL" option is not avaliable when showAll is false', async () => {
+    render(
+      <SingleQuarterDropdown
+        quarters={quarterRange("20211", "20211")}
+        quarter={quarter}
+        setQuarter={setQuarter}
+        controlId="sqd1"
+        showAll={false} // default value, so just visual
+      />,
+    );
+
+    const allOption = screen.queryByTestId("sqd1-option-all");
+    expect(allOption).not.toBeInTheDocument();
+  });
+
   test("when I select an object, the value changes", async () => {
     render(
       <SingleQuarterDropdown
@@ -58,6 +95,23 @@ describe("SingleQuarterSelector tests", () => {
     const selectQuarter = screen.getByLabelText("Select Quarter");
     userEvent.selectOptions(selectQuarter, "20213");
     expect(setQuarter).toBeCalledWith("20213");
+  });
+
+  test('when I select "ALL" option, value changes to "ALL"', async () => {
+    render(
+      <SingleQuarterDropdown
+        quarters={quarterRange("20211", "20222")}
+        quarter={quarter}
+        setQuarter={setQuarter}
+        controlId="spd1"
+        showAll={true}
+        label="Select Quarter"
+      />,
+    );
+    expect(await screen.findByLabelText("Select Quarter")).toBeInTheDocument();
+    const selectQuarter = screen.getByLabelText("Select Quarter");
+    userEvent.selectOptions(selectQuarter, "ALL");
+    expect(selectQuarter.value).toBe("ALL");
   });
 
   test("if I pass a non-null onChange, it gets called when the value changes", async () => {
@@ -82,6 +136,31 @@ describe("SingleQuarterSelector tests", () => {
     // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
     const event = onChange.mock.calls[0][0];
     expect(event.target.value).toBe("20213");
+  });
+
+  test('onChange is called when value is "ALL"', async () => {
+    const onChange = jest.fn();
+
+    render(
+      <SingleQuarterDropdown
+        quarters={quarterRange("20211", "20222")}
+        quarter={quarter}
+        setQuarter={setQuarter}
+        controlId="spd1"
+        showAll={true}
+        label="Select Quarter"
+        onChange={onChange}
+      />,
+    );
+
+    expect(await screen.findByLabelText("Select Quarter")).toBeInTheDocument();
+    const selectQuarter = screen.getByLabelText("Select Quarter");
+    userEvent.selectOptions(selectQuarter, "ALL");
+    await waitFor(() => expect(setQuarter).toHaveBeenCalledWith("ALL"));
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+
+    const event = onChange.mock.calls[0][0];
+    expect(event.target.value).toBe("ALL");
   });
 
   test("default label is Quarter", async () => {

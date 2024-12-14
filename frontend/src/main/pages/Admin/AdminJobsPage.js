@@ -2,9 +2,10 @@ import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
+import { Button } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
-import UpdateGradeInfoForm from "main/components/Jobs/UpdateGradeInfoForm";
+import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
@@ -31,7 +32,24 @@ const AdminJobsPage = () => {
     testJobMutation.mutate(data);
   };
 
-  // ***** update courses job *******
+  // purge job
+
+  const objectToAxiosParamsPurgeJobLog = () => ({
+    url: "/api/jobs/all",
+    method: "DELETE",
+  });
+
+  // Stryker disable all
+  const purgeJobLogMutation = useBackendMutation(
+    objectToAxiosParamsPurgeJobLog,
+    {},
+    ["/api/jobs/all"],
+  );
+  // Stryker restore all
+
+  const purgeJobLog = async () => {
+    purgeJobLogMutation.mutate();
+  };
 
   const objectToAxiosParamsUpdateCoursesJob = (data) => ({
     url: `/api/jobs/launch/updateCourses?quarterYYYYQ=${data.quarter}&subjectArea=${data.subject}&ifStale=${data.ifStale}`,
@@ -54,11 +72,13 @@ const AdminJobsPage = () => {
   });
 
   // Stryker disable all
+
   const updateCoursesJobMutation = useBackendMutation(
     objectToAxiosParamsUpdateCoursesJob,
     {},
     ["/api/jobs/all"],
   );
+
   const updateCoursesByQuarterJobMutation = useBackendMutation(
     objectToAxiosParamsUpdateCoursesByQuarterJob,
     {},
@@ -137,7 +157,12 @@ const AdminJobsPage = () => {
     },
     {
       name: "Update Grade Info",
-      form: <UpdateGradeInfoForm callback={submitUpdateGradeInfoJob} />,
+      form: (
+        <SingleButtonJobForm
+          callback={submitUpdateGradeInfoJob}
+          text={"Update Grades"}
+        />
+      ),
     },
   ];
 
@@ -156,6 +181,9 @@ const AdminJobsPage = () => {
       <h2 className="p-3">Job Status</h2>
 
       <JobsTable jobs={jobs} />
+      <Button variant="danger" onClick={purgeJobLog} data-testid="purgeJobLog">
+        Purge Job Log
+      </Button>
     </BasicLayout>
   );
 };
