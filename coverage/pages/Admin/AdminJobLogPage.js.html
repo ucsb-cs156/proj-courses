@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/Jobs/IfStaleCheckBox.js</title>
+    <title>Code coverage report for pages/Admin/AdminJobLogPage.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/Jobs</a> IfStaleCheckBox.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">pages/Admin</a> AdminJobLogPage.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -92,32 +92,26 @@
 <a name='L27'></a><a href='#L27'>27</a>
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">73x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">73x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -128,37 +122,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
-import { Form } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { useBackend } from "main/utils/useBackend";
+import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 &nbsp;
-const IfStaleCheckBox = ({
-  ifStale,
-  setIfStale,
-  controlId,
-  onChange = null,
-  label = "Update only if stale",
-}) =&gt; {
-  const handleOnChange = (event) =&gt; {
-    setIfStale(event.target.checked);
-    if (onChange != null) {
-      onChange(event);
-    }
+const AdminJobLogPage = () =&gt; {
+  const { id } = useParams();
+  const navigate = useNavigate();
+&nbsp;
+  const { data: jobLogs } = useBackend([`/api/jobs/logs/${id}`], {
+    method: "GET",
+    url: `/api/jobs/logs/${id}`,
+  });
+&nbsp;
+  const handleBack = () =&gt; {
+    navigate("/admin/jobs");
   };
 &nbsp;
   return (
-    &lt;Form.Group controlId={controlId}&gt;
-      &lt;Form.Label&gt;{label}&lt;/Form.Label&gt;
-      &lt;Form.Check
-        type="checkbox"
-        id={controlId}
-        data-testid={controlId}
-        defaultChecked={ifStale}
-        onChange={handleOnChange}
-      &gt;&lt;/Form.Check&gt;
-    &lt;/Form.Group&gt;
+    &lt;BasicLayout&gt;
+      &lt;Button onClick={handleBack}&gt;Back to Job List&lt;/Button&gt;
+      &lt;h3&gt;Job Logs for Job {id}&lt;/h3&gt;
+      {jobLogs ? &lt;pre&gt;{jobLogs}&lt;/pre&gt; : &lt;p&gt;Loading...&lt;/p&gt;}
+    &lt;/BasicLayout&gt;
   );
 };
 &nbsp;
-export default IfStaleCheckBox;
+export default AdminJobLogPage;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
