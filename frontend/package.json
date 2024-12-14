@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.4",
     "bootstrap": "^5.3.3",
+    "env-cmd": "^10.1.0",
     "graphql": "^16.9.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
@@ -27,16 +28,16 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "scripts/create_dotenv_local.sh; env-cmd react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "scripts/create_dotenv_local.sh; env-cmd react-scripts test",
     "eject": "react-scripts eject",
-    "coverage": "react-scripts test --watchAll=false --coverage; echo \"Coverage report is available at file://`pwd`/coverage/lcov-report/index.html\"",
+    "coverage": "scripts/create_dotenv_local.sh;  env-cmd react-scripts test --watchAll=false --coverage; echo \"Coverage report is available at file://`pwd`/coverage/lcov-report/index.html\"",
     "check-format": "prettier --check \"src/**/*.{js,jsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "chromatic": "npx chromatic run --project-token=$(grep CHROMATIC_PROJECT_TOKEN= ../.env  | sed -e s/CHROMATIC_PROJECT_TOKEN=// ) --exit-once-uploaded"
+    "storybook": "scripts/create_dotenv_local.sh; storybook dev -p 6006",
+    "build-storybook": "scripts/create_dotenv_local.sh; storybook build",
+    "chromatic": "scripts/create_dotenv_local.sh; npx chromatic run --project-token=$(grep CHROMATIC_PROJECT_TOKEN= ../.env  | sed -e s/CHROMATIC_PROJECT_TOKEN=// ) --exit-once-uploaded"
   },
   "browserslist": {
     "production": [
