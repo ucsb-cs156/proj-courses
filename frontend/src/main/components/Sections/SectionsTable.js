@@ -114,9 +114,21 @@ export const handleLectureAddToSchedule = (section, schedule, mutation) => {
 };
 
 export const onSuccess = (response) => {
-  toast(
-    `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
-  );
+  if (response.length < 3) {
+    toast(
+      `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
+    );
+  } else {
+    toast(
+      `Course ${response[0].enrollCd} replaced old section ${response[2].enrollCd} with new section ${response[1].enrollCd}`,
+    );
+  }
+};
+
+export const onError = (error) => {
+  const message =
+    error.response?.data?.message || "An unexpected error occurred";
+  toast.error(message);
 };
 
 export default function SectionsTable({ sections }) {
@@ -126,7 +138,7 @@ export default function SectionsTable({ sections }) {
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
-    { onSuccess },
+    { onSuccess, onError },
     // Stryker disable next-line all : hard to set up test for caching
     ["/api/courses/user/all"],
   );
@@ -241,6 +253,7 @@ export default function SectionsTable({ sections }) {
       accessor: "section.enrollCode",
       disableGroupBy: true,
       // No need for accessor if it's purely for actions like expand/collapse
+      // Stryker disable all : difficult to test modal interaction
       Cell: ({ row }) => {
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
