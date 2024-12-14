@@ -31,5 +31,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 <span class="fc" id="L32">    return ResponseEntity.ok().body(body);</span>
   }
+
+  // Backend for final exam info, similar to the above operation:
+  @Operation(summary = &quot;Get final exam information for a given quarter and course enrollment code&quot;)
+  @GetMapping(value = &quot;/finalsInfo&quot;, produces = &quot;application/json&quot;)
+  public ResponseEntity&lt;String&gt; finalsInfo(
+      @RequestParam String quarterYYYYQ, @RequestParam String enrollCd)
+      throws Exception { // Looks for quarter and code
+
+<span class="fc" id="L42">    String body = ucsbCurriculumService.getFinalsInfo(quarterYYYYQ, enrollCd);</span>
+
+<span class="fc" id="L44">    return ResponseEntity.ok().body(body);</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
