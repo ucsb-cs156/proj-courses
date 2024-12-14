@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/Jobs/UpdateGradeInfoForm.js</title>
+    <title>Code coverage report for pages/Admin/AdminJobLogPage.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/Jobs</a> UpdateGradeInfoForm.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">pages/Admin</a> AdminJobLogPage.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -94,15 +94,24 @@
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -112,44 +121,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Form, Button, Container, Row, Col } from "react-bootstrap";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { useBackend } from "main/utils/useBackend";
+import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 &nbsp;
-const UpdateGradeInfoForm = ({ callback }) =&gt; {
-  const handleSubmit = (event) =&gt; {
-    event.preventDefault();
-    callback();
+const AdminJobLogPage = () =&gt; {
+  const { id } = useParams();
+  const navigate = useNavigate();
+&nbsp;
+  const { data: jobLogs } = useBackend([`/api/jobs/logs/${id}`], {
+    method: "GET",
+    url: `/api/jobs/logs/${id}`,
+  });
+&nbsp;
+  const handleBack = () =&gt; {
+    navigate("/admin/jobs");
   };
 &nbsp;
-  // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
   return (
-    &lt;Form onSubmit={handleSubmit}&gt;
-      &lt;Container&gt;
-        &lt;Row style={{ paddingTop: 10, paddingBottom: 10 }}&gt;
-          &lt;Col md="auto"&gt;
-            &lt;Button
-              variant="primary"
-              type="submit"
-              data-testid="updateGradeInfoSubmit"
-            &gt;
-              Update Grades
-            &lt;/Button&gt;
-          &lt;/Col&gt;
-        &lt;/Row&gt;
-      &lt;/Container&gt;
-    &lt;/Form&gt;
+    &lt;BasicLayout&gt;
+      &lt;Button onClick={handleBack}&gt;Back to Job List&lt;/Button&gt;
+      &lt;h3&gt;Job Logs for Job {id}&lt;/h3&gt;
+      {jobLogs ? &lt;pre&gt;{jobLogs}&lt;/pre&gt; : &lt;p&gt;Loading...&lt;/p&gt;}
+    &lt;/BasicLayout&gt;
   );
 };
 &nbsp;
-export default UpdateGradeInfoForm;
+export default AdminJobLogPage;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -157,7 +157,7 @@ export default UpdateGradeInfoForm;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-11-10T02:21:04.884Z
+                at 2024-12-14T01:30:05.468Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
