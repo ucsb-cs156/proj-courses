@@ -429,6 +429,184 @@ public class SectionFixtures {
     }
     """;
 
+  public static final String SECTION_JSON_CMPSC156_UNEXPECTED_REVERSED =
+      """
+  {
+    "quarter": "20221",
+    "courseId": "CMPSC   156  ",
+    "title": "ADV APP PROGRAM",
+    "contactHours": 30,
+    "description": "Advanced application programming using a high-level, virtual-machine-based language. Topics include generic programming, exception handling, automatic memory management, and application development, management, and maintenance tools, third-party library use, version control, software testing, issue tracking, code review, and working with legacy code.",
+    "college": "ENGR",
+    "objLevelCode": "U",
+    "subjectArea": "CMPSC   ",
+    "unitsFixed": 4,
+    "unitsVariableHigh": null,
+    "unitsVariableLow": null,
+    "delayedSectioning": null,
+    "inProgressCourse": null,
+    "gradingOption": "L",
+    "instructionType": "LEC",
+    "onLineCourse": false,
+    "deptCode": "CMPSC",
+    "generalEducation": [],
+    "classSections": [
+      {
+        "enrollCode": "08326",
+        "section": "0103",
+        "session": null,
+        "classClosed": null,
+        "courseCancelled": null,
+        "gradingOptionCode": null,
+        "enrolledTotal": 24,
+        "maxEnroll": 24,
+        "secondaryStatus": null,
+        "departmentApprovalRequired": false,
+        "instructorApprovalRequired": false,
+        "restrictionLevel": null,
+        "restrictionMajor": "+CMPSC+CMPEN+CPSCI",
+        "restrictionMajorPass": null,
+        "restrictionMinor": null,
+        "restrictionMinorPass": null,
+        "concurrentCourses": [],
+        "timeLocations": [
+          {
+            "room": "3525",
+            "building": "PHELP",
+            "roomCapacity": null,
+            "days": " T     ",
+            "beginTime": "19:00",
+            "endTime": "19:50"
+          }
+        ],
+        "instructors": [
+          {
+            "instructor": "LU A H",
+            "functionCode": "Teaching but not in charge"
+          },
+          {
+            "instructor": "HEFFERNAN K J",
+            "functionCode": "Teaching but not in charge"
+          }
+        ]
+      },
+      {
+        "enrollCode": "08318",
+        "section": "0102",
+        "session": null,
+        "classClosed": null,
+        "courseCancelled": null,
+        "gradingOptionCode": null,
+        "enrolledTotal": 24,
+        "maxEnroll": 24,
+        "secondaryStatus": null,
+        "departmentApprovalRequired": false,
+        "instructorApprovalRequired": false,
+        "restrictionLevel": null,
+        "restrictionMajor": "+CMPSC+CMPEN+CPSCI",
+        "restrictionMajorPass": null,
+        "restrictionMinor": null,
+        "restrictionMinorPass": null,
+        "concurrentCourses": [],
+        "timeLocations": [
+          {
+            "room": "3525",
+            "building": "PHELP",
+            "roomCapacity": null,
+            "days": " T     ",
+            "beginTime": "18:00",
+            "endTime": "18:50"
+          }
+        ],
+        "instructors": [
+          {
+            "instructor": "HEFFERNAN K J",
+            "functionCode": "Teaching but not in charge"
+          },
+          {
+            "instructor": "LU A H",
+            "functionCode": "Teaching but not in charge"
+          }
+        ]
+      },
+      {
+        "enrollCode": "08292",
+        "section": "0100",
+        "session": null,
+        "classClosed": "Y",
+        "courseCancelled": null,
+        "gradingOptionCode": null,
+        "enrolledTotal": 72,
+        "maxEnroll": 72,
+        "secondaryStatus": "R",
+        "departmentApprovalRequired": false,
+        "instructorApprovalRequired": false,
+        "restrictionLevel": null,
+        "restrictionMajor": "+CMPSC+CMPEN+CPSCI",
+        "restrictionMajorPass": null,
+        "restrictionMinor": null,
+        "restrictionMinorPass": null,
+        "concurrentCourses": [],
+        "timeLocations": [
+          {
+            "room": "1431",
+            "building": "SH",
+            "roomCapacity": 76,
+            "days": "M W    ",
+            "beginTime": "12:30",
+            "endTime": "13:45"
+          }
+        ],
+        "instructors": [
+          {
+            "instructor": "CONRAD P T",
+            "functionCode": "Teaching and in charge"
+          }
+        ]
+      },
+      {
+        "enrollCode": "08300",
+        "section": "0101",
+        "session": null,
+        "classClosed": null,
+        "courseCancelled": null,
+        "gradingOptionCode": null,
+        "enrolledTotal": 24,
+        "maxEnroll": 24,
+        "secondaryStatus": null,
+        "departmentApprovalRequired": false,
+        "instructorApprovalRequired": false,
+        "restrictionLevel": null,
+        "restrictionMajor": "+CMPSC+CMPEN+CPSCI",
+        "restrictionMajorPass": null,
+        "restrictionMinor": null,
+        "restrictionMinorPass": null,
+        "concurrentCourses": [],
+        "timeLocations": [
+          {
+            "room": "3525",
+            "building": "PHELP",
+            "roomCapacity": null,
+            "days": " T     ",
+            "beginTime": "17:00",
+            "endTime": "17:50"
+          }
+        ],
+        "instructors": [
+          {
+            "instructor": "LU A H",
+            "functionCode": "Teaching but not in charge"
+          },
+          {
+            "instructor": "HEFFERNAN K J",
+            "functionCode": "Teaching but not in charge"
+          }
+        ]
+      }
+    ]
+  }
+  """;
+
   public static final String SECTION_JSON_CMPSC291A =
       """
     {

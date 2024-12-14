@@ -122,16 +122,22 @@ public class PSCourseController extends ApiController {
       throw new BadEnrollCdException(enrollCd);
     }
 
+    // may cause significant slowdowns if there are very large sections
     String enrollCdPrimary = null;
+    String enrollCdPreviousSecondary = null;
     boolean hasSecondary = false;
+    boolean hasPreviousSecondary = false;
     Iterator<JsonNode> it = mapper.readTree(body).path("classSections").elements();
     while (it.hasNext()) {
       JsonNode classSection = it.next();
       String section = classSection.path("section").asText();
+      String currentEnrollCd = classSection.path("enrollCode").asText();
+
       if (section.endsWith("00")) {
-        String currentEnrollCd = classSection.path("enrollCode").asText();
         enrollCdPrimary = currentEnrollCd;
-        if (hasSecondary) break;
+      } else if (coursesRepository.findByPsIdAndEnrollCd(psId, currentEnrollCd).isPresent()) {
+        enrollCdPreviousSecondary = currentEnrollCd;
+        hasPreviousSecondary = true;
       } else {
         hasSecondary = true;
       }
@@ -140,13 +146,39 @@ public class PSCourseController extends ApiController {
     if (enrollCdPrimary == null) {
       enrollCdPrimary = enrollCd;
       hasSecondary = false;
+      hasPreviousSecondary = false;
     }
 
-    if (coursesRepository.findByPsIdAndEnrollCd(psId, enrollCdPrimary).isPresent()) {
+    if (!hasPreviousSecondary
+        && coursesRepository.findByPsIdAndEnrollCd(psId, enrollCdPrimary).isPresent()) {
       throw new IllegalArgumentException("class exists in schedule");
     }
 
     ArrayList<PSCourse> savedCourses = new ArrayList<>();
+
+    if (hasPreviousSecondary) {
+      Optional<PSCourse> secondaryOptional =
+          coursesRepository.findByPsIdAndEnrollCd(psId, enrollCdPreviousSecondary);
+      PSCourse secondary = secondaryOptional.get();
+
+      PSCourse oldSection = new PSCourse();
+      oldSection.setUser(currentUser.getUser());
+      oldSection.setEnrollCd(secondary.getEnrollCd());
+      oldSection.setPsId(secondary.getPsId());
+
+      secondary.setEnrollCd(enrollCd);
+      PSCourse newSection = coursesRepository.save(secondary);
+
+      PSCourse primary = new PSCourse();
+      primary.setUser(currentUser.getUser());
+      primary.setEnrollCd(enrollCdPrimary);
+      primary.setPsId(psId);
+
+      savedCourses.add(primary);
+      savedCourses.add(newSection);
+      savedCourses.add(oldSection);
+      return savedCourses;
+    }
 
     if (!enrollCdPrimary.equals(enrollCd)) {
       String enrollCdSecondary = enrollCd;
@@ -154,8 +186,8 @@ public class PSCourseController extends ApiController {
       secondary.setUser(currentUser.getUser());
       secondary.setEnrollCd(enrollCdSecondary);
       secondary.setPsId(psId);
-      PSCourse savedSecondary = coursesRepository.save(secondary);
-      savedCourses.add(savedSecondary);
+      coursesRepository.save(secondary);
+      savedCourses.add(secondary);
     } else if (hasSecondary) {
       throw new IllegalArgumentException(
           enrollCd
@@ -166,8 +198,9 @@ public class PSCourseController extends ApiController {
     primary.setUser(currentUser.getUser());
     primary.setEnrollCd(enrollCdPrimary);
     primary.setPsId(psId);
-    PSCourse savedPrimary = coursesRepository.save(primary);
-    savedCourses.add(savedPrimary);
+    coursesRepository.save(primary);
+    savedCourses.add(primary);
+
     return savedCourses;
   }
 

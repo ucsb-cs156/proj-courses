@@ -11,6 +11,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,7 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +92,51 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
+  public void api_getJobLogById__admin_logged_in__returns_job_by_id() throws Exception {
+
+    // arrange
+
+    Job job = Job.builder().id(1L).status("completed").log("This is a test job log.").build();
+
+    when(jobsRepository.findById(eq(1L))).thenReturn(Optional.of(job));
+
+    // act
+
+    MvcResult response =
+        mockMvc.perform(get("/api/jobs?id=1")).andExpect(status().isOk()).andReturn();
+
+    // assert
+
+    verify(jobsRepository, times(1)).findById(1L);
+    String expectedJson = mapper.writeValueAsString(job);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void api_getJobLogById__admin_logged_in__returns_not_found_for_missing_job()
+      throws Exception {
+
+    // arrange
+
+    when(jobsRepository.findById(eq(2L))).thenReturn(Optional.empty());
+
+    // act
+
+    MvcResult response =
+        mockMvc.perform(get("/api/jobs?id=2")).andExpect(status().isNotFound()).andReturn();
+
+    // assert
+
+    verify(jobsRepository, times(1)).findById(2L);
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("EntityNotFoundException", json.get("type"));
+    assertEquals("Job with id 2 not found", json.get("message"));
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
   public void admin_can_delete_all_jobs() throws Exception {
 
     doNothing().when(jobsRepository).deleteAll();
@@ -107,6 +154,39 @@ public class JobsControllerTests extends ControllerTestCase {
     String expectedJson = mapper.writeValueAsString(Map.of("message", "All jobs deleted"));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_getJobLogs_admin_can_get_job_log() throws Exception {
+    // Arrange
+    Long jobId = 1L;
+    String jobLog = "This is a job log";
+    Job job = Job.builder().build();
+    job.setLog(jobLog);
+    when(jobsRepository.findById(jobId)).thenReturn(Optional.of(job));
+
+    // Act & Assert
+    mockMvc
+        .perform(get("/api/jobs/logs/{id}", jobId))
+        .andExpect(status().isOk())
+        .andExpect(content().string(jobLog));
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_getJobLogs_admin_can_get_empty_log() throws Exception {
+    // Arrange
+    Long jobId = 2L;
+    Job job = Job.builder().build();
+    job.setLog("");
+    when(jobsRepository.findById(jobId)).thenReturn(Optional.of(job));
+
+    // Act & Assert
+    mockMvc
+        .perform(get("/api/jobs/logs/{id}", jobId))
+        .andExpect(status().isOk())
+        .andExpect(content().string(""));
   }
 
   @WithMockUser(roles = {"ADMIN"})

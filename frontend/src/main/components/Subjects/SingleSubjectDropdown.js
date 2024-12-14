@@ -2,6 +2,9 @@ import { compareValues } from "main/utils/sortHelper";
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 
+// showAll is defaulted to false, to ensure the "ALL" option
+// doesn't showdown to pre-existing dropdowns
+
 const SingleSubjectDropdown = ({
   subjects,
   subject,
@@ -9,6 +12,7 @@ const SingleSubjectDropdown = ({
   controlId,
   onChange = null,
   label = "Subject Area",
+  showAll = false,
 }) => {
   const localSearchSubject = localStorage.getItem(controlId);
 
@@ -36,6 +40,11 @@ const SingleSubjectDropdown = ({
         value={subjectState}
         onChange={handleSubjectOnChange}
       >
+        {showAll && (
+          <option data-testid={`${controlId}-option-all`} value="ALL">
+            ALL
+          </option>
+        )}
         {subjects.map(function (object) {
           const subjectCode = object.subjectCode.replace(/ /g, "-");
           const key = `${controlId}-option-${subjectCode}`;
