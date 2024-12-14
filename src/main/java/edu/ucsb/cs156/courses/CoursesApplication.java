@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
-@SpringBootApplication
+@SpringBootApplication(excludeName = {"de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration"})
 @EnableJpaAuditing(dateTimeProviderRef = "utcDateTimeProvider")
 // enables automatic population of @CreatedDate and @LastModifiedDate
 @EnableAsync // for @Async annotation for JobsService
