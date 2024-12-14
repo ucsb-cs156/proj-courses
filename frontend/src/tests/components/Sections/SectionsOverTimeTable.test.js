@@ -317,7 +317,6 @@ describe("Section tests", () => {
           <SectionsOverTimeTable sections={fiveSections} />
         </MemoryRouter>
       </QueryClientProvider>,
-
     );
     const testId = "SectionsOverTimeTable";
 
