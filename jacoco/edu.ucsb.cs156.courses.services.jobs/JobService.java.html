@@ -40,5 +40,15 @@ import org.springframework.stereotype.Service;
 <span class="fc" id="L40">    job.setStatus(&quot;complete&quot;);</span>
 <span class="fc" id="L41">    jobsRepository.save(job);</span>
 <span class="fc" id="L42">  }</span>
+
+  public String getLongJob(Long jobId) {
+<span class="fc" id="L45">    Job job =</span>
+        jobsRepository
+<span class="fc" id="L47">            .findById(jobId)</span>
+<span class="fc" id="L48">            .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Job not found&quot;));</span>
+
+<span class="fc" id="L50">    String log = job.getLog();</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">    return log != null ? log : &quot;&quot;;</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
