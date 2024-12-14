@@ -256,6 +256,7 @@
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig.MyCsrfRequestMatcher</param>
                         <param>edu.ucsb.cs156.courses.config.SpringFoxConfig</param>
                         <param>edu.ucsb.cs156.courses.config.MongoConfig</param>
+                        <param>edu.ucsb.cs156.courses.config.MongoDevConfig</param>
                     </excludedClasses>
                     <excludedTestClasses>
                         <param>edu.ucsb.cs156.example.integration.*</param>
