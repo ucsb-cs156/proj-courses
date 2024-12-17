@@ -18,7 +18,7 @@ export default function AdminUpdatesPage() {
   });
 
   const onSuccess = (updates) => {
-    setUpdates(updates);
+    setUpdates(updates.content);
   };
 
   const mutation = useBackendMutation(

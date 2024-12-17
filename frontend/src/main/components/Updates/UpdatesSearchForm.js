@@ -54,6 +54,7 @@ const UpdatesSearchForm = ({ fetchUpdates }) => {
               quarter={quarter}
               setQuarter={setQuarter}
               controlId={"UpdatesSearch.Quarter"}
+              showAll={true}
             />
           </Col>
           <Col md="auto">
@@ -62,6 +63,7 @@ const UpdatesSearchForm = ({ fetchUpdates }) => {
               subject={subject}
               setSubject={setSubject}
               controlId={"UpdatesSearch.Subject"}
+              showAll={true}
             />
           </Col>
         </Row>
