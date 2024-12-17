@@ -122,6 +122,12 @@
             <artifactId>opencsv</artifactId>
             <version>5.7.1</version>
         </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo.spring3x</artifactId>
+            <version>4.18.0</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
@@ -137,13 +143,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
                     <compilerArgument>-proc:full</compilerArgument>
-                    </configuration>
-                </plugin>
+                </configuration>
+            </plugin>
             <!-- Test case coverage report -->
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -250,6 +256,7 @@
                         <param>edu.ucsb.cs156.courses.config.SecurityConfig.MyCsrfRequestMatcher</param>
                         <param>edu.ucsb.cs156.courses.config.SpringFoxConfig</param>
                         <param>edu.ucsb.cs156.courses.config.MongoConfig</param>
+                        <param>edu.ucsb.cs156.courses.config.MongoDevConfig</param>
                     </excludedClasses>
                     <excludedTestClasses>
                         <param>edu.ucsb.cs156.example.integration.*</param>
@@ -349,6 +356,21 @@
             </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                                <configuration>
+                                    <excludeGroupIds>de.flapdoodle,de.flapdoodle.embed,de.flapdoodle.graph,
+                                        de.flapdoodle.java8,de.flapdoodle.reverse</excludeGroupIds>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>
