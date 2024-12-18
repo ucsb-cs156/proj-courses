@@ -1,14 +1,19 @@
 import { useState } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
-
+import { Container, Row, Col } from "react-bootstrap";
 import { quarterRange } from "main/utils/quarterUtilities";
-
 import { useSystemInfo } from "main/utils/systemInfo";
-import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
-import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
+import SingleQuarterDropdown from "main/components/Quarters/SingleQuarterDropdown";
+import SingleSubjectDropdown from "main/components/Subjects/SingleSubjectDropdown";
+import GenericDropdown from "main/components/Utils/GenericDropdown";
 import { useBackend } from "main/utils/useBackend";
 
-const UpdatesSearchForm = ({ fetchUpdates }) => {
+const UpdatesSearchForm = ({
+  updateQuarter,
+  updateSubjectArea,
+  updateSortField,
+  updateSortDirection,
+  updatePageSize,
+}) => {
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
@@ -18,8 +23,7 @@ const UpdatesSearchForm = ({ fetchUpdates }) => {
 
   const quarters = quarterRange(startQtr, endQtr);
 
-  // Stryker disable all : not sure how to test/mock local storage
-  const localSubject = localStorage.getItem("UpdatesSearch.Subject");
+  const localSubjectArea = localStorage.getItem("UpdatesSearch.SubjectArea");
   const localQuarter = localStorage.getItem("UpdatesSearch.Quarter");
 
   const {
@@ -29,53 +33,77 @@ const UpdatesSearchForm = ({ fetchUpdates }) => {
   } = useBackend(
     // Stryker disable next-line all : don't test internal caching of React Query
     ["/api/UCSBSubjects/all"],
+    // Stryker disable next-line StringLiteral : equivalent mutation, GET is equivalent to "" (default)
     { method: "GET", url: "/api/UCSBSubjects/all" },
     [],
   );
 
-  const defaultSubjectArea = "ANTH";
-  const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
-  const [subject, setSubject] = useState(
-    localSubject || subjects[0]?.subjectCode || defaultSubjectArea,
-  );
+  // Stryker disable all ; testing for specific hard coded lists is just writing the code twice
+  const sortFields = ["subjectArea", "quarter", "lastUpdate"];
+  const sortDirections = ["ASC", "DESC"];
+  const pageSizes = ["10", "50", "100", "200", "500"];
+  // Stryker restore all
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    fetchUpdates(event, { quarter, subject });
+  const [quarter, setQuarter] = useState(localQuarter || "ALL");
+  const [subjectArea, setSubjectArea] = useState(localSubjectArea || "ALL");
+
+  const doUpdateQuarter = (q) => {
+    setQuarter(q);
+    updateQuarter(q);
+  };
+
+  const doUpdateSubjectArea = (s) => {
+    setSubjectArea(s);
+    updateSubjectArea(s);
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Container>
-        <Row>
-          <Col md="auto">
-            <SingleQuarterDropdown
-              quarters={quarters}
-              quarter={quarter}
-              setQuarter={setQuarter}
-              controlId={"UpdatesSearch.Quarter"}
-              showAll={true}
-            />
-          </Col>
-          <Col md="auto">
-            <SingleSubjectDropdown
-              subjects={subjects}
-              subject={subject}
-              setSubject={setSubject}
-              controlId={"UpdatesSearch.Subject"}
-              showAll={true}
-            />
-          </Col>
-        </Row>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
-          <Col md="auto">
-            <Button variant="primary" type="submit">
-              Update
-            </Button>
-          </Col>
-        </Row>
-      </Container>
-    </Form>
+    <Container>
+      <Row>
+        <Col md="auto">
+          <SingleQuarterDropdown
+            quarters={quarters}
+            quarter={quarter}
+            setQuarter={doUpdateQuarter}
+            controlId={"UpdatesSearch.Quarter"}
+            showAll={true}
+          />
+        </Col>
+        <Col md="auto">
+          <SingleSubjectDropdown
+            subjects={subjects}
+            subject={subjectArea}
+            setSubject={doUpdateSubjectArea}
+            controlId={"UpdatesSearch.SubjectArea"}
+            showAll={true}
+          />
+        </Col>
+        <Col md="auto">
+          <GenericDropdown
+            values={sortFields}
+            setValue={updateSortField}
+            controlId={"UpdatesSearch.SortField"}
+            label="Sort By"
+          />
+        </Col>
+        <Col md="auto">
+          <GenericDropdown
+            values={sortDirections}
+            setValue={updateSortDirection}
+            controlId={"UpdatesSearch.SortDirection"}
+            label="Sort Direction"
+          />
+        </Col>
+        <Col md="auto">
+          <GenericDropdown
+            values={pageSizes}
+            setValue={updatePageSize}
+            controlId={"UpdatesSearch.PageSize"}
+            label="Page Size"
+          />
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

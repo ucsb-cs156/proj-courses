@@ -1,82 +1,97 @@
-import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 
-import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 import UpdatesSearchForm from "main/components/Updates/UpdatesSearchForm";
 
-jest.mock("react-toastify", () => ({
-  toast: jest.fn(),
-}));
-
 describe("UpdatesSearchForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   const queryClient = new QueryClient();
-  const addToast = jest.fn();
+
+  const updateSubjectArea = jest.fn();
+  const updateQuarter = jest.fn();
+  const updateSortField = jest.fn();
+  const updateSortDirection = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
-
-    axiosMock
-      .onGet("/api/currentUser")
-      .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock.onGet("/api/systemInfo").reply(200, {
       ...systemInfoFixtures.showingNeither,
       startQtrYYYYQ: "20201",
       endQtrYYYYQ: "20214",
     });
-
-    toast.mockReturnValue({
-      addToast: addToast,
-    });
   });
 
-  test("renders without crashing", () => {
+  test("renders correctly, with ALL values in quarter and subject area dropdowns", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesSearchForm />
+          <UpdatesSearchForm
+            updateQuarter={updateQuarter}
+            updateSubjectArea={updateSubjectArea}
+            updateSortDirection={updateSortDirection}
+            updateSortField={updateSortField}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
+    expect(
+      screen.getByTestId("UpdatesSearch.Quarter-option-all"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("UpdatesSearch.SubjectArea-option-all"),
+    ).toBeInTheDocument();
   });
 
-  test("when I select a quarter, the state for quarter changes", () => {
+  test("when I select a quarter, the state for quarter changes and local storage is updated", () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesSearchForm />
+          <UpdatesSearchForm
+            updateQuarter={updateQuarter}
+            updateSubjectArea={updateSubjectArea}
+            updateSortDirection={updateSortDirection}
+            updateSortField={updateSortField}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20204");
-    expect(selectQuarter.value).toBe("20204");
+    userEvent.selectOptions(selectQuarter, "20212");
+    expect(selectQuarter.value).toBe("20212");
+    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.Quarter", "20212");
   });
 
   test("when I select a subject, the state for subject changes", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesSearchForm />
+          <UpdatesSearchForm
+            updateQuarter={updateQuarter}
+            updateSubjectArea={updateSubjectArea}
+            updateSortDirection={updateSortDirection}
+            updateSortField={updateSortField}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
-    const expectedKey = "UpdatesSearch.Subject-option-MATH";
+    const expectedKey = "UpdatesSearch.SubjectArea-option-MATH";
     await waitFor(() =>
       expect(screen.getByTestId(expectedKey).toBeInTheDocument),
     );
@@ -85,86 +100,68 @@ describe("UpdatesSearchForm tests", () => {
     userEvent.selectOptions(selectSubject, "MATH");
 
     expect(selectSubject.value).toBe("MATH");
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "UpdatesSearch.SubjectArea",
+      "MATH",
+    );
   });
 
-  test("when I click submit, the right stuff happens", async () => {
-    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    const sampleReturnValue = {
-      sampleKey: "sampleValue",
-    };
-
-    const fetchUpdatesSpy = jest.fn();
-
-    fetchUpdatesSpy.mockResolvedValue(sampleReturnValue);
+  test("when I select a sortField, the state for sortField changes", () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesSearchForm fetchUpdates={fetchUpdatesSpy} />
+          <UpdatesSearchForm
+            updateQuarter={updateQuarter}
+            updateSubjectArea={updateSubjectArea}
+            updateSortDirection={updateSortDirection}
+            updateSortField={updateSortField}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );
-
-    const expectedFields = {
-      quarter: "20211",
-      subject: "ANTH",
-    };
-
-    const expectedKey = "UpdatesSearch.Subject-option-ANTH";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
-    );
-
-    const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20211");
-    const selectSubject = screen.getByLabelText("Subject Area");
-    expect(selectSubject).toBeInTheDocument();
-    userEvent.selectOptions(selectSubject, "ANTH");
-    const submitButton = screen.getByText("Update");
-    userEvent.click(submitButton);
-
-    await waitFor(() => expect(fetchUpdatesSpy).toHaveBeenCalledTimes(1));
-
-    expect(fetchUpdatesSpy).toHaveBeenCalledWith(
-      expect.any(Object),
-      expectedFields,
+    const selectSortField = screen.getByLabelText("Sort By");
+    userEvent.selectOptions(selectSortField, "quarter");
+    expect(selectSortField.value).toBe("quarter");
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "UpdatesSearch.SortField",
+      "quarter",
     );
   });
 
-  test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
-    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-
-    const sampleReturnValue = {
-      sampleKey: "sampleValue",
-      total: 0,
-    };
-
-    const fetchUpdatesSpy = jest.fn();
-
-    fetchUpdatesSpy.mockResolvedValue(sampleReturnValue);
+  test("when I select a sortDirection, the state for sortDirection changes", () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesSearchForm fetchUpdates={fetchUpdatesSpy} />
+          <UpdatesSearchForm
+            updateQuarter={updateQuarter}
+            updateSubjectArea={updateSubjectArea}
+            updateSortDirection={updateSortDirection}
+            updateSortField={updateSortField}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );
-
-    const expectedKey = "UpdatesSearch.Subject-option-MATH";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    const selectSortDirection = screen.getByLabelText("Sort Direction");
+    userEvent.selectOptions(selectSortDirection, "ASC");
+    expect(selectSortDirection.value).toBe("ASC");
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "UpdatesSearch.SortDirection",
+      "ASC",
     );
 
-    const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20204");
-    const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "MATH");
-    const submitButton = screen.getByText("Update");
-    userEvent.click(submitButton);
+    userEvent.selectOptions(selectSortDirection, "DESC");
+    expect(selectSortDirection.value).toBe("DESC");
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "UpdatesSearch.SortDirection",
+      "DESC",
+    );
   });
 
-  test("renders without crashing when fallback values are used", async () => {
+  test("renders correctly when fallback values are used", async () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,
@@ -175,7 +172,12 @@ describe("UpdatesSearchForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesSearchForm />
+          <UpdatesSearchForm
+            updateQuarter={updateQuarter}
+            updateSubjectArea={updateSubjectArea}
+            updateSortDirection={updateSortDirection}
+            updateSortField={updateSortField}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );

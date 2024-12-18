@@ -2,7 +2,6 @@ import UpdatesSearchForm from "main/components/Updates/UpdatesSearchForm";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
 
 export default {
@@ -29,9 +28,17 @@ const mswHandlers = [
 
 export const Default = Template.bind({});
 Default.args = {
-  submitText: "Update",
-  fetchUpdates: (_event, data) => {
-    toast(`Update was clicked, data=${JSON.stringify(data)}`);
+  updateQuarter: (q) => {
+    console.log(`updateQuarter: ${q}`);
+  },
+  updateSubjectArea: (s) => {
+    console.log(`updateSubjectArea: ${s}`);
+  },
+  updateSortField: (s) => {
+    console.log(`updateSortField: ${s}`);
+  },
+  updateSortDirection: (s) => {
+    console.log(`updateSortDirection: ${s}`);
   },
 };
 Default.parameters = {

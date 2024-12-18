@@ -2,41 +2,67 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import UpdatesSearchForm from "main/components/Updates/UpdatesSearchForm";
 import UpdatesTable from "main/components/Updates/UpdatesTable";
 import { useState } from "react";
-import { useBackendMutation } from "main/utils/useBackend";
+import { useBackend } from "main/utils/useBackend";
+import OurPagination from "main/components/Utils/OurPagination";
 
 export default function AdminUpdatesPage() {
-  const [updates, setUpdates] = useState([]);
+  const testId = "AdminUpdatesPage";
 
-  const objectToAxiosParams = (query) => ({
-    url: "/api/updates",
-    params: {
-      quarter: query.quarter,
-      subjectArea: query.subject,
-      page: 0,  // TODO: FIXME!
-      pageSize: 100 // TODO: FIXME!
-    },
-  });
+  const [selectedPage, setSelectedPage] = useState(1);
+  const refreshJobsIntervalMilliseconds = 500;
 
-  const onSuccess = (updates) => {
-    setUpdates(updates.content);
-  };
-
-  const mutation = useBackendMutation(
-    objectToAxiosParams,
-    { onSuccess },
-    // Stryker disable next-line all : hard to set up test for caching
-    [],
+  const localSubject = localStorage.getItem("UpdatesSearch.SubjectArea");
+  const localQuarter = localStorage.getItem("UpdatesSearch.Quarter");
+  const localSortField = localStorage.getItem("UpdatesSearch.SortField");
+  const localSortDirection = localStorage.getItem(
+    "UpdatesSearch.SortDirection",
   );
+  const localPageSize = localStorage.getItem("UpdatesSearch.PageSize");
 
-  async function fetchUpdates(_event, query) {
-    mutation.mutate(query);
-  }
+  const [quarter, setQuarter] = useState(localQuarter || "ALL");
+  const [subject, setSubject] = useState(localSubject || "ALL");
+  const [sortField, setSortField] = useState(localSortField || "subjectArea");
+  const [sortDirection, setSortDirection] = useState(
+    localSortDirection || "ASC",
+  );
+  const [pageSize, setPageSize] = useState(localPageSize || "10");
+
+  // Stryker disable all
+  const { data: page } = useBackend(
+    ["/api/updates"],
+    {
+      method: "GET",
+      url: "/api/updates",
+      params: {
+        quarter: quarter,
+        subjectArea: subject,
+        page: selectedPage - 1,
+        pageSize: pageSize,
+        sortField: sortField,
+        sortDirection: sortDirection,
+      },
+    },
+    { content: [], totalPages: 0 },
+    { refetchInterval: refreshJobsIntervalMilliseconds },
+  );
+  // Stryker restore  all
 
   return (
     <BasicLayout>
       <h2>Updates</h2>
-      <UpdatesSearchForm fetchUpdates={fetchUpdates} />
-      <UpdatesTable updates={updates} />
+      <UpdatesSearchForm
+        updateQuarter={setQuarter}
+        updateSubjectArea={setSubject}
+        updateSortField={setSortField}
+        updateSortDirection={setSortDirection}
+        updatePageSize={setPageSize}
+      />
+      <OurPagination
+        updateActivePage={setSelectedPage}
+        totalPages={page.totalPages}
+        testId={testId}
+      />
+      <UpdatesTable updates={page.content} />
     </BasicLayout>
   );
 }
