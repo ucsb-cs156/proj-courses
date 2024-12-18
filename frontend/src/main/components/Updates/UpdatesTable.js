@@ -3,7 +3,7 @@ import OurTable from "main/components/OurTable";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 
 export default function UpdatesTable({
-  Update,
+  updates,
   testIdPrefix = "UpdatesTable",
 }) {
   const columns = [
@@ -36,5 +36,5 @@ export default function UpdatesTable({
     },
   ];
 
-  return <OurTable data={Update} columns={columns} testid={testIdPrefix} />;
+  return <OurTable data={updates} columns={columns} testid={testIdPrefix} />;
 }

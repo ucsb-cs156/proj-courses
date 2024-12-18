@@ -14,11 +14,11 @@ const Template = (args) => {
 export const Empty = Template.bind({});
 
 Empty.args = {
-  Update: [],
+  updates: [],
 };
 
 export const ThreeUpdates = Template.bind({});
 
 ThreeUpdates.args = {
-  Update: updatesFixtures.threeUpdates,
+  updates: updatesFixtures.threeUpdates,
 };
