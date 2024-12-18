@@ -12,7 +12,7 @@ courses,edu.ucsb.cs156.courses.controllers,UCSBSectionsController,0,29,0,0,0,6,0
 courses,edu.ucsb.cs156.courses.controllers,UsersController,0,16,0,0,0,4,0,2,0,2
 courses,edu.ucsb.cs156.courses.controllers,PSCourseController,0,833,0,54,0,184,0,51,0,24
 courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeInstructorController,0,40,0,2,0,11,0,3,0,2
-courses,edu.ucsb.cs156.courses.controllers,UpdateController,0,73,0,8,0,13,0,7,0,3
+courses,edu.ucsb.cs156.courses.controllers,UpdateController,0,149,0,14,0,24,0,10,0,3
 courses,edu.ucsb.cs156.courses.controllers,SystemInfoController,0,7,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeController,0,89,0,2,0,15,0,4,0,3
 courses,edu.ucsb.cs156.courses.controllers,JobsController,0,159,0,2,0,31,0,15,0,14
@@ -34,7 +34,7 @@ courses,edu.ucsb.cs156.courses.errors,BadEnrollCdException,0,12,0,0,0,3,0,1,0,1
 courses,edu.ucsb.cs156.courses.entities,GradeHistory,0,23,0,4,0,4,0,4,0,2
 courses,edu.ucsb.cs156.courses.models,Quarter,0,412,0,43,0,81,0,43,0,21
 courses,edu.ucsb.cs156.courses.services,UCSBAPIQuarterService,0,358,0,16,0,78,0,22,0,14
-courses,edu.ucsb.cs156.courses.services,UCSBSubjectsService,0,86,0,0,0,23,0,5,0,5
+courses,edu.ucsb.cs156.courses.services,UCSBSubjectsService,0,101,0,2,0,24,0,7,0,6
 courses,edu.ucsb.cs156.courses.services,SystemInfoServiceImpl,0,55,0,4,0,15,0,6,0,4
 courses,edu.ucsb.cs156.courses.services,GrantedAuthoritiesService,0,21,0,0,0,7,0,3,0,3
 courses,edu.ucsb.cs156.courses.services,UCSBSubjectsService.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
