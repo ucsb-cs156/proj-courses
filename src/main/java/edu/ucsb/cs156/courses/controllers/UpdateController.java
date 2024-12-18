@@ -7,6 +7,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -54,9 +58,39 @@ public class UpdateController extends ApiController {
               example = "5",
               required = true)
           @RequestParam
-          int pageSize) {
+          int pageSize,
+      @Parameter(
+              name = "sortField",
+              description = "sort field",
+              example = "subjectArea",
+              required = true)
+          @RequestParam
+          String sortField,
+          @Parameter(
+              name = "sortDirection",
+              description = "sort direction",
+              example = "ASC",
+              required = true)
+          @RequestParam
+          String sortDirection) {
     Iterable<Update> updates = null;
-    PageRequest pageRequest = PageRequest.of(page, pageSize, Direction.DESC, "lastUpdate");
+
+    List<String> allowedSortFields = Arrays.asList("subjectArea","quarter","lastUpdate");
+    if (!allowedSortFields.contains(sortField) ) {
+      throw new IllegalArgumentException(String.format("%s is not a valid sort field.  Valid values are %s",sortField,allowedSortFields));
+    }
+    List<String> allowedSortDirections = Arrays.asList("ASC","DESC");
+    if (!allowedSortDirections.contains(sortDirection) ) {
+      throw new IllegalArgumentException(String.format("%s is not a valid sort direction.  Valid values are %s",sortDirection,allowedSortDirections));
+    }
+    
+    Direction sortDirectionObject = Direction.ASC;
+    if (sortDirection.equals("DESC")) {
+      sortDirectionObject = Direction.DESC;
+    }
+
+    PageRequest pageRequest =
+        PageRequest.of(page, pageSize, sortDirectionObject, sortField);
 
     if (subjectArea.toUpperCase().equals("ALL") && quarter.toUpperCase().equals("ALL")) {
       updates = updateCollection.findAll(pageRequest);
