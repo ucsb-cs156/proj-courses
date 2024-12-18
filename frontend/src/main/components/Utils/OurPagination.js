@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Pagination } from "react-bootstrap";
 
+export const emptyArray = () => []; // factored out for Stryker testing
+
 const OurPagination = ({
   updateActivePage,
   totalPages = 10,
@@ -35,7 +37,7 @@ const OurPagination = ({
   );
 
   const generateSimplePaginationItems = () => {
-    const paginationItems = [];
+    const paginationItems = emptyArray();
     for (let number = 1; number <= totalPages; number++) {
       paginationItems.push(pageButton(number));
     }
@@ -43,7 +45,7 @@ const OurPagination = ({
   };
 
   const generatePaginationItemsWithEllipsis = () => {
-    const paginationItems = [];
+    const paginationItems = emptyArray();
 
     const leftEllipsis = activePage > 3;
     const rightEllipsis = activePage < totalPages - 2;

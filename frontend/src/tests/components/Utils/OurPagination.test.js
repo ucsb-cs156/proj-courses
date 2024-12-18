@@ -1,7 +1,20 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import OurPagination from "main/components/Utils/OurPagination";
+import OurPagination, { emptyArray } from "main/components/Utils/OurPagination";
+
+const checkTestIdsInOrder = (testIds) => {
+  const links = screen.getAllByTestId(/OurPagination-/);
+  expect(links.length).toBe(testIds.length);
+
+  for (var i = 0; i < links.length; i++) {
+    expect(screen.getByTestId(testIds[i])).toBe(links[i]);
+  }
+};
 
 describe("OurPagination tests", () => {
+  test("emptyArray returns empty array", () => {
+    expect(emptyArray()).toStrictEqual([]);
+  });
+
   test("renders the correct text for totalPages 5 maxPages 10", async () => {
     // Arrange
 
@@ -18,13 +31,15 @@ describe("OurPagination tests", () => {
 
     // Assert
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-4")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-5")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-3",
+      "OurPagination-4",
+      "OurPagination-5",
+      "OurPagination-next",
+    ]);
   });
 
   test("renders the correct text for totalPages 10 maxPages 10", async () => {
@@ -36,19 +51,20 @@ describe("OurPagination tests", () => {
     render(<OurPagination maxPages={10} updateActivePage={updateActivePage} />);
 
     // Assert
-
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-4")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-5")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-6")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-7")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-8")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-9")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-10")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-3",
+      "OurPagination-4",
+      "OurPagination-5",
+      "OurPagination-6",
+      "OurPagination-7",
+      "OurPagination-8",
+      "OurPagination-9",
+      "OurPagination-10",
+      "OurPagination-next",
+    ]);
   });
 
   test("renders the correct text for totalPages 12 maxPages 5", async () => {
@@ -66,113 +82,108 @@ describe("OurPagination tests", () => {
     );
 
     // Assert
-
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-12")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-right-ellipsis",
+      "OurPagination-12",
+      "OurPagination-next",
+    ]);
 
     const nextButton = screen.getByTestId("OurPagination-next");
     fireEvent.click(nextButton);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-12")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-3",
+      "OurPagination-right-ellipsis",
+      "OurPagination-12",
+      "OurPagination-next",
+    ]);
 
     fireEvent.click(nextButton);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-4")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-12")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-3",
+      "OurPagination-4",
+      "OurPagination-right-ellipsis",
+      "OurPagination-12",
+      "OurPagination-next",
+    ]);
 
     fireEvent.click(nextButton);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-left-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-4")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-5")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-12")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-left-ellipsis",
+      "OurPagination-3",
+      "OurPagination-4",
+      "OurPagination-5",
+      "OurPagination-right-ellipsis",
+      "OurPagination-12",
+      "OurPagination-next",
+    ]);
 
     const prevButton = screen.getByTestId("OurPagination-prev");
     fireEvent.click(prevButton);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-4")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-12")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-3",
+      "OurPagination-4",
+      "OurPagination-right-ellipsis",
+      "OurPagination-12",
+      "OurPagination-next",
+    ]);
 
     const button1 = screen.getByTestId("OurPagination-1");
     fireEvent.click(button1);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-12")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-right-ellipsis",
+      "OurPagination-12",
+      "OurPagination-next",
+    ]);
 
     const button12 = screen.getByTestId("OurPagination-12");
     fireEvent.click(button12);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-left-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-11")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-12")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-left-ellipsis",
+      "OurPagination-11",
+      "OurPagination-12",
+      "OurPagination-next",
+    ]);
 
     fireEvent.click(prevButton);
     fireEvent.click(prevButton);
     fireEvent.click(prevButton);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-left-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-8")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-9")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-10")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-12")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-left-ellipsis",
+      "OurPagination-8",
+      "OurPagination-9",
+      "OurPagination-10",
+      "OurPagination-right-ellipsis",
+      "OurPagination-12",
+      "OurPagination-next",
+    ]);
   });
 
   test("renders the correct text for totalPages 5 maxPages 2", async () => {
@@ -191,59 +202,45 @@ describe("OurPagination tests", () => {
 
     // Assert
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-5")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-right-ellipsis",
+      "OurPagination-5",
+      "OurPagination-next",
+    ]);
+
+    const button1 = screen.getByTestId("OurPagination-1");
+    expect(button1.parentElement).toHaveClass("active");
+    const button2 = screen.getByTestId("OurPagination-2");
+    expect(button2.parentElement).not.toHaveClass("active");
 
     const nextButton = screen.getByTestId("OurPagination-next");
     fireEvent.click(nextButton);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-right-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-5")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-3",
+      "OurPagination-right-ellipsis",
+      "OurPagination-5",
+      "OurPagination-next",
+    ]);
 
     fireEvent.click(nextButton);
 
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-4")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-5")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-3",
+      "OurPagination-4",
+      "OurPagination-5",
+      "OurPagination-next",
+    ]);
 
     fireEvent.click(nextButton);
-
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-left-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-4")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-5")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
-
-    fireEvent.click(nextButton);
-
-    expect(screen.getByTestId("OurPagination-prev")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("OurPagination-left-ellipsis"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-4")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-5")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-next")).toBeInTheDocument();
   });
 });
