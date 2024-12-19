@@ -1,12 +1,8 @@
-import { useState } from "react";
+import useLocalStorage from "main/utils/useLocalStorage";
 import { Form } from "react-bootstrap";
 
 const GenericDropdown = ({ values, setValue, controlId, label }) => {
-  const localStorageValue = localStorage.getItem(controlId);
-  const [valueState, setValueState] = useState(
-    // Stryker disable next-line all : not sure how to test/mock local storage
-    localStorageValue || values[0],
-  );
+  const [valueState, setValueState] = useLocalStorage(controlId, values[0]);
 
   const handleUpdateFieldChange = (event) => {
     localStorage.setItem(controlId, event.target.value);
