@@ -22,8 +22,10 @@ jest.mock("react-toastify", () => {
 });
 
 describe("Section Searches Index Page tests", () => {
+  const saveProcessEnv = process.env;
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
+    process.env = {};
     axiosMock.resetHistory();
     axiosMock
       .onGet("/api/currentUser")
@@ -33,8 +35,16 @@ describe("Section Searches Index Page tests", () => {
       .reply(200, systemInfoFixtures.showingNeither);
   });
 
+  afterEach(() => {
+    process.env = saveProcessEnv;
+  });
+
   const queryClient = new QueryClient();
   test("renders without crashing", () => {
+    process.env = {
+      REACT_APP_START_QTR: "20204",
+      REACT_APP_END_QTR: "20224",
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -42,9 +52,16 @@ describe("Section Searches Index Page tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    expect(
+      screen.getByText(/Welcome to the UCSB Courses Search App!/),
+    ).toBeInTheDocument();
   });
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
+    process.env = {
+      REACT_APP_START_QTR: "20204",
+      REACT_APP_END_QTR: "20224",
+    };
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock.onGet("/api/sections/basicsearch").reply(200, oneSection);
 

@@ -22,6 +22,9 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 COPY . /home/app
 
+ARG REACT_APP_START_QTR   
+ARG REACT_APP_END_QTR   
+ARG REACT_APP_SOURCE_REPO
 ENV PRODUCTION=true
 RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
 

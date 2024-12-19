@@ -1,12 +1,13 @@
-import React, { useState } from "react";
 import { Form } from "react-bootstrap";
+import useLocalStorage from "main/utils/useLocalStorage";
 
 // controlId is used to remember the value for localStorage,
 // and for the testId, so it should be unique to at least any
 // given page where the component is used.
 
 // quarter and setQuarter should be values returned
-// by a parent component's setState
+// by a parent component's useState or useLocalStorage hook.
+// quarter is a string in the format "20214"
 
 // showAll is defaulted to false, to ensure the "ALL" option
 // doesn't showdown to pre-existing dropdowns
@@ -25,22 +26,13 @@ function SingleQuarterDropdown({
   label = "Quarter",
   showAll = false,
 }) {
-  const lastInd = quarters.length - 1;
-
-  const localSearchQuarter = localStorage.getItem(controlId);
-
-  if (!localSearchQuarter) {
-    localStorage.setItem(controlId, quarters[lastInd].yyyyq);
-  }
-
-  const [quarterState, setQuarterState] = useState(
-    // Stryker disable next-line all : not sure how to test/mock local storage
-    quarter.yyyyq || localSearchQuarter || quarters[lastInd].yyyyq,
+  const [quarterState, setQuarterState] = useLocalStorage(
+    controlId,
+    quarter.yyyyq,
   );
 
   const handleQuarterOnChange = (event) => {
     const selectedQuarter = event.target.value;
-    localStorage.setItem(controlId, selectedQuarter);
     setQuarterState(selectedQuarter);
     setQuarter(selectedQuarter);
     if (onChange != null) {

@@ -1,6 +1,6 @@
 import { compareValues } from "main/utils/sortHelper";
-import React, { useState } from "react";
 import { Form } from "react-bootstrap";
+import useLocalStorage from "main/utils/useLocalStorage";
 
 // showAll is defaulted to false, to ensure the "ALL" option
 // doesn't showdown to pre-existing dropdowns
@@ -14,15 +14,9 @@ const SingleSubjectDropdown = ({
   label = "Subject Area",
   showAll = false,
 }) => {
-  const localSearchSubject = localStorage.getItem(controlId);
-
-  const [subjectState, setSubjectState] = useState(
-    // Stryker disable next-line all : not sure how to test/mock local storage
-    localSearchSubject || subject,
-  );
+  const [subjectState, setSubjectState] = useLocalStorage(controlId, subject);
 
   const handleSubjectOnChange = (event) => {
-    localStorage.setItem(controlId, event.target.value);
     setSubjectState(event.target.value);
     setSubject(event.target.value);
     if (onChange != null) {
