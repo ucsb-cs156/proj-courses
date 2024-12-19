@@ -74,7 +74,7 @@ describe("UpdatesSearchForm tests", () => {
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20212");
     expect(selectQuarter.value).toBe("20212");
-    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.Quarter", "20212")
+    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.Quarter", "20212");
     expect(updateQuarter).toHaveBeenCalledWith("20212");
   });
 
@@ -169,8 +169,6 @@ describe("UpdatesSearchForm tests", () => {
     );
   });
 
-
-
   test("when I select a pageSize, the state for pageSize changes", () => {
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
@@ -190,16 +188,12 @@ describe("UpdatesSearchForm tests", () => {
     const selectPageSize = screen.getByLabelText("Page Size");
     userEvent.selectOptions(selectPageSize, "200");
     expect(selectPageSize.value).toBe("200");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "UpdatesSearch.PageSize",
-      "200",
-    );
-
+    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.PageSize", "200");
   });
 
   test("renders correctly when fallback values are used", async () => {
     const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-    getItemSpy.mockImplementation(()=>null);
+    getItemSpy.mockImplementation(() => null);
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
     axiosMock.onGet("/api/systemInfo").reply(200, {
@@ -230,6 +224,6 @@ describe("UpdatesSearchForm tests", () => {
     expect(
       await screen.findByTestId(/UpdatesSearch.Quarter-option-3/),
     ).toHaveValue("20214");
-    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.SubjectArea","ALL");
+    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.SubjectArea", "ALL");
   });
 });

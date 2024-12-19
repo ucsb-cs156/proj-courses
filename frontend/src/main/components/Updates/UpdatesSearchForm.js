@@ -41,8 +41,14 @@ const UpdatesSearchForm = ({
   const pageSizes = ["10", "50", "100", "200", "500"];
   // Stryker restore all
 
-  const [quarter, setQuarter] = useLocalStorage("UpdatesSearch.SubjectArea", "ALL");
-  const [subjectArea, setSubjectArea] = useLocalStorage("UpdatesSearch.Quarter", "ALL");
+  const [quarter, setQuarter] = useLocalStorage(
+    "UpdatesSearch.SubjectArea",
+    "ALL",
+  );
+  const [subjectArea, setSubjectArea] = useLocalStorage(
+    "UpdatesSearch.Quarter",
+    "ALL",
+  );
 
   const doUpdateQuarter = (q) => {
     setQuarter(q);
