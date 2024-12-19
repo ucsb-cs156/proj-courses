@@ -30,7 +30,7 @@ describe("UpdatesTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesTable Update={[]} />
+          <UpdatesTable updates={[]} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -54,7 +54,7 @@ describe("UpdatesTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesTable Update={updatesFixtures.threeUpdates} />
+          <UpdatesTable updates={updatesFixtures.threeUpdates} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
