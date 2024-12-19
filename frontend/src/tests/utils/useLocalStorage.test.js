@@ -23,17 +23,14 @@ describe("useLocalStorage tests", () => {
     expect(result.current[0]).toBe("testValue");
     expect(result.current[1]).toBeInstanceOf(Function);
     expect(getItemSpy).toHaveBeenCalledWith("testKey");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "testKey",
-      JSON.stringify("testValue"),
-    );
+    expect(setItemSpy).toHaveBeenCalledWith("testKey", "testValue");
   });
 
   test("if there is a value local storage, it is used, not the default", async () => {
     const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) => {
       const values = {
-        testKey: JSON.stringify("localStoredValue"),
+        testKey: "localStoredValue",
       };
       const result = key in values ? values[key] : null;
       return result;
@@ -74,10 +71,7 @@ describe("useLocalStorage tests", () => {
       result.current[1]("newStoredValue");
     });
     expect(result.current[0]).toBe("newStoredValue");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "testKey",
-      JSON.stringify("newStoredValue"),
-    );
+    expect(setItemSpy).toHaveBeenCalledWith("testKey", "newStoredValue");
   });
 
   test("error handler in useState call works as expected", async () => {
@@ -123,10 +117,7 @@ describe("useLocalStorage tests", () => {
     expect(result.current[0]).toBe("testValue");
     expect(result.current[1]).toBeInstanceOf(Function);
     expect(getItemSpy).toHaveBeenCalledWith("testKey");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "testKey",
-      JSON.stringify("testValue"),
-    );
+    expect(setItemSpy).toHaveBeenCalledWith("testKey", "testValue");
 
     setItemSpy.mockImplementation(() => {
       throw new Error("setItem error");

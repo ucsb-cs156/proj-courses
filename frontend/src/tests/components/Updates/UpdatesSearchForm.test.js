@@ -19,6 +19,7 @@ describe("UpdatesSearchForm tests", () => {
   const updateQuarter = jest.fn();
   const updateSortField = jest.fn();
   const updateSortDirection = jest.fn();
+  const updatePageSize = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -40,6 +41,7 @@ describe("UpdatesSearchForm tests", () => {
             updateSubjectArea={updateSubjectArea}
             updateSortDirection={updateSortDirection}
             updateSortField={updateSortField}
+            updatePageSize={updatePageSize}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -64,6 +66,7 @@ describe("UpdatesSearchForm tests", () => {
             updateSubjectArea={updateSubjectArea}
             updateSortDirection={updateSortDirection}
             updateSortField={updateSortField}
+            updatePageSize={updatePageSize}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -71,7 +74,8 @@ describe("UpdatesSearchForm tests", () => {
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20212");
     expect(selectQuarter.value).toBe("20212");
-    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.Quarter", "20212");
+    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.Quarter", "20212")
+    expect(updateQuarter).toHaveBeenCalledWith("20212");
   });
 
   test("when I select a subject, the state for subject changes", async () => {
@@ -86,6 +90,7 @@ describe("UpdatesSearchForm tests", () => {
             updateSubjectArea={updateSubjectArea}
             updateSortDirection={updateSortDirection}
             updateSortField={updateSortField}
+            updatePageSize={updatePageSize}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -104,6 +109,7 @@ describe("UpdatesSearchForm tests", () => {
       "UpdatesSearch.SubjectArea",
       "MATH",
     );
+    expect(updateSubjectArea).toHaveBeenCalledWith("MATH");
   });
 
   test("when I select a sortField, the state for sortField changes", () => {
@@ -117,6 +123,7 @@ describe("UpdatesSearchForm tests", () => {
             updateSubjectArea={updateSubjectArea}
             updateSortDirection={updateSortDirection}
             updateSortField={updateSortField}
+            updatePageSize={updatePageSize}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -141,6 +148,7 @@ describe("UpdatesSearchForm tests", () => {
             updateSubjectArea={updateSubjectArea}
             updateSortDirection={updateSortDirection}
             updateSortField={updateSortField}
+            updatePageSize={updatePageSize}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -161,7 +169,39 @@ describe("UpdatesSearchForm tests", () => {
     );
   });
 
+
+
+  test("when I select a pageSize, the state for pageSize changes", () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <UpdatesSearchForm
+            updateQuarter={updateQuarter}
+            updateSubjectArea={updateSubjectArea}
+            updateSortDirection={updateSortDirection}
+            updateSortField={updateSortField}
+            updatePageSize={updatePageSize}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectPageSize = screen.getByLabelText("Page Size");
+    userEvent.selectOptions(selectPageSize, "200");
+    expect(selectPageSize.value).toBe("200");
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "UpdatesSearch.PageSize",
+      "200",
+    );
+
+  });
+
   test("renders correctly when fallback values are used", async () => {
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(()=>null);
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,
@@ -177,17 +217,19 @@ describe("UpdatesSearchForm tests", () => {
             updateSubjectArea={updateSubjectArea}
             updateSortDirection={updateSortDirection}
             updateSortField={updateSortField}
+            updatePageSize={updatePageSize}
           />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
-    // Make sure the first and last options
+    // Make sure the first and last options are what we expect
     expect(
       await screen.findByTestId(/UpdatesSearch.Quarter-option-0/),
     ).toHaveValue("20211");
     expect(
       await screen.findByTestId(/UpdatesSearch.Quarter-option-3/),
     ).toHaveValue("20214");
+    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.SubjectArea","ALL");
   });
 });

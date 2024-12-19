@@ -1,4 +1,4 @@
-import { useState } from "react";
+import useLocalStorage from "main/utils/useLocalStorage";
 import { Container, Row, Col } from "react-bootstrap";
 import { quarterRange } from "main/utils/quarterUtilities";
 import { useSystemInfo } from "main/utils/systemInfo";
@@ -23,9 +23,6 @@ const UpdatesSearchForm = ({
 
   const quarters = quarterRange(startQtr, endQtr);
 
-  const localSubjectArea = localStorage.getItem("UpdatesSearch.SubjectArea");
-  const localQuarter = localStorage.getItem("UpdatesSearch.Quarter");
-
   const {
     data: subjects,
     error: _error,
@@ -44,8 +41,8 @@ const UpdatesSearchForm = ({
   const pageSizes = ["10", "50", "100", "200", "500"];
   // Stryker restore all
 
-  const [quarter, setQuarter] = useState(localQuarter || "ALL");
-  const [subjectArea, setSubjectArea] = useState(localSubjectArea || "ALL");
+  const [quarter, setQuarter] = useLocalStorage("UpdatesSearch.SubjectArea", "ALL");
+  const [subjectArea, setSubjectArea] = useLocalStorage("UpdatesSearch.Quarter", "ALL");
 
   const doUpdateQuarter = (q) => {
     setQuarter(q);
