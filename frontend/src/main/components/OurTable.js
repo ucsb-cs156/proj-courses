@@ -33,11 +33,13 @@ export default function OurTable({
       <thead>
         {headerGroups.map((headerGroup, i) => (
           <tr
+            // Stryker disable next-line all: can't test keys since they are internal to React
             key={`row-${i}`}
             {...removeKey(headerGroup.getHeaderGroupProps())}
           >
             {headerGroup.headers.map((column) => (
               <th
+                // Stryker disable next-line all: can't test keys since they are internal to React
                 key={column.id}
                 {...removeKey(
                   column.getHeaderProps(column.getSortByToggleProps()),
@@ -57,10 +59,15 @@ export default function OurTable({
         {rows.map((row, i) => {
           prepareRow(row);
           return (
-            <tr key={`row-${i}`} {...removeKey(row.getRowProps())}>
+            <tr
+              // Stryker disable next-line all: can't test keys since they are internal to React
+              key={`row-${i}`}
+              {...removeKey(row.getRowProps())}
+            >
               {row.cells.map((cell, _index) => {
                 return (
                   <td
+                    // Stryker disable next-line all: can't test keys since they are internal to React
                     key={cell.column.id}
                     {...removeKey(cell.getCellProps())}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
