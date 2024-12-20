@@ -209,7 +209,23 @@
 <a name='L144'></a><a href='#L144'>144</a>
 <a name='L145'></a><a href='#L145'>145</a>
 <a name='L146'></a><a href='#L146'>146</a>
-<a name='L147'></a><a href='#L147'>147</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -244,6 +260,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">112x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">694x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -259,11 +279,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">293x</span>
 <span class="cline-any cline-yes">293x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1656x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -359,6 +389,7 @@
 import { useSortBy, useTable } from "react-table";
 import { Button, Table } from "react-bootstrap";
 import Plaintext from "main/components/Utils/Plaintext";
+import { removeKey } from "main/utils/removeKey";
 &nbsp;
 export default function OurTable({
   columns,
@@ -387,11 +418,19 @@ export default function OurTable({
   return (
     &lt;Table {...getTableProps()} striped bordered hover&gt;
       &lt;thead&gt;
-        {headerGroups.map((headerGroup) =&gt; (
-          &lt;tr {...headerGroup.getHeaderGroupProps()}&gt;
+        {headerGroups.map((headerGroup, i) =&gt; (
+          &lt;tr
+            // Stryker disable next-line all: can't test keys since they are internal to React
+            key={`row-${i}`}
+            {...removeKey(headerGroup.getHeaderGroupProps())}
+          &gt;
             {headerGroup.headers.map((column) =&gt; (
               &lt;th
-                {...column.getHeaderProps(column.getSortByToggleProps())}
+                // Stryker disable next-line all: can't test keys since they are internal to React
+                key={column.id}
+                {...removeKey(
+                  column.getHeaderProps(column.getSortByToggleProps()),
+                )}
                 data-testid={`${testid}-header-${column.id}`}
               &gt;
                 {column.render("Header")}
@@ -404,14 +443,20 @@ export default function OurTable({
         ))}
       &lt;/thead&gt;
       &lt;tbody {...getTableBodyProps()}&gt;
-        {rows.map((row) =&gt; {
+        {rows.map((row, i) =&gt; {
           prepareRow(row);
           return (
-            &lt;tr {...row.getRowProps()}&gt;
+            &lt;tr
+              // Stryker disable next-line all: can't test keys since they are internal to React
+              key={`row-${i}`}
+              {...removeKey(row.getRowProps())}
+            &gt;
               {row.cells.map((cell, _index) =&gt; {
                 return (
                   &lt;td
-                    {...cell.getCellProps()}
+                    // Stryker disable next-line all: can't test keys since they are internal to React
+                    key={cell.column.id}
+                    {...removeKey(cell.getCellProps())}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                   &gt;
                     {cell.render("Cell")}
@@ -508,7 +553,7 @@ export function DateColumn(label, getDate) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-12-20T21:11:38.026Z
+                at 2024-12-20T21:32:38.882Z
             </div>
         <script src="../prettify.js"></script>
         <script>
