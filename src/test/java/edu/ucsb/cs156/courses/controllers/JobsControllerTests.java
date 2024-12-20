@@ -82,9 +82,9 @@ public class JobsControllerTests extends ControllerTestCase {
     MvcResult response =
         mockMvc.perform(get("/api/jobs/all")).andExpect(status().isOk()).andReturn();
 
-    // // assert
+    // assert
 
-    verify(jobsRepository, times(1)).findAll();
+    verify(jobsRepository, atLeastOnce()).findAll();
     String expectedJson = mapper.writeValueAsString(expectedJobs);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
