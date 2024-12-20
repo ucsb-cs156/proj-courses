@@ -2,6 +2,7 @@ import React from "react";
 import { useSortBy, useTable } from "react-table";
 import { Button, Table } from "react-bootstrap";
 import Plaintext from "main/components/Utils/Plaintext";
+import { removeKey } from "main/utils/removeKey";
 
 export default function OurTable({
   columns,
@@ -30,11 +31,19 @@ export default function OurTable({
   return (
     <Table {...getTableProps()} striped bordered hover>
       <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
+        {headerGroups.map((headerGroup, i) => (
+          <tr
+            // Stryker disable next-line all: can't test keys since they are internal to React
+            key={`row-${i}`}
+            {...removeKey(headerGroup.getHeaderGroupProps())}
+          >
             {headerGroup.headers.map((column) => (
               <th
-                {...column.getHeaderProps(column.getSortByToggleProps())}
+                // Stryker disable next-line all: can't test keys since they are internal to React
+                key={column.id}
+                {...removeKey(
+                  column.getHeaderProps(column.getSortByToggleProps()),
+                )}
                 data-testid={`${testid}-header-${column.id}`}
               >
                 {column.render("Header")}
@@ -47,14 +56,20 @@ export default function OurTable({
         ))}
       </thead>
       <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
+        {rows.map((row, i) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()}>
+            <tr
+              // Stryker disable next-line all: can't test keys since they are internal to React
+              key={`row-${i}`}
+              {...removeKey(row.getRowProps())}
+            >
               {row.cells.map((cell, _index) => {
                 return (
                   <td
-                    {...cell.getCellProps()}
+                    // Stryker disable next-line all: can't test keys since they are internal to React
+                    key={cell.column.id}
+                    {...removeKey(cell.getCellProps())}
                     data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                   >
                     {cell.render("Cell")}

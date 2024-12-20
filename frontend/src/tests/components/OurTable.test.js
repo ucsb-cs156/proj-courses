@@ -48,6 +48,9 @@ describe("OurTable tests", () => {
 
   test("renders a table with two rows without crashing", () => {
     render(<OurTable columns={columns} data={threeRows} />);
+    expect(screen.getByTestId("testid-cell-row-0-col-Log")).toHaveTextContent(
+      "foobar baz",
+    );
   });
 
   test("The button appears in the table", async () => {

@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { useTable, useGroupBy, useExpanded } from "react-table";
 import { Table } from "react-bootstrap";
+import { removeKey } from "main/utils/removeKey";
 
 // Stryker disable StringLiteral, ArrayDeclaration
 export default function SectionsTableBase({
@@ -26,11 +27,12 @@ export default function SectionsTableBase({
   return (
     <Table {...getTableProps()} bordered hover className="table-hover">
       <thead key="thead">
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
+        {headerGroups.map((headerGroup, i) => (
+          <tr key={`tr-${i}`} {...removeKey(headerGroup.getHeaderGroupProps())}>
             {headerGroup.headers.map((column) => (
               <th
-                {...column.getHeaderProps()}
+                key={`${column.id}`}
+                {...removeKey(column.getHeaderProps())}
                 data-testid={`${testid}-header-${column.id}`}
               >
                 {column.render("Header")}
@@ -49,11 +51,12 @@ export default function SectionsTableBase({
             <Fragment key={`row-${i}`}>
               {row.cells[0].isGrouped ||
               (!row.cells[0].isGrouped && row.allCells[3].value) ? (
-                <tr style={rowStyle}>
+                <tr style={rowStyle} key={`row-${i}`}>
                   {row.cells.map((cell, _index) => {
                     return (
                       <td
-                        {...cell.getCellProps()}
+                        key={`${cell.column.id}`}
+                        {...removeKey(cell.getCellProps())}
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                         // Stryker disable next-line ObjectLiteral
                         style={{
