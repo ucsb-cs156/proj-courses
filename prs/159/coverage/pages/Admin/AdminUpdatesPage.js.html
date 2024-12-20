@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -120,18 +120,7 @@
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -139,29 +128,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -180,8 +159,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -203,30 +181,20 @@
 import UpdatesSearchForm from "main/components/Updates/UpdatesSearchForm";
 import UpdatesTable from "main/components/Updates/UpdatesTable";
 import { useState } from "react";
+import useLocalStorage from "main/utils/useLocalStorage";
 import { useBackend } from "main/utils/useBackend";
 import OurPagination from "main/components/Utils/OurPagination";
 &nbsp;
 export default function AdminUpdatesPage() {
-  const testId = "AdminUpdatesPage";
 &nbsp;
   const [selectedPage, setSelectedPage] = useState(1);
   const refreshJobsIntervalMilliseconds = 500;
 &nbsp;
-  const localSubject = localStorage.getItem("UpdatesSearch.SubjectArea");
-  const localQuarter = localStorage.getItem("UpdatesSearch.Quarter");
-  const localSortField = localStorage.getItem("UpdatesSearch.SortField");
-  const localSortDirection = localStorage.getItem(
-    "UpdatesSearch.SortDirection",
-  );
-  const localPageSize = localStorage.getItem("UpdatesSearch.PageSize");
-&nbsp;
-  const [quarter, setQuarter] = useState(localQuarter || "ALL");
-  const [subject, setSubject] = useState(localSubject || "ALL");
-  const [sortField, setSortField] = useState(localSortField || "subjectArea");
-  const [sortDirection, setSortDirection] = useState(
-    localSortDirection || "ASC",
-  );
-  const [pageSize, setPageSize] = useState(localPageSize || "10");
+  const [quarter, setQuarter] = useLocalStorage("UpdatesSearch.Quarter", "ALL");
+  const [subject, setSubject] = useLocalStorage("UpdatesSearch.SubjectArea", "ALL");
+  const [sortField, setSortField] = useLocalStorage("UpdatesSearch.SortField", "subjectArea");
+  const [sortDirection, setSortDirection] = useLocalStorage("UpdatesSearch.SortDirection", "ASC");
+  const [pageSize, setPageSize] = useLocalStorage("UpdatesSearch.PageSize", "10");
 &nbsp;
   // Stryker disable all
   const { data: page } = useBackend(
@@ -261,7 +229,6 @@ export default function AdminUpdatesPage() {
       &lt;OurPagination
         updateActivePage={setSelectedPage}
         totalPages={page.totalPages}
-        testId={testId}
       /&gt;
       &lt;UpdatesTable updates={page.content} /&gt;
     &lt;/BasicLayout&gt;
@@ -274,7 +241,7 @@ export default function AdminUpdatesPage() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-12-20T00:22:51.047Z
+                at 2024-12-20T01:16:46.293Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
