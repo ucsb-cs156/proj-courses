@@ -7,7 +7,6 @@ import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-<span class="fc" id="L23">@Slf4j</span>
+<span class="fc" id="L22">@Slf4j</span>
 @Service(&quot;UCSBSubjects&quot;)
 public class UCSBSubjectsService {
 
@@ -35,40 +34,39 @@ public class UCSBSubjectsService {
 
   private final RestTemplate restTemplate;
 
-<span class="fc" id="L38">  public UCSBSubjectsService(RestTemplateBuilder restTemplateBuilder) {</span>
-<span class="fc" id="L39">    restTemplate = restTemplateBuilder.build();</span>
-<span class="fc" id="L40">  }</span>
+<span class="fc" id="L37">  public UCSBSubjectsService(RestTemplateBuilder restTemplateBuilder) {</span>
+<span class="fc" id="L38">    restTemplate = restTemplateBuilder.build();</span>
+<span class="fc" id="L39">  }</span>
 
   public List&lt;UCSBSubject&gt; get() throws JsonProcessingException {
 
-<span class="fc" id="L44">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L45">    headers.setAccept(List.of(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L46">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L47">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L43">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L44">    headers.setAccept(List.of(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L45">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L46">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L49">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
-<span class="fc" id="L50">    ResponseEntity&lt;String&gt; re =</span>
-<span class="fc" id="L51">        restTemplate.exchange(ENDPOINT, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L48">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
+<span class="fc" id="L49">    ResponseEntity&lt;String&gt; re =</span>
+<span class="fc" id="L50">        restTemplate.exchange(ENDPOINT, HttpMethod.GET, entity, String.class);</span>
 
-<span class="fc" id="L53">    String retBody = re.getBody();</span>
-<span class="fc" id="L54">    List&lt;UCSBSubject&gt; subjects =</span>
-<span class="fc" id="L55">        mapper.readValue(retBody, new TypeReference&lt;List&lt;UCSBSubject&gt;&gt;() {});</span>
+<span class="fc" id="L52">    String retBody = re.getBody();</span>
+<span class="fc" id="L53">    List&lt;UCSBSubject&gt; subjects =</span>
+<span class="fc" id="L54">        mapper.readValue(retBody, new TypeReference&lt;List&lt;UCSBSubject&gt;&gt;() {});</span>
 
-<span class="fc" id="L57">    Stream&lt;UCSBSubject&gt; subjectStream = subjects.stream();</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">    return subjectStream.filter(us -&gt; !us.getSubjectCode().equals(&quot;SUBJECTCODE&quot;)).toList();</span>
+<span class="fc" id="L56">    return subjects;</span>
   }
 
   public List&lt;UCSBSubject&gt; loadAllSubjects() throws JsonProcessingException {
-<span class="fc" id="L62">    List&lt;UCSBSubject&gt; subjects = this.get();</span>
-<span class="fc" id="L63">    List&lt;UCSBSubject&gt; savedSubjects = new ArrayList&lt;UCSBSubject&gt;();</span>
+<span class="fc" id="L60">    List&lt;UCSBSubject&gt; subjects = this.get();</span>
+<span class="fc" id="L61">    List&lt;UCSBSubject&gt; savedSubjects = new ArrayList&lt;UCSBSubject&gt;();</span>
 
-<span class="fc" id="L65">    subjects.forEach(</span>
+<span class="fc" id="L63">    subjects.forEach(</span>
         (ucsbSubject) -&gt; {
-<span class="fc" id="L67">          subjectRepository.save(ucsbSubject);</span>
-<span class="fc" id="L68">          savedSubjects.add(ucsbSubject);</span>
-<span class="fc" id="L69">        });</span>
-<span class="fc" id="L70">    log.info(&quot;subjects={}&quot;, subjects);</span>
-<span class="fc" id="L71">    return savedSubjects;</span>
+<span class="fc" id="L65">          subjectRepository.save(ucsbSubject);</span>
+<span class="fc" id="L66">          savedSubjects.add(ucsbSubject);</span>
+<span class="fc" id="L67">        });</span>
+<span class="fc" id="L68">    log.info(&quot;subjects={}&quot;, subjects);</span>
+<span class="fc" id="L69">    return savedSubjects;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
