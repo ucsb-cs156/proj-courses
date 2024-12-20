@@ -32,6 +32,10 @@ public class UpdateCourseDataJob implements JobContextConsumer {
 
   @Override
   public void accept(JobContext ctx) throws Exception {
+    ctx.log(
+        String.format(
+            "Updating courses from %s to %s for %d subjects",
+            start_quarterYYYYQ, end_quarterYYYYQ, subjects.size()));
     List<Quarter> quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);
     for (Quarter quarter : quarters) {
       String quarterYYYYQ = quarter.getYYYYQ();
@@ -45,6 +49,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
         updateCourses(ctx, quarterYYYYQ, subjectArea);
       }
     }
+    ctx.log("Finished updating courses");
   }
 
   public Update updateUpdatesCollection(
