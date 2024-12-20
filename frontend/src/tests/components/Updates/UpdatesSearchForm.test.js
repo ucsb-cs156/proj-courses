@@ -224,7 +224,15 @@ describe("UpdatesSearchForm tests", () => {
     expect(
       await screen.findByTestId(/UpdatesSearch.Quarter-option-3/),
     ).toHaveValue("20214");
-    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.SubjectArea", "ALL");
-    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.Quarter", "ALL");
+
+    const setItemCalls = setItemSpy.mock.calls;
+    expect(setItemCalls).toContainEqual(["UpdatesSearch.SubjectArea", "ALL"]);
+    expect(setItemCalls).toContainEqual(["UpdatesSearch.Quarter", "ALL"]);
+    expect(setItemCalls).toContainEqual([
+      "UpdatesSearch.SortField",
+      "subjectArea",
+    ]);
+    expect(setItemCalls).toContainEqual(["UpdatesSearch.SortDirection", "ASC"]);
+    expect(setItemCalls).toContainEqual(["UpdatesSearch.PageSize", "10"]);
   });
 });
