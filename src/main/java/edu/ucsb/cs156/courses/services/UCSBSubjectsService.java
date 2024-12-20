@@ -7,6 +7,7 @@ import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,7 +54,8 @@ public class UCSBSubjectsService {
     List<UCSBSubject> subjects =
         mapper.readValue(retBody, new TypeReference<List<UCSBSubject>>() {});
 
-    return subjects;
+    Stream<UCSBSubject> subjectStream = subjects.stream();
+    return subjectStream.filter(us -> !us.getSubjectCode().equals("SUBJECTCODE")).toList();
   }
 
   public List<UCSBSubject> loadAllSubjects() throws JsonProcessingException {
