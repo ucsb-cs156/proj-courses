@@ -1,4 +1,4 @@
-package edu.ucsb.cs156.courses;
+package edu.ucsb.cs156.courses.startup;
 
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;

@@ -1,4 +1,4 @@
-package edu.ucsb.cs156.courses;
+package edu.ucsb.cs156.courses.startup;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
