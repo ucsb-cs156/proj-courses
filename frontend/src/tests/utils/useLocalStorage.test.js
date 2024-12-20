@@ -51,7 +51,7 @@ describe("useLocalStorage tests", () => {
     const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) => {
       const values = {
-        testKey: JSON.stringify("localStoredValue"),
+        testKey: "localStoredValue",
       };
       const result = key in values ? values[key] : null;
       return result;
