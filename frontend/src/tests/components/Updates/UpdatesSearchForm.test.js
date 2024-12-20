@@ -225,5 +225,6 @@ describe("UpdatesSearchForm tests", () => {
       await screen.findByTestId(/UpdatesSearch.Quarter-option-3/),
     ).toHaveValue("20214");
     expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.SubjectArea", "ALL");
+    expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.Quarter", "ALL");
   });
 });
