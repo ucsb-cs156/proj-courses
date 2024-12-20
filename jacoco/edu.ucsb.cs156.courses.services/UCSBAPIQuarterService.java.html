@@ -104,88 +104,90 @@ public class UCSBAPIQuarterService {
 <span class="fc" id="L104">    retVal = re.getBody();</span>
 
 <span class="fc" id="L106">    log.info(</span>
-        &quot;json: {} contentType: {} statusCode: {} entity: {}&quot;,
-        retVal,
+        &quot;contentType: {} statusCode: {} entity: {}&quot;,
         contentType,
         statusCode,
         entity);
-<span class="fc" id="L112">    UCSBAPIQuarter quarter = null;</span>
-<span class="fc" id="L113">    quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);</span>
-<span class="fc" id="L114">    return quarter;</span>
+<span class="fc" id="L111">    log.trace(</span>
+          &quot;json: {}&quot;,
+          retVal);
+<span class="fc" id="L114">    UCSBAPIQuarter quarter = null;</span>
+<span class="fc" id="L115">    quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);</span>
+<span class="fc" id="L116">    return quarter;</span>
   }
 
   public List&lt;UCSBAPIQuarter&gt; getAllQuarters() throws Exception {
-<span class="fc" id="L118">    List&lt;UCSBAPIQuarter&gt; quarters = ucsbApiQuarterRepository.findAll();</span>
-<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (quarters.isEmpty()) {</span>
-<span class="fc" id="L120">      quarters = this.loadAllQuarters();</span>
+<span class="fc" id="L120">    List&lt;UCSBAPIQuarter&gt; quarters = ucsbApiQuarterRepository.findAll();</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">    if (quarters.isEmpty()) {</span>
+<span class="fc" id="L122">      quarters = this.loadAllQuarters();</span>
     }
-<span class="fc" id="L122">    return quarters;</span>
+<span class="fc" id="L124">    return quarters;</span>
   }
 
   public List&lt;UCSBAPIQuarter&gt; getAllQuartersFromAPI() throws Exception {
-<span class="fc" id="L126">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L127">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L128">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L129">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
-<span class="fc" id="L130">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L128">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L129">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L130">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L131">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L132">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L132">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+<span class="fc" id="L134">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
 
-<span class="fc" id="L134">    String url = ALL_QUARTERS_ENDPOINT;</span>
+<span class="fc" id="L136">    String url = ALL_QUARTERS_ENDPOINT;</span>
 
-<span class="fc" id="L136">    log.info(&quot;url=&quot; + url);</span>
+<span class="fc" id="L138">    log.info(&quot;url=&quot; + url);</span>
 
-<span class="fc" id="L138">    String retVal = &quot;&quot;;</span>
-<span class="fc" id="L139">    MediaType contentType = null;</span>
-<span class="fc" id="L140">    HttpStatus statusCode = null;</span>
+<span class="fc" id="L140">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L141">    MediaType contentType = null;</span>
+<span class="fc" id="L142">    HttpStatus statusCode = null;</span>
 
-<span class="fc" id="L142">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
-<span class="fc" id="L143">    contentType = re.getHeaders().getContentType();</span>
-<span class="fc" id="L144">    statusCode = (HttpStatus) re.getStatusCode();</span>
-<span class="fc" id="L145">    retVal = re.getBody();</span>
+<span class="fc" id="L144">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L145">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L146">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L147">    retVal = re.getBody();</span>
 
-<span class="fc" id="L147">    log.info(</span>
+<span class="fc" id="L149">    log.info(</span>
         &quot;json: {} contentType: {} statusCode: {} entity: {}&quot;,
         retVal,
         contentType,
         statusCode,
         entity);
-<span class="fc" id="L153">    List&lt;UCSBAPIQuarter&gt; quarters = null;</span>
-<span class="fc" id="L154">    quarters = objectMapper.readValue(retVal, new TypeReference&lt;List&lt;UCSBAPIQuarter&gt;&gt;() {});</span>
-<span class="fc" id="L155">    return quarters;</span>
+<span class="fc" id="L155">    List&lt;UCSBAPIQuarter&gt; quarters = null;</span>
+<span class="fc" id="L156">    quarters = objectMapper.readValue(retVal, new TypeReference&lt;List&lt;UCSBAPIQuarter&gt;&gt;() {});</span>
+<span class="fc" id="L157">    return quarters;</span>
   }
 
   public boolean quarterYYYYQInRange(String quarterYYYYQ) {
-<span class="fc bfc" id="L159" title="All 2 branches covered.">    boolean dateGEStart = quarterYYYYQ.compareTo(startQtrYYYYQ) &gt;= 0;</span>
-<span class="fc bfc" id="L160" title="All 2 branches covered.">    boolean dateLEEnd = quarterYYYYQ.compareTo(endQtrYYYYQ) &lt;= 0;</span>
-<span class="fc bfc" id="L161" title="All 4 branches covered.">    return (dateGEStart &amp;&amp; dateLEEnd);</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">    boolean dateGEStart = quarterYYYYQ.compareTo(startQtrYYYYQ) &gt;= 0;</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">    boolean dateLEEnd = quarterYYYYQ.compareTo(endQtrYYYYQ) &lt;= 0;</span>
+<span class="fc bfc" id="L163" title="All 4 branches covered.">    return (dateGEStart &amp;&amp; dateLEEnd);</span>
   }
 
   public List&lt;UCSBAPIQuarter&gt; loadAllQuarters() throws Exception {
-<span class="fc" id="L165">    List&lt;UCSBAPIQuarter&gt; quarters = this.getAllQuartersFromAPI();</span>
-<span class="fc" id="L166">    List&lt;UCSBAPIQuarter&gt; savedQuarters = new ArrayList&lt;UCSBAPIQuarter&gt;();</span>
-<span class="fc" id="L167">    quarters.forEach(</span>
+<span class="fc" id="L167">    List&lt;UCSBAPIQuarter&gt; quarters = this.getAllQuartersFromAPI();</span>
+<span class="fc" id="L168">    List&lt;UCSBAPIQuarter&gt; savedQuarters = new ArrayList&lt;UCSBAPIQuarter&gt;();</span>
+<span class="fc" id="L169">    quarters.forEach(</span>
         (quarter) -&gt; {
-<span class="fc bfc" id="L169" title="All 2 branches covered.">          if (quarterYYYYQInRange(quarter.getQuarter())) {</span>
-<span class="fc" id="L170">            ucsbApiQuarterRepository.save(quarter);</span>
-<span class="fc" id="L171">            savedQuarters.add(quarter);</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">          if (quarterYYYYQInRange(quarter.getQuarter())) {</span>
+<span class="fc" id="L172">            ucsbApiQuarterRepository.save(quarter);</span>
+<span class="fc" id="L173">            savedQuarters.add(quarter);</span>
           }
-<span class="fc" id="L173">        });</span>
-<span class="fc" id="L174">    log.info(&quot;savedQuarters.size={}&quot;, savedQuarters.size());</span>
-<span class="fc" id="L175">    return savedQuarters;</span>
+<span class="fc" id="L175">        });</span>
+<span class="fc" id="L176">    log.info(&quot;savedQuarters.size={}&quot;, savedQuarters.size());</span>
+<span class="fc" id="L177">    return savedQuarters;</span>
   }
 
   public List&lt;String&gt; getActiveQuarters() throws Exception {
-<span class="fc" id="L179">    List&lt;String&gt; activeQuarters = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L180">    String currQtr = getCurrentQuarterYYYYQ();</span>
-<span class="fc" id="L181">    String endQtr = getEndQtrYYYYQ();</span>
+<span class="fc" id="L181">    List&lt;String&gt; activeQuarters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L182">    String currQtr = getCurrentQuarterYYYYQ();</span>
+<span class="fc" id="L183">    String endQtr = getEndQtrYYYYQ();</span>
 
-<span class="fc bfc" id="L183" title="All 2 branches covered.">    if (currQtr.compareTo(endQtr) &lt;= 0) {</span>
-<span class="fc" id="L184">      Quarter.quarterList(currQtr, endQtr)</span>
-<span class="fc" id="L185">          .forEach(quarter -&gt; activeQuarters.add(quarter.getYYYYQ()));</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">    if (currQtr.compareTo(endQtr) &lt;= 0) {</span>
+<span class="fc" id="L186">      Quarter.quarterList(currQtr, endQtr)</span>
+<span class="fc" id="L187">          .forEach(quarter -&gt; activeQuarters.add(quarter.getYYYYQ()));</span>
     }
 
-<span class="fc" id="L188">    return activeQuarters;</span>
+<span class="fc" id="L190">    return activeQuarters;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
