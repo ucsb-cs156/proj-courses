@@ -212,7 +212,9 @@
                         <exclude>**/edu/ucsb/cs156/courses/controllers/FrontendProxyController.*</exclude>
                         <exclude>**/edu/ucsb/cs156/courses/services/CurrentUserServiceImpl.*</exclude>
                         <exclude>**/edu/ucsb/cs156/courses/CoursesApplication.*</exclude>
-                        <exclude>**/edu/ucsb/cs156/courses/CoursesApplicationRunner.*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/CoursesApplicationRunner*.*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/CoursesStartup.*</exclude>
+                        <exclude>**/edu/ucsb/cs156/courses/jobs/ScheduledJobs.*</exclude>
                     </excludes>
                 </configuration>
 

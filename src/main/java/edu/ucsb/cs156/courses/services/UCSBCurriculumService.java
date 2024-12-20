@@ -86,7 +86,8 @@ public class UCSBCurriculumService {
     statusCode = (HttpStatus) re.getStatusCode();
     retVal = re.getBody();
 
-    log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
+    log.trace("json: {}", retVal);
+    log.info("contentType: {} statusCode: {}", contentType, statusCode);
     return retVal;
   }
 
