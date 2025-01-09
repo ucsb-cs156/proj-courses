@@ -103,12 +103,8 @@ public class UCSBAPIQuarterService {
     statusCode = (HttpStatus) re.getStatusCode();
     retVal = re.getBody();
 
-    log.info(
-        "json: {} contentType: {} statusCode: {} entity: {}",
-        retVal,
-        contentType,
-        statusCode,
-        entity);
+    log.info("contentType: {} statusCode: {} entity: {}", contentType, statusCode, entity);
+    log.trace("json: {}", retVal);
     UCSBAPIQuarter quarter = null;
     quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);
     return quarter;
