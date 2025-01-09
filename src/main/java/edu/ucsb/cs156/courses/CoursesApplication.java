@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
@@ -18,6 +19,7 @@ import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecu
 @EnableJpaAuditing(dateTimeProviderRef = "utcDateTimeProvider")
 // enables automatic population of @CreatedDate and @LastModifiedDate
 @EnableAsync // for @Async annotation for JobsService
+@EnableScheduling // for @Scheduled annotation for JobsService
 public class CoursesApplication {
 
   public static void main(String[] args) {
