@@ -3,13 +3,15 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Inspector } from "react-inspector";
 import { useSystemInfo } from "main/utils/systemInfo";
 
-const DeveloperPage = () => {
+const DeveloperPage = ({ overrideEnv }) => {
   const { data: systemInfo } = useSystemInfo();
+
+  const env = overrideEnv ? overrideEnv : process.env;
   return (
     <BasicLayout>
-      <h2>Github Branch Information</h2>
-      <p>The following SystemInfo is displayed in a JSON file.</p>
-      <Inspector data={systemInfo} />
+      <h2>Developer Page</h2>
+      <Inspector data={systemInfo} name={"systemInfo"} />
+      <Inspector data={env} name={"env"} />
     </BasicLayout>
   );
 };
