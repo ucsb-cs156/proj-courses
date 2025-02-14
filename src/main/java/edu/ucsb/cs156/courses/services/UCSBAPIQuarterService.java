@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,9 +34,11 @@ public class UCSBAPIQuarterService {
   @Value("${app.endQtrYYYYQ:20222}")
   private String endQtrYYYYQ;
 
-  @Autowired private ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
-  @Autowired UCSBAPIQuarterRepository ucsbApiQuarterRepository;
+  @Autowired
+  UCSBAPIQuarterRepository ucsbApiQuarterRepository;
 
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
@@ -45,14 +49,11 @@ public class UCSBAPIQuarterService {
     restTemplate = restTemplateBuilder.build();
   }
 
-  public static final String CURRENT_QUARTER_ENDPOINT =
-      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current";
+  public static final String CURRENT_QUARTER_ENDPOINT = "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current";
 
-  public static final String ALL_QUARTERS_ENDPOINT =
-      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
+  public static final String ALL_QUARTERS_ENDPOINT = "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
 
-  public static final String END_QUARTER_ENDPOINT =
-      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end";
+  public static final String END_QUARTER_ENDPOINT = "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end";
 
   public String getStartQtrYYYYQ() {
     return startQtrYYYYQ;
@@ -147,7 +148,8 @@ public class UCSBAPIQuarterService {
         statusCode,
         entity);
     List<UCSBAPIQuarter> quarters = null;
-    quarters = objectMapper.readValue(retVal, new TypeReference<List<UCSBAPIQuarter>>() {});
+    quarters = objectMapper.readValue(retVal, new TypeReference<List<UCSBAPIQuarter>>() {
+    });
     return quarters;
   }
 
@@ -182,5 +184,51 @@ public class UCSBAPIQuarterService {
     }
 
     return activeQuarters;
+  }
+
+  public LocalDateTime lastDayToRegister(UCSBAPIQuarter ucsbApiQuarter) {
+    if (ucsbApiQuarter == null) {
+      return null;
+    }
+
+    LocalDateTime lastDayToAddUndergrad = ucsbApiQuarter.getLastDayToAddUnderGrad();
+    LocalDateTime lastDayToAddGrad = ucsbApiQuarter.getLastDayToAddGrad();
+
+    if (lastDayToAddUndergrad == null || lastDayToAddGrad == null) {
+      return null;
+    }
+
+    return lastDayToAddUndergrad.isAfter(lastDayToAddGrad) ? lastDayToAddUndergrad : lastDayToAddGrad;
+  }
+
+  public boolean isQuarterInRegistrationPass(String quarterYYYYQ) {
+    UCSBAPIQuarter quarter = ucsbApiQuarterRepository.findById(quarterYYYYQ).orElse(null);
+    LocalDateTime lastDay = lastDayToRegister(quarter);
+
+    if (quarter == null) {
+      return false;
+    }
+
+    if (lastDay == null) {
+      return false;
+    }
+
+    LocalDateTime pass1Begin = quarter.getPass1Begin();
+
+    if (pass1Begin == null) {
+      return false;
+    }
+
+    LocalDateTime currentDate = LocalDateTime.now();
+    return currentDate.isAfter(pass1Begin) && currentDate.isBefore(lastDay);
+  }
+
+  public List<String> getActiveRegistrationQuarters() throws Exception {
+
+    List<String> activeQuarters = getActiveQuarters();
+
+    List<String> registrationQuarters = activeQuarters.stream().filter(yyyyq -> isQuarterInRegistrationPass(yyyyq))
+        .toList();
+    return registrationQuarters;
   }
 }
