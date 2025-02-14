@@ -35,8 +35,7 @@ public class UpdateCourseDataJobTests {
 
   @Mock IsStaleService isStaleService;
 
-  @Mock
-  EnrollmentDataPointRepository enrollmentDataPointRepository;
+  @Mock EnrollmentDataPointRepository enrollmentDataPointRepository;
 
   Job jobStarted = Job.builder().build();
   JobContext ctx = new JobContext(null, jobStarted);
