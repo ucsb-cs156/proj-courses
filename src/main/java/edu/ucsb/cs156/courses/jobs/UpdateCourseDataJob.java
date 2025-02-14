@@ -5,6 +5,7 @@ import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.models.Quarter;
+import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
@@ -29,6 +30,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
   private UpdateCollection updateCollection;
   private IsStaleService isStaleService;
   private boolean ifStale;
+  private EnrollmentDataPointRepository enrollmentDataPointRepository;
 
   @Override
   public void accept(JobContext ctx) throws Exception {

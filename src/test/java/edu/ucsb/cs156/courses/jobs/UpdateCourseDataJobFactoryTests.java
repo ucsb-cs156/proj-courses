@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.entities.UCSBSubject;
+import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
@@ -30,6 +31,8 @@ public class UpdateCourseDataJobFactoryTests {
   @MockBean IsStaleService isStaleService;
 
   @Autowired UpdateCourseDataJobFactory factory;
+
+  @MockBean EnrollmentDataPointRepository enrollmentDataPointRepository;
 
   @Test
   void test_createForSubjectAndQuarter() {
