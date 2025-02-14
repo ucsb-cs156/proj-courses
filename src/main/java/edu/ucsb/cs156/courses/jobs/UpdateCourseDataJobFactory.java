@@ -2,6 +2,7 @@ package edu.ucsb.cs156.courses.jobs;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.collections.UpdateCollection;
+import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
@@ -25,6 +26,8 @@ public class UpdateCourseDataJobFactory {
 
   @Autowired private IsStaleService isStaleService;
 
+  @Autowired private EnrollmentDataPointRepository enrollmentDataPointRepository;
+
   public UpdateCourseDataJob createForSubjectAndQuarter(String subjectArea, String quarterYYYYQ) {
     return new UpdateCourseDataJob(
         quarterYYYYQ,
@@ -34,7 +37,8 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        false);
+        false,
+        enrollmentDataPointRepository);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
@@ -47,7 +51,8 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        ifStale);
+        ifStale,
+        enrollmentDataPointRepository);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
@@ -60,7 +65,8 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true);
+        true,
+        enrollmentDataPointRepository);
   }
 
   private List<String> getAllSubjectCodes() {
@@ -81,7 +87,8 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true);
+        true,
+        enrollmentDataPointRepository);
   }
 
   public UpdateCourseDataJob createForQuarterRange(
@@ -94,6 +101,7 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true);
+        true,
+        enrollmentDataPointRepository);
   }
 }

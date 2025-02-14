@@ -12,6 +12,7 @@ import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.entities.Job;
+import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
@@ -34,6 +35,9 @@ public class UpdateCourseDataJobTests {
 
   @Mock IsStaleService isStaleService;
 
+  @Mock
+  EnrollmentDataPointRepository enrollmentDataPointRepository;
+
   Job jobStarted = Job.builder().build();
   JobContext ctx = new JobContext(null, jobStarted);
 
@@ -50,6 +54,7 @@ public class UpdateCourseDataJobTests {
                 .updateCollection(updateCollection)
                 .isStaleService(isStaleService)
                 .ifStale(false)
+                .enrollmentDataPointRepository(enrollmentDataPointRepository)
                 .build());
     doNothing().when(job).updateCourses(any(), any(), any());
 
@@ -91,7 +96,8 @@ public class UpdateCourseDataJobTests {
             convertedSectionCollection,
             updateCollection,
             isStaleService,
-            false);
+            false,
+            enrollmentDataPointRepository);
     job.accept(ctx);
 
     // Assert
@@ -153,7 +159,8 @@ public class UpdateCourseDataJobTests {
             convertedSectionCollection,
             updateCollection,
             isStaleService,
-            false);
+            false,
+            enrollmentDataPointRepository);
     job.accept(ctx);
 
     // Assert
@@ -208,7 +215,8 @@ public class UpdateCourseDataJobTests {
             convertedSectionCollection,
             updateCollection,
             isStaleService,
-            false);
+            false,
+            enrollmentDataPointRepository);
     job.accept(ctx);
 
     // Assert
@@ -268,7 +276,8 @@ public class UpdateCourseDataJobTests {
             convertedSectionCollection,
             updateCollection,
             isStaleService,
-            false);
+            false,
+            enrollmentDataPointRepository);
     job.accept(ctx);
 
     // Assert
@@ -334,7 +343,8 @@ public class UpdateCourseDataJobTests {
             convertedSectionCollection,
             updateCollection,
             isStaleService,
-            true);
+            true,
+            enrollmentDataPointRepository);
     job.accept(ctx);
 
     // Assert
@@ -371,7 +381,8 @@ public class UpdateCourseDataJobTests {
             convertedSectionCollection,
             updateCollection,
             isStaleService,
-            true);
+            true,
+            enrollmentDataPointRepository);
     job.accept(ctx);
   }
 }
