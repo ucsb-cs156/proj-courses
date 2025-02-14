@@ -14,27 +14,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity(name = "ucsbapiquarter")
 public class UCSBAPIQuarter {
-    @Id
-    private String quarter; // example: 20243
-    private String qyy; // example: M24
-    private String name; // example: SUMMER 2024
-    private String category; // example: SUMMER
-    private String academicYear; // example: 2023-2024
-    private LocalDateTime firstDayOfClasses; // example: 2024-06-24T00:00:00
-    private LocalDateTime lastDayOfClasses; // example: 2024-09-13T00:00:00
-    private LocalDateTime firstDayOfFinals; // example: 2024-09-14T00:00:00
-    private LocalDateTime lastDayOfFinals; // example: 2024-09-14T00:00:00
-    private LocalDateTime firstDayOfQuarter; // example: 2024-06-24T00:00:00
-    private LocalDateTime lastDayOfSchedule; // example: 2024-09-21T00:00:00
-    private LocalDateTime pass1Begin; // example: 2024-04-08T09:00:00
-    private LocalDateTime pass2Begin; // example: 2024-04-22T09:00:00
-    private LocalDateTime pass3Begin; // example: 2024-05-06T09:00:00
-    private LocalDateTime feeDeadline; // example: 2024-06-26T00:00:00
-    private LocalDateTime lastDayToAddUnderGrad; // example: 2024-07-15T00:00:00
-    private LocalDateTime lastDayToAddGrad; // example: 2024-09-13T00:00:00
-    private LocalDateTime lastDayThirdWeek; // example: null
+  @Id private String quarter; // example: 20243
+  private String qyy; // example: M24
+  private String name; // example: SUMMER 2024
+  private String category; // example: SUMMER
+  private String academicYear; // example: 2023-2024
+  private LocalDateTime firstDayOfClasses; // example: 2024-06-24T00:00:00
+  private LocalDateTime lastDayOfClasses; // example: 2024-09-13T00:00:00
+  private LocalDateTime firstDayOfFinals; // example: 2024-09-14T00:00:00
+  private LocalDateTime lastDayOfFinals; // example: 2024-09-14T00:00:00
+  private LocalDateTime firstDayOfQuarter; // example: 2024-06-24T00:00:00
+  private LocalDateTime lastDayOfSchedule; // example: 2024-09-21T00:00:00
+  private LocalDateTime pass1Begin; // example: 2024-04-08T09:00:00
+  private LocalDateTime pass2Begin; // example: 2024-04-22T09:00:00
+  private LocalDateTime pass3Begin; // example: 2024-05-06T09:00:00
+  private LocalDateTime feeDeadline; // example: 2024-06-26T00:00:00
+  private LocalDateTime lastDayToAddUnderGrad; // example: 2024-07-15T00:00:00
+  private LocalDateTime lastDayToAddGrad; // example: 2024-09-13T00:00:00
+  private LocalDateTime lastDayThirdWeek; // example: null
 
-    public static final String SAMPLE_QUARTER_JSON_M24 = """
+  public static final String SAMPLE_QUARTER_JSON_M24 =
+      """
                 {
                     "quarter": "20243",
                     "qyy": "M24",
@@ -57,7 +57,8 @@ public class UCSBAPIQuarter {
                 }
             """;
 
-    public static final String SAMPLE_QUARTER_JSON_F20 = """
+  public static final String SAMPLE_QUARTER_JSON_F20 =
+      """
                     {
                         "quarter": "20204",
                         "qyy": "F20",
@@ -80,7 +81,8 @@ public class UCSBAPIQuarter {
                     }
             """;
 
-    public static final String SAMPLE_QUARTER_JSON_W21 = """
+  public static final String SAMPLE_QUARTER_JSON_W21 =
+      """
                     {
                         "quarter": "20211",
                         "qyy": "W21",
@@ -103,7 +105,8 @@ public class UCSBAPIQuarter {
                     },
             """;
 
-    public static final String SAMPLE_QUARTER_JSON_S21 = """
+  public static final String SAMPLE_QUARTER_JSON_S21 =
+      """
                     {
                         "quarter": "20212",
                         "qyy": "S21",
@@ -126,7 +129,8 @@ public class UCSBAPIQuarter {
                     }
             """;
 
-    public static final String SAMPLE_QUARTER_JSON_M21 = """
+  public static final String SAMPLE_QUARTER_JSON_M21 =
+      """
                     {
                         "quarter": "20213",
                         "qyy": "M21",
@@ -149,7 +153,8 @@ public class UCSBAPIQuarter {
                     }
             """;
 
-    public static final String SAMPLE_QUARTER_JSON_F21 = """
+  public static final String SAMPLE_QUARTER_JSON_F21 =
+      """
                     {
                         "quarter": "20214",
                         "qyy": "F21",
@@ -171,7 +176,8 @@ public class UCSBAPIQuarter {
                         "lastDayThirdWeek": "2021-10-19T00:00:00"
                     }
             """;
-    public static final String SAMPLE_QUARTER_JSON_W22 = """
+  public static final String SAMPLE_QUARTER_JSON_W22 =
+      """
                     {
                         "quarter": "20221",
                         "qyy": "W22",
@@ -194,7 +200,8 @@ public class UCSBAPIQuarter {
                     }
             """;
 
-    public static final String SAMPLE_QUARTER_JSON_S22 = """
+  public static final String SAMPLE_QUARTER_JSON_S22 =
+      """
                     {
                         "quarter": "20222",
                         "qyy": "S22",
@@ -217,7 +224,8 @@ public class UCSBAPIQuarter {
                     }
             """;
 
-    public static final String SAMPLE_QUARTER_JSON_M22 = """
+  public static final String SAMPLE_QUARTER_JSON_M22 =
+      """
                     {
                         "quarter": "20223",
                         "qyy": "M22",
@@ -239,5 +247,4 @@ public class UCSBAPIQuarter {
                         "lastDayThirdWeek": "2022-07-12T00:00:00"
                     }
             """;
-
 }
