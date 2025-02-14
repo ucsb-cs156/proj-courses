@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -182,5 +183,53 @@ public class UCSBAPIQuarterService {
     }
 
     return activeQuarters;
+  }
+
+  public LocalDateTime lastDayToRegister(UCSBAPIQuarter ucsbApiQuarter) {
+    if (ucsbApiQuarter == null) {
+      return null;
+    }
+
+    LocalDateTime lastDayToAddUndergrad = ucsbApiQuarter.getLastDayToAddUnderGrad();
+    LocalDateTime lastDayToAddGrad = ucsbApiQuarter.getLastDayToAddGrad();
+
+    if (lastDayToAddUndergrad == null || lastDayToAddGrad == null) {
+      return null;
+    }
+
+    return lastDayToAddUndergrad.isAfter(lastDayToAddGrad)
+        ? lastDayToAddUndergrad
+        : lastDayToAddGrad;
+  }
+
+  public boolean isQuarterInRegistrationPass(String quarterYYYYQ) {
+    UCSBAPIQuarter quarter = ucsbApiQuarterRepository.findById(quarterYYYYQ).orElse(null);
+    LocalDateTime lastDay = lastDayToRegister(quarter);
+
+    if (quarter == null) {
+      return false;
+    }
+
+    if (lastDay == null) {
+      return false;
+    }
+
+    LocalDateTime pass1Begin = quarter.getPass1Begin();
+
+    if (pass1Begin == null) {
+      return false;
+    }
+
+    LocalDateTime currentDate = LocalDateTime.now();
+    return currentDate.isAfter(pass1Begin) && currentDate.isBefore(lastDay);
+  }
+
+  public List<String> getActiveRegistrationQuarters() throws Exception {
+
+    List<String> activeQuarters = getActiveQuarters();
+
+    List<String> registrationQuarters =
+        activeQuarters.stream().filter(yyyyq -> isQuarterInRegistrationPass(yyyyq)).toList();
+    return registrationQuarters;
   }
 }
