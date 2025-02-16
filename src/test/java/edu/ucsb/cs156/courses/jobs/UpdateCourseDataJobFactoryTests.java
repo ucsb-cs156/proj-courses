@@ -38,18 +38,6 @@ public class UpdateCourseDataJobFactoryTests {
   @MockBean UCSBAPIQuarterService ucsbapiQuarterService;
 
   @Test
-  void test_createForSubjectAndQuarter() {
-
-    // Act
-    UpdateCourseDataJob job = factory.createForSubjectAndQuarter("CMPSC", "20211");
-
-    // Assert
-    assertEquals(List.of("CMPSC"), job.getSubjects());
-    assertEquals("20211", job.getStart_quarterYYYYQ());
-    assertEquals("20211", job.getEnd_quarterYYYYQ());
-  }
-
-  @Test
   void test_createForSubjectAndQuarterAndIfStale() {
 
     // Act
@@ -66,7 +54,8 @@ public class UpdateCourseDataJobFactoryTests {
   void test_createForSubjectAndQuarterRange() {
 
     // Act
-    UpdateCourseDataJob job = factory.createForSubjectAndQuarterRange("CMPSC", "20211", "20213");
+    UpdateCourseDataJob job =
+        factory.createForSubjectAndQuarterRange("CMPSC", "20211", "20213", true);
 
     // Assert
     assertEquals(List.of("CMPSC"), job.getSubjects());
@@ -109,7 +98,7 @@ public class UpdateCourseDataJobFactoryTests {
 
     when(ucsbSubjectRepository.findAll()).thenReturn(subjects);
 
-    UpdateCourseDataJob job = factory.createForQuarterRange("20221", "20222");
+    UpdateCourseDataJob job = factory.createForQuarterRange("20221", "20222", false);
 
     // Assert
     assertEquals("20221", job.getStart_quarterYYYYQ());
