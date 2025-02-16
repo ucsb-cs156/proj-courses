@@ -10,6 +10,7 @@ import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
+import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,8 @@ public class UpdateCourseDataJobFactoryTests {
   @Autowired UpdateCourseDataJobFactory factory;
 
   @MockBean EnrollmentDataPointRepository enrollmentDataPointRepository;
+
+  @MockBean UCSBAPIQuarterService ucsbapiQuarterService;
 
   @Test
   void test_createForSubjectAndQuarter() {

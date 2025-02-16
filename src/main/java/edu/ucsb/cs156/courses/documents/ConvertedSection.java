@@ -1,5 +1,7 @@
 package edu.ucsb.cs156.courses.documents;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,5 +33,18 @@ public class ConvertedSection {
     newConvertedSection.setSection(newSection);
 
     return newConvertedSection;
+  }
+
+  @JsonIgnore
+  public EnrollmentDataPoint getEnrollmentDataPoint() {
+    EnrollmentDataPoint edp =
+        EnrollmentDataPoint.builder()
+            .yyyyq(this.getCourseInfo().getQuarter())
+            .enrollCd(this.getSection().getEnrollCode())
+            .enrollment(this.getSection().getEnrolledTotal())
+            .courseId(this.getCourseInfo().getCourseId())
+            .section(this.getSection().getSection())
+            .build();
+    return edp;
   }
 }

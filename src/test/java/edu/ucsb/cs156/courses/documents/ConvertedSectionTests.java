@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -32,5 +33,21 @@ public class ConvertedSectionTests {
     cs1.set_id(new ObjectId());
     ConvertedSection cs2 = (ConvertedSection) cs1.clone();
     assertEquals(cs1, cs2);
+  }
+
+  @Test
+  public void test_EnrollmentDataPoint() throws JsonProcessingException {
+    List<ConvertedSection> cs =
+        mapper.readValue(
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
+            new TypeReference<List<ConvertedSection>>() {});
+
+    ConvertedSection cs1 = cs.get(0);
+    EnrollmentDataPoint edp = cs1.getEnrollmentDataPoint();
+    assertEquals("20222", edp.getYyyyq());
+    assertEquals("30395", edp.getEnrollCd());
+    assertEquals("MATH      3B -1", edp.getCourseId());
+    assertEquals("0100", edp.getSection());
+    assertEquals(142, edp.getEnrollment());
   }
 }
