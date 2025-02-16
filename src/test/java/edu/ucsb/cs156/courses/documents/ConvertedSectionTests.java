@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
-
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
