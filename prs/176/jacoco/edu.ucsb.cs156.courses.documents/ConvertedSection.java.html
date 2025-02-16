@@ -42,8 +42,10 @@ public class ConvertedSection {
 <span class="fc" id="L42">            .yyyyq(this.getCourseInfo().getQuarter())</span>
 <span class="fc" id="L43">            .enrollCd(this.getSection().getEnrollCode())</span>
 <span class="fc" id="L44">            .enrollment(this.getSection().getEnrolledTotal())</span>
-<span class="fc" id="L45">            .build();</span>
-<span class="fc" id="L46">    return edp;</span>
+<span class="fc" id="L45">            .courseId(this.getCourseInfo().getCourseId())</span>
+<span class="fc" id="L46">            .section(this.getSection().getSection())</span>
+<span class="fc" id="L47">            .build();</span>
+<span class="fc" id="L48">    return edp;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
