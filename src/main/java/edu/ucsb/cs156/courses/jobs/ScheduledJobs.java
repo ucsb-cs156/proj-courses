@@ -43,7 +43,7 @@ public class ScheduledJobs {
     String currentQuarterYYYYQ = ucsbAPIQuarterService.getCurrentQuarterYYYYQ();
 
     JobContextConsumer updateCourseDataJob =
-        updateCourseDataJobFactory.createForQuarterRange(currentQuarterYYYYQ, endQtrYYYYQ);
+        updateCourseDataJobFactory.createForQuarterRange(currentQuarterYYYYQ, endQtrYYYYQ, true);
     jobService.runAsJob(updateCourseDataJob);
 
     log.info(

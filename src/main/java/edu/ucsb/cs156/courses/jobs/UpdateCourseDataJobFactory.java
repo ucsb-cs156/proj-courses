@@ -31,20 +31,6 @@ public class UpdateCourseDataJobFactory {
 
   @Autowired private UCSBAPIQuarterService ucsbapiQuarterService;
 
-  public UpdateCourseDataJob createForSubjectAndQuarter(String subjectArea, String quarterYYYYQ) {
-    return new UpdateCourseDataJob(
-        quarterYYYYQ,
-        quarterYYYYQ,
-        List.of(subjectArea),
-        curriculumService,
-        convertedSectionCollection,
-        updateCollection,
-        isStaleService,
-        false,
-        enrollmentDataPointRepository,
-        ucsbapiQuarterService);
-  }
-
   public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
       String subjectArea, String quarterYYYYQ, boolean ifStale) {
     return new UpdateCourseDataJob(
@@ -61,7 +47,7 @@ public class UpdateCourseDataJobFactory {
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
-      String subjectArea, String start_quarterYYYYQ, String end_quarterYYYYQ) {
+      String subjectArea, String start_quarterYYYYQ, String end_quarterYYYYQ, boolean ifStale) {
     return new UpdateCourseDataJob(
         start_quarterYYYYQ,
         end_quarterYYYYQ,
@@ -70,7 +56,7 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true,
+        ifStale,
         enrollmentDataPointRepository,
         ucsbapiQuarterService);
   }
@@ -99,7 +85,7 @@ public class UpdateCourseDataJobFactory {
   }
 
   public UpdateCourseDataJob createForQuarterRange(
-      String start_quarterYYYYQ, String end_quarterYYYYQ) {
+      String start_quarterYYYYQ, String end_quarterYYYYQ, boolean ifStale) {
     return new UpdateCourseDataJob(
         start_quarterYYYYQ,
         end_quarterYYYYQ,
@@ -108,7 +94,7 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true,
+        ifStale,
         enrollmentDataPointRepository,
         ucsbapiQuarterService);
   }
