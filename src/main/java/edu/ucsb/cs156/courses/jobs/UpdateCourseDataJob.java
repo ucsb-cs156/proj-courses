@@ -73,6 +73,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     int newSections = 0;
     int updatedSections = 0;
     int errors = 0;
+    boolean isInRegistrationPass = ucsbapiQuarterService.isQuarterInRegistrationPass(quarterYYYYQ);
 
     for (ConvertedSection section : convertedSections) {
       try {
@@ -90,7 +91,9 @@ public class UpdateCourseDataJob implements JobContextConsumer {
           convertedSectionCollection.save(section);
           newSections++;
         }
-        
+        if (isInRegistrationPass) {
+          enrollmentDataPointRepository.save(section.getEnrollmentDataPoint());
+        }
       } catch (Exception e) {
         errors++;
       }

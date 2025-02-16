@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -31,5 +35,15 @@ public class ConvertedSection {
     newConvertedSection.setSection(newSection);
 
     return newConvertedSection;
+  }
+
+  @JsonIgnore
+  public EnrollmentDataPoint getEnrollmentDataPoint() {
+    EnrollmentDataPoint edp = EnrollmentDataPoint.builder()
+        .yyyyq(this.getCourseInfo().getQuarter())
+        .enrollCd(this.getSection().getEnrollCode())
+        .enrollment(this.getSection().getEnrolledTotal())
+        .build();
+    return edp;
   }
 }
