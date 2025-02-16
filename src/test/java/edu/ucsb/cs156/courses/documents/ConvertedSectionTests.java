@@ -44,8 +44,8 @@ public class ConvertedSectionTests {
 
     ConvertedSection cs1 = cs.get(0);
     EnrollmentDataPoint edp = cs1.getEnrollmentDataPoint();
-    assertEquals("20211", edp.getYyyyq());
-    assertEquals("10001", edp.getEnrollCd());
-    assertEquals(10, edp.getEnrollment());
+    assertEquals("20222", edp.getYyyyq());
+    assertEquals("30395", edp.getEnrollCd());
+    assertEquals(142, edp.getEnrollment());
   }
 }

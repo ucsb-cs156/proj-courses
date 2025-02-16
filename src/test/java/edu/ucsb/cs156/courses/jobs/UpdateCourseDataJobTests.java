@@ -11,6 +11,7 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.Update;
+import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
@@ -85,6 +86,8 @@ public class UpdateCourseDataJobTests {
     when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20211"), eq("A")))
         .thenReturn(result);
 
+    when(ucsbapiQuarterService.isQuarterInRegistrationPass(anyString())).thenReturn(false);
+
     LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
     Update update = new Update(null, "CMPSC", "20211", 14, 0, 0, someTime);
     when(updateCollection.save(any())).thenReturn(update);
@@ -148,6 +151,7 @@ public class UpdateCourseDataJobTests {
     when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
             eq(section1.getCourseInfo().getQuarter()), eq(section1.getSection().getEnrollCode())))
         .thenReturn(emptyOptional);
+    when(ucsbapiQuarterService.isQuarterInRegistrationPass(anyString())).thenReturn(false);
 
     LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
     Update update = new Update(null, "MATH", "20211", 2, 1, 0, someTime);
@@ -205,6 +209,7 @@ public class UpdateCourseDataJobTests {
     when(convertedSectionCollection.findOneByQuarterAndEnrollCode(
             eq(section0.getCourseInfo().getQuarter()), eq(section0.getSection().getEnrollCode())))
         .thenThrow(new IllegalArgumentException("Testing Exception Handling!"));
+    when(ucsbapiQuarterService.isQuarterInRegistrationPass(anyString())).thenReturn(false);
 
     LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
     Update update = new Update(null, "MATH", "20211", 0, 0, 1, someTime);
@@ -267,6 +272,7 @@ public class UpdateCourseDataJobTests {
         .thenReturn(listWithUpdatedSection);
     when(convertedSectionCollection.findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode)))
         .thenReturn(section0Optional);
+    when(ucsbapiQuarterService.isQuarterInRegistrationPass(anyString())).thenReturn(false);
 
     LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
     Update update = new Update(null, "MATH", "20211", 0, 1, 1, someTime);
@@ -335,10 +341,14 @@ public class UpdateCourseDataJobTests {
         .thenReturn(listWithUpdatedSection);
     when(convertedSectionCollection.findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode)))
         .thenReturn(section0Optional);
+    when(ucsbapiQuarterService.isQuarterInRegistrationPass(eq("20211"))).thenReturn(true);
 
     LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
     Update update = new Update(null, "MATH", "20211", 0, 1, 1, someTime);
     when(updateCollection.save(any())).thenReturn(update);
+
+    EnrollmentDataPoint edp = updatedSection.getEnrollmentDataPoint();
+    when(enrollmentDataPointRepository.save(eq(edp))).thenReturn(edp);
 
     // Act
     var job =
@@ -370,6 +380,7 @@ public class UpdateCourseDataJobTests {
     verify(convertedSectionCollection, times(1))
         .findOneByQuarterAndEnrollCode(eq(quarter), eq(enrollCode));
     verify(convertedSectionCollection, times(1)).save(updatedSection);
+    verify(enrollmentDataPointRepository, times(1)).save(eq(edp));
   }
 
   @Test
