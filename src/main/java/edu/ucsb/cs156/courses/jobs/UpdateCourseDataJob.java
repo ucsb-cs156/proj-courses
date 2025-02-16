@@ -7,6 +7,7 @@ import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
+import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
@@ -31,6 +32,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
   private IsStaleService isStaleService;
   private boolean ifStale;
   private EnrollmentDataPointRepository enrollmentDataPointRepository;
+  private UCSBAPIQuarterService ucsbapiQuarterService;
 
   @Override
   public void accept(JobContext ctx) throws Exception {
@@ -88,6 +90,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
           convertedSectionCollection.save(section);
           newSections++;
         }
+        
       } catch (Exception e) {
         errors++;
       }
