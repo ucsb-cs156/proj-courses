@@ -48,7 +48,7 @@ public class CoursesStartup {
 
     JobContextConsumer updateCourseDataJob =
         updateCourseDataJobFactory.createForSubjectAndQuarterRange(
-            "CMPSC", startQtrYYYYQ, endQtrYYYYQ);
+            "CMPSC", startQtrYYYYQ, endQtrYYYYQ, true);
     jobService.runAsJob(updateCourseDataJob);
 
     log.info(
@@ -66,7 +66,7 @@ public class CoursesStartup {
     // Launch course update job
 
     JobContextConsumer updateCourseDataJob =
-        updateCourseDataJobFactory.createForQuarterRange(startQtrYYYYQ, endQtrYYYYQ);
+        updateCourseDataJobFactory.createForQuarterRange(startQtrYYYYQ, endQtrYYYYQ, true);
     jobService.runAsJob(updateCourseDataJob);
 
     log.info(
