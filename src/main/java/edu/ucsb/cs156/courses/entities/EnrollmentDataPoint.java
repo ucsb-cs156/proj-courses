@@ -2,6 +2,7 @@ package edu.ucsb.cs156.courses.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * GradeHistory - Entity for grade history data. Each object represents one row from the CSV files
@@ -25,6 +27,7 @@ import org.springframework.data.annotation.CreatedDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "enrollmentdatapoint")
+@EntityListeners(AuditingEntityListener.class)
 public class EnrollmentDataPoint {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
