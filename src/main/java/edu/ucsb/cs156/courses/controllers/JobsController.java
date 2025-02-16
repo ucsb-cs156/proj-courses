@@ -131,7 +131,7 @@ public class JobsController extends ApiController {
           @RequestParam(defaultValue = "true")
           Boolean ifStale) {
 
-    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);
+    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ, ifStale);
 
     return jobService.runAsJob(job);
   }

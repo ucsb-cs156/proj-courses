@@ -84,7 +84,7 @@ public class UpdateCourseDataJobFactory {
     return subjectCodes;
   }
 
-  public UpdateCourseDataJob createForQuarter(String quarterYYYYQ) {
+  public UpdateCourseDataJob createForQuarter(String quarterYYYYQ, boolean ifStale) {
     return new UpdateCourseDataJob(
         quarterYYYYQ,
         quarterYYYYQ,
@@ -93,7 +93,7 @@ public class UpdateCourseDataJobFactory {
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true,
+        ifStale,
         enrollmentDataPointRepository,
         ucsbapiQuarterService);
   }
