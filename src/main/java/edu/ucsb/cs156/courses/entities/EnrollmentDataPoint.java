@@ -28,6 +28,6 @@ public class EnrollmentDataPoint {
   private Long id;
 
   private String yyyyq;
-  private String section;
+  private String enrollCd;
   private int enrollment;
 }
