@@ -14,6 +14,7 @@ import edu.ucsb.cs156.courses.documents.Update;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
+import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import java.time.LocalDateTime;
@@ -37,6 +38,8 @@ public class UpdateCourseDataJobTests {
 
   @Mock EnrollmentDataPointRepository enrollmentDataPointRepository;
 
+  @Mock UCSBAPIQuarterService ucsbapiQuarterService;
+
   Job jobStarted = Job.builder().build();
   JobContext ctx = new JobContext(null, jobStarted);
 
@@ -54,6 +57,7 @@ public class UpdateCourseDataJobTests {
                 .isStaleService(isStaleService)
                 .ifStale(false)
                 .enrollmentDataPointRepository(enrollmentDataPointRepository)
+                .ucsbapiQuarterService(ucsbapiQuarterService)
                 .build());
     doNothing().when(job).updateCourses(any(), any(), any());
 
@@ -96,7 +100,8 @@ public class UpdateCourseDataJobTests {
             updateCollection,
             isStaleService,
             false,
-            enrollmentDataPointRepository);
+            enrollmentDataPointRepository,
+            ucsbapiQuarterService);
     job.accept(ctx);
 
     // Assert
@@ -159,7 +164,8 @@ public class UpdateCourseDataJobTests {
             updateCollection,
             isStaleService,
             false,
-            enrollmentDataPointRepository);
+            enrollmentDataPointRepository,
+            ucsbapiQuarterService);
     job.accept(ctx);
 
     // Assert
@@ -215,7 +221,8 @@ public class UpdateCourseDataJobTests {
             updateCollection,
             isStaleService,
             false,
-            enrollmentDataPointRepository);
+            enrollmentDataPointRepository,
+            ucsbapiQuarterService);
     job.accept(ctx);
 
     // Assert
@@ -276,7 +283,8 @@ public class UpdateCourseDataJobTests {
             updateCollection,
             isStaleService,
             false,
-            enrollmentDataPointRepository);
+            enrollmentDataPointRepository,
+            ucsbapiQuarterService);
     job.accept(ctx);
 
     // Assert
@@ -343,7 +351,8 @@ public class UpdateCourseDataJobTests {
             updateCollection,
             isStaleService,
             true,
-            enrollmentDataPointRepository);
+            enrollmentDataPointRepository,
+            ucsbapiQuarterService);
     job.accept(ctx);
 
     // Assert
@@ -381,7 +390,8 @@ public class UpdateCourseDataJobTests {
             updateCollection,
             isStaleService,
             true,
-            enrollmentDataPointRepository);
+            enrollmentDataPointRepository,
+            ucsbapiQuarterService);
     job.accept(ctx);
   }
 }

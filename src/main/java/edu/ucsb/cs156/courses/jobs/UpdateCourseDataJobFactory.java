@@ -5,6 +5,7 @@ import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
+import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class UpdateCourseDataJobFactory {
 
   @Autowired private EnrollmentDataPointRepository enrollmentDataPointRepository;
 
+  @Autowired private UCSBAPIQuarterService ucsbapiQuarterService;
+
   public UpdateCourseDataJob createForSubjectAndQuarter(String subjectArea, String quarterYYYYQ) {
     return new UpdateCourseDataJob(
         quarterYYYYQ,
@@ -38,7 +41,9 @@ public class UpdateCourseDataJobFactory {
         updateCollection,
         isStaleService,
         false,
-        enrollmentDataPointRepository);
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService
+        );
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
@@ -52,7 +57,9 @@ public class UpdateCourseDataJobFactory {
         updateCollection,
         isStaleService,
         ifStale,
-        enrollmentDataPointRepository);
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService
+        );
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
@@ -66,7 +73,9 @@ public class UpdateCourseDataJobFactory {
         updateCollection,
         isStaleService,
         true,
-        enrollmentDataPointRepository);
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService
+        );
   }
 
   private List<String> getAllSubjectCodes() {
@@ -88,7 +97,9 @@ public class UpdateCourseDataJobFactory {
         updateCollection,
         isStaleService,
         true,
-        enrollmentDataPointRepository);
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService
+        );
   }
 
   public UpdateCourseDataJob createForQuarterRange(
@@ -102,6 +113,8 @@ public class UpdateCourseDataJobFactory {
         updateCollection,
         isStaleService,
         true,
-        enrollmentDataPointRepository);
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService
+        );
   }
 }
