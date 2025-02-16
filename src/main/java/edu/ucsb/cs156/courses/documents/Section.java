@@ -73,22 +73,6 @@ public class Section implements Cloneable {
   public Object clone() throws CloneNotSupportedException {
 
     Section newSection = (Section) super.clone();
-    // List<String> copyConcurrentCourses = new ArrayList<>();
-    // Collections.copy(copyConcurrentCourses, this.getConcurrentCourses());
-    // newSection.setConcurrentCourses(copyConcurrentCourses);
-
-    // List<TimeLocation> copyTimeLocations = new ArrayList<>();
-    // for (TimeLocation tl : this.getTimeLocations()) {
-    //     copyTimeLocations.add((TimeLocation) tl.clone());
-    // }
-    // newSection.setTimeLocations(copyTimeLocations);
-
-    // List<Instructor> copyInstructors = new ArrayList<>();
-    // for (Instructor i : this.getInstructors()) {
-    //     copyInstructors.add((Instructor) i.clone());
-    // }
-    // newSection.setInstructors(copyInstructors);
-
     return newSection;
   }
 }
