@@ -86,7 +86,7 @@ public class UpdateCourseDataJobFactoryTests {
 
     when(ucsbSubjectRepository.findAll()).thenReturn(subjects);
 
-    UpdateCourseDataJob job = factory.createForQuarter("20211");
+    UpdateCourseDataJob job = factory.createForQuarter("20211", false);
 
     // Assert
 
