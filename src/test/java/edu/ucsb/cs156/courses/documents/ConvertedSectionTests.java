@@ -46,6 +46,8 @@ public class ConvertedSectionTests {
     EnrollmentDataPoint edp = cs1.getEnrollmentDataPoint();
     assertEquals("20222", edp.getYyyyq());
     assertEquals("30395", edp.getEnrollCd());
+    assertEquals("MATH      3B -1", edp.getCourseId());
+    assertEquals("0100", edp.getSection());
     assertEquals(142, edp.getEnrollment());
   }
 }

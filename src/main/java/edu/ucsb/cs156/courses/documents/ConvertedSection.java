@@ -42,6 +42,8 @@ public class ConvertedSection {
             .yyyyq(this.getCourseInfo().getQuarter())
             .enrollCd(this.getSection().getEnrollCode())
             .enrollment(this.getSection().getEnrolledTotal())
+            .courseId(this.getCourseInfo().getCourseId())
+            .section(this.getSection().getSection())
             .build();
     return edp;
   }
