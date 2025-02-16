@@ -73,23 +73,7 @@ public class Section implements Cloneable {
   public Object clone() throws CloneNotSupportedException {
 
 <span class="fc" id="L75">    Section newSection = (Section) super.clone();</span>
-    // List&lt;String&gt; copyConcurrentCourses = new ArrayList&lt;&gt;();
-    // Collections.copy(copyConcurrentCourses, this.getConcurrentCourses());
-    // newSection.setConcurrentCourses(copyConcurrentCourses);
-
-    // List&lt;TimeLocation&gt; copyTimeLocations = new ArrayList&lt;&gt;();
-    // for (TimeLocation tl : this.getTimeLocations()) {
-    //     copyTimeLocations.add((TimeLocation) tl.clone());
-    // }
-    // newSection.setTimeLocations(copyTimeLocations);
-
-    // List&lt;Instructor&gt; copyInstructors = new ArrayList&lt;&gt;();
-    // for (Instructor i : this.getInstructors()) {
-    //     copyInstructors.add((Instructor) i.clone());
-    // }
-    // newSection.setInstructors(copyInstructors);
-
-<span class="fc" id="L92">    return newSection;</span>
+<span class="fc" id="L76">    return newSection;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
