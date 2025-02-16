@@ -1,15 +1,13 @@
 package edu.ucsb.cs156.courses.documents;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 
 @Data
 @Builder
@@ -39,11 +37,12 @@ public class ConvertedSection {
 
   @JsonIgnore
   public EnrollmentDataPoint getEnrollmentDataPoint() {
-    EnrollmentDataPoint edp = EnrollmentDataPoint.builder()
-        .yyyyq(this.getCourseInfo().getQuarter())
-        .enrollCd(this.getSection().getEnrollCode())
-        .enrollment(this.getSection().getEnrolledTotal())
-        .build();
+    EnrollmentDataPoint edp =
+        EnrollmentDataPoint.builder()
+            .yyyyq(this.getCourseInfo().getQuarter())
+            .enrollCd(this.getSection().getEnrollCode())
+            .enrollment(this.getSection().getEnrolledTotal())
+            .build();
     return edp;
   }
 }

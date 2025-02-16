@@ -42,8 +42,7 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         false,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService
-        );
+        ucsbapiQuarterService);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
@@ -58,8 +57,7 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         ifStale,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService
-        );
+        ucsbapiQuarterService);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
@@ -74,8 +72,7 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         true,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService
-        );
+        ucsbapiQuarterService);
   }
 
   private List<String> getAllSubjectCodes() {
@@ -98,8 +95,7 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         true,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService
-        );
+        ucsbapiQuarterService);
   }
 
   public UpdateCourseDataJob createForQuarterRange(
@@ -114,7 +110,6 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         true,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService
-        );
+        ucsbapiQuarterService);
   }
 }
