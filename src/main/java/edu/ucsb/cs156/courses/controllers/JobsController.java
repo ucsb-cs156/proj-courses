@@ -131,7 +131,7 @@ public class JobsController extends ApiController {
           @RequestParam(defaultValue = "true")
           Boolean ifStale) {
 
-    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);
+    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ, ifStale);
 
     return jobService.runAsJob(job);
   }
@@ -161,7 +161,8 @@ public class JobsController extends ApiController {
           Boolean ifStale) {
 
     var job =
-        updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);
+        updateCourseDataJobFactory.createForQuarterRange(
+            start_quarterYYYYQ, end_quarterYYYYQ, ifStale);
 
     return jobService.runAsJob(job);
   }
@@ -187,7 +188,7 @@ public class JobsController extends ApiController {
 
     var job =
         updateCourseDataJobFactory.createForSubjectAndQuarterRange(
-            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
+            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ, ifStale);
 
     return jobService.runAsJob(job);
   }
