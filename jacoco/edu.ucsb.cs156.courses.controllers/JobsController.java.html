@@ -131,7 +131,7 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam(defaultValue = &quot;true&quot;)
           Boolean ifStale) {
 
-<span class="fc" id="L134">    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ);</span>
+<span class="fc" id="L134">    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ, ifStale);</span>
 
 <span class="fc" id="L136">    return jobService.runAsJob(job);</span>
   }
@@ -161,9 +161,10 @@ import org.springframework.web.bind.annotation.RestController;
           Boolean ifStale) {
 
 <span class="fc" id="L163">    var job =</span>
-<span class="fc" id="L164">        updateCourseDataJobFactory.createForQuarterRange(start_quarterYYYYQ, end_quarterYYYYQ);</span>
+<span class="fc" id="L164">        updateCourseDataJobFactory.createForQuarterRange(</span>
+<span class="fc" id="L165">            start_quarterYYYYQ, end_quarterYYYYQ, ifStale);</span>
 
-<span class="fc" id="L166">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L167">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(
@@ -185,19 +186,19 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam(defaultValue = &quot;true&quot;)
           Boolean ifStale) {
 
-<span class="fc" id="L188">    var job =</span>
-<span class="fc" id="L189">        updateCourseDataJobFactory.createForSubjectAndQuarterRange(</span>
-            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ);
+<span class="fc" id="L189">    var job =</span>
+<span class="fc" id="L190">        updateCourseDataJobFactory.createForSubjectAndQuarterRange(</span>
+<span class="fc" id="L191">            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ, ifStale);</span>
 
-<span class="fc" id="L192">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L193">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to update grade history&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @PostMapping(&quot;/launch/uploadGradeData&quot;)
   public Job launchUploadGradeData() {
-<span class="fc" id="L199">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
-<span class="fc" id="L200">    return jobService.runAsJob(updateGradeDataJob);</span>
+<span class="fc" id="L200">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
+<span class="fc" id="L201">    return jobService.runAsJob(updateGradeDataJob);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

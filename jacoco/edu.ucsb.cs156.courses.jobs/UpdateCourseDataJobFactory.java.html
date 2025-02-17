@@ -31,26 +31,12 @@ import org.springframework.stereotype.Service;
 
   @Autowired private UCSBAPIQuarterService ucsbapiQuarterService;
 
-  public UpdateCourseDataJob createForSubjectAndQuarter(String subjectArea, String quarterYYYYQ) {
-<span class="fc" id="L35">    return new UpdateCourseDataJob(</span>
-        quarterYYYYQ,
-        quarterYYYYQ,
-<span class="fc" id="L38">        List.of(subjectArea),</span>
-        curriculumService,
-        convertedSectionCollection,
-        updateCollection,
-        isStaleService,
-        false,
-        enrollmentDataPointRepository,
-        ucsbapiQuarterService);
-  }
-
   public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
       String subjectArea, String quarterYYYYQ, boolean ifStale) {
-<span class="fc" id="L50">    return new UpdateCourseDataJob(</span>
+<span class="fc" id="L36">    return new UpdateCourseDataJob(</span>
         quarterYYYYQ,
         quarterYYYYQ,
-<span class="fc" id="L53">        List.of(subjectArea),</span>
+<span class="fc" id="L39">        List.of(subjectArea),</span>
         curriculumService,
         convertedSectionCollection,
         updateCollection,
@@ -61,54 +47,54 @@ import org.springframework.stereotype.Service;
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
-      String subjectArea, String start_quarterYYYYQ, String end_quarterYYYYQ) {
-<span class="fc" id="L65">    return new UpdateCourseDataJob(</span>
+      String subjectArea, String start_quarterYYYYQ, String end_quarterYYYYQ, boolean ifStale) {
+<span class="fc" id="L51">    return new UpdateCourseDataJob(</span>
         start_quarterYYYYQ,
         end_quarterYYYYQ,
-<span class="fc" id="L68">        List.of(subjectArea),</span>
+<span class="fc" id="L54">        List.of(subjectArea),</span>
         curriculumService,
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true,
+        ifStale,
         enrollmentDataPointRepository,
         ucsbapiQuarterService);
   }
 
   private List&lt;String&gt; getAllSubjectCodes() {
-<span class="fc" id="L79">    var subjects = subjectRepository.findAll();</span>
-<span class="fc" id="L80">    var subjectCodes = new ArrayList&lt;String&gt;();</span>
-<span class="fc bfc" id="L81" title="All 2 branches covered.">    for (var subject : subjects) {</span>
-<span class="fc" id="L82">      subjectCodes.add(subject.getSubjectCode());</span>
-<span class="fc" id="L83">    }</span>
-<span class="fc" id="L84">    return subjectCodes;</span>
+<span class="fc" id="L65">    var subjects = subjectRepository.findAll();</span>
+<span class="fc" id="L66">    var subjectCodes = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    for (var subject : subjects) {</span>
+<span class="fc" id="L68">      subjectCodes.add(subject.getSubjectCode());</span>
+<span class="fc" id="L69">    }</span>
+<span class="fc" id="L70">    return subjectCodes;</span>
   }
 
-  public UpdateCourseDataJob createForQuarter(String quarterYYYYQ) {
-<span class="fc" id="L88">    return new UpdateCourseDataJob(</span>
+  public UpdateCourseDataJob createForQuarter(String quarterYYYYQ, boolean ifStale) {
+<span class="fc" id="L74">    return new UpdateCourseDataJob(</span>
         quarterYYYYQ,
         quarterYYYYQ,
-<span class="fc" id="L91">        getAllSubjectCodes(),</span>
+<span class="fc" id="L77">        getAllSubjectCodes(),</span>
         curriculumService,
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true,
+        ifStale,
         enrollmentDataPointRepository,
         ucsbapiQuarterService);
   }
 
   public UpdateCourseDataJob createForQuarterRange(
-      String start_quarterYYYYQ, String end_quarterYYYYQ) {
-<span class="fc" id="L103">    return new UpdateCourseDataJob(</span>
+      String start_quarterYYYYQ, String end_quarterYYYYQ, boolean ifStale) {
+<span class="fc" id="L89">    return new UpdateCourseDataJob(</span>
         start_quarterYYYYQ,
         end_quarterYYYYQ,
-<span class="fc" id="L106">        getAllSubjectCodes(),</span>
+<span class="fc" id="L92">        getAllSubjectCodes(),</span>
         curriculumService,
         convertedSectionCollection,
         updateCollection,
         isStaleService,
-        true,
+        ifStale,
         enrollmentDataPointRepository,
         ucsbapiQuarterService);
   }
