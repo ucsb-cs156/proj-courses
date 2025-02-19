@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EnrollmentDataPointRepository extends CrudRepository<EnrollmentDataPoint, Long> {}
+public interface EnrollmentDataPointRepository extends CrudRepository<EnrollmentDataPoint, Long> {
+    Iterable<EnrollmentDataPoint> findByYyyyq(String yyyyq);
+}
