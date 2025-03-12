@@ -6,7 +6,6 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
-
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -24,21 +23,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-<span class="nc" id="L37">@Slf4j</span>
+<span class="fc" id="L34">@Slf4j</span>
 @Tag(name = &quot;API for enrollment data&quot;)
 @RequestMapping(&quot;/api/enrollment&quot;)
 @RestController
-<span class="nc" id="L41">public class EnrollmentController extends ApiController {</span>
+<span class="fc" id="L38">public class EnrollmentController extends ApiController {</span>
+
   @Autowired
   EnrollmentDataPointRepository enrollmentDataPointRepository;
 
@@ -48,32 +46,35 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
   })
   @GetMapping(value = &quot;/csv/quarter&quot;, produces = &quot;text/csv&quot;)
   public ResponseEntity&lt;StreamingResponseBody&gt; csvForQuarter(
-      @Parameter(name = &quot;yyyyq&quot;, description = &quot;quarter in yyyyq format&quot;, example = &quot;20252&quot;) @RequestParam String yyyyq)
-      throws Exception {
-<span class="nc" id="L53">    StreamingResponseBody stream = outputStream -&gt; {</span>
-<span class="nc" id="L54">      Iterable&lt;EnrollmentDataPoint&gt; iterable = enrollmentDataPointRepository.findByYyyyq(yyyyq);</span>
-<span class="nc" id="L55">      List&lt;EnrollmentDataPoint&gt; list = Streamable.of(iterable).toList();</span>
+      @Parameter(name = &quot;yyyyq&quot;, description = &quot;quarter in yyyyq format&quot;, example = &quot;20252&quot;) @RequestParam String yyyyq,
+      @Parameter(name = &quot;testException&quot; , description = &quot;test exception&quot;, example = &quot;CsvDataTypeMismatchException&quot;) @RequestParam(required = false, defaultValue = &quot;&quot;) String testException)
+      throws Exception, IOException  {
+<span class="fc" id="L52">    StreamingResponseBody stream = (outputStream) -&gt; {</span>
+<span class="fc" id="L53">      Iterable&lt;EnrollmentDataPoint&gt; iterable = enrollmentDataPointRepository.findByYyyyq(yyyyq);</span>
+<span class="fc" id="L54">      List&lt;EnrollmentDataPoint&gt; list = Streamable.of(iterable).toList();</span>
 
-<span class="nc" id="L57">      try (Writer writer = new OutputStreamWriter(outputStream,</span>
+<span class="fc" id="L56">      try (Writer writer = new OutputStreamWriter(outputStream,</span>
           StandardCharsets.UTF_8)) {
         try {
-<span class="nc" id="L60">          new StatefulBeanToCsvBuilder&lt;EnrollmentDataPoint&gt;(writer)</span>
-<span class="nc" id="L61">              .build().write(list);</span>
-<span class="nc" id="L62">        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {</span>
-<span class="nc" id="L63">          log.error(&quot;Error writing CSV file&quot;, e);</span>
-<span class="nc" id="L64">          throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);</span>
-<span class="nc" id="L65">        }</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">          if (testException.equals(&quot;CsvDataTypeMismatchException&quot;)) {</span>
+<span class="fc" id="L60">            throw new CsvDataTypeMismatchException(&quot;test exception&quot;);</span>
+          } 
+<span class="fc" id="L62">          new StatefulBeanToCsvBuilder&lt;EnrollmentDataPoint&gt;(writer)</span>
+<span class="fc" id="L63">              .build().write(list);</span>
+<span class="fc" id="L64">        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {</span>
+<span class="fc" id="L65">          log.error(&quot;Error writing CSV file&quot;, e); </span>
+<span class="fc" id="L66">          throw new IOException(&quot;Error writing CSV file: &quot; + e.getMessage());         </span>
+<span class="fc" id="L67">        }</span>
       }
-<span class="nc" id="L67">    };</span>
+<span class="fc" id="L69">    };</span>
 
-<span class="nc" id="L69">    return ResponseEntity.ok()</span>
-<span class="nc" id="L70">        .contentType(MediaType.parseMediaType(&quot;text/csv; charset=UTF-8&quot;))</span>
-<span class="nc" id="L71">        .header(HttpHeaders.CONTENT_DISPOSITION, String.format(&quot;attachment;filename=enrollment_%s.csv&quot;, yyyyq))</span>
-<span class="nc" id="L72">        .header(HttpHeaders.CONTENT_TYPE, &quot;text/csv; charset=UTF-8&quot;)</span>
-<span class="nc" id="L73">        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,</span>
+<span class="fc" id="L71">    return ResponseEntity.ok()</span>
+<span class="fc" id="L72">        .contentType(MediaType.parseMediaType(&quot;text/csv; charset=UTF-8&quot;))</span>
+<span class="fc" id="L73">        .header(HttpHeaders.CONTENT_DISPOSITION, String.format(&quot;attachment;filename=enrollment_%s.csv&quot;, yyyyq))</span>
+<span class="fc" id="L74">        .header(HttpHeaders.CONTENT_TYPE, &quot;text/csv; charset=UTF-8&quot;)</span>
+<span class="fc" id="L75">        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,</span>
             HttpHeaders.CONTENT_DISPOSITION)
-<span class="nc" id="L75">        .body(stream);</span>
+<span class="fc" id="L77">        .body(stream);</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
