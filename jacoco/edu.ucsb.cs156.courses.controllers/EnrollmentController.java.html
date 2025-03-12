@@ -3,7 +3,6 @@
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,14 +11,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 import org.springframework.http.HttpHeaders;
@@ -31,50 +28,65 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-<span class="fc" id="L34">@Slf4j</span>
+<span class="fc" id="L31">@Slf4j</span>
 @Tag(name = &quot;API for enrollment data&quot;)
 @RequestMapping(&quot;/api/enrollment&quot;)
 @RestController
-<span class="fc" id="L38">public class EnrollmentController extends ApiController {</span>
+<span class="fc" id="L35">public class EnrollmentController extends ApiController {</span>
 
-  @Autowired
-  EnrollmentDataPointRepository enrollmentDataPointRepository;
+  @Autowired EnrollmentDataPointRepository enrollmentDataPointRepository;
 
-  @Operation(summary = &quot;Download CSV File&quot;, description = &quot;Returns a CSV file as a response&quot;, responses = {
-      @ApiResponse(responseCode = &quot;200&quot;, description = &quot;CSV file&quot;, content = @Content(mediaType = &quot;text/csv&quot;, schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;))),
-      @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
-  })
+  @Operation(
+      summary = &quot;Download CSV File&quot;,
+      description = &quot;Returns a CSV file as a response&quot;,
+      responses = {
+        @ApiResponse(
+            responseCode = &quot;200&quot;,
+            description = &quot;CSV file&quot;,
+            content =
+                @Content(
+                    mediaType = &quot;text/csv&quot;,
+                    schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;))),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
+      })
   @GetMapping(value = &quot;/csv/quarter&quot;, produces = &quot;text/csv&quot;)
   public ResponseEntity&lt;StreamingResponseBody&gt; csvForQuarter(
-      @Parameter(name = &quot;yyyyq&quot;, description = &quot;quarter in yyyyq format&quot;, example = &quot;20252&quot;) @RequestParam String yyyyq,
-      @Parameter(name = &quot;testException&quot; , description = &quot;test exception&quot;, example = &quot;CsvDataTypeMismatchException&quot;) @RequestParam(required = false, defaultValue = &quot;&quot;) String testException)
-      throws Exception, IOException  {
-<span class="fc" id="L52">    StreamingResponseBody stream = (outputStream) -&gt; {</span>
-<span class="fc" id="L53">      Iterable&lt;EnrollmentDataPoint&gt; iterable = enrollmentDataPointRepository.findByYyyyq(yyyyq);</span>
-<span class="fc" id="L54">      List&lt;EnrollmentDataPoint&gt; list = Streamable.of(iterable).toList();</span>
+      @Parameter(name = &quot;yyyyq&quot;, description = &quot;quarter in yyyyq format&quot;, example = &quot;20252&quot;)
+          @RequestParam
+          String yyyyq,
+      @Parameter(
+              name = &quot;testException&quot;,
+              description = &quot;test exception&quot;,
+              example = &quot;CsvDataTypeMismatchException&quot;)
+          @RequestParam(required = false, defaultValue = &quot;&quot;)
+          String testException)
+      throws Exception, IOException {
+<span class="fc" id="L64">    StreamingResponseBody stream =</span>
+        (outputStream) -&gt; {
+<span class="fc" id="L66">          Iterable&lt;EnrollmentDataPoint&gt; iterable = enrollmentDataPointRepository.findByYyyyq(yyyyq);</span>
+<span class="fc" id="L67">          List&lt;EnrollmentDataPoint&gt; list = Streamable.of(iterable).toList();</span>
 
-<span class="fc" id="L56">      try (Writer writer = new OutputStreamWriter(outputStream,</span>
-          StandardCharsets.UTF_8)) {
-        try {
-<span class="fc bfc" id="L59" title="All 2 branches covered.">          if (testException.equals(&quot;CsvDataTypeMismatchException&quot;)) {</span>
-<span class="fc" id="L60">            throw new CsvDataTypeMismatchException(&quot;test exception&quot;);</span>
-          } 
-<span class="fc" id="L62">          new StatefulBeanToCsvBuilder&lt;EnrollmentDataPoint&gt;(writer)</span>
-<span class="fc" id="L63">              .build().write(list);</span>
-<span class="fc" id="L64">        } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {</span>
-<span class="fc" id="L65">          log.error(&quot;Error writing CSV file&quot;, e); </span>
-<span class="fc" id="L66">          throw new IOException(&quot;Error writing CSV file: &quot; + e.getMessage());         </span>
-<span class="fc" id="L67">        }</span>
-      }
-<span class="fc" id="L69">    };</span>
+<span class="fc" id="L69">          try (Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {</span>
+            try {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">              if (testException.equals(&quot;CsvDataTypeMismatchException&quot;)) {</span>
+<span class="fc" id="L72">                throw new CsvDataTypeMismatchException(&quot;test exception&quot;);</span>
+              }
+<span class="fc" id="L74">              new StatefulBeanToCsvBuilder&lt;EnrollmentDataPoint&gt;(writer).build().write(list);</span>
+<span class="fc" id="L75">            } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {</span>
+<span class="fc" id="L76">              log.error(&quot;Error writing CSV file&quot;, e);</span>
+<span class="fc" id="L77">              throw new IOException(&quot;Error writing CSV file: &quot; + e.getMessage());</span>
+<span class="fc" id="L78">            }</span>
+          }
+<span class="fc" id="L80">        };</span>
 
-<span class="fc" id="L71">    return ResponseEntity.ok()</span>
-<span class="fc" id="L72">        .contentType(MediaType.parseMediaType(&quot;text/csv; charset=UTF-8&quot;))</span>
-<span class="fc" id="L73">        .header(HttpHeaders.CONTENT_DISPOSITION, String.format(&quot;attachment;filename=enrollment_%s.csv&quot;, yyyyq))</span>
-<span class="fc" id="L74">        .header(HttpHeaders.CONTENT_TYPE, &quot;text/csv; charset=UTF-8&quot;)</span>
-<span class="fc" id="L75">        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,</span>
-            HttpHeaders.CONTENT_DISPOSITION)
-<span class="fc" id="L77">        .body(stream);</span>
+<span class="fc" id="L82">    return ResponseEntity.ok()</span>
+<span class="fc" id="L83">        .contentType(MediaType.parseMediaType(&quot;text/csv; charset=UTF-8&quot;))</span>
+<span class="fc" id="L84">        .header(</span>
+            HttpHeaders.CONTENT_DISPOSITION,
+<span class="fc" id="L86">            String.format(&quot;attachment;filename=enrollment_%s.csv&quot;, yyyyq))</span>
+<span class="fc" id="L87">        .header(HttpHeaders.CONTENT_TYPE, &quot;text/csv; charset=UTF-8&quot;)</span>
+<span class="fc" id="L88">        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)</span>
+<span class="fc" id="L89">        .body(stream);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
