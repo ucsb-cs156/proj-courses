@@ -30,4 +30,36 @@ public class SectionTests {
     Section s2 = (Section) s1.clone();
     assertEquals(s1, s2);
   }
+
+  @Test
+  public void test_status() {
+    Section s = new Section();
+    s.setCourseCancelled("Y");
+    assertEquals("Cancelled", s.status());
+
+    s.setCourseCancelled("");
+    s.setClassClosed("Y");
+    assertEquals("Closed", s.status());
+
+    s.setCourseCancelled("");
+    s.setClassClosed("");
+    assertEquals("", s.status());
+
+    s.setCourseCancelled(null);
+    s.setClassClosed(null);
+    assertEquals("", s.status());
+  }
+
+  @Test
+  public void test_instructorlist() {
+
+    Section s = new Section();
+    assertEquals("", s.instructorList());
+    List<Instructor> instructors =
+        List.of(
+            Instructor.builder().instructor("CONRAD P T").build(),
+            Instructor.builder().instructor("WANG R K").build());
+    s.setInstructors(instructors);
+    assertEquals("CONRAD P T, WANG R K", s.instructorList());
+  }
 }
