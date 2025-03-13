@@ -26,9 +26,10 @@ public class CourseInfo implements Cloneable {
     if (generalEducation == null) {
       return "";
     }
+
     List<String> gesAsListOfStrings =
         generalEducation.stream()
-            .map(GeneralEducation::getGeCode)
+            .map(GeneralEducation::toString)
             .map(String::trim)
             .collect(Collectors.toList());
     return String.join(", ", gesAsListOfStrings);

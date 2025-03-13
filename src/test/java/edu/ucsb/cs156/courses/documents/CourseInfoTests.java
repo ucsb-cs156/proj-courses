@@ -32,16 +32,35 @@ public class CourseInfoTests {
   }
 
   @Test
-  public void test_ges() {
+  public void test_null_ges() {
     CourseInfo c = CourseInfo.builder().generalEducation(null).build();
     assertEquals("", c.ges());
+  }
+
+  @Test
+  public void test_empty_ges() {
+    CourseInfo c = CourseInfo.builder().generalEducation(List.of()).build();
+    assertEquals("", c.ges());
+  }
+
+  @Test
+  public void test_ges_with_college() {
 
     List<GeneralEducation> ges =
         List.of(
-            GeneralEducation.builder().geCode("C").build(),
-            GeneralEducation.builder().geCode("QNT").build());
+            GeneralEducation.builder().geCode("C").geCollege("L&S").build(),
+            GeneralEducation.builder().geCode("QNT").geCollege("L&S").build());
 
-    c = CourseInfo.builder().generalEducation(ges).build();
-    assertEquals("C, QNT", c.ges());
+    CourseInfo c = CourseInfo.builder().generalEducation(ges).build();
+    assertEquals("C (L&S), QNT (L&S)", c.ges());
+  }
+
+  @Test
+  public void test_ges_with_nulls() {
+    List<GeneralEducation> gesNullCases =
+        List.of(GeneralEducation.builder().geCode("C").build(), GeneralEducation.builder().build());
+
+    CourseInfo c = CourseInfo.builder().generalEducation(gesNullCases).build();
+    assertEquals("C, ", c.ges());
   }
 }

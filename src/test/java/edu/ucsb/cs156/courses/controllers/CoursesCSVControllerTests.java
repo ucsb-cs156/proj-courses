@@ -49,8 +49,8 @@ public class CoursesCSVControllerTests {
             .title("INTRO TO COMP SCI")
             .generalEducation(
                 List.of(
-                    GeneralEducation.builder().geCode("C").build(),
-                    GeneralEducation.builder().geCode("QNT").build()))
+                    GeneralEducation.builder().geCode("C").geCollege("L&S").build(),
+                    GeneralEducation.builder().geCode("QNT").geCollege("L&S").build()))
             .build();
 
     Section section0100 =
@@ -132,11 +132,11 @@ public class CoursesCSVControllerTests {
     String expectedCSVOutput =
         """
         "COURSEID","ENROLLED","GES","INSTRUCTOR","MAXENROLL","QUARTER","SECTION","STATUS"
-        "CMPSC    8 -1","55","C, QNT","MIRZA D","150","20252","0100",""
-        "CMPSC    8 -1","30","C, QNT","MIRZA D","30","20252","0101",""
-        "CMPSC    8 -1","25","C, QNT","MIRZA D","30","20252","0102","Closed"
-        "CMPSC    8 -1","0","C, QNT","MIRZA D","30","20252","0103","Closed"
-        "CMPSC    8 -1","0","C, QNT","MIRZA D","30","20252","0104",""
+        "CMPSC    8 -1","55","C (L&S), QNT (L&S)","MIRZA D","150","20252","0100",""
+        "CMPSC    8 -1","30","C (L&S), QNT (L&S)","MIRZA D","30","20252","0101",""
+        "CMPSC    8 -1","25","C (L&S), QNT (L&S)","MIRZA D","30","20252","0102","Closed"
+        "CMPSC    8 -1","0","C (L&S), QNT (L&S)","MIRZA D","30","20252","0103","Closed"
+        "CMPSC    8 -1","0","C (L&S), QNT (L&S)","MIRZA D","30","20252","0104",""
         """;
 
     assertEquals(expectedCSVOutput, csvOutput);
