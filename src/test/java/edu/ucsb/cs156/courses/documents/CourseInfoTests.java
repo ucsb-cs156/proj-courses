@@ -30,4 +30,18 @@ public class CourseInfoTests {
     CourseInfo c2 = (CourseInfo) c1.clone();
     assertEquals(c1, c2);
   }
+
+  @Test
+  public void test_ges() {
+    CourseInfo c = CourseInfo.builder().generalEducation(null).build();
+    assertEquals("", c.ges());
+
+    List<GeneralEducation> ges =
+        List.of(
+            GeneralEducation.builder().geCode("C").build(),
+            GeneralEducation.builder().geCode("QNT").build());
+
+    c = CourseInfo.builder().generalEducation(ges).build();
+    assertEquals("C, QNT", c.ges());
+  }
 }
