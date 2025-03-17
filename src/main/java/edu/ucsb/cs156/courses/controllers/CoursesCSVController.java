@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @Slf4j
-@Tag(name = "API for enrollment data")
-@RequestMapping("/api/courses")
+@Tag(name = "API for course data as CSV downloads")
+@RequestMapping("/api/courses/csv")
 @RestController
 public class CoursesCSVController extends ApiController {
 
@@ -51,15 +51,15 @@ public class CoursesCSVController extends ApiController {
                     schema = @Schema(type = "string", format = "binary"))),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
       })
-  @GetMapping(value = "/csv/quarter", produces = "text/csv")
+  @GetMapping(value = "/quarter", produces = "text/csv")
   public ResponseEntity<StreamingResponseBody> csvForCourses(
       @Parameter(name = "yyyyq", description = "quarter in yyyyq format", example = "20252")
           @RequestParam
           String yyyyq,
       @Parameter(
               name = "testException",
-              description = "test exception",
-              example = "CsvDataTypeMismatchException")
+              description = "test exception (e.g. CsvDataTypeMismatchException)",
+              example = "")
           @RequestParam(required = false, defaultValue = "")
           String testException)
       throws Exception, IOException {

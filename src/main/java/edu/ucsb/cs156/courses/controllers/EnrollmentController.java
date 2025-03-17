@@ -56,8 +56,8 @@ public class EnrollmentController extends ApiController {
           String yyyyq,
       @Parameter(
               name = "testException",
-              description = "test exception",
-              example = "CsvDataTypeMismatchException")
+              description = "test exception (e.g. CsvDataTypeMismatchException)",
+              example = "")
           @RequestParam(required = false, defaultValue = "")
           String testException)
       throws Exception, IOException {
