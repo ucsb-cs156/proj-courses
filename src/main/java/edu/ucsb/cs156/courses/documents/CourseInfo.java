@@ -28,10 +28,7 @@ public class CourseInfo implements Cloneable {
     }
 
     List<String> gesAsListOfStrings =
-        generalEducation.stream()
-            .map(GeneralEducation::toString)
-            .map(String::trim)
-            .collect(Collectors.toList());
+        generalEducation.stream().map(GeneralEducation::toString).collect(Collectors.toList());
     return String.join(", ", gesAsListOfStrings);
   }
 
