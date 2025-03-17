@@ -18,8 +18,8 @@ public class GeneralEducation {
       return "";
     }
     if (geCollege == null) {
-      return geCode;
+      return geCode.trim();
     }
-    return geCode + " (" + geCollege + ")";
+    return geCode.trim() + " (" + geCollege.trim() + ")";
   }
 }
