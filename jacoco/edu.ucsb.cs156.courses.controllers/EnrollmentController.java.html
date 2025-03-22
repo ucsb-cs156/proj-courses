@@ -37,7 +37,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
   @Autowired EnrollmentDataPointRepository enrollmentDataPointRepository;
 
   @Operation(
-      summary = &quot;Download CSV File&quot;,
+      summary = &quot;Download Enrollment Data as CSV File&quot;,
       description = &quot;Returns a CSV file as a response&quot;,
       responses = {
         @ApiResponse(
@@ -56,8 +56,8 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
           String yyyyq,
       @Parameter(
               name = &quot;testException&quot;,
-              description = &quot;test exception&quot;,
-              example = &quot;CsvDataTypeMismatchException&quot;)
+              description = &quot;test exception (e.g. CsvDataTypeMismatchException)&quot;,
+              example = &quot;&quot;)
           @RequestParam(required = false, defaultValue = &quot;&quot;)
           String testException)
       throws Exception, IOException {
