@@ -12,4 +12,14 @@ import lombok.NoArgsConstructor;
 public class GeneralEducation {
   private String geCode;
   private String geCollege;
+
+  public String toString() {
+    if (geCode == null) {
+      return "";
+    }
+    if (geCollege == null) {
+      return geCode.trim();
+    }
+    return geCode.trim() + " (" + geCollege.trim() + ")";
+  }
 }
