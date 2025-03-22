@@ -1,10 +1,15 @@
 package edu.ucsb.cs156.courses.documents;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Section implements Cloneable {
 
@@ -22,6 +27,16 @@ public class Section implements Cloneable {
 
   /** is course cancelled */
   private String courseCancelled;
+
+  public String status() {
+    if (courseCancelled != null && courseCancelled.equals("Y")) {
+      return "Cancelled";
+    }
+    if (classClosed != null && classClosed.equals("Y")) {
+      return "Closed";
+    }
+    return "";
+  }
 
   /**
    * Grading Options Code like Pass/No Pass (P/NP) Or Letter Grades (L).
@@ -69,6 +84,15 @@ public class Section implements Cloneable {
 
   /** List of {@link Instructor} objects for this course */
   private List<Instructor> instructors;
+
+  public String instructorList() {
+    if (instructors == null) {
+      return "";
+    }
+    List<String> listOfInstructorNames =
+        instructors.stream().map(Instructor::getInstructor).collect(Collectors.toList());
+    return String.join(", ", listOfInstructorNames);
+  }
 
   public Object clone() throws CloneNotSupportedException {
 
