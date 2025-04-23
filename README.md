@@ -1,5 +1,8 @@
 # proj-courses
 
+### Sprint Planning Doc for S25: 
+- https://docs.google.com/document/d/1_6yE7yOBh4hRHPr4JbERSBSjDdJ2BI8Cbk99hbCmxDo/edit?usp=sharing
+
 This repo contains the code for the CMPSC 156 legacy code project "Courses Search". 
 
 The project provides a web application where users can search for UCSB courses in various ways.
