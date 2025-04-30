@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-REACT_APP-vars","number":136,"title":"pc - fix bugs with quarter selectors ","url":"https://github.com/ucsb-cs156/proj-courses/pull/136"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjI2MzQ3ODk3","is_bot":false,"login":"Division7","name":"Daniel Jensen"},"headRefName":"dj-addStartupScript","number":199,"title":"Adding the Postgres Autoconfiguration Script","url":"https://github.com/ucsb-cs156/proj-courses/pull/199"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-REACT_APP-vars","number":136,"title":"pc - fix bugs with quarter selectors ","url":"https://github.com/ucsb-cs156/proj-courses/pull/136"}]
