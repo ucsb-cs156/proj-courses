@@ -17,27 +17,6 @@ Users with a Google Account can also store past, current or future schedules of 
 | qa | <https://courses-qa.dokku-00.cs.ucsb.edu/>  | 
 
 
-# W24 Production Deployments
-
-
-| Team | Link       | 
-|------|------------|
-| w24-5pm-1 | <https://courses.dokku-05.cs.ucsb.edu/> | 
-| w24-5pm-2 | <https://courses.dokku-06.cs.ucsb.edu/>  | 
-| w24-5pm-3 | <https://courses.dokku-07.cs.ucsb.edu/>  | 
-| w24-5pm-4 | <https://courses.dokku-08.cs.ucsb.edu/>  | 
-
-# W24 QA Deployments
-
-
-| Team | Link       | 
-|------|------------|
-| w24-5pm-1 | <https://courses-qa.dokku-05.cs.ucsb.edu/> | 
-| w24-5pm-2 | <https://courses-qa.dokku-06.cs.ucsb.edu/>  | 
-| w24-5pm-3 | <https://courses-qa.dokku-07.cs.ucsb.edu/>  | 
-| w24-5pm-4 | <https://courses-qa.dokku-08.cs.ucsb.edu/>  | 
-
-
 # Setup before running application
 
 Before running the application for the first time,
@@ -48,6 +27,7 @@ will likely see an error such as:
 
 <img src="https://user-images.githubusercontent.com/1119017/149858436-c9baa238-a4f7-4c52-b995-0ed8bee97487.png" alt="Authorization Error; Error 401: invalid_client; The OAuth client was not found." width="400"/>
 
+You will also need a value for `UCSB_API_KEY`; you can obtain a value for that by following the instructions at this link: <https://ucsb-cs156.github.io/topics/apis/apis_ucsb_developer_api.html>
 
 # Getting Started on localhost
 
