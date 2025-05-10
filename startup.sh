@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set +x
+
 if [ -n "$DOKKU_POSTGRES_AQUA_URL" ]; then
 DATABASE_URL="$DOKKU_POSTGRES_AQUA_URL"
 fi
