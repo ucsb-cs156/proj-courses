@@ -34,5 +34,7 @@ RUN mvn \
 
 ENTRYPOINT ["sh", "-c", "java -jar /home/app/target/*.jar"]
 
+RUN ["ls", "-ls", "/home/app/target"]
+
 RUN ["chmod", "+x", "/home/app/startup.sh"]
 ENTRYPOINT ["/home/app/startup.sh","/home/app/target/courses-1.1.0.jar"]
