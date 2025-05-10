@@ -42,10 +42,16 @@ dokku config:set --no-restart courses GOOGLE_CLIENT_SECRET=get-value-from-google
 dokku config:set --no-restart courses UCSB_API_KEY=get-from-developer.ucsb.edu  # modify this
 dokku config:set --no-restart courses START_QTR=20244  # modify this
 dokku config:set --no-restart courses END_QTR=20254    # modify this
-dokku config:set --no-restart courses SOURCE_REPO=https://ucsb-cs156-s25/proj-courses-s25-xx # modify this to your repo
+
+# Set SOURCE_REPO to your repo (modify the url)
+# This is for the link in the footer, and for the link to currently deployed branch in /api/systemInfo
+dokku config:set --no-restart courses SOURCE_REPO=https://github.com/ucsb-cs156-s25/proj-courses-s25-xx 
+
+# Set ADMIN_EMAILS to staff emails and team emails
+dokku config:set --no-restart courses ADMIN_EMAILS=list-of-admin-emails # modify this
 
 # git sync for first deploy (http)
-dokku git:sync courses https://github.com/ucsb-cs156-s25/proj-courses-s25-xx main  # modify this to your repo
+dokku git:sync courses https://github.com/ucsb-cs156-s25/proj-courses-s25-xx main  # modify this 
 dokku ps:rebuild courses
 
 # Enable https
