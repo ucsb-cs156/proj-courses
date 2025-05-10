@@ -23,6 +23,12 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 COPY . /home/app
 
 ENV PRODUCTION=true
-RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
-
+RUN mvn \
+   -B \
+   -ntp \
+   -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+   -DskipTests \
+   -Pproduction \
+   -f /home/app/pom.xml clean package
+   
 ENTRYPOINT ["sh", "-c", "java -jar /home/app/target/*.jar"]
