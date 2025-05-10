@@ -1,28 +1,57 @@
+FROM ubuntu:22.04
 
-FROM bellsoft/liberica-openjdk-alpine:21
+# Set environment variables to avoid interactive prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -qq update 
+RUN apt-get -qq install -y openjdk-21-jdk  
+RUN apt-get -qq install -y  curl  
+RUN apt-get -qq install -y  bash  
+RUN apt-get -qq install -y maven  
+RUN apt-get -qq install -y  python3 
+RUN apt-get -qq clean
+RUN rm -rf /var/lib/apt/lists/*
+
+# Set JAVA_HOME environment variable
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV PATH="$JAVA_HOME/bin:$PATH"
+
+# Verify installation
+RUN java -version
 
 WORKDIR /app
 
+# Verify installation
+RUN java -version
+RUN curl --version
+
 ENV NODE_VERSION=20.17.0
-RUN apk add curl
-RUN apk add bash
-RUN apk add maven
-RUN apk add --no-cache libstdc++
-RUN apk add git
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 ENV NVM_DIR=/root/.nvm
 RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
-# This approach (copying entire directory including git info) 
-# relies on the dokku setting:
-#   dokku git:set appname keep-git-dir true
+RUN . "$NVM_DIR/nvm.sh" && nvm --version
+RUN node --version
+RUN npm --version
 
 COPY . /home/app
 
 ENV PRODUCTION=true
-RUN mvn -B -DskipTests -Pproduction -f /home/app/pom.xml clean package
+ENV NPM_CONFIG_LOGLEVEL=error
+RUN mvn \
+   -B \
+   -ntp \
+   -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+   -DskipTests \
+   -Pproduction \
+   -f /home/app/pom.xml clean package
 
 ENTRYPOINT ["sh", "-c", "java -jar /home/app/target/*.jar"]
+
+RUN ["ls", "-ls", "/home/app/target"]
+
+RUN ["chmod", "+x", "/home/app/startup.sh"]
+ENTRYPOINT ["/home/app/startup.sh","/home/app/target/courses-1.1.0.jar"]
