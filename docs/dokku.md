@@ -26,11 +26,11 @@ dokku apps:create courses
 
 # Create and link postgres database
 dokku postgres:create courses-db
-dokku postgres:link courses-db courses
+dokku postgres:link courses-db courses --no-restart
 
 # Create and link mongodb database
-dokku mongodb:create courses-m-db
-dokku mongodb:link courses-m-db courses
+dokku mongo:create courses-m-db
+dokku mongo:link courses-m-db courses --no-restart
 
 # Modify dokku settings
 dokku git:set courses keep-git-dir true
@@ -45,8 +45,8 @@ dokku config:set --no-restart courses END_QTR=20254    # modify this
 dokku config:set --no-restart courses SOURCE_REPO=https://ucsb-cs156-s25/proj-courses-s25-xx # modify this to your repo
 
 # git sync for first deploy (http)
-dokku git:sync courses https://ucsb-cs156-s25/proj-courses-s25-xx main  # modify this to your repo
-dokku ps:rebuild
+dokku git:sync courses https://github.com/ucsb-cs156-s25/proj-courses-s25-xx main  # modify this to your repo
+dokku ps:rebuild courses
 
 # Enable https
 dokku letsencrypt:set courses email yourEmail@ucsb.edu # modify email
