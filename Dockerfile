@@ -3,13 +3,13 @@ FROM ubuntu:22.04
 # Set environment variables to avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update 
-RUN apt-get install -y openjdk-21-jdk  
-RUN apt-get install -y  curl  
-RUN apt-get install -y  bash  
-RUN apt-get install -y maven  
-RUN apt-get install -y  python3 
-RUN apt-get clean
+RUN apt-get -q update 
+RUN apt-get -q install -y openjdk-21-jdk  
+RUN apt-get -q install -y  curl  
+RUN apt-get -q install -y  bash  
+RUN apt-get -q install -y maven  
+RUN apt-get -q install -y  python3 
+RUN apt-get -q clean
 RUN rm -rf /var/lib/apt/lists/*
 
 # Set JAVA_HOME environment variable
