@@ -33,3 +33,6 @@ RUN mvn \
    -f /home/app/pom.xml clean package
 
 ENTRYPOINT ["sh", "-c", "java -jar /home/app/target/*.jar"]
+
+RUN ["chmod", "+x", "/home/app/startup.sh"]
+ENTRYPOINT ["/home/app/startup.sh","/home/app/target/courses-1.1.0.jar"]
