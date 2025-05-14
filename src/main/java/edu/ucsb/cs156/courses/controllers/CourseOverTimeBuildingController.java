@@ -7,6 +7,12 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,25 +28,17 @@ public class CourseOverTimeBuildingController {
 
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
-  @Operation(summary = "Get a list of courses over time, filtered by (abbreviated) building code")
-  @GetMapping(value = "/buildingsearch", produces = "application/json")
+  @Operation(summary = "Get a list of classroom numbers within a particular building, given a quarter and building code")
+  @GetMapping(value = "/buildingsearch/classroom", produces = "application/json")
   public ResponseEntity<String> search(
       @Parameter(
-              name = "startQtr",
+              name = "quarter",
               description =
-                  "Starting quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+                  "Quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
               example = "20231",
               required = true)
           @RequestParam
-          String startQtr,
-      @Parameter(
-              name = "endQtr",
-              description =
-                  "Ending quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
-              example = "20231",
-              required = true)
-          @RequestParam
-          String endQtr,
+          String quarter,
       @Parameter(
               name = "buildingCode",
               description = "Building code such as PHELP for Phelps, GIRV for Girvetz",
@@ -50,9 +48,27 @@ public class CourseOverTimeBuildingController {
           String buildingCode)
       throws JsonProcessingException {
     List<ConvertedSection> courseResults =
-        convertedSectionCollection.findByQuarterRangeAndBuildingCode(
-            startQtr, endQtr, buildingCode);
-    String body = mapper.writeValueAsString(courseResults);
+        convertedSectionCollection.findByQuarterAndBuildingCode(
+            quarter, buildingCode);
+
+    Set<String> classrooms = courseResults.stream()
+        .flatMap(result -> { 
+            if (result.getSection() != null && result.getSection().getTimeLocations() != null) {
+                return result.getSection().getTimeLocations().stream();
+            } else {
+                return Stream.empty();
+            }
+        })
+        .filter(loc -> loc.getBuilding() != null && loc.getBuilding().equalsIgnoreCase(buildingCode))
+        .map(loc -> loc.getRoom())
+        .filter(room -> room != null && !room.isEmpty())
+        .collect(Collectors.toCollection(TreeSet::new));
+    
+    Map<String, Object> response = new HashMap<>();
+    response.put("buildingCode", buildingCode);
+    response.put("classrooms", classrooms);
+
+    String body = mapper.writeValueAsString(response);
     return ResponseEntity.ok().body(body);
   }
 }
