@@ -39,13 +39,13 @@ public class CourseOverTimeBuildingControllerTests {
   public void test_search_emptyRequest() throws Exception {
     List<ConvertedSection> expectedResult = new ArrayList<ConvertedSection>();
     String urlTemplate =
-        "/api/public/courseovertime/buildingsearch?startQtr=%s&endQtr=%s&buildingCode=%s";
+        "/api/public/courseovertime/buildingsearch/classroom?quarter=%s&buildingCode=%s";
 
-    String url = String.format(urlTemplate, "20221", "20222", "Storke Tower");
+    String url = String.format(urlTemplate, "20222", "Storke Tower");
 
     // mock
-    when(convertedSectionCollection.findByQuarterRangeAndBuildingCode(
-            any(String.class), any(String.class), any(String.class)))
+    when(convertedSectionCollection.findByQuarterAndBuildingCode(
+            any(String.class), any(String.class)))
         .thenReturn(expectedResult);
 
     // act
@@ -81,16 +81,15 @@ public class CourseOverTimeBuildingControllerTests {
     ConvertedSection cs2 = ConvertedSection.builder().courseInfo(info).section(section2).build();
 
     String urlTemplate =
-        "/api/public/courseovertime/buildingsearch?startQtr=%s&endQtr=%s&buildingCode=%s";
+        "/api/public/courseovertime/buildingsearch/classroom?quarter=%s&buildingCode=%s";
 
-    String url = String.format(urlTemplate, "20221", "20222", "GIRV");
+    String url = String.format(urlTemplate, "20222", "GIRV");
 
     List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
     expectedSecs.addAll(Arrays.asList(cs1, cs2));
 
     // mock
-    when(convertedSectionCollection.findByQuarterRangeAndBuildingCode(
-            any(String.class), any(String.class), eq("GIRV")))
+    when(convertedSectionCollection.findByQuarterAndBuildingCode(any(String.class), eq("GIRV")))
         .thenReturn(expectedSecs);
 
     // act

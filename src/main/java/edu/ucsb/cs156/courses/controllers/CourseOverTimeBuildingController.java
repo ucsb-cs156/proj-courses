@@ -7,8 +7,6 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -28,7 +26,9 @@ public class CourseOverTimeBuildingController {
 
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
-  @Operation(summary = "Get a list of classroom numbers within a particular building, given a quarter and building code")
+  @Operation(
+      summary =
+          "Get a list of classroom numbers within a particular building, given a quarter and building code")
   @GetMapping(value = "/buildingsearch/classroom", produces = "application/json")
   public ResponseEntity<String> search(
       @Parameter(
@@ -48,27 +48,27 @@ public class CourseOverTimeBuildingController {
           String buildingCode)
       throws JsonProcessingException {
     List<ConvertedSection> courseResults =
-        convertedSectionCollection.findByQuarterAndBuildingCode(
-            quarter, buildingCode);
+        convertedSectionCollection.findByQuarterAndBuildingCode(quarter, buildingCode);
 
-    Set<String> classrooms = courseResults.stream()
-        .flatMap(result -> { 
-            if (result.getSection() != null && result.getSection().getTimeLocations() != null) {
-                return result.getSection().getTimeLocations().stream();
-            } else {
-                return Stream.empty();
-            }
-        })
-        .filter(loc -> loc.getBuilding() != null && loc.getBuilding().equalsIgnoreCase(buildingCode))
-        .map(loc -> loc.getRoom())
-        .filter(room -> room != null && !room.isEmpty())
-        .collect(Collectors.toCollection(TreeSet::new));
-    
-    Map<String, Object> response = new HashMap<>();
-    response.put("buildingCode", buildingCode);
-    response.put("classrooms", classrooms);
+    Set<String> classrooms =
+        courseResults.stream()
+            .flatMap(
+                result -> {
+                  if (result.getSection() != null
+                      && result.getSection().getTimeLocations() != null) {
+                    return result.getSection().getTimeLocations().stream();
+                  } else {
+                    return Stream.empty();
+                  }
+                })
+            .filter(
+                loc ->
+                    loc.getBuilding() != null && loc.getBuilding().equalsIgnoreCase(buildingCode))
+            .map(loc -> loc.getRoom())
+            .filter(room -> room != null && !room.isEmpty())
+            .collect(Collectors.toCollection(TreeSet::new));
 
-    String body = mapper.writeValueAsString(response);
+    String body = mapper.writeValueAsString(classrooms);
     return ResponseEntity.ok().body(body);
   }
 }
