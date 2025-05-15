@@ -16,22 +16,22 @@ public class JobRateLimit {
    */
   private int rateLimitDelayMs;
 
-<span class="nc" id="L19">  public JobRateLimit(@Value(&quot;${app.rateLimitDelayMs}&quot;) String rateLimitDelayMsString) {</span>
+<span class="fc" id="L19">  public JobRateLimit(@Value(&quot;${app.rateLimitDelayMs}&quot;) String rateLimitDelayMsString) {</span>
     try {
-<span class="nc" id="L21">      rateLimitDelayMs = Integer.parseInt(rateLimitDelayMsString);</span>
-<span class="nc" id="L22">    } catch (NumberFormatException e) {</span>
-<span class="nc" id="L23">      rateLimitDelayMs = 200;</span>
-<span class="nc" id="L24">      log.warn(&quot;Invalid rate limit delay: &quot; + rateLimitDelayMsString);</span>
-<span class="nc" id="L25">      log.warn(String.format(&quot;Using default rate limit delay of %d ms&quot;, rateLimitDelayMs));</span>
-<span class="nc" id="L26">    }</span>
-<span class="nc" id="L27">  }</span>
+<span class="fc" id="L21">      rateLimitDelayMs = Integer.parseInt(rateLimitDelayMsString);</span>
+<span class="fc" id="L22">    } catch (NumberFormatException e) {</span>
+<span class="fc" id="L23">      rateLimitDelayMs = 200;</span>
+<span class="fc" id="L24">      log.warn(&quot;Invalid rate limit delay: &quot; + rateLimitDelayMsString);</span>
+<span class="fc" id="L25">      log.warn(String.format(&quot;Using default rate limit delay of %d ms&quot;, rateLimitDelayMs));</span>
+<span class="fc" id="L26">    }</span>
+<span class="fc" id="L27">  }</span>
 
   public void sleep() throws InterruptedException {
-<span class="nc" id="L30">    Thread.sleep(rateLimitDelayMs);</span>
-<span class="nc" id="L31">  }</span>
+<span class="fc" id="L30">    Thread.sleep(rateLimitDelayMs);</span>
+<span class="fc" id="L31">  }</span>
 
   public int getRateLimitDelayMs() {
-<span class="nc" id="L34">    return rateLimitDelayMs;</span>
+<span class="fc" id="L34">    return rateLimitDelayMs;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
