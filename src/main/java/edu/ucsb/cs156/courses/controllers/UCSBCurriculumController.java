@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import edu.ucsb.cs156.courses.entities.UCSBGE;
+import edu.ucsb.cs156.courses.repositories.UCSBGERepository;
+
 @Tag(name = "UCSBCurriculumController")
 @RestController
 @RequestMapping("/api/public")
@@ -20,6 +24,8 @@ public class UCSBCurriculumController extends ApiController {
 
   @Autowired UserRepository userRepository;
   @Autowired UCSBCurriculumService ucsbCurriculumService;
+  @Autowired
+  private UCSBGERepository ucsbgeRepository;
 
   @Operation(summary = "Get course data for a given quarter, department, and level")
   @GetMapping(value = "/basicsearch", produces = "application/json")
@@ -42,5 +48,13 @@ public class UCSBCurriculumController extends ApiController {
     String body = ucsbCurriculumService.getFinalsInfo(quarterYYYYQ, enrollCd);
 
     return ResponseEntity.ok().body(body);
+  }
+
+  // Backend for General Education Requirement Information, similar to above operation
+  @Operation(summary = "Get list of General Education Areas")
+  @GetMapping(value = "/generalEducationInfo", produces = "application/json")
+  public ResponseEntity<List<UCSBGE>> generalEducationInfo() {
+    List<UCSBGE> areas = (List<UCSBGE>) ucsbgeRepository.findAll();
+    return ResponseEntity.ok(areas);
   }
 }
