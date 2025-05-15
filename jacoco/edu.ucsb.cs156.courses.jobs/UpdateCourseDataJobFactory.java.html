@@ -8,7 +8,6 @@ import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobRateLimit;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-<span class="fc" id="L19">@Slf4j</span>
-<span class="fc" id="L20">public class UpdateCourseDataJobFactory {</span>
+<span class="fc" id="L18">@Slf4j</span>
+<span class="fc" id="L19">public class UpdateCourseDataJobFactory {</span>
 
   @Autowired private UCSBCurriculumService curriculumService;
 
@@ -37,26 +36,26 @@ import org.springframework.stereotype.Service;
 
   public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
       String subjectArea, String quarterYYYYQ, boolean ifStale) {
-<span class="fc" id="L40">    return new UpdateCourseDataJob(</span>
+<span class="fc" id="L39">    return new UpdateCourseDataJob(</span>
         quarterYYYYQ,
         quarterYYYYQ,
-<span class="fc" id="L43">        List.of(subjectArea),</span>
+<span class="fc" id="L42">        List.of(subjectArea),</span>
         curriculumService,
         convertedSectionCollection,
         updateCollection,
         isStaleService,
         ifStale,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService, 
+        ucsbapiQuarterService,
         jobRateLimit);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
       String subjectArea, String start_quarterYYYYQ, String end_quarterYYYYQ, boolean ifStale) {
-<span class="fc" id="L56">    return new UpdateCourseDataJob(</span>
+<span class="fc" id="L55">    return new UpdateCourseDataJob(</span>
         start_quarterYYYYQ,
         end_quarterYYYYQ,
-<span class="fc" id="L59">        List.of(subjectArea),</span>
+<span class="fc" id="L58">        List.of(subjectArea),</span>
         curriculumService,
         convertedSectionCollection,
         updateCollection,
@@ -68,19 +67,19 @@ import org.springframework.stereotype.Service;
   }
 
   private List&lt;String&gt; getAllSubjectCodes() {
-<span class="fc" id="L71">    var subjects = subjectRepository.findAll();</span>
-<span class="fc" id="L72">    var subjectCodes = new ArrayList&lt;String&gt;();</span>
-<span class="fc bfc" id="L73" title="All 2 branches covered.">    for (var subject : subjects) {</span>
-<span class="fc" id="L74">      subjectCodes.add(subject.getSubjectCode());</span>
-<span class="fc" id="L75">    }</span>
-<span class="fc" id="L76">    return subjectCodes;</span>
+<span class="fc" id="L70">    var subjects = subjectRepository.findAll();</span>
+<span class="fc" id="L71">    var subjectCodes = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    for (var subject : subjects) {</span>
+<span class="fc" id="L73">      subjectCodes.add(subject.getSubjectCode());</span>
+<span class="fc" id="L74">    }</span>
+<span class="fc" id="L75">    return subjectCodes;</span>
   }
 
   public UpdateCourseDataJob createForQuarter(String quarterYYYYQ, boolean ifStale) {
-<span class="fc" id="L80">    return new UpdateCourseDataJob(</span>
+<span class="fc" id="L79">    return new UpdateCourseDataJob(</span>
         quarterYYYYQ,
         quarterYYYYQ,
-<span class="fc" id="L83">        getAllSubjectCodes(),</span>
+<span class="fc" id="L82">        getAllSubjectCodes(),</span>
         curriculumService,
         convertedSectionCollection,
         updateCollection,
@@ -93,10 +92,10 @@ import org.springframework.stereotype.Service;
 
   public UpdateCourseDataJob createForQuarterRange(
       String start_quarterYYYYQ, String end_quarterYYYYQ, boolean ifStale) {
-<span class="fc" id="L96">    return new UpdateCourseDataJob(</span>
+<span class="fc" id="L95">    return new UpdateCourseDataJob(</span>
         start_quarterYYYYQ,
         end_quarterYYYYQ,
-<span class="fc" id="L99">        getAllSubjectCodes(),</span>
+<span class="fc" id="L98">        getAllSubjectCodes(),</span>
         curriculumService,
         convertedSectionCollection,
         updateCollection,
