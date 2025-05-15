@@ -27,11 +27,11 @@ courses,edu.ucsb.cs156.courses.documents,TimeLocation,0,3,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,CourseInfo,0,24,0,2,0,7,0,3,0,2
 courses,edu.ucsb.cs156.courses.documents,Instructor,0,3,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,Section,0,46,0,10,0,12,0,8,0,3
-courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJobFactory,0,117,0,2,0,16,0,8,0,7
+courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJobFactory,0,125,0,2,0,16,0,8,0,7
 courses,edu.ucsb.cs156.courses.jobs,UploadGradeDataJobFactory,0,11,0,0,0,2,0,2,0,2
 courses,edu.ucsb.cs156.courses.jobs,UploadGradeDataJob,0,127,0,8,0,34,0,7,0,3
 courses,edu.ucsb.cs156.courses.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
-courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJob,0,225,0,14,0,54,0,11,0,4
+courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJob,0,228,0,14,0,55,0,11,0,4
 courses,edu.ucsb.cs156.courses.errors,EntityNotFoundException,0,47,0,0,0,8,0,2,0,2
 courses,edu.ucsb.cs156.courses.errors,BadEnrollCdException,0,12,0,0,0,3,0,1,0,1
 courses,edu.ucsb.cs156.courses.entities,GradeHistory,0,23,0,4,0,4,0,4,0,2
@@ -52,3 +52,4 @@ courses,edu.ucsb.cs156.courses.services,UCSBCurriculumService,0,651,0,6,0,132,0,
 courses,edu.ucsb.cs156.courses.utilities,CourseUtilities,0,68,0,2,0,12,0,2,0,1
 courses,edu.ucsb.cs156.courses.services.jobs,JobContext,0,48,0,4,0,6,0,4,0,2
 courses,edu.ucsb.cs156.courses.services.jobs,JobService,0,75,0,2,0,20,0,6,0,5
+courses,edu.ucsb.cs156.courses.services.jobs,JobRateLimit,0,40,0,0,0,12,0,4,0,4
