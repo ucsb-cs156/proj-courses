@@ -318,4 +318,22 @@ public class UCSBCurriculumServiceTests {
 
     assertEquals(expectedResult, result);
   }
+
+  @Test
+  public void test_getGeInfo_success() throws Exception {
+    // Sample GE info JSON array with one GE area (example)
+    String expectedResult = "[{\"requirementCode\":\"A1\",\"description\":\"English Reading and Composition\"}]";
+
+    String expectedURL = UCSBCurriculumService.GE_ENDPOINT;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "3.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+    String result = ucs.getGeInfo();
+    assertEquals(expectedResult, result);
+  }
 }
