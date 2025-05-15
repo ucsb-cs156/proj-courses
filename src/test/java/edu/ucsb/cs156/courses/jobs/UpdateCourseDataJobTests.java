@@ -80,6 +80,7 @@ public class UpdateCourseDataJobTests {
     verify(job).updateCourses(ctx, "20211", "MATH");
     verify(job).updateCourses(ctx, "20212", "MATH");
     verify(job).updateCourses(ctx, "20213", "MATH");
+    verify(jobRateLimit, atLeastOnce()).sleep();
   }
 
   @Test
