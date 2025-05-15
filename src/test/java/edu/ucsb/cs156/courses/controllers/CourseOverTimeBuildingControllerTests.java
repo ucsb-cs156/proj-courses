@@ -13,6 +13,8 @@ import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.Section;
+import edu.ucsb.cs156.courses.documents.TimeLocation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,37 +68,43 @@ public class CourseOverTimeBuildingControllerTests {
   public void test_search_validRequestWithoutSuffix() throws Exception {
     CourseInfo info =
         CourseInfo.builder()
-            .quarter("20222")
-            .courseId("CMPSC   24 -1")
-            .title("OBJ ORIENTED DESIGN")
-            .description("Intro to object oriented design")
+            .quarter("20233")
+            .courseId("CMPSC   156 -1")
+            .title("ADV APP PROGRAM")
+            .description("Advanced application programming using a high-level, virtual-machine-based language. Topics include generic programming, exception handling, automatic memory management, and application development, management, and maintenanc e tools, third-party library use, version control, software testing, issue tracking, code review, and working with legacy code.")
             .build();
 
-    Section section1 = new Section();
+    TimeLocation loc = 
+      TimeLocation.builder()
+            .building("SH")
+            .room("1431")
+            .build();
 
-    Section section2 = new Section();
+    Section section = 
+      Section.builder()
+          .timeLocations(List.of(loc))
+          .build();
 
-    ConvertedSection cs1 = ConvertedSection.builder().courseInfo(info).section(section1).build();
-
-    ConvertedSection cs2 = ConvertedSection.builder().courseInfo(info).section(section2).build();
+    ConvertedSection cs = 
+      ConvertedSection.builder()
+          .courseInfo(info)
+          .section(section) 
+          .build();
 
     String urlTemplate =
         "/api/public/courseovertime/buildingsearch/classroom?quarter=%s&buildingCode=%s";
 
-    String url = String.format(urlTemplate, "20222", "GIRV");
-
-    List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
-    expectedSecs.addAll(Arrays.asList(cs1, cs2));
+    String url = String.format(urlTemplate, "20233", "SH");
 
     // mock
-    when(convertedSectionCollection.findByQuarterAndBuildingCode(any(String.class), eq("GIRV")))
-        .thenReturn(expectedSecs);
+    when(convertedSectionCollection.findByQuarterAndBuildingCode(any(String.class), eq("SH")))
+        .thenReturn(List.of(cs));
 
     // act
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
     // assert
-    String expectedString = mapper.writeValueAsString(expectedSecs);
+    String expectedString = mapper.writeValueAsString(List.of("1431"));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedString, responseString);
   }
