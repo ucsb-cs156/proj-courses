@@ -67,4 +67,24 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
     assertEquals(expectedResult, responseString);
   }
+
+  // Test for ge info controller
+  @Test
+  public void test_geInfo() throws Exception {
+    String expectedResult = "{expectedJSONResult}";
+    String url = "/api/public/generalEducationInfo";
+    
+    when(ucsbCurriculumService.getGeInfo())
+        .thenReturn(expectedResult);
+
+    MvcResult response = 
+          mockMvc
+              .perform(get(url).contentType("application/json"))
+              .andExpect(status().isOk())
+              .andReturn();
+
+    String responseString = response.getResponse().getContentAsString();
+
+    assertEquals(expectedResult, responseString);
+  }
 }
