@@ -2,6 +2,7 @@ package edu.ucsb.cs156.courses.jobs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -18,6 +19,7 @@ import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import edu.ucsb.cs156.courses.services.jobs.JobRateLimit;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.test.context.TestPropertySource;
 
 @ExtendWith(MockitoExtension.class)
+@EnableConfigurationProperties(value = JobRateLimit.class)
+@TestPropertySource("classpath:application.properties")
 public class UpdateCourseDataJobTests {
   @Mock UCSBCurriculumService ucsbCurriculumService;
 
@@ -40,6 +46,8 @@ public class UpdateCourseDataJobTests {
   @Mock EnrollmentDataPointRepository enrollmentDataPointRepository;
 
   @Mock UCSBAPIQuarterService ucsbapiQuarterService;
+
+  @Mock JobRateLimit jobRateLimit;
 
   Job jobStarted = Job.builder().build();
   JobContext ctx = new JobContext(null, jobStarted);
@@ -59,6 +67,7 @@ public class UpdateCourseDataJobTests {
                 .ifStale(false)
                 .enrollmentDataPointRepository(enrollmentDataPointRepository)
                 .ucsbapiQuarterService(ucsbapiQuarterService)
+                .jobRateLimit(jobRateLimit)
                 .build());
     doNothing().when(job).updateCourses(any(), any(), any());
 
@@ -104,7 +113,8 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             false,
             enrollmentDataPointRepository,
-            ucsbapiQuarterService);
+            ucsbapiQuarterService,
+            jobRateLimit);
     job.accept(ctx);
 
     // Assert
@@ -169,7 +179,8 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             false,
             enrollmentDataPointRepository,
-            ucsbapiQuarterService);
+            ucsbapiQuarterService,
+            jobRateLimit);
     job.accept(ctx);
 
     // Assert
@@ -227,7 +238,8 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             false,
             enrollmentDataPointRepository,
-            ucsbapiQuarterService);
+            ucsbapiQuarterService,
+            jobRateLimit);
     job.accept(ctx);
 
     // Assert
@@ -290,7 +302,8 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             false,
             enrollmentDataPointRepository,
-            ucsbapiQuarterService);
+            ucsbapiQuarterService,
+            jobRateLimit);
     job.accept(ctx);
 
     // Assert
@@ -362,7 +375,8 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             true,
             enrollmentDataPointRepository,
-            ucsbapiQuarterService);
+            ucsbapiQuarterService,
+            jobRateLimit);
     job.accept(ctx);
 
     // Assert
@@ -402,7 +416,8 @@ public class UpdateCourseDataJobTests {
             isStaleService,
             true,
             enrollmentDataPointRepository,
-            ucsbapiQuarterService);
+            ucsbapiQuarterService,
+            jobRateLimit);
     job.accept(ctx);
   }
 }
