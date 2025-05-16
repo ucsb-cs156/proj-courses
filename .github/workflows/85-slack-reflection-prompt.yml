@@ -6,7 +6,7 @@ name: "85-slack-reflection-prompt.yml"
 on:
   schedule:
     # During Daylight Saving Time (Mar–Nov), Pacific is UTC-7
-    - cron: "0 16 * * 4"  # 9 AM PDT
+    - cron: "0 16 * * 2"  # 9 AM PDT
 
     # During Standard Time (Nov–Mar), Pacific is UTC-8
     # - cron: "0 17 * * 4"  # 9 AM PST
