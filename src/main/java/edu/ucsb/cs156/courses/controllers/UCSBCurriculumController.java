@@ -20,7 +20,6 @@ public class UCSBCurriculumController extends ApiController {
 
   @Autowired UserRepository userRepository;
   @Autowired UCSBCurriculumService ucsbCurriculumService;
-  
 
   @Operation(summary = "Get course data for a given quarter, department, and level")
   @GetMapping(value = "/basicsearch", produces = "application/json")
@@ -49,7 +48,7 @@ public class UCSBCurriculumController extends ApiController {
   @Operation(summary = "Get list of General Education Areas")
   @GetMapping(value = "/generalEducationInfo", produces = "application/json")
   public ResponseEntity<String[]> generalEducationInfo() throws Exception {
-    String[] body= ucsbCurriculumService.getGeInfo();
+    String[] body = ucsbCurriculumService.getGeInfo();
     return ResponseEntity.ok().body(body);
   }
 }

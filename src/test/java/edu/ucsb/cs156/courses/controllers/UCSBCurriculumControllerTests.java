@@ -26,10 +26,8 @@ import org.springframework.test.web.servlet.MvcResult;
 public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
   @MockBean UserRepository userRepository;
-
-  @Autowired private MockMvc mockMvc;
-
   @MockBean private UCSBCurriculumService ucsbCurriculumService;
+  @Autowired private MockMvc mockMvc;
 
   @Test
   public void test_search() throws Exception {
@@ -72,23 +70,25 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
   // Test for ge info controller
   @Test
   public void test_geInfo() throws Exception {
-    String[] expectedArray = {"A1","A2","AMH","B","C","D","E","E1","E2","ETH","EUR","F","G","H","NWC","QNT","SUB","WRT"};
+    String[] expectedArray = {
+      "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+      "SUB", "WRT"
+    };
     String url = "/api/public/generalEducationInfo";
-    
-    when(ucsbCurriculumService.getGeInfo())
-        .thenReturn(expectedArray);
 
-    MvcResult response = 
-          mockMvc
-              .perform(get(url).contentType("application/json"))
-              .andExpect(status().isOk())
-              .andReturn();
+    when(ucsbCurriculumService.getGeInfo()).thenReturn(expectedArray);
+
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
 
     String responseString = response.getResponse().getContentAsString();
 
     ObjectMapper mapper = new ObjectMapper();
     String expectedJson = mapper.writeValueAsString(expectedArray);
-    
+
     assertEquals(expectedJson, responseString);
   }
 }
