@@ -34,8 +34,8 @@ public class CourseOverTimeBuildingController {
       @Parameter(
               name = "quarter",
               description =
-                  "Quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
-              example = "20231",
+                  "Quarter in yyyyq format, e.g. 20232 for S23, 20234 for F23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+              example = "20232",
               required = true)
           @RequestParam
           String quarter,

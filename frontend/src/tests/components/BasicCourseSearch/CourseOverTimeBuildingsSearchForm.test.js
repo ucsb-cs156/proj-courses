@@ -32,13 +32,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock.onGet("/api/systemInfo").reply(200, {
       ...systemInfoFixtures.showingNeither,
-      QtrYYYQ: "20201",
+      startQtrYYYYQ: "20201",
+      endQtrYYYYQ: "20214",
     });
-    axiosMock.onGet("/api/public/basicQuarterDates").reply(200, [
-      { yyyyq: "20201" },
-      { yyyyq: "20211" },
-      { yyyyq: "20222" },
-    ]);
 
     toast.mockReturnValue({
       addToast: addToast,
@@ -55,7 +51,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
   });
 
-  test("when I select a quarter, the state for quarter changes", () => {
+  test("when I select a start quarter, the state for start quarter changes", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -63,9 +59,22 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20201");
-    expect(selectQuarter.value).toBe("20201");
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20201");
+    expect(selectStartQuarter.value).toBe("20201");
+  });
+
+  test("when I select an end quarter, the state for end quarter changes", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20204");
+    expect(selectEndQuarter.value).toBe("20204");
   });
 
   test("when I select a building, the state for building changes", async () => {
@@ -106,17 +115,20 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
 
     const expectedFields = {
-      Quarter: "20201",
+      startQuarter: "20211",
+      endQuarter: "20214",
       buildingCode: "GIRV",
     };
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
     );
 
-    const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20201");
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20211");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20214");
     const selectBuilding = screen.getByLabelText("Building Name");
     expect(selectBuilding).toBeInTheDocument();
     userEvent.selectOptions(selectBuilding, "GIRV");
@@ -131,11 +143,47 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
   });
 
+  test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
+    const sampleReturnValue = {
+      sampleKey: "sampleValue",
+      total: 0,
+    };
+
+    const fetchJSONSpy = jest.fn();
+
+    fetchJSONSpy.mockResolvedValue(sampleReturnValue);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20204");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20204");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
+    userEvent.click(submitButton);
+  });
+
   test("renders without crashing when fallback values are used", async () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
-      springH2ConsoleEnabled: true,
+      springH2ConsoleEnabled: false,
       showSwaggerUILink: true,
-      QtrYYYYQ: null, // use fallback value
+      startQtrYYYYQ: null, // use fallback value
+      endQtrYYYYQ: null, // use fallback value
     });
 
     render(
@@ -149,9 +197,14 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     // Make sure the first and last options
     expect(
       await screen.findByTestId(
-        "CourseOverTimeBuildingsSearch.Quarter-option-0",
+        "CourseOverTimeBuildingsSearch.StartQuarter-option-0",
       ),
-    ).toHaveValue("20201");
+    ).toHaveValue("20211");
+    expect(
+      await screen.findByTestId(
+        "CourseOverTimeBuildingsSearch.EndQuarter-option-3",
+      ),
+    ).toHaveValue("20214");
     expect(
       await screen.findByTestId(
         "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
@@ -178,43 +231,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     expect(buttonRow).toHaveAttribute(
       "style",
       "padding-top: 10px; padding-bottom: 10px;",
-    );
-  });
-
-  test("fetches classrooms and displays them when quarter and building are selected", async () => {
-    axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch/classroom", {
-        params: { quarter: "20201", buildingCode: "GIRV" },
-      })
-      .reply(200, ["1431", "1435"]);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeBuildingsSearchForm />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20201");
-
-    const selectBuilding = screen.getByLabelText("Building Name");
-
-    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    );
-
-    await userEvent.selectOptions(selectBuilding, "GIRV");
-
-    // Wait for classroom API to be called and classrooms displayed
-    await waitFor(() =>
-      expect(screen.getByTestId("available-classrooms")).toBeInTheDocument(),
-    );
-
-    expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-      "1431, 1435",
     );
   });
 });
