@@ -11,8 +11,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
@@ -67,4 +73,28 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
     assertEquals(expectedResult, responseString);
   }
-}
+
+
+  // Tests for the general education areas controller
+  @Test
+  public void test_GEAreasList() throws Exception {
+    List<String> expectedList = List.of(
+        "A1", "A2", "B", "C", "D", "E", "F", "G", "H",
+        "WRT", "QR", "ETH", "EUR", "NWC", "AMH"
+    );
+
+    String url = "/api/public/generalEducationInfo";
+
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+    String responseString = response.getResponse().getContentAsString();
+
+    ObjectMapper mapper = new ObjectMapper();
+    List<String> actualList = mapper.readValue(responseString, new TypeReference<List<String>>() {});
+
+    assertEquals(expectedList, actualList);
+  }
+};

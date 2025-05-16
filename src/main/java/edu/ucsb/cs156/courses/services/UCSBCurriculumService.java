@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.courses.services;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -298,22 +297,22 @@ public class UCSBCurriculumService {
   //   log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
   //   return retVal;
   // }
-  public String getGEJSON(String quarter, String geCode) throws IOException {
+  // public String getGEJSON(String quarter, String geCode) throws IOException {
 
-    String url = String.format("%s?quarter=%s&areas=%s", CURRICULUM_ENDPOINT, quarter, geCode);
+  //   String url = String.format("%s?quarter=%s&areas=%s", CURRICULUM_ENDPOINT, quarter, geCode);
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.set("ucsb-api-version", "1.0");
-    headers.set("ucsb-api-key", apiKey);
+  //   HttpHeaders headers = new HttpHeaders();
+  //   headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+  //   headers.setContentType(MediaType.APPLICATION_JSON);
+  //   headers.set("ucsb-api-version", "1.0");
+  //   headers.set("ucsb-api-key", apiKey);
 
-    HttpEntity<String> entity = new HttpEntity<>("body", headers);
+  //   HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+  //   ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-    return response.getBody();
-  }
+  //   return response.getBody();
+  // }
 
 
 }
