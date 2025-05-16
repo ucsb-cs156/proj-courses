@@ -323,12 +323,12 @@ public class UCSBCurriculumServiceTests {
   @Test
   public void test_getGeInfo_success() {
     String[] expected = {
-        "A1","A2","AMH","B","C","D","E","E1","E2","ETH","EUR","F","G","H","NWC","QNT","SUB","WRT"
-      };
+      "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+      "SUB", "WRT"
+    };
 
     String[] result = ucs.getGeInfo();
 
     assertArrayEquals(expected, result);
   }
-
 }

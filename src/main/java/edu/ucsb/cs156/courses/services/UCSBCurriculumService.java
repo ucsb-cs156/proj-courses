@@ -51,10 +51,10 @@ public class UCSBCurriculumService {
   public static final String FINALS_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v3/finals";
 
-
-  // Hard‑coded list of all UCSB General Education requirement codes
-  private static final String[] GE_CODES = {"A1","A2","AMH","B","C","D","E","E1","E2","ETH","EUR","F","G","H","NWC","QNT","SUB","WRT"};
-
+  private static final String[] GE_CODES = {
+    "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+    "SUB", "WRT"
+  };
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
 
