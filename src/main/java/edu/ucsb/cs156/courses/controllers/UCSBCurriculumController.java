@@ -47,7 +47,7 @@ public class UCSBCurriculumController extends ApiController {
   @Operation(summary = "Get list of General Education Areas")
   @GetMapping(value = "/generalEducationInfo", produces = "application/json")
   public ResponseEntity<String> generalEducationInfo() throws Exception {
-      String body = ucsbCurriculumService.getGeInfo();
-      return ResponseEntity.ok().body(body);
+    String body = ucsbCurriculumService.getGeInfo();
+    return ResponseEntity.ok().body(body);
   }
 }

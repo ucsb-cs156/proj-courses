@@ -24,14 +24,11 @@ import org.springframework.test.web.servlet.MvcResult;
 @AutoConfigureDataJpa
 public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
-  @MockBean
-  UserRepository userRepository;
+  @MockBean UserRepository userRepository;
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @MockBean
-  private UCSBCurriculumService ucsbCurriculumService;
+  @MockBean private UCSBCurriculumService ucsbCurriculumService;
 
   @Test
   public void test_search() throws Exception {
