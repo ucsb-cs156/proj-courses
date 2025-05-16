@@ -31,43 +31,43 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
   @MockBean private UCSBCurriculumService ucsbCurriculumService;
 
-  // @Test
-  // public void test_search() throws Exception {
+  @Test
+  public void test_search() throws Exception {
 
-  //   String expectedResult = "{expectedJSONResult}";
-  //   String urlTemplate = "/api/public/basicsearch?qtr=%s&dept=%s&level=%s";
-  //   String url = String.format(urlTemplate, "20204", "CMPSC", "L");
-  //   when(ucsbCurriculumService.getJSON(any(String.class), any(String.class), any(String.class)))
-  //       .thenReturn(expectedResult);
+    String expectedResult = "{expectedJSONResult}";
+    String urlTemplate = "/api/public/basicsearch?qtr=%s&dept=%s&level=%s";
+    String url = String.format(urlTemplate, "20204", "CMPSC", "L");
+    when(ucsbCurriculumService.getJSON(any(String.class), any(String.class), any(String.class)))
+        .thenReturn(expectedResult);
 
-  //   MvcResult response =
-  //       mockMvc
-  //           .perform(get(url).contentType("application/json"))
-  //           .andExpect(status().isOk())
-  //           .andReturn();
-  //   String responseString = response.getResponse().getContentAsString();
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+    String responseString = response.getResponse().getContentAsString();
 
-  //   assertEquals(expectedResult, responseString);
-  // }
+    assertEquals(expectedResult, responseString);
+  }
 
   // Tests for the final exam information controller
-  // @Test
-  // public void test_finalsInfo() throws Exception {
-  //   String expectedResult = "{expectedJSONResult}";
-  //   String urlTemplate = "/api/public/finalsInfo?quarterYYYYQ=%s&enrollCd=%s";
-  //   String url = String.format(urlTemplate, "20251", "67421");
-  //   when(ucsbCurriculumService.getFinalsInfo(any(String.class), any(String.class)))
-  //       .thenReturn(expectedResult);
+  @Test
+  public void test_finalsInfo() throws Exception {
+    String expectedResult = "{expectedJSONResult}";
+    String urlTemplate = "/api/public/finalsInfo?quarterYYYYQ=%s&enrollCd=%s";
+    String url = String.format(urlTemplate, "20251", "67421");
+    when(ucsbCurriculumService.getFinalsInfo(any(String.class), any(String.class)))
+        .thenReturn(expectedResult);
 
-  //   MvcResult response =
-  //       mockMvc
-  //           .perform(get(url).contentType("application/json"))
-  //           .andExpect(status().isOk())
-  //           .andReturn();
-  //   String responseString = response.getResponse().getContentAsString();
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+    String responseString = response.getResponse().getContentAsString();
 
-  //   assertEquals(expectedResult, responseString);
-  // }
+    assertEquals(expectedResult, responseString);
+  }
 
   // Test for ge info controller
   @Test
