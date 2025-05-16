@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.courses.services;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -320,20 +321,14 @@ public class UCSBCurriculumServiceTests {
   }
 
   @Test
-  public void test_getGeInfo_success() throws Exception {
-    // Sample GE info JSON array with one GE area (example)
-    String expectedResult = "[{\"requirementCode\":\"A1\",\"description\":\"English Reading and Composition\"}]";
+  public void test_getGeInfo_success() {
+    String[] expected = {
+        "A1","A2","AMH","B","C","D","E","E1","E2","ETH","EUR","F","G","H","NWC","QNT","SUB","WRT"
+      };
 
-    String expectedURL = UCSBCurriculumService.GE_ENDPOINT;
+    String[] result = ucs.getGeInfo();
 
-    this.mockRestServiceServer
-        .expect(requestTo(expectedURL))
-        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
-        .andExpect(header("ucsb-api-version", "3.0"))
-        .andExpect(header("ucsb-api-key", apiKey))
-        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
-
-    String result = ucs.getGeInfo();
-    assertEquals(expectedResult, result);
+    assertArrayEquals(expected, result);
   }
+
 }
