@@ -1,10 +1,13 @@
 package edu.ucsb.cs156.courses.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CoursePage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -16,12 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import edu.ucsb.cs156.courses.documents.ConvertedSection;
-import edu.ucsb.cs156.courses.documents.CoursePage;
-import lombok.extern.slf4j.Slf4j;
 
 /** Service object that wraps the UCSB Academic Curriculum API */
 @Service
@@ -309,10 +306,10 @@ public class UCSBCurriculumService {
 
   //   HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-  //   ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+  //   ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+  // String.class);
 
   //   return response.getBody();
   // }
-
 
 }
