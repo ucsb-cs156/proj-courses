@@ -1,13 +1,10 @@
 package edu.ucsb.cs156.courses.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.ucsb.cs156.courses.documents.ConvertedSection;
-import edu.ucsb.cs156.courses.documents.CoursePage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -19,6 +16,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CoursePage;
+import lombok.extern.slf4j.Slf4j;
 
 /** Service object that wraps the UCSB Academic Curriculum API */
 @Service
@@ -268,48 +271,4 @@ public class UCSBCurriculumService {
     log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
     return retVal;
   }
-
-  // public String getGEInfo(String quarter, String areaCode) throws Exception {
-  //   HttpHeaders headers = new HttpHeaders();
-  //   headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-  //   headers.set("ucsb-api-version", "3.0");
-  //   headers.set("ucsb-api-key", this.apiKey);
-
-  //   HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-  //   String params = String.format("?quarter=%s&areas=%s", quarter, areaCode);
-  //   String url = CURRICULUM_ENDPOINT + params;
-
-  //   log.info("url=" + url);
-
-  //   String retVal;
-  //   MediaType contentType;
-  //   HttpStatus statusCode;
-
-  //   ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-  //   contentType = re.getHeaders().getContentType();
-  //   statusCode = (HttpStatus) re.getStatusCode();
-  //   retVal = re.getBody();
-
-  //   log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
-  //   return retVal;
-  // }
-  // public String getGEJSON(String quarter, String geCode) throws IOException {
-
-  //   String url = String.format("%s?quarter=%s&areas=%s", CURRICULUM_ENDPOINT, quarter, geCode);
-
-  //   HttpHeaders headers = new HttpHeaders();
-  //   headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-  //   headers.setContentType(MediaType.APPLICATION_JSON);
-  //   headers.set("ucsb-api-version", "1.0");
-  //   headers.set("ucsb-api-key", apiKey);
-
-  //   HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-  //   ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-  // String.class);
-
-  //   return response.getBody();
-  // }
-
 }
