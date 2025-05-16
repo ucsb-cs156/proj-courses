@@ -51,10 +51,10 @@ public class UCSBCurriculumService {
   public static final String FINALS_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v3/finals";
 
-  // Implement GE END point for curriculum controller 
-  // getgeInfo
-  public static final String GE_ENDPOINT =
-    "https://api.ucsb.edu/students/lookups/v1/requirements";
+
+  // Hard‑coded list of all UCSB General Education requirement codes
+  private static final String[] GE_CODES = {"A1","A2","AMH","B","C","D","E","E1","E2","ETH","EUR","F","G","H","NWC","QNT","SUB","WRT"};
+
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
 
@@ -274,28 +274,7 @@ public class UCSBCurriculumService {
     return retVal;
   }
 
-  public String getGeInfo() throws Exception {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    headers.set("ucsb-api-version", "3.0");
-    headers.set("ucsb-api-key", this.apiKey);
-
-    HttpEntity<String> entity = new HttpEntity<>("body", headers);
-
-    String url = GE_ENDPOINT;
-
-    log.info("url=" + url);
-
-    String retVal;
-    MediaType contentType;
-    HttpStatus statusCode;
-
-    ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-    contentType = re.getHeaders().getContentType();
-    statusCode = (HttpStatus) re.getStatusCode();
-    retVal = re.getBody();
-
-    log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
-    return retVal;
+  public String[] getGeInfo() {
+    return GE_CODES;
   }
 }
