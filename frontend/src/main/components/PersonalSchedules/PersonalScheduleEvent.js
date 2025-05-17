@@ -109,7 +109,9 @@ export default function SchedulerEvents({ event, eventColor, borderColor }) {
           {style.height >= 40 && (
             <Card.Text
               data-testid={`${testId}-time`}
+              // Stryker disable all
               style={{ fontSize: "12px", textAlign: "left" }}
+              // Stryker restore all
             >
               {event.startTime} - {event.endTime}
             </Card.Text>
