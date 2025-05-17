@@ -7,7 +7,6 @@ import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalS
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import userEvent from "@testing-library/user-event";
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => {

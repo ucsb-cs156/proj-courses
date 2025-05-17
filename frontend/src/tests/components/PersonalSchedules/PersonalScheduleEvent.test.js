@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import PersonalScheduleEvent from "main/components/PersonalSchedules/PersonalScheduleEvent";
 
 describe("PersonalScheduleEvent tests", () => {
