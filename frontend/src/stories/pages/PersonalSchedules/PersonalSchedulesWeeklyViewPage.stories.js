@@ -48,8 +48,12 @@ Default.parameters = {
         },
       );
     }),
-    http.get("/api/personalSections/all", () => {
-      return HttpResponse.json(personalSectionsFixtures.threePersonalSections, {
+    http.get("/api/personalSections/all", ({ url }) => {
+      const psId = new URL(url).searchParams.get("psId");
+      const filteredSections = personalSectionsFixtures.threePersonalSections.filter(
+        (section) => section.psId === psId
+      );
+      return HttpResponse.json(filteredSections, {
         status: 200,
       });
     }),
