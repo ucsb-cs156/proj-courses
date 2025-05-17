@@ -12,7 +12,7 @@ import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
 import "bootstrap/dist/css/bootstrap.css";
 
-import EnrollmentDataIndexPage from "main/pages/EnrollmentData/EnrollmentDataIndexPage"
+import EnrollmentDataIndexPage from "main/pages/EnrollmentData/EnrollmentDataIndexPage";
 
 import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
@@ -100,7 +100,7 @@ function App() {
         />
         <Route
           exact
-          path="/enrollmentdata"
+          path="/enrollmentdata/search"
           element={<EnrollmentDataIndexPage />}
         />
       </Routes>
