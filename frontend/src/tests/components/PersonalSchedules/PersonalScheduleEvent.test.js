@@ -348,7 +348,7 @@ describe("PersonalScheduleEvent tests", () => {
 
   const fixedEndTimeRenderTestCases = [
     { time: "12:00AM", expectTitle: true, expectTimeText: true },
-    { time: "12:55PM", expectTitle: true, expectTimeText: false },
+    { time: "12:55PM", expectTitle: false, expectTimeText: false },
     { time: "1:00PM", expectTitle: false, expectTimeText: false },
   ];
 
