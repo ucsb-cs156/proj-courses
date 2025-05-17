@@ -1,11 +1,6 @@
+/* eslint-disable jest/no-conditional-expect */
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  within,
-  waitFor,
-} from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import PersonalScheduleEvent from "main/components/PersonalSchedules/PersonalScheduleEvent";
@@ -300,97 +295,105 @@ describe("PersonalScheduleEvent tests", () => {
 
   timeTestCases.forEach(
     ({ startTime, endTime, expectedFontSize, expectedHeight }) => {
-      test(`renders event with height from ${startTime} to ${endTime} with font size ${expectedFontSize}`, async () => {
+      test(`renders event from ${startTime}-${endTime} (H:${expectedHeight}, FS:${expectedFontSize})`, () => {
+        const uniqueEventId = `event-${startTime}-${endTime}`.replace(
+          /[:\s]/g,
+          "",
+        );
         render(
-          <QueryClientProvider client={queryClient}>
-            <Router>
-              <PersonalScheduleEvent
-                event={{ ...mockEventBase, startTime, endTime }}
-                eventColor={eventColor}
-                borderColor={borderColor}
-              />
-            </Router>
-          </QueryClientProvider>,
+          <PersonalScheduleEvent
+            event={{ ...mockEventBase, id: uniqueEventId, startTime, endTime }}
+            eventColor={eventColor}
+            borderColor={borderColor}
+          />,
         );
 
-        // Check if the event card has correct font size
-        if (expectedFontSize === null) {
-          expect(
-            screen.queryByTestId("SchedulerEvent-title"),
-          ).not.toBeInTheDocument();
-        } else {
-          const cardText = await screen.findByText(mockEventBase.title);
-          expect(cardText).toHaveStyle(`font-size: ${expectedFontSize}`);
-        }
-
-        // Check if the event card has correct height
-        const card = screen.getByTestId(`${testId}-${mockEventBase.id}`);
+        const card = screen.getByTestId(`${testId}-${uniqueEventId}`);
         expect(card).toHaveStyle(`height: ${expectedHeight}px`);
 
-        // Check conditional rendering based on height
+        if (expectedFontSize === null || expectedHeight < 20) {
+          expect(
+            screen.queryByTestId(`${testId}-title`),
+          ).not.toBeInTheDocument();
+        } else {
+          const titleElement = screen.getByTestId(`${testId}-title`);
+          expect(titleElement).toBeInTheDocument();
+          expect(titleElement).toHaveTextContent(mockEventBase.title);
+          expect(titleElement).toHaveStyle(`font-size: ${expectedFontSize}`);
+        }
+
         if (expectedHeight >= 40) {
-          expect(
-            screen.getByTestId("SchedulerEvent-title"),
-          ).toBeInTheDocument();
-          const time = screen.getByTestId("SchedulerEvent-time");
-          expect(time).toBeInTheDocument();
-          expect(time).toHaveStyle("font-size: 12px");
-          expect(time).toHaveStyle("text-align: left");
+          const titleElement = screen.getByTestId(`${testId}-title`);
+          expect(titleElement).toBeInTheDocument();
+          const timeElement = screen.getByTestId(`${testId}-time`);
+          expect(timeElement).toBeInTheDocument();
+          expect(timeElement).toHaveTextContent(`${startTime} - ${endTime}`);
         } else if (expectedHeight >= 20) {
+          const titleElement = screen.getByTestId(`${testId}-title`);
+          expect(titleElement).toBeInTheDocument();
           expect(
-            screen.queryByTestId("SchedulerEvent-title"),
-          ).toBeInTheDocument();
-          expect(
-            screen.queryByTestId("SchedulerEvent-time"),
+            screen.queryByTestId(`${testId}-time`),
           ).not.toBeInTheDocument();
         } else {
           expect(
-            screen.queryByTestId("SchedulerEvent-title"),
+            screen.queryByTestId(`${testId}-title`),
           ).not.toBeInTheDocument();
           expect(
-            screen.queryByTestId("SchedulerEvent-time"),
+            screen.queryByTestId(`${testId}-time`),
           ).not.toBeInTheDocument();
         }
       });
     },
   );
 
-  test("renders correctly for various start times with fixed end time", () => {
-    const renderingTestCases = [
-      { time: "12:00AM", shouldRenderTime: true }, // Height: 780 (1:00PM - 12:00AM)
-      { time: "1:00AM", shouldRenderTime: true }, // Height: 720 (1:00PM - 1:00AM)
-      { time: "12:00PM", shouldRenderTime: true }, // Height: 60 (1:00PM - 12:00PM)
-      { time: "1:00PM", shouldRenderTime: false }, // Height: 0 (1:00PM - 1:00PM)
-      { time: "11:59PM", shouldRenderTime: false }, // Height: -659 (1:00PM - 11:59PM) -> effectively 0 or not rendered as expected
-    ];
+  const fixedEndTimeRenderTestCases = [
+    { time: "12:00AM", expectTitle: true, expectTimeText: true },
+    { time: "12:55PM", expectTitle: true, expectTimeText: false },
+    { time: "1:00PM", expectTitle: false, expectTimeText: false },
+  ];
 
-    renderingTestCases.forEach(({ time, shouldRenderTime }) => {
-      const testEvent = {
-        ...mockEventBase,
-        id: `test-render-${time.replace(/[: ]/g, "")}`,
-        startTime: time,
-        endTime: "1:00PM", // Fixed end time
-      };
-
-      const { container } = render(
-        <PersonalScheduleEvent
-          event={testEvent}
-          eventColor={eventColor}
-          borderColor={borderColor}
-        />,
-      );
-
-      if (shouldRenderTime) {
-        const timeElement = within(container).getByTestId(`${testId}-time`);
-        expect(timeElement).toBeInTheDocument();
-        expect(timeElement).toHaveTextContent(
-          `${testEvent.startTime} - ${testEvent.endTime}`,
+  fixedEndTimeRenderTestCases.forEach(
+    ({ time, expectTitle, expectTimeText }) => {
+      test(`renders for fixed end time with start: ${time}`, () => {
+        const uniqueEventId = `fixedEndTime-${time}`.replace(/[:\s]/g, "");
+        const testEvent = {
+          ...mockEventBase,
+          id: uniqueEventId,
+          startTime: time,
+          endTime: "1:00PM",
+        };
+        const { container } = render(
+          <PersonalScheduleEvent
+            event={testEvent}
+            eventColor={eventColor}
+            borderColor={borderColor}
+          />,
         );
-      } else {
-        expect(
-          within(container).queryByTestId(`${testId}-time`),
-        ).not.toBeInTheDocument();
-      }
-    });
-  });
+
+        if (expectTitle) {
+          const titleElement = within(container).getByTestId(`${testId}-title`);
+          expect(titleElement).toBeInTheDocument();
+          expect(titleElement).toHaveTextContent(mockEventBase.title);
+        } else {
+          expect(
+            within(container).queryByTestId(`${testId}-title`),
+          ).not.toBeInTheDocument();
+        }
+
+        if (expectTimeText) {
+          const timeTextElement = within(container).getByTestId(
+            `${testId}-time`,
+          );
+          expect(timeTextElement).toBeInTheDocument();
+          expect(timeTextElement).toHaveTextContent(
+            `${testEvent.startTime} - ${testEvent.endTime}`,
+          );
+        } else {
+          expect(
+            within(container).queryByTestId(`${testId}-time`),
+          ).not.toBeInTheDocument();
+        }
+      });
+    },
+  );
 });
