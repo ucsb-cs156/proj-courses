@@ -22,6 +22,7 @@ jest.mock("react-router-dom", () => {
       mockNavigate(x);
       return null;
     },
+    useNavigate: () => mockNavigate,
   };
 });
 
@@ -156,10 +157,14 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
-  test("renders 'Back' button", () => {
+  test("renders 'Back' button", async () => {
     const queryClient = new QueryClient();
-    axiosMock.onGet(`/api/personalschedules?id=17`).reply(200, []);
-    axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, []);
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -169,11 +174,75 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
+    // Check for Back button
     const backButton = screen.getByRole("button", { name: /back/i });
     expect(backButton).toBeInTheDocument();
+  });
 
-    // Optional: Test button functionality
-    userEvent.click(backButton);
-    // Add your assertions here to ensure that clicking the button triggers the expected action.
+  test("renders PersonalSchedulerPanel with events", async () => {
+    setupAdminUser(); // or setupUser() if non-admin is sufficient
+    const queryClient = new QueryClient();
+    const scheduleId = 17;
+
+    // Use a fixture for sections that will produce some events
+    // We can reuse personalScheduleFixtures.threePersonalSchedulesDiffId if it's suitable
+    // or define a more specific one if needed for clarity.
+    // For this example, let's assume onePersonalScheduleDiffId and threePersonalSchedulesDiffId are good enough.
+    axiosMock
+      .onGet(`/api/personalschedules?id=${scheduleId}`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`/api/personalSections/all?psId=${scheduleId}`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId); // This should contain sections data
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Weekly Schedule View")).toBeInTheDocument();
+    });
+
+    // Check for day titles rendered by PersonalSchedulerPanel
+    const days = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      // "Saturday", // Uncomment if your fixture/data includes these
+      // "Sunday",
+    ];
+    days.forEach((day) => {
+      expect(
+        screen.getByTestId(`SchedulerPanel-${day}-title`),
+      ).toBeInTheDocument();
+    });
+
+    // Check for some time slot identifiers
+    // Note: The testid in PersonalSchedulePanel is `SchedulerPanel-${hour.replace(" ", "-")}-title`
+    // And for the label inside it is `SchedulerPanel-${hour.replace(" ", "-")}-label`
+    expect(screen.getByTestId("SchedulerPanel-8-AM-title")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("SchedulerPanel-12-PM-title"),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("SchedulerPanel-3-PM-title")).toBeInTheDocument();
+
+    // You might also want to check if specific events derived from your fixtures are rendered.
+    // This would involve looking for elements with testids like `SchedulerEvent-${event.id}`
+    // For example, if one of the events from threePersonalSchedulesDiffId is expected:
+    await waitFor(() => {
+      // The event ID is constructed as `${classSection.enrollCode}-${day}`
+      // courseId: "ECE 1A ", section: "0100", enrollCode: "12583", days: "M  "
+      // title becomes: "ECE 1A (0100)"
+      // id becomes: "12583-Monday"
+      expect(
+        screen.getByTestId("SchedulerEvent-12583-Monday"),
+      ).toBeInTheDocument();
+    });
   });
 });
