@@ -39,31 +39,31 @@ Default.parameters = {
     http.get("/api/personalschedules", ({ url }) => {
       const id = new URL(url).searchParams.get("id");
       const schedule = personalScheduleFixtures.onePersonalSchedule.find(
-        (schedule) => schedule.id === parseInt(id, 10)
+        (schedule) => schedule.id === parseInt(id, 10),
       );
-      return HttpResponse.json(
-        schedule || { error: "Schedule not found" },
-        {
-          status: schedule ? 200 : 404,
-        },
-      );
+      return HttpResponse.json(schedule || { error: "Schedule not found" }, {
+        status: schedule ? 200 : 404,
+      });
     }),
     http.get("/api/personalSections/all", ({ url }) => {
       const params = new URL(url).searchParams;
       const psId = params.get("psId");
       if (psId) {
         const section = personalSectionsFixtures.threePersonalSections.find(
-          (section) => section.id === parseInt(psId, 10)
+          (section) => section.id === parseInt(psId, 10),
         );
         if (section) {
           return HttpResponse.json(section, { status: 200 });
         } else {
-          return HttpResponse.json({ error: "Section not found" }, { status: 404 });
+          return HttpResponse.json(
+            { error: "Section not found" },
+            { status: 404 },
+          );
         }
       } else {
         return HttpResponse.json(
           { error: "Missing psId query parameter" },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }),

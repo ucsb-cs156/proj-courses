@@ -13,8 +13,6 @@ const daysOfWeek = [
 ];
 
 const hours = [
-  // Stryker disable next-line all
-  "",
   "1 AM",
   "2 AM",
   "3 AM",

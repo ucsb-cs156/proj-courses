@@ -39,20 +39,18 @@ Default.parameters = {
     http.get("/api/personalschedules", ({ url }) => {
       const id = new URL(url).searchParams.get("id");
       const schedule = personalScheduleFixtures.onePersonalSchedule.find(
-        (schedule) => schedule.id === id
+        (schedule) => schedule.id === id,
       );
-      return HttpResponse.json(
-        schedule || { error: "Schedule not found" },
-        {
-          status: schedule ? 200 : 404,
-        },
-      );
+      return HttpResponse.json(schedule || { error: "Schedule not found" }, {
+        status: schedule ? 200 : 404,
+      });
     }),
     http.get("/api/personalSections/all", ({ url }) => {
       const psId = new URL(url).searchParams.get("psId");
-      const filteredSections = personalSectionsFixtures.threePersonalSections.filter(
-        (section) => section.psId === psId
-      );
+      const filteredSections =
+        personalSectionsFixtures.threePersonalSections.filter(
+          (section) => section.psId === psId,
+        );
       return HttpResponse.json(filteredSections, {
         status: 200,
       });
