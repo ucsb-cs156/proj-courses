@@ -43,7 +43,7 @@ export default function PersonalSchedulesDetailsPage() {
 
   const backButton = () => {
     return (
-      <Button variant="primary" href="/personalschedules/list">
+      <Button variant="primary" onClick={() => navigate('/personalschedules/list')}>
         Back
       </Button>
     );
