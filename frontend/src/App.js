@@ -15,16 +15,15 @@ import "bootstrap/dist/css/bootstrap.css";
 import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
-
 import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailsPage";
+import PersonalSchedulesWeeklyViewPage from "main/pages/PersonalSchedules/PersonalSchedulesWeeklyViewPage";
 import SectionSearchesIndexPage from "main/pages/SectionSearches/SectionSearchesIndexPage";
 
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
-
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
-
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
+
 function App() {
   const { data: currentUser } = useCurrentUser();
 
@@ -68,6 +67,11 @@ function App() {
               exact
               path="/personalschedules/details/:id"
               element={<PersonalSchedulesDetailsPage />}
+            />
+            <Route
+              exact
+              path="/personalschedules/weekly/:id"
+              element={<PersonalSchedulesWeeklyViewPage />}
             />
           </>
         )}
