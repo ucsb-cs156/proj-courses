@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import SchedulerEvents from "./SchedulerEvent"; // Updated import path
+import SchedulerEvents from "./PersonalScheduleEvent"; // Updated import path
 
 const daysOfWeek = [
   "Monday",
