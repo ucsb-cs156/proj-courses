@@ -2,7 +2,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import UpdatesSearchForm from "main/components/Jobs/JobsSearchForm";
 import JobsSearchForm from "main/components/Jobs/JobsSearchForm";
 
 describe("JobsSearchForm tests", () => {
@@ -90,7 +89,7 @@ describe("JobsSearchForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <UpdatesSearchForm
+          <JobsSearchForm
             updateSortDirection={updateSortDirection}
             updateSortField={updateSortField}
             updatePageSize={updatePageSize}
