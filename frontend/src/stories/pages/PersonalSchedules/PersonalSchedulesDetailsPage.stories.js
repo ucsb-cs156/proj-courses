@@ -36,11 +36,15 @@ Default.parameters = {
         status: 200,
       });
     }),
-    http.get("/api/personalschedules", () => {
+    http.get("/api/personalschedules", ({ url }) => {
+      const id = new URL(url).searchParams.get("id");
+      const schedule = personalScheduleFixtures.onePersonalSchedule.find(
+        (schedule) => schedule.id === parseInt(id, 10)
+      );
       return HttpResponse.json(
-        personalScheduleFixtures.onePersonalSchedule[0],
+        schedule || { error: "Schedule not found" },
         {
-          status: 200,
+          status: schedule ? 200 : 404,
         },
       );
     }),
