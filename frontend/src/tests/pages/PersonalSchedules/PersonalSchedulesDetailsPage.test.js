@@ -81,7 +81,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
     axiosMock
-      .onGet(`api/personalSections/all?psId=17`)
+      .onGet(`/api/personalSections/all?psId=17`)
       .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
 
     render(
@@ -91,16 +91,19 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
     await waitFor(() => {
       expect(
         screen.getByText("Personal Schedules Details"),
       ).toBeInTheDocument();
     });
+
     await waitFor(() => {
       expect(
         screen.getByText("Sections in Personal Schedule"),
       ).toBeInTheDocument();
     });
+
     await waitFor(() => {
       expect(
         screen.getByTestId("PersonalSchedulesTable-cell-row-0-col-id"),
@@ -157,13 +160,13 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
-  test("renders 'Back' button", async () => {
+  test("renders 'Back' button and 'View Weekly Schedule' button", async () => {
     const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
     axiosMock
-      .onGet(`api/personalSections/all?psId=17`)
+      .onGet(`/api/personalSections/all?psId=17`)
       .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
 
     render(
@@ -177,23 +180,22 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     // Check for Back button
     const backButton = screen.getByRole("button", { name: /back/i });
     expect(backButton).toBeInTheDocument();
+
+    // Check for View Weekly Schedule button
+    const weeklyViewButton = screen.getByRole("button", {
+      name: /view weekly schedule/i,
+    });
+    expect(weeklyViewButton).toBeInTheDocument();
   });
 
-  test("renders PersonalSchedulerPanel with events", async () => {
-    setupAdminUser(); // or setupUser() if non-admin is sufficient
+  test("navigates to weekly view when 'View Weekly Schedule' button is clicked", async () => {
     const queryClient = new QueryClient();
-    const scheduleId = 17;
-
-    // Use a fixture for sections that will produce some events
-    // We can reuse personalScheduleFixtures.threePersonalSchedulesDiffId if it's suitable
-    // or define a more specific one if needed for clarity.
-    // For this example, let's assume onePersonalScheduleDiffId and threePersonalSchedulesDiffId are good enough.
     axiosMock
-      .onGet(`/api/personalschedules?id=${scheduleId}`)
+      .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
     axiosMock
-      .onGet(`/api/personalSections/all?psId=${scheduleId}`)
-      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId); // This should contain sections data
+      .onGet(`/api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -203,46 +205,13 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    await waitFor(() => {
-      expect(screen.getByText("Weekly Schedule View")).toBeInTheDocument();
+    const weeklyViewButton = screen.getByRole("button", {
+      name: /view weekly schedule/i,
     });
+    weeklyViewButton.click();
 
-    // Check for day titles rendered by PersonalSchedulerPanel
-    const days = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      // "Saturday", // Uncomment if your fixture/data includes these
-      // "Sunday",
-    ];
-    days.forEach((day) => {
-      expect(
-        screen.getByTestId(`SchedulerPanel-${day}-title`),
-      ).toBeInTheDocument();
-    });
-
-    // Check for some time slot identifiers
-    // Note: The testid in PersonalSchedulePanel is `SchedulerPanel-${hour.replace(" ", "-")}-title`
-    // And for the label inside it is `SchedulerPanel-${hour.replace(" ", "-")}-label`
-    expect(screen.getByTestId("SchedulerPanel-8-AM-title")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("SchedulerPanel-12-PM-title"),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId("SchedulerPanel-3-PM-title")).toBeInTheDocument();
-
-    // You might also want to check if specific events derived from your fixtures are rendered.
-    // This would involve looking for elements with testids like `SchedulerEvent-${event.id}`
-    // For example, if one of the events from threePersonalSchedulesDiffId is expected:
     await waitFor(() => {
-      // The event ID is constructed as `${classSection.enrollCode}-${day}`
-      // courseId: "ECE 1A ", section: "0100", enrollCode: "12583", days: "M  "
-      // title becomes: "ECE 1A (0100)"
-      // id becomes: "12583-Monday"
-      expect(
-        screen.getByTestId("SchedulerEvent-12583-Monday"),
-      ).toBeInTheDocument();
+      expect(mockNavigate).toHaveBeenCalledWith("/personalschedules/weekly/17");
     });
   });
 });

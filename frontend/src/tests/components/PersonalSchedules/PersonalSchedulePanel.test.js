@@ -16,10 +16,29 @@ describe("PersonalSchedulePanel tests", () => {
   ];
 
   const hours = [
-    "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM",
-    "8 AM", "9 AM", "10 AM", "11 AM", "12 PM",
-    "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM",
-    "7 PM", "8 PM", "9 PM", "10 PM", "11 PM",
+    "1 AM",
+    "2 AM",
+    "3 AM",
+    "4 AM",
+    "5 AM",
+    "6 AM",
+    "7 AM",
+    "8 AM",
+    "9 AM",
+    "10 AM",
+    "11 AM",
+    "12 PM",
+    "1 PM",
+    "2 PM",
+    "3 PM",
+    "4 PM",
+    "5 PM",
+    "6 PM",
+    "7 PM",
+    "8 PM",
+    "9 PM",
+    "10 PM",
+    "11 PM",
   ];
 
   test("renders without crashing and displays day and time headers", () => {
@@ -32,9 +51,13 @@ describe("PersonalSchedulePanel tests", () => {
 
     // Check for time slot labels (skipping the first empty one in the component's `hours` array)
     hours.forEach((hour) => {
-      expect(screen.getByTestId(`${testId}-${hour.replace(" ", "-")}-title`)).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`${testId}-${hour.replace(" ", "-")}-title`),
+      ).toBeInTheDocument();
       // Also check for the span label inside
-      expect(screen.getByTestId(`${testId}-${hour.replace(" ", "-")}-label`)).toHaveTextContent(hour);
+      expect(
+        screen.getByTestId(`${testId}-${hour.replace(" ", "-")}-label`),
+      ).toHaveTextContent(hour);
     });
   });
 
@@ -47,7 +70,7 @@ describe("PersonalSchedulePanel tests", () => {
         day: "Monday",
         startTime: "10:00 AM",
         endTime: "11:00 AM",
-        description: "Lecture"
+        description: "Lecture",
       },
       {
         id: "event2-Wednesday",
@@ -55,14 +78,18 @@ describe("PersonalSchedulePanel tests", () => {
         day: "Wednesday",
         startTime: "2:00 PM",
         endTime: "3:30 PM",
-        description: "Lab section"
+        description: "Lab section",
       },
     ];
     render(<PersonalSchedulePanel Events={mockEvents} />);
 
     // Check that SchedulerEvents are rendered (by checking for their testids)
-    expect(screen.getByTestId("SchedulerEvent-event1-Monday")).toBeInTheDocument();
-    expect(screen.getByTestId("SchedulerEvent-event2-Wednesday")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("SchedulerEvent-event1-Monday"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("SchedulerEvent-event2-Wednesday"),
+    ).toBeInTheDocument();
   });
 
   test("renders no events when Events prop is empty", () => {
@@ -72,7 +99,7 @@ describe("PersonalSchedulePanel tests", () => {
     const events = screen.queryAllByTestId(/^SchedulerEvent-/);
     expect(events.length).toBe(0);
   });
-  
+
   test("uses default colors when not provided", () => {
     const mockEvent = {
       id: "event-default-color",
@@ -86,7 +113,7 @@ describe("PersonalSchedulePanel tests", () => {
     // The component uses inline styles, which are hard to check directly for exact default values
     // without knowing them or potentially using snapshot testing.
     // However, we can ensure it renders without crashing and the element exists.
-    expect(eventElement).toBeInTheDocument(); 
+    expect(eventElement).toBeInTheDocument();
     // You could also check that it does NOT have a specific custom color if that makes sense.
   });
 
@@ -106,7 +133,7 @@ describe("PersonalSchedulePanel tests", () => {
         Events={[mockEvent]}
         eventColor={customEventColor}
         borderColor={customBorderColor}
-      />
+      />,
     );
     const eventElement = screen.getByTestId(`SchedulerEvent-${mockEvent.id}`);
     expect(eventElement).toBeInTheDocument();
@@ -116,5 +143,4 @@ describe("PersonalSchedulePanel tests", () => {
     expect(eventElement).toHaveStyle(`background-color: ${customEventColor}`);
     expect(eventElement).toHaveStyle(`border: 2px solid ${customBorderColor}`);
   });
-
-}); 
+});
