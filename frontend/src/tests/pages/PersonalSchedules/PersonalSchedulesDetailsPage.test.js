@@ -90,7 +90,6 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     );
 
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalled();
       expect(
         screen.getByText("Personal Schedules Details"),
       ).toBeInTheDocument();

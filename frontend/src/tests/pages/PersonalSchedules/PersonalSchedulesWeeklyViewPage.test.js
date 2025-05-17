@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
@@ -8,11 +8,6 @@ import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-
-// Debug helper function
-const debug = (message, data) => {
-  console.log(`[DEBUG] ${message}:`, data);
-};
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => {
@@ -24,7 +19,6 @@ jest.mock("react-router-dom", () => {
       id: 17,
     }),
     Navigate: (x) => {
-      debug("Navigate called with", x);
       mockNavigate(x);
       return null;
     },
@@ -67,15 +61,12 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    // Add a basic assertion to ensure rendering completes
     expect(screen.getByText("Weekly Schedule View")).toBeInTheDocument();
   });
 
-  test("shows the correct info for admin users", async () => {
+  test("renders correctly for admin user", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();
-
-    debug("Setting up API mocks for admin user test");
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
@@ -83,7 +74,80 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
       .onGet(`/api/personalSections/all?psId=17`)
       .reply(200, personalSectionsFixtures.threePersonalSections);
 
-    debug("Rendering component for admin user test");
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesWeeklyViewPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText("Weekly Schedule View")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          personalScheduleFixtures.onePersonalScheduleDiffId.name,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    const backButton = screen.getByRole("button", { name: /Back to Details/i });
+    expect(backButton).toBeInTheDocument();
+
+    expect(
+      screen.getByTestId("SchedulerPanel-Monday-column"),
+    ).toBeInTheDocument();
+
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    days.forEach((day) => {
+      expect(
+        screen.getByTestId(`SchedulerPanel-${day}-title`),
+      ).toBeInTheDocument();
+    });
+
+    const timeSlots = [
+      "8-AM",
+      "9-AM",
+      "10-AM",
+      "11-AM",
+      "12-PM",
+      "1-PM",
+      "2-PM",
+      "3-PM",
+      "4-PM",
+      "5-PM",
+    ];
+    timeSlots.forEach((time) => {
+      expect(
+        screen.getByTestId(`SchedulerPanel-${time}-title`),
+      ).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("ECE 1A (0100)")).toBeInTheDocument();
+    });
+
+    fireEvent.click(backButton);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/personalschedules/details/17",
+      );
+    });
+  });
+
+  test("shows the correct info for admin users", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`/api/personalSections/all?psId=17`)
+      .reply(200, personalSectionsFixtures.threePersonalSections);
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -93,15 +157,10 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
     );
 
     await waitFor(() => {
-      debug("Checking for Weekly Schedule View text in admin test");
       expect(screen.getByText("Weekly Schedule View")).toBeInTheDocument();
     });
 
     await waitFor(() => {
-      debug(
-        "Checking for schedule name in admin test",
-        personalScheduleFixtures.onePersonalScheduleDiffId.name,
-      );
       expect(
         screen.getByText(
           personalScheduleFixtures.onePersonalScheduleDiffId.name,
@@ -110,12 +169,10 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
     });
 
     // Check for Back to Details button
-    debug("Looking for back button in admin test");
     const backButton = screen.getByRole("button", { name: /back to details/i });
     expect(backButton).toBeInTheDocument();
 
     // Check for SchedulerPanel
-    debug("Checking SchedulerPanel in admin test");
     expect(
       screen.getByTestId("SchedulerPanel-Monday-column"),
     ).toBeInTheDocument();
@@ -123,7 +180,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
     // Check for day titles
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
     days.forEach((day) => {
-      debug(`Checking day title for ${day} in admin test`);
       expect(
         screen.getByTestId(`SchedulerPanel-${day}-title`),
       ).toBeInTheDocument();
@@ -143,7 +199,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
       "5-PM",
     ];
     timeSlots.forEach((time) => {
-      debug(`Checking time slot for ${time} in admin test`);
       expect(
         screen.getByTestId(`SchedulerPanel-${time}-title`),
       ).toBeInTheDocument();
@@ -151,7 +206,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
 
     // Check for specific course events
     await waitFor(() => {
-      debug("Checking for course event ECE 1A (0100) in admin test");
       expect(screen.getByText("ECE 1A (0100)")).toBeInTheDocument();
     });
   });
@@ -179,14 +233,9 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
     });
 
     const backButton = screen.getByRole("button", { name: /back to details/i });
-    debug("Clicking back button");
-    backButton.click();
+    fireEvent.click(backButton);
 
     await waitFor(() => {
-      debug(
-        "Checking navigation after back button click",
-        mockNavigate.mock.calls,
-      );
       expect(mockNavigate).toHaveBeenCalledWith(
         "/personalschedules/details/17",
       );
