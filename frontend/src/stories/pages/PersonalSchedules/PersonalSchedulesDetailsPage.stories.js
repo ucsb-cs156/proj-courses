@@ -48,10 +48,24 @@ Default.parameters = {
         },
       );
     }),
-    http.get("/api/personalSections/all", () => {
-      return HttpResponse.json(personalSectionsFixtures.threePersonalSections, {
-        status: 200,
-      });
+    http.get("/api/personalSections/all", ({ url }) => {
+      const params = new URL(url).searchParams;
+      const psId = params.get("psId");
+      if (psId) {
+        const section = personalSectionsFixtures.threePersonalSections.find(
+          (section) => section.id === parseInt(psId, 10)
+        );
+        if (section) {
+          return HttpResponse.json(section, { status: 200 });
+        } else {
+          return HttpResponse.json({ error: "Section not found" }, { status: 404 });
+        }
+      } else {
+        return HttpResponse.json(
+          { error: "Missing psId query parameter" },
+          { status: 400 }
+        );
+      }
     }),
   ],
 };
