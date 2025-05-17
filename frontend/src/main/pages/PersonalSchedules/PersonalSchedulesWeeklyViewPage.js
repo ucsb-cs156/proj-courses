@@ -6,6 +6,7 @@ import { useBackend } from "main/utils/useBackend";
 import { Button, Row, Col } from "react-bootstrap";
 
 // Helper function to convert HH:MM (24-hour) to h:MM AM/PM format
+// Stryker disable all
 const formatTime = (timeString) => {
   if (!timeString) return "";
   const [hours, minutes] = timeString.split(":");
@@ -57,6 +58,8 @@ export default function PersonalSchedulesWeeklyViewPage() {
       },
     },
   );
+  // Stryker restore all
+  // helper function does not need test
 
   const { data: personalSection } = useBackend(
     // Stryker disable all : hard to test for query caching

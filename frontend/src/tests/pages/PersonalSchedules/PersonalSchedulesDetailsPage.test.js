@@ -71,6 +71,30 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
+    // Add assertions to verify basic rendering
+    expect(screen.getByText("Personal Schedules Details")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
+  });
+
+  test("handles API error gracefully", async () => {
+    const queryClient = new QueryClient();
+    axiosMock.onGet(`/api/personalschedules?id=17`).reply(500, {});
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalled();
+      expect(
+        screen.getByText("Personal Schedules Details"),
+      ).toBeInTheDocument();
+    });
   });
 
   test("shows the correct info for admin users", async () => {

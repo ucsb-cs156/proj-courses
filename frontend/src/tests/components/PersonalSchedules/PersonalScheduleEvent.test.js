@@ -1,6 +1,20 @@
 import React from "react";
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  within,
+  waitFor,
+} from "@testing-library/react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
 import PersonalScheduleEvent from "main/components/PersonalSchedules/PersonalScheduleEvent";
+
+const mockedNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedNavigate,
+}));
 
 describe("PersonalScheduleEvent tests", () => {
   const testId = "SchedulerEvent";
@@ -15,6 +29,8 @@ describe("PersonalScheduleEvent tests", () => {
 
   const eventColor = "rgb(200, 200, 255)"; // Light blue
   const borderColor = "rgb(100, 100, 200)"; // Darker blue
+
+  const queryClient = new QueryClient();
 
   test("renders without crashing for a standard event", () => {
     render(
@@ -160,5 +176,221 @@ describe("PersonalScheduleEvent tests", () => {
     expect(screen.getByTestId(`${testId}-time`)).toHaveTextContent(
       `${eventAcrossMidday.startTime} - ${eventAcrossMidday.endTime}`,
     );
+  });
+
+  test("renders event with correct styles and popover", async () => {
+    const event = {
+      id: 1,
+      title: "Test Event",
+      startTime: "12:00PM",
+      endTime: "1:00PM",
+      description: "Test Description",
+      actions: [
+        {
+          text: "Edit",
+          variant: "primary",
+          callback: jest.fn(),
+        },
+        {
+          text: "Delete",
+          variant: "danger",
+          callback: jest.fn(),
+        },
+      ],
+    };
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <PersonalScheduleEvent
+            event={event}
+            eventColor="lightblue"
+            borderColor="blue"
+          />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    // Check if the event is rendered with the correct title
+    expect(screen.getByText(event.title)).toBeInTheDocument();
+
+    // Check if the event card has correct styles
+    const card = screen.getByTestId(`${testId}-${event.id}`);
+    expect(card).toHaveStyle("background-color: lightblue");
+    expect(card).toHaveStyle("border: 2px solid blue");
+
+    // Check if time is displayed
+    expect(
+      screen.getByText(`${event.startTime} - ${event.endTime}`),
+    ).toBeInTheDocument();
+
+    // Simulate a click to show the popover
+    fireEvent.click(card);
+
+    // Check if the popover content is correct
+    const popover = await screen.findByRole("tooltip");
+    // Use a more robust way to check for text within the popover
+    expect(
+      within(popover).getByText(event.description, { exact: false }),
+    ).toBeInTheDocument();
+
+    // Check if the actions are rendered correctly
+    event.actions.forEach((action) => {
+      expect(screen.getByText(action.text)).toBeInTheDocument();
+    });
+
+    // Check if clicking action buttons triggers callbacks
+    event.actions.forEach((action) => {
+      const button = screen.getByText(action.text);
+      fireEvent.click(button);
+      expect(action.callback).toHaveBeenCalled();
+    });
+  });
+
+  const timeTestCases = [
+    {
+      startTime: "12:00PM",
+      endTime: "12:10PM",
+      expectedFontSize: null,
+      expectedHeight: 10,
+    },
+    {
+      startTime: "12:00PM",
+      endTime: "12:20PM",
+      expectedFontSize: "10px",
+      expectedHeight: 20,
+    },
+    {
+      startTime: "12:00PM",
+      endTime: "12:30PM",
+      expectedFontSize: "12px",
+      expectedHeight: 30,
+    },
+    {
+      startTime: "12:00PM",
+      endTime: "12:40PM",
+      expectedFontSize: "14px",
+      expectedHeight: 40,
+    },
+    {
+      startTime: "12:00PM",
+      endTime: "01:00PM",
+      expectedFontSize: "16px",
+      expectedHeight: 60,
+    },
+    {
+      startTime: "12:00PM",
+      endTime: "02:00PM",
+      expectedFontSize: "16px",
+      expectedHeight: 120,
+    },
+    {
+      startTime: "12:00AM",
+      endTime: "02:00PM",
+      expectedFontSize: "16px",
+      expectedHeight: 840,
+    },
+    {
+      startTime: "2:00AM",
+      endTime: "02:00PM",
+      expectedFontSize: "16px",
+      expectedHeight: 720,
+    },
+  ];
+
+  timeTestCases.forEach(
+    ({ startTime, endTime, expectedFontSize, expectedHeight }) => {
+      test(`renders event with height from ${startTime} to ${endTime} with font size ${expectedFontSize}`, async () => {
+        render(
+          <QueryClientProvider client={queryClient}>
+            <Router>
+              <PersonalScheduleEvent
+                event={{ ...mockEventBase, startTime, endTime }}
+                eventColor={eventColor}
+                borderColor={borderColor}
+              />
+            </Router>
+          </QueryClientProvider>,
+        );
+
+        // Check if the event card has correct font size
+        if (expectedFontSize === null) {
+          expect(
+            screen.queryByTestId("SchedulerEvent-title"),
+          ).not.toBeInTheDocument();
+        } else {
+          const cardText = await screen.findByText(mockEventBase.title);
+          expect(cardText).toHaveStyle(`font-size: ${expectedFontSize}`);
+        }
+
+        // Check if the event card has correct height
+        const card = screen.getByTestId(`${testId}-${mockEventBase.id}`);
+        expect(card).toHaveStyle(`height: ${expectedHeight}px`);
+
+        // Check conditional rendering based on height
+        if (expectedHeight >= 40) {
+          expect(
+            screen.getByTestId("SchedulerEvent-title"),
+          ).toBeInTheDocument();
+          const time = screen.getByTestId("SchedulerEvent-time");
+          expect(time).toBeInTheDocument();
+          expect(time).toHaveStyle("font-size: 12px");
+          expect(time).toHaveStyle("text-align: left");
+        } else if (expectedHeight >= 20) {
+          expect(
+            screen.queryByTestId("SchedulerEvent-title"),
+          ).toBeInTheDocument();
+          expect(
+            screen.queryByTestId("SchedulerEvent-time"),
+          ).not.toBeInTheDocument();
+        } else {
+          expect(
+            screen.queryByTestId("SchedulerEvent-title"),
+          ).not.toBeInTheDocument();
+          expect(
+            screen.queryByTestId("SchedulerEvent-time"),
+          ).not.toBeInTheDocument();
+        }
+      });
+    },
+  );
+
+  test("renders correctly for various start times with fixed end time", () => {
+    const renderingTestCases = [
+      { time: "12:00AM", shouldRenderTime: true }, // Height: 780 (1:00PM - 12:00AM)
+      { time: "1:00AM", shouldRenderTime: true }, // Height: 720 (1:00PM - 1:00AM)
+      { time: "12:00PM", shouldRenderTime: true }, // Height: 60 (1:00PM - 12:00PM)
+      { time: "1:00PM", shouldRenderTime: false }, // Height: 0 (1:00PM - 1:00PM)
+      { time: "11:59PM", shouldRenderTime: false }, // Height: -659 (1:00PM - 11:59PM) -> effectively 0 or not rendered as expected
+    ];
+
+    renderingTestCases.forEach(({ time, shouldRenderTime }) => {
+      const testEvent = {
+        ...mockEventBase,
+        id: `test-render-${time.replace(/[: ]/g, "")}`,
+        startTime: time,
+        endTime: "1:00PM", // Fixed end time
+      };
+
+      const { container } = render(
+        <PersonalScheduleEvent
+          event={testEvent}
+          eventColor={eventColor}
+          borderColor={borderColor}
+        />,
+      );
+
+      if (shouldRenderTime) {
+        const timeElement = within(container).getByTestId(`${testId}-time`);
+        expect(timeElement).toBeInTheDocument();
+        expect(timeElement).toHaveTextContent(
+          `${testEvent.startTime} - ${testEvent.endTime}`,
+        );
+      } else {
+        expect(
+          within(container).queryByTestId(`${testId}-time`),
+        ).not.toBeInTheDocument();
+      }
+    });
   });
 });

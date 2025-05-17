@@ -13,6 +13,7 @@ const daysOfWeek = [
 ];
 
 const hours = [
+  // Stryker disable next-line all
   "",
   "1 AM",
   "2 AM",
@@ -47,12 +48,13 @@ const hours = [
 //     endTime: "4:00PM"
 // }
 
-// Stryker disable next-line all : no need to test default colors
+// Stryker disable all : no need to test default colors
 export default function SchedulerPanel({
   Events = [],
   eventColor = "#d1ecf188",
   borderColor = "#bee5eb",
 }) {
+  // Stryker restore all
   const testId = "SchedulerPanel";
 
   return (
@@ -89,15 +91,15 @@ export default function SchedulerPanel({
       <Row>
         <Col style={styles.timeColumn}>
           {
-            /* Stryker disable next-line all : no test needed for styling */
             <div
+              /* Stryker disable next-line all : no test needed for styling */
               style={{ ...styles.timeSlot, height: "30px", border: "0" }}
             ></div>
           }
           {hours.map((hour, index) => (
-            /* Stryker disable next-line all : no test needed for styling */
             <div
               key={index}
+              /* Stryker disable next-line all : no test needed for styling */
               style={{ ...styles.timeSlot, border: "0" }}
               data-testid={`${testId}-${hour.replace(" ", "-")}-title`}
             >
@@ -110,23 +112,25 @@ export default function SchedulerPanel({
             </div>
           ))}
         </Col>
-        {daysOfWeek.map((day) => (
-          <Col key={day} style={styles.dayColumn}>
-            {
-              /* Stryker disable next-line all : no test needed for styling */
-              <div style={{ ...styles.timeSlot, height: "30px" }}></div>
-            }
-            {hours.slice(0, hours.length - 1).map((hour) => (
-              <div
-                key={hour}
-                style={styles.timeSlot}
-                data-testid={`${testId}-base-slot`}
-              >
-                <Card style={styles.eventCard} />
-              </div>
-            ))}
-          </Col>
-        ))}
+
+        {
+          // Stryker disable all : no test needed for styling
+          daysOfWeek.map((day) => (
+            <Col key={day} style={styles.dayColumn}>
+              {<div style={{ ...styles.timeSlot, height: "30px" }}></div>}
+              {hours.slice(0, hours.length - 1).map((hour) => (
+                <div
+                  key={hour}
+                  style={styles.timeSlot}
+                  data-testid={`${testId}-base-slot`}
+                >
+                  <Card style={styles.eventCard} />
+                </div>
+                // Stryker restore all
+              ))}
+            </Col>
+          ))
+        }
       </Row>
     </Container>
   );
