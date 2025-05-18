@@ -1,10 +1,13 @@
 import { Container, Row, Col } from "react-bootstrap";
 import GenericDropdown from "main/components/Utils/GenericDropdown";
+import OurPagination from "../Utils/OurPagination";
 
 const JobsSearchForm = ({
+  updateSelectedPage,
   updateSortField,
   updateSortDirection,
   updatePageSize,
+  totalPages,
 }) => {
   // Stryker disable all ; testing for specific hard coded lists is just writing the code twice
   const sortFields = ["createdAt", "updatedAt", "status"];
@@ -40,6 +43,10 @@ const JobsSearchForm = ({
           />
         </Col>
       </Row>
+      <OurPagination
+        updateActivePage={updateSelectedPage}
+        totalPages={totalPages}
+      />
     </Container>
   );
 };
