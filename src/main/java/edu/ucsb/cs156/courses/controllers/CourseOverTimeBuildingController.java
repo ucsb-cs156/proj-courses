@@ -26,11 +26,48 @@ public class CourseOverTimeBuildingController {
 
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
+  // old
+  @Operation(summary = "Get a list of courses over time, filtered by (abbreviated) building code")
+  @GetMapping(value = "/buildingsearch", produces = "application/json")
+  public ResponseEntity<String> search(
+      @Parameter(
+              name = "startQtr",
+              description =
+                  "Starting quarter in yyyyq format, e.g. 20232 for S23, 20234 for F23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+              example = "20232",
+              required = true)
+          @RequestParam
+          String startQtr,
+      @Parameter(
+              name = "endQtr",
+              description =
+                  "Ending quarter in yyyyq format, e.g. 20232 for S23, 20234 for F23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+              example = "20232",
+              required = true)
+          @RequestParam
+          String endQtr,
+      @Parameter(
+              name = "buildingCode",
+              description = "Building code such as PHELP for Phelps, GIRV for Girvetz",
+              example = "GIRV",
+              required = true)
+          @RequestParam
+              String buildingCode)
+      throws JsonProcessingException {
+    List<ConvertedSection> courseResults =
+        convertedSectionCollection.findByQuarterRangeAndBuildingCode(
+            startQtr, endQtr, buildingCode);
+    String body = mapper.writeValueAsString(courseResults);
+
+    return ResponseEntity.ok().body(body);
+  }
+  
+  // new
   @Operation(
       summary =
           "Get a list of classroom numbers within a particular building, given a quarter and building code")
-  @GetMapping(value = "/buildingsearch/classroom", produces = "application/json")
-  public ResponseEntity<String> search(
+  @GetMapping(value = "/buildingsearch/classrooms", produces = "application/json")
+  public ResponseEntity<String> searchNew(
       @Parameter(
               name = "quarter",
               description =

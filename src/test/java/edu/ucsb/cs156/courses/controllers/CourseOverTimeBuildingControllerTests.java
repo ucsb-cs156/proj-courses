@@ -39,7 +39,7 @@ public class CourseOverTimeBuildingControllerTests {
   public void test_search_emptyRequest() throws Exception {
     List<ConvertedSection> expectedResult = new ArrayList<ConvertedSection>();
     String urlTemplate =
-        "/api/public/courseovertime/buildingsearch/classroom?quarter=%s&buildingCode=%s";
+        "/api/public/courseovertime/buildingsearch/classrooms?quarter=%s&buildingCode=%s";
 
     String url = String.format(urlTemplate, "20222", "Storke Tower");
 
@@ -80,7 +80,7 @@ public class CourseOverTimeBuildingControllerTests {
     ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
 
     String urlTemplate =
-        "/api/public/courseovertime/buildingsearch/classroom?quarter=%s&buildingCode=%s";
+        "/api/public/courseovertime/buildingsearch/classrooms?quarter=%s&buildingCode=%s";
 
     String url = String.format(urlTemplate, "20233", "SH");
 
@@ -115,7 +115,7 @@ public class CourseOverTimeBuildingControllerTests {
             .build();
 
     String url =
-        "/api/public/courseovertime/buildingsearch/classroom?quarter=20233&buildingCode=SH";
+        "/api/public/courseovertime/buildingsearch/classrooms?quarter=20233&buildingCode=SH";
 
     when(convertedSectionCollection.findByQuarterAndBuildingCode(any(), eq("SH")))
         .thenReturn(List.of(cs));
@@ -137,7 +137,7 @@ public class CourseOverTimeBuildingControllerTests {
         .thenReturn(List.of(cs));
 
     String url =
-        "/api/public/courseovertime/buildingsearch/classroom?quarter=20233&buildingCode=SH";
+        "/api/public/courseovertime/buildingsearch/classrooms?quarter=20233&buildingCode=SH";
 
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
     assertEquals("[]", response.getResponse().getContentAsString());
@@ -164,7 +164,7 @@ public class CourseOverTimeBuildingControllerTests {
     ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
 
     String url =
-        "/api/public/courseovertime/buildingsearch/classroom?quarter=20233&buildingCode=GIRV";
+        "/api/public/courseovertime/buildingsearch/classrooms?quarter=20233&buildingCode=GIRV";
 
     when(convertedSectionCollection.findByQuarterAndBuildingCode(any(), eq("GIRV")))
         .thenReturn(List.of(cs));
@@ -195,7 +195,7 @@ public class CourseOverTimeBuildingControllerTests {
     ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
 
     String url =
-        "/api/public/courseovertime/buildingsearch/classroom?quarter=20233&buildingCode=SH";
+        "/api/public/courseovertime/buildingsearch/classrooms?quarter=20233&buildingCode=SH";
 
     when(convertedSectionCollection.findByQuarterAndBuildingCode(any(), eq("SH")))
         .thenReturn(List.of(cs));
@@ -229,7 +229,7 @@ public class CourseOverTimeBuildingControllerTests {
     ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
 
     String url =
-        "/api/public/courseovertime/buildingsearch/classroom?quarter=20233&buildingCode=SH";
+        "/api/public/courseovertime/buildingsearch/classrooms?quarter=20233&buildingCode=SH";
 
     when(convertedSectionCollection.findByQuarterAndBuildingCode(any(), eq("SH")))
         .thenReturn(List.of(cs));
@@ -241,4 +241,33 @@ public class CourseOverTimeBuildingControllerTests {
 
     assertEquals(expected, actual);
   }
+
+  // old test
+  @Test
+  public void test_old_endpoint_returns_course_sections() throws Exception {
+  CourseInfo info = CourseInfo.builder()
+      .quarter("20254")
+      .courseId("CMPSC 156 -1")
+      .title("Advanced Programming")
+      .description("Desc")
+      .build();
+
+  ConvertedSection cs = ConvertedSection.builder().courseInfo(info).build();
+
+  when(convertedSectionCollection.findByQuarterRangeAndBuildingCode("20232", "20254", "GIRV"))
+      .thenReturn(List.of(cs));
+
+  MvcResult response = mockMvc.perform(
+      get("/api/public/courseovertime/buildingsearch")
+        .param("startQtr", "20232")
+        .param("endQtr", "20254")
+        .param("buildingCode", "GIRV")
+    ).andExpect(status().isOk()).andReturn();
+
+  String expected = mapper.writeValueAsString(List.of(cs));
+  String actual = response.getResponse().getContentAsString();
+
+  assertEquals(expected, actual);
+}
+
 }
