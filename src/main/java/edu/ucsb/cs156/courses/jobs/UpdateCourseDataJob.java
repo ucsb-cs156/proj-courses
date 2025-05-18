@@ -11,6 +11,7 @@ import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
+import edu.ucsb.cs156.courses.services.jobs.JobRateLimit;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public class UpdateCourseDataJob implements JobContextConsumer {
+
   private String start_quarterYYYYQ;
   private String end_quarterYYYYQ;
   private List<String> subjects;
@@ -33,9 +35,11 @@ public class UpdateCourseDataJob implements JobContextConsumer {
   private boolean ifStale;
   private EnrollmentDataPointRepository enrollmentDataPointRepository;
   private UCSBAPIQuarterService ucsbapiQuarterService;
+  private JobRateLimit jobRateLimit;
 
   @Override
   public void accept(JobContext ctx) throws Exception {
+
     ctx.log(
         String.format(
             "Updating courses from %s to %s for %d subjects",
@@ -50,6 +54,7 @@ public class UpdateCourseDataJob implements JobContextConsumer {
             continue;
           }
         }
+        jobRateLimit.sleep();
         updateCourses(ctx, quarterYYYYQ, subjectArea);
       }
     }
