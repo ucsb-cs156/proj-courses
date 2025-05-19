@@ -104,12 +104,12 @@ export const handleAddToSchedule = (section, schedule, mutation) => {
 
 export const handleLectureAddToSchedule = (section, schedule, mutation) => {
   // Execute the mutation with the provided data
-
+  console.log(section);
   const dataFinal = {
     enrollCd: section,
     psId: schedule,
   };
-
+  console.log(dataFinal);
   mutation.mutate(dataFinal);
 };
 
