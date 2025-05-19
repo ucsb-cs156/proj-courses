@@ -4,6 +4,6 @@ export default function GeneralEducationSearchPage() {
   return (
     <BasicLayout>
       <h1>GE Search coming soon!</h1>
-    </div>
+        </BasicLayout>
   );
 }
