@@ -83,9 +83,8 @@ describe("SingleClassroomDropdown", () => {
       />,
     );
 
-    const opts = screen.getAllByRole("option").filter((o) => o.value !== "ALL"); 
+    const opts = screen.getAllByRole("option").filter((o) => o.value !== "ALL");
 
- 
     opts.forEach((o) => {
       expect(o).toHaveTextContent("ILP");
     });
@@ -178,7 +177,6 @@ describe("SingleClassroomDropdown", () => {
     expect(select.value).toBe("");
     expect(setClassroom).toHaveBeenCalledWith("");
   });
-
 
   test("defaults to first classroom when neither localStorage nor classroom prop is set", () => {
     render(
