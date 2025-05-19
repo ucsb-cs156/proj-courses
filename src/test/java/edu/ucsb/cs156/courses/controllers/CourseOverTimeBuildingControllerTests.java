@@ -245,29 +245,32 @@ public class CourseOverTimeBuildingControllerTests {
   // old test
   @Test
   public void test_old_endpoint_returns_course_sections() throws Exception {
-  CourseInfo info = CourseInfo.builder()
-      .quarter("20254")
-      .courseId("CMPSC 156 -1")
-      .title("Advanced Programming")
-      .description("Desc")
-      .build();
+    CourseInfo info =
+        CourseInfo.builder()
+            .quarter("20254")
+            .courseId("CMPSC 156 -1")
+            .title("Advanced Programming")
+            .description("Desc")
+            .build();
 
-  ConvertedSection cs = ConvertedSection.builder().courseInfo(info).build();
+    ConvertedSection cs = ConvertedSection.builder().courseInfo(info).build();
 
-  when(convertedSectionCollection.findByQuarterRangeAndBuildingCode("20232", "20254", "GIRV"))
-      .thenReturn(List.of(cs));
+    when(convertedSectionCollection.findByQuarterRangeAndBuildingCode("20232", "20254", "GIRV"))
+        .thenReturn(List.of(cs));
 
-  MvcResult response = mockMvc.perform(
-      get("/api/public/courseovertime/buildingsearch")
-        .param("startQtr", "20232")
-        .param("endQtr", "20254")
-        .param("buildingCode", "GIRV")
-    ).andExpect(status().isOk()).andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/public/courseovertime/buildingsearch")
+                    .param("startQtr", "20232")
+                    .param("endQtr", "20254")
+                    .param("buildingCode", "GIRV"))
+            .andExpect(status().isOk())
+            .andReturn();
 
-  String expected = mapper.writeValueAsString(List.of(cs));
-  String actual = response.getResponse().getContentAsString();
+    String expected = mapper.writeValueAsString(List.of(cs));
+    String actual = response.getResponse().getContentAsString();
 
-  assertEquals(expected, actual);
-}
-
+    assertEquals(expected, actual);
+  }
 }

@@ -52,7 +52,7 @@ public class CourseOverTimeBuildingController {
               example = "GIRV",
               required = true)
           @RequestParam
-              String buildingCode)
+          String buildingCode)
       throws JsonProcessingException {
     List<ConvertedSection> courseResults =
         convertedSectionCollection.findByQuarterRangeAndBuildingCode(
@@ -61,7 +61,7 @@ public class CourseOverTimeBuildingController {
 
     return ResponseEntity.ok().body(body);
   }
-  
+
   // new
   @Operation(
       summary =
