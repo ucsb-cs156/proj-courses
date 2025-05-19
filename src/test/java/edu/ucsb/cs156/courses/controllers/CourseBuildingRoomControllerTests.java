@@ -80,7 +80,7 @@ public class CourseBuildingRoomControllerTests {
     CourseInfo info =
         CourseInfo.builder()
             .quarter("20222")
-            .courseId("CMPSC 24 -1")
+            .courseId("CMPSC 24")
             .title("Object-Oriented Design")
             .description("Intro to object-oriented design")
             .build();
@@ -139,5 +139,187 @@ public class CourseBuildingRoomControllerTests {
     assertEquals(
         expectedString,
         responseString); // Validate that the response matches the extracted room numbers
+  }
+
+  @Test
+  public void test_search_courseWithNoRoomNumber() throws Exception {
+    // Arrange: Create CourseInfo and Section objects (with no room numbers in timeLocations)
+    CourseInfo info =
+        CourseInfo.builder()
+            .quarter("20222")
+            .courseId("CMPSC 24")
+            .title("Object-Oriented Design")
+            .description("Intro to object-oriented design")
+            .build();
+
+    // Create section with no room numbers
+    Section section = new Section();
+    section.setTimeLocations(new ArrayList<>()); // No timeLocations (no room numbers)
+
+    // Create ConvertedSection with the section (no rooms)
+    ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
+
+    // Prepare the URL with valid parameters (targetQtr and buildingCode)
+    String urlTemplate =
+        "/api/public/coursebuildingroom/buildingroomsearch?targetQtr=%s&buildingCode=%s";
+    String url =
+        String.format(
+            urlTemplate, "20222", "GIRV"); // Querying for targetQtr "20222" and building "GIRV"
+
+    // Mock the repository to return the above ConvertedSection (with no room numbers)
+    List<ConvertedSection> expectedSecs = Arrays.asList(cs);
+    when(convertedSectionCollection.findByQuarterAndBuildingCode("20222", "GIRV"))
+        .thenReturn(expectedSecs);
+
+    // Act: Perform the HTTP GET request to the /buildingroomsearch endpoint
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk()) // Expecting HTTP 200 OK status
+            .andReturn();
+
+    // Extract room numbers from the mocked response (which will be an empty list)
+    List<String> actualRoomNumbers = new ArrayList<>();
+    for (ConvertedSection sectionItem : expectedSecs) {
+      for (TimeLocation timeLocation : sectionItem.getSection().getTimeLocations()) {
+        actualRoomNumbers.add(timeLocation.getRoom());
+      }
+    }
+
+    // Since there are no room numbers, actualRoomNumbers should remain empty
+    // Assert: Validate that the response body matches an empty list
+    String expectedString = mapper.writeValueAsString(actualRoomNumbers); // Empty list
+    String responseString = response.getResponse().getContentAsString();
+
+    assertEquals(
+        expectedString,
+        responseString); // Validate that the response is an empty list of room numbers
+  }
+
+  @Test
+  public void test_search_courseWithNullRoomNumber() throws Exception {
+    // Arrange: Create CourseInfo and Section objects (with null room number in timeLocations)
+    CourseInfo info =
+        CourseInfo.builder()
+            .quarter("20222")
+            .courseId("CMPSC 24 -1")
+            .title("Object-Oriented Design")
+            .description("Intro to object-oriented design")
+            .build();
+
+    // Create section with a timeLocation that has a null room number
+    Section section = new Section();
+    section.setTimeLocations(
+        Arrays.asList(
+            TimeLocation.builder()
+                .building("GIRV")
+                .room(null)
+                .build() // Room is null for this timeLocation
+            ));
+
+    // Create ConvertedSection with the section (room number is null)
+    ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
+
+    // Prepare the URL with valid parameters (targetQtr and buildingCode)
+    String urlTemplate =
+        "/api/public/coursebuildingroom/buildingroomsearch?targetQtr=%s&buildingCode=%s";
+    String url =
+        String.format(
+            urlTemplate, "20222", "GIRV"); // Querying for targetQtr "20222" and building "GIRV"
+
+    // Mock the repository to return the above ConvertedSection (with null room number)
+    List<ConvertedSection> expectedSecs = Arrays.asList(cs);
+    when(convertedSectionCollection.findByQuarterAndBuildingCode("20222", "GIRV"))
+        .thenReturn(expectedSecs);
+
+    // Act: Perform the HTTP GET request to the /buildingroomsearch endpoint
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk()) // Expecting HTTP 200 OK status
+            .andReturn();
+
+    // Extract room numbers from the mocked response (which will be an empty list due to null room
+    // number)
+    List<String> actualRoomNumbers = new ArrayList<>();
+    for (ConvertedSection sectionItem : expectedSecs) {
+      for (TimeLocation timeLocation : sectionItem.getSection().getTimeLocations()) {
+        if (timeLocation.getRoom() != null) {
+          actualRoomNumbers.add(timeLocation.getRoom());
+        }
+      }
+    }
+
+    // Since the room number is null, actualRoomNumbers should remain empty
+    // Assert: Validate that the response body matches an empty list
+    String expectedString = mapper.writeValueAsString(actualRoomNumbers); // Empty list
+    String responseString = response.getResponse().getContentAsString();
+
+    assertEquals(
+        expectedString,
+        responseString); // Validate that the response is an empty list of room numbers
+  }
+
+  @Test
+  public void test_search_courseWithEmptyRoomNumber() throws Exception {
+    // Arrange: Create CourseInfo and Section objects (with an empty room number)
+    CourseInfo info =
+        CourseInfo.builder()
+            .quarter("20222")
+            .courseId("CMPSC 24 -1")
+            .title("Object-Oriented Design")
+            .description("Intro to object-oriented design")
+            .build();
+
+    // Create section with a timeLocation that has an empty room number
+    Section section = new Section();
+    section.setTimeLocations(
+        Arrays.asList(
+            TimeLocation.builder()
+                .building("GIRV")
+                .room("")
+                .build() // Non-null but empty string for the room number
+            ));
+
+    // Create ConvertedSection with the section (room number is an empty string)
+    ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
+
+    // Prepare the URL with valid parameters (targetQtr and buildingCode)
+    String urlTemplate =
+        "/api/public/coursebuildingroom/buildingroomsearch?targetQtr=%s&buildingCode=%s";
+    String url =
+        String.format(
+            urlTemplate, "20222", "GIRV"); // Querying for targetQtr "20222" and building "GIRV"
+
+    // Mock the repository to return the above ConvertedSection (with empty room number)
+    List<ConvertedSection> expectedSecs = Arrays.asList(cs);
+    when(convertedSectionCollection.findByQuarterAndBuildingCode("20222", "GIRV"))
+        .thenReturn(expectedSecs);
+
+    // Act: Perform the HTTP GET request to the /buildingroomsearch endpoint
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk()) // Expecting HTTP 200 OK status
+            .andReturn();
+
+    // Extract room numbers from the mocked response (which will not contain the empty room number)
+    List<String> actualRoomNumbers = new ArrayList<>();
+    for (ConvertedSection sectionItem : expectedSecs) {
+      for (TimeLocation timeLocation : sectionItem.getSection().getTimeLocations()) {
+        if (timeLocation.getRoom() != null && !timeLocation.getRoom().isEmpty()) {
+          actualRoomNumbers.add(timeLocation.getRoom());
+        }
+      }
+    }
+
+    // Assert: Verify that the list of room numbers is empty, because the room number is an empty
+    // string
+    String expectedString = mapper.writeValueAsString(actualRoomNumbers); // Should be an empty list
+    String responseString = response.getResponse().getContentAsString();
+
+    assertEquals(
+        expectedString,
+        responseString); // Validate that the response is an empty list of room numbers
   }
 }
