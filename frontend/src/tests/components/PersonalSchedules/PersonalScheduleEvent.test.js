@@ -396,4 +396,109 @@ describe("PersonalScheduleEvent tests", () => {
       });
     },
   );
+
+  const mockEvent = {
+    id: "test-event-1",
+    title: "Test Event",
+    startTime: "9:00 AM",
+    endTime: "10:30 AM",
+    description: "This is a test event.",
+    day: "Monday", // Not directly used by PersonalScheduleEvent styling but good for context
+  };
+
+  // Helper to convert time string (e.g., "9:00 AM") to minutes from midnight
+  const convertTimeToMinutes = (time) => {
+    const [timePart, modifier] = [time.slice(0, -2), time.slice(-2)];
+    let [hours, minutes] = timePart.split(":").map(Number);
+    if (modifier === "PM" && hours !== 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0; // Midnight case
+    return hours * 60 + minutes;
+  };
+
+  test("renders event with correct position and height", () => {
+    render(
+      <PersonalScheduleEvent
+        event={mockEvent}
+        eventColor={eventColor}
+        borderColor={borderColor}
+      />,
+    );
+
+    const eventElement = screen.getByTestId(`SchedulerEvent-${mockEvent.id}`);
+    expect(eventElement).toBeInTheDocument();
+
+    // Calculate expected values
+    const startMinutes = convertTimeToMinutes(mockEvent.startTime); // 9 * 60 = 540
+    const endMinutes = convertTimeToMinutes(mockEvent.endTime); // 10 * 60 + 30 = 630
+    const expectedHeight = endMinutes - startMinutes; // 630 - 540 = 90
+    const TOP_POSITION_OFFSET = 94; // Value from PersonalScheduleEvent.js
+    const expectedTop = startMinutes + TOP_POSITION_OFFSET; // 540 + 94 = 634
+
+    expect(eventElement).toHaveStyle(`height: ${expectedHeight}px`);
+    expect(eventElement).toHaveStyle(`top: ${expectedTop}px`);
+    expect(eventElement).toHaveStyle(`background-color: ${eventColor}`);
+    expect(eventElement).toHaveStyle(`border: 2px solid ${borderColor}`);
+  });
+
+  test("renders title and time based on height", () => {
+    const shortEvent = {
+      ...mockEvent,
+      id: "short-event",
+      startTime: "1:00 PM",
+      endTime: "1:15 PM", // 15 min height
+    };
+    const { container: shortContainer } = render(
+      <PersonalScheduleEvent event={shortEvent} eventColor="" borderColor="" />,
+    );
+    // Title should not render as height is < 20 (15px)
+    expect(
+      within(shortContainer).queryByTestId("SchedulerEvent-title"),
+    ).not.toBeInTheDocument();
+    // Time should not render as height is < 40 (15px)
+    expect(
+      within(shortContainer).queryByTestId("SchedulerEvent-time"),
+    ).not.toBeInTheDocument();
+
+    const mediumEvent = {
+      ...mockEvent,
+      id: "medium-event",
+      startTime: "2:00 PM",
+      endTime: "2:30 PM", // 30 min height
+    };
+    const { container: mediumContainer } = render(
+      <PersonalScheduleEvent
+        event={mediumEvent}
+        eventColor=""
+        borderColor=""
+      />,
+    );
+    // Title should render as height >= 20 (30px)
+    expect(
+      within(mediumContainer).getByTestId("SchedulerEvent-title"),
+    ).toBeInTheDocument();
+    // Time should not render as height < 40 (30px)
+    expect(
+      within(mediumContainer).queryByTestId("SchedulerEvent-time"),
+    ).not.toBeInTheDocument();
+
+    const tallEvent = {
+      ...mockEvent,
+      id: "tall-event",
+      startTime: "3:00 PM",
+      endTime: "4:00 PM", // 60 min height
+    };
+    const { container: tallContainer } = render(
+      <PersonalScheduleEvent event={tallEvent} eventColor="" borderColor="" />,
+    );
+    // Title should render as height >= 20 (60px)
+    expect(
+      within(tallContainer).getByTestId("SchedulerEvent-title"),
+    ).toBeInTheDocument();
+    // Time should render as height >= 40 (60px)
+    const timeElement = within(tallContainer).getByTestId(
+      "SchedulerEvent-time",
+    );
+    expect(timeElement).toBeInTheDocument();
+    expect(timeElement).toHaveClass("PersonalScheduleCard");
+  });
 });

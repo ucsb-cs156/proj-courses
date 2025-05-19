@@ -98,3 +98,8 @@ code {
   background-color: #18335d;
   border-color: #34859b;
 }
+
+.PersonalScheduleCard {
+  font-size: 12px;
+  text-align: left;
+}

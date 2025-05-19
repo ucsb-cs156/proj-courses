@@ -25,13 +25,15 @@ export default function SchedulerEvents({ event, eventColor, borderColor }) {
     return hours * 60 + minutes;
   };
 
-  // Stryker disable all : hard to test for specfic styles
+  const TOP_POSITION_OFFSET = 94;
+
   useEffect(() => {
     const startMinutes = convertTimeToMinutes(event.startTime);
     const endMinutes = convertTimeToMinutes(event.endTime);
     const height = endMinutes - startMinutes;
-    const topPosition = startMinutes + 94;
+    const topPosition = startMinutes + TOP_POSITION_OFFSET;
 
+    // Stryker disable all : hard to test for specfic styles
     setStyle({
       event: {
         position: "absolute",
@@ -65,8 +67,8 @@ export default function SchedulerEvents({ event, eventColor, borderColor }) {
       },
       height: height,
     });
+    // Stryker restore all
   }, [event.startTime, event.endTime, eventColor, borderColor]);
-  // Stryker restore all
 
   return (
     <OverlayTrigger
@@ -109,9 +111,7 @@ export default function SchedulerEvents({ event, eventColor, borderColor }) {
           {style.height >= 40 && (
             <Card.Text
               data-testid={`${testId}-time`}
-              // Stryker disable all
-              style={{ fontSize: "12px", textAlign: "left" }}
-              // Stryker restore all
+              className="PersonalScheduleCard"
             >
               {event.startTime} - {event.endTime}
             </Card.Text>
