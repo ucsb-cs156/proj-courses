@@ -1,6 +1,6 @@
 import React from "react";
 
-import EnrollmentDataGraphs from "main/components/EnrollmentData/EnrollmentDataGraph";
+import EnrollmentHistoryGraphs from "main/components/EnrollmentData/EnrollmentHistoryGraph";
 import {
   oneQuarterCourse,
   twoQuarterCourse,
@@ -9,11 +9,11 @@ import {
 
 export default {
   title: "components/EnrollmentData/EnrollmentDataTable",
-  component: EnrollmentDataGraphs,
+  component: EnrollmentHistoryGraphs,
 };
 
 const Template = (args) => {
-  return <EnrollmentDataGraphs {...args} />;
+  return <EnrollmentHistoryGraphs {...args} />;
 };
 
 export const Empty = Template.bind({});
