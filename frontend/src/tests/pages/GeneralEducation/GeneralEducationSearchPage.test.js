@@ -38,11 +38,9 @@ describe("GeneralEducationSearchPage tests", () => {
       </QueryClientProvider>,
     );
 
-    await screen.findByText("Search page not yet implemented");
+    await screen.findByText("GE Search coming soon!");
 
     // assert
-    expect(
-      screen.getByText("Search page not yet implemented"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("GE Search coming soon!")).toBeInTheDocument();
   });
 });

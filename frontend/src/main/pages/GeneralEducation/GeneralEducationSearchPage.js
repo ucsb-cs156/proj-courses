@@ -5,7 +5,7 @@ export default function GeneralEducationSearchPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Search page not yet implemented</h1>
+        <h1>GE Search coming soon!</h1>
       </div>
     </BasicLayout>
   );
