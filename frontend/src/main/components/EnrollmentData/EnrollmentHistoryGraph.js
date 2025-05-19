@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
@@ -98,14 +98,14 @@ export const groupDataByQuarterAndInstructor = (data) => {
 };
 
 // Component to render a single bar chart for a specific group of data
-const GradeBarChart = ({ data, title }) => {
+const GradeLineChart = ({ data, title }) => {
   const completeData = createCompleteGradeData(data);
 
   return (
     <div data-testid="grade-history-graph">
       <h3>{title}</h3>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart
+        <LineChart
           data={completeData}
           // Stryker disable all
           margin={{
@@ -123,8 +123,8 @@ const GradeBarChart = ({ data, title }) => {
 
           <Legend />
           <Tooltip formatter={formatTooltip} />
-          <Bar dataKey="percentage" fill="#8884d8" />
-        </BarChart>
+          <Line dataKey="percentage" fill="#8884d8" />
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
@@ -140,7 +140,7 @@ const EnrollmentHistoryGraphs = ({ gradeHistory }) => {
         const title = `${yyyyqToPrettyStr(data[0].yyyyq)} - ${
           data[0].instructor
         }`;
-        return <GradeBarChart key={key} data={data} title={title} />;
+        return <GradeLineChart key={key} data={data} title={title} />;
       })}
     </div>
   );
