@@ -7,7 +7,7 @@ jest.mock("main/utils/currentUser", () => ({
     data: { loggedIn: false, root: { user: { email: "test@example.com" } } },
   }),
   useLogout: () => ({ mutate: jest.fn() }),
-  hasRole: (user, role) => false, // or customize per role
+  hasRole: (_user, _role) => false, // or customize per role
 }));
 
 jest.mock("main/utils/systemInfo", () => ({
