@@ -980,12 +980,30 @@ describe("Action Column Tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-2-col-action`),
     ).toHaveTextContent("");
+
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-2-col-action`)
+        .querySelector('[data-testid="empty-action-cell"]'),
+    ).toBeInTheDocument();
+
     expect(
       screen.getByTestId(`${testId}-cell-row-3-col-action`),
     ).toHaveTextContent("");
     expect(
+      screen
+        .getByTestId(`${testId}-cell-row-3-col-action`)
+        .querySelector('[data-testid="empty-action-cell"]'),
+    ).toBeInTheDocument();
+
+    expect(
       screen.getByTestId(`${testId}-cell-row-4-col-action`),
     ).toHaveTextContent("");
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-4-col-action`)
+        .querySelector('[data-testid="empty-action-cell"]'),
+    ).toBeInTheDocument();
 
     currentUserModule.useCurrentUser.mockClear();
   });
@@ -1157,7 +1175,11 @@ describe("Action Column Tests", () => {
     const testId = "SectionsTable";
     const actionCell = screen.getByTestId(`${testId}-cell-row-0-col-action`);
     expect(actionCell).toBeInTheDocument();
-    expect(actionCell).toBeEmptyDOMElement(); // Check that it renders nothing because the conditions were met
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-0-col-action`)
+        .querySelector('[data-testid="empty-action-cell"]'),
+    ).toBeInTheDocument();
 
     // Also, ensure our spied AddToScheduleModal was not rendered by this path
     expect(

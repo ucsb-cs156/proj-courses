@@ -269,7 +269,7 @@ export default function SectionsTable({ sections }) {
             </div>
           );
         } else {
-          return null;
+          return <div data-testid="empty-action-cell"></div>;
         }
       },
       aggregate: getFirstVal,
@@ -288,7 +288,7 @@ export default function SectionsTable({ sections }) {
             </div>
           );
         } else if (!isLectureWithSections(value, sections)) {
-          return null;
+          return <div data-testid="empty-action-cell"></div>;
         } else {
           return (
             <span {...row.getToggleRowExpandedProps()} data-testid={testId}>
