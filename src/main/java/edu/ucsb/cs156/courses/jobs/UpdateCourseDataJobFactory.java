@@ -7,6 +7,7 @@ import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
 import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.jobs.JobRateLimit;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,8 @@ public class UpdateCourseDataJobFactory {
 
   @Autowired private UCSBAPIQuarterService ucsbapiQuarterService;
 
+  @Autowired private JobRateLimit jobRateLimit;
+
   public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
       String subjectArea, String quarterYYYYQ, boolean ifStale) {
     return new UpdateCourseDataJob(
@@ -43,7 +46,8 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         ifStale,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService);
+        ucsbapiQuarterService,
+        jobRateLimit);
   }
 
   public UpdateCourseDataJob createForSubjectAndQuarterRange(
@@ -58,7 +62,8 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         ifStale,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService);
+        ucsbapiQuarterService,
+        jobRateLimit);
   }
 
   private List<String> getAllSubjectCodes() {
@@ -81,7 +86,8 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         ifStale,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService);
+        ucsbapiQuarterService,
+        jobRateLimit);
   }
 
   public UpdateCourseDataJob createForQuarterRange(
@@ -96,6 +102,7 @@ public class UpdateCourseDataJobFactory {
         isStaleService,
         ifStale,
         enrollmentDataPointRepository,
-        ucsbapiQuarterService);
+        ucsbapiQuarterService,
+        jobRateLimit);
   }
 }

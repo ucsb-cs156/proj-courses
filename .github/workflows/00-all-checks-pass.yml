@@ -1,0 +1,57 @@
+name: 00 - All Checks Pass
+
+# This workflow checks if all required checks have passed before allowing a pull request to be merged.
+# It is triggered on pull request events and uses the GitHub CLI to check the status of checks.
+# The workflow will wait for all other checks to finish before proceeding.
+# If any of the required checks fail, the workflow will exit with an error.
+
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - name: Wait for all other checks to finish
+        run: |
+          pr_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          repo="${{ github.repository }}"
+          echo "Waiting for checks on PR #$pr_number in $repo"
+
+          # Poll GitHub API until all checks are completed
+          while true; do
+            raw_data1=$(gh api "repos/$repo/pulls/$pr_number")
+            # echo "raw_data=$raw_data1"
+            head_sha=$(echo $raw_data1 | jq -r '.head.sha' --)
+            # echo "head_sha=$head_sha"
+            statuses=$(gh api "repos/$repo/commits/$head_sha/check-runs" --jq '.check_runs' )
+            # echo "statuses=$statuses"
+            statuses_summarized=$(echo "$statuses" | jq '[.[] | select(.name != "enforce")] | map({name: .name, status: .status, conclusion: .conclusion})')
+            echo "statuses_summarized=$statuses_summarized"
+            state=$( echo $statuses_summarized | jq  'all(.[]; .status == "completed")')
+            echo "state=$state"
+            if [[ "$state" == "true" ]]; then
+              break
+            fi
+            echo "Waiting for other checks to complete..."
+            sleep 60
+          done
+
+          # Check if any of the other checks failed
+          failed=$(echo "$statuses" | jq '[.[] | select(.name != "enforce" and .conclusion != "success")] | length')
+          if [ "$failed" -gt 0 ]; then
+            echo "Some required checks failed."
+            exit 1
+          fi
+
+          echo "All required checks passed."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
