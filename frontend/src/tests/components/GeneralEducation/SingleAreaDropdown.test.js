@@ -195,7 +195,7 @@ describe("SingleAreaDropdown tests", () => {
     expect(setArea).toHaveBeenCalledWith("ALL");
   });
 
-  test("out of order subjects is sorted by requirementCode", async () => {
+  test("out of order subjects is sorted by requirementCode and collegeCode", async () => {
     render(
       <SingleAreaDropdown
         areas={outOfOrderAreas}
@@ -208,9 +208,16 @@ describe("SingleAreaDropdown tests", () => {
     expect(
       await screen.findByText("General Education Area"),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText("A2 - English Reading & Composition (L&S)"),
-    ).toHaveAttribute("data-testid", "sad1-option-A2-L&S");
+    const options = screen.getAllByRole("option");
+    const optionTexts = options.map((opt) => opt.textContent);
+    expect(optionTexts).toEqual([
+      "A1 - English Reading & Composition (L&S)",
+      "A2 - English Reading & Composition (ENGR)",
+      "A2 - English Reading & Composition (L&S)",
+      "C - Science, Math and Technology (ENGR)",
+      "C - Science, Math and Technology (L&S)",
+      "D - Social Sciences (L&S)",
+    ]);
   });
 
   test("if I pass a non-null onChange, it gets called when the value changes", async () => {

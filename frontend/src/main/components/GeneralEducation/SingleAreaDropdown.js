@@ -1,4 +1,3 @@
-import { compareValues } from "main/utils/sortHelper";
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 
@@ -29,7 +28,12 @@ const SingleAreaDropdown = ({
       onChange(event);
     }
   };
-  areas.sort(compareValues("requirementCode"));
+
+  areas.sort((a, b) => {
+    const codeCompare = a.requirementCode.localeCompare(b.requirementCode);
+    if (codeCompare !== 0) return codeCompare;
+    return a.collegeCode.localeCompare(b.collegeCode);
+  });
 
   return (
     <Form.Group controlId={controlId}>

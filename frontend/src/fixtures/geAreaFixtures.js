@@ -164,6 +164,11 @@ export const outOfOrderAreas = [
     collegeCode: "ENGR",
   },
   {
+    requirementCode: "A2",
+    requirementTranslation: "English Reading & Composition",
+    collegeCode: "L&S",
+  },
+  {
     requirementCode: "A1",
     requirementTranslation: "English Reading & Composition",
     collegeCode: "L&S",
@@ -181,11 +186,6 @@ export const outOfOrderAreas = [
   {
     requirementCode: "C",
     requirementTranslation: "Science, Math and Technology",
-    collegeCode: "L&S",
-  },
-  {
-    requirementCode: "A2",
-    requirementTranslation: "English Reading & Composition",
     collegeCode: "L&S",
   },
 ];
