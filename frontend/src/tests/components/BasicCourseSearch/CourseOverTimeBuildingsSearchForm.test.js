@@ -16,9 +16,9 @@ jest.mock("react-toastify", () => ({
   toast: jest.fn(),
 }));
 
-const axiosMock = new AxiosMockAdapter(axios);
-
 describe("CourseOverTimeBuildingsSearchForm tests", () => {
+  const axiosMock = new AxiosMockAdapter(axios);
+
   const queryClient = new QueryClient();
   const addToast = jest.fn();
 
@@ -27,18 +27,15 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
-    axiosMock.reset();
-
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: true,
       startQtrYYYYQ: "20232",
       endQtrYYYYQ: "20254",
     });
-
-    axiosMock
-      .onGet("/api/currentUser")
-      .reply(200, apiCurrentUserFixtures.userOnly);
 
     axiosMock
       .onGet("/api/public/basicQuarterDates")
@@ -140,9 +137,8 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: true,
-      quarterYYYYQ: null, // use fallback value
-      startQtrYYYYQ: "20232",
-      endQtrYYYYQ: "20254",
+      startQtrYYYYQ: null, // use fallback value
+      endQtrYYYYQ: null, // use fallback value
     });
 
     render(

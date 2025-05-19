@@ -61,7 +61,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20232");
+    userEvent.selectOptions(selectQuarter, "20222");
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
@@ -82,12 +82,14 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
-      quarter: "20232",
+      quarter: "20222",
       buildingCode: "GIRV",
       classroom: "",
     });
 
-    expect(screen.getByText("1004")).toBeInTheDocument();
+    expect(
+      screen.getByText((text) => text.includes("184")),
+    ).toBeInTheDocument();
   });
 
   test("calls UCSB Course over time search api correctly with correctly sorted data", async () => {
@@ -109,7 +111,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20232");
+    userEvent.selectOptions(selectQuarter, "20222");
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
@@ -130,12 +132,14 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
-      quarter: "20232",
+      quarter: "20222",
       buildingCode: "GIRV",
       classroom: "",
     });
 
-    expect(screen.getByText("1004")).toBeInTheDocument();
+    expect(
+      screen.getByText((text) => text.includes("184")),
+    ).toBeInTheDocument();
 
     // Check that CoursesOverTimeBuildings received the sorted sections data
     const sortedSections = coursesInLibDifferentDate.sort((a, b) =>

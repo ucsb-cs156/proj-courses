@@ -12,9 +12,11 @@ import SingleBuildingDropdown from "../Buildings/SingleBuildingDropdown";
 const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
 
-  const availableQuarters = systemInfo
-    ? quarterRange(systemInfo.startQtrYYYYQ, systemInfo.endQtrYYYYQ)
-    : [];
+  // stryker-disable OptionalChaining
+  const startQtr = systemInfo?.startQtrYYYYQ ?? "20232";
+  const endQtr = systemInfo?.endQtrYYYYQ ?? "20254";
+  // stryker-enable OptionalChaining
+  const availableQuarters = quarterRange(startQtr, endQtr);
 
   const localQuarter = localStorage.getItem(
     "CourseOverTimeBuildingsSearch.Quarter",

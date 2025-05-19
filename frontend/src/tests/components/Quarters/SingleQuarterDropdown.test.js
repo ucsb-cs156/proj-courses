@@ -190,42 +190,38 @@ describe("SingleQuarterSelector tests", () => {
     expect(await screen.findByTestId(expectedKey)).toBeInTheDocument();
   });
 
-  test("when localstorage has a value, it is passed to useState", async () => {
+  test("when localstorage has a value, it is selected in dropdown", async () => {
     const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => "20202");
-
-    const setQuarterStateSpy = jest.fn();
-    useState.mockImplementation((x) => [x, setQuarterStateSpy]);
 
     render(
       <SingleQuarterDropdown
         quarters={quarterRange("20201", "20224")}
-        quarter={quarter}
+        quarter={null} // allow internal fallback to run
         setQuarter={setQuarter}
         controlId="sqd1"
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("20202"));
+    const select = await screen.findByTestId("sqd1");
+    expect(select.value).toBe("20202");
   });
 
-  test("when localstorage has no value last element of quarter range is passed to useState", async () => {
+  test("when localstorage has no value, last element of quarter range is selected", async () => {
     const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
-
-    const setQuarterStateSpy = jest.fn();
-    useState.mockImplementation((x) => [x, setQuarterStateSpy]);
 
     render(
       <SingleQuarterDropdown
         quarters={quarterRange("20201", "20234")}
-        quarter={quarter}
+        quarter={null} // allow internal fallback to run
         setQuarter={setQuarter}
         controlId="sqd1"
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("20234"));
+    const select = await screen.findByTestId("sqd1");
+    expect(select.value).toBe("20234");
   });
 
   test("when localstorage has no value, last element of quarter range is the default parameter", async () => {
