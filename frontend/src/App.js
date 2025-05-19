@@ -24,6 +24,8 @@ import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseO
 
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 
+import GeneralEducationSearchPage from "main/pages/GeneralEducation/Search/GeneralEducationSearchPage";
+
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
 function App() {
   const { data: currentUser } = useCurrentUser();
@@ -95,6 +97,11 @@ function App() {
           exact
           path="/coursedetails/:qtr/:enrollCode"
           element={<CourseDetailsIndexPage />}
+        />
+        <Route
+          exact
+          path="/generaleducation/search"
+          element={<GeneralEducationSearchPage />}
         />
       </Routes>
     </BrowserRouter>
