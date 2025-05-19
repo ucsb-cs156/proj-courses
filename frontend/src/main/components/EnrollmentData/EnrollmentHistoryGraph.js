@@ -31,19 +31,19 @@ const allGrades = [
   "NP",
 ];
 
-const qtrNumToQuarter = {
-  1: "Winter",
-  2: "Spring",
-  3: "Summer",
-  4: "Fall",
-};
+// const qtrNumToQuarter = {
+//   1: "Winter",
+//   2: "Spring",
+//   3: "Summer",
+//   4: "Fall",
+// };
 // Stryker restore all
 
 //from an input YYYYQ, create a prettier formated output that I like
-const yyyyqToPrettyStr = (yyyyq) => {
-  const [year, qtr] = [yyyyq.slice(0, 4), yyyyq[4]];
-  return `${qtrNumToQuarter[qtr]} ${year}`;
-};
+// const yyyyqToPrettyStr = (yyyyq) => {
+//   const [year, qtr] = [yyyyq.slice(0, 4), yyyyq[4]];
+//   return `${qtrNumToQuarter[qtr]} ${year}`;
+// };
 
 export const formatTooltip = (value, _, props) => {
   return [`Percentage: ${value.toFixed(1)}%, Count: ${props.payload.count}`];
@@ -67,6 +67,39 @@ export const createCompleteGradeData = (data) => {
     percentage:
       totalCount > 0 ? ((gradeCounts[grade] || 0) / totalCount) * 100 : 0,
   }));
+};
+
+export const createCompleteEnrollmentData = (data) => {
+  // const enrollmentCounts = data.reduce((acc, item) => {
+  //   acc[item.dateCreated] = item.count;
+  //   return acc;
+  // }, {});
+
+  // const totalCount = Object.values(enrollmentCounts).reduce(
+  //   (acc, count) => acc + count,
+  //   0,
+  // );
+
+  var data_list = [];
+
+  for (let index = 0; index < data.length; index++) {
+    const element = data[index];
+    data_list.push(element.enrollment, element.dateCreated)
+  }
+
+  return data_list;
+  // return Object.map(data_list) => ({
+  //   dateCreated
+  //   enrollment: 
+  // })
+
+  // return Object //.sort((enrollmentCounts, dateCreated))
+  // .map((dateCreated) => ({
+  //   dateCreated,
+  //   count: enrollmentCounts[dateCreated] || 0,
+  //   percentage:
+  //     totalCount > 0 ? ((enrollmentCounts[dateCreated] || 0) / totalCount) * 100 : 0,
+  // }));
 };
 
 // Helper function to group data by `yyyyq` and `instructor`
@@ -98,7 +131,7 @@ export const groupDataByQuarterAndInstructor = (data) => {
 };
 
 // Component to render a single bar chart for a specific group of data
-const GradeLineChart = ({ data, title }) => {
+const _GradeLineChart = ({ data, title }) => {
   const completeData = createCompleteGradeData(data);
 
   return (
@@ -130,18 +163,61 @@ const GradeLineChart = ({ data, title }) => {
   );
 };
 
-const EnrollmentHistoryGraphs = ({ gradeHistory }) => {
-  const groupedData = groupDataByQuarterAndInstructor(gradeHistory);
+// Component to render a single bar chart for a specific group of data
+const EnrollmentHistoryLineChart = ({ data, title }) => {
+  // const completeData = createCompleteEnrollmentData(data);
+  const completeData = data;
 
   return (
-    <div data-testid="grade-history-graphs">
-      {Object.keys(groupedData).map((key) => {
-        const data = groupedData[key];
-        const title = `${yyyyqToPrettyStr(data[0].yyyyq)} - ${
-          data[0].instructor
-        }`;
-        return <GradeLineChart key={key} data={data} title={title} />;
-      })}
+    <div data-testid="enrollment-history-graph">
+      <h3>{title}</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart
+          data={completeData}
+          // Stryker disable all
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <XAxis dataKey="dateCreated" />
+          <YAxis
+            tickFormatter={(value) => `${value.toFixed(1)}%`}
+            // Stryker restore all
+          />
+
+          <Legend />
+          <Tooltip formatter={formatTooltip} />
+          <Line dataKey="enrollment" fill="#8884d8" />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+const EnrollmentHistoryGraphs = ({ _enrollmentHistory }) => {
+  // const groupedData = groupDataByQuarterAndInstructor(enrollmentHistory);
+  const enrollmentHistory = [{"dateCreated": "2025-05-14T17:50:52.356611",
+    value: 1
+  }, {"dateCreated": "2025-05-14T17:50:52.361636",
+    value: 2
+  }]
+
+  return (
+    <div data-testid="enrollment-history-graphs">
+      {
+      // Object.keys(enrollmentHistory).map((key) => {
+      //   const data = enrollmentHistory[key];
+      //   const title = "t";
+      //   // const title = `${yyyyqToPrettyStr(data[0].yyyyq)} - ${
+      //   //   data[0].instructor
+      //   // }`;
+      //   return <EnrollmentHistoryLineChart key={key} data={data} title={title} />;
+      // })
+      <EnrollmentHistoryLineChart data={enrollmentHistory} title={"t"} />
+      }
     </div>
   );
 };
