@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UCSBCurriculumController extends ApiController {
 
-  @Autowired UserRepository userRepository;
-  @Autowired UCSBCurriculumService ucsbCurriculumService;
+  @Autowired
+  UserRepository userRepository;
+  @Autowired
+  UCSBCurriculumService ucsbCurriculumService;
 
   @Operation(summary = "Get course data for a given quarter, department, and level")
   @GetMapping(value = "/basicsearch", produces = "application/json")
@@ -51,7 +53,7 @@ public class UCSBCurriculumController extends ApiController {
   @Operation(summary = "Get all general education areas")
   @GetMapping(value = "/generalEducationInfo", produces = "application/json")
   public ResponseEntity<String[]> generalEducationAreas() throws Exception {
-    String[] generalEducationAreas = ucsbCurriculumService.getGEAReas();
+    String[] generalEducationAreas = ucsbCurriculumService.getGEAreas();
     return ResponseEntity.ok().body(generalEducationAreas);
   }
 }

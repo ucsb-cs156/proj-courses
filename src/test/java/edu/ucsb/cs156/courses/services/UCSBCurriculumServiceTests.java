@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -29,11 +30,14 @@ public class UCSBCurriculumServiceTests {
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
 
-  @Autowired private MockRestServiceServer mockRestServiceServer;
+  @Autowired
+  private MockRestServiceServer mockRestServiceServer;
 
-  @Mock private RestTemplate restTemplate;
+  @Mock
+  private RestTemplate restTemplate;
 
-  @Autowired private UCSBCurriculumService ucs;
+  @Autowired
+  private UCSBCurriculumService ucs;
 
   @Test
   public void test_getJSON_success() throws Exception {
@@ -43,10 +47,9 @@ public class UCSBCurriculumServiceTests {
     String quarter = "20201";
     String level = "L";
 
-    String expectedParams =
-        String.format(
-            "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
-            quarter, subjectArea, level, 1, 100, "true");
+    String expectedParams = String.format(
+        "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
+        quarter, subjectArea, level, 1, 100, "true");
     String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
 
     this.mockRestServiceServer
@@ -93,10 +96,9 @@ public class UCSBCurriculumServiceTests {
 
     String level = "A";
 
-    String expectedParams =
-        String.format(
-            "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
-            quarter, subjectArea, 1, 100, "true");
+    String expectedParams = String.format(
+        "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
+        quarter, subjectArea, 1, 100, "true");
     String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
 
     this.mockRestServiceServer
@@ -137,10 +139,9 @@ public class UCSBCurriculumServiceTests {
     String quarter = "20222";
     String level = "L";
 
-    String expectedParams =
-        String.format(
-            "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
-            quarter, subjectArea, level, 1, 100, "true");
+    String expectedParams = String.format(
+        "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
+        quarter, subjectArea, level, 1, 100, "true");
     String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
 
     this.mockRestServiceServer
@@ -152,12 +153,11 @@ public class UCSBCurriculumServiceTests {
         .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
 
     ObjectMapper objectMapper = new ObjectMapper();
-    List<ConvertedSection> convertedSections =
-        ucs.getConvertedSections(subjectArea, quarter, level);
-    List<ConvertedSection> expected =
-        objectMapper.readValue(
-            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
-            new TypeReference<List<ConvertedSection>>() {});
+    List<ConvertedSection> convertedSections = ucs.getConvertedSections(subjectArea, quarter, level);
+    List<ConvertedSection> expected = objectMapper.readValue(
+        CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
+        new TypeReference<List<ConvertedSection>>() {
+        });
 
     assertEquals(expected, convertedSections);
   }
@@ -170,10 +170,9 @@ public class UCSBCurriculumServiceTests {
     String quarter = "20222";
     String level = "L";
 
-    String expectedParams =
-        String.format(
-            "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
-            quarter, subjectArea, level, 1, 100, "true");
+    String expectedParams = String.format(
+        "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
+        quarter, subjectArea, level, 1, 100, "true");
     String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
 
     this.mockRestServiceServer
@@ -186,13 +185,13 @@ public class UCSBCurriculumServiceTests {
 
     ObjectMapper objectMapper = new ObjectMapper();
     String convertedSectionsString = ucs.getSectionJSON(subjectArea, quarter, level);
-    List<ConvertedSection> convertedSections =
-        objectMapper.readValue(
-            convertedSectionsString, new TypeReference<List<ConvertedSection>>() {});
-    List<ConvertedSection> expected =
-        objectMapper.readValue(
-            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
-            new TypeReference<List<ConvertedSection>>() {});
+    List<ConvertedSection> convertedSections = objectMapper.readValue(
+        convertedSectionsString, new TypeReference<List<ConvertedSection>>() {
+        });
+    List<ConvertedSection> expected = objectMapper.readValue(
+        CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
+        new TypeReference<List<ConvertedSection>>() {
+        });
 
     assertEquals(expected, convertedSections);
   }
@@ -205,10 +204,9 @@ public class UCSBCurriculumServiceTests {
     String enrollCode = "08268";
     String quarter = "20224";
 
-    String expectedURL =
-        UCSBCurriculumService.SECTION_ENDPOINT
-            .replace("{quarter}", quarter)
-            .replace("{enrollcode}", enrollCode);
+    String expectedURL = UCSBCurriculumService.SECTION_ENDPOINT
+        .replace("{quarter}", quarter)
+        .replace("{enrollcode}", enrollCode);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -230,10 +228,9 @@ public class UCSBCurriculumServiceTests {
     String enrollCode = "08268";
     String quarter = "00000";
 
-    String expectedURL =
-        UCSBCurriculumService.SECTION_ENDPOINT
-            .replace("{quarter}", quarter)
-            .replace("{enrollcode}", enrollCode);
+    String expectedURL = UCSBCurriculumService.SECTION_ENDPOINT
+        .replace("{quarter}", quarter)
+        .replace("{enrollcode}", enrollCode);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -255,10 +252,9 @@ public class UCSBCurriculumServiceTests {
     String enrollCode = "08268";
     String quarter = "20224";
 
-    String expectedURL =
-        UCSBCurriculumService.ALL_SECTIONS_ENDPOINT
-            .replace("{quarter}", quarter)
-            .replace("{enrollcode}", enrollCode);
+    String expectedURL = UCSBCurriculumService.ALL_SECTIONS_ENDPOINT
+        .replace("{quarter}", quarter)
+        .replace("{enrollcode}", enrollCode);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -280,10 +276,9 @@ public class UCSBCurriculumServiceTests {
     String enrollCode = "08268";
     String quarter = "00000";
 
-    String expectedURL =
-        UCSBCurriculumService.ALL_SECTIONS_ENDPOINT
-            .replace("{quarter}", quarter)
-            .replace("{enrollcode}", enrollCode);
+    String expectedURL = UCSBCurriculumService.ALL_SECTIONS_ENDPOINT
+        .replace("{quarter}", quarter)
+        .replace("{enrollcode}", enrollCode);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -317,5 +312,16 @@ public class UCSBCurriculumServiceTests {
     String result = ucs.getFinalsInfo(quarter, enrollCode);
 
     assertEquals(expectedResult, result);
+  }
+
+  @Test
+  public void test_getGEAreas_success() throws Exception {
+    String[] expectedResult = {
+        "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT", "SUB", "WRT"
+    };
+
+    String[] result = ucs.getGEAreas();
+
+    assertArrayEquals(expectedResult, result);
   }
 }
