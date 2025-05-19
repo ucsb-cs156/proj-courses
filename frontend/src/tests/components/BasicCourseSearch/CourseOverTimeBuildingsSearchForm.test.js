@@ -181,7 +181,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   test("renders without crashing when fallback values are used", async () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
-      showSwaggerUILink: true,
+      showSwaggerUILink: false,
       startQtrYYYYQ: null, // use fallback value
       endQtrYYYYQ: null, // use fallback value
     });
