@@ -1,5 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { fiveSections, gigaSections } from "fixtures/sectionFixtures";
+import {
+  fiveSections,
+  gigaSections,
+  oneSection,
+  oneLectureSectionWithNoDiscussion,
+  threeSections,
+} from "fixtures/sectionFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,6 +18,10 @@ import {
   isLectureWithSections,
 } from "main/components/Sections/SectionsTable";
 import { useBackendMutation } from "main/utils/useBackend";
+import * as backend from "main/utils/useBackend";
+import * as currentUserModule from "main/utils/currentUser";
+
+import * as modalCode from "main/components/PersonalSchedules/AddToScheduleModal";
 
 const mockedNavigate = jest.fn();
 
@@ -30,6 +40,7 @@ jest.mock("react-toastify", () => {
   return { toast };
 });
 jest.mock("main/utils/useBackend", () => ({
+  useBackend: jest.fn(),
   useBackendMutation: jest.fn(),
 }));
 
@@ -851,5 +862,309 @@ describe("Section tests", () => {
         .getByTestId(`${testId}-cell-row-4-col-info`)
         .querySelector('a[href$="/coursedetails/20221/12625"]'),
     ).toBeInTheDocument();
+  });
+});
+
+describe("Action Column Tests", () => {
+  const queryClient = new QueryClient();
+
+  beforeEach(() => {
+    jest.spyOn(backend, "useBackend").mockImplementation(() => ({
+      data: [
+        {
+          id: 1,
+          quarter: "20221", // This should match the quarter prop passed to the modal
+          name: "Fall 2022 Personal Schedule",
+          // Additional properties that might be used by your PersonalScheduleSelector or schedulesFilter
+          user: {
+            id: 1,
+            email: "phtcon@ucsb.edu",
+            googleSub: "115856948234298493496",
+            pictureUrl:
+              "https://lh3.googleusercontent.com/-bQynVrzVIrU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmkGuVsELD1ZeV5iDUAUfe6_K-p8w/s96-c/photo.jpg",
+            fullName: "Phill Conrad",
+            givenName: "Phill",
+            familyName: "Conrad",
+            emailVerified: true,
+            locale: "en",
+            hostedDomain: "ucsb.edu",
+            admin: true,
+          },
+          description: "My Plan for Winter",
+        },
+      ],
+      error: null,
+      status: "success",
+    }));
+  });
+
+  it("renders AddToScheduleModal for section rows when user is logged in", () => {
+    jest.spyOn(currentUserModule, "useCurrentUser").mockImplementation(() => ({
+      data: { loggedIn: true, root: null },
+    }));
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsTable";
+
+    const expandRow = screen.getByTestId(
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-action`),
+    ).toHaveTextContent("➖");
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-action`),
+    ).toHaveTextContent("Add");
+
+    const actionContainers = document.querySelectorAll(
+      ".d-flex.align-items-center.gap-2",
+    );
+    expect(actionContainers.length).toBeGreaterThan(0);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-action`),
+    ).toHaveTextContent("Add");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-3-col-action`),
+    ).toHaveTextContent("Add");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-4-col-action`),
+    ).toHaveTextContent("Add");
+
+    currentUserModule.useCurrentUser.mockClear();
+  });
+
+  it("does not render AddToScheduleModal for section rows when user is not logged in", () => {
+    jest.spyOn(currentUserModule, "useCurrentUser").mockImplementation(() => ({
+      data: { loggedIn: false, root: null },
+    }));
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fiveSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsTable";
+
+    const expandRow = screen.getByTestId(
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-action`),
+    ).toHaveTextContent("➖");
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-action`),
+    ).toHaveTextContent("");
+
+    const actionContainers = document.querySelectorAll(
+      ".d-flex.align-items-center.gap-2",
+    );
+    expect(actionContainers.length).toBeLessThanOrEqual(0);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-action`),
+    ).toHaveTextContent("");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-3-col-action`),
+    ).toHaveTextContent("");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-4-col-action`),
+    ).toHaveTextContent("");
+
+    currentUserModule.useCurrentUser.mockClear();
+  });
+
+  it("renders AddToScheduleModal for lecture with no sections", () => {
+    jest.spyOn(currentUserModule, "useCurrentUser").mockImplementation(() => ({
+      data: { loggedIn: true, root: null },
+    }));
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={oneLectureSectionWithNoDiscussion} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsTable";
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-action`),
+    ).toHaveTextContent("Add");
+
+    currentUserModule.useCurrentUser.mockClear();
+  });
+
+  it("handleAddToSchedule is called when Modal Add is clicked", async () => {
+    jest.spyOn(currentUserModule, "useCurrentUser").mockImplementation(() => ({
+      data: { loggedIn: true, root: null },
+    }));
+
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    jest
+      .spyOn(modalCode, "default")
+      .mockImplementation((propsReceivedByModal) => {
+        // propsReceivedByModal contains { section, quarter, onAdd }
+        return typeof propsReceivedByModal.section != "string" &&
+          propsReceivedByModal.section.section.section === "0101" ? (
+          <button
+            data-testid="spy-trigger-sections-table-onadd"
+            onClick={() => {
+              // Simulate the modal eventually calling the onAdd prop it received
+              if (typeof propsReceivedByModal.onAdd === "function") {
+                propsReceivedByModal.onAdd(propsReceivedByModal.section, "1");
+              }
+            }}
+          >
+            Trigger SectionsTable onAdd via Spy
+          </button>
+        ) : (
+          <div></div>
+        );
+      });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={threeSections} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsTable";
+
+    const expandRow = screen.getByTestId(
+      `${testId}-cell-row-1-col-courseInfo.courseId-expand-symbols`,
+    );
+    fireEvent.click(expandRow);
+
+    const spyTriggerButton = screen.getByTestId(
+      "spy-trigger-sections-table-onadd",
+    );
+    expect(spyTriggerButton).toBeInTheDocument();
+
+    fireEvent.click(spyTriggerButton); // This click will trigger propsReceivedByModal.onAdd
+
+    // If the mutate function was called, it means handleAddToSchedule was called.
+    expect(mockMutation.mutate).toHaveBeenCalledTimes(1);
+    expect(mockMutation.mutate).toHaveBeenCalledWith({
+      enrollCd: "12609",
+      psId: "1",
+    });
+
+    currentUserModule.useCurrentUser.mockClear();
+    modalCode.default.mockClear();
+  });
+
+  it("handleLectureAddToSchedule is called when Modal Add is clicked", async () => {
+    jest.spyOn(currentUserModule, "useCurrentUser").mockImplementation(() => ({
+      data: { loggedIn: true, root: null },
+    }));
+
+    const mockMutate = jest.fn();
+    const mockMutation = { mutate: mockMutate };
+
+    useBackendMutation.mockReturnValue(mockMutation);
+
+    jest
+      .spyOn(modalCode, "default")
+      .mockImplementation((propsReceivedByModal) => {
+        // propsReceivedByModal contains { section, quarter, onAdd }
+        return (
+          <button
+            data-testid="spy-trigger-sections-table-onadd"
+            onClick={() => {
+              // Simulate the modal eventually calling the onAdd prop it received
+              if (typeof propsReceivedByModal.onAdd === "function") {
+                propsReceivedByModal.onAdd(propsReceivedByModal.section, "1");
+              }
+            }}
+          >
+            Trigger SectionsTable onAdd via Spy
+          </button>
+        );
+      });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={oneSection} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const spyTriggerButton = screen.getByTestId(
+      "spy-trigger-sections-table-onadd",
+    );
+    expect(spyTriggerButton).toBeInTheDocument();
+
+    fireEvent.click(spyTriggerButton); // This click will trigger propsReceivedByModal.onAdd
+
+    // If the mutate function was called, it means handleLectureAddToSchedule was called.
+    expect(mockMutation.mutate).toHaveBeenCalledTimes(1);
+    expect(mockMutation.mutate).toHaveBeenCalledWith({
+      enrollCd: "12583",
+      psId: "1",
+    });
+
+    currentUserModule.useCurrentUser.mockClear();
+    modalCode.default.mockClear();
+  });
+
+  it("Aggregated Action Cell is empty when !isLectureWithSections is true and isLectureWithNoSections is false", () => {
+    jest.spyOn(currentUserModule, "useCurrentUser").mockImplementation(() => ({
+      data: { loggedIn: true, root: null },
+    }));
+
+    jest.spyOn(modalCode, "default").mockImplementation(() => {
+      return (
+        <div data-testid="mock-modal-should-not-appear">Modal Appeared</div>
+      );
+    });
+
+    // this should return false for both isLectureWithSections and isLectureWithNoSections
+    const fixtureForGrouping = [fiveSections[2], fiveSections[3]];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fixtureForGrouping} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const testId = "SectionsTable";
+    const actionCell = screen.getByTestId(`${testId}-cell-row-0-col-action`);
+    expect(actionCell).toBeInTheDocument();
+    expect(actionCell).toBeEmptyDOMElement(); // Check that it renders nothing because the conditions were met
+
+    // Also, ensure our spied AddToScheduleModal was not rendered by this path
+    expect(
+      screen.queryByTestId("mock-modal-should-not-appear"),
+    ).not.toBeInTheDocument();
+
+    currentUserModule.useCurrentUser.mockClear();
+    modalCode.default.mockClear();
   });
 });

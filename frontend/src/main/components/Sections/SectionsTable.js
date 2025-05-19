@@ -104,12 +104,12 @@ export const handleAddToSchedule = (section, schedule, mutation) => {
 
 export const handleLectureAddToSchedule = (section, schedule, mutation) => {
   // Execute the mutation with the provided data
-  console.log(section);
+
   const dataFinal = {
     enrollCd: section,
     psId: schedule,
   };
-  console.log(dataFinal);
+
   mutation.mutate(dataFinal);
 };
 
@@ -246,14 +246,14 @@ export default function SectionsTable({ sections }) {
       aggregate: getFirstVal,
       Aggregated: renderInfoLink,
     },
-    // Stryker disable all : difficult to test modal interaction but we should try in future work
+    // Sssssstryker disable all : difficult to test modal interaction but we should try in future work
     {
       Header: "Action",
       id: "action",
       accessor: "section.enrollCode",
       disableGroupBy: true,
       // No need for accessor if it's purely for actions like expand/collapse
-      // Stryker disable all : difficult to test modal interaction
+      // Ssssstryker disable all : difficult to test modal interaction
       Cell: ({ row }) => {
         /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
