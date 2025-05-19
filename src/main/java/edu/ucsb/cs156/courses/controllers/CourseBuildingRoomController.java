@@ -26,7 +26,7 @@ public class CourseBuildingRoomController {
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
 @Operation(summary = "Get a list of classroom numbers from a building for a specified quarter")
-@GetMapping(value = "/buildingsearch", produces = "application/json")
+@GetMapping(value = "/buildingroomsearch", produces = "application/json")
 public ResponseEntity<String> search(
     @Parameter(
             name = "targetQtr",
@@ -65,7 +65,7 @@ public ResponseEntity<String> search(
         }
     }
 
-    // Convert the set of unique classroom numbers to a list (if you need to output as a list)
+    // Convert the set of unique classroom numbers to a list 
     List<String> uniqueClassrooms = new ArrayList<>(classroomNumbers);
 
     // Convert the classroom numbers list to JSON
