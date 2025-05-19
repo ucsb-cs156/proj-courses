@@ -1,12 +1,12 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
@@ -20,21 +20,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @WebMvcTest(value = UCSBCurriculumController.class)
 @Import(SecurityConfig.class)
 @AutoConfigureDataJpa
 public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
-  @MockBean
-  UserRepository userRepository;
+  @MockBean UserRepository userRepository;
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @MockBean
-  private UCSBCurriculumService ucsbCurriculumService;
+  @MockBean private UCSBCurriculumService ucsbCurriculumService;
 
   @Test
   public void test_search() throws Exception {
@@ -45,10 +40,11 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     when(ucsbCurriculumService.getJSON(any(String.class), any(String.class), any(String.class)))
         .thenReturn(expectedResult);
 
-    MvcResult response = mockMvc
-        .perform(get(url).contentType("application/json"))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
     String responseString = response.getResponse().getContentAsString();
 
     assertEquals(expectedResult, responseString);
@@ -63,10 +59,11 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     when(ucsbCurriculumService.getFinalsInfo(any(String.class), any(String.class)))
         .thenReturn(expectedResult);
 
-    MvcResult response = mockMvc
-        .perform(get(url).contentType("application/json"))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
     String responseString = response.getResponse().getContentAsString();
 
     assertEquals(expectedResult, responseString);
@@ -76,17 +73,18 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
   @Test
   public void test_generalEducationAreas() throws Exception {
     String[] expectedResult = {
-        "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT", "SUB", "WRT"
+      "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+      "SUB", "WRT"
     };
 
     String url = "/api/public/generalEducationInfo";
-    when(ucsbCurriculumService.getGEAreas())
-        .thenReturn(expectedResult);
+    when(ucsbCurriculumService.getGEAreas()).thenReturn(expectedResult);
 
-    MvcResult response = mockMvc
-        .perform(get(url).contentType("application/json"))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
     String responseString = response.getResponse().getContentAsString();
 
     ObjectMapper objectMapper = new ObjectMapper();

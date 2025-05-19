@@ -1,11 +1,8 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import edu.ucsb.cs156.courses.entities.GradeHistory;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
-import edu.ucsb.cs156.courses.utilities.CourseUtilities;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UCSBCurriculumController extends ApiController {
 
-  @Autowired
-  UserRepository userRepository;
-  @Autowired
-  UCSBCurriculumService ucsbCurriculumService;
+  @Autowired UserRepository userRepository;
+  @Autowired UCSBCurriculumService ucsbCurriculumService;
 
   @Operation(summary = "Get course data for a given quarter, department, and level")
   @GetMapping(value = "/basicsearch", produces = "application/json")
