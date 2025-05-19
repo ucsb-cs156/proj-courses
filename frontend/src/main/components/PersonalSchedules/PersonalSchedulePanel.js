@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import SchedulerEvents from "./PersonalScheduleEvent"; // Updated import path
-import { daysOfWeek, hours } from "../../utils/dateUtils";
+import { daysOfWeek, hours } from "../Utils/dateUtils";
 
 // Example minimum required data for event object
 // {
