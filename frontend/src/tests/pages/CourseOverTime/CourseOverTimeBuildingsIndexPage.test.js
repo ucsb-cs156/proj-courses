@@ -49,7 +49,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
 
   test("calls UCSB Course over time search api correctly with correct response", async () => {
     axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch")
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms")
       .reply(200, coursesInLib);
 
     render(
@@ -60,41 +60,39 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
       </QueryClientProvider>,
     );
 
-    const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
-    const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
+    axiosMock.resetHistory();
+
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
-
-    axiosMock.resetHistory();
 
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
-      startQtr: "20222",
-      endQtr: "20222",
+      quarter: "20232",
       buildingCode: "GIRV",
+      classroom: "",
     });
 
-    expect(screen.getByText("CHEM 184")).toBeInTheDocument();
+    expect(screen.getByText("1004")).toBeInTheDocument();
   });
 
   test("calls UCSB Course over time search api correctly with correctly sorted data", async () => {
     axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch")
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms")
       .reply(200, coursesInLibDifferentDate);
 
     const spy = jest.spyOn(
@@ -110,15 +108,13 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
       </QueryClientProvider>,
     );
 
-    const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20201");
-    const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     userEvent.selectOptions(selectBuilding, "GIRV");
@@ -134,12 +130,12 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
-      startQtr: "20201",
-      endQtr: "20222",
+      quarter: "20232",
       buildingCode: "GIRV",
+      classroom: "",
     });
 
-    expect(screen.getByText("CHEM 184")).toBeInTheDocument();
+    expect(screen.getByText("1004")).toBeInTheDocument();
 
     // Check that CoursesOverTimeBuildings received the sorted sections data
     const sortedSections = coursesInLibDifferentDate.sort((a, b) =>
