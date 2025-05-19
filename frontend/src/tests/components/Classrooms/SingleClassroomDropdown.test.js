@@ -131,4 +131,103 @@ describe("SingleClassroomDropdown", () => {
     );
     expect(screen.queryByRole("option")).toBeNull();
   });
+
+  test("initializes from classroom prop when no localStorage", () => {
+    window.localStorage.clear();
+    render(
+      <SingleClassroomDropdown
+        building="ILP"
+        classrooms={threeClassrooms}
+        classroom="3211"
+        setClassroom={setClassroom}
+        controlId="cd1"
+      />
+    );
+    const combobox = screen.getByRole("combobox");
+    expect(combobox.value).toBe("3211");
+  });
+
+  test("resets value and parent when building changes", () => {
+    const { rerender } = render(
+      <SingleClassroomDropdown
+        building="ILP"
+        classrooms={threeClassrooms}
+        classroom=""
+        setClassroom={setClassroom}
+        controlId="cd1"
+      />
+    );
+    const select = screen.getByRole("combobox");
+    userEvent.selectOptions(select, "3211");
+    expect(setClassroom).toHaveBeenCalledWith("3211");
+
+    // change building
+    rerender(
+      <SingleClassroomDropdown
+        building="ENG"
+        classrooms={allClassrooms}
+        classroom="3211"
+        setClassroom={setClassroom}
+        controlId="cd1"
+      />
+    );
+    expect(select.value).toBe("");
+    expect(setClassroom).toHaveBeenCalledWith("");
+  });
+
+  // ────────────────────────────────────────────────────────────────────────────────
+  // New tests to kill the surviving mutants:
+  // ────────────────────────────────────────────────────────────────────────────────
+
+  test("defaults to first classroom when neither localStorage nor classroom prop is set", () => {
+    render(
+      <SingleClassroomDropdown
+        building="ILP"
+        classrooms={threeClassrooms}
+        classroom=""
+        setClassroom={setClassroom}
+        controlId="cdDefault"
+      />
+    );
+    const combobox = screen.getByRole("combobox");
+    // first sorted ILP roomNumber is "1101"
+    expect(combobox.value).toBe("1101");
+  });
+
+  test("sorts even an unsorted classroom list by roomNumber", () => {
+    const unsorted = [
+      { buildingCode: "ILP", roomNumber: "3316" },
+      { buildingCode: "ILP", roomNumber: "1101" },
+      { buildingCode: "ILP", roomNumber: "3211" },
+    ];
+    render(
+      <SingleClassroomDropdown
+        building="ILP"
+        classrooms={unsorted}
+        classroom=""
+        setClassroom={setClassroom}
+        controlId="cdSort"
+      />
+    );
+    const opts = screen.getAllByRole("option").filter(o => o.value !== "ALL");
+    expect(opts.map(o => o.value)).toEqual(["1101", "3211", "3316"]);
+  });
+
+  test("replaces spaces with hyphens in the generated test-id slug", () => {
+    const withSpaces = [
+      { buildingCode: "ENG LAB", roomNumber: "101 A" }
+    ];
+    render(
+      <SingleClassroomDropdown
+        building="ENG LAB"
+        classrooms={withSpaces}
+        classroom=""
+        setClassroom={setClassroom}
+        controlId="cdSlug"
+      />
+    );
+    expect(
+      screen.getByTestId("cdSlug-option-ENG-LAB-101-A")
+    ).toBeInTheDocument();
+  });
 });

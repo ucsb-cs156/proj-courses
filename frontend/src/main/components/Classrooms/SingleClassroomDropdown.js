@@ -1,5 +1,5 @@
 import { compareValues } from "main/utils/sortHelper";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Form } from "react-bootstrap";
 
 const SingleClassroomDropdown = ({
@@ -12,15 +12,25 @@ const SingleClassroomDropdown = ({
   label = "Classroom",
   showAll = false,
 }) => {
+  // Initialize from localStorage, then from controlled prop, then empty string
   const [value, setValue] = useState(
     localStorage.getItem(controlId) || classroom || ""
   );
 
+  // Ref to skip the reset effect on initial mount
+  const isFirstRun = useRef(true);
+
+  // Whenever the building prop changes _after_ mount, clear selection
   useEffect(() => {
-    const stored = localStorage.getItem(controlId) || "";
-    setValue(stored);
-    setClassroom(stored);
-  }, [building, controlId, setClassroom]);
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
+    // Remove stored value and reset both local and parent state
+    localStorage.removeItem(controlId);
+    setValue("");
+    setClassroom("");
+  }, [building]);
 
   const handleChange = (e) => {
     const v = e.target.value;
@@ -30,6 +40,7 @@ const SingleClassroomDropdown = ({
     if (onChange) onChange(e);
   };
 
+  // Either show all classrooms or only those matching the building, then sort
   const options = (
     showAll
       ? classrooms
