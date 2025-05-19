@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import SingleAreaDropdown from "main/components/GEArea/SingleAreaDropdown";
+import SingleAreaDropdown from "main/components/GeneralEducation/SingleAreaDropdown";
 
 import { oneArea, threeAreas, allTheAreas } from "fixtures/geAreaFixtures";
 
