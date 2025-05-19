@@ -14,8 +14,8 @@ export default function AppNavbar({
     <>
       {(currentUrl.startsWith("http://localhost:3000") ||
         currentUrl.startsWith("http://127.0.0.1:3000")) && (
-        <AppNavbarLocalhost url={currentUrl} />
-      )}
+          <AppNavbarLocalhost url={currentUrl} />
+        )}
       <Navbar
         expand="xl"
         variant="dark"
@@ -91,6 +91,12 @@ export default function AppNavbar({
                   data-testid="appnavbar-course-over-time-buildings-search"
                 >
                   Course Location History
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/generaleducation/search"
+                  data-testid="appnavbar-general-education-area-search"
+                >
+                  Search by GE Area
                 </NavDropdown.Item>
                 <NavDropdown.Item
                   href="/courseovertime/instructorsearch"
