@@ -83,7 +83,7 @@ function App() {
         />
         <Route
           exact
-          path="/courseovertime/buildingsearch"
+          path="/courseovertime/buildingsearch/classrooms"
           element={<CourseOverTimeBuildingsIndexPage />}
         />
         <Route

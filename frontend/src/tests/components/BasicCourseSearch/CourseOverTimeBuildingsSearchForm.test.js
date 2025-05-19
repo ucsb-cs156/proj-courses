@@ -16,9 +16,9 @@ jest.mock("react-toastify", () => ({
   toast: jest.fn(),
 }));
 
-describe("CourseOverTimeBuildingsSearchForm tests", () => {
-  const axiosMock = new AxiosMockAdapter(axios);
+const axiosMock = new AxiosMockAdapter(axios);
 
+describe("CourseOverTimeBuildingsSearchForm tests", () => {
   const queryClient = new QueryClient();
   const addToast = jest.fn();
 
@@ -27,17 +27,19 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
+    axiosMock.reset();
+
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: true,
+      startQtrYYYYQ: "20232",
+      endQtrYYYYQ: "20254",
+    });
+
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/systemInfo").reply(200, {
-      ...systemInfoFixtures.showingNeither,
-      quarterYYYYQ: [
-        { yyyyq: "20232" },
-        { yyyyq: "20242" },
-        { yyyyq: "20252" },
-      ],
-    });
+
     axiosMock
       .onGet("/api/public/basicQuarterDates")
       .reply(200, [{ yyyyq: "20232" }, { yyyyq: "20242" }, { yyyyq: "20252" }]);
@@ -110,6 +112,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const expectedFields = {
       Quarter: "20232",
       buildingCode: "GIRV",
+      classroom: "",
     };
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
@@ -138,6 +141,8 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: true,
       quarterYYYYQ: null, // use fallback value
+      startQtrYYYYQ: "20232",
+      endQtrYYYYQ: "20254",
     });
 
     render(
@@ -153,7 +158,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       await screen.findByTestId(
         "CourseOverTimeBuildingsSearch.Quarter-option-0",
       ),
-    ).toHaveValue("20201");
+    ).toHaveValue("20232");
     expect(
       await screen.findByTestId(
         "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
