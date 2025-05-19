@@ -4,23 +4,22 @@ import GeneralEducationSearchPage from "main/pages/GeneralEducation/Search/Gener
 
 jest.mock("main/utils/currentUser", () => ({
   useCurrentUser: () => ({
-    data: { loggedIn: false, root: { user: { email: "test@example.com" } } }
+    data: { loggedIn: false, root: { user: { email: "test@example.com" } } },
   }),
   useLogout: () => ({ mutate: jest.fn() }),
-  hasRole: (user, role) => false // or customize per role
+  hasRole: (user, role) => false, // or customize per role
 }));
 
 jest.mock("main/utils/systemInfo", () => ({
   useSystemInfo: () => ({ data: {} }),
 }));
 
-
 describe("GeneralEducationSearchPage tests", () => {
   test("renders without crashing and shows placeholder text", () => {
     render(
       <MemoryRouter>
         <GeneralEducationSearchPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const heading = screen.getByText(/GE Search coming soon!/i);
