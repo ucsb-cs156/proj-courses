@@ -4,7 +4,11 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
 
 import SingleClassroomDropdown from "main/components/Classrooms/SingleClassroomDropdown";
-import { oneClassroom, threeClassrooms, allClassrooms } from "fixtures/classroomFixtures";
+import {
+  oneClassroom,
+  threeClassrooms,
+  allClassrooms,
+} from "fixtures/classroomFixtures";
 
 // Note: No mocks for compareValues or React; using real implementations
 
@@ -24,7 +28,7 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cd1"
-      />
+      />,
     );
     const option = screen.getByTestId("cd1-option-ILP-1101");
     expect(option).toBeInTheDocument();
@@ -39,10 +43,10 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cd1"
-      />
+      />,
     );
     // Should see 3 ILP rooms: 1101, 3211, 3316
-    const opts = screen.getAllByRole("option").filter(o => o.value !== "ALL");
+    const opts = screen.getAllByRole("option").filter((o) => o.value !== "ALL");
     expect(opts).toHaveLength(3);
     expect(opts[0]).toHaveTextContent("ILP 1101");
     expect(opts[1]).toHaveTextContent("ILP 3211");
@@ -58,7 +62,7 @@ describe("SingleClassroomDropdown", () => {
         setClassroom={setClassroom}
         controlId="cd1"
         showAll
-      />
+      />,
     );
     const allOpt = screen.getByTestId("cd1-option-all");
     expect(allOpt).toBeInTheDocument();
@@ -76,10 +80,10 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cd1"
-      />
+      />,
     );
     const opts = screen.getAllByRole("option");
-    opts.forEach(o => {
+    opts.forEach((o) => {
       if (o.value !== "ALL") {
         expect(o.textContent).toContain("ILP");
       }
@@ -96,7 +100,7 @@ describe("SingleClassroomDropdown", () => {
         setClassroom={setClassroom}
         controlId="cd1"
         onChange={onChange}
-      />
+      />,
     );
     const select = screen.getByLabelText("Classroom");
     userEvent.selectOptions(select, "3211");
@@ -113,7 +117,7 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cd1"
-      />
+      />,
     );
     const combobox = screen.getByRole("combobox");
     expect(combobox.value).toBe("1101");
@@ -127,7 +131,7 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cd1"
-      />
+      />,
     );
     expect(screen.queryByRole("option")).toBeNull();
   });
@@ -141,7 +145,7 @@ describe("SingleClassroomDropdown", () => {
         classroom="3211"
         setClassroom={setClassroom}
         controlId="cd1"
-      />
+      />,
     );
     const combobox = screen.getByRole("combobox");
     expect(combobox.value).toBe("3211");
@@ -155,7 +159,7 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cd1"
-      />
+      />,
     );
     const select = screen.getByRole("combobox");
     userEvent.selectOptions(select, "3211");
@@ -169,7 +173,7 @@ describe("SingleClassroomDropdown", () => {
         classroom="3211"
         setClassroom={setClassroom}
         controlId="cd1"
-      />
+      />,
     );
     expect(select.value).toBe("");
     expect(setClassroom).toHaveBeenCalledWith("");
@@ -187,7 +191,7 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cdDefault"
-      />
+      />,
     );
     const combobox = screen.getByRole("combobox");
     // first sorted ILP roomNumber is "1101"
@@ -207,16 +211,14 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cdSort"
-      />
+      />,
     );
-    const opts = screen.getAllByRole("option").filter(o => o.value !== "ALL");
-    expect(opts.map(o => o.value)).toEqual(["1101", "3211", "3316"]);
+    const opts = screen.getAllByRole("option").filter((o) => o.value !== "ALL");
+    expect(opts.map((o) => o.value)).toEqual(["1101", "3211", "3316"]);
   });
 
   test("replaces spaces with hyphens in the generated test-id slug", () => {
-    const withSpaces = [
-      { buildingCode: "ENG LAB", roomNumber: "101 A" }
-    ];
+    const withSpaces = [{ buildingCode: "ENG LAB", roomNumber: "101 A" }];
     render(
       <SingleClassroomDropdown
         building="ENG LAB"
@@ -224,10 +226,10 @@ describe("SingleClassroomDropdown", () => {
         classroom=""
         setClassroom={setClassroom}
         controlId="cdSlug"
-      />
+      />,
     );
     expect(
-      screen.getByTestId("cdSlug-option-ENG-LAB-101-A")
+      screen.getByTestId("cdSlug-option-ENG-LAB-101-A"),
     ).toBeInTheDocument();
   });
 });
