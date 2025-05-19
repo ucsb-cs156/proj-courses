@@ -96,6 +96,13 @@ function App() {
           path="/coursedetails/:qtr/:enrollCode"
           element={<CourseDetailsIndexPage />}
         />
+
+        <Route
+          exact
+          path="/generaleducation/search"
+          element={<GeneralEducationSearchPage />} 
+        />
+
       </Routes>
     </BrowserRouter>
   );
