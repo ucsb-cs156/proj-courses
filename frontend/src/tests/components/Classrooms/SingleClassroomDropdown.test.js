@@ -82,11 +82,12 @@ describe("SingleClassroomDropdown", () => {
         controlId="cd1"
       />,
     );
-    const opts = screen.getAllByRole("option");
+
+    const opts = screen.getAllByRole("option").filter((o) => o.value !== "ALL"); 
+
+ 
     opts.forEach((o) => {
-      if (o.value !== "ALL") {
-        expect(o.textContent).toContain("ILP");
-      }
+      expect(o).toHaveTextContent("ILP");
     });
   });
 
@@ -165,7 +166,6 @@ describe("SingleClassroomDropdown", () => {
     userEvent.selectOptions(select, "3211");
     expect(setClassroom).toHaveBeenCalledWith("3211");
 
-    // change building
     rerender(
       <SingleClassroomDropdown
         building="ENG"
@@ -179,9 +179,6 @@ describe("SingleClassroomDropdown", () => {
     expect(setClassroom).toHaveBeenCalledWith("");
   });
 
-  // ────────────────────────────────────────────────────────────────────────────────
-  // New tests to kill the surviving mutants:
-  // ────────────────────────────────────────────────────────────────────────────────
 
   test("defaults to first classroom when neither localStorage nor classroom prop is set", () => {
     render(

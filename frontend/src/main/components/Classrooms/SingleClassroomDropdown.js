@@ -28,7 +28,11 @@ const SingleClassroomDropdown = ({
     // Stryker disable next-line all : not sure how to test/mock local storage
     setValue("");
     setClassroom("");
-  }, [building]);
+  }, [
+    building, // reset when building changes
+    controlId, // used inside effect
+    setClassroom, // used inside effect
+  ]);
 
   const handleChange = (e) => {
     const v = e.target.value;
@@ -38,7 +42,6 @@ const SingleClassroomDropdown = ({
     if (onChange) onChange(e);
   };
 
-  // Either show all classrooms or only those matching the building, then sort
   const options = (
     showAll ? classrooms : classrooms.filter((c) => c.buildingCode === building)
   ).sort(compareValues("roomNumber"));
