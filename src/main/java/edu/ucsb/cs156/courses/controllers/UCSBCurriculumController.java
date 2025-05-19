@@ -1,8 +1,11 @@
 package edu.ucsb.cs156.courses.controllers;
 
+import edu.ucsb.cs156.courses.entities.GradeHistory;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.utilities.CourseUtilities;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +45,13 @@ public class UCSBCurriculumController extends ApiController {
     String body = ucsbCurriculumService.getFinalsInfo(quarterYYYYQ, enrollCd);
 
     return ResponseEntity.ok().body(body);
+  }
+
+  // Backend for General Education Areas
+  @Operation(summary = "Get all general education areas")
+  @GetMapping(value = "/generalEducationInfo", produces = "application/json")
+  public ResponseEntity<String[]> generalEducationAreas() throws Exception {
+    String[] generalEducationAreas = ucsbCurriculumService.getGEAReas();
+    return ResponseEntity.ok().body(generalEducationAreas);
   }
 }
