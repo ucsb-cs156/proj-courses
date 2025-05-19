@@ -156,3 +156,36 @@ export const allTheAreas = [
     collegeCode: "L&S",
   },
 ];
+
+export const outOfOrderAreas = [
+  {
+    requirementCode: "C",
+    requirementTranslation: "Science, Math and Technology",
+    collegeCode: "ENGR",
+  },
+  {
+    requirementCode: "A1",
+    requirementTranslation: "English Reading & Composition",
+    collegeCode: "L&S",
+  },
+  {
+    requirementCode: "D",
+    requirementTranslation: "Social Sciences",
+    collegeCode: "L&S",
+  },
+  {
+    requirementCode: "A2",
+    requirementTranslation: "English Reading & Composition",
+    collegeCode: "ENGR",
+  },
+  {
+    requirementCode: "C",
+    requirementTranslation: "Science, Math and Technology",
+    collegeCode: "L&S",
+  },
+  {
+    requirementCode: "A2",
+    requirementTranslation: "English Reading & Composition",
+    collegeCode: "L&S",
+  },
+];

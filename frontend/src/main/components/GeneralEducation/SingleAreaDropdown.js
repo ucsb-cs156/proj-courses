@@ -11,7 +11,7 @@ const SingleAreaDropdown = ({
   setArea,
   controlId,
   onChange = null,
-  label = "General Education Areas",
+  label = "General Education Area",
   showAll = false,
 }) => {
   const localGEArea = localStorage.getItem(controlId);
@@ -42,18 +42,12 @@ const SingleAreaDropdown = ({
         )}
         {areas.map(function (object) {
           const areaCode = object.requirementCode;
-          const key = `${controlId}-option-${areaCode}`;
+          const key = `${controlId}-option-${areaCode}-${object.collegeCode}`;
           return (
             <option
               key={key}
               data-testid={key}
-              value={
-                object.requirementCode +
-                "-" +
-                object.collegeCode +
-                "-" +
-                object.objCode
-              }
+              value={object.requirementCode + "-" + object.collegeCode}
             >
               {object.requirementCode} - {object.requirementTranslation} (
               {object.collegeCode})

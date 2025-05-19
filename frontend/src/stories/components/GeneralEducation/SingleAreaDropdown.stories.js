@@ -5,7 +5,7 @@ import SingleAreaDropdown from "main/components/GeneralEducation/SingleAreaDropd
 import { oneArea, threeAreas, allTheAreas } from "fixtures/geAreaFixtures";
 
 export default {
-  title: "components/GEArea/SingleAreaDropdown",
+  title: "components/GeneralEducation/SingleAreaDropdown",
   component: SingleAreaDropdown,
 };
 
@@ -17,7 +17,7 @@ const Template = (args) => {
       areas={areas}
       setArea={setArea}
       controlId={"SampleControlId"}
-      label={"General Education Areas"}
+      label={"General Education Area"}
       {...args}
     />
   );
