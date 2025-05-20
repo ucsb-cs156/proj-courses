@@ -322,15 +322,16 @@ public class UCSBCurriculumServiceTests {
   @Test
   public void test_getGeneralEducationInfo_success() throws Exception {
     // a minimal valid JSON array
-    String expectedResult = "[" +
-        "{\"requirementCode\":\"A1\"," +
-         "\"requirementTranslation\":\"English Reading & Composition\"," +
-         "\"collegeCode\":\"ENGR\"," +
-         "\"objCode\":\"BS\"," +
-         "\"courseCount\":1," +
-         "\"units\":4," +
-         "\"inactive\":false}" +
-      "]";
+    String expectedResult =
+        "["
+            + "{\"requirementCode\":\"A1\","
+            + "\"requirementTranslation\":\"English Reading & Composition\","
+            + "\"collegeCode\":\"ENGR\","
+            + "\"objCode\":\"BS\","
+            + "\"courseCount\":1,"
+            + "\"units\":4,"
+            + "\"inactive\":false}"
+            + "]";
 
     // stub out the GET to the GE endpoint
     this.mockRestServiceServer
@@ -348,12 +349,13 @@ public class UCSBCurriculumServiceTests {
   @Test
   public void test_getRequirementCodesByCollege_filtersAndDistinct() throws Exception {
     // JSON containing mixed collegeCodes, with a duplicate A1
-    String fakeJson = "[" +
-      "{\"requirementCode\":\"A1\",\"requirementTranslation\":\"…\",\"collegeCode\":\"ENGR\",\"objCode\":\"BS\",\"courseCount\":1,\"units\":4,\"inactive\":false}," +
-      "{\"requirementCode\":\"B1\",\"requirementTranslation\":\"…\",\"collegeCode\":\"L&S\",\"objCode\":\"BA\",\"courseCount\":1,\"units\":4,\"inactive\":false}," +
-      "{\"requirementCode\":\"A1\",\"requirementTranslation\":\"…\",\"collegeCode\":\"ENGR\",\"objCode\":\"BS\",\"courseCount\":1,\"units\":4,\"inactive\":false}," +
-      "{\"requirementCode\":\"A2\",\"requirementTranslation\":\"…\",\"collegeCode\":\"ENGR\",\"objCode\":\"BS\",\"courseCount\":1,\"units\":4,\"inactive\":false}" +
-    "]";
+    String fakeJson =
+        "["
+            + "{\"requirementCode\":\"A1\",\"requirementTranslation\":\"…\",\"collegeCode\":\"ENGR\",\"objCode\":\"BS\",\"courseCount\":1,\"units\":4,\"inactive\":false},"
+            + "{\"requirementCode\":\"B1\",\"requirementTranslation\":\"…\",\"collegeCode\":\"L&S\",\"objCode\":\"BA\",\"courseCount\":1,\"units\":4,\"inactive\":false},"
+            + "{\"requirementCode\":\"A1\",\"requirementTranslation\":\"…\",\"collegeCode\":\"ENGR\",\"objCode\":\"BS\",\"courseCount\":1,\"units\":4,\"inactive\":false},"
+            + "{\"requirementCode\":\"A2\",\"requirementTranslation\":\"…\",\"collegeCode\":\"ENGR\",\"objCode\":\"BS\",\"courseCount\":1,\"units\":4,\"inactive\":false}"
+            + "]";
 
     // stub the same GE endpoint
     this.mockRestServiceServer
@@ -368,5 +370,4 @@ public class UCSBCurriculumServiceTests {
     List<String> codes = ucs.getRequirementCodesByCollege("ENGR");
     assertEquals(List.of("A1", "A2"), codes);
   }
-
 }

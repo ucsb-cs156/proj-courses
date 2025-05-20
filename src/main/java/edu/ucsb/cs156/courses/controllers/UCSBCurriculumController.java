@@ -3,8 +3,8 @@ package edu.ucsb.cs156.courses.controllers;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +50,9 @@ public class UCSBCurriculumController extends ApiController {
   @GetMapping(value = "/generalEducationInfo", produces = "application/json")
   public ResponseEntity<?> generalEducationInfo(
       @Parameter(description = "Enter either L&S, ENGR, or CRST")
-      @RequestParam(value = "collegeCode", required = false)
-      String collegeCode
-  ) throws Exception {
+          @RequestParam(value = "collegeCode", required = false)
+          String collegeCode)
+      throws Exception {
 
     if (collegeCode != null) {
       // returns List<String> of requirementCode

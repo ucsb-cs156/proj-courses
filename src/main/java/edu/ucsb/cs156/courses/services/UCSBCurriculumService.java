@@ -1,8 +1,7 @@
 package edu.ucsb.cs156.courses.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.GERequirement;
@@ -10,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -294,13 +294,13 @@ public class UCSBCurriculumService {
   public List<String> getRequirementCodesByCollege(String collegeCode) throws Exception {
     String json = getGeneralEducationInfo();
 
-    List<GERequirement> allAreas = objectMapper.readValue(
-          json, new TypeReference<List<GERequirement>>() {});
+    List<GERequirement> allAreas =
+        objectMapper.readValue(json, new TypeReference<List<GERequirement>>() {});
 
     return allAreas.stream()
-          .filter(area -> area.getCollegeCode().equalsIgnoreCase(collegeCode))
-          .map(GERequirement::getRequirementCode)
-          .distinct()
-          .collect(Collectors.toList());
+        .filter(area -> area.getCollegeCode().equalsIgnoreCase(collegeCode))
+        .map(GERequirement::getRequirementCode)
+        .distinct()
+        .collect(Collectors.toList());
   }
 }
