@@ -129,8 +129,6 @@ export default function PersonalSchedulesDetailsPage() {
             height: "1000px", // Adjust based on your longest day
             margin: "20px 0",
             border: "1px solid #ddd",
-            background:
-              "repeating-linear-gradient(#f9f9f9 0px, #f9f9f9 60px, #eee 60px, #eee 61px)",
           }}
         >
           {eventStyles.map((event, idx) => (
@@ -142,7 +140,7 @@ export default function PersonalSchedulesDetailsPage() {
               overlay={
                 <Popover>
                   <Popover.Header as="h3">{event.title}</Popover.Header>
-                  <Popover.Body>
+                  <Popover.Body data-testid={`PopoverBody-${event.id}`}>
                     <p>
                       {event.startTime} - {event.endTime}
                       <br />
@@ -153,17 +151,21 @@ export default function PersonalSchedulesDetailsPage() {
               }
             >
               <Card
-                style={event.style}
                 data-testid={`SchedulerEvent-${event.id}`}
+                style={event.style}
               >
-                <Card.Body style={{ padding: "5px" }}>
+                <Card.Body style={{ padding: "5px" }}> 
                   {event.height >= 20 && (
-                    <Card.Text style={event.titleStyle}>
+                    <Card.Text 
+                      data-testid={`SchedulerEventTitle-${event.id}`} 
+                      style={event.titleStyle}>
                       {event.title}
                     </Card.Text>
                   )}
                   {event.height >= 40 && (
-                    <Card.Text style={{ fontSize: "12px", textAlign: "left" }}>
+                    <Card.Text 
+                      data-testid={`SchedulerEventTime-${event.id}`}
+                      style={{ fontSize: "12px", textAlign: "left" }}>
                       {event.startTime} - {event.endTime}
                     </Card.Text>
                   )}
