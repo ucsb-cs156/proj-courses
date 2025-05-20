@@ -155,8 +155,14 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     );
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
-    expect(screen.queryByTestId("PersonalSchedulesTable-cell-row-0-col-Delete-button")).not.toBeInTheDocument();
-    expect(screen.queryByTestId("PersonalSchedulesTable-cell-row-0-col-Edit-button")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(
+        "PersonalSchedulesTable-cell-row-0-col-Delete-button",
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("PersonalSchedulesTable-cell-row-0-col-Edit-button"),
+    ).not.toBeInTheDocument();
   });
 
   test("renders 'Back' button", () => {
@@ -196,7 +202,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         <MemoryRouter>
           <PersonalSchedulesDetailsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -211,13 +217,16 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     });
 
     // Specific title by test ID (best practice)
-    expect(screen.getByTestId("SchedulerEventTitle-0-0-0")).toHaveTextContent("COMP ENGR SEMINAR");
+    expect(screen.getByTestId("SchedulerEventTitle-0-0-0")).toHaveTextContent(
+      "COMP ENGR SEMINAR",
+    );
 
     // OR: Fallback if test IDs aren’t added
     expect(screen.getAllByText("COMP ENGR SEMINAR").length).toBeGreaterThan(0);
 
-    expect(screen.getByTestId("SchedulerEvent-0-0-0").firstChild).toHaveStyle("padding: 5px");
-
+    expect(screen.getByTestId("SchedulerEvent-0-0-0").firstChild).toHaveStyle(
+      "padding: 5px",
+    );
   });
 
   test("clicking on an event shows a popover with details", async () => {
@@ -236,15 +245,18 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         <MemoryRouter>
           <PersonalSchedulesDetailsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const card = await screen.findByTestId("SchedulerEvent-0-0-0");
     fireEvent.click(card);
+    const popover = screen.getByTestId("PopoverBody-0-0-0");
 
     await waitFor(() => {
-      const popover = screen.getByTestId("PopoverBody-0-0-0");
       expect(popover).toHaveTextContent("15:00 - 15:50");
+    });
+
+    await waitFor(() => {
       expect(popover).toHaveTextContent("ECE 1A — BUCHN 1930");
     });
   });
@@ -265,7 +277,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         <MemoryRouter>
           <PersonalSchedulesDetailsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const titleEl = await screen.findByTestId("SchedulerEventTitle-0-0-0");
@@ -287,7 +299,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         <MemoryRouter>
           <PersonalSchedulesDetailsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const calendar = screen.getByTestId("calendar-grid");
@@ -304,18 +316,15 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       margin: 20px 0;
       border: 1px solid #ddd;
     `);
-
   });
 
   test("does NOT display time text when event height is less than 40", async () => {
     setupAdminUser();
 
-
     const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
-
 
     axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, [
       {
@@ -342,7 +351,6 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       },
     ]);
 
-
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -351,24 +359,19 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
-
     await screen.findByTestId("SchedulerEvent-0-0-0");
-
 
     expect(screen.queryByText(/4:00 PM/)).not.toBeInTheDocument();
     expect(screen.queryByText(/4:20 PM/)).not.toBeInTheDocument();
   });
 
-
   test("displays time text when event height is exactly 40", async () => {
     setupAdminUser();
-
 
     const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
-
 
     axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, [
       {
@@ -395,6 +398,52 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       },
     ]);
 
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/10:00 AM/)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/10:40 AM/)).toBeInTheDocument();
+    });
+  });
+
+  test("correctly positions events based on time conversion", async () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, [
+      {
+        id: 1,
+        courseId: "TEST 101",
+        title: "Test Course",
+        enrolled: "10/20",
+        location: "TEST 101",
+        classSections: [
+          {
+            enrollCode: "12345",
+            section: "0100",
+            timeLocations: [
+              {
+                days: "MWF",
+                beginTime: "9:00 AM",
+                endTime: "9:50 AM",
+                building: "TEST",
+                room: "101",
+              },
+            ],
+          },
+        ],
+      },
+    ]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -404,68 +453,31 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
-
     await waitFor(() => {
-      expect(screen.getByText(/10:00 AM/)).toBeInTheDocument();
-      expect(screen.getByText(/10:40 AM/)).toBeInTheDocument();
+      const event = screen.getByTestId("SchedulerEvent-0-0-0");
+      expect(event).toHaveStyle({ top: "634px" });
+    });
+    await waitFor(() => {
+      const event = screen.getByTestId("SchedulerEvent-0-0-0");
+      expect(event).toHaveStyle({ height: "50px" });
+    });
+    await waitFor(() => {
+      const timeText = screen.getByText("9:00 AM - 9:50 AM");
+      expect(timeText).toHaveStyle("font-size: 12px");
+    });
+    await waitFor(() => {
+      const timeText = screen.getByText("9:00 AM - 9:50 AM");
+      expect(timeText).toHaveStyle("text-align: left");
     });
   });
-
-  test("correctly positions events based on time conversion", async () => {
-     const queryClient = new QueryClient();
-     axiosMock
-       .onGet(`/api/personalschedules?id=17`)
-       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
-     axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, [
-       {
-         id: 1,
-         courseId: "TEST 101",
-         title: "Test Course",
-         enrolled: "10/20",
-         location: "TEST 101",
-         classSections: [
-           {
-             enrollCode: "12345",
-             section: "0100",
-             timeLocations: [
-               {
-                 days: "MWF",
-                 beginTime: "9:00 AM",
-                 endTime: "9:50 AM",
-                 building: "TEST",
-                 room: "101",
-               },
-             ],
-           },
-         ],
-       },
-     ]);
-
-
-     render(
-       <QueryClientProvider client={queryClient}>
-         <MemoryRouter>
-           <PersonalSchedulesDetailsPage />
-         </MemoryRouter>
-       </QueryClientProvider>,
-     );
-
-
-     await waitFor(() => {
-       const event = screen.getByTestId("SchedulerEvent-0-0-0");
-       expect(event).toHaveStyle({ top: "634px" });
-       expect(event).toHaveStyle({ height: "50px" });
-       const timeText = screen.getByText("9:00 AM - 9:50 AM");
-       expect(timeText).toHaveStyle("font-size: 12px");
-       expect(timeText).toHaveStyle("text-align: left");
-     });
-   });
 
   test("does NOT display title when event height is less than 20", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();
 
-    axiosMock.onGet("/api/personalschedules?id=17").reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet("/api/personalschedules?id=17")
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
     axiosMock.onGet("api/personalSections/all?psId=17").reply(200, [
       {
         id: 4,
@@ -497,21 +509,25 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         <MemoryRouter>
           <PersonalSchedulesDetailsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // Wait for event block to exist
     await screen.findByTestId("SchedulerEvent-0-0-0");
 
     // Confirm title is NOT rendered
-    expect(screen.queryByTestId("SchedulerEventTitle-0-0-0")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("SchedulerEventTitle-0-0-0"),
+    ).not.toBeInTheDocument();
   });
 
   test("displays title text when event height is exactly 20", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();
 
-    axiosMock.onGet("/api/personalschedules?id=17").reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet("/api/personalschedules?id=17")
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
 
     axiosMock.onGet("api/personalSections/all?psId=17").reply(200, [
       {
@@ -544,12 +560,11 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         <MemoryRouter>
           <PersonalSchedulesDetailsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // Wait for title to appear
     const title = await screen.findByTestId("SchedulerEventTitle-0-0-0");
     expect(title).toHaveTextContent("Exact Match Event");
   });
-
 });

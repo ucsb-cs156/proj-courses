@@ -154,18 +154,20 @@ export default function PersonalSchedulesDetailsPage() {
                 data-testid={`SchedulerEvent-${event.id}`}
                 style={event.style}
               >
-                <Card.Body style={{ padding: "5px" }}> 
+                <Card.Body style={{ padding: "5px" }}>
                   {event.height >= 20 && (
-                    <Card.Text 
-                      data-testid={`SchedulerEventTitle-${event.id}`} 
-                      style={event.titleStyle}>
+                    <Card.Text
+                      data-testid={`SchedulerEventTitle-${event.id}`}
+                      style={event.titleStyle}
+                    >
                       {event.title}
                     </Card.Text>
                   )}
                   {event.height >= 40 && (
-                    <Card.Text 
+                    <Card.Text
                       data-testid={`SchedulerEventTime-${event.id}`}
-                      style={{ fontSize: "12px", textAlign: "left" }}>
+                      style={{ fontSize: "12px", textAlign: "left" }}
+                    >
                       {event.startTime} - {event.endTime}
                     </Card.Text>
                   )}
