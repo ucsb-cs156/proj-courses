@@ -7,6 +7,7 @@ describe("PersonalSchedulePanel tests", () => {
   const testId = "SchedulerPanel";
 
   test("renders without crashing and displays day and time headers", () => {
+    render(<PersonalSchedulePanel />);
     // Check for the timeslot header
     expect(screen.getByTestId(`${testId}-timeslot-header`)).toBeInTheDocument();
 
