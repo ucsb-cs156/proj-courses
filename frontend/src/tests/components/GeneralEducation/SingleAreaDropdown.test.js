@@ -46,10 +46,10 @@ describe("SingleAreaDropdown tests", () => {
     );
   });
 
-  test("renders without crashing on three areas", async () => {
+  test("renders without crashing on three areas and sorts them properly", async () => {
     render(
       <SingleAreaDropdown
-        areas={[threeAreas[2], threeAreas[0], threeAreas[1]]}
+        areas={[threeAreas[2], threeAreas[1], threeAreas[0]]}
         area={area}
         setArea={setArea}
         controlId="sad1"
@@ -193,31 +193,6 @@ describe("SingleAreaDropdown tests", () => {
     const selectElement = screen.getByLabelText("General Education Area");
     userEvent.selectOptions(selectElement, "ALL");
     expect(setArea).toHaveBeenCalledWith("ALL");
-  });
-
-  test("out of order subjects is sorted by requirementCode and collegeCode", async () => {
-    render(
-      <SingleAreaDropdown
-        areas={outOfOrderAreas}
-        area={area}
-        setArea={setArea}
-        controlId="sad1"
-      />,
-    );
-
-    expect(
-      await screen.findByText("General Education Area"),
-    ).toBeInTheDocument();
-    const options = screen.getAllByRole("option");
-    const optionTexts = options.map((opt) => opt.textContent);
-    expect(optionTexts).toEqual([
-      "A1 - English Reading & Composition (L&S)",
-      "A2 - English Reading & Composition (ENGR)",
-      "A2 - English Reading & Composition (L&S)",
-      "C - Science, Math and Technology (ENGR)",
-      "C - Science, Math and Technology (L&S)",
-      "D - Social Sciences (L&S)",
-    ]);
   });
 
   test("if I pass a non-null onChange, it gets called when the value changes", async () => {
