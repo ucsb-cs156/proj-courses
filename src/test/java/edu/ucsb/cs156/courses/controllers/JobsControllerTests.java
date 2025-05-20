@@ -5,6 +5,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -37,8 +38,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
@@ -66,28 +74,57 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
-  public void admin_can_get_all_jobs() throws Exception {
+public void admin_can_get_all_jobs_paged() throws Exception {
 
     // arrange
-
     Job job1 = Job.builder().log("this is job 1").build();
     Job job2 = Job.builder().log("this is job 2").build();
+    List<Job> expectedJobs = List.of(job1, job2);
 
-    ArrayList<Job> expectedJobs = new ArrayList<>();
-    expectedJobs.addAll(Arrays.asList(job1, job2));
+    // wrap in a PageImpl and stub the paged findAll(Pageable)
+    PageImpl<Job> page = new PageImpl<>(expectedJobs);
+    when(jobsRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-    when(jobsRepository.findAll()).thenReturn(expectedJobs);
+    // act & assert
+    mockMvc.perform(get("/api/jobs/all"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(2))
+        .andExpect(jsonPath("$.totalElements").value(2));
 
-    // act
-    MvcResult response =
-        mockMvc.perform(get("/api/jobs/all")).andExpect(status().isOk()).andReturn();
+    verify(jobsRepository, atLeastOnce()).findAll(any(Pageable.class));
+}
+@WithMockUser(roles="ADMIN")
+@Test
+public void getAllJobs__invalidSortField__returns400() throws Exception {
+  mockMvc.perform(get("/api/jobs/all")
+          .param("page","0")
+          .param("size","5")
+          .param("sortField","notAField")
+          .param("sortDir","DESC")
+      )
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.message").value("notAField is not a valid sort field"));
+}
 
-    // assert
+  @WithMockUser(roles="ADMIN")
+  @Test
+  public void getAllJobs__nonDescSortDir__usesAsc() throws Exception {
+  // stub the repository to return a one-element page
+  PageImpl<Job> page = new PageImpl<>(List.of(Job.builder().build()));
+  when(jobsRepository.findAll(any(Pageable.class))).thenReturn(page);
+  
+    mockMvc.perform(get("/api/jobs/all")
+          .param("page","0")
+          .param("size","1")
+          .param("sortField","createdAt")
+          .param("sortDir","ASC")    // not DESC => should pick ASC branch
+      )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content.length()").value(1));
 
-    verify(jobsRepository, atLeastOnce()).findAll();
-    String expectedJson = mapper.writeValueAsString(expectedJobs);
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
+  // verify that we passed Sort.Direction.ASC into the Pageable
+    verify(jobsRepository)
+      .findAll(argThat((Pageable p) -> p.getSort().getOrderFor("createdAt").getDirection() == Sort.Direction.ASC));
   }
 
   @WithMockUser(roles = {"ADMIN"})

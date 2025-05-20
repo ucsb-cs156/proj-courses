@@ -25,6 +25,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import java.util.List;
+
+
 
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
@@ -43,13 +50,28 @@ public class JobsController extends ApiController {
 
   @Autowired UploadGradeDataJobFactory updateGradeDataJobFactory;
 
-  @Operation(summary = "List all jobs")
+  @Operation(summary = "List all jobs(Paged)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/all")
-  public Iterable<Job> allJobs() {
-    Iterable<Job> jobs = jobsRepository.findAll();
-    return jobs;
-  }
+  public Page<Job> allJobs(
+    @RequestParam(defaultValue="0") int page,
+    @RequestParam(defaultValue="10") int size,
+    @RequestParam(defaultValue="createdAt") String sortField,
+    @RequestParam(defaultValue="DESC") String sortDir
+) {
+    // only these fields are allowed for sorting
+    List<String> allowed = List.of("id","createdAt","updatedAt","status");
+    if (!allowed.contains(sortField)) {
+        throw new IllegalArgumentException(sortField + " is not a valid sort field");
+    }
+
+    Sort.Direction dir = sortDir.equalsIgnoreCase("DESC")
+        ? Sort.Direction.DESC
+        : Sort.Direction.ASC;
+    Pageable pageable = PageRequest.of(page, size, dir, sortField);
+
+    return jobsRepository.findAll(pageable);
+}
 
   @Operation(summary = "Delete all job records")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
