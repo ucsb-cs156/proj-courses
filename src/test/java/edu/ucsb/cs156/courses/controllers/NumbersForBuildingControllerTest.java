@@ -13,8 +13,6 @@ import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.Section;
 import edu.ucsb.cs156.courses.documents.TimeLocation;
-
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -88,10 +86,8 @@ public class NumbersForBuildingControllerTest {
             any(String.class), any(String.class), eq("GIRV")))
         .thenReturn(sections);
 
-        
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
-    
     Set<String> expectedRoomNumbers = new HashSet<>(Arrays.asList("1116", "2120"));
     String expectedString = mapper.writeValueAsString(expectedRoomNumbers);
     String responseString = response.getResponse().getContentAsString();
