@@ -60,6 +60,166 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     console.error.mockRestore();
   });
 
+  test("renders calendar with correct background style", async () => {
+    setupAdminUser();
+
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const grid = await screen.findByTestId("calendar-grid");
+    expect(grid).toHaveStyle(
+      "background: repeating-linear-gradient(#f9f9f9 0px, #f9f9f9 60px, #eee 60px, #eee 61px)",
+    );
+  });
+
+  test("displays time text only when event height is at least 40", async () => {
+    setupAdminUser();
+
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+
+    // Use section with height >= 40
+    axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, [
+      {
+        id: 1,
+        courseId: "TEST 101",
+        title: "Test Course",
+        enrolled: "10/20",
+        location: "TEST 101",
+        classSections: [
+          {
+            enrollCode: "12345",
+            section: "0100",
+            timeLocations: [
+              {
+                days: "M",
+                beginTime: "1:00 PM",
+                endTime: "2:00 PM",
+                building: "TEST",
+                room: "101",
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      // Depending on how time is rendered (as full text or split), this may need to be adjusted
+      expect(screen.getByText(/1:00 PM/)).toBeInTheDocument();
+      expect(screen.getByText(/2:00 PM/)).toBeInTheDocument();
+    });
+  });
+
+  test("does NOT display time text when event height is less than 40", async () => {
+    setupAdminUser();
+
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+
+    // Provide a section with short duration (20 minutes)
+    axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, [
+      {
+        id: 2,
+        courseId: "SHORT 102",
+        title: "Short Event",
+        enrolled: "5/10",
+        location: "SHORT ROOM",
+        classSections: [
+          {
+            enrollCode: "67890",
+            section: "0200",
+            timeLocations: [
+              {
+                days: "T",
+                beginTime: "4:00 PM",
+                endTime: "4:20 PM", // 20 minutes = height < 40px
+                building: "SHORT",
+                room: "102",
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Wait for event to render
+    await waitFor(() => {
+      expect(screen.getByTestId("SchedulerEvent-0-0-0")).toBeInTheDocument();
+    });
+
+    // Assert time text is NOT shown
+    expect(screen.queryByText(/4:00 PM/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/4:20 PM/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/4:00 PM - 4:20 PM/)).not.toBeInTheDocument();
+  });
+
+
+
+  test("calendar grid has expected styles", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+
+    axiosMock
+      .onGet("/api/personalschedules?id=17")
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+
+    axiosMock.onGet("api/personalSections/all?psId=17").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const calendarGrid = await screen.findByTestId("calendar-grid");
+
+    expect(calendarGrid).toHaveStyle("position: relative");
+    expect(calendarGrid).toHaveStyle("height: 1000px");
+    expect(calendarGrid).toHaveStyle("margin: 20px 0");
+    expect(calendarGrid).toHaveStyle("border: 1px solid #ddd");
+    expect(calendarGrid).toHaveStyle(
+      "background: repeating-linear-gradient(#f9f9f9 0px, #f9f9f9 60px, #eee 60px, #eee 61px)"
+    );
+  });
+
+
+
   test("renders without crashing for regular user", () => {
     const queryClient = new QueryClient();
     axiosMock.onGet("/api/personalschedules/all").reply(200, []);
@@ -175,5 +335,87 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     // Optional: Test button functionality
     userEvent.click(backButton);
     // Add your assertions here to ensure that clicking the button triggers the expected action.
+  });
+
+  describe("convertTimeToMinutes and event styles", () => {
+    beforeEach(() => {
+      setupAdminUser();
+    });
+
+    test("correctly positions events based on time conversion", async () => {
+      const queryClient = new QueryClient();
+      axiosMock
+        .onGet(`/api/personalschedules?id=17`)
+        .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+      axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, [
+        {
+          id: 1,
+          courseId: "TEST 101",
+          title: "Test Course",
+          enrolled: "10/20",
+          location: "TEST 101",
+          classSections: [
+            {
+              enrollCode: "12345",
+              section: "0100",
+              timeLocations: [
+                {
+                  days: "MWF",
+                  beginTime: "9:00 AM",
+                  endTime: "9:50 AM",
+                  building: "TEST",
+                  room: "101",
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <PersonalSchedulesDetailsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      await waitFor(() => {
+        const event = screen.getByTestId("SchedulerEvent-0-0-0");
+        // 9:00 AM should convert to 540 minutes (9 * 60)
+        // The component adds 94px to the top position
+        expect(event).toHaveStyle({ top: "634px" }); // 540 + 94 = 634
+        // Duration from 9:00 AM to 9:50 AM is 50 minutes
+        expect(event).toHaveStyle({ height: "50px" });
+      });
+    });
+
+    test("creates correct event styles from personal sections", async () => {
+      const queryClient = new QueryClient();
+      axiosMock
+        .onGet(`/api/personalschedules?id=17`)
+        .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+      axiosMock
+        .onGet(`api/personalSections/all?psId=17`)
+        .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <PersonalSchedulesDetailsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId("SchedulerEvent-0-0-0")).toBeInTheDocument();
+        const event = screen.getByTestId("SchedulerEvent-0-0-0");
+        expect(event).toHaveStyle({
+          backgroundColor: "#b3d9ff",
+          border: "2px solid #3399ff",
+        });
+        expect(event).toHaveTextContent("COMP ENGR SEMINAR");
+      });
+    });
   });
 });
