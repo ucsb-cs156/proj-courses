@@ -32,61 +32,61 @@ export default function PersonalSchedulesDetailsPage() {
   const [eventStyles, setEventStyles] = useState([]);
 
   const convertTimeToMinutes = (time) => {
-    const [timePart, modifier] = [time.slice(0, -2), time.slice(-2)];
-    let [hours, minutes] = timePart.split(":").map(Number);
-
-    if (modifier === "PM" && hours !== 12) hours += 12;
-    if (modifier === "AM" && hours === 12) hours = 0;
-
-    return hours * 60 + minutes;
+    if (!time) return 0;
+    if (time.includes("AM") || time.includes("PM")) {
+      const timeStr = time.replace(/\s/g, "");
+      const [timePart, modifier] = [timeStr.slice(0, -2), timeStr.slice(-2)];
+      let [hours, minutes] = timePart.split(":").map(Number);
+      if (modifier === "PM" && hours !== 12) hours += 12;
+      if (modifier === "AM" && hours === 12) hours = 0;
+      return hours * 60 + minutes;
+    } else {
+      const [hours, minutes] = time.split(":").map(Number);
+      return hours * 60 + minutes;
+    }
   };
 
   useEffect(() => {
     if (personalSection) {
-      const styles = personalSection
-        .filter((event) => event.startTime && event.endTime)
-        .map((event) => {
-          const start = convertTimeToMinutes(event.startTime);
-          const end = convertTimeToMinutes(event.endTime);
-          const height = end - start;
-          const top = start + 94;
+      const styles = personalSection.flatMap((section, sectionIdx) => {
+        if (!section.classSections) return [];
 
-          return {
-            id: event.id,
-            title: event.title,
-            startTime: event.startTime,
-            endTime: event.endTime,
-            description: event.description,
-            style: {
-              position: "absolute",
-              top: `${top}px`,
-              height: `${height}px`,
-              width: "100%",
-              backgroundColor: "#b3d9ff",
-              border: "2px solid #3399ff",
-              zIndex: 1,
-              padding: "2px",
-              justifyContent: "center",
-              alignItems: "left",
-            },
-            titleStyle: {
-              fontSize:
-                height < 25
-                  ? "10px"
-                  : height < 40
-                    ? "12px"
-                    : height < 60
-                      ? "14px"
-                      : "16px",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-              textAlign: "left",
-              margin: "0",
-            },
-            height: height,
-          };
+        return section.classSections.flatMap((cls, clsIdx) => {
+          if (!cls.timeLocations) return [];
+
+          return cls.timeLocations.map((loc, locIdx) => {
+            const start = convertTimeToMinutes(loc.beginTime);
+            const end = convertTimeToMinutes(loc.endTime);
+            const height = end - start;
+
+            return {
+              id: `${sectionIdx}-${clsIdx}-${locIdx}`,
+              title: section.title || "Untitled",
+              startTime: loc.beginTime,
+              endTime: loc.endTime,
+              description: `${section.courseId?.trim()} — ${loc.building} ${loc.room}`,
+              style: {
+                position: "absolute",
+                top: `${start + 94}px`,
+                height: `${height}px`,
+                width: "100%",
+                backgroundColor: "#b3d9ff",
+                border: "2px solid #3399ff",
+                zIndex: 1,
+                padding: "2px",
+              },
+              titleStyle: {
+                fontSize: height < 25 ? "10px" : height < 40 ? "12px" : "14px",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              },
+              height: height,
+            };
+          });
         });
+      });
+
       setEventStyles(styles);
     }
   }, [personalSection]);
