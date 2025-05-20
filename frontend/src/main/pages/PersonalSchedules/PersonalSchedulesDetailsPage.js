@@ -120,9 +120,11 @@ export default function PersonalSchedulesDetailsPage() {
         <div
           style={{
             position: "relative",
-            height: "1200px",
-            marginTop: "40px",
-            border: "1px solid #ccc",
+            height: "1000px", // Adjust based on your longest day
+            margin: "20px 0",
+            border: "1px solid #ddd",
+            background:
+              "repeating-linear-gradient(#f9f9f9 0px, #f9f9f9 60px, #eee 60px, #eee 61px)",
           }}
         >
           {eventStyles.map((event, idx) => (
