@@ -4,6 +4,7 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,4 +44,48 @@ public class UCSBCurriculumController extends ApiController {
 
     return ResponseEntity.ok().body(body);
   }
+
+  @GetMapping(value = "/generalEducationInfo", produces = "application/json")
+  public List<String> getGeneralEducationAreas() {
+    List<String> geAreas =
+        List.of(
+            "A1", // English Reading and Composition (Part 1)
+            "A2", // English Reading and Composition (Part 2)
+            "B", // Foreign Language
+            "C", // Science, Mathematics, and Technology
+            "D", // Social Sciences
+            "E", // Culture and Thought
+            "F", // Arts
+            "G", // Literature
+            "H", // Foreign Language
+            "WRT", // Writing
+            "QR", // Quantitative Reasoning
+            "ETH", // Ethnicity
+            "EUR", // European Traditions
+            "NWC", // World Cultures
+            "AMH" // American History and Institutions
+            );
+    return geAreas;
+  }
+
+  /*
+   * Definitions
+   *
+   * Areas of GE:
+   *
+   * Area A - English Reading and Composition
+   * Area B - Foreign Language
+   * Area C - Science, Mathematics, and Technology
+   * Area D - Social Science
+   * Area E - Culture and Thought
+   * Area F - Arts
+   * Area G - Literature
+   *
+   * Writing (A1 & A2)  -->> This is different from Area A
+   * European Traditions
+   * World Cultures
+   * Quantitative Relationships
+   * Ethnicity
+   * American History and Institutions
+   */
 }
