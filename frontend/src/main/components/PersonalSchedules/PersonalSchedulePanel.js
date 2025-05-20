@@ -11,6 +11,7 @@ import { daysOfWeek, hours } from "../Utils/dateUtils";
 //     endTime: "4:00PM"
 // }
 
+// Stryker disable all: This is a component that is used to display a personal schedule
 export default function SchedulerPanel({
   Events = [],
   eventColor = "#d1ecf188",
@@ -78,8 +79,8 @@ export default function SchedulerPanel({
           <Col key={day} className="scheduler-day-column">
             {
               <div
-                style={{ height: "30px" }}
-                className="scheduler-time-slot"
+                className="scheduler-time-slot-short"
+                data-testid={`${testId}-day-slot-header`}
               ></div>
             }
             {hours.slice(0, hours.length - 1).map((hour) => (

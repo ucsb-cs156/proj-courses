@@ -64,6 +64,15 @@ body {
   border-bottom: 1px solid #ddd;
 }
 
+.scheduler-time-slot-short {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-bottom: 1px solid #ddd;
+}
+
 .scheduler-event-card {
   width: 100%;
   height: 100%;

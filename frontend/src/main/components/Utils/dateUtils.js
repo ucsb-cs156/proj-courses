@@ -7,7 +7,6 @@ export const daysOfWeek = [
   "Saturday",
   "Sunday",
 ];
-
 export const hours = [
   "12 AM",
   "1 AM",

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import PersonalSchedulePanel from "main/components/PersonalSchedules/PersonalSchedulePanel";
 import { daysOfWeek, hours } from "../../../main/components/Utils/dateUtils"; // Adjusted import path
 
@@ -7,11 +7,26 @@ describe("PersonalSchedulePanel tests", () => {
   const testId = "SchedulerPanel";
 
   test("renders without crashing and displays day and time headers", () => {
-    render(<PersonalSchedulePanel Events={[]} />);
+    const { container } = render(<PersonalSchedulePanel Events={[]} />);
 
-    // Check for day headers
+    // Check for the timeslot header
+    expect(screen.getByTestId(`${testId}-timeslot-header`)).toBeInTheDocument();
+
+    // Check for day headers and columns
     daysOfWeek.forEach((day) => {
-      expect(screen.getByTestId(`${testId}-${day}-title`)).toBeInTheDocument();
+      // Check column exists
+      expect(screen.getByTestId(`${testId}-${day}-column`)).toBeInTheDocument();
+      // Check title exists
+      const dayTitle = screen.getByTestId(`${testId}-${day}-title`);
+      expect(dayTitle).toBeInTheDocument();
+      expect(dayTitle).toHaveTextContent(day);
+
+      // Check that day slot headers exist and have the right class
+      const columnElements = screen.getAllByTestId(`${testId}-day-slot-header`);
+      expect(columnElements.length).toBe(daysOfWeek.length); // One for each day
+      columnElements.forEach((element) => {
+        expect(element).toHaveClass("scheduler-time-slot-short");
+      });
     });
 
     // Check for time slot labels (skipping the first empty one in the component's `hours` array)
@@ -20,9 +35,24 @@ describe("PersonalSchedulePanel tests", () => {
         screen.getByTestId(`${testId}-${hour.replace(" ", "-")}-title`),
       ).toBeInTheDocument();
       // Also check for the span label inside
-      expect(
-        screen.getByTestId(`${testId}-${hour.replace(" ", "-")}-label`),
-      ).toHaveTextContent(hour);
+      const hourLabel = screen.getByTestId(
+        `${testId}-${hour.replace(" ", "-")}-label`,
+      );
+      expect(hourLabel).toBeInTheDocument();
+      expect(hourLabel).toHaveTextContent(hour);
+      expect(hourLabel).toHaveClass("scheduler-hour-label");
+    });
+
+    // Check base time slots are rendered
+    const baseSlots = screen.getAllByTestId(`${testId}-base-slot`);
+    // Should be (hours.length - 1) * daysOfWeek.length slots
+    const expectedSlots = (hours.length - 1) * daysOfWeek.length;
+    expect(baseSlots.length).toBe(expectedSlots);
+    baseSlots.forEach((slot) => {
+      expect(slot).toHaveClass("scheduler-time-slot");
+      // Verify a card exists inside the slot
+      const cardElement = slot.querySelector(".scheduler-event-card");
+      expect(cardElement).not.toBeNull();
     });
   });
 
