@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import PersonalSchedulePanel from "main/components/PersonalSchedules/PersonalSchedulePanel";
-import { daysOfWeek, hours } from "../../../main/components/Utils/dateUtils"; // Adjusted import path
+import { daysOfWeek, hours } from "../../../main/utils/dateUtils"; // Adjusted import path
 
 describe("PersonalSchedulePanel tests", () => {
   const testId = "SchedulerPanel";
