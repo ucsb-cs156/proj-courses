@@ -236,4 +236,63 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/personalschedules/weekly/17");
     });
   });
+
+  test("navigates to list page when 'Back' button is clicked", async () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`/api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const backButton = screen.getByRole("button", { name: /back/i });
+    backButton.click();
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/personalschedules/list");
+    });
+  });
+
+  test("PersonalSchedulesTable should have showButtons set to false", async () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`/api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("PersonalSchedulesTable-cell-row-0-col-id"),
+      ).toBeInTheDocument();
+    });
+
+    // Verify no edit/delete buttons are present
+    expect(
+      screen.queryByTestId(
+        "PersonalSchedulesTable-cell-row-0-col-Delete-button",
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("PersonalSchedulesTable-cell-row-0-col-Edit-button"),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -40,6 +40,7 @@ export default function PersonalSchedulesDetailsPage() {
       },
     },
   );
+  // Stryker restore all
 
   const backButton = () => {
     return (
