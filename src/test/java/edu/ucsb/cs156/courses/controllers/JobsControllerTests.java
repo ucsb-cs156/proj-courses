@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,8 +28,7 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -39,14 +39,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MvcResult;
-import java.util.List;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MvcResult;
 
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
@@ -74,7 +70,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
-public void admin_can_get_all_jobs_paged() throws Exception {
+  public void admin_can_get_all_jobs_paged() throws Exception {
 
     // arrange
     Job job1 = Job.builder().log("this is job 1").build();
@@ -86,45 +82,53 @@ public void admin_can_get_all_jobs_paged() throws Exception {
     when(jobsRepository.findAll(any(Pageable.class))).thenReturn(page);
 
     // act & assert
-    mockMvc.perform(get("/api/jobs/all"))
+    mockMvc
+        .perform(get("/api/jobs/all"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content.length()").value(2))
         .andExpect(jsonPath("$.totalElements").value(2));
 
     verify(jobsRepository, atLeastOnce()).findAll(any(Pageable.class));
-}
-@WithMockUser(roles="ADMIN")
-@Test
-public void getAllJobs__invalidSortField__returns400() throws Exception {
-  mockMvc.perform(get("/api/jobs/all")
-          .param("page","0")
-          .param("size","5")
-          .param("sortField","notAField")
-          .param("sortDir","DESC")
-      )
-      .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.message").value("notAField is not a valid sort field"));
-}
+  }
 
-  @WithMockUser(roles="ADMIN")
+  @WithMockUser(roles = "ADMIN")
+  @Test
+  public void getAllJobs__invalidSortField__returns400() throws Exception {
+    mockMvc
+        .perform(
+            get("/api/jobs/all")
+                .param("page", "0")
+                .param("size", "5")
+                .param("sortField", "notAField")
+                .param("sortDir", "DESC"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("notAField is not a valid sort field"));
+  }
+
+  @WithMockUser(roles = "ADMIN")
   @Test
   public void getAllJobs__nonDescSortDir__usesAsc() throws Exception {
-  // stub the repository to return a one-element page
-  PageImpl<Job> page = new PageImpl<>(List.of(Job.builder().build()));
-  when(jobsRepository.findAll(any(Pageable.class))).thenReturn(page);
-  
-    mockMvc.perform(get("/api/jobs/all")
-          .param("page","0")
-          .param("size","1")
-          .param("sortField","createdAt")
-          .param("sortDir","ASC")    // not DESC => should pick ASC branch
-      )
+    // stub the repository to return a one-element page
+    PageImpl<Job> page = new PageImpl<>(List.of(Job.builder().build()));
+    when(jobsRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+    mockMvc
+        .perform(
+            get("/api/jobs/all")
+                .param("page", "0")
+                .param("size", "1")
+                .param("sortField", "createdAt")
+                .param("sortDir", "ASC") // not DESC => should pick ASC branch
+            )
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content.length()").value(1));
 
-  // verify that we passed Sort.Direction.ASC into the Pageable
+    // verify that we passed Sort.Direction.ASC into the Pageable
     verify(jobsRepository)
-      .findAll(argThat((Pageable p) -> p.getSort().getOrderFor("createdAt").getDirection() == Sort.Direction.ASC));
+        .findAll(
+            argThat(
+                (Pageable p) ->
+                    p.getSort().getOrderFor("createdAt").getDirection() == Sort.Direction.ASC));
   }
 
   @WithMockUser(roles = {"ADMIN"})

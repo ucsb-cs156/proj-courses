@@ -14,9 +14,14 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +30,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import java.util.List;
-
-
 
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
@@ -54,24 +52,22 @@ public class JobsController extends ApiController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/all")
   public Page<Job> allJobs(
-    @RequestParam(defaultValue="0") int page,
-    @RequestParam(defaultValue="10") int size,
-    @RequestParam(defaultValue="createdAt") String sortField,
-    @RequestParam(defaultValue="DESC") String sortDir
-) {
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "createdAt") String sortField,
+      @RequestParam(defaultValue = "DESC") String sortDir) {
     // only these fields are allowed for sorting
-    List<String> allowed = List.of("id","createdAt","updatedAt","status");
+    List<String> allowed = List.of("id", "createdAt", "updatedAt", "status");
     if (!allowed.contains(sortField)) {
-        throw new IllegalArgumentException(sortField + " is not a valid sort field");
+      throw new IllegalArgumentException(sortField + " is not a valid sort field");
     }
 
-    Sort.Direction dir = sortDir.equalsIgnoreCase("DESC")
-        ? Sort.Direction.DESC
-        : Sort.Direction.ASC;
+    Sort.Direction dir =
+        sortDir.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC;
     Pageable pageable = PageRequest.of(page, size, dir, sortField);
 
     return jobsRepository.findAll(pageable);
-}
+  }
 
   @Operation(summary = "Delete all job records")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
