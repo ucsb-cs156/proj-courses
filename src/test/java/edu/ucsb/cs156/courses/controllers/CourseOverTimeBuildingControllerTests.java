@@ -133,7 +133,12 @@ public class CourseOverTimeBuildingControllerTests {
   public void test_classrooms_validRequest() throws Exception {
     // build one ConvertedSection with two TimeLocations in GIRV
     CourseInfo info =
-        CourseInfo.builder().quarter("20222").courseId("X").title("Y").description("Z").build();
+        CourseInfo.builder()
+            .quarter("20222")
+            .courseId("CMPSC   24 -1")
+            .title("OBJ ORIENTED DESIGN")
+            .description("Intro to object oriented design")
+            .build();
 
     TimeLocation tl1 = new TimeLocation();
     tl1.setBuilding("GIRV");
@@ -143,8 +148,12 @@ public class CourseOverTimeBuildingControllerTests {
     tl2.setBuilding("GIRV");
     tl2.setRoom("2110");
 
+    TimeLocation drop = new TimeLocation();
+    drop.setBuilding("ELSB"); // different building
+    drop.setRoom("2002");
+
     Section section = new Section();
-    section.setTimeLocations(Arrays.asList(tl1, tl2));
+    section.setTimeLocations(Arrays.asList(tl1, tl2, drop));
 
     ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
 
