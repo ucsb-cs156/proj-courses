@@ -13,6 +13,8 @@ import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.Section;
+import edu.ucsb.cs156.courses.documents.TimeLocation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -101,4 +103,81 @@ public class CourseOverTimeBuildingControllerTests {
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedString, responseString);
   }
+
+  @Test
+public void test_classrooms_emptyRequest() throws Exception {
+  // no sections → expect empty room list
+  List<ConvertedSection> emptySecs = new ArrayList<>();
+  String urlTemplate =
+      "/api/public/courseovertime/classrooms?startQtr=%s&endQtr=%s&buildingCode=%s";
+  String url = String.format(urlTemplate, "20221", "20222", "GIRV");
+
+  // mock
+  when(convertedSectionCollection.findByQuarterRangeAndBuildingCode(
+          any(String.class), any(String.class), any(String.class)))
+      .thenReturn(emptySecs);
+
+  // act
+  MvcResult response =
+      mockMvc
+          .perform(get(url).contentType("application/json"))
+          .andExpect(status().isOk())
+          .andReturn();
+
+  // assert
+  String responseString = response.getResponse().getContentAsString();
+  String expectedString = mapper.writeValueAsString(new ArrayList<String>());
+  assertEquals(expectedString, responseString);
 }
+
+@Test
+public void test_classrooms_validRequest() throws Exception {
+  // build one ConvertedSection with two TimeLocations in GIRV
+  CourseInfo info = CourseInfo.builder()
+      .quarter("20222")
+      .courseId("X")
+      .title("Y")
+      .description("Z")
+      .build();
+
+  TimeLocation tl1 = new TimeLocation();
+  tl1.setBuilding("GIRV");
+  tl1.setRoom("1004");
+
+  TimeLocation tl2 = new TimeLocation();
+  tl2.setBuilding("GIRV");
+  tl2.setRoom("2110");
+
+  Section section = new Section();
+  section.setTimeLocations(Arrays.asList(tl1, tl2));
+
+  ConvertedSection cs = ConvertedSection.builder()
+      .courseInfo(info)
+      .section(section)
+      .build();
+
+  List<ConvertedSection> repoResult = Arrays.asList(cs);
+  String urlTemplate =
+      "/api/public/courseovertime/classrooms?startQtr=%s&endQtr=%s&buildingCode=%s";
+  String url = String.format(urlTemplate, "20221", "20222", "GIRV");
+
+  // mock
+  when(convertedSectionCollection.findByQuarterRangeAndBuildingCode(
+          any(String.class), any(String.class), eq("GIRV")))
+      .thenReturn(repoResult);
+
+  // act
+  MvcResult response =
+      mockMvc
+          .perform(get(url).contentType("application/json"))
+          .andExpect(status().isOk())
+          .andReturn();
+
+  // assert
+  List<String> expectedRooms = Arrays.asList("1004", "2110");
+  String expectedString = mapper.writeValueAsString(expectedRooms);
+  String responseString = response.getResponse().getContentAsString();
+  assertEquals(expectedString, responseString);
+}
+}
+
