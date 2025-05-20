@@ -32,11 +32,12 @@ describe("dateUtils tests", () => {
   });
 
   describe("hours constant", () => {
-    test("contains 24 hours in correct order", () => {
-      expect(hours.length).toBe(24);
-      expect(hours[0]).toBe("12 AM");
-      expect(hours[12]).toBe("12 PM");
-      expect(hours[23]).toBe("11 PM");
+    test("contains 15 hours in correct order", () => {
+      // hours now starts at 8 AM and ends at 10 PM
+      expect(hours.length).toBe(15);
+      expect(hours[0]).toBe("8 AM");
+      expect(hours[4]).toBe("12 PM");
+      expect(hours[14]).toBe("10 PM");
     });
   });
 

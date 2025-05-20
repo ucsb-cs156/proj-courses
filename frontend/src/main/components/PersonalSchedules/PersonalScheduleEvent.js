@@ -28,12 +28,14 @@ export default function SchedulerEvents({ event, eventColor, borderColor }) {
   };
 
   const TOP_POSITION_OFFSET = 94;
+  const DISPLAY_START_HOUR_MINUTES = 8 * 60; // 8 AM in minutes
 
   useEffect(() => {
     const startMinutes = convertTimeToMinutes(event.startTime);
     const endMinutes = convertTimeToMinutes(event.endTime);
     const height = endMinutes - startMinutes;
-    const topPosition = startMinutes + TOP_POSITION_OFFSET;
+    const topPosition =
+      startMinutes + TOP_POSITION_OFFSET - DISPLAY_START_HOUR_MINUTES;
 
     // Determine font size class based on height
     let fontSizeClass = "event-title-xs";

@@ -447,7 +447,9 @@ describe("PersonalScheduleEvent tests", () => {
     const endMinutes = convertTimeToMinutes(mockEvent.endTime); // 10 * 60 + 30 = 630
     const expectedHeight = endMinutes - startMinutes; // 630 - 540 = 90
     const TOP_POSITION_OFFSET = 94; // Value from PersonalScheduleEvent.js
-    const expectedTop = startMinutes + TOP_POSITION_OFFSET; // 540 + 94 = 634
+    const DISPLAY_START_HOUR_MINUTES = 8 * 60; // 8 AM in minutes
+    const expectedTop =
+      startMinutes + TOP_POSITION_OFFSET - DISPLAY_START_HOUR_MINUTES; // 540 + 94 - 480 = 154
 
     expect(eventElement).toHaveStyle(`height: ${expectedHeight}px`);
     expect(eventElement).toHaveStyle(`top: ${expectedTop}px`);
@@ -602,7 +604,9 @@ describe("PersonalScheduleEvent tests", () => {
     // Calculate initial position
     const initialStartMinutes = convertTimeToMinutes(initialEvent.startTime);
     const TOP_POSITION_OFFSET = 94;
-    const initialTop = initialStartMinutes + TOP_POSITION_OFFSET;
+    const DISPLAY_START_HOUR_MINUTES = 8 * 60; // 8 AM in minutes
+    const initialTop =
+      initialStartMinutes + TOP_POSITION_OFFSET - DISPLAY_START_HOUR_MINUTES;
 
     // Render the component
     const { rerender, container } = render(
@@ -637,9 +641,10 @@ describe("PersonalScheduleEvent tests", () => {
       endTime: "11:00 AM", // Now 60 min - title and time should be visible
     };
 
-    // Calculate new expected values
+    // Calculate new expected top for the updated event
     const updatedStartMinutes = convertTimeToMinutes(updatedEvent.startTime);
-    const updatedTop = updatedStartMinutes + TOP_POSITION_OFFSET;
+    const updatedTop =
+      updatedStartMinutes + TOP_POSITION_OFFSET - DISPLAY_START_HOUR_MINUTES;
 
     // Re-render with new props
     rerender(

@@ -13,14 +13,6 @@ export const daysOfWeek = [
 
 export const hours = [
   // Stryker disable all : no test needed
-  "12 AM",
-  "1 AM",
-  "2 AM",
-  "3 AM",
-  "4 AM",
-  "5 AM",
-  "6 AM",
-  "7 AM",
   "8 AM",
   "9 AM",
   "10 AM",
@@ -36,7 +28,6 @@ export const hours = [
   "8 PM",
   "9 PM",
   "10 PM",
-  "11 PM",
   // Stryker restore all
 ];
 
