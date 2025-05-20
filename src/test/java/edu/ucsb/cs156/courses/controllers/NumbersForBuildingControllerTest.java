@@ -13,6 +13,8 @@ import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.Section;
 import edu.ucsb.cs156.courses.documents.TimeLocation;
+
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -67,18 +69,20 @@ public class NumbersForBuildingControllerTest {
   public void test_getRoomNumbers_validRequest() throws Exception {
     TimeLocation timeLocation1 = TimeLocation.builder().building("GIRV").room("1116").build();
     TimeLocation timeLocation2 = TimeLocation.builder().building("GIRV").room("2120").build();
+    TimeLocation timeLocation3 = TimeLocation.builder().building("PHELP").room("3525").build();
 
     Section section1 = Section.builder().timeLocations(Arrays.asList(timeLocation1)).build();
     Section section2 = Section.builder().timeLocations(Arrays.asList(timeLocation2)).build();
+    Section section3 = Section.builder().timeLocations(Arrays.asList(timeLocation3)).build();
 
     ConvertedSection cs1 = ConvertedSection.builder().section(section1).build();
     ConvertedSection cs2 = ConvertedSection.builder().section(section2).build();
+    ConvertedSection cs3 = ConvertedSection.builder().section(section3).build();
 
     String urlTemplate = "/api/public/classrooms/roomnumbers?quarter=%s&buildingCode=%s";
     String url = String.format(urlTemplate, "20221", "GIRV");
 
-    List<ConvertedSection> sections = Arrays.asList(cs1, cs2);
-
+    List<ConvertedSection> sections = Arrays.asList(cs1, cs2, cs3);
 
     when(convertedSectionCollection.findByQuarterRangeAndBuildingCode(
             any(String.class), any(String.class), eq("GIRV")))

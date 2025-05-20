@@ -22,8 +22,7 @@ public class NumbersForBuildingController {
 
   private ObjectMapper mapper = new ObjectMapper();
 
-  @Autowired
-  private ConvertedSectionCollection convertedSectionCollection;
+  @Autowired private ConvertedSectionCollection convertedSectionCollection;
 
   @Operation(summary = "Get a list of room numbers for a specific building and quarter")
   @GetMapping(value = "/roomnumbers", produces = "application/json")
@@ -45,14 +44,15 @@ public class NumbersForBuildingController {
           String buildingCode)
       throws JsonProcessingException {
     List<ConvertedSection> sections =
-        convertedSectionCollection.findByQuarterRangeAndBuildingCode(quarter, quarter, buildingCode);
+        convertedSectionCollection.findByQuarterRangeAndBuildingCode(
+            quarter, quarter, buildingCode);
 
-        
-    Set<String> roomNumbers = sections.stream()
-        .flatMap(section -> section.getSection().getTimeLocations().stream())
-        .filter(timeLocation -> buildingCode.equalsIgnoreCase(timeLocation.getBuilding()))
-        .map(timeLocation -> timeLocation.getRoom())
-        .collect(Collectors.toSet());
+    Set<String> roomNumbers =
+        sections.stream()
+            .flatMap(section -> section.getSection().getTimeLocations().stream())
+            .filter(timeLocation -> buildingCode.equalsIgnoreCase(timeLocation.getBuilding()))
+            .map(timeLocation -> timeLocation.getRoom())
+            .collect(Collectors.toSet());
 
     String body = mapper.writeValueAsString(roomNumbers);
     return ResponseEntity.ok().body(body);
