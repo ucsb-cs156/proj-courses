@@ -57,7 +57,13 @@ export default function SchedulerEvents({ event, eventColor, borderColor }) {
       },
       height: height,
     });
-  }, [event.startTime, event.endTime, eventColor, borderColor]);
+  }, [
+    event.startTime,
+    event.endTime,
+    eventColor,
+    borderColor,
+    DISPLAY_START_HOUR_MINUTES,
+  ]);
 
   return (
     <OverlayTrigger
