@@ -9,6 +9,8 @@ import {
 
 export default function SchedulerEvents({ event, eventColor, borderColor }) {
   const [style, setStyle] = useState({});
+  // Stryker disable next-line all : Initial value is immediately overwritten in useEffect
+  const [titleClass, setTitleClass] = useState("");
 
   const testId = "SchedulerEvent";
 
@@ -33,41 +35,26 @@ export default function SchedulerEvents({ event, eventColor, borderColor }) {
     const height = endMinutes - startMinutes;
     const topPosition = startMinutes + TOP_POSITION_OFFSET;
 
-    // Stryker disable all : hard to test for specfic styles
+    // Determine font size class based on height
+    let fontSizeClass = "event-title-xs";
+    if (height >= 60) {
+      fontSizeClass = "event-title-lg";
+    } else if (height >= 40) {
+      fontSizeClass = "event-title-md";
+    } else if (height >= 25) {
+      fontSizeClass = "event-title-sm";
+    }
+    setTitleClass(fontSizeClass);
+
     setStyle({
       event: {
-        position: "absolute",
         top: `${topPosition}px`,
         height: `${height}px`,
-        width: "100%",
         backgroundColor: eventColor,
         border: `2px solid ${borderColor}`,
-        zIndex: 1,
-        padding: "2px",
-        justifyContent: "center",
-        alignItems: "left",
-      },
-      title: {
-        fontSize:
-          height < 25
-            ? "10px"
-            : height < 40
-              ? "12px"
-              : height < 60
-                ? "14px"
-                : "16px",
-        overflow: "hidden",
-        whiteSpace: "nowrap",
-        textOverflow: "ellipsis",
-        textAlign: "left",
-        margin: "0",
-      },
-      padding5: {
-        padding: "5px",
       },
       height: height,
     });
-    // Stryker restore all
   }, [event.startTime, event.endTime, eventColor, borderColor]);
 
   return (
@@ -99,12 +86,16 @@ export default function SchedulerEvents({ event, eventColor, borderColor }) {
     >
       <Card
         key={event.title}
+        className="scheduler-event"
         style={style.event}
         data-testid={`${testId}-${event.id}`}
       >
-        <Card.Body style={style.padding5}>
+        <Card.Body className="scheduler-event-body">
           {style.height >= 20 && (
-            <Card.Text data-testid={`${testId}-title`} style={style.title}>
+            <Card.Text
+              data-testid={`${testId}-title`}
+              className={`scheduler-event-title ${titleClass}`}
+            >
               {event.title}
             </Card.Text>
           )}

@@ -112,3 +112,43 @@ code {
   font-size: 12px;
   text-align: left;
 }
+
+/* PersonalScheduleEvent styles */
+.scheduler-event {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  padding: 2px;
+  justify-content: center;
+  align-items: left;
+}
+
+.scheduler-event-body {
+  padding: 5px;
+}
+
+.scheduler-event-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+  margin: 0;
+}
+
+/* Font size classes for different event heights */
+.event-title-xs {
+  font-size: 10px;
+}
+
+.event-title-sm {
+  font-size: 12px;
+}
+
+.event-title-md {
+  font-size: 14px;
+}
+
+.event-title-lg {
+  font-size: 16px;
+}
+
