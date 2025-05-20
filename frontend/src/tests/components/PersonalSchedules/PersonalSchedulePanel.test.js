@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import PersonalSchedulePanel from "main/components/PersonalSchedules/PersonalSchedulePanel";
 import { daysOfWeek, hours } from "../../../main/utils/dateUtils"; // Adjusted import path
 
@@ -7,8 +7,6 @@ describe("PersonalSchedulePanel tests", () => {
   const testId = "SchedulerPanel";
 
   test("renders without crashing and displays day and time headers", () => {
-    const { container } = render(<PersonalSchedulePanel Events={[]} />);
-
     // Check for the timeslot header
     expect(screen.getByTestId(`${testId}-timeslot-header`)).toBeInTheDocument();
 

@@ -4,7 +4,6 @@ import { render, screen, fireEvent, within } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import PersonalScheduleEvent from "main/components/PersonalSchedules/PersonalScheduleEvent";
-import { act } from "react-dom/test-utils";
 
 const mockedNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
