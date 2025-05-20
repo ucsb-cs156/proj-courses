@@ -7,7 +7,6 @@ import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalS
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import userEvent from "@testing-library/user-event";
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => {
@@ -22,6 +21,7 @@ jest.mock("react-router-dom", () => {
       mockNavigate(x);
       return null;
     },
+    useNavigate: () => mockNavigate,
   };
 });
 
@@ -71,6 +71,29 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
+    // Add assertions to verify basic rendering
+    expect(screen.getByText("Personal Schedules Details")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
+  });
+
+  test("handles API error gracefully", async () => {
+    const queryClient = new QueryClient();
+    axiosMock.onGet(`/api/personalschedules?id=17`).reply(500, {});
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Personal Schedules Details"),
+      ).toBeInTheDocument();
+    });
   });
 
   test("shows the correct info for admin users", async () => {
@@ -80,7 +103,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
     axiosMock
-      .onGet(`api/personalSections/all?psId=17`)
+      .onGet(`/api/personalSections/all?psId=17`)
       .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
 
     render(
@@ -90,16 +113,19 @@ describe("PersonalSchedulesDetailsPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
     await waitFor(() => {
       expect(
         screen.getByText("Personal Schedules Details"),
       ).toBeInTheDocument();
     });
+
     await waitFor(() => {
       expect(
         screen.getByText("Sections in Personal Schedule"),
       ).toBeInTheDocument();
     });
+
     await waitFor(() => {
       expect(
         screen.getByTestId("PersonalSchedulesTable-cell-row-0-col-id"),
@@ -156,10 +182,69 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
-  test("renders 'Back' button", () => {
+  test("renders 'Back' button and 'View Weekly Schedule' button", async () => {
     const queryClient = new QueryClient();
-    axiosMock.onGet(`/api/personalschedules?id=17`).reply(200, []);
-    axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, []);
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`/api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Check for Back button
+    const backButton = screen.getByRole("button", { name: /back/i });
+    expect(backButton).toBeInTheDocument();
+
+    // Check for View Weekly Schedule button
+    const weeklyViewButton = screen.getByRole("button", {
+      name: /view weekly schedule/i,
+    });
+    expect(weeklyViewButton).toBeInTheDocument();
+  });
+
+  test("navigates to weekly view when 'View Weekly Schedule' button is clicked", async () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`/api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const weeklyViewButton = screen.getByRole("button", {
+      name: /view weekly schedule/i,
+    });
+    weeklyViewButton.click();
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/personalschedules/weekly/17");
+    });
+  });
+
+  test("navigates to list page when 'Back' button is clicked", async () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`/api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -170,10 +255,44 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     );
 
     const backButton = screen.getByRole("button", { name: /back/i });
-    expect(backButton).toBeInTheDocument();
+    backButton.click();
 
-    // Optional: Test button functionality
-    userEvent.click(backButton);
-    // Add your assertions here to ensure that clicking the button triggers the expected action.
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/personalschedules/list");
+    });
+  });
+
+  test("PersonalSchedulesTable should have showButtons set to false", async () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet(`/api/personalschedules?id=17`)
+      .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
+    axiosMock
+      .onGet(`/api/personalSections/all?psId=17`)
+      .reply(200, personalScheduleFixtures.threePersonalSchedulesDiffId);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSchedulesDetailsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("PersonalSchedulesTable-cell-row-0-col-id"),
+      ).toBeInTheDocument();
+    });
+
+    // Verify no edit/delete buttons are present
+    expect(
+      screen.queryByTestId(
+        "PersonalSchedulesTable-cell-row-0-col-Delete-button",
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("PersonalSchedulesTable-cell-row-0-col-Edit-button"),
+    ).not.toBeInTheDocument();
   });
 });
