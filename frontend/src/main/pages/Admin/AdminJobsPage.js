@@ -7,12 +7,33 @@ import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
 
+import { useState } from "react";
+import JobsSearchForm from "main/components/Jobs/JobsSearchForm";
+import OurPagination from "main/components/Utils/OurPagination";
+import useLocalStorage from "main/utils/useLocalStorage";
+
 import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 import UpdateCoursesByQuarterJobForm from "main/components/Jobs/UpdateCoursesByQuarterJobForm";
 import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCoursesByQuarterRangeJobForm";
 
 const AdminJobsPage = () => {
+
+  const [selectedPage, setSelectedPage] = useState(1);
+
+const [sortField, setSortField] = useLocalStorage(
+  "JobsSearch.SortField",
+  "status"
+);
+const [sortDirection, setSortDirection] = useLocalStorage(
+  "JobsSearch.SortDirection",
+  "ASC"
+);
+const [pageSize, setPageSize] = useLocalStorage(
+  "JobsSearch.PageSize",
+  "10"
+);
+
   const refreshJobsIntervalMilliseconds = 5000;
 
   // test job
@@ -116,16 +137,22 @@ const AdminJobsPage = () => {
 
   // Stryker disable all
   const {
-    data: jobs,
+    data: page,
     error: _error,
     status: _status,
   } = useBackend(
-    ["/api/jobs/all"],
+    ["/api/jobs/paginated"],
     {
       method: "GET",
-      url: "/api/jobs/all",
+      url: "/api/jobs/paginated",
+      params: {
+      page: selectedPage - 1,
+      pageSize: pageSize,
+      sortField: sortField,
+      sortDirection: sortDirection,
     },
-    [],
+    },
+    { content: [], totalPages: 0 },
     { refetchInterval: refreshJobsIntervalMilliseconds },
   );
   // Stryker restore  all
@@ -178,9 +205,20 @@ const AdminJobsPage = () => {
         ))}
       </Accordion>
 
+      <JobsSearchForm
+  updateSortField={setSortField}
+  updateSortDirection={setSortDirection}
+  updatePageSize={setPageSize}
+/>
+<OurPagination
+  updateActivePage={setSelectedPage}
+  totalPages={page?.totalPages || 0}
+/>
+
+
       <h2 className="p-3">Job Status</h2>
 
-      <JobsTable jobs={jobs} />
+      <JobsTable jobs={page.content} />
       <Button variant="danger" onClick={purgeJobLog} data-testid="purgeJobLog">
         Purge Job Log
       </Button>

@@ -24,7 +24,13 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock.onGet("/api/jobs/paginated").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 1,
+      number: 0,
+      size: 10,
+      totalElements: jobsFixtures.sixJobs.length,
+    });
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -38,6 +44,7 @@ describe("AdminJobsPage tests", () => {
     );
     expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
     expect(await screen.findByText("Job Status")).toBeInTheDocument();
+
 
     ["Test Job", "Update Courses Database", "Update Grade Info"].map(
       (jobName) => expect(screen.getByText(jobName)).toBeInTheDocument(),
@@ -60,6 +67,37 @@ describe("AdminJobsPage tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
     ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
+  });
+
+  test("When localstorage is empty, fallback values are used and correct params sent", async () => {
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await screen.findByText("Job Status");
+
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "status");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "10");
+
+    // Check that the correct params were sent to /api/jobs/paginated
+    const jobsRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/jobs/paginated"
+    );
+    expect(jobsRequest.params).toEqual({
+      page: 0,
+      pageSize: "10",
+      sortField: "status",
+      sortDirection: "ASC",
+    });
   });
 
   test("user can submit a test job", async () => {
