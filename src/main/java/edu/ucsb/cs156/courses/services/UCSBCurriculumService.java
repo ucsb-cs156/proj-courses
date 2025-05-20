@@ -1,8 +1,11 @@
 package edu.ucsb.cs156.courses.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import java.util.stream.Collectors;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
+import edu.ucsb.cs156.courses.documents.GERequirement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +53,8 @@ public class UCSBCurriculumService {
 
   public static final String FINALS_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v3/finals";
+
+  public static final String GE_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/requirements";
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
 
@@ -267,5 +272,35 @@ public class UCSBCurriculumService {
 
     log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
     return retVal;
+  }
+
+  public String getGeneralEducationInfo() throws Exception {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("ucsb-api-version", "1.0");
+    headers.set("ucsb-api-key", this.apiKey);
+
+    HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+    log.info("Fetching GE areas from {}", GE_ENDPOINT);
+    ResponseEntity<String> response =
+        restTemplate.exchange(GE_ENDPOINT, HttpMethod.GET, entity, String.class);
+
+    log.debug("GE areas JSON: {}", response.getBody());
+    return response.getBody();
+  }
+
+  public List<String> getRequirementCodesByCollege(String collegeCode) throws Exception {
+    String json = getGeneralEducationInfo();
+
+    List<GERequirement> allAreas = objectMapper.readValue(
+          json, new TypeReference<List<GERequirement>>() {});
+
+    return allAreas.stream()
+          .filter(area -> area.getCollegeCode().equalsIgnoreCase(collegeCode))
+          .map(GERequirement::getRequirementCode)
+          .distinct()
+          .collect(Collectors.toList());
   }
 }

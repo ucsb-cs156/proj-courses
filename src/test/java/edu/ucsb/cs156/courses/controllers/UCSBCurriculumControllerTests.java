@@ -18,6 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import java.util.List;
+
 
 @WebMvcTest(value = UCSBCurriculumController.class)
 @Import(SecurityConfig.class)
@@ -66,5 +68,53 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     String responseString = response.getResponse().getContentAsString();
 
     assertEquals(expectedResult, responseString);
+  }
+
+  /**
+   * GET /api/public/generalEducationInfo  → raw JSON from service
+   */
+  @Test
+  public void test_generalEducationInfo_noCollegeCode() throws Exception {
+    // ← use the real “English Reading & Composition” (all ASCII) instead of “…”
+    String expectedJson =
+      "[" +
+        "{\"requirementCode\":\"A1\"," +
+        "\"requirementTranslation\":\"English Reading & Composition\"," +
+        "\"collegeCode\":\"ENGR\"," +
+        "\"objCode\":\"BS\"," +
+        "\"courseCount\":1," +
+        "\"units\":4," +
+        "\"inactive\":false}" +
+      "]";
+
+    when(ucsbCurriculumService.getGeneralEducationInfo())
+        .thenReturn(expectedJson);
+
+    mockMvc.perform(get("/api/public/generalEducationInfo")
+              .contentType("application/json"))
+          .andExpect(status().isOk())
+          .andExpect(content().json(expectedJson));
+  }
+
+  /**
+   * GET /api/public/generalEducationInfo?collegeCode=ENGR  → List<String> of codes
+   */
+  @Test
+  public void test_generalEducationInfo_withCollegeCode() throws Exception {
+    // our controller will call getRequirementCodesByCollege("ENGR")
+    List<String> fakeCodes = List.of("A1", "A2");
+    when(ucsbCurriculumService.getRequirementCodesByCollege("ENGR"))
+        .thenReturn(fakeCodes);
+
+    MvcResult response =
+      mockMvc.perform(get("/api/public/generalEducationInfo")
+                .param("collegeCode", "ENGR")
+                .contentType("application/json"))
+             .andExpect(status().isOk())
+             .andReturn();
+
+    String body = response.getResponse().getContentAsString();
+    // JSON representation of ["A1","A2"]
+    assertEquals("[\"A1\",\"A2\"]", body);
   }
 }
