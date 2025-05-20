@@ -22,6 +22,8 @@ import SectionSearchesIndexPage from "main/pages/SectionSearches/SectionSearches
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
+
+import GeneralEducationSearchPage from "main/pages/GeneralEducation/Search/GeneralEducationSearchPage";
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
 
 function App() {
@@ -99,6 +101,11 @@ function App() {
           exact
           path="/coursedetails/:qtr/:enrollCode"
           element={<CourseDetailsIndexPage />}
+        />
+        <Route
+          exact
+          path="/generaleducation/search"
+          element={<GeneralEducationSearchPage />}
         />
       </Routes>
     </BrowserRouter>
