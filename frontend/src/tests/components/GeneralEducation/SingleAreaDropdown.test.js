@@ -6,7 +6,6 @@ import { useState } from "react";
 import SingleAreaDropdown from "main/components/GeneralEducation/SingleAreaDropdown";
 import { oneArea } from "fixtures/geAreaFixtures";
 import { threeAreas } from "fixtures/geAreaFixtures";
-import { outOfOrderAreas } from "fixtures/geAreaFixtures";
 
 jest.mock("react", () => ({
   ...jest.requireActual("react"),
