@@ -428,4 +428,26 @@ describe("AdminJobsPage tests", () => {
     expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
     expect(screen.queryByTestId("OurPagination-4")).not.toBeInTheDocument();
   });
+
+  test("does not throw and renders 10 pages when page is undefined (default)", async () => {
+    axiosMock.onGet("/api/jobs/paginated").reply(200, undefined);
+
+    jest
+      .spyOn(require("main/utils/useLocalStorage"), "default")
+      .mockImplementation((key, initial) => [initial, jest.fn()]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Should render 10 pages (default)
+    for (let i = 1; i <= 3; i++) {
+      expect(screen.getByTestId(`OurPagination-${i}`)).toBeInTheDocument();
+    }
+    expect(screen.queryByTestId("OurPagination-4")).not.toBeInTheDocument();
+  });
 });
