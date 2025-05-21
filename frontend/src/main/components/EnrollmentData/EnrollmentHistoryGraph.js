@@ -215,9 +215,10 @@ const EnrollmentHistoryGraphs = ({ _enrollmentHistory }) => {
         //   // }`;
         //   return <EnrollmentHistoryLineChart key={key} data={data} title={title} />;
         // })
-        <EnrollmentHistoryLineChart data={enrollmentHistory} title={"t"} />
-      }
-    </div>
+}
+        <EnrollmentHistoryLineChart key={[enrollmentHistory[0].dateCreated, enrollmentHistory[1].dateCreated]}
+        data={[enrollmentHistory[0].value,enrollmentHistory[1].value]} title={"t"} />
+  </div>
   );
 };
 

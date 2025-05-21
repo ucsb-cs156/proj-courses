@@ -8,7 +8,7 @@ import {
 } from "fixtures/gradeHistoryFixtures";
 import {
   oneEnrollmentDataPoint,
-  _threeEnrollmentDataPoints,
+  threeEnrollmentDataPoints,
 } from "fixtures/enrollmentDataPointFixtures";
 
 export default {
@@ -30,10 +30,10 @@ OneEnrollmentData.args = {
   enrollmentHistory: oneEnrollmentDataPoint,
 };
 
-// export const ThreeEnrollmentData = Template.bing({});
-// ThreeEnrollmentData.args = {
-//   enrollmentHistory: threeEnrollmentDataPoints,
-// };
+export const ThreeEnrollmentData = Template.bind({});
+ThreeEnrollmentData.args = {
+  enrollmentHistory: threeEnrollmentDataPoints,
+};
 
 export const OneQuarterCourse = Template.bind({});
 OneQuarterCourse.args = {
