@@ -28,24 +28,27 @@ export const createCompleteEnrollmentData = (data) => {
 
 // Component to render a single bar chart for a specific group of data
 const EnrollmentHistoryLineChart = ({ _data, title }) => {
-  const completeData = [{grade: "A", count: 1, percentage: 10},{grade: "B", count: 2, percentage: 20}];
+  const completeData = [
+    { grade: "A", count: 1, percentage: 10 },
+    { grade: "B", count: 2, percentage: 20 },
+  ];
 
   return (
-      <div data-testid="grade-history-graph">
-        <h3>{title}</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data = {completeData} >
-            <XAxis dataKey="grade" />
-            <YAxis
-              tickFormatter={(value) => `${value.toFixed(1)}%`}
-              // Stryker restore all
-            />
+    <div data-testid="grade-history-graph">
+      <h3>{title}</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={completeData}>
+          <XAxis dataKey="grade" />
+          <YAxis
+            tickFormatter={(value) => `${value.toFixed(1)}%`}
+            // Stryker restore all
+          />
 
-            <Legend />
-            <Tooltip formatter={formatTooltip} />
-            <Line dataKey="percentage" />
-          </LineChart>
-        </ResponsiveContainer>
+          <Legend />
+          <Tooltip formatter={formatTooltip} />
+          <Line dataKey="percentage" />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 };
@@ -55,14 +58,12 @@ const EnrollmentHistoryGraphs = ({ _enrollmentHistory }) => {
     {
       data: [1, 2, 3],
     },
- ];
+  ];
 
   return (
     <div data-testid="enrollment-history-graphs">
-        <EnrollmentHistoryLineChart 
-        data={enrollmentHistory}
-        title={"t"} />
-  </div>
+      <EnrollmentHistoryLineChart data={enrollmentHistory} title={"t"} />
+    </div>
   );
 };
 
