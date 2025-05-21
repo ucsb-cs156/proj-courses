@@ -67,13 +67,12 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    );
+    await screen.findByTestId(expectedKey);
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
     const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
 
     axiosMock.resetHistory();
@@ -116,13 +115,12 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    );
+    await screen.findByTestId(expectedKey);
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
     const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
 
     axiosMock.resetHistory();
@@ -164,10 +162,14 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
       </QueryClientProvider>,
     );
 
-    userEvent.selectOptions(screen.getByLabelText("Start Quarter"), "20222");
-    userEvent.selectOptions(screen.getByLabelText("End Quarter"), "20222");
-    userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
-    userEvent.click(screen.getByText("Submit"));
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20222");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20222");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
 
     await waitFor(() => {
       const calls = axiosMock.history.get.filter((r) =>
