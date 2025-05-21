@@ -5,6 +5,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
+import { act } from "react-dom/test-utils";
 
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -35,13 +36,15 @@ describe("AdminJobsPage tests", () => {
   });
 
   test("renders without crashing", async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
     expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
     expect(await screen.findByText("Job Status")).toBeInTheDocument();
 
@@ -73,13 +76,15 @@ describe("AdminJobsPage tests", () => {
     getItemSpy.mockImplementation(() => null);
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
 
     await screen.findByText("Job Status");
 
@@ -104,13 +109,15 @@ describe("AdminJobsPage tests", () => {
       .onPost("/api/jobs/launch/testjob?fail=false&sleepMs=0")
       .reply(200, {});
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
 
     expect(await screen.findByText("Test Job")).toBeInTheDocument();
 
@@ -143,13 +150,15 @@ describe("AdminJobsPage tests", () => {
       )
       .reply(200, {});
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
 
     expect(
       await screen.findByText("Update Courses Database"),
@@ -189,13 +198,15 @@ describe("AdminJobsPage tests", () => {
       "/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=20222&ifStale=true";
     axiosMock.onPost(url).reply(200, {});
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
 
     expect(
       await screen.findByText("Update Courses Database by quarter"),
@@ -230,13 +241,15 @@ describe("AdminJobsPage tests", () => {
       "/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=20212&end_quarterYYYYQ=20213&ifStale=true";
     axiosMock.onPost(url).reply(200, {});
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
 
     expect(
       await screen.findByText("Update Courses Database by quarter range"),
@@ -270,13 +283,15 @@ describe("AdminJobsPage tests", () => {
     const url = "/api/jobs/launch/uploadGradeData";
     axiosMock.onPost(url).reply(200, {});
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
 
     expect(await screen.findByText("Update Grade Info")).toBeInTheDocument();
 
@@ -295,13 +310,15 @@ describe("AdminJobsPage tests", () => {
   test("user can purge all jobs in the JobsTable", async () => {
     axiosMock.onDelete("/api/jobs/all").reply(200, {});
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
 
     expect(await screen.findByText("Purge Job Log")).toBeInTheDocument();
 
@@ -312,5 +329,62 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
 
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
+  });
+
+  test("AdminJobsPage uses correct localStorage keys for search form", async () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const getItemSpy = jest
+      .spyOn(Storage.prototype, "getItem")
+      .mockImplementation(() => null);
+
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+
+    // Wait for the page to render
+    await screen.findByText("Job Status");
+
+    // Simulate user changing dropdowns
+    userEvent.selectOptions(screen.getByLabelText("Sort By"), "updatedAt");
+    userEvent.selectOptions(screen.getByLabelText("Sort Direction"), "DESC");
+    userEvent.selectOptions(screen.getByLabelText("Page Size"), "20");
+
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "JobsSearch.SortField",
+      "updatedAt",
+    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "20");
+  });
+
+  test("AdminJobsPage renders spacing divs with correct margin styles", async () => {
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+    });
+
+    // There should be a div with marginTop: "1rem"
+    const divs = document.querySelectorAll("div");
+    const hasMarginTopDiv = Array.from(divs).some(
+      (div) => div.style && div.style.marginTop === "1rem",
+    );
+    expect(hasMarginTopDiv).toBe(true);
+
+    // There should be a div with marginBottom: "1rem"
+    const hasMarginBottomDiv = Array.from(divs).some(
+      (div) => div.style && div.style.marginBottom === "1rem",
+    );
+    expect(hasMarginBottomDiv).toBe(true);
   });
 });

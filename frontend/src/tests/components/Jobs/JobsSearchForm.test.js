@@ -96,4 +96,33 @@ describe("JobsSearchForm", () => {
     expect(screen.getByLabelText("Sort Direction").value).toBe("ASC");
     expect(screen.getByLabelText("Page Size").value).toBe("5");
   });
+
+  test("uses correct localStorage keys for all dropdowns", () => {
+    render(
+      <JobsSearchForm
+        updateSortField={updateSortField}
+        updateSortDirection={updateSortDirection}
+        updatePageSize={updatePageSize}
+      />,
+    );
+
+    // Change all dropdowns
+    userEvent.selectOptions(screen.getByLabelText("Sort By"), "updatedAt");
+    userEvent.selectOptions(screen.getByLabelText("Sort Direction"), "DESC");
+    userEvent.selectOptions(screen.getByLabelText("Page Size"), "20");
+
+    // Assert correct keys are set in localStorage
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "JobsSearch.SortField",
+      "updatedAt",
+    );
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "JobsSearch.SortDirection",
+      "DESC",
+    );
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "JobsSearch.PageSize",
+      "20",
+    );
+  });
 });
