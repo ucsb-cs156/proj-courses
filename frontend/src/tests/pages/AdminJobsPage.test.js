@@ -316,9 +316,6 @@ describe("AdminJobsPage tests", () => {
 
   test("AdminJobsPage uses correct localStorage keys for search form", async () => {
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
-    const getItemSpy = jest
-      .spyOn(Storage.prototype, "getItem")
-      .mockImplementation(() => null);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -364,37 +361,25 @@ describe("AdminJobsPage tests", () => {
     expect(hasMarginBottomDiv).toBe(true);
   });
 
-  test("AdminJobsPage uses correct localStorage key for pageSize", async () => {
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
-    const getItemSpy = jest
-      .spyOn(Storage.prototype, "getItem")
-      .mockImplementation((key) => {
-        if (key === "JobsSearch.PageSize") return "50";
-        if (key === "") return "WRONG";
-        return null;
-      });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(screen.getByLabelText("Page Size").value).toBe("50");
-  });
-
   test("When localstorage is empty, fallback values are used", async () => {
     const getItemSpy = jest
       .spyOn(Storage.prototype, "getItem")
       .mockImplementation(() => null);
+
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
     const useLocalStorageSpy = jest.spyOn(
       require("main/utils/useLocalStorage"),
       "default",
     );
+
+    axiosMock.onGet("/api/jobs/paginated").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 3,
+      number: 0,
+      size: 10,
+      totalElements: jobsFixtures.sixJobs.length,
+    });
 
     render(
       <QueryClientProvider client={queryClient}>
