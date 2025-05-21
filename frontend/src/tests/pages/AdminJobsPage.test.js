@@ -4,7 +4,7 @@
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { act } from "react";
+// Removed unnecessary import of act
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
@@ -80,10 +80,8 @@ describe("AdminJobsPage tests", () => {
     const sleepMsInput = await screen.findByTestId("TestJobForm-sleepMs");
     const submitButton = screen.getByTestId("TestJobForm-Submit-Button");
 
-    await act(async () => {
-      fireEvent.change(sleepMsInput, { target: { value: "0" } });
-      submitButton.click();
-    });
+    fireEvent.change(sleepMsInput, { target: { value: "0" } });
+    submitButton.click();
 
     await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(
@@ -119,9 +117,7 @@ describe("AdminJobsPage tests", () => {
     );
     userEvent.selectOptions(screen.getByLabelText("Subject Area"), "ANTH");
 
-    await act(async () => {
-      screen.getByTestId("updateCourses").click();
-    });
+    screen.getByTestId("updateCourses").click();
 
     await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(
@@ -156,9 +152,7 @@ describe("AdminJobsPage tests", () => {
       "20222",
     );
 
-    await act(async () => {
-      screen.getByTestId("updateCoursesByQuarter").click();
-    });
+    screen.getByTestId("updateCoursesByQuarter").click();
 
     await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(url);
@@ -189,9 +183,7 @@ describe("AdminJobsPage tests", () => {
     userEvent.selectOptions(screen.getByLabelText("Start Quarter"), "20212");
     userEvent.selectOptions(screen.getByLabelText("End Quarter"), "20213");
 
-    await act(async () => {
-      screen.getByTestId("updateCoursesByQuarterRange").click();
-    });
+    screen.getByTestId("updateCoursesByQuarterRange").click();
 
     await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(url);
