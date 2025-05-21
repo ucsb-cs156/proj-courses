@@ -84,13 +84,13 @@ export const createCompleteEnrollmentData = (data) => {
 
   for (let index = 0; index < data.length; index++) {
     const element = data[index];
-    data_list.push(element.enrollment, element.dateCreated)
+    data_list.push(element.enrollment, element.dateCreated);
   }
 
   return data_list;
   // return Object.map(data_list) => ({
   //   dateCreated
-  //   enrollment: 
+  //   enrollment:
   // })
 
   // return Object //.sort((enrollmentCounts, dateCreated))
@@ -199,31 +199,29 @@ const EnrollmentHistoryLineChart = ({ data, title }) => {
 
 const EnrollmentHistoryGraphs = ({ _enrollmentHistory }) => {
   // const groupedData = groupDataByQuarterAndInstructor(enrollmentHistory);
-  const enrollmentHistory = [{"dateCreated": "2025-05-14T17:50:52.356611",
-    value: 1
-  }, {"dateCreated": "2025-05-14T17:50:52.361636",
-    value: 2
-  }]
+  const enrollmentHistory = [
+    { dateCreated: "2025-05-14T17:50:52.356611", value: 1 },
+    { dateCreated: "2025-05-14T17:50:52.361636", value: 2 },
+  ];
 
   return (
     <div data-testid="enrollment-history-graphs">
       {
-      // Object.keys(enrollmentHistory).map((key) => {
-      //   const data = enrollmentHistory[key];
-      //   const title = "t";
-      //   // const title = `${yyyyqToPrettyStr(data[0].yyyyq)} - ${
-      //   //   data[0].instructor
-      //   // }`;
-      //   return <EnrollmentHistoryLineChart key={key} data={data} title={title} />;
-      // })
-      <EnrollmentHistoryLineChart data={enrollmentHistory} title={"t"} />
+        // Object.keys(enrollmentHistory).map((key) => {
+        //   const data = enrollmentHistory[key];
+        //   const title = "t";
+        //   // const title = `${yyyyqToPrettyStr(data[0].yyyyq)} - ${
+        //   //   data[0].instructor
+        //   // }`;
+        //   return <EnrollmentHistoryLineChart key={key} data={data} title={title} />;
+        // })
+        <EnrollmentHistoryLineChart data={enrollmentHistory} title={"t"} />
       }
     </div>
   );
 };
 
 export default EnrollmentHistoryGraphs;
-
 
 // import React from "react";
 // import {

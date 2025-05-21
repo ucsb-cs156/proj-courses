@@ -6,7 +6,10 @@ import {
   // twoQuarterCourse,
   // fullCourse,
 } from "fixtures/gradeHistoryFixtures";
-import { oneEnrollmentDataPoint, _threeEnrollmentDataPoints } from "fixtures/enrollmentDataPointFixtures";
+import {
+  oneEnrollmentDataPoint,
+  _threeEnrollmentDataPoints,
+} from "fixtures/enrollmentDataPointFixtures";
 
 export default {
   title: "components/EnrollmentData/EnrollmentDataTable",
