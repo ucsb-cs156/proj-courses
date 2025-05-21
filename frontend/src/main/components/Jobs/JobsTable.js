@@ -20,7 +20,7 @@ export default function JobsTable({ jobs }) {
     {
       Header: "Log",
       accessor: "log",
-  
+
       Cell: ({ cell }) => {
         const log = cell.row.original.log;
         if (!log) {
@@ -34,23 +34,23 @@ export default function JobsTable({ jobs }) {
         const truncatedLog = logLines.slice(0, 10).join("\n");
         return (
           <div
-        style={{
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          maxWidth: "800px",
-          overflowX: "auto",
-        }}
-        data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}
-      >
-        {logLines.length > 10 ? (
-          <>
-            <Plaintext text={truncatedLog} />
-            <span>...</span>
-            <br />
-            <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
-              See entire log
-            </Link>
-          </>
+            style={{
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+              maxWidth: "800px",
+              overflowX: "auto",
+            }}
+            data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}
+          >
+            {logLines.length > 10 ? (
+              <>
+                <Plaintext text={truncatedLog} />
+                <span>...</span>
+                <br />
+                <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
+                  See entire log
+                </Link>
+              </>
             ) : (
               <pre>{log}</pre>
             )}

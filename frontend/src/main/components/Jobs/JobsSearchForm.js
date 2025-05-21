@@ -15,15 +15,15 @@ const JobsSearchForm = ({
 
   const [sortField, setSortField] = useLocalStorage(
     "JobsSearch.SortField",
-    sortFields[0]
+    sortFields[0],
   );
   const [sortDirection, setSortDirection] = useLocalStorage(
     "JobsSearch.SortDirection",
-    sortDirections[0]
+    sortDirections[0],
   );
   const [pageSize, setPageSize] = useLocalStorage(
     "JobsSearch.PageSize",
-    pageSizes[0]
+    pageSizes[0],
   );
 
   const doUpdateSortField = (value) => {

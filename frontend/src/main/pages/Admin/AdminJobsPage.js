@@ -18,21 +18,17 @@ import UpdateCoursesByQuarterJobForm from "main/components/Jobs/UpdateCoursesByQ
 import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCoursesByQuarterRangeJobForm";
 
 const AdminJobsPage = () => {
-
   const [selectedPage, setSelectedPage] = useState(1);
 
-const [sortField, setSortField] = useLocalStorage(
-  "JobsSearch.SortField",
-  "status"
-);
-const [sortDirection, setSortDirection] = useLocalStorage(
-  "JobsSearch.SortDirection",
-  "ASC"
-);
-const [pageSize, setPageSize] = useLocalStorage(
-  "JobsSearch.PageSize",
-  "5"
-);
+  const [sortField, setSortField] = useLocalStorage(
+    "JobsSearch.SortField",
+    "status",
+  );
+  const [sortDirection, setSortDirection] = useLocalStorage(
+    "JobsSearch.SortDirection",
+    "ASC",
+  );
+  const [pageSize, setPageSize] = useLocalStorage("JobsSearch.PageSize", "5");
 
   const refreshJobsIntervalMilliseconds = 5000;
 
@@ -146,11 +142,11 @@ const [pageSize, setPageSize] = useLocalStorage(
       method: "GET",
       url: "/api/jobs/paginated",
       params: {
-      page: Number(selectedPage - 1),
-      pageSize: Number(pageSize),
-      sortField: sortField,
-      sortDirection: sortDirection,
-    },
+        page: Number(selectedPage - 1),
+        pageSize: Number(pageSize),
+        sortField: sortField,
+        sortDirection: sortDirection,
+      },
     },
     { content: [], totalPages: 0 },
     { refetchInterval: refreshJobsIntervalMilliseconds },
@@ -216,11 +212,10 @@ const [pageSize, setPageSize] = useLocalStorage(
 
       {/* Add spacing below the search form */}
       <div style={{ marginBottom: "1rem" }} />
-<OurPagination
-  updateActivePage={setSelectedPage}
-  totalPages={page?.totalPages || 0}
-/>
-
+      <OurPagination
+        updateActivePage={setSelectedPage}
+        totalPages={page?.totalPages || 0}
+      />
 
       <h2 className="p-3">Job Status</h2>
 

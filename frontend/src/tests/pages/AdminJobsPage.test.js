@@ -45,7 +45,6 @@ describe("AdminJobsPage tests", () => {
     expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
     expect(await screen.findByText("Job Status")).toBeInTheDocument();
 
-
     ["Test Job", "Update Courses Database", "Update Grade Info"].map(
       (jobName) => expect(screen.getByText(jobName)).toBeInTheDocument(),
     );
@@ -79,7 +78,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Job Status");
@@ -90,7 +89,7 @@ describe("AdminJobsPage tests", () => {
 
     // Check that the correct params were sent to /api/jobs/paginated
     const jobsRequest = axiosMock.history.get.find(
-      (req) => req.url === "/api/jobs/paginated"
+      (req) => req.url === "/api/jobs/paginated",
     );
     expect(jobsRequest.params).toEqual({
       page: 0,

@@ -19,7 +19,7 @@ describe("JobsSearchForm", () => {
         updateSortField={updateSortField}
         updateSortDirection={updateSortDirection}
         updatePageSize={updatePageSize}
-      />
+      />,
     );
 
     expect(screen.getByLabelText("Sort By")).toBeInTheDocument();
@@ -33,14 +33,14 @@ describe("JobsSearchForm", () => {
         updateSortField={updateSortField}
         updateSortDirection={updateSortDirection}
         updatePageSize={updatePageSize}
-      />
+      />,
     );
     const selectSortField = screen.getByLabelText("Sort By");
     userEvent.selectOptions(selectSortField, "createdAt");
     expect(selectSortField.value).toBe("createdAt");
     expect(localStorage.setItem).toHaveBeenCalledWith(
       "JobsSearch.SortField",
-      "createdAt"
+      "createdAt",
     );
     expect(updateSortField).toHaveBeenCalledWith("createdAt");
   });
@@ -51,14 +51,14 @@ describe("JobsSearchForm", () => {
         updateSortField={updateSortField}
         updateSortDirection={updateSortDirection}
         updatePageSize={updatePageSize}
-      />
+      />,
     );
     const selectSortDirection = screen.getByLabelText("Sort Direction");
     userEvent.selectOptions(selectSortDirection, "DESC");
     expect(selectSortDirection.value).toBe("DESC");
     expect(localStorage.setItem).toHaveBeenCalledWith(
       "JobsSearch.SortDirection",
-      "DESC"
+      "DESC",
     );
     expect(updateSortDirection).toHaveBeenCalledWith("DESC");
   });
@@ -69,31 +69,31 @@ describe("JobsSearchForm", () => {
         updateSortField={updateSortField}
         updateSortDirection={updateSortDirection}
         updatePageSize={updatePageSize}
-      />
+      />,
     );
     const selectPageSize = screen.getByLabelText("Page Size");
     userEvent.selectOptions(selectPageSize, "100");
     expect(selectPageSize.value).toBe("100");
     expect(localStorage.setItem).toHaveBeenCalledWith(
       "JobsSearch.PageSize",
-      "100"
+      "100",
     );
     expect(updatePageSize).toHaveBeenCalledWith("100");
   });
 
   test("renders correctly when fallback values are used", () => {
-  // Simulate localStorage returning null for all keys (already mocked in beforeEach)
-  render(
-    <JobsSearchForm
-      updateSortField={updateSortField}
-      updateSortDirection={updateSortDirection}
-      updatePageSize={updatePageSize}
-    />
-  );
+    // Simulate localStorage returning null for all keys (already mocked in beforeEach)
+    render(
+      <JobsSearchForm
+        updateSortField={updateSortField}
+        updateSortDirection={updateSortDirection}
+        updatePageSize={updatePageSize}
+      />,
+    );
 
-  // The default values should be selected
-  expect(screen.getByLabelText("Sort By").value).toBe("status");
-  expect(screen.getByLabelText("Sort Direction").value).toBe("ASC");
-  expect(screen.getByLabelText("Page Size").value).toBe("5");
-});
+    // The default values should be selected
+    expect(screen.getByLabelText("Sort By").value).toBe("status");
+    expect(screen.getByLabelText("Sort Direction").value).toBe("ASC");
+    expect(screen.getByLabelText("Page Size").value).toBe("5");
+  });
 });
