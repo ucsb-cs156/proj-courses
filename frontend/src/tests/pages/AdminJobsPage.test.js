@@ -85,7 +85,7 @@ describe("AdminJobsPage tests", () => {
 
     expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "status");
     expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
-    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "10");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "5");
 
     // Check that the correct params were sent to /api/jobs/paginated
     const jobsRequest = axiosMock.history.get.find(
@@ -93,7 +93,7 @@ describe("AdminJobsPage tests", () => {
     );
     expect(jobsRequest.params).toEqual({
       page: 0,
-      pageSize: "10",
+      pageSize: 5,
       sortField: "status",
       sortDirection: "ASC",
     });
