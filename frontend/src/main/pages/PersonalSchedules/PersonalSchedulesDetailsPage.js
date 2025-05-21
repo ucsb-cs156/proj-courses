@@ -71,7 +71,7 @@ export default function PersonalSchedulesDetailsPage() {
               description: `${section.courseId?.trim()} — ${loc.building} ${loc.room}`,
               style: {
                 position: "absolute",
-                top: `${start + 94}px`,
+                top: `${start-400}px`,
                 height: `${height}px`,
                 width: "100%",
                 backgroundColor: "#b3d9ff",
