@@ -45,6 +45,9 @@ const allGrades = [
 //   return `${qtrNumToQuarter[qtr]} ${year}`;
 // };
 
+// TODO: Hardcode first and get the graph to look good. Then use the data when the graph looks good.
+// The key in GradeHistoryGraph holds the quarter and instructor.
+
 export const formatTooltip = (value, _, props) => {
   return [`Percentage: ${value.toFixed(1)}%, Count: ${props.payload.count}`];
 };
@@ -164,45 +167,52 @@ const _GradeLineChart = ({ data, title }) => {
 };
 
 // Component to render a single bar chart for a specific group of data
-const EnrollmentHistoryLineChart = ({ data, title }) => {
+const EnrollmentHistoryLineChart = ({ _data, title }) => {
   // const completeData = createCompleteEnrollmentData(data);
-  const completeData = data;
+  // const completeData = data;
+  const completeData = [{grade: "A", count: 1, percentage: 10},{grade: "B", count: 2, percentage: 20}];
 
   return (
-    <div data-testid="enrollment-history-graph">
-      <h3>{title}</h3>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart
-          data={completeData}
-          // Stryker disable all
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <XAxis dataKey="dateCreated" />
-          <YAxis
-            tickFormatter={(value) => `${value.toFixed(1)}%`}
-            // Stryker restore all
-          />
+      <div data-testid="grade-history-graph">
+        <h3>{title}</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data = {completeData} >
+            <XAxis dataKey="grade" />
+            <YAxis
+              tickFormatter={(value) => `${value.toFixed(1)}%`}
+              // Stryker restore all
+            />
 
-          <Legend />
-          <Tooltip formatter={formatTooltip} />
-          <Line dataKey="enrollment" fill="#8884d8" />
-        </LineChart>
-      </ResponsiveContainer>
+            <Legend />
+            <Tooltip formatter={formatTooltip} />
+            <Line dataKey="percentage" />
+          </LineChart>
+        </ResponsiveContainer>
     </div>
   );
 };
 
 const EnrollmentHistoryGraphs = ({ _enrollmentHistory }) => {
   // const groupedData = groupDataByQuarterAndInstructor(enrollmentHistory);
+  // const enrollmentHistory = [
+  //   { key: "dateCreated", dateCreated: "2025-05-14T17:50:52.356611", value: 1 },
+  //   { key: "dateCreated", dateCreated: "2025-05-14T17:50:52.361636", value: 2 },
+  // ];
   const enrollmentHistory = [
-    { dateCreated: "2025-05-14T17:50:52.356611", value: 1 },
-    { dateCreated: "2025-05-14T17:50:52.361636", value: 2 },
-  ];
+    {
+      data: [1, 2, 3],
+    },
+ ];
+
+//   <LineChart
+//   xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+//   series={[
+//     {
+//       data: [2, 5.5, 2, 8.5, 1.5, 5],
+//     },
+//   ]}
+//   height={300}
+// />
 
   return (
     <div data-testid="enrollment-history-graphs">
@@ -216,8 +226,11 @@ const EnrollmentHistoryGraphs = ({ _enrollmentHistory }) => {
         //   return <EnrollmentHistoryLineChart key={key} data={data} title={title} />;
         // })
 }
-        <EnrollmentHistoryLineChart key={[enrollmentHistory[0].dateCreated, enrollmentHistory[1].dateCreated]}
-        data={[enrollmentHistory[0].value,enrollmentHistory[1].value]} title={"t"} />
+        <EnrollmentHistoryLineChart 
+        // key={[enrollmentHistory[0].dateCreated, enrollmentHistory[1].dateCreated]}
+        // data={[enrollmentHistory[0].value,enrollmentHistory[1].value]}
+        data={enrollmentHistory}
+        title={"t"} />
   </div>
   );
 };
