@@ -31,8 +31,6 @@ const SingleGEDropdown = ({
 
   areas.sort((a, b) => a.requirementCode.localeCompare(b.requirementCode));
 
-  areas.sort();
-
   return (
     <Form.Group controlId={controlId}>
       <Form.Label>{label}</Form.Label>

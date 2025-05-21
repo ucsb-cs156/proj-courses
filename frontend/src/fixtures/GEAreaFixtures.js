@@ -27,3 +27,57 @@ export const outOfOrderGEAreas = [
     requirementCode: "A1",
   },
 ];
+
+export const allTheGEAreas = [
+  {
+    requirementCode: "A1",
+  },
+  {
+    requirementCode: "A2",
+  },
+  {
+    requirementCode: "B",
+  },
+  {
+    requirementCode: "C",
+  },
+  {
+    requirementCode: "D",
+  },
+  {
+    requirementCode: "E",
+  },
+  {
+    requirementCode: "E1",
+  },
+  {
+    requirementCode: "E2",
+  },
+  {
+    requirementCode: "ETH",
+  },
+  {
+    requirementCode: "EUR",
+  },
+  {
+    requirementCode: "F",
+  },
+  {
+    requirementCode: "G",
+  },
+  {
+    requirementCode: "H",
+  },
+  {
+    requirementCode: "NWC",
+  },
+  {
+    requirementCode: "QNT",
+  },
+  {
+    requirementCode: "SUB",
+  },
+  {
+    requirementCode: "WRT",
+  },
+];
