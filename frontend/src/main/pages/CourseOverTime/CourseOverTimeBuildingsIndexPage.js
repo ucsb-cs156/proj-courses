@@ -15,7 +15,6 @@ export default function CourseOverTimeBuildingsIndexPage() {
     buildingCode: "",
   });
 
-  // — your existing “buildingsearch” mutation —
   const objectToAxiosParams = (q) => ({
     url: "/api/public/courseovertime/buildingsearch",
     params: {
@@ -27,7 +26,6 @@ export default function CourseOverTimeBuildingsIndexPage() {
   const onSuccess = (buildings) => setCourseJSON(buildings);
   const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, []);
 
-  // — your “classrooms” mutation —
   const objectToAxiosParamsClassrooms = (q) => ({
     url: "/api/public/courseovertime/classrooms",
     params: {
@@ -42,11 +40,9 @@ export default function CourseOverTimeBuildingsIndexPage() {
     [],
   );
 
-  // <-- pull out exactly the bits our effect uses -->
   const { startQuarter, endQuarter, buildingCode } = latestQuery;
   const fetchClassrooms = classroomMutation.mutate;
 
-  // effect now only depends on primitives + the stable fetchClassrooms fn
   useEffect(() => {
     if (!buildingCode) {
       setAvailableClassrooms([]);
@@ -55,7 +51,6 @@ export default function CourseOverTimeBuildingsIndexPage() {
     fetchClassrooms({ startQuarter, endQuarter, buildingCode });
   }, [startQuarter, endQuarter, buildingCode, fetchClassrooms]);
 
-  // single handler to run both API calls
   function fetchCourseOverTimeJSON(_e, query) {
     mutation.mutate(query);
     setLatestQuery(query);
