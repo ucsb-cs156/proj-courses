@@ -67,16 +67,16 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     assertEquals(expectedResult, responseString);
   }
 
-  // Test for ge info controller
+  // Test for static ge info controller
   @Test
-  public void test_geInfo() throws Exception {
+  public void test_StaticGeInfo() throws Exception {
     String[] expectedArray = {
       "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
       "SUB", "WRT"
     };
-    String url = "/api/public/generalEducationInfo";
+    String url = "/api/public/staticGeneralEducationInfo";
 
-    when(ucsbCurriculumService.getGeInfo()).thenReturn(expectedArray);
+    when(ucsbCurriculumService.getStaticGeInfo()).thenReturn(expectedArray);
 
     MvcResult response =
         mockMvc
@@ -90,5 +90,24 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     String expectedJson = mapper.writeValueAsString(expectedArray);
 
     assertEquals(expectedJson, responseString);
+  }
+
+  // Test for ge info controller that calls API
+  @Test
+  public void test_GeInfo() throws Exception {
+    String expectedResult = "expectedJSONResult";
+    String url = "/api/public/generalEducationInfo";
+
+    when(ucsbCurriculumService.getGeInfo()).thenReturn(expectedResult);
+
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String responseString = response.getResponse().getContentAsString();
+
+    assertEquals(expectedResult, responseString);
   }
 }
