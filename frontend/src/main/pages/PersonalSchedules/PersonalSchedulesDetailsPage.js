@@ -71,7 +71,7 @@ export default function PersonalSchedulesDetailsPage() {
               description: `${section.courseId?.trim()} — ${loc.building} ${loc.room}`,
               style: {
                 position: "absolute",
-                top: `${start-400}px`,
+                top: `${start + 94}px`,
                 height: `${height}px`,
                 width: "100%",
                 backgroundColor: "#b3d9ff",
@@ -154,20 +154,18 @@ export default function PersonalSchedulesDetailsPage() {
                 data-testid={`SchedulerEvent-${event.id}`}
                 style={event.style}
               >
-                <Card.Body style={{ padding: "5px" }}>
+                <Card.Body style={{ padding: "5px" }}> 
                   {event.height >= 20 && (
-                    <Card.Text
-                      data-testid={`SchedulerEventTitle-${event.id}`}
-                      style={event.titleStyle}
-                    >
+                    <Card.Text 
+                      data-testid={`SchedulerEventTitle-${event.id}`} 
+                      style={event.titleStyle}>
                       {event.title}
                     </Card.Text>
                   )}
                   {event.height >= 40 && (
-                    <Card.Text
+                    <Card.Text 
                       data-testid={`SchedulerEventTime-${event.id}`}
-                      style={{ fontSize: "12px", textAlign: "left" }}
-                    >
+                      style={{ fontSize: "12px", textAlign: "left" }}>
                       {event.startTime} - {event.endTime}
                     </Card.Text>
                   )}
