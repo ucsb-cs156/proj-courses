@@ -28,9 +28,14 @@ export const createCompleteEnrollmentData = (data) => {
 
 // Component to render a single bar chart for a specific group of data
 const EnrollmentHistoryLineChart = ({ _data, title }) => {
+  // const completeData = [
+  //   { grade: "A", count: 1, percentage: 10 },
+  //   { grade: "B", count: 2, percentage: 20 },
+  // ];
+
   const completeData = [
-    { grade: "A", count: 1, percentage: 10 },
-    { grade: "B", count: 2, percentage: 20 },
+    { enrollment: 125, dateCreated: "2025-05-14T17:50:52.356611" },
+    { enrollment: 24, dateCreated: "2025-05-14T17:50:52.361636"},
   ];
 
   return (
@@ -38,7 +43,7 @@ const EnrollmentHistoryLineChart = ({ _data, title }) => {
       <h3>{title}</h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={completeData}>
-          <XAxis dataKey="grade" />
+          <XAxis dataKey="dateCreated" />
           <YAxis
             tickFormatter={(value) => `${value.toFixed(1)}%`}
             // Stryker restore all
@@ -46,7 +51,7 @@ const EnrollmentHistoryLineChart = ({ _data, title }) => {
 
           <Legend />
           <Tooltip formatter={formatTooltip} />
-          <Line dataKey="percentage" />
+          <Line dataKey="enrollment" />
         </LineChart>
       </ResponsiveContainer>
     </div>
