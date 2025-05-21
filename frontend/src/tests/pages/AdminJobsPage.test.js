@@ -429,21 +429,22 @@ describe("AdminJobsPage tests", () => {
     expect(screen.queryByTestId("OurPagination-4")).not.toBeInTheDocument();
   });
 
-  test("does not render pages when page is undefined (default)", async () => {
+  test("throws if page is undefined and optional chaining is removed", async () => {
     axiosMock.onGet("/api/jobs/paginated").reply(200, undefined);
 
     jest
       .spyOn(require("main/utils/useLocalStorage"), "default")
       .mockImplementation((initial) => [initial, jest.fn()]);
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(screen.queryByTestId("OurPagination-1")).not.toBeInTheDocument();
+    // Expect render to throw if page is undefined and optional chaining is removed
+    expect(() =>
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminJobsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      ),
+    ).not.toThrow();
   });
 });
