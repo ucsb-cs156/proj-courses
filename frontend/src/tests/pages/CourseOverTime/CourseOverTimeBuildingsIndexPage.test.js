@@ -29,13 +29,13 @@ jest.mock(
   "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm",
   () => {
     const Actual = jest.requireActual(
-      "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm"
+      "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm",
     ).default;
     return (props) => {
       mockForm(props);
       return <Actual {...props} />;
     };
-  }
+  },
 );
 
 describe("CourseOverTimeBuildingsIndexPage tests", () => {
@@ -44,8 +44,12 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
-    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
     axiosMock.onGet("/api/personalschedules/all").reply(200, []);
     mockForm.mockClear();
   });
@@ -56,7 +60,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   });
 
@@ -73,11 +77,11 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     userEvent.selectOptions(screen.getByLabelText("Start Quarter"), "20222");
-    userEvent.selectOptions(screen.getByLabelText("End Quarter"),   "20222");
+    userEvent.selectOptions(screen.getByLabelText("End Quarter"), "20222");
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
     userEvent.click(screen.getByText("Submit"));
 
@@ -89,20 +93,20 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
 
     const calls = axiosMock.history.get.filter((r) =>
-      r.url.includes("/courseovertime/")
+      r.url.includes("/courseovertime/"),
     );
 
     expect(calls[0].url).toContain("buildingsearch");
     expect(calls[0].params).toEqual({
-      startQtr:     "20222",
-      endQtr:       "20222",
+      startQtr: "20222",
+      endQtr: "20222",
       buildingCode: "GIRV",
     });
 
     expect(calls[1].url).toContain("classrooms");
     expect(calls[1].params).toEqual({
-      startQtr:     "20222",
-      endQtr:       "20222",
+      startQtr: "20222",
+      endQtr: "20222",
       buildingCode: "GIRV",
     });
 
@@ -110,8 +114,8 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
       expect(mockForm).toHaveBeenLastCalledWith(
         expect.objectContaining({
           availableClassrooms: ["1004", "2110"],
-        })
-      )
+        }),
+      ),
     );
 
     expect(screen.getByText("CHEM 184")).toBeInTheDocument();
@@ -121,13 +125,11 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch")
       .reply(200, coursesInLibDifferentDate);
-    axiosMock
-      .onGet("/api/public/courseovertime/classrooms")
-      .reply(200, []);
+    axiosMock.onGet("/api/public/courseovertime/classrooms").reply(200, []);
 
     const spy = jest.spyOn(
       require("main/components/Sections/SectionsTable"),
-      "default"
+      "default",
     );
 
     render(
@@ -135,30 +137,26 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
         <MemoryRouter>
           <CourseOverTimeBuildingsIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     userEvent.selectOptions(screen.getByLabelText("Start Quarter"), "20201");
-    userEvent.selectOptions(screen.getByLabelText("End Quarter"),   "20222");
+    userEvent.selectOptions(screen.getByLabelText("End Quarter"), "20222");
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
     userEvent.click(screen.getByText("Submit"));
 
     await waitFor(() => {
       const calls = axiosMock.history.get.filter((r) =>
-        r.url.includes("/courseovertime/")
+        r.url.includes("/courseovertime/"),
       );
       expect(calls).toHaveLength(2);
     });
 
     const sorted = [...coursesInLibDifferentDate].sort((a, b) =>
-      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter)
+      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
     );
-    expect(spy).toHaveBeenCalledWith(
-      { sections: sorted },
-      expect.any(Object)
-    );
+    expect(spy).toHaveBeenCalledWith({ sections: sorted }, expect.any(Object));
 
     spy.mockRestore();
   });
 });
-
