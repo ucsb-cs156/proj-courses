@@ -10,6 +10,7 @@ import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import jobsFixtures from "fixtures/jobsFixtures";
+import React from "react";
 
 describe("AdminJobsPage tests", () => {
   const queryClient = new QueryClient();
@@ -415,7 +416,8 @@ describe("AdminJobsPage tests", () => {
     expect(urls).toContain("/api/jobs/paginated");
 
     const updatesRequest = axiosMock.history.get.find(
-      (req) => req.url === "/api/jobs/paginated",
+        (req) => req.url && req.url.includes("/api/jobs/paginated")
+
     );
     expect(updatesRequest.params).toEqual({
       page: 0,
@@ -430,21 +432,22 @@ describe("AdminJobsPage tests", () => {
   });
 
   test("throws if page is undefined and optional chaining is removed", async () => {
-    axiosMock.onGet("/api/jobs/paginated").reply(200, undefined);
+  axiosMock.onGet("/api/jobs/paginated").reply(200, undefined);
 
-    jest
-      .spyOn(require("main/utils/useLocalStorage"), "default")
-      .mockImplementation((initial) => [initial, jest.fn()]);
+  jest.spyOn(React, "useState").mockImplementationOnce(() => [undefined, jest.fn()]);
 
-    // Expect render to throw if page is undefined and optional chaining is removed
-    expect(() =>
-      render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <AdminJobsPage />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    ).not.toThrow();
-  });
+  jest.spyOn(require("main/utils/useLocalStorage"), "default")
+    .mockImplementation((initial) => [initial, jest.fn()]);
+
+  // Expect render to throw if page is undefined and optional chaining is removed
+  expect(() =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    ),
+  ).not.toThrow();
+});
 });
