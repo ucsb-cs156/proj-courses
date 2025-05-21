@@ -67,7 +67,9 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await screen.findByTestId(expectedKey);
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
@@ -115,7 +117,9 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await screen.findByTestId(expectedKey);
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
