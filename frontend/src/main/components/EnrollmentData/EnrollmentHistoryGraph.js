@@ -28,14 +28,9 @@ export const createCompleteEnrollmentData = (data) => {
 
 // Component to render a single bar chart for a specific group of data
 const EnrollmentHistoryLineChart = ({ _data, title }) => {
-  // const completeData = [
-  //   { grade: "A", count: 1, percentage: 10 },
-  //   { grade: "B", count: 2, percentage: 20 },
-  // ];
-
   const completeData = [
     { enrollment: 125, dateCreated: "2025-05-14T17:50:52.356611" },
-    { enrollment: 24, dateCreated: "2025-05-14T17:50:52.361636"},
+    { enrollment: 24, dateCreated: "2025-05-14T17:50:52.361636" },
   ];
 
   return (
