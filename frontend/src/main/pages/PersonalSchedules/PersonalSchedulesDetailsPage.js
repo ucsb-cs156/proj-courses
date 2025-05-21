@@ -78,11 +78,11 @@ export default function PersonalSchedulesDetailsPage() {
             .filter(section => section.classSections.timeLocations !== undefined)
             .map(section => ({
               id: section.classSections.enrollCode.trim(),
-              title: section.classSections.courseId.replaceAll(" ", ""),
+              title: section.courseId.replaceAll(" ", ""),
               day: dayParser(section.classSections.timeLocations.days),
               name: section.title,
               description: section.description,
-              location: section.classSections.timeLocations.building.trim() + " " + section.classSections.timeLocations.room.trim(),
+              area: section.classSections.timeLocations.building.trim() + " " + section.classSections.timeLocations.room.trim(),
               startTime: section.classSections.timeLocations.beginTime,
               endTime: section.classSections.timeLocations.endTime,
           })),

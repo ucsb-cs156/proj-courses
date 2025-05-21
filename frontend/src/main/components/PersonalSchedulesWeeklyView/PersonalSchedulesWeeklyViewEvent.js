@@ -68,7 +68,7 @@ export default function PersonalSectionsEvents({ event, eventColor, borderColor 
             <Card key={event.title} style={style.event} data-testid={`${testId}-${event.id}`}>
                 <Card.Body style={style.padding5}>
                     {style.height >= 20 && <Card.Text data-testid={`${testId}-title`} style={style.title}>{event.title}</Card.Text>}
-                    {style.height >= 40 && <Card.Text data-testid={`${testId}-title`} style={style.title}>{event.location}</Card.Text>}
+                    {style.height >= 40 && <Card.Text data-testid={`${testId}-title`} style={style.title}>{event.area}</Card.Text>}
                     {style.height >= 60 && <Card.Text data-testid={`${testId}-time`} style={{ fontSize: '12px', textAlign: 'left' }}>{event.startTime} - {event.endTime}</Card.Text>}
                 </Card.Body>
             </Card>
