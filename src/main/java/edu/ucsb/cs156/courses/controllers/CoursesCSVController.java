@@ -7,7 +7,6 @@ import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.models.SectionCSVLine;
 import edu.ucsb.cs156.courses.services.SectionCSVLineService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,8 +39,7 @@ public class CoursesCSVController extends ApiController {
 
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
-  @Autowired
-  private SectionCSVLineService sectionCsvLineService;
+  @Autowired private SectionCSVLineService sectionCsvLineService;
 
   @Operation(
       summary = "Download Course List as CSV File",
@@ -59,7 +57,8 @@ public class CoursesCSVController extends ApiController {
   @GetMapping(value = "/quarter", produces = "text/csv")
   public ResponseEntity<StreamingResponseBody> csvForCourses(
       @Parameter(name = "yyyyq", description = "quarter in yyyyq format", example = "20252")
-          @RequestParam String yyyyq)
+          @RequestParam
+          String yyyyq)
       throws Exception, IOException {
     StreamingResponseBody stream =
         (outputStream) -> {
@@ -75,7 +74,8 @@ public class CoursesCSVController extends ApiController {
 
           try (Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
             try {
-              StatefulBeanToCsv<SectionCSVLine> beanToCsvWriter = sectionCsvLineService.getStatefulBeanToCSV(writer);
+              StatefulBeanToCsv<SectionCSVLine> beanToCsvWriter =
+                  sectionCsvLineService.getStatefulBeanToCSV(writer);
               beanToCsvWriter.write(list);
             } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
               log.error("Error writing CSV file", e);
