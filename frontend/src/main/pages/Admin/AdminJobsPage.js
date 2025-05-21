@@ -7,7 +7,7 @@ import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import JobsSearchForm from "main/components/Jobs/JobsSearchForm";
 import OurPagination from "main/components/Utils/OurPagination";
 import useLocalStorage from "main/utils/useLocalStorage";
@@ -29,6 +29,10 @@ const AdminJobsPage = () => {
     "ASC",
   );
   const [pageSize, setPageSize] = useLocalStorage("JobsSearch.PageSize", "5");
+
+  useEffect(() => {
+    setSelectedPage(1);
+  }, [pageSize]);
 
   const refreshJobsIntervalMilliseconds = 5000;
 
