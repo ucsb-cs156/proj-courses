@@ -30,8 +30,12 @@ describe("AdminJobsPage tests", () => {
     axiosMock.reset();
     axiosMock.resetHistory();
 
-    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -46,7 +50,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
@@ -67,7 +71,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const testJobButton = await screen.findByText("Test Job");
@@ -81,11 +85,9 @@ describe("AdminJobsPage tests", () => {
       submitButton.click();
     });
 
-    await waitFor(() =>
-      expect(axiosMock.history.post).toHaveLength(1)
-    );
+    await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/testjob?fail=false&sleepMs=0"
+      "/api/jobs/launch/testjob?fail=false&sleepMs=0",
     );
   });
 
@@ -96,7 +98,7 @@ describe("AdminJobsPage tests", () => {
     });
     axiosMock
       .onPost(
-        "/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH&ifStale=true"
+        "/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH&ifStale=true",
       )
       .reply(200, {});
 
@@ -105,7 +107,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Update Courses Database");
@@ -113,7 +115,7 @@ describe("AdminJobsPage tests", () => {
 
     userEvent.selectOptions(
       screen.getByTestId("UpdateCoursesJobForm.Quarter"),
-      "20211"
+      "20211",
     );
     userEvent.selectOptions(screen.getByLabelText("Subject Area"), "ANTH");
 
@@ -121,11 +123,9 @@ describe("AdminJobsPage tests", () => {
       screen.getByTestId("updateCourses").click();
     });
 
-    await waitFor(() =>
-      expect(axiosMock.history.post).toHaveLength(1)
-    );
+    await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH&ifStale=true"
+      "/api/jobs/launch/updateCourses?quarterYYYYQ=20211&subjectArea=ANTH&ifStale=true",
     );
   });
 
@@ -143,24 +143,24 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Update Courses Database by quarter");
-    await userEvent.click(screen.getByText("Update Courses Database by quarter"));
+    await userEvent.click(
+      screen.getByText("Update Courses Database by quarter"),
+    );
 
     userEvent.selectOptions(
       screen.getByTestId("UpdateCoursesByQuarterJobForm.Quarter"),
-      "20222"
+      "20222",
     );
 
     await act(async () => {
       screen.getByTestId("updateCoursesByQuarter").click();
     });
 
-    await waitFor(() =>
-      expect(axiosMock.history.post).toHaveLength(1)
-    );
+    await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(url);
   });
 
@@ -178,12 +178,12 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Update Courses Database by quarter range");
     await userEvent.click(
-      screen.getByText("Update Courses Database by quarter range")
+      screen.getByText("Update Courses Database by quarter range"),
     );
 
     userEvent.selectOptions(screen.getByLabelText("Start Quarter"), "20212");
@@ -193,9 +193,7 @@ describe("AdminJobsPage tests", () => {
       screen.getByTestId("updateCoursesByQuarterRange").click();
     });
 
-    await waitFor(() =>
-      expect(axiosMock.history.post).toHaveLength(1)
-    );
+    await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(url);
   });
 
@@ -212,16 +210,14 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Update Grade Info");
     await userEvent.click(screen.getByText("Update Grade Info"));
     await userEvent.click(screen.getByText("Update Grades"));
 
-    await waitFor(() =>
-      expect(axiosMock.history.post).toHaveLength(1)
-    );
+    await waitFor(() => expect(axiosMock.history.post).toHaveLength(1));
     expect(axiosMock.history.post[0].url).toBe(url);
   });
 
@@ -237,15 +233,13 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Purge Job Log");
     await userEvent.click(screen.getByText("Purge Job Log"));
 
-    await waitFor(() =>
-      expect(axiosMock.history.delete).toHaveLength(1)
-    );
+    await waitFor(() => expect(axiosMock.history.delete).toHaveLength(1));
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
   });
 
@@ -257,7 +251,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText(/Error fetching jobs/i)).toBeInTheDocument();
@@ -271,11 +265,12 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("JobsTable-cell-row-0-col-id"))
-      .toHaveTextContent("1");
+    expect(
+      await screen.findByTestId("JobsTable-cell-row-0-col-id"),
+    ).toHaveTextContent("1");
   });
 
   test("auto-refresh triggers repeated fetchJobs calls", async () => {
@@ -290,12 +285,12 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // on mount, only one /api/jobs/all call
     expect(
-      axiosMock.history.get.filter(r => r.url === "/api/jobs/all")
+      axiosMock.history.get.filter((r) => r.url === "/api/jobs/all"),
     ).toHaveLength(1);
 
     // advance timers by the refresh interval
@@ -303,8 +298,8 @@ describe("AdminJobsPage tests", () => {
     jest.runOnlyPendingTimers();
     await waitFor(() =>
       expect(
-        axiosMock.history.get.filter(r => r.url === "/api/jobs/all")
-      ).toHaveLength(2)
+        axiosMock.history.get.filter((r) => r.url === "/api/jobs/all"),
+      ).toHaveLength(2),
     );
   });
 
@@ -319,7 +314,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Launch Jobs");
@@ -337,7 +332,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Launch Jobs");
@@ -355,12 +350,12 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await screen.findByText("Launch Jobs");
     await waitFor(() =>
-      expect(screen.getAllByRole("listitem")).toHaveLength(3)
+      expect(screen.getAllByRole("listitem")).toHaveLength(3),
     );
   });
 });
