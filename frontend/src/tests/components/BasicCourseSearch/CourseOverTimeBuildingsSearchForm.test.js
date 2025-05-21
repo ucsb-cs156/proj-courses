@@ -92,9 +92,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    );
+    await screen.findByTestId(expectedKey);
 
     const selectBuilding = screen.getByLabelText("Building Name");
     userEvent.selectOptions(selectBuilding, "BRDA");
@@ -126,9 +124,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     };
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    );
+    await screen.findByTestId(expectedKey);
 
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20232");
@@ -237,15 +233,11 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    );
+    await screen.findByTestId(expectedKey);
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    await waitFor(() =>
-      expect(screen.getByTestId("available-classrooms")).toBeInTheDocument(),
-    );
+    await screen.findByTestId("available-classrooms");
 
     expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
       "1004, 1106, 1108, 1112, 1115, 1116, 1119, 2108, 2110, 2112, 2115, 2116, 2119, 2120, 2123, 2124, 2127, 2128, 2129, 2135",
@@ -277,15 +269,11 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    );
+    await screen.findByTestId(expectedKey);
 
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
-    await waitFor(() =>
-      expect(screen.getByTestId("available-classrooms")).toBeInTheDocument(),
-    );
+    await screen.findByTestId("available-classrooms");
 
     expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
       "1004, 1106, 1108",
@@ -310,9 +298,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
-    );
+    await screen.findByTestId(expectedKey);
 
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
