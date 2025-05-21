@@ -18,7 +18,7 @@ const Template = (args) => {
 
 export const Empty = Template.bind({});
 Empty.args = {
-  gradeHistory: [],
+  enrollmentHistory: [],
 };
 
 export const OneEnrollmentData = Template.bind({});
