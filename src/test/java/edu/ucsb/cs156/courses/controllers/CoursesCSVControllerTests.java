@@ -1,9 +1,32 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.MvcResult;
+
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
@@ -11,34 +34,53 @@ import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.GeneralEducation;
 import edu.ucsb.cs156.courses.documents.Instructor;
 import edu.ucsb.cs156.courses.documents.Section;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import edu.ucsb.cs156.courses.services.SectionCSVLineService;
+import edu.ucsb.cs156.courses.testconfig.TestConfig;
 
-public class CoursesCSVControllerTests {
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
-  @Mock
-  private ConvertedSectionCollection convertedSectionCollection =
-      mock(ConvertedSectionCollection.class);
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Optional;
 
-  @InjectMocks private CoursesCSVController coursesCSVController;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
 
-  @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
+import org.mockito.Answers;
+
+import org.mockito.MockedConstruction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
+
+import edu.ucsb.cs156.courses.models.SectionCSVLine;
+import edu.ucsb.cs156.courses.ControllerTestCase;
+import edu.ucsb.cs156.courses.testconfig.TestConfig;
+
+@WebMvcTest(controllers = {CoursesCSVController.class})
+@Import(TestConfig.class)
+@AutoConfigureDataJpa
+public class CoursesCSVControllerTests extends ControllerTestCase {
+
+  @MockBean
+  private ConvertedSectionCollection convertedSectionCollection;
+
+  @MockBean(answer = Answers.CALLS_REAL_METHODS) SectionCSVLineService sectionCsvLineService;
+  
+  @Mock(answer = Answers.CALLS_REAL_METHODS)
+  StatefulBeanToCsv<SectionCSVLine> csvWriter;
 
   @Test
+  @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
   public void testCsvForQuarter_success() throws Exception {
     String yyyyq = "20252";
 
@@ -110,25 +152,6 @@ public class CoursesCSVControllerTests {
             .map(section -> ConvertedSection.builder().courseInfo(info).section(section).build())
             .toList();
 
-    when(convertedSectionCollection.findByQuarter(yyyyq)).thenReturn(dataPoints);
-
-    ResponseEntity<StreamingResponseBody> response = coursesCSVController.csvForCourses(yyyyq, "");
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("text/csv;charset=UTF-8", response.getHeaders().getContentType().toString());
-    String expectedFilename = "courses_" + yyyyq + ".csv";
-    String expectedContentDisposition = "attachment;filename=" + expectedFilename;
-    String actualContentDisposition =
-        response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION).get(0);
-    assertEquals(expectedContentDisposition, actualContentDisposition);
-
-    StreamingResponseBody body = response.getBody();
-    assertNotNull(body);
-
-    OutputStream outputStream = new ByteArrayOutputStream();
-    body.writeTo(outputStream);
-    String csvOutput = outputStream.toString();
-
     String expectedCSVOutput =
         """
         "COURSEID","ENROLLED","GES","INSTRUCTOR","MAXENROLL","QUARTER","SECTION","STATUS"
@@ -138,7 +161,18 @@ public class CoursesCSVControllerTests {
         "CMPSC    8 -1","0","C (L&S), QNT (L&S)","MIRZA D","30","20252","0103","Closed"
         "CMPSC    8 -1","0","C (L&S), QNT (L&S)","MIRZA D","30","20252","0104",""
         """;
+        
+    doReturn(dataPoints).when(convertedSectionCollection).findByQuarter(yyyyq);
 
-    assertEquals(expectedCSVOutput, csvOutput);
+    MvcResult response = mockMvc.perform(get("/api/courses/csv/quarter?yyyyq=20252"))
+            .andExpect(request().asyncStarted())
+            .andDo(MvcResult::getAsyncResult)
+            .andExpect(status().isOk())
+            .andReturn();
+
+    verify(convertedSectionCollection, times(1)).findByQuarter(yyyyq);
+    verify(sectionCsvLineService, times(1)).getStatefulBeanToCSV(any());
+
+    assertEquals(expectedCSVOutput, response.getResponse().getContentAsString());
   }
 }
