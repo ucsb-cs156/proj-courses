@@ -148,7 +148,7 @@ const AdminJobsPage = () => {
         sortDirection: sortDirection,
       },
     },
-    { content: [], totalPages: 0 },
+    undefined,
     { refetchInterval: refreshJobsIntervalMilliseconds },
   );
   // Stryker restore  all
@@ -217,7 +217,7 @@ const AdminJobsPage = () => {
 
       <h2 className="p-3">Job Status</h2>
 
-      <JobsTable jobs={page.content} />
+      <JobsTable jobs={page?.content || []} />
       <Button variant="danger" onClick={purgeJobLog} data-testid="purgeJobLog">
         Purge Job Log
       </Button>
