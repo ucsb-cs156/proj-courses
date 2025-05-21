@@ -26,7 +26,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   );
 
   const [Quarter, setQuarter] = useState(
-    localQuarter || availableQuarters[0]?.yyyyq,
+    localQuarter || availableQuarters[0].yyyyq,
   );
   const [buildingCode, setBuildingCode] = useState(localBuildingCode || "");
   const [availableClassrooms, setAvailableClassrooms] = useState([]);
@@ -48,7 +48,6 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             },
           );
           console.log("Classrooms returned:", response.data);
-
           const classrooms = response.data.sort();
 
           setAvailableClassrooms(classrooms);

@@ -73,6 +73,8 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
 
     axiosMock.resetHistory();
 
+    axiosMock.resetHistory();
+
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
