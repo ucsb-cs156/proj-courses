@@ -49,7 +49,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
 
   test("calls UCSB Course over time search api correctly with correct response", async () => {
     axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch/classrooms")
+      .onGet("/api/public/courseovertime/buildingsearch")
       .reply(200, coursesInLib);
 
     render(
@@ -82,9 +82,9 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
-      quarter: "20222",
+      startQtr: "20222",
+      endQtr: "20222",
       buildingCode: "GIRV",
-      classroom: "",
     });
 
     expect(
@@ -94,7 +94,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
 
   test("calls UCSB Course over time search api correctly with correctly sorted data", async () => {
     axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch/classrooms")
+      .onGet("/api/public/courseovertime/buildingsearch")
       .reply(200, coursesInLibDifferentDate);
 
     const spy = jest.spyOn(
@@ -130,9 +130,9 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
-      quarter: "20222",
+      startQtr: "20222",
+      endQtr: "20222",
       buildingCode: "GIRV",
-      classroom: "",
     });
 
     expect(

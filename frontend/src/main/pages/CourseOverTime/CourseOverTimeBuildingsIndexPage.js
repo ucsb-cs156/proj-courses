@@ -9,11 +9,11 @@ export default function CourseOverTimeBuildingsIndexPage() {
   const [courseJSON, setCourseJSON] = useState([]);
 
   const objectToAxiosParams = (query) => ({
-    url: "/api/public/courseovertime/buildingsearch/classrooms",
+    url: "/api/public/courseovertime/buildingsearch",
     params: {
-      quarter: query.Quarter,
+      startQtr: query.Quarter,
+      endQtr: query.Quarter,
       buildingCode: query.buildingCode,
-      classroom: query.classroom,
     },
   });
 
