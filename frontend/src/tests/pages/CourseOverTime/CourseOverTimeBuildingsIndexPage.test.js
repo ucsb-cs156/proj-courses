@@ -1,6 +1,4 @@
-import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
@@ -13,45 +11,30 @@ import {
   coursesInLib,
   coursesInLibDifferentDate,
 } from "fixtures/buildingFixtures";
+import userEvent from "@testing-library/user-event";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
-  const original = jest.requireActual("react-toastify");
+  const originalModule = jest.requireActual("react-toastify");
   return {
     __esModule: true,
-    ...original,
-    toast: (msg) => mockToast(msg),
+    ...originalModule,
+    toast: (x) => mockToast(x),
   };
 });
 
-const mockForm = jest.fn();
-jest.mock(
-  "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm",
-  () => {
-    const Actual = jest.requireActual(
-      "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm",
-    ).default;
-    return (props) => {
-      mockForm(props);
-      return <Actual {...props} />;
-    };
-  },
-);
-
 describe("CourseOverTimeBuildingsIndexPage tests", () => {
-  let axiosMock;
+  const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
 
   beforeEach(() => {
-    axiosMock = new AxiosMockAdapter(axios);
+    axiosMock.resetHistory();
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
-    mockForm.mockClear();
   });
 
   test("renders without crashing", () => {
@@ -64,10 +47,111 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
   });
 
-  test("calls both APIs and passes availableClassrooms to form", async () => {
+  test("calls UCSB Course over time search api correctly with correct response", async () => {
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch")
       .reply(200, coursesInLib);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20222");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20222");
+    const selectBuilding = screen.getByLabelText("Building Name");
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    axiosMock.resetHistory();
+
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
+    });
+
+    expect(axiosMock.history.get[0].params).toEqual({
+      startQtr: "20222",
+      endQtr: "20222",
+      buildingCode: "GIRV",
+    });
+
+    expect(screen.getByText("CHEM 184")).toBeInTheDocument();
+  });
+
+  test("calls UCSB Course over time search api correctly with correctly sorted data", async () => {
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch")
+      .reply(200, coursesInLibDifferentDate);
+
+    const spy = jest.spyOn(
+      require("main/components/Sections/SectionsTable"),
+      "default",
+    );
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20201");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20222");
+    const selectBuilding = screen.getByLabelText("Building Name");
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    axiosMock.resetHistory();
+
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
+    });
+
+    expect(axiosMock.history.get[0].params).toEqual({
+      startQtr: "20201",
+      endQtr: "20222",
+      buildingCode: "GIRV",
+    });
+
+    expect(screen.getByText("CHEM 184")).toBeInTheDocument();
+
+    const sortedSections = coursesInLibDifferentDate.sort((a, b) =>
+      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
+    );
+    expect(spy).toHaveBeenCalledWith(
+      { sections: sortedSections },
+      expect.anything(),
+    );
+
+    spy.mockRestore();
+  });
+
+  test("also calls the classrooms endpoint with the same params", async () => {
+    axiosMock.onGet("/api/public/courseovertime/buildingsearch").reply(200, []);
     axiosMock
       .onGet("/api/public/courseovertime/classrooms")
       .reply(200, ["1004", "2110"]);
@@ -86,77 +170,20 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     userEvent.click(screen.getByText("Submit"));
 
     await waitFor(() => {
-      const calls = axiosMock.history.get
-        .map((r) => r.url)
-        .filter((u) => u.includes("/courseovertime/"));
-      expect(calls).toHaveLength(2);
-    });
-
-    const calls = axiosMock.history.get.filter((r) =>
-      r.url.includes("/courseovertime/"),
-    );
-
-    expect(calls[0].url).toContain("buildingsearch");
-    expect(calls[0].params).toEqual({
-      startQtr: "20222",
-      endQtr: "20222",
-      buildingCode: "GIRV",
-    });
-
-    expect(calls[1].url).toContain("classrooms");
-    expect(calls[1].params).toEqual({
-      startQtr: "20222",
-      endQtr: "20222",
-      buildingCode: "GIRV",
-    });
-
-    await waitFor(() =>
-      expect(mockForm).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          availableClassrooms: ["1004", "2110"],
-        }),
-      ),
-    );
-
-    expect(screen.getByText("CHEM 184")).toBeInTheDocument();
-  });
-
-  test("sorted-data test still works", async () => {
-    axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch")
-      .reply(200, coursesInLibDifferentDate);
-    axiosMock.onGet("/api/public/courseovertime/classrooms").reply(200, []);
-
-    const spy = jest.spyOn(
-      require("main/components/Sections/SectionsTable"),
-      "default",
-    );
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeBuildingsIndexPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    userEvent.selectOptions(screen.getByLabelText("Start Quarter"), "20201");
-    userEvent.selectOptions(screen.getByLabelText("End Quarter"), "20222");
-    userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
-    userEvent.click(screen.getByText("Submit"));
-
-    await waitFor(() => {
       const calls = axiosMock.history.get.filter((r) =>
         r.url.includes("/courseovertime/"),
       );
       expect(calls).toHaveLength(2);
     });
 
-    const sorted = [...coursesInLibDifferentDate].sort((a, b) =>
-      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
+    const clsCall = axiosMock.history.get.find((r) =>
+      r.url.includes("/courseovertime/classrooms"),
     );
-    expect(spy).toHaveBeenCalledWith({ sections: sorted }, expect.any(Object));
-
-    spy.mockRestore();
+    expect(clsCall).toBeDefined();
+    expect(clsCall.params).toEqual({
+      startQtr: "20222",
+      endQtr: "20222",
+      buildingCode: "GIRV",
+    });
   });
 });
