@@ -78,7 +78,6 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
     when(ucsbCurriculumService.getStaticGeInfo()).thenReturn(expectedArray);
 
-
     MvcResult response =
         mockMvc
             .perform(get(url).contentType("application/json"))
