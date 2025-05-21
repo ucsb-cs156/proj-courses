@@ -362,9 +362,7 @@ describe("AdminJobsPage tests", () => {
   });
 
   test("When localstorage is empty, fallback values are used", async () => {
-    const getItemSpy = jest
-      .spyOn(Storage.prototype, "getItem")
-      .mockImplementation(() => null);
+    jest.spyOn(Storage.prototype, "getItem").mockImplementation(() => null);
 
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
@@ -425,5 +423,9 @@ describe("AdminJobsPage tests", () => {
       sortField: "status",
       sortDirection: "ASC",
     });
+    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
+    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
+    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
+    expect(screen.queryByTestId("OurPagination-4")).not.toBeInTheDocument();
   });
 });
