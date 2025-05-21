@@ -9,9 +9,7 @@ import {
   Legend,
 } from "recharts";
 
-// Stryker disable all: don't need to mutate constant arrays I just have to make checking things easier
-
-// Stryker restore all
+// Stryker disable all: This is not to be run until the tests are written as it is a placeholder.
 
 export const formatTooltip = (value, _, props) => {
   return [`Percentage: ${value.toFixed(1)}%, Count: ${props.payload.count}`];
