@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ButtonGroup, Card, OverlayTrigger, Popover, Button } from 'react-bootstrap';
+import { Card, OverlayTrigger, Popover } from 'react-bootstrap';
 
 export default function PersonalSectionsEvents({ event, eventColor, borderColor }) {
     const [style, setStyle] = useState({});
@@ -61,11 +61,6 @@ export default function PersonalSectionsEvents({ event, eventColor, borderColor 
                             {event.name}<br/>
                             {event.description}
                         </p>
-                        {/* {event.actions && event.actions.map((action, index) => (
-                            <ButtonGroup key={index}>
-                                <Button variant={action.variant} onClick={action.callback}>{action.text}</Button>
-                            </ButtonGroup>
-                        ))} */}
                     </Popover.Body>
                 </Popover>
             }
