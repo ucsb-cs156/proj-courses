@@ -60,6 +60,7 @@ public class UCSBCurriculumService {
     "SUB", "WRT"
   };
 
+
   public static final String GE_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/requirements";
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
