@@ -5,7 +5,7 @@ import { Form } from "react-bootstrap";
 // doesn't showdown to pre-existing dropdowns
 
 const SingleGEDropdown = ({
-  areas = [],
+  areas,
   area,
   setArea,
   controlId,
