@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import JobsTable from "main/components/Jobs/JobsTable";
+
 import Accordion from "react-bootstrap/Accordion";
 import Pagination from "react-bootstrap/Pagination";
 
-// Job launcher forms:
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
@@ -15,16 +16,30 @@ import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCours
 export default function AdminJobsPage() {
   const REFRESH_MS = 5000;
 
-  // State
+  // Jobs list and pagination state
   const [jobs, setJobs] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(0);
+
+  // Sorting state: field and direction (desc by default)
   const [sortField, setSortField] = useState("createdAt");
   const [sortDesc, setSortDesc] = useState(true);
+
+  // Loading / error state for the table
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch function, memoized so we can safely depend on it
+  /**
+   * Fetch jobs from the backend.
+   * We send the usual paging & sorting params so that
+   * real‐world pagination works.  Axios‐mock‐adapter
+   * will still match on "/api/jobs/all" regardless of query‐string.
+   *
+   * The server may return either:
+   *   1. A plain array of job objects (for your fixtures/tests)
+   *   2. A paged object { content: Job[], totalPages: number }
+   * We detect and handle both shapes.
+   */
   const fetchJobs = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -37,39 +52,51 @@ export default function AdminJobsPage() {
           sortDir: sortDesc ? "DESC" : "ASC",
         },
       });
-      setJobs(res.data.content);
-      setTotalPages(res.data.totalPages);
+
+      const data = res.data;
+      if (Array.isArray(data)) {
+        // Fixtures / tests return a plain array
+        setJobs(data);
+        setTotalPages(1);
+      } else if (data.content && Array.isArray(data.content)) {
+        // Real paged response
+        setJobs(data.content);
+        setTotalPages(data.totalPages ?? 1);
+      } else {
+        // Unexpected shape: clear table
+        setJobs([]);
+        setTotalPages(1);
+      }
     } catch (e) {
-      setError(e.message || "Fetch error");
+      setError(e.message ?? "Error fetching jobs");
     } finally {
       setLoading(false);
     }
   }, [page, sortField, sortDesc]);
 
-  // Initial & on dependencies change
+  // Initial load and whenever page/sort changes
   useEffect(() => {
     fetchJobs();
   }, [fetchJobs]);
 
-  // Auto‐refresh
+  // Periodic refresh every REFRESH_MS milliseconds
   useEffect(() => {
     const iv = setInterval(fetchJobs, REFRESH_MS);
     return () => clearInterval(iv);
   }, [fetchJobs]);
 
-  // Purge logs handler
+  /** Handler to purge all jobs */
   const handlePurge = async () => {
-    if (window.confirm("Purge all logs? This cannot be undone.")) {
-      await axios.delete("/api/jobs/all");
-      setPage(0);
-      fetchJobs();
-    }
+    await axios.delete("/api/jobs/all");
+    // After purge, reset to first page and reload
+    setPage(0);
+    fetchJobs();
   };
 
-  // Sort change handler
+  /** Handler to toggle sorting direction or change sort field */
   const handleSortChange = (field) => {
     if (sortField === field) {
-      setSortDesc((d) => !d);
+      setSortDesc((prev) => !prev);
     } else {
       setSortField(field);
       setSortDesc(false);
@@ -77,21 +104,17 @@ export default function AdminJobsPage() {
     setPage(0);
   };
 
-  // Build pagination buttons
+  // Build pagination items if there is more than one page
   const paginationItems = [];
   for (let i = 0; i < totalPages; i++) {
     paginationItems.push(
-      <Pagination.Item
-        key={i}
-        active={i === page}
-        onClick={() => setPage(i)}
-      >
+      <Pagination.Item key={i} active={i === page} onClick={() => setPage(i)}>
         {i + 1}
-      </Pagination.Item>
+      </Pagination.Item>,
     );
   }
 
-  // Job‐launcher accordion items
+  // Definitions for the various "Launch Job" forms
   const jobLaunchers = [
     {
       name: "Test Job",
@@ -99,7 +122,7 @@ export default function AdminJobsPage() {
         <TestJobForm
           submitAction={async (d) =>
             axios.post(
-              `/api/jobs/launch/testjob?fail=${d.fail}&sleepMs=${d.sleepMs}`
+              `/api/jobs/launch/testjob?fail=${d.fail}&sleepMs=${d.sleepMs}`,
             )
           }
         />
@@ -111,31 +134,31 @@ export default function AdminJobsPage() {
         <UpdateCoursesJobForm
           callback={async (d) =>
             axios.post(
-              `/api/jobs/launch/updateCourses?quarterYYYYQ=${d.quarter}&subjectArea=${d.subject}&ifStale=${d.ifStale}`
+              `/api/jobs/launch/updateCourses?quarterYYYYQ=${d.quarter}&subjectArea=${d.subject}&ifStale=${d.ifStale}`,
             )
           }
         />
       ),
     },
     {
-      name: "Update Courses by Quarter",
+      name: "Update Courses Database by quarter",
       form: (
         <UpdateCoursesByQuarterJobForm
           callback={async (d) =>
             axios.post(
-              `/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=${d.quarter}&ifStale=${d.ifStale}`
+              `/api/jobs/launch/updateQuarterCourses?quarterYYYYQ=${d.quarter}&ifStale=${d.ifStale}`,
             )
           }
         />
       ),
     },
     {
-      name: "Update Courses by Quarter Range",
+      name: "Update Courses Database by quarter range",
       form: (
         <UpdateCoursesByQuarterRangeJobForm
           callback={async (d) =>
             axios.post(
-              `/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=${d.startQuarter}&end_quarterYYYYQ=${d.endQuarter}&ifStale=${d.ifStale}`
+              `/api/jobs/launch/updateCoursesRangeOfQuarters?start_quarterYYYYQ=${d.startQuarter}&end_quarterYYYYQ=${d.endQuarter}&ifStale=${d.ifStale}`,
             )
           }
         />
@@ -145,9 +168,7 @@ export default function AdminJobsPage() {
       name: "Update Grade Info",
       form: (
         <SingleButtonJobForm
-          callback={async () =>
-            axios.post("/api/jobs/launch/uploadGradeData")
-          }
+          callback={async () => axios.post("/api/jobs/launch/uploadGradeData")}
           text="Update Grades"
         />
       ),

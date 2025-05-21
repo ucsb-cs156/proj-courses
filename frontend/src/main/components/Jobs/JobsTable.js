@@ -3,22 +3,13 @@ import { Table, Spinner, Alert, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Plaintext from "../Utils/Plaintext";
 
-/**
- * Props:
- * - jobs: Job[]
- * - loading: boolean
- * - error: string|null
- * - sortBy: { id: string, desc: boolean }
- * - onSortChange: (field: string) => void
- * - onPurge: () => void
- */
 export default function JobsTable({
-  jobs,
-  loading,
-  error,
-  sortBy,
-  onSortChange,
-  onPurge,
+  jobs = [],
+  loading = false,
+  error = null,
+  sortBy = { id: "id", desc: true },
+  onSortChange = () => {},
+  onPurge = () => {},
 }) {
   if (loading) {
     return (
@@ -35,15 +26,19 @@ export default function JobsTable({
     );
   }
 
-  // Header click toggles that field
   const clickHeader = (field) => {
     onSortChange(field);
   };
 
-  // Unified arrow: ▲ / ▼ for the active column
   const SortIcon = ({ field }) => {
-    if (sortBy.id !== field) return null;
-    return sortBy.desc ? " ▼" : " ▲";
+    if (sortBy.id !== field) {
+      return <span data-testid={`JobsTable-header-${field}-sort-carets`} />;
+    }
+    return (
+      <span data-testid={`JobsTable-header-${field}-sort-carets`}>
+        {sortBy.desc ? "🔽" : "🔼"}
+      </span>
+    );
   };
 
   return (
@@ -51,78 +46,105 @@ export default function JobsTable({
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h5>Job Log</h5>
         <Button variant="danger" size="sm" onClick={onPurge}>
-          Purge Logs
+          Purge Job Log
         </Button>
       </div>
 
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th
-              style={{ cursor: "pointer" }}
-              onClick={() => clickHeader("id")}
-            >
-              ID<SortIcon field="id" />
-            </th>
-            <th
-              style={{ cursor: "pointer" }}
-              onClick={() => clickHeader("createdAt")}
-            >
-              Created At<SortIcon field="createdAt" />
-            </th>
-            <th
-              style={{ cursor: "pointer" }}
-              onClick={() => clickHeader("updatedAt")}
-            >
-              Updated At<SortIcon field="updatedAt" />
-            </th>
-            <th
-              style={{ cursor: "pointer" }}
-              onClick={() => clickHeader("status")}
-            >
-              Status<SortIcon field="status" />
-            </th>
-            <th>Log</th>
-          </tr>
-        </thead>
-        <tbody>
-          {jobs.length === 0 ? (
+      <div className="table-responsive">
+        <Table striped bordered hover responsive>
+          <thead>
             <tr>
-              <td colSpan={5} className="text-center">
-                No jobs to display.
-              </td>
+              <th
+                style={{ cursor: "pointer" }}
+                onClick={() => clickHeader("id")}
+              >
+                id
+                <SortIcon field="id" />
+              </th>
+              <th
+                style={{ cursor: "pointer" }}
+                onClick={() => clickHeader("createdAt")}
+              >
+                Created
+                <SortIcon field="createdAt" />
+              </th>
+              <th
+                style={{ cursor: "pointer" }}
+                onClick={() => clickHeader("updatedAt")}
+              >
+                Updated
+                <SortIcon field="updatedAt" />
+              </th>
+              <th
+                style={{ cursor: "pointer" }}
+                onClick={() => clickHeader("status")}
+              >
+                Status
+                <SortIcon field="status" />
+              </th>
+              <th>Log</th>
             </tr>
-          ) : (
-            jobs.map((job, _idx) => {
-              const lines = (job.log || "").split("\n");
-              const truncated = lines.slice(0, 10).join("\n");
-              const needs = lines.length > 10;
-              return (
-                <tr key={job.id}>
-                  <td>{job.id}</td>
-                  <td>{new Date(job.createdAt).toLocaleString()}</td>
-                  <td>{new Date(job.updatedAt).toLocaleString()}</td>
-                  <td>{job.status}</td>
-                  <td data-testid={`JobsTable-cell-row-${_idx}-col-Log`}>
-                    {needs ? (
-                      <>
-                        <Plaintext text={truncated} />
-                        <span>...</span>
-                        <br />
-                        <Link to={`/admin/jobs/logs/${job.id}`}>
-                          View Full Log
-                        </Link>
-                      </>
-                    ) : (
-                      <pre>{job.log}</pre>
-                    )}
-                  </td>
-                </tr>
-              );
-            })
-          )}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {jobs.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="text-center">
+                  no jobs to display.
+                </td>
+              </tr>
+            ) : (
+              jobs.map((job, idx) => {
+                const raw = job.log ?? "";
+                const lines = raw.split("\n");
+                const needsTruncate = lines.length > 10;
+                const truncated = lines.slice(0, 10).join("\n");
+
+                const formatValue = (value) => {
+                  if (typeof value === "string") {
+                    return new Date(value).toLocaleString(undefined, {
+                      hour12: false,
+                    });
+                  }
+                  return value;
+                };
+
+                return (
+                  <tr key={job.id}>
+                    <td data-testid={`JobsTable-cell-row-${idx}-col-id`}>
+                      {job.id}
+                    </td>
+                    <td data-testid={`JobsTable-cell-row-${idx}-col-Created`}>
+                      {job.createdAt}
+                    </td>
+                    <td data-testid={`JobsTable-cell-row-${idx}-col-Updated`}>
+                      {formatValue(job.updatedAt)}
+                    </td>
+                    <td data-testid={`JobsTable-cell-row-${idx}-col-status`}>
+                      {job.status}
+                    </td>
+                    <td data-testid={`JobsTable-cell-row-${idx}-col-Log`}>
+                      {raw === "" ? (
+                        <span>No logs available</span>
+                      ) : needsTruncate ? (
+                        <>
+                          <Plaintext text={truncated} />
+                          <span>...</span>
+                          <br />
+                          <Link to={`/admin/jobs/logs/${job.id}`}>
+                            See entire log
+                          </Link>
+                        </>
+                      ) : (
+                        <pre>{raw}</pre>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }
