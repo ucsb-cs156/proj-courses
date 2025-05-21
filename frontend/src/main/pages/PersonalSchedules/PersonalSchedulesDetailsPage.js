@@ -51,19 +51,19 @@ export default function PersonalSchedulesDetailsPage() {
     dayString.replaceAll(" ", "");
     const dayArray = [];
     for(let i = 0; i < dayString.length; i++) {
-      if(dayString[i] == "M") {
+      if(dayString[i] === "M") {
         dayArray.push("Monday");
       }
-      else if(dayString[i] == "T") {
+      else if(dayString[i] === "T") {
         dayArray.push("Tuesday");
       }
-      else if(dayString[i] == "W") {
+      else if(dayString[i] === "W") {
         dayArray.push("Wednesday");
       }
-      else if(dayString[i] == "R") {
+      else if(dayString[i] === "R") {
         dayArray.push("Thursday");
       }
-      else if(dayString[i] == "F") {
+      else if(dayString[i] === "F") {
         dayArray.push("Friday");
       }
     }
@@ -113,7 +113,7 @@ export default function PersonalSchedulesDetailsPage() {
         </p>
         <p>
           {personalSection && (
-            <PersonalSchedulesWeeklyView Events={personalSection} />
+            <PersonalSchedulesWeeklyView Events={eventParser().event} />
           )}
         </p>
         {createButton()}

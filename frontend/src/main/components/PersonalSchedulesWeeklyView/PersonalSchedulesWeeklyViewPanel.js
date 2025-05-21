@@ -16,8 +16,8 @@ const hours = [
 //     id: "12845"
 //     title: "CHEM184",
 //     day: ["Tuesday", "Thursday"],
-//     startTime: "2:00PM",
-//     endTime: "4:00PM"
+//     startTime: "02:00",
+//     endTime: "04:00"
 // }
 
 // Stryker disable next-line all : no need to test default colors
