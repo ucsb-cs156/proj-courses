@@ -302,12 +302,10 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalled();
-      expect(
-        screen.queryByTestId("available-classrooms"),
-      ).not.toBeInTheDocument();
-    });
+    await waitFor(() => expect(console.error).toHaveBeenCalled());
+    expect(
+      screen.queryByTestId("available-classrooms"),
+    ).not.toBeInTheDocument();
   });
 
   test("uses fallback quarter/building when localStorage for quarter/building is null", () => {
