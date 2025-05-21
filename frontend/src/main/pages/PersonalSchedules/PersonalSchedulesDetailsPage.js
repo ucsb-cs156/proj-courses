@@ -2,6 +2,7 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useParams } from "react-router-dom";
 import PersonalSchedulesTable from "main/components/PersonalSchedules/PersonalSchedulesTable";
 import PersonalSectionsTable from "main/components/PersonalSections/PersonalSectionsTable";
+import PersonalSchedulesWeeklyView from "main/components/PersonalSchedulesWeeklyView/PersonalSchedulesWeeklyViewPanel"
 import { useBackend, _useBackendMutation } from "main/utils/useBackend";
 import { Button } from "react-bootstrap";
 import { useCurrentUser } from "main/utils/currentUser";
@@ -46,6 +47,50 @@ export default function PersonalSchedulesDetailsPage() {
     },
   );
 
+  const dayParser = (dayString) => {
+    dayString.replaceAll(" ", "");
+    const dayArray = [];
+    for(let i = 0; i < dayString.length; i++) {
+      if(dayString[i] == "M") {
+        dayArray.push("Monday");
+      }
+      else if(dayString[i] == "T") {
+        dayArray.push("Tuesday");
+      }
+      else if(dayString[i] == "W") {
+        dayArray.push("Wednesday");
+      }
+      else if(dayString[i] == "R") {
+        dayArray.push("Thursday");
+      }
+      else if(dayString[i] == "F") {
+        dayArray.push("Friday");
+      }
+    }
+    return dayArray;
+  }
+
+  const eventParser = () => {
+    if(personalSection !== undefined) {
+      return {
+        event: 
+          personalSection
+            .filter(section => section.timeLocations.length !== 0)
+            .map(section => ({
+              id: section.classSections.enrollCode.trim(),
+              title: section.classSections.courseId.replaceAll(" ", ""),
+              day: dayParser(section.classSections.timeLocations.days),
+              name: section.title,
+              description: section.description,
+              location: section.classSections.timeLocations.building.trim() + " " + section.classSections.timeLocations.room.trim(),
+              startTime: section.classSections.timeLocations.beginTime,
+              endTime: section.classSections.timeLocations.endTime,
+          })),
+      }
+    }
+    return {}
+  }
+
   return (
     <BasicLayout>
       <div className="pt-2">
@@ -64,6 +109,11 @@ export default function PersonalSchedulesDetailsPage() {
               psId={id}
               currentUser={currentUser}
             />
+          )}
+        </p>
+        <p>
+          {personalSection && (
+            <PersonalSchedulesWeeklyView Events={personalSection} />
           )}
         </p>
         {createButton()}
