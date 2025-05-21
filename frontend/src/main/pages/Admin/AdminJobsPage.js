@@ -68,7 +68,8 @@ export default function AdminJobsPage() {
         setTotalPages(1);
       }
     } catch (e) {
-      setError(e.message ?? "Error fetching jobs");
+      console.error(e);
+      setError("Error fetching jobs");
     } finally {
       setLoading(false);
     }
