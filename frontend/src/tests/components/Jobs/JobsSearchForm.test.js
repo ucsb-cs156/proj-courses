@@ -82,7 +82,6 @@ describe("JobsSearchForm", () => {
   });
 
   test("renders correctly when fallback values are used", () => {
-    // Simulate localStorage returning null for all keys (already mocked in beforeEach)
     render(
       <JobsSearchForm
         updateSortField={updateSortField}
@@ -106,12 +105,10 @@ describe("JobsSearchForm", () => {
       />,
     );
 
-    // Change all dropdowns
     userEvent.selectOptions(screen.getByLabelText("Sort By"), "updatedAt");
     userEvent.selectOptions(screen.getByLabelText("Sort Direction"), "DESC");
     userEvent.selectOptions(screen.getByLabelText("Page Size"), "20");
 
-    // Assert correct keys are set in localStorage
     expect(localStorage.setItem).toHaveBeenCalledWith(
       "JobsSearch.SortField",
       "updatedAt",
@@ -124,5 +121,25 @@ describe("JobsSearchForm", () => {
       "JobsSearch.PageSize",
       "20",
     );
+  });
+
+  test("does not use default value if localStorage key is wrong", () => {
+    jest.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
+      if (key === "") return "WRONG";
+      return null;
+    });
+
+    render(
+      <JobsSearchForm
+        updateSortField={updateSortField}
+        updateSortDirection={updateSortDirection}
+        updatePageSize={updatePageSize}
+      />,
+    );
+
+    // The default values should still be selected, not "WRONG"
+    expect(screen.getByLabelText("Sort By").value).toBe("status");
+    expect(screen.getByLabelText("Sort Direction").value).toBe("ASC");
+    expect(screen.getByLabelText("Page Size").value).toBe("5");
   });
 });

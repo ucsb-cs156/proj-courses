@@ -201,7 +201,6 @@ const AdminJobsPage = () => {
         ))}
       </Accordion>
 
-      {/* Add spacing above the search form */}
       <div style={{ marginTop: "1rem" }} />
 
       <JobsSearchForm
@@ -210,7 +209,6 @@ const AdminJobsPage = () => {
         updatePageSize={setPageSize}
       />
 
-      {/* Add spacing below the search form */}
       <div style={{ marginBottom: "1rem" }} />
       <OurPagination
         updateActivePage={setSelectedPage}
