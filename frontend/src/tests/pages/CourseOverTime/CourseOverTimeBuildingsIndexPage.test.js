@@ -25,7 +25,6 @@ jest.mock("react-toastify", () => {
 
 describe("CourseOverTimeBuildingsIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
-  const queryClient = new QueryClient();
 
   beforeEach(() => {
     axiosMock.resetHistory();
@@ -37,6 +36,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
       .reply(200, systemInfoFixtures.showingNeither);
   });
 
+  const queryClient = new QueryClient();
   test("renders without crashing", () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -68,7 +68,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
     );
 
     userEvent.selectOptions(selectBuilding, "GIRV");
@@ -118,7 +118,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
     );
 
     userEvent.selectOptions(selectBuilding, "GIRV");
@@ -140,7 +140,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
 
     expect(screen.getByText("CHEM 184")).toBeInTheDocument();
-
+    // Check that CoursesOverTimeBuildings received the sorted sections data
     const sortedSections = coursesInLibDifferentDate.sort((a, b) =>
       b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
     );
