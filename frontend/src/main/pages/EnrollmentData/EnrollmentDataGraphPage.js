@@ -1,7 +1,7 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 
+// Stryker disable all : placeholder for future implementation
 export default function EnrollmentDataGraphPage() {
-  // Stryker disable all : placeholder for future implementation
   return (
     <BasicLayout>
       <div className="pt-2">
