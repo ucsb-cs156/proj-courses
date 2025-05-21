@@ -8,69 +8,57 @@ import SectionsTable from "main/components/Sections/SectionsTable";
 export default function CourseOverTimeBuildingsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
-  // store fetched classroom numbers
   const [availableClassrooms, setAvailableClassrooms] = useState([]);
-  // hold onto the latest query so we can trigger classroom fetch
   const [latestQuery, setLatestQuery] = useState({
     startQuarter: "",
     endQuarter: "",
     buildingCode: "",
   });
 
-  const objectToAxiosParams = (query) => ({
+  // — your existing “buildingsearch” mutation —
+  const objectToAxiosParams = (q) => ({
     url: "/api/public/courseovertime/buildingsearch",
     params: {
-      startQtr: query.startQuarter,
-      endQtr: query.endQuarter,
-      buildingCode: query.buildingCode,
+      startQtr: q.startQuarter,
+      endQtr: q.endQuarter,
+      buildingCode: q.buildingCode,
     },
   });
+  const onSuccess = (buildings) => setCourseJSON(buildings);
+  const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, []);
 
-  const onSuccess = (buildings) => {
-    setCourseJSON(buildings);
-  };
-
-  const mutation = useBackendMutation(
-    objectToAxiosParams,
-    { onSuccess },
-    // Stryker disable next-line all : hard to set up test for caching
-    [],
-  );
-
-
-  const objectToAxiosParamsClassrooms = (query) => ({
+  // — your “classrooms” mutation —
+  const objectToAxiosParamsClassrooms = (q) => ({
     url: "/api/public/courseovertime/classrooms",
     params: {
-      startQtr: query.startQuarter,
-      endQtr: query.endQuarter,
-      buildingCode: query.buildingCode,
+      startQtr: q.startQuarter,
+      endQtr: q.endQuarter,
+      buildingCode: q.buildingCode,
     },
   });
-
   const classroomMutation = useBackendMutation(
     objectToAxiosParamsClassrooms,
     { onSuccess: (rooms) => setAvailableClassrooms(rooms) },
-    // Stryker disable next-line all : hard to set up test for caching
     [],
   );
 
-  // whenever buildingCode in our saved query changes, re-fetch classrooms
+  // <-- pull out exactly the bits our effect uses -->
+  const { startQuarter, endQuarter, buildingCode } = latestQuery;
+  const fetchClassrooms = classroomMutation.mutate;
+
+  // effect now only depends on primitives + the stable fetchClassrooms fn
   useEffect(() => {
-    if (!latestQuery.buildingCode) {
+    if (!buildingCode) {
       setAvailableClassrooms([]);
       return;
     }
-    classroomMutation.mutate(latestQuery);
-  }, [latestQuery.buildingCode]);
+    fetchClassrooms({ startQuarter, endQuarter, buildingCode });
+  }, [startQuarter, endQuarter, buildingCode, fetchClassrooms]);
 
-  // fire the sections search AND save the query for useEffect
-  async function fetchCourseOverTimeJSON(_event, query) {
+  // single handler to run both API calls
+  function fetchCourseOverTimeJSON(_e, query) {
     mutation.mutate(query);
-    setLatestQuery({
-      startQuarter: query.startQuarter,
-      endQuarter: query.endQuarter,
-      buildingCode: query.buildingCode,
-    });
+    setLatestQuery(query);
   }
 
   return (
