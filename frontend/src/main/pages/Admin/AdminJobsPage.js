@@ -31,7 +31,7 @@ const [sortDirection, setSortDirection] = useLocalStorage(
 );
 const [pageSize, setPageSize] = useLocalStorage(
   "JobsSearch.PageSize",
-  "10"
+  "5"
 );
 
   const refreshJobsIntervalMilliseconds = 5000;
@@ -141,13 +141,13 @@ const [pageSize, setPageSize] = useLocalStorage(
     error: _error,
     status: _status,
   } = useBackend(
-    ["/api/jobs/paginated"],
+    ["/api/jobs/paginated", selectedPage, pageSize, sortField, sortDirection],
     {
       method: "GET",
       url: "/api/jobs/paginated",
       params: {
-      page: selectedPage - 1,
-      pageSize: pageSize,
+      page: Number(selectedPage - 1),
+      pageSize: Number(pageSize),
       sortField: sortField,
       sortDirection: sortDirection,
     },
@@ -205,11 +205,17 @@ const [pageSize, setPageSize] = useLocalStorage(
         ))}
       </Accordion>
 
+      {/* Add spacing above the search form */}
+      <div style={{ marginTop: "1rem" }} />
+
       <JobsSearchForm
-  updateSortField={setSortField}
-  updateSortDirection={setSortDirection}
-  updatePageSize={setPageSize}
-/>
+        updateSortField={setSortField}
+        updateSortDirection={setSortDirection}
+        updatePageSize={setPageSize}
+      />
+
+      {/* Add spacing below the search form */}
+      <div style={{ marginBottom: "1rem" }} />
 <OurPagination
   updateActivePage={setSelectedPage}
   totalPages={page?.totalPages || 0}

@@ -8,7 +8,7 @@ const JobsSearchForm = ({
   updatePageSize,
 }) => {
   // Stryker disable all ; testing for specific hard coded lists is just writing the code twice
-  const sortFields = ["status", "createdAt", "completedAt"];
+  const sortFields = ["status", "createdAt", "updatedAt"];
   const sortDirections = ["ASC", "DESC"];
   const pageSizes = ["5", "10", "20", "50", "100", "200", "500"];
   // Stryker restore all
