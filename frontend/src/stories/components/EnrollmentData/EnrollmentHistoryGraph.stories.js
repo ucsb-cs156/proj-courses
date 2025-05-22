@@ -3,8 +3,8 @@ import React from "react";
 import EnrollmentHistoryGraphs from "main/components/EnrollmentData/EnrollmentHistoryGraph";
 
 import {
-  oneEnrollmentDataPoint,
-  threeEnrollmentDataPoints,
+  oneEnrollmentDataPointArray,
+  threeEnrollmentDataPointsArray,
 } from "fixtures/enrollmentDataPointFixtures";
 
 export default {
@@ -23,10 +23,10 @@ Empty.args = {
 
 export const OneEnrollmentData = Template.bind({});
 OneEnrollmentData.args = {
-  enrollmentHistory: oneEnrollmentDataPoint,
+  enrollmentHistory: oneEnrollmentDataPointArray,
 };
 
 export const ThreeEnrollmentData = Template.bind({});
 ThreeEnrollmentData.args = {
-  enrollmentHistory: threeEnrollmentDataPoints,
+  enrollmentHistory: threeEnrollmentDataPointsArray,
 };
