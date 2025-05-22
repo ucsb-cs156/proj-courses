@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-
-import { allTheLevels } from "fixtures/levelsFixtures";
 import { quarterRange } from "main/utils/quarterUtilities";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleAreaDropdown from "../GEAreas/SingleAreaDropdown";
-import SingleLevelDropdown from "../Levels/SingleLevelDropdown";
 import { useBackend } from "main/utils/useBackend";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
@@ -21,34 +18,30 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
   const quarters = quarterRange(startQtr, endQtr);
 
   // Stryker disable all : not sure how to test/mock local storage
-  const localSubject = localStorage.getItem("GEAreaSearch.Subject");
   const localQuarter = localStorage.getItem("GEAreaSearch.Quarter");
-  const localLevel = localStorage.getItem("GEAreaSearch.Level");
+  const localArea = localStorage.getItem("GEAreaSearch.Area");
 
   const {
-    data: subjects,
-    error: _error,
-    status: _status,
+    data: areas = [],
+    error,
+    status,
   } = useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/UCSBSubjects/all"],
-    { method: "GET", url: "/api/UCSBSubjects/all" },
+    ["/api/public/generalEducationInfo"],
+    { method: "GET", url: "/api/public/generalEducationInfo" },
     [],
   );
 
-  const defaultSubjectArea = "ANTH";
+  const areaCodes = areas.map((r) => r.requirementCode);
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
-  const [subject, setSubject] = useState(
-    localSubject || subjects[0]?.subjectCode || defaultSubjectArea,
-  );
-  const [level, setLevel] = useState(localLevel || "U");
+  const [area, setArea] = useState(localArea || "");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { quarter, subject, level });
+    localStorage.setItem("GEAreaSearch.Quarter", quarter);
+    localStorage.setItem("GEAreaSearch.Area", area);
+    fetchJSON(event, { quarter, area });
   };
 
-  // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
@@ -60,22 +53,26 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
               setQuarter={setQuarter}
               controlId={"GEAreaSearch.Quarter"}
             />
-          </Col>
-          <Col md="auto">
-            <SingleAreaDropdown
-              subjects={subjects}
-              subject={subject}
-              setSubject={setSubject}
-              controlId={"GEAreaSearch.Area"}
-            />
-          </Col>
-          <Col md="auto">
-            <SingleLevelDropdown
-              levels={allTheLevels}
-              level={level}
-              setLevel={setLevel}
-              controlId={"GEAreaSearch.Level"}
-            />
+            <Form.Group controlId="GEAreaSearch.Area">
+              <Form.Label>General Education Area</Form.Label>
+              <Form.Control
+                as="select"
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+              >
+                <option data-testid="GEAreaSearch.Area-option-all" value="ALL">
+                  ALL
+                </option>
+                {areaCodes.map((code) => {
+                  const testid = `GEAreaSearch.Area-option-${code}`;
+                  return (
+                    <option key={code} data-testid={testid} value={code}>
+                      {code}
+                    </option>
+                  );
+                })}
+              </Form.Control>
+            </Form.Group>
           </Col>
         </Row>
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
