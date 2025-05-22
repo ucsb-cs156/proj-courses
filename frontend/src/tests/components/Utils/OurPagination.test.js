@@ -26,7 +26,7 @@ describe("OurPagination tests", () => {
   test("renders the correct text for totalPages 5 maxPages 10", async () => {
     // Arrange
 
-    const updateActivePage = jest.fn();
+    jest.fn();
 
     // Act
     render(<ControlledPaginationWrapper totalPages={5} maxPages={10} />);
@@ -72,7 +72,7 @@ describe("OurPagination tests", () => {
   test("renders the correct text for totalPages 12 maxPages 5", async () => {
     // Arrange
 
-    const updateActivePage = jest.fn();
+    jest.fn();
 
     // Act
     render(<ControlledPaginationWrapper totalPages={12} maxPages={5} />);
@@ -185,7 +185,7 @@ describe("OurPagination tests", () => {
   test("renders the correct text for totalPages 5 maxPages 2", async () => {
     // Arrange
 
-    const updateActivePage = jest.fn();
+    jest.fn();
 
     // Act
     render(<ControlledPaginationWrapper totalPages={5} maxPages={2} />);
