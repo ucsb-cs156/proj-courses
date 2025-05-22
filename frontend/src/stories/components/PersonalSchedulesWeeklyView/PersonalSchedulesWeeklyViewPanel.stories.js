@@ -5,7 +5,7 @@ import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 
 export default {
   title: "components/PersonalSchedulesWeeklyView/PersonalSchedulesWeeklyViewPanel",
-  component: PersonalSchedulesWeeklyViewPanel,
+  component: PersonalSchedulesWeeklyView,
 };
 
 const Template = (args) => {
