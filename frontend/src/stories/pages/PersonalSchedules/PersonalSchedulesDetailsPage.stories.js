@@ -46,7 +46,7 @@ Default.parameters = {
         },
       );
     }),
-    http.get("/api/personalschedules/all", () => {
+    http.get("/api/personalSections/all", () => {
       return HttpResponse.json(
         personalSectionsFixtures.threePersonalSections,
         {
