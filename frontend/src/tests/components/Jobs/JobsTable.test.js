@@ -211,7 +211,7 @@ describe("JobsTable tests", () => {
   // ↓↓↓ NEW TESTS ↓↓↓
 
   test("JobsTable shows spinner when loading=true", () => {
-    const { container } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <JobsTable jobs={[]} loading={true} onSortChange={() => {}} />

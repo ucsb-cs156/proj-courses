@@ -478,9 +478,7 @@ describe("AdminJobsPage tests", () => {
         name: /created/i,
       });
 
-      await act(async () => {
-        await userEvent.click(createdHeader);
-      });
+      await userEvent.click(createdHeader);
 
       await waitFor(() => {
         const matching = axiosMock.history.get.find(
@@ -490,9 +488,7 @@ describe("AdminJobsPage tests", () => {
         expect(matching).toBeDefined();
       });
 
-      await act(async () => {
-        await userEvent.click(createdHeader);
-      });
+      await userEvent.click(createdHeader);
 
       await waitFor(() => {
         const matching = axiosMock.history.get.find(
@@ -534,7 +530,7 @@ describe("AdminJobsPage tests", () => {
     expect(await screen.findByText(/no jobs to display/i)).toBeInTheDocument();
   });
 
-  test("unexpected payload shape clears table and shows no-jobs message", async () => {
+  test("unexpected payload shape clears table and shows no-jobs message - variant", async () => {
     axiosMock.onGet("/api/jobs/all").reply(200, { foo: "bar" });
 
     render(
