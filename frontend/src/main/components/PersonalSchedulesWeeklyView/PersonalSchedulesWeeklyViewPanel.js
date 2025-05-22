@@ -22,7 +22,7 @@ const hours = [
 
 // Stryker disable next-line all : no need to test default colors
 export default function PersonalSchedulesWeeklyView({ Events = [], eventColor="#d1ecf188", borderColor="#bee5eb"}) {
-
+    console.log(Events);
     const testId = "PersonalSchedulesWeeklyView";
 
     return (

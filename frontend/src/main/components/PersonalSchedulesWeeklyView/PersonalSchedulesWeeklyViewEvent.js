@@ -3,7 +3,7 @@ import { Card, OverlayTrigger, Popover } from 'react-bootstrap';
 
 export default function PersonalSectionsEvents({ event, eventColor, borderColor }) {
     const [style, setStyle] = useState({});
-
+    console.log("foobar");
     const testId = "PersonalSectionsEvents";
 
     const convertTimeToMinutes = (time) => {

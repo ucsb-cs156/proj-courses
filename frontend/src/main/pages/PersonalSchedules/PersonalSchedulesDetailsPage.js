@@ -75,22 +75,22 @@ export default function PersonalSchedulesDetailsPage() {
       return {
         event: 
           personalSection
-            .filter(section => section.classSections.timeLocations !== undefined)
+            .filter(section => section.classSections[0].timeLocations !== undefined)
             .map(section => ({
-              id: section.classSections.enrollCode.trim(),
+              id: section.classSections[0].enrollCode.trim(),
               title: section.courseId.replaceAll(" ", ""),
-              day: dayParser(section.classSections.timeLocations.days),
+              day: dayParser(section.classSections[0].timeLocations.days),
               name: section.title,
               description: section.description,
-              area: section.classSections.timeLocations.building.trim() + " " + section.classSections.timeLocations.room.trim(),
-              startTime: section.classSections.timeLocations.beginTime,
-              endTime: section.classSections.timeLocations.endTime,
+              area: section.classSections[0].timeLocations.building.trim() + " " + section.classSections[0].timeLocations.room.trim(),
+              startTime: section.classSections[0].timeLocations.beginTime,
+              endTime: section.classSections[0].timeLocations.endTime,
           })),
       }
     }
     return {}
   }
-
+  console.log(eventParser());
   return (
     <BasicLayout>
       <div className="pt-2">
