@@ -1,7 +1,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { rest } from "msw";
 import GEAreaSearchForm from "./GEAreaSearchForm";
+import { http, HttpResponse } from "msw";
 
 // Default export with title, component, decorators and MSW mock
 export default {
@@ -20,29 +20,27 @@ export default {
   parameters: {
     msw: [
       // mock our GE-areas endpoint
-      rest.get("/api/public/generalEducationInfo", (_req, res, ctx) => {
-        return res(
-          ctx.json([
-            {
-              requirementCode: "A1",
-              requirementTranslation: "English Reading & Composition",
-              collegeCode: "ENGR",
-              objCode: "BS",
-              courseCount: 1,
-              units: 4,
-              inactive: false,
-            },
-            {
-              requirementCode: "B",
-              requirementTranslation: "Foreign Language - L&S",
-              collegeCode: "L&S",
-              objCode: "BA",
-              courseCount: 1,
-              units: 4,
-              inactive: false,
-            },
-          ]),
-        );
+      http.get("/api/public/generalEducationInfo", () => {
+        return HttpResponse.json([
+          {
+            requirementCode: "A1",
+            requirementTranslation: "English Reading & Composition",
+            collegeCode: "ENGR",
+            objCode: "BS",
+            courseCount: 1,
+            units: 4,
+            inactive: false,
+          },
+          {
+            requirementCode: "B",
+            requirementTranslation: "Foreign Language - L&S",
+            collegeCode: "L&S",
+            objCode: "BA",
+            courseCount: 1,
+            units: 4,
+            inactive: false,
+          },
+        ]);
       }),
     ],
   },

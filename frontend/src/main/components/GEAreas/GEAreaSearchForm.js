@@ -8,8 +8,9 @@ import { useBackend } from "main/utils/useBackend";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
-  const quarters = quarterRange(systemInfo.startQtrYYYYQ, systemInfo.endQtrYYYYQ);
-
+  const startQtr = systemInfo?.startQtrYYYYQ || "20231";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20253";
+  const quarters = quarterRange(startQtr, endQtr);
 
   // Stryker disable all : not sure how to test/mock local storage
   const localQuarter = localStorage.getItem("GEAreaSearch.Quarter");
