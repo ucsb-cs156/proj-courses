@@ -75,7 +75,7 @@ export default function PersonalSchedulesDetailsPage() {
       return {
         event: 
           personalSection
-            .filter(section => section.classSections[0].timeLocations !== undefined)
+            .filter(section => section.classSections[0].timeLocations[0] !== undefined)
             .map(section => ({
               id: section.classSections[0].enrollCode.trim(),
               title: section.courseId.replaceAll(" ", ""),
