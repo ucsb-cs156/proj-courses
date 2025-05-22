@@ -74,7 +74,7 @@ const GeneralEducationSearchForm = ({ fetchJSON }) => {
         </Row>
         <Form.Group controlId="GeneralEducationSearch.GEArea">
           <SingleGEDropdown
-            areas={geAreas || []}
+            areas={geAreas}
             area={geArea}
             setArea={setArea}
             onChange={handleGeneralEducationOnChange}
@@ -82,7 +82,10 @@ const GeneralEducationSearchForm = ({ fetchJSON }) => {
             label="GE Area"
           />
         </Form.Group>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row
+          data-testid="GeneralEducationSearchForm-submit-row"
+          style={{ paddingTop: 10, paddingBottom: 10 }}
+        >
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit

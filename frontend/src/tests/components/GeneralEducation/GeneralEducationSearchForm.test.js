@@ -84,9 +84,9 @@ describe("GeneralEducationSearchForm tests", () => {
     );
 
     const selectGEArea = screen.getByLabelText("GE Area");
-    userEvent.selectOptions(selectGEArea, "A1");
+    userEvent.selectOptions(selectGEArea, "A2");
 
-    expect(selectGEArea.value).toBe("A1");
+    expect(selectGEArea.value).toBe("A2");
   });
 
   test("when I click submit, the right stuff happens", async () => {
@@ -192,5 +192,32 @@ describe("GeneralEducationSearchForm tests", () => {
     expect(
       await screen.findByTestId(/GeneralEducationSearch.EndQuarter-option-3/),
     ).toHaveValue("20214");
+  });
+
+  test("renders the End Quarter dropdown with the correct label", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByLabelText("End Quarter")).toBeInTheDocument();
+  });
+
+  test("submit row has the correct padding style", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const row = screen.getByTestId("GeneralEducationSearchForm-submit-row");
+    expect(row).toHaveStyle({
+      paddingTop: "10px",
+      paddingBottom: "10px",
+    });
   });
 });
