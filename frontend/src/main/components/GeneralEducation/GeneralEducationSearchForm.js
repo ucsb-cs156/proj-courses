@@ -26,7 +26,6 @@ const GeneralEducationSearchForm = ({ fetchJSON }) => {
     fetchJSON(event, { area });
   };
 
-  // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
@@ -40,6 +39,7 @@ const GeneralEducationSearchForm = ({ fetchJSON }) => {
             />
           </Col>
         </Row>
+  // Stryker disablenext-line  all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
             <Button variant="primary" type="submit">
