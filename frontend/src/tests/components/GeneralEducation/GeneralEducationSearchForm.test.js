@@ -220,4 +220,45 @@ describe("GeneralEducationSearchForm tests", () => {
       paddingBottom: "10px",
     });
   });
+
+  test("GE area selection changes are reflected in form submission", async () => {
+    axiosMock
+      .onGet("/api/public/generalEducationInfo")
+      .reply(200, allTheGEAreas);
+
+    const fetchJSONSpy = jest.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("GeneralEducationSearch.GEArea-option-A1"),
+      ).toBeInTheDocument();
+    });
+
+    const selectGEArea = screen.getByLabelText("GE Area");
+    expect(selectGEArea.value).toBe("A1");
+
+    await userEvent.selectOptions(selectGEArea, "A2");
+
+    expect(selectGEArea.value).toBe("A2");
+
+    const submitButton = screen.getByText("Submit");
+    await userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+
+    expect(fetchJSONSpy).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        geArea: "A2",
+      }),
+    );
+  });
 });

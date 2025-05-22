@@ -38,10 +38,6 @@ const GeneralEducationSearchForm = ({ fetchJSON }) => {
   const [geArea, setArea] = useState(localGeneralEducation || geAreas[0]);
   // Stryker restore all
 
-  const handleGeneralEducationOnChange = (event) => {
-    setArea(event.target.value);
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     fetchJSON(event, { quarter, geArea });
@@ -77,7 +73,6 @@ const GeneralEducationSearchForm = ({ fetchJSON }) => {
             areas={geAreas}
             area={geArea}
             setArea={setArea}
-            onChange={handleGeneralEducationOnChange}
             controlId="GeneralEducationSearch.GEArea"
             label="GE Area"
           />
