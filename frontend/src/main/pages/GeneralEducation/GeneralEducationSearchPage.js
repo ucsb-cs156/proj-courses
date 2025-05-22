@@ -1,7 +1,7 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 
 export default function GeneralEducationSearchPage() {
-  // Stryker disable all : placeholder for future implementation
+  console.log("foobar");
   return (
     <BasicLayout>
       <div className="GEsearch">

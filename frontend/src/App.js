@@ -26,7 +26,7 @@ import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOv
 
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
 
-import GeneralEducationSearchPage from "main/pages/GeneralEducation/search/GeneralEducationSearchPage";
+import GeneralEducationSearchPage from "main/pages/GeneralEducation/GeneralEducationSearchPage";
 function App() {
   const { data: currentUser } = useCurrentUser();
 
