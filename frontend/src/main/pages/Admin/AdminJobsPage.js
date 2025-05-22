@@ -16,30 +16,16 @@ import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCours
 export default function AdminJobsPage() {
   const REFRESH_MS = 5000;
 
-  // Jobs list and pagination state
   const [jobs, setJobs] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(0);
 
-  // Sorting state: field and direction (desc by default)
   const [sortField, setSortField] = useState("createdAt");
   const [sortDesc, setSortDesc] = useState(true);
 
-  // Loading / error state for the table
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  /**
-   * Fetch jobs from the backend.
-   * We send the usual paging & sorting params so that
-   * real‐world pagination works.  Axios‐mock‐adapter
-   * will still match on "/api/jobs/all" regardless of query‐string.
-   *
-   * The server may return either:
-   *   1. A plain array of job objects (for your fixtures/tests)
-   *   2. A paged object { content: Job[], totalPages: number }
-   * We detect and handle both shapes.
-   */
   const fetchJobs = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -55,15 +41,12 @@ export default function AdminJobsPage() {
 
       const data = res.data;
       if (Array.isArray(data)) {
-        // Fixtures / tests return a plain array
         setJobs(data);
         setTotalPages(1);
       } else if (data.content && Array.isArray(data.content)) {
-        // Real paged response
         setJobs(data.content);
         setTotalPages(data.totalPages ?? 1);
       } else {
-        // Unexpected shape: clear table
         setJobs([]);
         setTotalPages(1);
       }
@@ -75,26 +58,21 @@ export default function AdminJobsPage() {
     }
   }, [page, sortField, sortDesc]);
 
-  // Initial load and whenever page/sort changes
   useEffect(() => {
     fetchJobs();
   }, [fetchJobs]);
 
-  // Periodic refresh every REFRESH_MS milliseconds
   useEffect(() => {
     const iv = setInterval(fetchJobs, REFRESH_MS);
     return () => clearInterval(iv);
   }, [fetchJobs]);
 
-  /** Handler to purge all jobs */
   const handlePurge = async () => {
     await axios.delete("/api/jobs/all");
-    // After purge, reset to first page and reload
     setPage(0);
     fetchJobs();
   };
 
-  /** Handler to toggle sorting direction or change sort field */
   const handleSortChange = (field) => {
     if (sortField === field) {
       setSortDesc((prev) => !prev);
@@ -105,7 +83,6 @@ export default function AdminJobsPage() {
     setPage(0);
   };
 
-  // Build pagination items if there is more than one page
   const paginationItems = [];
   for (let i = 0; i < totalPages; i++) {
     paginationItems.push(
@@ -115,7 +92,6 @@ export default function AdminJobsPage() {
     );
   }
 
-  // Definitions for the various "Launch Job" forms
   const jobLaunchers = [
     {
       name: "Test Job",
