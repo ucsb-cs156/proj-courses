@@ -47,12 +47,9 @@ Default.parameters = {
       );
     }),
     http.get("/api/personalSections/all", () => {
-      return HttpResponse.json(
-        personalSectionsFixtures.threePersonalSections,
-        {
-          status: 200,
-        },
-      );
+      return HttpResponse.json(personalSectionsFixtures.threePersonalSections, {
+        status: 200,
+      });
     }),
   ],
 };
