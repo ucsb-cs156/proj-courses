@@ -4,7 +4,7 @@ import GEAreaSearchForm from "./GEAreaSearchForm";
 import { http, HttpResponse } from "msw";
 
 // Default export with title, component, decorators and MSW mock
-export default {
+const meta = {
   title: "Courses/GEAreaSearchForm",
   component: GEAreaSearchForm,
   decorators: [
@@ -52,6 +52,8 @@ export default {
     ],
   },
 };
+
+export default meta;
 
 // “template” function for args
 const Template = (args) => <GEAreaSearchForm {...args} />;
