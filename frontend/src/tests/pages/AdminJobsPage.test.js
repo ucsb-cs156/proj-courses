@@ -1,10 +1,4 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
@@ -282,13 +276,12 @@ describe("AdminJobsPage tests", () => {
 
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
   });
-  // 用以下测试替换你现有的pagination测试
 
   test("pagination prev button disabled on first page", async () => {
     const paginatedData = {
       content: jobsFixtures.sixJobs,
       totalPages: 2,
-      number: 0, // This matches component's initial page state
+      number: 0,
       size: 10,
     };
 
@@ -304,7 +297,6 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       const prevButton = screen.getByTestId("pagination-prev");
-      // Test page === 0 condition - component starts at page 0, so prev should be disabled
       expect(prevButton.closest(".page-item")).toHaveClass("disabled");
     });
   });
@@ -312,7 +304,7 @@ describe("AdminJobsPage tests", () => {
   test("pagination next button disabled on last page", async () => {
     const paginatedData = {
       content: jobsFixtures.sixJobs,
-      totalPages: 1, // Only 1 page total, so next should be disabled
+      totalPages: 1,
       number: 0,
       size: 10,
     };
@@ -329,7 +321,6 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       const nextButton = screen.getByTestId("pagination-next");
-      // Test page + 1 >= totalPages condition (0 + 1 >= 1 = true)
       expect(nextButton.closest(".page-item")).toHaveClass("disabled");
     });
   });
@@ -353,9 +344,14 @@ describe("AdminJobsPage tests", () => {
     );
 
     await waitFor(() => {
-      // Test idx + 1 calculation
       expect(screen.getByTestId("pagination-button-1")).toHaveTextContent("1");
+    });
+
+    await waitFor(() => {
       expect(screen.getByTestId("pagination-button-2")).toHaveTextContent("2");
+    });
+
+    await waitFor(() => {
       expect(screen.getByTestId("pagination-button-3")).toHaveTextContent("3");
     });
   });
@@ -364,7 +360,7 @@ describe("AdminJobsPage tests", () => {
     const paginatedData = {
       content: jobsFixtures.sixJobs,
       totalPages: 3,
-      number: 0, // Component starts at page 0
+      number: 0,
       size: 10,
     };
 
@@ -379,18 +375,16 @@ describe("AdminJobsPage tests", () => {
     );
 
     await waitFor(() => {
-      // Test idx === page logic - page 0 should be active (button 1)
-      const page1 = screen.getByTestId("pagination-button-1"); // idx=0, so this is active
-      const page2 = screen.getByTestId("pagination-button-2"); // idx=1, so this is not active
-
+      const page1 = screen.getByTestId("pagination-button-1");
       expect(page1.closest(".page-item")).toHaveClass("active");
+    });
+
+    await waitFor(() => {
+      const page2 = screen.getByTestId("pagination-button-2");
       expect(page2.closest(".page-item")).not.toHaveClass("active");
     });
   });
 
-  // 在你现有的test文件最后添加这些测试来杀死所有surviving mutants
-
-  // 这个测试专门针对 onClick={() => setPage((p) => Math.max(p - 1, 0))} 的所有mutants
   test("pagination prev button click handler works correctly", async () => {
     const paginatedData = {
       content: jobsFixtures.sixJobs,
@@ -418,9 +412,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 先点击next到第2页
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() => {
       const page2Item = screen
@@ -430,9 +422,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 点击prev按钮 - 这会触发 setPage((p) => Math.max(p - 1, 0))
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-prev"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-prev"));
 
     // 验证页面确实改变了 - 证明onClick函数不是undefined，Math.max工作正常
     await waitFor(() => {
@@ -443,23 +433,23 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 再次点击prev按钮，应该停在第0页（测试Math.max的边界情况）
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-prev"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-prev"));
 
     await waitFor(() => {
       const page1Item = screen
         .getByTestId("pagination-button-1")
         .closest(".page-item");
+      expect(page1Item).toHaveClass("active");
+    });
+
+    await waitFor(() => {
       const prevItem = screen
         .getByTestId("pagination-prev")
         .closest(".page-item");
-      expect(page1Item).toHaveClass("active"); // 仍然在第1页
-      expect(prevItem).toHaveClass("disabled"); // prev按钮被禁用
+      expect(prevItem).toHaveClass("disabled");
     });
   });
 
-  // 这个测试专门针对 setPage((p) => Math.min(p + 1, totalPages - 1)) 的mutant
   test("pagination next button click handler works correctly and respects totalPages boundary", async () => {
     const paginatedData = {
       content: jobsFixtures.sixJobs,
@@ -487,9 +477,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 点击next按钮到第2页
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() => {
       const page2Item = screen
@@ -499,36 +487,34 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 再次点击next按钮到最后一页 - 这会触发 setPage((p) => Math.min(p + 1, totalPages - 1))
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
     // 验证到达了最后一页
     await waitFor(() => {
       const page3Item = screen
         .getByTestId("pagination-button-3")
         .closest(".page-item");
+      expect(page3Item).toHaveClass("active");
+    });
+
+    await waitFor(() => {
       const nextItem = screen
         .getByTestId("pagination-next")
         .closest(".page-item");
-      expect(page3Item).toHaveClass("active");
       expect(nextItem).toHaveClass("disabled");
     });
 
     // 再次点击next，应该停在最后一页（测试Math.min和totalPages-1的边界）
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() => {
       const page3Item = screen
         .getByTestId("pagination-button-3")
         .closest(".page-item");
-      expect(page3Item).toHaveClass("active"); // 仍然在最后一页
+      expect(page3Item).toHaveClass("active");
     });
   });
 
-  // 这个测试专门验证Math.max vs Math.min的区别，以及p-1 vs p+1的区别
   test("pagination arithmetic operations work correctly", async () => {
     const paginatedData = {
       content: jobsFixtures.sixJobs,
@@ -556,9 +542,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 导航到第3页（index 2）
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-button-3"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-button-3"));
 
     await waitFor(() => {
       const page3Item = screen
@@ -568,89 +552,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 测试 p - 1 操作（不是 p + 1）
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-prev"));
-    });
-
-    await waitFor(() => {
-      const page2Item = screen
-        .getByTestId("pagination-button-2")
-        .closest(".page-item");
-      expect(page2Item).toHaveClass("active"); // 应该是2-1=1（显示为第2页）
-    });
-
-    // 测试 p + 1 操作（不是 p - 1）
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
-
-    await waitFor(() => {
-      const page3Item = screen
-        .getByTestId("pagination-button-3")
-        .closest(".page-item");
-      expect(page3Item).toHaveClass("active"); // 应该是1+1=2（显示为第3页）
-    });
-
-    // 继续测试next到边界
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
-
-    // 现在应该在最后一页，测试totalPages-1 vs totalPages+1
-    await waitFor(() => {
-      const page5Item = screen
-        .getByTestId("pagination-button-5")
-        .closest(".page-item");
-      const nextItem = screen
-        .getByTestId("pagination-next")
-        .closest(".page-item");
-      expect(page5Item).toHaveClass("active");
-      expect(nextItem).toHaveClass("disabled"); // 因为用的是totalPages-1，不是totalPages+1
-    });
-  });
-
-  // 这个测试确保onClick handlers真的被调用了，而不是返回undefined
-  test("pagination buttons have functional onClick handlers", async () => {
-    const paginatedData = {
-      content: jobsFixtures.sixJobs,
-      totalPages: 4,
-      number: 0,
-      size: 10,
-    };
-
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    // 测试prev按钮的onClick不是undefined（当前在第0页，点击应该没有效果）
-    const initialPage1 = await screen.findByTestId("pagination-button-1");
-    expect(initialPage1.closest(".page-item")).toHaveClass("active");
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-prev"));
-    });
-
-    // 应该还在第1页，但证明onClick被调用了
-    await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
-        .closest(".page-item");
-      expect(page1Item).toHaveClass("active");
-    });
-
-    // 测试next按钮的onClick确实改变了状态
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-prev"));
 
     await waitFor(() => {
       const page2Item = screen
@@ -659,10 +561,18 @@ describe("AdminJobsPage tests", () => {
       expect(page2Item).toHaveClass("active");
     });
 
-    // 测试页面按钮的onClick
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-button-4"));
+    // 测试 p + 1 操作（不是 p - 1）
+    fireEvent.click(screen.getByTestId("pagination-next"));
+
+    await waitFor(() => {
+      const page3Item = screen
+        .getByTestId("pagination-button-3")
+        .closest(".page-item");
+      expect(page3Item).toHaveClass("active");
     });
+
+    // 继续测试next到边界 - 从第3页开始点击next两次到第5页
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() => {
       const page4Item = screen
@@ -670,54 +580,25 @@ describe("AdminJobsPage tests", () => {
         .closest(".page-item");
       expect(page4Item).toHaveClass("active");
     });
-  });
 
-  // 专门测试prev按钮在第0页的边界行为
-  test("pagination prev button respects page 0 boundary", async () => {
-    const paginatedData = {
-      content: jobsFixtures.sixJobs,
-      totalPages: 3,
-      number: 0,
-      size: 10,
-    };
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    // 在第0页时，多次点击prev应该停留在第0页
+    // 现在应该在最后一页，测试totalPages-1 vs totalPages+1
     await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
+      const page5Item = screen
+        .getByTestId("pagination-button-5")
         .closest(".page-item");
-      const prevItem = screen
-        .getByTestId("pagination-prev")
-        .closest(".page-item");
-      expect(page1Item).toHaveClass("active");
-      expect(prevItem).toHaveClass("disabled");
-    });
-
-    // 即使disabled，也要测试点击行为（测试Math.max(p-1, 0)中的0边界）
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-prev"));
+      expect(page5Item).toHaveClass("active");
     });
 
     await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
+      const nextItem = screen
+        .getByTestId("pagination-next")
         .closest(".page-item");
-      expect(page1Item).toHaveClass("active"); // 应该仍然在第1页
+      expect(nextItem).toHaveClass("disabled");
     });
   });
-  // 添加这两个测试来杀死最后的2个surviving mutants
 
-  // 这个测试专门杀死 disabled={page === 0} → disabled={true} 的mutant
   test("pagination prev button is enabled when not on first page", async () => {
     const paginatedData = {
       content: jobsFixtures.sixJobs,
@@ -745,9 +626,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 点击到第2页
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
     // 现在prev button应该是enabled的（page === 0 为false）
     // 如果mutant把条件改为disabled={true}，这个测试就会失败
@@ -755,13 +634,11 @@ describe("AdminJobsPage tests", () => {
       const prevItem = screen
         .getByTestId("pagination-prev")
         .closest(".page-item");
-      expect(prevItem).not.toHaveClass("disabled"); // 这里验证按钮是enabled的
+      expect(prevItem).not.toHaveClass("disabled");
     });
 
     // 再次验证可以实际点击prev按钮
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-prev"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-prev"));
 
     await waitFor(() => {
       const page1Item = screen
@@ -771,7 +648,6 @@ describe("AdminJobsPage tests", () => {
     });
   });
 
-  // 这个测试专门杀死 disabled={page + 1 >= totalPages} → disabled={true} 的mutant
   test("pagination next button is enabled when not on last page", async () => {
     const paginatedData = {
       content: jobsFixtures.sixJobs,
@@ -796,13 +672,11 @@ describe("AdminJobsPage tests", () => {
       const nextItem = screen
         .getByTestId("pagination-next")
         .closest(".page-item");
-      expect(nextItem).not.toHaveClass("disabled"); // 这里验证按钮是enabled的
+      expect(nextItem).not.toHaveClass("disabled");
     });
 
     // 验证可以实际点击next按钮
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() => {
       const page2Item = screen
@@ -820,9 +694,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     // 到最后一页
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("pagination-next"));
-    });
+    fireEvent.click(screen.getByTestId("pagination-next"));
 
     // 现在在最后一页，next button应该是disabled的（page + 1 >= totalPages 为true，因为2+1 >= 3）
     await waitFor(() => {
