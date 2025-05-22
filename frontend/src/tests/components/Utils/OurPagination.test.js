@@ -1,5 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import OurPagination, { emptyArray } from "main/components/Utils/OurPagination";
+import React from "react";
+
+function ControlledPaginationWrapper(props) {
+  const [page, setPage] = React.useState(1);
+  return (
+    <OurPagination {...props} currentPage={page} updateActivePage={setPage} />
+  );
+}
 
 const checkTestIdsInOrder = (testIds) => {
   const links = screen.getAllByTestId(/OurPagination-/);
@@ -21,13 +29,7 @@ describe("OurPagination tests", () => {
     const updateActivePage = jest.fn();
 
     // Act
-    render(
-      <OurPagination
-        totalPages={5}
-        maxPages={10}
-        updateActivePage={updateActivePage}
-      />,
-    );
+    render(<ControlledPaginationWrapper totalPages={5} maxPages={10} />);
 
     // Assert
 
@@ -48,7 +50,7 @@ describe("OurPagination tests", () => {
     const updateActivePage = jest.fn();
 
     // Act
-    render(<OurPagination maxPages={10} updateActivePage={updateActivePage} />);
+    render(<ControlledPaginationWrapper totalPages={10} maxPages={10} />);
 
     // Assert
     checkTestIdsInOrder([
@@ -73,13 +75,7 @@ describe("OurPagination tests", () => {
     const updateActivePage = jest.fn();
 
     // Act
-    render(
-      <OurPagination
-        totalPages={12}
-        maxPages={5}
-        updateActivePage={updateActivePage}
-      />,
-    );
+    render(<ControlledPaginationWrapper totalPages={12} maxPages={5} />);
 
     // Assert
     checkTestIdsInOrder([
@@ -192,13 +188,7 @@ describe("OurPagination tests", () => {
     const updateActivePage = jest.fn();
 
     // Act
-    render(
-      <OurPagination
-        totalPages={5}
-        maxPages={3}
-        updateActivePage={updateActivePage}
-      />,
-    );
+    render(<ControlledPaginationWrapper totalPages={5} maxPages={2} />);
 
     // Assert
 
@@ -218,7 +208,6 @@ describe("OurPagination tests", () => {
 
     const nextButton = screen.getByTestId("OurPagination-next");
     fireEvent.click(nextButton);
-
     checkTestIdsInOrder([
       "OurPagination-prev",
       "OurPagination-1",
