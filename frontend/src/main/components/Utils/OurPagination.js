@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Pagination } from "react-bootstrap";
 
 export const emptyArray = () => []; // factored out for Stryker testing
@@ -8,8 +8,14 @@ const OurPagination = ({
   totalPages = 10,
   maxPages = 8,
   testId = "OurPagination",
+  currentPage = 1,
 }) => {
-  const [activePage, setActivePage] = useState(1);
+  const [activePage, setActivePage] = useState(currentPage);
+
+  useEffect(() => {
+    setActivePage(currentPage);
+  }, [currentPage]);
+  
   const nextPage = () => {
     const newPage = Math.min(activePage + 1, totalPages);
     setActivePage(newPage);
