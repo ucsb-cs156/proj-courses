@@ -42,6 +42,13 @@ export default {
           },
         ]);
       }),
+      // mock systemInfo so startQtrYYYYQ/endQtrYYYYQ are always present
+      http.get("/api/systemInfo", () => {
+        return HttpResponse.json({
+          startQtrYYYYQ: "20211",
+          endQtrYYYYQ: "20253",
+        });
+      }),
     ],
   },
 };
