@@ -22,14 +22,6 @@ export const createCompleteEnrollmentData = (data) => {
 
   for (let index = 0; index < data.length; index++) {
     const item = data[index];
-    console.log(
-      "Item: ",
-      item,
-      item.enrollment,
-      item.dateCreated,
-      index,
-      data.length,
-    );
     data_list.push({
       enrollment: item.enrollment,
       dateCreated: item.dateCreated,
