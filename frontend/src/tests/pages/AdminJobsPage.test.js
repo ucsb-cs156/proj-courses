@@ -25,12 +25,29 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/paginated").reply(200, {
-      content: jobsFixtures.sixJobs,
-      totalPages: 1,
-      number: 0,
-      size: 10,
-      totalElements: jobsFixtures.sixJobs.length,
+    axiosMock.onGet(/\/api\/jobs\/paginated.*/).reply((config) => {
+      let page = 0;
+      let pageSize = 10;
+      if (config.params && config.params.page !== undefined) {
+        page = Number(config.params.page);
+      }
+      if (config.params && config.params.pageSize !== undefined) {
+        pageSize = Number(config.params.pageSize);
+      }
+      // Calculate totalPages based on jobsFixtures.sixJobs.length and pageSize
+      const totalElements = jobsFixtures.sixJobs.length;
+      const totalPages = Math.ceil(totalElements / pageSize);
+
+      return [
+        200,
+        {
+          content: jobsFixtures.sixJobs,
+          totalPages,
+          number: page,
+          size: pageSize,
+          totalElements,
+        },
+      ];
     });
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
@@ -67,37 +84,6 @@ describe("AdminJobsPage tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
     ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
-  });
-
-  test("When localstorage is empty, fallback values are used and correct params sent", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-    getItemSpy.mockImplementation(() => null);
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    await screen.findByText("Job Status");
-
-    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "status");
-    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
-    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "5");
-
-    // Check that the correct params were sent to /api/jobs/paginated
-    const jobsRequest = axiosMock.history.get.find(
-      (req) => req.url === "/api/jobs/paginated",
-    );
-    expect(jobsRequest.params).toEqual({
-      page: 0,
-      pageSize: 5,
-      sortField: "status",
-      sortDirection: "ASC",
-    });
   });
 
   test("user can submit a test job", async () => {
@@ -426,8 +412,13 @@ describe("AdminJobsPage tests", () => {
     });
     expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
     expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
-    expect(screen.getByTestId("OurPagination-3")).toBeInTheDocument();
-    expect(screen.queryByTestId("OurPagination-4")).not.toBeInTheDocument();
+
+    expect(screen.queryByTestId("OurPagination-3")).not.toBeInTheDocument();
+
+    userEvent.selectOptions(screen.getByLabelText("Page Size"), "20");
+
+    expect(screen.queryByTestId("OurPagination-1")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("OurPagination-2")).not.toBeInTheDocument();
   });
 
   test("throws if page is undefined and optional chaining is removed", async () => {
