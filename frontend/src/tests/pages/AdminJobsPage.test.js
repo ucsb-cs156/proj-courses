@@ -393,7 +393,7 @@ describe("AdminJobsPage tests", () => {
       "JobsSearch.SortDirection,ASC": 6,
       "JobsSearch.SortField,status": 6,
     });
-    /*
+
     expect(axiosMock.history.get.length).toBe(4);
     const urls = axiosMock.history.get.map((req) => req.url);
     expect(urls).toContain("/api/systemInfo");
@@ -410,7 +410,7 @@ describe("AdminJobsPage tests", () => {
       sortField: "status",
       sortDirection: "ASC",
     });
-    */
+
     expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
     expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
 
