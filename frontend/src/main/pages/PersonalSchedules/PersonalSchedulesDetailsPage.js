@@ -1,13 +1,15 @@
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { useParams } from "react-router-dom";
 import PersonalSchedulesTable from "main/components/PersonalSchedules/PersonalSchedulesTable";
 import PersonalSectionsTable from "main/components/PersonalSections/PersonalSectionsTable";
-import { useBackend, _useBackendMutation } from "main/utils/useBackend";
-import { Button } from "react-bootstrap";
+import { useBackend } from "main/utils/useBackend";
+import { Button, Row, Col } from "react-bootstrap";
 import { useCurrentUser } from "main/utils/currentUser";
 
 export default function PersonalSchedulesDetailsPage() {
   let { id } = useParams();
+  const navigate = useNavigate();
   const { data: currentUser } = useCurrentUser();
 
   const {
@@ -26,13 +28,6 @@ export default function PersonalSchedulesDetailsPage() {
       },
     },
   );
-  const createButton = () => {
-    return (
-      <Button variant="primary" href="/personalschedules/list" style={{}}>
-        Back
-      </Button>
-    );
-  };
 
   const { data: personalSection } = useBackend(
     // Stryker disable all : hard to test for query caching
@@ -45,6 +40,29 @@ export default function PersonalSchedulesDetailsPage() {
       },
     },
   );
+  // Stryker restore all
+
+  const backButton = () => {
+    return (
+      <Button
+        variant="primary"
+        onClick={() => navigate("/personalschedules/list")}
+      >
+        Back
+      </Button>
+    );
+  };
+
+  const weeklyViewButton = () => {
+    return (
+      <Button
+        variant="primary"
+        onClick={() => navigate(`/personalschedules/weekly/${id}`)}
+      >
+        View Weekly Schedule
+      </Button>
+    );
+  };
 
   return (
     <BasicLayout>
@@ -56,8 +74,13 @@ export default function PersonalSchedulesDetailsPage() {
             showButtons={false}
           />
         )}
-        <p>
-          <h2>Sections in Personal Schedule</h2>
+        <div className="mt-4">
+          <Row className="align-items-center mb-3">
+            <Col>
+              <h2>Sections in Personal Schedule</h2>
+            </Col>
+            <Col xs="auto">{weeklyViewButton()}</Col>
+          </Row>
           {personalSection && (
             <PersonalSectionsTable
               personalSections={personalSection}
@@ -65,8 +88,8 @@ export default function PersonalSchedulesDetailsPage() {
               currentUser={currentUser}
             />
           )}
-        </p>
-        {createButton()}
+        </div>
+        {backButton()}
       </div>
     </BasicLayout>
   );

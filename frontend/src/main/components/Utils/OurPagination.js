@@ -6,7 +6,6 @@ export const emptyArray = () => []; // factored out for Stryker testing
 const OurPagination = ({
   updateActivePage,
   totalPages = 10,
-  maxPages = 8,
   testId = "OurPagination",
 }) => {
   const [activePage, setActivePage] = useState(1);
@@ -44,30 +43,18 @@ const OurPagination = ({
     return paginationItems;
   };
 
-  const generatePaginationItemsWithEllipsis = () => {
+  const generateComplexPaginationItems = () => {
     const paginationItems = emptyArray();
 
-    const leftEllipsis = activePage > 3;
-    const rightEllipsis = activePage < totalPages - 2;
-
+    // Always show page 1 and totalPages
     paginationItems.push(pageButton(1));
-    if (leftEllipsis) {
-      paginationItems.push(
-        <Pagination.Ellipsis
-          key="left-ellipsis"
-          data-testid={`${testId}-left-ellipsis`}
-        />,
-      );
-    }
-    // Show a range of pages around the active page
-    let start = Math.max(activePage - 1, 2);
-    let end = Math.min(activePage + 1, totalPages - 1);
 
-    for (let number = start; number <= end; number++) {
-      paginationItems.push(pageButton(number));
-    }
-
-    if (rightEllipsis) {
+    // Case 1: activePage is near the beginning (1, 2, 3, 4)
+    if (activePage < 5) {
+      paginationItems.push(pageButton(2));
+      paginationItems.push(pageButton(3));
+      paginationItems.push(pageButton(4));
+      paginationItems.push(pageButton(5));
       paginationItems.push(
         <Pagination.Ellipsis
           key="right-ellipsis"
@@ -75,15 +62,46 @@ const OurPagination = ({
         />,
       );
     }
-    paginationItems.push(pageButton(totalPages));
+    // Case 2: activePage is near the end (totalPages - 3, totalPages - 2, totalPages - 1, totalPages)
+    else if (activePage > totalPages - 4) {
+      paginationItems.push(
+        <Pagination.Ellipsis
+          key="left-ellipsis"
+          data-testid={`${testId}-left-ellipsis`}
+        />,
+      );
+      paginationItems.push(pageButton(totalPages - 4));
+      paginationItems.push(pageButton(totalPages - 3));
+      paginationItems.push(pageButton(totalPages - 2));
+      paginationItems.push(pageButton(totalPages - 1));
+    }
+    // Case 3: activePage is in the middle
+    else {
+      paginationItems.push(
+        <Pagination.Ellipsis
+          key="left-ellipsis"
+          data-testid={`${testId}-left-ellipsis`}
+        />,
+      );
+      paginationItems.push(pageButton(activePage - 1));
+      paginationItems.push(pageButton(activePage));
+      paginationItems.push(pageButton(activePage + 1));
+      paginationItems.push(
+        <Pagination.Ellipsis
+          key="right-ellipsis"
+          data-testid={`${testId}-right-ellipsis`}
+        />,
+      );
+    }
 
+    paginationItems.push(pageButton(totalPages));
     return paginationItems;
   };
 
   const generatePaginationItems = () =>
-    totalPages <= maxPages
+    totalPages <= 7
       ? generateSimplePaginationItems()
-      : generatePaginationItemsWithEllipsis();
+      : generateComplexPaginationItems();
 
   return (
     <Pagination>
