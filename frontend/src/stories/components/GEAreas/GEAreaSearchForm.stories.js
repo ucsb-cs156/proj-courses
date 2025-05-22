@@ -1,11 +1,11 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import GEAreaSearchForm from "./GEAreaSearchForm";
+import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
 import { http, HttpResponse } from "msw";
 
 // Default export with title, component, decorators and MSW mock
 const meta = {
-  title: "Courses/GEAreaSearchForm",
+  title: "Components/GEAreas/GEAreaSearchForm",
   component: GEAreaSearchForm,
   decorators: [
     (StoryFn) => {
