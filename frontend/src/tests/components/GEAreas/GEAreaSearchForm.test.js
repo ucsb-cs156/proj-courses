@@ -112,5 +112,4 @@ describe("GEAreaSearchForm tests", () => {
       area: "A1",
     });
   });
-  
 });
