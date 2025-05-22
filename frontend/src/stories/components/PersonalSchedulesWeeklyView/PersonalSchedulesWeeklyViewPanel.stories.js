@@ -1,11 +1,11 @@
 import React from "react";
 
-import PersonalSchedulesWeeklyView from "main/components/PersonalSchedulesWeeklyView/PersonalSchedulesTable";
+import PersonalSchedulesWeeklyView from "main/components/PersonalSchedulesWeeklyView/PersonalSchedulesWeeklyViewPanel";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 
 export default {
   title: "components/PersonalSchedulesWeeklyView/PersonalSchedulesWeeklyViewPanel",
-  component: PersonalSchedulesWeeklyView,
+  component: PersonalSchedulesWeeklyViewPanel,
 };
 
 const Template = (args) => {
@@ -17,6 +17,31 @@ export const Empty = Template.bind({});
 Empty.args = {
   Events: [],
 };
+
+//dayParser, eventParser copied from PersonalSchedulesDetailsPage.js to format sections into the Events parameter correctly
+
+const dayParser = (dayString) => {
+  dayString.replaceAll(" ", "");
+  const dayArray = [];
+  for(let i = 0; i < dayString.length; i++) {
+    if(dayString[i] === "M") {
+      dayArray.push("Monday");
+    }
+    else if(dayString[i] === "T") {
+      dayArray.push("Tuesday");
+    }
+    else if(dayString[i] === "W") {
+      dayArray.push("Wednesday");
+    }
+    else if(dayString[i] === "R") {
+      dayArray.push("Thursday");
+    }
+    else if(dayString[i] === "F") {
+      dayArray.push("Friday");
+    }
+  }
+  return dayArray;
+}
 
 const eventParser = (personalSection) => {
   return {
