@@ -140,6 +140,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
 
     expect(screen.getByText("CHEM 184")).toBeInTheDocument();
+
     // Check that CoursesOverTimeBuildings received the sorted sections data
     const sortedSections = coursesInLibDifferentDate.sort((a, b) =>
       b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
