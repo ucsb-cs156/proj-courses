@@ -47,7 +47,7 @@ describe("OurPagination tests", () => {
   test("renders the correct text for totalPages 10 maxPages 10", async () => {
     // Arrange
 
-    const updateActivePage = jest.fn();
+    jest.fn();
 
     // Act
     render(<ControlledPaginationWrapper totalPages={10} maxPages={10} />);
