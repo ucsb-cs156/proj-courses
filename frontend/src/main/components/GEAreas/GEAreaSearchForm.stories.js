@@ -20,7 +20,7 @@ export default {
   parameters: {
     msw: [
       // mock our GE-areas endpoint
-      rest.get("/api/public/generalEducationInfo", (req, res, ctx) => {
+      rest.get("/api/public/generalEducationInfo", (_req, res, ctx) => {
         return res(
           ctx.json([
             {
