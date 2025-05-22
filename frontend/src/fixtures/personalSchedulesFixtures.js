@@ -25,6 +25,12 @@ const personalSchedulesFixtures = {
       quarter: "S12",
     },
   ],
+  onePersonalScheduleMatching: { //matching ThreePersonalSections from personalSectionsFixtures.js
+    id: 1,
+    name: "ThreePersonalSectionsSchedule",
+    description: "Matches threePersonalSections from personalSectionsFixtures.js",
+    quarter: "W21"
+  },
 };
 
 export { personalSchedulesFixtures };
