@@ -219,7 +219,7 @@ describe("JobsTable tests", () => {
       </QueryClientProvider>,
     );
     // look for the bootstrap spinner class
-    expect(container.querySelector(".spinner-border")).toBeInTheDocument();
+    expect(document.querySelector(".spinner-border")).toBeInTheDocument();
   });
 
   test("JobsTable shows 'no jobs to display.' when jobs empty", () => {
