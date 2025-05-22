@@ -10,7 +10,8 @@ export default function PersonalSectionsEvents({ event, eventColor, borderColor 
         const [hours, minutes] = [time.slice(0, 2), time.slice(-2)];
         return hours * 60 + minutes;
     };
-
+    console.log(convertTimeToMinutes(event.startTime));
+    console.log(convertTimeToMinutes(event.endTime));
     // Stryker disable all : hard to test for specfic styles
     useEffect(() => {
         const startMinutes = convertTimeToMinutes(event.startTime);
