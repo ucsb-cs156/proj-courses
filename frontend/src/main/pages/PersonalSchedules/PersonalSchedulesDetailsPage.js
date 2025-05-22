@@ -90,7 +90,7 @@ export default function PersonalSchedulesDetailsPage() {
     }
     return {}
   }
-  console.log(eventParser());
+  
   return (
     <BasicLayout>
       <div className="pt-2">

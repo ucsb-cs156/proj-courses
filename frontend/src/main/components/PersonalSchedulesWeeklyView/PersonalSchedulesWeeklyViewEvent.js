@@ -3,15 +3,22 @@ import { Card, OverlayTrigger, Popover } from 'react-bootstrap';
 
 export default function PersonalSectionsEvents({ event, eventColor, borderColor }) {
     const [style, setStyle] = useState({});
-    console.log(event, "foobar");
     const testId = "PersonalSectionsEvents";
 
     const convertTimeToMinutes = (time) => {
         const [hours, minutes] = [time.slice(0, 2), time.slice(-2)];
         return hours * 60 + minutes * 1;
     };
-    console.log(convertTimeToMinutes(event.startTime));
-    console.log(convertTimeToMinutes(event.endTime));
+
+    const convert24Hourto12Hour = (time) => {
+      let [hours, minutes] = [time.slice(0, 2), time.slice(-2)];
+      if(hours * 1 > 12) {
+        let hTemp = hours * 1 - 12;
+        hours = hTemp.toString();
+      }
+      return hours + ":" + minutes;
+    };
+
     // Stryker disable all : hard to test for specfic styles
     useEffect(() => {
         const startMinutes = convertTimeToMinutes(event.startTime);
@@ -47,7 +54,7 @@ export default function PersonalSectionsEvents({ event, eventColor, borderColor 
         });
     }, [event.startTime, event.endTime, eventColor, borderColor]);
     // Stryker restore all
-
+    
     return (
         <OverlayTrigger
             trigger="click"
@@ -56,7 +63,7 @@ export default function PersonalSectionsEvents({ event, eventColor, borderColor 
             rootClose
             overlay={
                 <Popover>
-                    <Popover.Header as="h3">{event.title}</Popover.Header>
+                    <Popover.Header as="h3">{event.title} - {event.area}</Popover.Header>
                     <Popover.Body>
                         <p data-testid={`${testId}-description`}>
                             {event.name}<br/>
@@ -69,8 +76,7 @@ export default function PersonalSectionsEvents({ event, eventColor, borderColor 
             <Card key={event.title} style={style.event} data-testid={`${testId}-${event.id}`}>
                 <Card.Body style={style.padding5}>
                     {style.height >= 20 && <Card.Text data-testid={`${testId}-title`} style={style.title}>{event.title}</Card.Text>}
-                    {style.height >= 40 && <Card.Text data-testid={`${testId}-title`} style={style.title}>{event.area}</Card.Text>}
-                    {style.height >= 60 && <Card.Text data-testid={`${testId}-time`} style={{ fontSize: '12px', textAlign: 'left' }}>{event.startTime} - {event.endTime}</Card.Text>}
+                    {style.height >= 40 && <Card.Text data-testid={`${testId}-time`} style={{ fontSize: '12px', textAlign: 'left' }}>{convert24Hourto12Hour(event.startTime)} - {convert24Hourto12Hour(event.endTime)}</Card.Text>}
                 </Card.Body>
             </Card>
         </OverlayTrigger>
