@@ -206,50 +206,51 @@ public class JobsController extends ApiController {
     return jobService.runAsJob(updateGradeDataJob);
   }
 
-@Operation(summary = "Get updates for a subject area and quarter (most recent first)")
-@PreAuthorize("hasRole('ROLE_ADMIN')")
-@GetMapping(value = "/paginate", produces = "application/json")
-public Page<Job> getJobPage(
-    @Parameter(
-            name = "page",
-            description = "what page of the data",
-            example = "0",
-            required = true)
-        @RequestParam int page,
-
-        @Parameter(
-          name = "pageSize",
-          description = "size of each page",
-          example = "5",
-          required = true)
-        @RequestParam int pageSize,
-
-    @Parameter(
-          name = "sortField",
-          description = "sort field",
-          example = "createdAt",
-          required = false)
-      @RequestParam String sortField,
-
-    @Parameter(
-          name = "sortDirection",
-          description = "sort direction",
-          example = "ASC",
-          required = false)
-      @RequestParam(defaultValue = "ASC") String sortDirection) {
+  @Operation(summary = "Get updates for a subject area and quarter (most recent first)")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping(value = "/paginate", produces = "application/json")
+  public Page<Job> getJobPage(
+      @Parameter(
+              name = "page",
+              description = "what page of the data",
+              example = "0",
+              required = true)
+          @RequestParam
+          int page,
+      @Parameter(
+              name = "pageSize",
+              description = "size of each page",
+              example = "5",
+              required = true)
+          @RequestParam
+          int pageSize,
+      @Parameter(
+              name = "sortField",
+              description = "sort field",
+              example = "createdAt",
+              required = false)
+          @RequestParam
+          String sortField,
+      @Parameter(
+              name = "sortDirection",
+              description = "sort direction",
+              example = "ASC",
+              required = false)
+          @RequestParam(defaultValue = "ASC")
+          String sortDirection) {
 
     List<String> allowedSortFields = Arrays.asList("createdBy", "createdAt", "updatedAt", "status");
 
     if (!allowedSortFields.contains(sortField)) {
       throw new IllegalArgumentException(
           String.format(
-              "%s is not a valid sort field.  Valid values are %s", sortField, allowedSortFields));
+              "%s is not a valid sort field. Valid values are %s", sortField, allowedSortFields));
     }
     List<String> allowedSortDirections = Arrays.asList("ASC", "DESC");
     if (!allowedSortDirections.contains(sortDirection)) {
       throw new IllegalArgumentException(
           String.format(
-              "%s is not a valid sort direction.  Valid values are %s",
+              "%s is not a valid sort direction. Valid values are %s",
               sortDirection, allowedSortDirections));
     }
 
