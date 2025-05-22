@@ -1,150 +1,73 @@
 import React from "react";
-import { Table, Spinner, Alert, Button } from "react-bootstrap";
+import OurTable, { DateColumn } from "main/components/OurTable";
 import { Link } from "react-router-dom";
 import Plaintext from "../Utils/Plaintext";
 
-export default function JobsTable({
-  jobs = [],
-  loading = false,
-  error = null,
-  sortBy = { id: "id", desc: true },
-  onSortChange = () => {},
-  onPurge = () => {},
-}) {
-  if (loading) {
-    return (
-      <div className="text-center my-4">
-        <Spinner animation="border" />
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <Alert variant="danger" className="my-4">
-        {error}
-      </Alert>
-    );
-  }
+export default function JobsTable({ jobs }) {
+  const testid = "JobsTable";
 
-  const clickHeader = (field) => {
-    onSortChange(field);
-  };
+  const columns = [
+    {
+      Header: "id",
+      accessor: "id", // accessor is the "key" in the data
+    },
+    DateColumn("Created", (cell) => cell.row.original.createdAt),
+    DateColumn("Updated", (cell) => cell.row.original.updatedAt),
+    {
+      Header: "Status",
+      accessor: "status",
+    },
+    {
+      Header: "Log",
+      accessor: "log",
+      Cell: ({ cell }) => {
+        const log = cell.row.original.log;
+        if (!log) {
+          return (
+            <div data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}>
+              No logs available
+            </div>
+          );
+        }
+        const logLines = log.split("\n");
+        const truncatedLog = logLines.slice(0, 10).join("\n");
+        return (
+          <div data-testid={`JobsTable-cell-row-${cell.row.index}-col-Log`}>
+            {logLines.length > 10 ? (
+              <>
+                <Plaintext text={truncatedLog} />
+                <span>...</span>
+                <br />
+                <Link to={`/admin/jobs/logs/${cell.row.original.id}`}>
+                  See entire log
+                </Link>
+              </>
+            ) : (
+              <pre>{log}</pre>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
 
-  const SortIcon = ({ field }) => {
-    if (sortBy.id !== field) {
-      return <span data-testid={`JobsTable-header-${field}-sort-carets`} />;
-    }
-    return (
-      <span data-testid={`JobsTable-header-${field}-sort-carets`}>
-        {sortBy.desc ? "🔽" : "🔼"}
-      </span>
-    );
-  };
+  const sortees = React.useMemo(
+    () => [
+      {
+        id: "id",
+        desc: true,
+      },
+    ],
+    // Stryker disable next-line all
+    [],
+  );
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <h5>Job Log</h5>
-        <Button variant="danger" size="sm" onClick={onPurge}>
-          Purge Job Log
-        </Button>
-      </div>
-
-      <div className="table-responsive">
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th
-                style={{ cursor: "pointer" }}
-                onClick={() => clickHeader("id")}
-              >
-                id
-                <SortIcon field="id" />
-              </th>
-              <th
-                style={{ cursor: "pointer" }}
-                onClick={() => clickHeader("createdAt")}
-              >
-                Created
-                <SortIcon field="createdAt" />
-              </th>
-              <th
-                style={{ cursor: "pointer" }}
-                onClick={() => clickHeader("updatedAt")}
-              >
-                Updated
-                <SortIcon field="updatedAt" />
-              </th>
-              <th
-                style={{ cursor: "pointer" }}
-                onClick={() => clickHeader("status")}
-              >
-                Status
-                <SortIcon field="status" />
-              </th>
-              <th>Log</th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobs.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center">
-                  no jobs to display.
-                </td>
-              </tr>
-            ) : (
-              jobs.map((job, idx) => {
-                const raw = job.log ?? "";
-                const lines = raw.split("\n");
-                const needsTruncate = lines.length > 10;
-                const truncated = lines.slice(0, 10).join("\n");
-
-                const formatValue = (value) => {
-                  if (typeof value === "string") {
-                    return new Date(value).toLocaleString(undefined, {
-                      hour12: false,
-                    });
-                  }
-                  return value;
-                };
-
-                return (
-                  <tr key={job.id}>
-                    <td data-testid={`JobsTable-cell-row-${idx}-col-id`}>
-                      {job.id}
-                    </td>
-                    <td data-testid={`JobsTable-cell-row-${idx}-col-Created`}>
-                      {job.createdAt}
-                    </td>
-                    <td data-testid={`JobsTable-cell-row-${idx}-col-Updated`}>
-                      {formatValue(job.updatedAt)}
-                    </td>
-                    <td data-testid={`JobsTable-cell-row-${idx}-col-status`}>
-                      {job.status}
-                    </td>
-                    <td data-testid={`JobsTable-cell-row-${idx}-col-Log`}>
-                      {raw === "" ? (
-                        <span>No logs available</span>
-                      ) : needsTruncate ? (
-                        <>
-                          <Plaintext text={truncated} />
-                          <span>...</span>
-                          <br />
-                          <Link to={`/admin/jobs/logs/${job.id}`}>
-                            See entire log
-                          </Link>
-                        </>
-                      ) : (
-                        <pre>{raw}</pre>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </Table>
-      </div>
-    </div>
+    <OurTable
+      data={jobs}
+      columns={columns}
+      testid={testid}
+      initialState={{ sortBy: sortees }}
+    />
   );
 }

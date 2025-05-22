@@ -1,12 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event"; // ← added
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-
 import JobsTable from "main/components/Jobs/JobsTable";
 import jobsFixtures from "fixtures/jobsFixtures";
 
@@ -37,13 +31,13 @@ describe("JobsTable tests", () => {
     const testId = "JobsTable";
 
     expectedHeaders.forEach((headerText) => {
-      expect(screen.getByText(headerText)).toBeInTheDocument();
+      const header = screen.getByText(headerText);
+      expect(header).toBeInTheDocument();
     });
 
     expectedFields.forEach((field) => {
-      expect(
-        screen.getByTestId(`${testId}-cell-row-0-col-${field}`),
-      ).toBeInTheDocument();
+      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
+      expect(header).toBeInTheDocument();
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
@@ -97,7 +91,7 @@ describe("JobsTable tests", () => {
         createdAt: "2023-11-01T12:00:00Z",
         updatedAt: "2023-11-01T12:30:00Z",
         status: "in-progress",
-        log: "Line \n".repeat(15),
+        log: "Line \n".repeat(15), // Long log of 15 lines
       },
     ];
 
@@ -170,6 +164,7 @@ describe("JobsTable tests", () => {
       "Line Line Line Line Line Line Line Line Line",
     );
 
+    // The 'See entire log' link should NOT be present
     const link = screen.queryByRole("link", { name: /See entire log/i });
     expect(link).not.toBeInTheDocument();
   });
@@ -200,68 +195,10 @@ describe("JobsTable tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      screen.getByTestId("JobsTable-cell-row-0-col-Log"),
-    ).toHaveTextContent("No logs available");
-    expect(
-      screen.getByTestId("JobsTable-cell-row-1-col-Log"),
-    ).toHaveTextContent("No logs available");
-  });
+    const logCell1 = screen.getByTestId("JobsTable-cell-row-0-col-Log");
+    const logCell2 = screen.getByTestId("JobsTable-cell-row-1-col-Log");
 
-  // ↓↓↓ NEW TESTS ↓↓↓
-
-  test("JobsTable shows spinner when loading=true", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <JobsTable jobs={[]} loading={true} onSortChange={() => {}} />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-    // look for the bootstrap spinner class
-    expect(document.querySelector(".spinner-border")).toBeInTheDocument();
-  });
-
-  test("JobsTable shows 'no jobs to display.' when jobs empty", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <JobsTable jobs={[]} loading={false} onSortChange={() => {}} />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-    // case‐insensitive match
-    expect(screen.getByText(/no jobs to display\./i)).toBeInTheDocument();
-  });
-
-  test("clicking each column header calls onSortChange with the correct field", () => {
-    const sortSpy = jest.fn();
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <JobsTable
-            jobs={jobsFixtures.sixJobs}
-            loading={false}
-            sortBy={{ id: "id", desc: false }}
-            onSortChange={sortSpy}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    // The table renders each <th> with role="columnheader"
-    const mapping = {
-      id: "id",
-      Created: "createdAt",
-      Updated: "updatedAt",
-      Status: "status",
-    };
-
-    for (let [label, field] of Object.entries(mapping)) {
-      userEvent.click(
-        screen.getByRole("columnheader", { name: new RegExp(label, "i") }),
-      );
-      expect(sortSpy).toHaveBeenLastCalledWith(field);
-    }
+    expect(logCell1).toHaveTextContent("No logs available");
+    expect(logCell2).toHaveTextContent("No logs available");
   });
 });
