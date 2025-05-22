@@ -79,12 +79,12 @@ export default function PersonalSchedulesDetailsPage() {
             .map(section => ({
               id: section.classSections[0].enrollCode.trim(),
               title: section.courseId.replaceAll(" ", ""),
-              day: dayParser(section.classSections[0].timeLocations.days),
+              day: dayParser(section.classSections[0].timeLocations[0].days),
               name: section.title,
               description: section.description,
-              area: section.classSections[0].timeLocations.building.trim() + " " + section.classSections[0].timeLocations.room.trim(),
-              startTime: section.classSections[0].timeLocations.beginTime,
-              endTime: section.classSections[0].timeLocations.endTime,
+              area: section.classSections[0].timeLocations[0].building.trim() + " " + section.classSections[0].timeLocations[0].room.trim(),
+              startTime: section.classSections[0].timeLocations[0].beginTime,
+              endTime: section.classSections[0].timeLocations[0].endTime,
           })),
       }
     }
