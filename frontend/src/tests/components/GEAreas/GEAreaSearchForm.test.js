@@ -83,7 +83,7 @@ describe("GEAreaSearchForm tests", () => {
   test("selecting GE area updates state", async () => {
     render(<WrappedForm />);
     // wait for options to load
-    await waitFor(() => screen.getByTestId("GEAreaSearch.Area-option-A1"));
+    await screen.findByTestId("GEAreaSearch.Area-option-A1");
 
     const areaSelect = screen.getByLabelText("General Education Area");
     userEvent.selectOptions(areaSelect, "B");
@@ -95,7 +95,7 @@ describe("GEAreaSearchForm tests", () => {
     render(<WrappedForm fetchJSON={fetchJSONSpy} />);
 
     // wait for areas
-    await waitFor(() => screen.getByTestId("GEAreaSearch.Area-option-A1"));
+    await screen.findByTestId("GEAreaSearch.Area-option-A1");
 
     // choose quarter and area
     userEvent.selectOptions(screen.getByLabelText("Quarter"), "20213");
