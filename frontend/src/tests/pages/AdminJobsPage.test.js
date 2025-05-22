@@ -90,7 +90,7 @@ describe("AdminJobsPage tests", () => {
 
     const testJobButton = screen.getByText("Test Job");
     expect(testJobButton).toBeInTheDocument();
-    
+
     await act(async () => {
       testJobButton.click();
     });
@@ -134,7 +134,7 @@ describe("AdminJobsPage tests", () => {
 
     const updateCoursesButton = screen.getByText("Update Courses Database");
     expect(updateCoursesButton).toBeInTheDocument();
-    
+
     await act(async () => {
       updateCoursesButton.click();
     });
@@ -185,7 +185,7 @@ describe("AdminJobsPage tests", () => {
       "Update Courses Database by quarter",
     );
     expect(updateCoursesButton).toBeInTheDocument();
-    
+
     await act(async () => {
       updateCoursesButton.click();
     });
@@ -229,7 +229,7 @@ describe("AdminJobsPage tests", () => {
       "Update Courses Database by quarter range",
     );
     expect(updateCoursesButton).toBeInTheDocument();
-    
+
     await act(async () => {
       updateCoursesButton.click();
     });
@@ -268,7 +268,7 @@ describe("AdminJobsPage tests", () => {
 
     const dropDownButton = screen.getByText("Update Grade Info");
     expect(dropDownButton).toBeInTheDocument();
-    
+
     await act(async () => {
       dropDownButton.click();
     });
@@ -366,8 +366,8 @@ describe("AdminJobsPage tests", () => {
 
     // Test page change
     const requestCountBefore = requestHistory.length;
-    
-      fireEvent.click(button2);
+
+    fireEvent.click(button2);
 
     await waitFor(() => {
       expect(requestHistory.length).toBeGreaterThan(requestCountBefore);
@@ -414,13 +414,13 @@ describe("AdminJobsPage tests", () => {
     });
 
     const button2 = screen.getByTestId("pagination-button-2");
-    
-      fireEvent.click(button2);
+
+    fireEvent.click(button2);
 
     // Wait for page change
     await waitFor(() => {
       const pageChangeRequests = requestHistory.filter(
-        r => r.type === "GET" && r.params.page === 1
+        (r) => r.type === "GET" && r.params.page === 1,
       );
       expect(pageChangeRequests.length).toBe(1);
     });
@@ -429,24 +429,27 @@ describe("AdminJobsPage tests", () => {
     const purgeButton = await screen.findByText("Purge Job Log");
     const requestCountBeforePurge = requestHistory.length;
 
-      fireEvent.click(purgeButton);
+    fireEvent.click(purgeButton);
 
     // Wait for DELETE request
     await waitFor(() => {
-      const deleteRequests = requestHistory.filter(r => r.type === "DELETE");
+      const deleteRequests = requestHistory.filter((r) => r.type === "DELETE");
       expect(deleteRequests.length).toBe(1);
     });
 
     // Wait for subsequent GET request with page reset
-    await waitFor(() => {
-      const postPurgeRequests = requestHistory.filter(
-        (req, index) => 
-          index > requestCountBeforePurge && 
-          req.type === "GET" && 
-          req.params.page === 0
-      );
-      expect(postPurgeRequests.length).toBe(1);
-    }, { timeout: 3000 });
+    await waitFor(
+      () => {
+        const postPurgeRequests = requestHistory.filter(
+          (req, index) =>
+            index > requestCountBeforePurge &&
+            req.type === "GET" &&
+            req.params.page === 0,
+        );
+        expect(postPurgeRequests.length).toBe(1);
+      },
+      { timeout: 3000 },
+    );
   });
 
   test("handleSortChange logic mutations", async () => {
@@ -471,15 +474,13 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(sortRequests.length).toBe(1));
 
     // Expand the Job Status accordion
-      fireEvent.click(screen.getByText("Job Status"));
+    fireEvent.click(screen.getByText("Job Status"));
 
-    
     // Wait for table to render
     await screen.findByTestId("JobsTable-cell-row-0-col-id");
 
     // First click - should toggle to ASC
-      fireEvent.click(screen.getByText("Created"));
-
+    fireEvent.click(screen.getByText("Created"));
 
     await waitFor(() => expect(sortRequests.length).toBe(2));
     expect(sortRequests[1].sortDir).toBe("ASC");
@@ -570,260 +571,264 @@ describe("AdminJobsPage tests", () => {
     expect(requestCount).toBe(requestCountBeforeUnmount);
   });
 
-  
   // Add these tests to your existing test file
 
-test("handles data response with null content properly", async () => {
-  // This will kill the logical operator mutant: && vs ||
-  axiosMock.onGet("/api/jobs/all").reply(200, { content: null });
+  test("handles data response with null content properly", async () => {
+    // This will kill the logical operator mutant: && vs ||
+    axiosMock.onGet("/api/jobs/all").reply(200, { content: null });
 
-  render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  await screen.findByText("Launch Jobs");
-  
-  // Expand Job Status to check table state
+    await screen.findByText("Launch Jobs");
+
+    // Expand Job Status to check table state
     fireEvent.click(screen.getByText("Job Status"));
 
-  // Should handle null content and show empty table
-  await waitFor(() => {
-    expect(screen.queryByTestId("JobsTable-cell-row-0-col-id")).not.toBeInTheDocument();
-  });
-});
-
-test("pagination only shows when totalPages > 1", async () => {
-  // This will kill the comparison operator mutant: > vs >=
-  
-  // First test with exactly 1 page
-  axiosMock.reset();
-  axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-  axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
-  axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-  axiosMock.onGet("/api/jobs/all").reply(200, { 
-    content: jobsFixtures.sixJobs, 
-    totalPages: 1 
+    // Should handle null content and show empty table
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("JobsTable-cell-row-0-col-id"),
+      ).not.toBeInTheDocument();
+    });
   });
 
-  const { unmount } = render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
+  test("pagination only shows when totalPages > 1", async () => {
+    // This will kill the comparison operator mutant: > vs >=
 
-  await screen.findByText("Launch Jobs");
-  
-  // With totalPages = 1, pagination should NOT be visible
-  expect(screen.queryByTestId("pagination-button-1")).not.toBeInTheDocument();
-  
-  unmount();
-  
-  // Now test with totalPages = 2 (> 1)
-  axiosMock.reset();
-  axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-  axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
-  axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-  axiosMock.onGet("/api/jobs/all").reply(200, { 
-    content: jobsFixtures.sixJobs, 
-    totalPages: 2 
-  });
+    // First test with exactly 1 page
+    axiosMock.reset();
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/jobs/all").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 1,
+    });
 
-  render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
+    const { unmount } = render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  // With totalPages = 2, pagination SHOULD be visible
-  await waitFor(() => {
-    expect(screen.getByTestId("pagination-button-1")).toBeInTheDocument();
-  });
-});
-// Add these tests to handle the remaining mutants
-// Add these tests to kill the final 7 mutants
+    await screen.findByText("Launch Jobs");
 
-
-
-
-
-
-
-
-
-test("pagination button CSS classes", async () => {
-  // This will kill: "active" : "" -> "active" : "Stryker was here!"
-  
-  axiosMock.onGet("/api/jobs/all").reply(200, { 
-    content: jobsFixtures.sixJobs, 
-    totalPages: 2 
-  });
-
-  render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
-
-  await screen.findByText("Launch Jobs");
-
-  await waitFor(() => {
-    const button1 = screen.getByTestId("pagination-button-1");
-    expect(button1.className).toContain("active");
-  });
-  
-  const button1 = screen.getByTestId("pagination-button-1");
-  const button2 = screen.getByTestId("pagination-button-2");
-  expect(button1.className).toContain("active");
-  expect(button2.className).not.toContain("Stryker was here!");
-  expect(button2.className).toContain("page-link");
-  // 替换那些 "covered 0" 的测试，用这些更精准的测试
-});
-// 在最后一个 test("pagination button CSS classes") 结束后，
-// 但在 describe 块结束前，添加这些新测试：
-
-test("useEffect refetches when fetchJobs changes", async () => {
-  let callCount = 0;
-  
-  axiosMock.onGet("/api/jobs/all").reply(() => {
-    callCount++;
-    return [200, { content: [], totalPages: 1 }];
-  });
-
-  const { rerender } = render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage key="first" />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
-
-  await screen.findByText("Launch Jobs");
-  expect(callCount).toBe(1);
-
-  rerender(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage key="second" />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
-
-  await waitFor(() => {
-    expect(callCount).toBe(2);
-  });
-});
-
-test("loading state changes correctly during fetch", async () => {
-  let resolvePromise;
-  const pendingPromise = new Promise(resolve => {
-    resolvePromise = resolve;
-  });
-  
-  axiosMock.onGet("/api/jobs/all").reply(() => pendingPromise);
-
-  render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
-
-  act(() => {
-    resolvePromise([200, { content: [], totalPages: 1 }]);
-  });
-
-  await screen.findByText("Launch Jobs");
-});
-
-test("initial arrays are empty, not pre-filled", async () => {
-  axiosMock.onGet("/api/jobs/all").reply(200, { content: [], totalPages: 3 });
-
-  render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
-
-  await screen.findByText("Launch Jobs");
-
-  await waitFor(() => {
-    const paginationButtons = screen.getAllByTestId(/pagination-button-\d+/);
-    expect(paginationButtons).toHaveLength(3);
-  });
-  
-  const paginationButtons = screen.getAllByTestId(/pagination-button-\d+/);
-  expect(paginationButtons[0].textContent).toBe("1");
-  expect(paginationButtons[1].textContent).toBe("2");
-  expect(paginationButtons[2].textContent).toBe("3");
-
-  fireEvent.click(screen.getByText("Job Status"));
-
-  expect(screen.queryByTestId("JobsTable-cell-row-0-col-id")).not.toBeInTheDocument();
-});
-
-test("else block executes for invalid data shape", async () => {
-  axiosMock.onGet("/api/jobs/all").reply(200, { 
-    content: "invalid", 
-    totalPages: 5 
-  });
-
-  render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
-
-  await screen.findByText("Launch Jobs");
-
-  await waitFor(() => {
+    // With totalPages = 1, pagination should NOT be visible
     expect(screen.queryByTestId("pagination-button-1")).not.toBeInTheDocument();
+
+    unmount();
+
+    // Now test with totalPages = 2 (> 1)
+    axiosMock.reset();
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/jobs/all").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 2,
+    });
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // With totalPages = 2, pagination SHOULD be visible
+    await waitFor(() => {
+      expect(screen.getByTestId("pagination-button-1")).toBeInTheDocument();
+    });
   });
-});
+  // Add these tests to handle the remaining mutants
+  // Add these tests to kill the final 7 mutants
 
-test("sortBy object has correct structure", async () => {
-  axiosMock.onGet("/api/jobs/all").reply(200, { 
-    content: jobsFixtures.sixJobs, 
-    totalPages: 1 
+  test("pagination button CSS classes", async () => {
+    // This will kill: "active" : "" -> "active" : "Stryker was here!"
+
+    axiosMock.onGet("/api/jobs/all").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 2,
+    });
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Launch Jobs");
+
+    await waitFor(() => {
+      const button1 = screen.getByTestId("pagination-button-1");
+      expect(button1.className).toContain("active");
+    });
+
+    const button1 = screen.getByTestId("pagination-button-1");
+    const button2 = screen.getByTestId("pagination-button-2");
+    expect(button1.className).toContain("active");
+    expect(button2.className).not.toContain("Stryker was here!");
+    expect(button2.className).toContain("page-link");
+    // 替换那些 "covered 0" 的测试，用这些更精准的测试
+  });
+  // 在最后一个 test("pagination button CSS classes") 结束后，
+  // 但在 describe 块结束前，添加这些新测试：
+
+  test("useEffect refetches when fetchJobs changes", async () => {
+    let callCount = 0;
+
+    axiosMock.onGet("/api/jobs/all").reply(() => {
+      callCount++;
+      return [200, { content: [], totalPages: 1 }];
+    });
+
+    const { rerender } = render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage key="first" />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Launch Jobs");
+    expect(callCount).toBe(1);
+
+    rerender(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage key="second" />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(callCount).toBe(2);
+    });
   });
 
-  render(
-    <QueryClientProvider client={new QueryClient()}>
-      <MemoryRouter>
-        <AdminJobsPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
+  test("loading state changes correctly during fetch", async () => {
+    let resolvePromise;
+    const pendingPromise = new Promise((resolve) => {
+      resolvePromise = resolve;
+    });
 
-  await screen.findByText("Launch Jobs");
+    axiosMock.onGet("/api/jobs/all").reply(() => pendingPromise);
 
-  fireEvent.click(screen.getByText("Job Status"));
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  await waitFor(() => {
-    expect(screen.getByTestId("JobsTable-cell-row-0-col-id")).toBeInTheDocument();
+    act(() => {
+      resolvePromise([200, { content: [], totalPages: 1 }]);
+    });
+
+    await screen.findByText("Launch Jobs");
   });
 
-  fireEvent.click(screen.getByText("Created"));
+  test("initial arrays are empty, not pre-filled", async () => {
+    axiosMock.onGet("/api/jobs/all").reply(200, { content: [], totalPages: 3 });
 
-  await waitFor(() => {
-    expect(axiosMock.history.get.length).toBeGreaterThan(1);
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Launch Jobs");
+
+    await waitFor(() => {
+      const paginationButtons = screen.getAllByTestId(/pagination-button-\d+/);
+      expect(paginationButtons).toHaveLength(3);
+    });
+
+    const paginationButtons = screen.getAllByTestId(/pagination-button-\d+/);
+    expect(paginationButtons[0].textContent).toBe("1");
+    expect(paginationButtons[1].textContent).toBe("2");
+    expect(paginationButtons[2].textContent).toBe("3");
+
+    fireEvent.click(screen.getByText("Job Status"));
+
+    expect(
+      screen.queryByTestId("JobsTable-cell-row-0-col-id"),
+    ).not.toBeInTheDocument();
   });
-});
 
+  test("else block executes for invalid data shape", async () => {
+    axiosMock.onGet("/api/jobs/all").reply(200, {
+      content: "invalid",
+      totalPages: 5,
+    });
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Launch Jobs");
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("pagination-button-1"),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  test("sortBy object has correct structure", async () => {
+    axiosMock.onGet("/api/jobs/all").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 1,
+    });
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Launch Jobs");
+
+    fireEvent.click(screen.getByText("Job Status"));
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("JobsTable-cell-row-0-col-id"),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText("Created"));
+
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThan(1);
+    });
+  });
 }); // 这里是 describe 块的结束
-
-
