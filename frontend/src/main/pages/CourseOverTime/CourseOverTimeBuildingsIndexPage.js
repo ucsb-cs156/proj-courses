@@ -26,6 +26,7 @@ export default function CourseOverTimeBuildingsIndexPage() {
       buildingCode: query.buildingCode,
     },
   });
+  
   const onSuccess = (buildings) => {
     setCourseJSON(buildings);
   };
