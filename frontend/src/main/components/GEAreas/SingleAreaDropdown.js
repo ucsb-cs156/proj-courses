@@ -9,7 +9,7 @@ const SingleAreaDropdown = ({
   controlId,
   onChange = null,
   label = "GE Area",
-  showAll = false,
+  //showAll = false,
 }) => {
   const localSearchArea = localStorage.getItem(controlId);
 
@@ -25,8 +25,6 @@ const SingleAreaDropdown = ({
     [],
   );
 
-  
-
   const handleAreaOnChange = (event) => {
     localStorage.setItem(controlId, event.target.value);
     setAreaState(event.target.value);
@@ -40,11 +38,11 @@ const SingleAreaDropdown = ({
     <Form.Group controlId={controlId}>
       <Form.Label>{label}</Form.Label>
       <Form.Control as="select" value={areaState} onChange={handleAreaOnChange}>
-        {showAll && (
+        {
           <option data-testid={`${controlId}-option-all`} value="ALL">
             ALL
           </option>
-        )}
+        }
         {areas &&
           areas.map((areaCode) => {
             const key = `${controlId}-option-${areaCode}`;

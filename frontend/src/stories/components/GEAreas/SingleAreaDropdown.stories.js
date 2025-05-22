@@ -18,7 +18,7 @@ const Template = (args) => {
   return (
     <SingleAreaDropdown
       areas={areas}
-    //   area={area}
+      //   area={area}
       setArea={setArea}
       controlId={"SampleGEControlId"}
       label={"General Education Area"}
@@ -27,14 +27,16 @@ const Template = (args) => {
   );
 };
 
-
 export const AllGEAreas = Template.bind({});
 AllGEAreas.args = {
   areas: allGEAreas,
 };
-AllGEAreas.parameters={msw: [http.get("/api/public/generalEducationInfo", () => {
-    return HttpResponse.json(allGEAreas, {
-      status: 200,
-    });
-})]}
-
+AllGEAreas.parameters = {
+  msw: [
+    http.get("/api/public/generalEducationInfo", () => {
+      return HttpResponse.json(allGEAreas, {
+        status: 200,
+      });
+    }),
+  ],
+};
