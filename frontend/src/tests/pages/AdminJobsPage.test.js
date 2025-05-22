@@ -437,7 +437,7 @@ describe("AdminJobsPage tests", () => {
       const lastRequest = axiosMock.history.get
         .filter((req) => req.url && req.url.includes("/api/jobs/paginated"))
         .pop();
-      console.log(axiosMock.history.get.map((r) => r.params));
+      
       expect(lastRequest.params.page).toBe(0); // or whatever the expected page is
     });
   });
