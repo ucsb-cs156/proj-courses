@@ -230,7 +230,6 @@ describe("OurPagination tests", () => {
     ]);
 
     fireEvent.click(nextButton);
-
     checkTestIdsInOrder([
       "OurPagination-prev",
       "OurPagination-1",
