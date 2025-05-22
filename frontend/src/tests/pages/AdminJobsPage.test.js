@@ -415,12 +415,12 @@ describe("AdminJobsPage tests", () => {
 
     expect(screen.queryByTestId("OurPagination-3")).not.toBeInTheDocument();
 
-    userEvent.selectOptions(screen.getByLabelText("Page Size"), "20");
+    userEvent.selectOptions(screen.getByLabelText("Page Size"), "5");
 
-    expect(
-      screen.getByTestId("OurPagination-1").parentElement,
-    ).toBeInTheDocument();
-    expect(screen.queryByTestId("OurPagination-2")).not.toBeInTheDocument();
+    expect(screen.getByTestId("OurPagination-1").parentElement).toHaveClass(
+      "active",
+    );
+    expect(screen.queryByTestId("OurPagination-3")).not.toBeInTheDocument();
   });
 
   test("throws if page is undefined and optional chaining is removed", async () => {

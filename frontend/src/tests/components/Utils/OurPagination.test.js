@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, rerender } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import OurPagination, { emptyArray } from "main/components/Utils/OurPagination";
 
 const checkTestIdsInOrder = (testIds) => {
