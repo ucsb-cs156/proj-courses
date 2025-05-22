@@ -8,7 +8,7 @@ export default function PersonalSectionsEvents({ event, eventColor, borderColor 
 
     const convertTimeToMinutes = (time) => {
         const [hours, minutes] = [time.slice(0, 2), time.slice(-2)];
-        return hours * 60 + minutes;
+        return hours * 60 + minutes * 1;
     };
     console.log(convertTimeToMinutes(event.startTime));
     console.log(convertTimeToMinutes(event.endTime));
