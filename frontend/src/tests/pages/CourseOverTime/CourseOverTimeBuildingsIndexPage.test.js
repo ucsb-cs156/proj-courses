@@ -193,6 +193,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
       buildingCode: "GIRV",
     });
   });
+  //test needs to be refactored when dropdown is actually implemented
   test("availableClassrooms state is set on classrooms API success", async () => {
     axiosMock.onGet("/api/public/courseovertime/buildingsearch").reply(200, []);
     axiosMock

@@ -63,7 +63,7 @@ export default function CourseOverTimeBuildingsIndexPage() {
     fetchClassrooms({ startQuarter, endQuarter, buildingCode });
   }, [startQuarter, endQuarter, buildingCode, fetchClassrooms]);
 
-  function fetchCourseOverTimeJSON(_e, query) {
+  async function fetchCourseOverTimeJSON(_event, query) {
     mutation.mutate(query);
     setLatestQuery(query);
   }
