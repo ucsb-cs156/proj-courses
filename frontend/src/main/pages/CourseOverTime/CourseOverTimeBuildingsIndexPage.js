@@ -74,7 +74,6 @@ export default function CourseOverTimeBuildingsIndexPage() {
         <h5>Welcome to the UCSB Course History Search!</h5>
         <CourseOverTimeBuildingsSearchForm
           fetchJSON={fetchCourseOverTimeJSON}
-          availableClassrooms={availableClassrooms}
         />
         {/* TEST‐ONLY: expose classrooms for mutation tests, will be refactored once dropdown is implemented*/}
         <div data-testid="debug-classrooms">
