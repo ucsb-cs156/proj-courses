@@ -217,8 +217,7 @@ const AdminJobsPage = () => {
       <OurPagination
         updateActivePage={setSelectedPage}
         totalPages={page?.totalPages || 0}
-          currentPage={selectedPage}
-
+        currentPage={selectedPage}
       />
 
       <h2 className="p-3">Job Status</h2>

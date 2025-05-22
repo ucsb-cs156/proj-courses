@@ -15,7 +15,7 @@ const OurPagination = ({
   useEffect(() => {
     setActivePage(currentPage);
   }, [currentPage]);
-  
+
   const nextPage = () => {
     const newPage = Math.min(activePage + 1, totalPages);
     setActivePage(newPage);

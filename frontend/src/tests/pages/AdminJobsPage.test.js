@@ -35,8 +35,6 @@ describe("AdminJobsPage tests", () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
- 
-
   test("renders without crashing", async () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -362,8 +360,6 @@ describe("AdminJobsPage tests", () => {
       (div) => div.style && div.style.marginBottom === "1rem",
     );
     expect(hasMarginBottomDiv).toBe(true);
-
-    
   });
 
   test("When localstorage is empty, fallback values are used", async () => {
@@ -434,8 +430,6 @@ describe("AdminJobsPage tests", () => {
     expect(screen.queryByTestId("OurPagination-4")).not.toBeInTheDocument();
   });
 
-   
-
   test("throws if page is undefined and optional chaining is removed", async () => {
     axiosMock.onGet("/api/jobs/paginated").reply(200, undefined);
 
@@ -458,6 +452,4 @@ describe("AdminJobsPage tests", () => {
       ),
     ).not.toThrow();
   });
-
-
 });
