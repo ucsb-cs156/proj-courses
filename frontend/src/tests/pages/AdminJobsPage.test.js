@@ -417,7 +417,9 @@ describe("AdminJobsPage tests", () => {
 
     userEvent.selectOptions(screen.getByLabelText("Page Size"), "20");
 
-    expect(screen.queryByTestId("OurPagination-1")).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId("OurPagination-1").parentElement,
+    ).toBeInTheDocument();
     expect(screen.queryByTestId("OurPagination-2")).not.toBeInTheDocument();
   });
 

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, rerender } from "@testing-library/react";
 import OurPagination, { emptyArray } from "main/components/Utils/OurPagination";
 
 const checkTestIdsInOrder = (testIds) => {
@@ -242,5 +242,36 @@ describe("OurPagination tests", () => {
     ]);
 
     fireEvent.click(nextButton);
+  });
+
+  test("updates active page when currentPage prop changes", () => {
+    const updateActivePage = jest.fn();
+
+    const { rerender } = render(
+      <OurPagination
+        totalPages={5}
+        updateActivePage={updateActivePage}
+        currentPage={1}
+      />,
+    );
+
+    // Page 1 should be active
+    expect(screen.getByTestId("OurPagination-1").parentElement).toHaveClass(
+      "active",
+    );
+
+    // Rerender with currentPage=3
+    rerender(
+      <OurPagination
+        totalPages={5}
+        updateActivePage={updateActivePage}
+        currentPage={3}
+      />,
+    );
+
+    // Page 3 should now be active
+    expect(screen.getByTestId("OurPagination-3").parentElement).toHaveClass(
+      "active",
+    );
   });
 });
