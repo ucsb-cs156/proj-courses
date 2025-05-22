@@ -18,30 +18,37 @@ export default function CourseOverTimeBuildingsIndexPage() {
   });
   // Stryker restore all : Can't test state because hook is internal
 
-  const objectToAxiosParams = (q) => ({
+  const objectToAxiosParams = (query) => ({
     url: "/api/public/courseovertime/buildingsearch",
     params: {
-      startQtr: q.startQuarter,
-      endQtr: q.endQuarter,
-      buildingCode: q.buildingCode,
+      startQtr: query.startQuarter,
+      endQtr: query.endQuarter,
+      buildingCode: query.buildingCode,
     },
   });
-  const onSuccess = (buildings) => setCourseJSON(buildings);
-  // Stryker disable next-line all : Can't test state because hook is internal
-  const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, []);
+  const onSuccess = (buildings) => {
+    setCourseJSON(buildings);
+  };
 
-  const objectToAxiosParamsClassrooms = (q) => ({
+  const mutation = useBackendMutation(
+    objectToAxiosParams,
+    { onSuccess },
+    // Stryker disable next-line all : hard to set up test for caching
+    [],
+  );
+
+  const objectToAxiosParamsClassrooms = (query) => ({
     url: "/api/public/courseovertime/classrooms",
     params: {
-      startQtr: q.startQuarter,
-      endQtr: q.endQuarter,
-      buildingCode: q.buildingCode,
+      startQtr: query.startQuarter,
+      endQtr: query.endQuarter,
+      buildingCode: query.buildingCode,
     },
   });
   const classroomMutation = useBackendMutation(
     objectToAxiosParamsClassrooms,
     { onSuccess: (rooms) => setAvailableClassrooms(rooms) },
-    // Stryker disable next-line all : Can't test state because hook is internal
+    // Stryker disable next-line all : hard to set up test for caching
     [],
   );
 
