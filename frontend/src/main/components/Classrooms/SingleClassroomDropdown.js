@@ -60,7 +60,7 @@ const SingleClassroomDropdown = ({
           const key = `${controlId}-option-${slug}`;
           return (
             <option key={key} data-testid={key} value={c.roomNumber}>
-              {c.buildingCode} {c.roomNumber}
+              {c.roomNumber}
             </option>
           );
         })}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 import { allBuildings } from "fixtures/buildingFixtures";
@@ -7,18 +7,16 @@ import { quarterRange } from "main/utils/quarterUtilities";
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleBuildingDropdown from "../Buildings/SingleBuildingDropdown";
+import SingleClassroomDropdown from "../Classrooms/SingleClassroomDropdown";
 
 const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
 
-  // Stryker disable OptionalChaining
   const startQtr = systemInfo?.startQtrYYYYQ || "20211";
   const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker restore OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
 
-  // Stryker disable all : not sure how to test/mock local storage
   const localStartQuarter = localStorage.getItem(
     "CourseOverTimeBuildingsSearch.StartQuarter",
   );
@@ -35,13 +33,33 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const [endQuarter, setEndQuarter] = useState(
     localEndQuarter || quarters[0].yyyyq,
   );
-  const [buildingCode, setBuildingCode] = useState(localBuildingCode || {});
+  const [buildingCode, setBuildingCode] = useState(localBuildingCode || "");
+  const [allClassrooms, setAllClassrooms] = useState([]);
+  const [classroom, setClassroom] = useState("");
 
-  // Stryker restore all
+  useEffect(() => {
+    const fetchClassrooms = async () => {
+      if (!buildingCode) return;
+      try {
+        const url = `/api/public/courseovertime/classrooms?startQtr=${startQuarter}&endQtr=${endQuarter}&buildingCode=${buildingCode}`;
+        const response = await fetch(url);
+        const rooms = await response.json();
+        setAllClassrooms(
+          rooms.map((room) => ({
+            buildingCode,
+            roomNumber: room,
+          })),
+        );
+      } catch (error) {
+        console.error("Error fetching classrooms:", error);
+      }
+    };
+    fetchClassrooms();
+  }, [buildingCode, startQuarter, endQuarter]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { startQuarter, endQuarter, buildingCode });
+    fetchJSON(event, { startQuarter, endQuarter, buildingCode, classroom });
   };
 
   return (
@@ -73,6 +91,17 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
               setBuilding={setBuildingCode}
               controlId={"CourseOverTimeBuildingsSearch.BuildingCode"}
               label={"Building Name"}
+            />
+          </Col>
+          mv
+          <Col md="auto">
+            <SingleClassroomDropdown
+              building={buildingCode}
+              classrooms={allClassrooms}
+              classroom={classroom}
+              setClassroom={setClassroom}
+              controlId="CourseOverTimeBuildingsSearch.Classroom"
+              label="Classroom"
             />
           </Col>
         </Row>
