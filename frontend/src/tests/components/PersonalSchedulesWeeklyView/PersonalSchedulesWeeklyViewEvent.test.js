@@ -40,7 +40,7 @@ describe("PersonalSectionsEvents tests", () => {
     expect(card).toHaveStyle("border: 2px solid blue");
 
     expect(
-      screen.getByText(`${event.startTime} - ${event.endTime}`),
+      screen.getByText(`/\b2:00\s*-\s*3:15\b`),
     ).toBeInTheDocument();
 
     // Simulate a click to show the popover
