@@ -2,7 +2,7 @@ import React from "react";
 import GeneralEducationSearchPage from "main/pages/GeneralEducation/GeneralEducationSearchPage";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { generalEducationAreasFixtures } from "fixtures/generalEducationAreasFixtures";
-import { sectionsFixtures } from "fixtures/sectionsFixtures";
+import { sectionFixtures } from "fixtures/sectionFixtures";
 import { http, HttpResponse } from "msw";
 
 export default {
@@ -44,8 +44,7 @@ WithResults.parameters = {
     http.get(
       "/api/sections/generaleducationsearch",
       ({ request: _request }) => {
-        // Use a predefined small set from your fixtures
-        return HttpResponse.json(sectionsFixtures.oneSection); // Or sectionsFixtures.threeSections
+        return HttpResponse.json(sectionFixtures.oneSection);
       },
     ),
   ],

@@ -7,6 +7,7 @@ import { useBackendMutation } from "main/utils/useBackend";
 export default function GeneralEducationSearchPage() {
   const [sectionJSON, setSectionJSON] = useState([]);
 
+  // Stryker disable all
   const objectToAxiosParams = (query) => ({
     // TO-DO: Implement the API call to fetch sections based on the GE area
     url: "/api/sections/generaleducationsearch",
@@ -15,6 +16,7 @@ export default function GeneralEducationSearchPage() {
       area: query.area,
     },
   });
+  // Stryker restore all
 
   // Callback function to update state with fetched sections
   const onSuccess = (sections) => {

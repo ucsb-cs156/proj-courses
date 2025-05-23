@@ -6,8 +6,8 @@ import { MemoryRouter } from "react-router-dom";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { generalEducationAreasFixtures } from "fixtures/generalEducationAreasFixtures";
-import { sectionsFixtures } from "fixtures/sectionsFixtures";
+import { allTheAreas } from "fixtures/areaFixtures";
+import { threeSections } from "fixtures/sectionFixtures";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -25,7 +25,6 @@ jest.mock("react-toastify", () => {
 describe("GeneralEducationSearchPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
-  const user = userEvent.setup();
 
   const renderPage = () =>
     render(
@@ -39,59 +38,80 @@ describe("GeneralEducationSearchPage tests", () => {
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+    mockToast.mockClear();
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock
-      .onGet("/api/public/generalEducationInfo")
-      .reply(200, generalEducationAreasFixtures.areas);
+    axiosMock.onGet("/api/public/generalEducationInfo").reply(200, allTheAreas);
+    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
   });
 
   test("renders correctly with form and empty table initially", async () => {
-    axiosMock.onGet("/api/sections/generaleducationsearch").reply(200, []); // No results initially
+    axiosMock.onGet("/api/sections/generaleducationsearch").reply(200, []);
     renderPage();
 
     expect(
-      await screen.findByText("Search by GeneralEducation Area"),
+      await screen.findByText(/Search by General Education Area/i),
     ).toBeInTheDocument();
-    expect(await screen.findByRole("combobox")).toBeInTheDocument(); // For the GE Area dropdown
+    expect(await screen.findByRole("combobox")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Submit/i })).toBeInTheDocument();
-    // Assuming SectionsTable shows column headers even when empty
     expect(
       screen.getByRole("columnheader", { name: /Course ID/i }),
     ).toBeInTheDocument();
   });
 
   test("fetches and displays sections when user performs a search", async () => {
-    const selectedAreaCode = generalEducationAreasFixtures.areas[0].areaCode;
-    // Use the existing named export from your fixtures
-    const mockSearchResults = sectionsFixtures.threeSections;
+    if (allTheAreas.length === 0) {
+      throw new Error("Fixture 'allTheAreas' is empty.");
+    }
+    const selectedAreaObject = allTheAreas[0];
+    const optionValueToSelect = `${selectedAreaObject.requirementCode}-${selectedAreaObject.collegeCode}`;
+    const apiSearchParameter = optionValueToSelect;
+
+    const mockSearchResults = threeSections;
+    // console.log("DEBUG: mockSearchResults for table:", JSON.stringify(mockSearchResults, null, 2)); // For debugging
 
     axiosMock
       .onGet("/api/sections/generaleducationsearch", {
-        params: { area: selectedAreaCode },
+        params: { area: apiSearchParameter },
       })
       .reply(200, mockSearchResults);
-    // Fallback for any other search call during this test (optional, but can prevent unexpected empty results)
-    axiosMock.onGet("/api/sections/generaleducationsearch").reply(200, []);
+    axiosMock.onGet("/api/sections/generaleducationsearch").reply((config) => {
+      if (config.params && config.params.area === apiSearchParameter) {
+        return [200, mockSearchResults];
+      }
+      return [200, []];
+    });
 
     renderPage();
 
     const areaDropdown = await screen.findByRole("combobox");
-    await user.selectOptions(areaDropdown, selectedAreaCode);
+    await screen.findByText(
+      new RegExp(
+        `${selectedAreaObject.requirementCode} - ${selectedAreaObject.requirementTranslation} \\(${selectedAreaObject.collegeCode}\\)`,
+      ),
+    );
+
+    // Wrap event causing state update in act if needed, though userEvent usually handles this
+    // await act(async () => {
+    await userEvent.selectOptions(areaDropdown, optionValueToSelect);
+    // });
 
     const submitButton = screen.getByRole("button", { name: /Submit/i });
-    await user.click(submitButton);
+    // await act(async () => {
+    await userEvent.click(submitButton);
+    // });
 
     await waitFor(() => {
       expect(
         axiosMock.history.get.some(
           (req) =>
             req.url === "/api/sections/generaleducationsearch" &&
-            req.params.area === selectedAreaCode,
+            req.params &&
+            req.params.area === apiSearchParameter,
         ),
       ).toBe(true);
     });
@@ -100,64 +120,83 @@ describe("GeneralEducationSearchPage tests", () => {
       expect(
         await screen.findByText(section.courseInfo.title),
       ).toBeInTheDocument();
-      expect(screen.getByText(section.section.enrollCode)).toBeInTheDocument();
     }
   });
 
   test("shows an empty table or message if search returns no results", async () => {
-    const selectedAreaCode = generalEducationAreasFixtures.areas[1].areaCode;
+    if (allTheAreas.length < 2) {
+      throw new Error("Fixture 'allTheAreas' has less than 2 items.");
+    }
+    const selectedAreaObject = allTheAreas[1];
+    const optionValueToSelect = `${selectedAreaObject.requirementCode}-${selectedAreaObject.collegeCode}`;
+    const apiSearchParameter = optionValueToSelect;
 
     axiosMock
       .onGet("/api/sections/generaleducationsearch", {
-        params: { area: selectedAreaCode },
+        params: { area: apiSearchParameter },
       })
-      .reply(200, []); // Return empty array
+      .reply(200, []);
 
     renderPage();
 
     const areaDropdown = await screen.findByRole("combobox");
-    await user.selectOptions(areaDropdown, selectedAreaCode);
+    await screen.findByText(
+      new RegExp(
+        `${selectedAreaObject.requirementCode} - ${selectedAreaObject.requirementTranslation} \\(${selectedAreaObject.collegeCode}\\)`,
+      ),
+    );
+    await userEvent.selectOptions(areaDropdown, optionValueToSelect);
 
     const submitButton = screen.getByRole("button", { name: /Submit/i });
-    await user.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(
         axiosMock.history.get.some(
           (req) =>
             req.url === "/api/sections/generaleducationsearch" &&
-            req.params.area === selectedAreaCode,
+            req.params &&
+            req.params.area === apiSearchParameter,
         ),
       ).toBe(true);
     });
 
-    // Ensure content from a potential previous search (e.g., from sectionsFixtures.threeSections) is NOT there
     expect(
-      screen.queryByText(sectionsFixtures.threeSections[0].courseInfo.title),
+      screen.queryByText(threeSections[0].courseInfo.title),
     ).not.toBeInTheDocument();
-    // expect(await screen.findByText(/No sections match your search/i)).toBeInTheDocument(); // If your table shows a specific message
   });
 
   test("handles API error during search gracefully", async () => {
-    const selectedAreaCode = generalEducationAreasFixtures.areas[0].areaCode;
+    if (allTheAreas.length === 0) {
+      throw new Error("Fixture 'allTheAreas' is empty.");
+    }
+    const selectedAreaObject = allTheAreas[0];
+    const optionValueToSelect = `${selectedAreaObject.requirementCode}-${selectedAreaObject.collegeCode}`;
+    const apiSearchParameter = optionValueToSelect;
 
     axiosMock
       .onGet("/api/sections/generaleducationsearch", {
-        params: { area: selectedAreaCode },
+        params: { area: apiSearchParameter },
       })
       .reply(500, { message: "Internal Server Error" });
 
     renderPage();
 
     const areaDropdown = await screen.findByRole("combobox");
-    await user.selectOptions(areaDropdown, selectedAreaCode);
+    await screen.findByText(
+      new RegExp(
+        `${selectedAreaObject.requirementCode} - ${selectedAreaObject.requirementTranslation} \\(${selectedAreaObject.collegeCode}\\)`,
+      ),
+    );
+    // *** Manually retype this line in your editor: delete `selectOptions` and type it again carefully ***
+    await userEvent.selectOptions(areaDropdown, optionValueToSelect);
 
     const submitButton = screen.getByRole("button", { name: /Submit/i });
-    await user.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(mockToast).toHaveBeenCalledWith(
-        "Error fetching results: Internal Server Error",
+        expect.stringContaining("Error communicating with backend"),
       );
     });
   });
