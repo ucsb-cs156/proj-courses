@@ -82,8 +82,7 @@ public class GeneralEducationFullControllerTest {
     String url = String.format(urlTemplate, "20221", "20222", "A1");
 
     // Mock the repository call
-    when(convertedSectionCollection.findByQuarterRangeAndGECode(
-            eq("20221"), eq("20222"), eq("A1")))
+    when(convertedSectionCollection.findByQuarterRangeAndGECode(eq("20221"), eq("20222"), eq("A1")))
         .thenReturn(expectedResult);
 
     // Perform the request
@@ -98,5 +97,4 @@ public class GeneralEducationFullControllerTest {
     String expectedString = mapper.writeValueAsString(expectedResult);
     assertEquals(expectedString, responseString);
   }
-
 }

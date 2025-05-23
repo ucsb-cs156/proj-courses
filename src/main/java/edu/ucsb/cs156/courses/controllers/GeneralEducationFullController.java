@@ -41,16 +41,12 @@ public class GeneralEducationFullController {
               required = true)
           @RequestParam
           String endQtr,
-      @Parameter(
-              name = "geCode",
-              description = "GE Code",
-              example = "A1",
-              required = true)
+      @Parameter(name = "geCode", description = "GE Code", example = "A1", required = true)
           @RequestParam
           String geCode)
       throws JsonProcessingException {
-    List<ConvertedSection> courseResults = 
-          convertedSectionCollection.findByQuarterRangeAndGECode(startQtr, endQtr, geCode);
+    List<ConvertedSection> courseResults =
+        convertedSectionCollection.findByQuarterRangeAndGECode(startQtr, endQtr, geCode);
     String body = mapper.writeValueAsString(courseResults);
     return ResponseEntity.ok().body(body);
   }
