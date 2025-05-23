@@ -45,7 +45,7 @@ export default function PersonalSchedulesWeeklyView({
   eventColor = "#d1ecf188",
   borderColor = "#bee5eb",
 }) {
-// Stryker restore all
+  // Stryker restore all
   const testId = "PersonalSchedulesWeeklyView";
 
   return (
@@ -96,7 +96,8 @@ export default function PersonalSchedulesWeeklyView({
               key={index}
               style={{ ...styles.timeSlot, border: "0" }}
               data-testid={`${testId}-${hour.replace(" ", "-")}-title`}
-            /* Stryker restore all */>
+              /* Stryker restore all */
+            >
               <span
                 style={styles.hourLabel}
                 data-testid={`${testId}-${hour.replace(" ", "-")}-label`}
