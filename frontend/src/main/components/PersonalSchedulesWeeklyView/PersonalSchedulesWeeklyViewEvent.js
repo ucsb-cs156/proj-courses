@@ -103,8 +103,7 @@ export default function PersonalSectionsEvents({
               data-testid={`${testId}-time`}
               style={{ fontSize: "12px", textAlign: "left" }}
             >
-              {convert24Hourto12Hour(event.startTime)} -{" "}
-              {convert24Hourto12Hour(event.endTime)}
+              {convert24Hourto12Hour(event.startTime)} - {convert24Hourto12Hour(event.endTime)}
             </Card.Text>
           )}
         </Card.Body>

@@ -59,7 +59,7 @@ describe('PersonalSectionsEvents tests', () => {
         { startTime: '12:00', endTime: '13:00', expectedFontSize: '16px', expectedHeight: 60 },
         { startTime: '12:00', endTime: '14:00', expectedFontSize: '16px', expectedHeight: 120 },
         { startTime: '00:00', endTime: '14:00', expectedFontSize: '16px', expectedHeight: 840 },
-        { startTime: '2:00', endTime: '14:00', expectedFontSize: '16px', expectedHeight: 720 },
+        { startTime: '02:00', endTime: '14:00', expectedFontSize: '16px', expectedHeight: 720 },
     ];
     
     heights.forEach(({ startTime, endTime, expectedFontSize, expectedHeight }) => {
