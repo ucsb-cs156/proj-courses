@@ -257,11 +257,10 @@ describe("SingleClassroomDropdown behavior tests", () => {
         controlId="cdSlug"
       />,
     );
-  
+
     // Test ID should not contain space
     const testOption = screen.getByTestId("cdSlug-option-1102");
     expect(testOption).toBeInTheDocument();
     expect(testOption.textContent).toBe("11 02");
   });
-  
 });
