@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,11 +30,12 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
-
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +46,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
 @Import(JobService.class)
@@ -74,7 +73,7 @@ public class JobsControllerTests extends ControllerTestCase {
   @MockBean UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
   @MockBean ConvertedSectionCollection convertedSectionCollection;
-  
+
   @MockBean private JdbcTemplate jdbcTemplate;
 
   @WithMockUser(roles = {"ADMIN"})
@@ -484,215 +483,211 @@ public class JobsControllerTests extends ControllerTestCase {
 
     assertNotNull(jobReturned.getStatus());
   }
+
   @WithMockUser(roles = {"ADMIN"})
   @Test
   public void admin_can_delete_all_jobs_with_postgresql_database() throws Exception {
     // arrange
     doNothing().when(jobsRepository).deleteAll();
     when(jobsRepository.count()).thenReturn(3L).thenReturn(0L);
-    
+
     DataSource mockDataSource = mock(DataSource.class);
     Connection mockConnection = mock(Connection.class);
     DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-    
+
     when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
     when(mockDataSource.getConnection()).thenReturn(mockConnection);
     when(mockConnection.getMetaData()).thenReturn(mockMetaData);
     when(mockMetaData.getURL()).thenReturn("jdbc:postgresql://localhost:5432/test");
-    
+
     when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
     doNothing().when(jdbcTemplate).execute(anyString());
-  
+
     // act
-    mockMvc.perform(delete("/api/jobs/all").with(csrf()))
-        .andExpect(status().isOk());
-  
+    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
+
     // assert - 验证实际调用的方法
     verify(jdbcTemplate).getDataSource();
     verify(jdbcTemplate).execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
   }
-  
 
-@WithMockUser(roles = {"ADMIN"})
-@Test 
-public void admin_can_delete_all_jobs_with_generic_database_identity_success() throws Exception {
-  // arrange
-  doNothing().when(jobsRepository).deleteAll();
-  when(jobsRepository.count()).thenReturn(2L).thenReturn(0L);
-  
-  DataSource mockDataSource = mock(DataSource.class);
-  Connection mockConnection = mock(Connection.class);
-  DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-  
-  when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-  when(mockDataSource.getConnection()).thenReturn(mockConnection);
-  when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-  when(mockMetaData.getURL()).thenReturn("jdbc:someother:database");
-  
-  when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
-  doNothing().when(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_delete_all_jobs_with_generic_database_identity_success() throws Exception {
+    // arrange
+    doNothing().when(jobsRepository).deleteAll();
+    when(jobsRepository.count()).thenReturn(2L).thenReturn(0L);
 
-  // act
-  mockMvc.perform(delete("/api/jobs/all").with(csrf()))
-      .andExpect(status().isOk());
+    DataSource mockDataSource = mock(DataSource.class);
+    Connection mockConnection = mock(Connection.class);
+    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
 
-  // assert
-  verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-}
+    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
+    when(mockDataSource.getConnection()).thenReturn(mockConnection);
+    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
+    when(mockMetaData.getURL()).thenReturn("jdbc:someother:database");
 
-@WithMockUser(roles = {"ADMIN"})
-@Test
-public void admin_can_delete_all_jobs_with_generic_database_sequence_fallback() throws Exception {
-  // arrange
-  doNothing().when(jobsRepository).deleteAll();
-  when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-  
-  DataSource mockDataSource = mock(DataSource.class);
-  Connection mockConnection = mock(Connection.class);
-  DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-  
-  when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-  when(mockDataSource.getConnection()).thenReturn(mockConnection);
-  when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-  when(mockMetaData.getURL()).thenReturn("jdbc:someother:database");
-  
-  when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
+    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
+    doNothing().when(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
 
-  doThrow(new RuntimeException("IDENTITY not supported"))
-      .when(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+    // act
+    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
 
-  doNothing().when(jdbcTemplate).execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
+    // assert
+    verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+  }
 
-  // act
-  mockMvc.perform(delete("/api/jobs/all").with(csrf()))
-      .andExpect(status().isOk());
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_delete_all_jobs_with_generic_database_sequence_fallback() throws Exception {
+    // arrange
+    doNothing().when(jobsRepository).deleteAll();
+    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
 
-  // assert
-  verify(jdbcTemplate).execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
-}
+    DataSource mockDataSource = mock(DataSource.class);
+    Connection mockConnection = mock(Connection.class);
+    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
 
-@WithMockUser(roles = {"ADMIN"})
-@Test
-public void admin_can_delete_all_jobs_without_job_logs_table() throws Exception {
-  // arrange
-  doNothing().when(jobsRepository).deleteAll();
-  when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-  
-  DataSource mockDataSource = mock(DataSource.class);
-  Connection mockConnection = mock(Connection.class);
-  DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-  
-  when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-  when(mockDataSource.getConnection()).thenReturn(mockConnection);
-  when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-  when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
-  
+    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
+    when(mockDataSource.getConnection()).thenReturn(mockConnection);
+    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
+    when(mockMetaData.getURL()).thenReturn("jdbc:someother:database");
 
-  when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(0);
-  doNothing().when(jdbcTemplate).execute(anyString());
+    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
 
-  // act
-  mockMvc.perform(delete("/api/jobs/all").with(csrf()))
-      .andExpect(status().isOk());
+    doThrow(new RuntimeException("IDENTITY not supported"))
+        .when(jdbcTemplate)
+        .execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
 
-  // assert
+    doNothing().when(jdbcTemplate).execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
 
-  verify(jdbcTemplate, never()).execute("DELETE FROM job_logs");
+    // act
+    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
 
-  verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-}
+    // assert
+    verify(jdbcTemplate).execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
+  }
 
-@WithMockUser(roles = {"ADMIN"})
-@Test
-public void admin_can_delete_all_jobs_with_clear_job_logs_exception() throws Exception {
-  // arrange
-  doNothing().when(jobsRepository).deleteAll();
-  when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-  
-  DataSource mockDataSource = mock(DataSource.class);
-  Connection mockConnection = mock(Connection.class);
-  DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-  
-  when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-  when(mockDataSource.getConnection()).thenReturn(mockConnection);
-  when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-  when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
-  
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_delete_all_jobs_without_job_logs_table() throws Exception {
+    // arrange
+    doNothing().when(jobsRepository).deleteAll();
+    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
 
-  when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class)))
-      .thenThrow(new RuntimeException("Table check failed"));
-  doNothing().when(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+    DataSource mockDataSource = mock(DataSource.class);
+    Connection mockConnection = mock(Connection.class);
+    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
 
-  // act
-  mockMvc.perform(delete("/api/jobs/all").with(csrf()))
-      .andExpect(status().isOk());
+    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
+    when(mockDataSource.getConnection()).thenReturn(mockConnection);
+    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
+    when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
 
-  verify(jobsRepository).deleteAll();
-}
+    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(0);
+    doNothing().when(jdbcTemplate).execute(anyString());
 
-@WithMockUser(roles = {"ADMIN"})
-@Test
-public void admin_can_delete_all_jobs_with_sequence_reset_failure_and_fallback() throws Exception {
-  // arrange
-  doNothing().when(jobsRepository).deleteAll();
-  when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-  
-  DataSource mockDataSource = mock(DataSource.class);
-  Connection mockConnection = mock(Connection.class);
-  DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-  
-  when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-  when(mockDataSource.getConnection()).thenReturn(mockConnection);
-  when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-  when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
-  
-  when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
+    // act
+    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
 
-  doThrow(new RuntimeException("Reset failed"))
-      .when(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+    // assert
 
-  doThrow(new RuntimeException("Fallback failed"))
-      .when(jdbcTemplate).execute("ALTER SEQUENCE IF EXISTS jobs_id_seq RESTART WITH 1");
-  doNothing().when(jdbcTemplate).execute("DROP TABLE IF EXISTS JOBS CASCADE");
+    verify(jdbcTemplate, never()).execute("DELETE FROM job_logs");
 
-  // act
-  mockMvc.perform(delete("/api/jobs/all").with(csrf()))
-      .andExpect(status().isOk());
+    verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+  }
 
-  verify(jdbcTemplate).getDataSource();
-  verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-  verify(jdbcTemplate).execute("DROP TABLE IF EXISTS JOBS CASCADE");
-}
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_delete_all_jobs_with_clear_job_logs_exception() throws Exception {
+    // arrange
+    doNothing().when(jobsRepository).deleteAll();
+    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
 
-@WithMockUser(roles = {"ADMIN"})
-@Test
-public void admin_can_delete_all_jobs_with_all_sequence_reset_methods_failing() throws Exception {
-  // arrange
-  doNothing().when(jobsRepository).deleteAll();
-  when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-  
-  DataSource mockDataSource = mock(DataSource.class);
-  Connection mockConnection = mock(Connection.class);
-  DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-  
-  when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-  when(mockDataSource.getConnection()).thenReturn(mockConnection);
-  when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-  when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
-  
-  when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
+    DataSource mockDataSource = mock(DataSource.class);
+    Connection mockConnection = mock(Connection.class);
+    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
 
-  doThrow(new RuntimeException("Reset failed"))
-      .when(jdbcTemplate).execute(anyString());
+    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
+    when(mockDataSource.getConnection()).thenReturn(mockConnection);
+    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
+    when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
 
-  // act
-  MvcResult response = mockMvc.perform(delete("/api/jobs/all").with(csrf()))
-      .andExpect(status().isOk())
-      .andReturn();
+    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class)))
+        .thenThrow(new RuntimeException("Table check failed"));
+    doNothing().when(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
 
+    // act
+    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
 
-  verify(jobsRepository).deleteAll();
-  String responseString = response.getResponse().getContentAsString();
-  assertThat(responseString).contains("All jobs deleted");
-}
+    verify(jobsRepository).deleteAll();
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_delete_all_jobs_with_sequence_reset_failure_and_fallback()
+      throws Exception {
+    // arrange
+    doNothing().when(jobsRepository).deleteAll();
+    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
+
+    DataSource mockDataSource = mock(DataSource.class);
+    Connection mockConnection = mock(Connection.class);
+    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
+
+    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
+    when(mockDataSource.getConnection()).thenReturn(mockConnection);
+    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
+    when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
+
+    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
+
+    doThrow(new RuntimeException("Reset failed"))
+        .when(jdbcTemplate)
+        .execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+
+    doThrow(new RuntimeException("Fallback failed"))
+        .when(jdbcTemplate)
+        .execute("ALTER SEQUENCE IF EXISTS jobs_id_seq RESTART WITH 1");
+    doNothing().when(jdbcTemplate).execute("DROP TABLE IF EXISTS JOBS CASCADE");
+
+    // act
+    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
+
+    verify(jdbcTemplate).getDataSource();
+    verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+    verify(jdbcTemplate).execute("DROP TABLE IF EXISTS JOBS CASCADE");
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void admin_can_delete_all_jobs_with_all_sequence_reset_methods_failing() throws Exception {
+    // arrange
+    doNothing().when(jobsRepository).deleteAll();
+    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
+
+    DataSource mockDataSource = mock(DataSource.class);
+    Connection mockConnection = mock(Connection.class);
+    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
+
+    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
+    when(mockDataSource.getConnection()).thenReturn(mockConnection);
+    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
+    when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
+
+    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
+
+    doThrow(new RuntimeException("Reset failed")).when(jdbcTemplate).execute(anyString());
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(delete("/api/jobs/all").with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    verify(jobsRepository).deleteAll();
+    String responseString = response.getResponse().getContentAsString();
+    assertThat(responseString).contains("All jobs deleted");
+  }
 }
