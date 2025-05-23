@@ -7,28 +7,38 @@ import { MemoryRouter } from "react-router-dom";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { generalEducationAreasFixtures } from "fixtures/generalEducationAreasFixtures";
+import { sectionsFixtures } from "fixtures/sectionsFixtures";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
-// Helper to wrap with providers
-const renderWithProviders = (ui, { queryClient } = {}) => {
-  const client = queryClient || new QueryClient();
-  return render(
-    <QueryClientProvider client={client}>
-      <MemoryRouter>{ui}</MemoryRouter>
-    </QueryClientProvider>,
-  );
-};
+const mockToast = jest.fn();
+jest.mock("react-toastify", () => {
+  const originalModule = jest.requireActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: (x) => mockToast(x),
+  };
+});
 
 describe("GeneralEducationSearchPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
+  const user = userEvent.setup();
+
+  const renderPage = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
-    // Basic mocks common to all tests
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
@@ -38,52 +48,55 @@ describe("GeneralEducationSearchPage tests", () => {
     axiosMock
       .onGet("/api/public/generalEducationInfo")
       .reply(200, generalEducationAreasFixtures.areas);
-    axiosMock.onGet("/api/sections/generaleducationsearch").reply(200, []);
   });
 
-  test("renders expected content and form elements", async () => {
-    renderWithProviders(<GeneralEducationSearchPage />, { queryClient });
+  test("renders correctly with form and empty table initially", async () => {
+    axiosMock.onGet("/api/sections/generaleducationsearch").reply(200, []); // No results initially
+    renderPage();
 
-    // Check for page title
     expect(
       await screen.findByText("Search by GeneralEducation Area"),
     ).toBeInTheDocument();
+    expect(await screen.findByRole("combobox")).toBeInTheDocument(); // For the GE Area dropdown
     expect(screen.getByRole("button", { name: /Submit/i })).toBeInTheDocument();
-    const dropdown = screen.getByRole("combobox", { name: /Select GE Area/i });
-
+    // Assuming SectionsTable shows column headers even when empty
     expect(
-      await screen.findByText(generalEducationAreasFixtures.areas[0].areaName),
+      screen.getByRole("columnheader", { name: /Course ID/i }),
     ).toBeInTheDocument();
   });
 
   test("fetches and displays sections when user performs a search", async () => {
-    // Override the default search mock to return specific data for this test
-    const testSections = sectionsFixtures.threeSections;
-    axiosMock
-      .onGet("/api/sections/generaleducationsearch", { params: { area: "A1" } }) // Ensure params match
-      .reply(200, testSections);
+    const selectedAreaCode = generalEducationAreasFixtures.areas[0].areaCode;
+    // Use the existing named export from your fixtures
+    const mockSearchResults = sectionsFixtures.threeSections;
 
-    renderWithProviders(<GeneralEducationSearchPage />, { queryClient });
-    const user = userEvent.setup();
+    axiosMock
+      .onGet("/api/sections/generaleducationsearch", {
+        params: { area: selectedAreaCode },
+      })
+      .reply(200, mockSearchResults);
+    // Fallback for any other search call during this test (optional, but can prevent unexpected empty results)
+    axiosMock.onGet("/api/sections/generaleducationsearch").reply(200, []);
+
+    renderPage();
 
     const areaDropdown = await screen.findByRole("combobox");
-    await user.selectOptions(areaDropdown, "A1");
+    await user.selectOptions(areaDropdown, selectedAreaCode);
 
     const submitButton = screen.getByRole("button", { name: /Submit/i });
     await user.click(submitButton);
 
-    // Assert that the API was called
     await waitFor(() => {
       expect(
         axiosMock.history.get.some(
           (req) =>
             req.url === "/api/sections/generaleducationsearch" &&
-            req.params.area === "A1",
+            req.params.area === selectedAreaCode,
         ),
       ).toBe(true);
     });
 
-    for (const section of testSections) {
+    for (const section of mockSearchResults) {
       expect(
         await screen.findByText(section.courseInfo.title),
       ).toBeInTheDocument();
@@ -91,31 +104,61 @@ describe("GeneralEducationSearchPage tests", () => {
     }
   });
 
-  test("displays a message or empty table when search returns no results", async () => {
+  test("shows an empty table or message if search returns no results", async () => {
+    const selectedAreaCode = generalEducationAreasFixtures.areas[1].areaCode;
+
     axiosMock
       .onGet("/api/sections/generaleducationsearch", {
-        params: { area: "XYZ" },
+        params: { area: selectedAreaCode },
       })
-      .reply(200, []);
+      .reply(200, []); // Return empty array
 
-    renderWithProviders(<GeneralEducationSearchPage />, { queryClient });
-    const user = userEvent.setup();
+    renderPage();
 
     const areaDropdown = await screen.findByRole("combobox");
-    await user.selectOptions(
-      areaDropdown,
-      generalEducationAreasFixtures.areas[0].areaCode,
-    ); // Select any valid area
+    await user.selectOptions(areaDropdown, selectedAreaCode);
+
     const submitButton = screen.getByRole("button", { name: /Submit/i });
     await user.click(submitButton);
 
-    // Wait for the (empty) search to complete
     await waitFor(() => {
       expect(
         axiosMock.history.get.some(
-          (req) => req.url === "/api/sections/generaleducationsearch",
+          (req) =>
+            req.url === "/api/sections/generaleducationsearch" &&
+            req.params.area === selectedAreaCode,
         ),
       ).toBe(true);
+    });
+
+    // Ensure content from a potential previous search (e.g., from sectionsFixtures.threeSections) is NOT there
+    expect(
+      screen.queryByText(sectionsFixtures.threeSections[0].courseInfo.title),
+    ).not.toBeInTheDocument();
+    // expect(await screen.findByText(/No sections match your search/i)).toBeInTheDocument(); // If your table shows a specific message
+  });
+
+  test("handles API error during search gracefully", async () => {
+    const selectedAreaCode = generalEducationAreasFixtures.areas[0].areaCode;
+
+    axiosMock
+      .onGet("/api/sections/generaleducationsearch", {
+        params: { area: selectedAreaCode },
+      })
+      .reply(500, { message: "Internal Server Error" });
+
+    renderPage();
+
+    const areaDropdown = await screen.findByRole("combobox");
+    await user.selectOptions(areaDropdown, selectedAreaCode);
+
+    const submitButton = screen.getByRole("button", { name: /Submit/i });
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockToast).toHaveBeenCalledWith(
+        "Error fetching results: Internal Server Error",
+      );
     });
   });
 });
