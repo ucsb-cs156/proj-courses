@@ -56,7 +56,7 @@ const SingleClassroomDropdown = ({
           </option>
         )}
         {options.map((c) => {
-          const slug = `${c.buildingCode}-${c.roomNumber}`.replace(/ /g, "-");
+          const slug = `${c.roomNumber}`.replace(/ /g, "");
           const key = `${controlId}-option-${slug}`;
           return (
             <option key={key} data-testid={key} value={c.roomNumber}>

@@ -28,7 +28,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         controlId="cd1"
       />,
     );
-    const option = screen.getByTestId("cd1-option-PHELP-1401");
+    const option = screen.getByTestId("cd1-option-1401");
     expect(option).toBeInTheDocument();
     expect(option).toHaveTextContent("1401");
   });
@@ -68,7 +68,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
     const allOption = screen.getByTestId("cd1-option-all");
     expect(allOption).toBeInTheDocument();
     expect(allOption).toHaveValue("ALL");
-    expect(screen.getByTestId("cd1-option-PHELP-1401")).toBeInTheDocument();
+    expect(screen.getByTestId("cd1-option-1401")).toBeInTheDocument();
   });
 
   test("filters by building when showAll is off", () => {
@@ -242,7 +242,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
       />,
     );
 
-    const testOption = screen.getByTestId("cdSlug-option-ILP-1102");
+    const testOption = screen.getByTestId("cdSlug-option-1102");
     expect(testOption).toBeInTheDocument();
   });
 });
