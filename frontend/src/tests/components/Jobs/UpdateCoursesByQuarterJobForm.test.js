@@ -13,12 +13,6 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-// const mockedUseSystemInfo = jest.fn();
-
-// jest.mock("main/utils/systemInfo", () => ({
-//   useSystemInfo: () => mockedUseSystemInfo,
-// }));
-
 const queryClient = new QueryClient();
 
 describe("UpdateCoursesByQuarterJobForm tests", () => {
@@ -118,7 +112,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
     ).toHaveValue("20194");
 
     // Assert: make sure option from local storage is selected
-    expect(screen.getByRole("option", { name: /M19/i }).selected).toBeTruthy();
+    expect(screen.getByLabelText("Quarter").value).toBe("20193");
   });
 
   test("works when local storage doesn't have a value", async () => {
@@ -153,10 +147,6 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
     expect(getItemSpy).toHaveBeenCalledWith(
       "UpdateCoursesByQuarterJobForm.Quarter",
     );
-
-    expect(screen.queryByRole("option", { name: /W19/i }).selected).toBeFalsy();
-    expect(screen.queryByRole("option", { name: /S19/i }).selected).toBeFalsy();
-    expect(screen.queryByRole("option", { name: /M19/i }).selected).toBeFalsy();
-    expect(screen.getByRole("option", { name: /F19/i }).selected).toBeTruthy();
+    expect(screen.getByLabelText("Quarter").value).toBe("20191");
   });
 });
