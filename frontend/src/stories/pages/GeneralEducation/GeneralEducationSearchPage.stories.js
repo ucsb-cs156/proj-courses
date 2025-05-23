@@ -1,8 +1,8 @@
 import React from "react";
 import GeneralEducationSearchPage from "main/pages/GeneralEducation/GeneralEducationSearchPage";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { generalEducationAreasFixtures } from "fixtures/generalEducationAreasFixtures";
-import { sectionFixtures } from "fixtures/sectionFixtures";
+import { allTheAreas } from "fixtures/areaFixtures";
+import { threeSections } from "fixtures/sectionFixtures";
 import { http, HttpResponse } from "msw";
 
 export default {
@@ -20,7 +20,7 @@ Default.parameters = {
     ),
     http.get("/api/currentUser", () => HttpResponse.status(403)),
     http.get("/api/public/generalEducationInfo", () => {
-      return HttpResponse.json(generalEducationAreasFixtures.areas);
+      return HttpResponse.json(allTheAreas);
     }),
     http.get(
       "/api/sections/generaleducationsearch",
@@ -39,12 +39,13 @@ WithResults.parameters = {
     ),
     http.get("/api/currentUser", () => HttpResponse.status(403)),
     http.get("/api/public/generalEducationInfo", () => {
-      return HttpResponse.json(generalEducationAreasFixtures.areas);
+      return HttpResponse.json(allTheAreas);
     }),
+
     http.get(
       "/api/sections/generaleducationsearch",
       ({ request: _request }) => {
-        return HttpResponse.json(sectionFixtures.oneSection);
+        return HttpResponse.json(threeSections);
       },
     ),
   ],
