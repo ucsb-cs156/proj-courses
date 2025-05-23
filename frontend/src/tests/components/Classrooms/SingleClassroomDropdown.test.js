@@ -257,7 +257,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cd1"
-      />
+      />,
     );
     const option = screen.getByTestId("cd1-option-PHELP-1401");
     expect(option).toBeInTheDocument();
@@ -272,10 +272,12 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cd1"
-      />
+      />,
     );
 
-    const filtered = screen.getAllByRole("option").filter(o => o.value !== "ALL");
+    const filtered = screen
+      .getAllByRole("option")
+      .filter((o) => o.value !== "ALL");
     expect(filtered).toHaveLength(3);
     expect(filtered[0]).toHaveTextContent("PHELP 1401");
     expect(filtered[1]).toHaveTextContent("PHELP 1502");
@@ -291,7 +293,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         setClassroom={mockSetClassroom}
         controlId="cd1"
         showAll={true}
-      />
+      />,
     );
 
     const allOption = screen.getByTestId("cd1-option-all");
@@ -308,11 +310,13 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cd1"
-      />
+      />,
     );
 
-    const buildingOptions = screen.getAllByRole("option").filter(o => o.value !== "ALL");
-    buildingOptions.forEach(opt => {
+    const buildingOptions = screen
+      .getAllByRole("option")
+      .filter((o) => o.value !== "ALL");
+    buildingOptions.forEach((opt) => {
       expect(opt).toHaveTextContent("PHELP");
     });
   });
@@ -327,7 +331,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         setClassroom={mockSetClassroom}
         controlId="cd1"
         onChange={mockOnChange}
-      />
+      />,
     );
 
     const dropdown = screen.getByLabelText("Classroom");
@@ -347,7 +351,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cd1"
-      />
+      />,
     );
 
     const box = screen.getByRole("combobox");
@@ -362,7 +366,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cd1"
-      />
+      />,
     );
 
     expect(screen.queryByRole("option")).toBeNull();
@@ -378,7 +382,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom="1502"
         setClassroom={mockSetClassroom}
         controlId="cd1"
-      />
+      />,
     );
 
     expect(screen.getByRole("combobox").value).toBe("1502");
@@ -392,7 +396,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cd1"
-      />
+      />,
     );
 
     const dropdown = screen.getByRole("combobox");
@@ -406,7 +410,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom="1502"
         setClassroom={mockSetClassroom}
         controlId="cd1"
-      />
+      />,
     );
 
     expect(dropdown.value).toBe("");
@@ -421,7 +425,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cdDefault"
-      />
+      />,
     );
 
     expect(screen.getByRole("combobox").value).toBe("1401");
@@ -441,11 +445,13 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cdSort"
-      />
+      />,
     );
 
-    const roomOptions = screen.getAllByRole("option").filter(o => o.value !== "ALL");
-    expect(roomOptions.map(o => o.value)).toEqual(["1401", "1502", "1603"]);
+    const roomOptions = screen
+      .getAllByRole("option")
+      .filter((o) => o.value !== "ALL");
+    expect(roomOptions.map((o) => o.value)).toEqual(["1401", "1502", "1603"]);
   });
 
   test("sanitizes spaces for test id generation", () => {
@@ -457,7 +463,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
         classroom=""
         setClassroom={mockSetClassroom}
         controlId="cdSlug"
-      />
+      />,
     );
 
     const testOption = screen.getByTestId("cdSlug-option-ENG-LAB-101-A");
