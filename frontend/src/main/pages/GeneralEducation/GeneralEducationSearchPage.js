@@ -26,7 +26,7 @@ export default function GeneralEducationSearchPage() {
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    [] // Dependencies array for the mutation hook
+    [], // Dependencies array for the mutation hook
   );
 
   // Function to trigger the API call, passed to the search form
@@ -38,7 +38,9 @@ export default function GeneralEducationSearchPage() {
     <BasicLayout>
       <div className="pt-2">
         <h5>Search by General Education Area</h5>
-        <GeneralEducationSearchForm fetchJSON={fetchGeneralEducationSectionsJSON} />
+        <GeneralEducationSearchForm
+          fetchJSON={fetchGeneralEducationSectionsJSON}
+        />
         <SectionsTable sections={sectionJSON} />
       </div>
     </BasicLayout>
