@@ -458,7 +458,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
     const spacedClassroom = [{ buildingCode: "ILP", roomNumber: "1102" }];
     rtlRender(
       <SingleClassroomDropdown
-        building="ENG LAB"
+        building="ILP"
         classrooms={spacedClassroom}
         classroom=""
         setClassroom={mockSetClassroom}
@@ -466,7 +466,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
       />,
     );
 
-    const testOption = screen.getByTestId("cdSlug-option-ENG-LAB-101-A");
+    const testOption = screen.getByTestId("cdSlug-option-ILP-1102");
     expect(testOption).toBeInTheDocument();
   });
 });
