@@ -299,7 +299,6 @@ export default function SectionsTable({ sections }) {
     },
   ];
 
-
   const testid = "SectionsTable";
 
   const columnsToDisplay = columns;
