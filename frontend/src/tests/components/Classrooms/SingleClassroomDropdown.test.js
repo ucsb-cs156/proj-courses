@@ -230,8 +230,24 @@ describe("SingleClassroomDropdown behavior tests", () => {
     expect(roomOptions.map((o) => o.value)).toEqual(["1401", "1502", "1603"]);
   });
 
+  // test("sanitizes spaces for test id generation", () => {
+  //   const spacedClassroom = [{ buildingCode: "ILP", roomNumber: "1102" }];
+  //   rtlRender(
+  //     <SingleClassroomDropdown
+  //       building="ILP"
+  //       classrooms={spacedClassroom}
+  //       classroom=""
+  //       setClassroom={mockSetClassroom}
+  //       controlId="cdSlug"
+  //     />,
+  //   );
+
+  //   const testOption = screen.getByTestId("cdSlug-option-1102");
+  //   expect(testOption).toBeInTheDocument();
+  // });
+
   test("sanitizes spaces for test id generation", () => {
-    const spacedClassroom = [{ buildingCode: "ILP", roomNumber: "1102" }];
+    const spacedClassroom = [{ buildingCode: "ILP", roomNumber: "11 02" }];
     rtlRender(
       <SingleClassroomDropdown
         building="ILP"
@@ -241,8 +257,11 @@ describe("SingleClassroomDropdown behavior tests", () => {
         controlId="cdSlug"
       />,
     );
-
+  
+    // Test ID should not contain space
     const testOption = screen.getByTestId("cdSlug-option-1102");
     expect(testOption).toBeInTheDocument();
+    expect(testOption.textContent).toBe("11 02");
   });
+  
 });
