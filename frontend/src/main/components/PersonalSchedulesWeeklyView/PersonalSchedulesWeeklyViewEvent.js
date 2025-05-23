@@ -7,7 +7,7 @@ export default function PersonalSectionsEvents({
   borderColor,
 }) {
   const [style, setStyle] = useState({});
-  const testId = "PersonalSectionsEvents";
+  const testId = "PersonalSectionsEvent";
 
   const convertTimeToMinutes = (time) => {
     const [hours, minutes] = [time.slice(0, 2), time.slice(-2)];

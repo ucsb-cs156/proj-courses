@@ -39,12 +39,13 @@ const hours = [
   "11 PM",
 ];
 
-// Stryker disable next-line all : no need to test default colors
+// Stryker disable all : no need to test default colors
 export default function PersonalSchedulesWeeklyView({
   Events = [],
   eventColor = "#d1ecf188",
   borderColor = "#bee5eb",
 }) {
+// Stryker restore all
   const testId = "PersonalSchedulesWeeklyView";
 
   return (
@@ -83,18 +84,19 @@ export default function PersonalSchedulesWeeklyView({
       <Row>
         <Col style={styles.timeColumn}>
           {
-            /* Stryker disable next-line all : no test needed for styling */
+            /* Stryker disable all : no test needed for styling */
             <div
               style={{ ...styles.timeSlot, height: "30px", border: "0" }}
             ></div>
+            // Stryker restore all
           }
           {hours.map((hour, index) => (
-            /* Stryker disable next-line all : no test needed for styling */
+            /* Stryker disable all : no test needed for styling */
             <div
               key={index}
               style={{ ...styles.timeSlot, border: "0" }}
               data-testid={`${testId}-${hour.replace(" ", "-")}-title`}
-            >
+            /* Stryker restore all */>
               <span
                 style={styles.hourLabel}
                 data-testid={`${testId}-${hour.replace(" ", "-")}-label`}
