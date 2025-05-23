@@ -30,7 +30,7 @@ describe("SingleClassroomDropdown behavior tests", () => {
     );
     const option = screen.getByTestId("cd1-option-PHELP-1401");
     expect(option).toBeInTheDocument();
-    expect(option).toHaveTextContent("PHELP 1401");
+    expect(option).toHaveTextContent("1401");
   });
 
   test("correctly filters and orders classrooms", () => {
@@ -48,9 +48,9 @@ describe("SingleClassroomDropdown behavior tests", () => {
       .getAllByRole("option")
       .filter((o) => o.value !== "ALL");
     expect(filtered).toHaveLength(3);
-    expect(filtered[0]).toHaveTextContent("PHELP 1401");
-    expect(filtered[1]).toHaveTextContent("PHELP 1502");
-    expect(filtered[2]).toHaveTextContent("PHELP 1603");
+    expect(filtered[0]).toHaveTextContent("1401");
+    expect(filtered[1]).toHaveTextContent("1502");
+    expect(filtered[2]).toHaveTextContent("1603");
   });
 
   test("includes 'ALL' option when enabled", () => {
@@ -85,8 +85,15 @@ describe("SingleClassroomDropdown behavior tests", () => {
     const buildingOptions = screen
       .getAllByRole("option")
       .filter((o) => o.value !== "ALL");
+
+    const expectedRooms = allClassrooms
+      .filter((c) => c.buildingCode === "PHELP")
+      .map((c) => c.roomNumber);
+
+    expect(buildingOptions).not.toHaveLength(0);
+
     buildingOptions.forEach((opt) => {
-      expect(opt).toHaveTextContent("PHELP");
+      expect(expectedRooms).toContain(opt.textContent);
     });
   });
 
