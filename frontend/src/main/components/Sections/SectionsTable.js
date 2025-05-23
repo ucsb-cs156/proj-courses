@@ -165,7 +165,7 @@ export default function SectionsTable({ sections }) {
       Header: "Title",
       accessor: formatTitleLink,
       cell: renderTitleLink,
-      
+
       aggregate: getFirstVal,
       Aggregated: renderTitleLink,
     },

@@ -670,7 +670,8 @@ describe("Section tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-Title`),
     ).toHaveTextContent("COMP ENGR SEMINAR");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Title`)
+      screen
+        .getByTestId(`${testId}-cell-row-0-col-Title`)
         .querySelector('a[href$="/coursedetails/20221/12583"]'),
     ).toBeInTheDocument();
     expect(
