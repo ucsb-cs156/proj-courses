@@ -24,7 +24,7 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock.onGet("/api/jobs/paged").reply(200, jobsFixtures.sixJobsPage);
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -275,5 +275,62 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
 
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
+  });
+
+  test("When localstorage is empty, fallback values are used", async () => {
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    const useLocalStorageSpy = jest.spyOn(
+      require("main/utils/useLocalStorage"),
+      "default",
+    );
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
+    expect(await screen.findByText("Job Status")).toBeInTheDocument();
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "JobsSearch.SortField",
+      "createdAt",
+    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "5");
+
+    const calls = useLocalStorageSpy.mock.calls;
+    let counts = {};
+    for (const call of calls) {
+      counts[call] = counts[call] ? counts[call] + 1 : 1;
+    }
+
+    expect(counts).toEqual({
+      "JobsSearch.PageSize,5": 4,
+      "JobsSearch.SortDirection,ASC": 4,
+      "JobsSearch.SortField,createdAt": 4,
+    });
+
+    expect(axiosMock.history.get.length).toBe(4);
+    const urls = axiosMock.history.get.map((req) => req.url);
+    expect(urls).toContain("/api/systemInfo");
+    expect(urls).toContain("/api/UCSBSubjects/all");
+    expect(urls).toContain("/api/currentUser");
+    expect(urls).toContain("/api/jobs/paged");
+    const updatesRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/jobs/paged",
+    );
+    expect(updatesRequest.params).toEqual({
+      page: 0,
+      pageSize: "5",
+      sortField: "createdAt",
+      sortDirection: "ASC",
+    });
   });
 });
