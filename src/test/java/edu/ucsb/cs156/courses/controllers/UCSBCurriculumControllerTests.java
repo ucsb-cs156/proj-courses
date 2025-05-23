@@ -3,11 +3,9 @@ package edu.ucsb.cs156.courses.controllers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
@@ -71,27 +69,48 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     assertEquals(expectedResult, responseString);
   }
 
-  // Tests for the general education areas controller
+  /** GET /api/public/generalEducationInfo → raw JSON from service */
   @Test
-  public void test_GEAreasList() throws Exception {
-    List<String> expectedList =
-        List.of(
-            "A1", "A2", "B", "C", "D", "E", "F", "G", "H", "WRT", "QR", "ETH", "EUR", "NWC", "AMH");
+  public void test_generalEducationInfo_noCollegeCode() throws Exception {
+    // ← use the real “English Reading & Composition” (all ASCII) instead of “…”
+    String expectedJson =
+        "["
+            + "{\"requirementCode\":\"A1\","
+            + "\"requirementTranslation\":\"English Reading & Composition\","
+            + "\"collegeCode\":\"ENGR\","
+            + "\"objCode\":\"BS\","
+            + "\"courseCount\":1,"
+            + "\"units\":4,"
+            + "\"inactive\":false}"
+            + "]";
 
-    String url = "/api/public/generalEducationInfo";
+    when(ucsbCurriculumService.getGeneralEducationInfo()).thenReturn(expectedJson);
+
+    mockMvc
+        .perform(get("/api/public/generalEducationInfo").contentType("application/json"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(expectedJson));
+  }
+
+  /** GET /api/public/generalEducationInfo?collegeCode=ENGR → List<String> of codes */
+  @Test
+  public void test_generalEducationInfo_withCollegeCode() throws Exception {
+    // our controller will call getRequirementCodesByCollege("ENGR")
+    List<String> fakeCodes = List.of("A1", "A2");
+    when(ucsbCurriculumService.getRequirementCodesByCollege("ENGR")).thenReturn(fakeCodes);
 
     MvcResult response =
         mockMvc
-            .perform(get(url).contentType("application/json"))
+            .perform(
+                get("/api/public/generalEducationInfo")
+                    .param("collegeCode", "ENGR")
+                    .contentType("application/json"))
             .andExpect(status().isOk())
             .andReturn();
-    String responseString = response.getResponse().getContentAsString();
 
-    ObjectMapper mapper = new ObjectMapper();
-    List<String> actualList =
-        mapper.readValue(responseString, new TypeReference<List<String>>() {});
-
-    assertEquals(expectedList, actualList);
+    String body = response.getResponse().getContentAsString();
+    // JSON representation of ["A1","A2"]
+    assertEquals("[\"A1\",\"A2\"]", body);
   }
 }
 ;
