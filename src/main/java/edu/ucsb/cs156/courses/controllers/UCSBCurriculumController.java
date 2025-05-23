@@ -43,4 +43,12 @@ public class UCSBCurriculumController extends ApiController {
 
     return ResponseEntity.ok().body(body);
   }
+
+  // Backend for General Education Requirement Information, similar to above operation
+  @Operation(summary = "Get list of General Education Areas")
+  @GetMapping(value = "/generalEducationInfo", produces = "application/json")
+  public ResponseEntity<String[]> generalEducationInfo() throws Exception {
+    String[] body = ucsbCurriculumService.getGeInfo();
+    return ResponseEntity.ok().body(body);
+  }
 }
