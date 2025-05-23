@@ -11,8 +11,8 @@ export default function CourseOverTimeBuildingsIndexPage() {
   const objectToAxiosParams = (query) => ({
     url: "/api/public/courseovertime/buildingsearch",
     params: {
-      startQtr: query.startQuarter,
-      endQtr: query.endQuarter,
+      startQtr: query.Quarter,
+      endQtr: query.Quarter,
       buildingCode: query.buildingCode,
     },
   });

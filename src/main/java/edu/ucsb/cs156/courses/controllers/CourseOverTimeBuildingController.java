@@ -26,7 +26,6 @@ public class CourseOverTimeBuildingController {
 
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
-  // old
   @Operation(summary = "Get a list of courses over time, filtered by (abbreviated) building code")
   @GetMapping(value = "/buildingsearch", produces = "application/json")
   public ResponseEntity<String> search(
@@ -62,7 +61,6 @@ public class CourseOverTimeBuildingController {
     return ResponseEntity.ok().body(body);
   }
 
-  // new
   @Operation(
       summary =
           "Get a list of classroom numbers within a particular building, given a quarter and building code")

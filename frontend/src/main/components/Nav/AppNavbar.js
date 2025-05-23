@@ -87,7 +87,7 @@ export default function AppNavbar({
                   Course History
                 </NavDropdown.Item>
                 <NavDropdown.Item
-                  href="/courseovertime/buildingsearch"
+                  href="/courseovertime/buildingsearch/classrooms"
                   data-testid="appnavbar-course-over-time-buildings-search"
                 >
                   Course Location History

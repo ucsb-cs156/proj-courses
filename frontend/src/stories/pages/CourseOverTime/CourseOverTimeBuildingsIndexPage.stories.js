@@ -29,7 +29,7 @@ Default.parameters = {
     http.get("/api/currentUser", () => {
       return HttpResponse.status(403); // returns 403 when not logged in
     }),
-    http.get("/api/public/courseovertime/buildingsearch", () => {
+    http.get("/api/public/courseovertime/buildingsearch/classrooms", () => {
       return HttpResponse.json(coursesInLib, {
         status: 200,
       });
