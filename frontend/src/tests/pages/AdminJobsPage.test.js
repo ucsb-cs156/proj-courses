@@ -277,94 +277,28 @@ describe("AdminJobsPage tests", () => {
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
   });
 
-  test("pagination prev button disabled on first page", async () => {
-    const paginatedData = {
-      content: jobsFixtures.sixJobs,
-      totalPages: 2,
-      number: 0,
-      size: 10,
-    };
-
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => {
-      const prevButton = screen.getByTestId("pagination-prev");
-      expect(prevButton.closest(".page-item")).toHaveClass("disabled");
-    });
-  });
-
-  test("pagination next button disabled on last page", async () => {
-    const paginatedData = {
-      content: jobsFixtures.sixJobs,
-      totalPages: 1,
-      number: 0,
-      size: 10,
-    };
-
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => {
-      const nextButton = screen.getByTestId("pagination-next");
-      expect(nextButton.closest(".page-item")).toHaveClass("disabled");
-    });
-  });
-
-  test("pagination buttons display correct numbers", async () => {
-    const paginatedData = {
+  test("pagination triggers backend requests when page changes", async () => {
+    const paginatedDataPage1 = {
       content: jobsFixtures.sixJobs,
       totalPages: 3,
       number: 0,
       size: 10,
     };
 
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId("pagination-button-1")).toHaveTextContent("1");
-    });
-
-    await waitFor(() => {
-      expect(screen.getByTestId("pagination-button-2")).toHaveTextContent("2");
-    });
-
-    await waitFor(() => {
-      expect(screen.getByTestId("pagination-button-3")).toHaveTextContent("3");
-    });
-  });
-
-  test("pagination active state works correctly", async () => {
-    const paginatedData = {
+    const paginatedDataPage2 = {
       content: jobsFixtures.sixJobs,
       totalPages: 3,
-      number: 0,
+      number: 1,
       size: 10,
     };
 
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
+    // Mock initial request for page 1
+    axiosMock.onGet("/api/jobs/all").reply(200, paginatedDataPage1);
+
+    // Mock subsequent request for page 2
+    axiosMock
+      .onGet("/api/jobs/all", { params: { page: 1, size: 10 } })
+      .reply(200, paginatedDataPage2);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -375,90 +309,47 @@ describe("AdminJobsPage tests", () => {
     );
 
     await waitFor(() => {
-      const page1 = screen.getByTestId("pagination-button-1");
+      expect(screen.getByText("Job Status")).toBeInTheDocument();
+    });
+
+    // Verify we start on page 1
+    await waitFor(() => {
+      const page1 = screen.getByTestId("AdminJobsPagination-1");
       expect(page1.closest(".page-item")).toHaveClass("active");
     });
 
+    // Click next button - this should call updateActivePage(2) and trigger new API request
+    fireEvent.click(screen.getByTestId("AdminJobsPagination-next"));
+
+    // Wait for the API call to complete and page to update
     await waitFor(() => {
-      const page2 = screen.getByTestId("pagination-button-2");
-      expect(page2.closest(".page-item")).not.toHaveClass("active");
+      expect(axiosMock.history.get.length).toBeGreaterThan(1);
+    });
+
+    await waitFor(() => {
+      const page2 = screen.getByTestId("AdminJobsPagination-2");
+      expect(page2.closest(".page-item")).toHaveClass("active");
     });
   });
 
-  test("pagination prev button click handler works correctly", async () => {
-    const paginatedData = {
+  test("kill the last one", async () => {
+    const page1 = {
       content: jobsFixtures.sixJobs,
       totalPages: 3,
       number: 0,
       size: 10,
     };
-
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    // 等待页面加载，组件默认从page 0开始
-    await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
-        .closest(".page-item");
-      expect(page1Item).toHaveClass("active");
-    });
-
-    // 先点击next到第2页
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    await waitFor(() => {
-      const page2Item = screen
-        .getByTestId("pagination-button-2")
-        .closest(".page-item");
-      expect(page2Item).toHaveClass("active");
-    });
-
-    // 点击prev按钮 - 这会触发 setPage((p) => Math.max(p - 1, 0))
-    fireEvent.click(screen.getByTestId("pagination-prev"));
-
-    // 验证页面确实改变了 - 证明onClick函数不是undefined，Math.max工作正常
-    await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
-        .closest(".page-item");
-      expect(page1Item).toHaveClass("active");
-    });
-
-    // 再次点击prev按钮，应该停在第0页（测试Math.max的边界情况）
-    fireEvent.click(screen.getByTestId("pagination-prev"));
-
-    await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
-        .closest(".page-item");
-      expect(page1Item).toHaveClass("active");
-    });
-
-    await waitFor(() => {
-      const prevItem = screen
-        .getByTestId("pagination-prev")
-        .closest(".page-item");
-      expect(prevItem).toHaveClass("disabled");
-    });
-  });
-
-  test("pagination next button click handler works correctly and respects totalPages boundary", async () => {
-    const paginatedData = {
+    const page2 = {
       content: jobsFixtures.sixJobs,
       totalPages: 3,
-      number: 0,
+      number: 1,
       size: 10,
     };
 
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
+    axiosMock.onGet("/api/jobs/all").reply(200, page1);
+    axiosMock
+      .onGet("/api/jobs/all", { params: { page: 1, size: 10 } })
+      .reply(200, page2);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -468,240 +359,27 @@ describe("AdminJobsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    // 等待页面加载，组件默认从page 0开始
-    await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
-        .closest(".page-item");
-      expect(page1Item).toHaveClass("active");
-    });
-
-    // 点击next按钮到第2页
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    await waitFor(() => {
-      const page2Item = screen
-        .getByTestId("pagination-button-2")
-        .closest(".page-item");
-      expect(page2Item).toHaveClass("active");
-    });
-
-    // 再次点击next按钮到最后一页 - 这会触发 setPage((p) => Math.min(p + 1, totalPages - 1))
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    // 验证到达了最后一页
-    await waitFor(() => {
-      const page3Item = screen
-        .getByTestId("pagination-button-3")
-        .closest(".page-item");
-      expect(page3Item).toHaveClass("active");
-    });
-
-    await waitFor(() => {
-      const nextItem = screen
-        .getByTestId("pagination-next")
-        .closest(".page-item");
-      expect(nextItem).toHaveClass("disabled");
-    });
-
-    // 再次点击next，应该停在最后一页（测试Math.min和totalPages-1的边界）
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    await waitFor(() => {
-      const page3Item = screen
-        .getByTestId("pagination-button-3")
-        .closest(".page-item");
-      expect(page3Item).toHaveClass("active");
-    });
-  });
-
-  test("pagination arithmetic operations work correctly", async () => {
-    const paginatedData = {
-      content: jobsFixtures.sixJobs,
-      totalPages: 5,
-      number: 0,
-      size: 10,
-    };
-
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    await waitFor(() =>
+      expect(
+        screen.getByTestId("AdminJobsPagination-1").closest(".page-item"),
+      ).toHaveClass("active"),
     );
 
-    // 确认起始页面（page 0，显示为第1页）
-    await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
-        .closest(".page-item");
-      expect(page1Item).toHaveClass("active");
-    });
-
-    // 导航到第3页（index 2）
-    fireEvent.click(screen.getByTestId("pagination-button-3"));
+    fireEvent.click(screen.getByTestId("AdminJobsPagination-2"));
 
     await waitFor(() => {
-      const page3Item = screen
-        .getByTestId("pagination-button-3")
-        .closest(".page-item");
-      expect(page3Item).toHaveClass("active");
+      const jobGets = axiosMock.history.get.filter(
+        (req) => req.url === "/api/jobs/all",
+      );
+      expect(jobGets.length).toBeGreaterThan(1);
     });
 
-    // 测试 p - 1 操作（不是 p + 1）
-    fireEvent.click(screen.getByTestId("pagination-prev"));
-
-    await waitFor(() => {
-      const page2Item = screen
-        .getByTestId("pagination-button-2")
-        .closest(".page-item");
-      expect(page2Item).toHaveClass("active");
-    });
-
-    // 测试 p + 1 操作（不是 p - 1）
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    await waitFor(() => {
-      const page3Item = screen
-        .getByTestId("pagination-button-3")
-        .closest(".page-item");
-      expect(page3Item).toHaveClass("active");
-    });
-
-    // 继续测试next到边界 - 从第3页开始点击next两次到第5页
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    await waitFor(() => {
-      const page4Item = screen
-        .getByTestId("pagination-button-4")
-        .closest(".page-item");
-      expect(page4Item).toHaveClass("active");
-    });
-
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    // 现在应该在最后一页，测试totalPages-1 vs totalPages+1
-    await waitFor(() => {
-      const page5Item = screen
-        .getByTestId("pagination-button-5")
-        .closest(".page-item");
-      expect(page5Item).toHaveClass("active");
-    });
-
-    await waitFor(() => {
-      const nextItem = screen
-        .getByTestId("pagination-next")
-        .closest(".page-item");
-      expect(nextItem).toHaveClass("disabled");
-    });
-  });
-
-  test("pagination prev button is enabled when not on first page", async () => {
-    const paginatedData = {
-      content: jobsFixtures.sixJobs,
-      totalPages: 3,
-      number: 0,
-      size: 10,
-    };
-
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    const jobGets = axiosMock.history.get.filter(
+      (req) => req.url === "/api/jobs/all",
     );
-
-    // 首先确认在第1页时prev button是disabled的（page === 0 为true）
-    await waitFor(() => {
-      const prevItem = screen
-        .getByTestId("pagination-prev")
-        .closest(".page-item");
-      expect(prevItem).toHaveClass("disabled");
-    });
-
-    // 点击到第2页
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    // 现在prev button应该是enabled的（page === 0 为false）
-    // 如果mutant把条件改为disabled={true}，这个测试就会失败
-    await waitFor(() => {
-      const prevItem = screen
-        .getByTestId("pagination-prev")
-        .closest(".page-item");
-      expect(prevItem).not.toHaveClass("disabled");
-    });
-
-    // 再次验证可以实际点击prev按钮
-    fireEvent.click(screen.getByTestId("pagination-prev"));
-
-    await waitFor(() => {
-      const page1Item = screen
-        .getByTestId("pagination-button-1")
-        .closest(".page-item");
-      expect(page1Item).toHaveClass("active");
-    });
-  });
-
-  test("pagination next button is enabled when not on last page", async () => {
-    const paginatedData = {
-      content: jobsFixtures.sixJobs,
-      totalPages: 3,
-      number: 0,
-      size: 10,
-    };
-
-    axiosMock.onGet("/api/jobs/all").reply(200, paginatedData);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminJobsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    // 在第1页时，next button应该是enabled的（page + 1 >= totalPages 为false，因为0+1 < 3）
-    // 如果mutant把条件改为disabled={true}，这个测试就会失败
-    await waitFor(() => {
-      const nextItem = screen
-        .getByTestId("pagination-next")
-        .closest(".page-item");
-      expect(nextItem).not.toHaveClass("disabled");
-    });
-
-    // 验证可以实际点击next按钮
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    await waitFor(() => {
-      const page2Item = screen
-        .getByTestId("pagination-button-2")
-        .closest(".page-item");
-      expect(page2Item).toHaveClass("active");
-    });
-
-    // 继续到第2页，next还应该是enabled的（1+1 < 3）
-    await waitFor(() => {
-      const nextItem = screen
-        .getByTestId("pagination-next")
-        .closest(".page-item");
-      expect(nextItem).not.toHaveClass("disabled");
-    });
-
-    // 到最后一页
-    fireEvent.click(screen.getByTestId("pagination-next"));
-
-    // 现在在最后一页，next button应该是disabled的（page + 1 >= totalPages 为true，因为2+1 >= 3）
-    await waitFor(() => {
-      const nextItem = screen
-        .getByTestId("pagination-next")
-        .closest(".page-item");
-      expect(nextItem).toHaveClass("disabled");
-    });
+    const second = jobGets[1];
+    expect(second.params).toBeDefined();
+    expect(second.params.page).toBe(1);
+    expect(second.params.size).toBe(10);
   });
 });

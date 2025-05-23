@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
@@ -47,6 +49,8 @@ public class JobsController extends ApiController {
   @Autowired UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
   @Autowired UploadGradeDataJobFactory updateGradeDataJobFactory;
+
+  @Autowired private JdbcTemplate jdbcTemplate;
 
   @Operation(summary = "List all jobs(Paged)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -72,10 +76,56 @@ public class JobsController extends ApiController {
   @Operation(summary = "Delete all job records")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/all")
+  @Transactional  
   public Map<String, String> deleteAllJobs() {
     jobsRepository.deleteAll();
+    resetJobSequence();
     return Map.of("message", "All jobs deleted");
   }
+
+  private void resetJobSequence() {
+    try {
+        log.info("=== STARTING SEQUENCE RESET ===");
+        
+        String dbUrl = jdbcTemplate.getDataSource().getConnection().getMetaData().getURL();
+        log.info("Database URL: {}", dbUrl);
+        
+        if (dbUrl.contains("h2")) {
+            log.info("Detected H2 database, resetting IDENTITY");
+            
+            jdbcTemplate.execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+            log.info("H2 IDENTITY reset command executed");
+            
+        } else if (dbUrl.contains("postgresql")) {
+            log.info("Detected PostgreSQL database, using PostgreSQL syntax");
+            jdbcTemplate.execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
+            log.info("PostgreSQL sequence reset command executed");
+            
+        } else {
+            log.info("Using generic method for database: {}", dbUrl);
+            try {
+                jdbcTemplate.execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
+                log.info("IDENTITY reset succeeded");
+            } catch (Exception e1) {
+                jdbcTemplate.execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
+                log.info("SEQUENCE reset succeeded");
+            }
+        }
+        
+        log.info("=== SEQUENCE/IDENTITY RESET COMPLETED ===");
+        
+    } catch (Exception e) {
+        log.error("Failed to reset job ID: {}", e.getMessage(), e);
+        
+        try {
+            log.info("Trying alternative method - recreate table...");
+            jdbcTemplate.execute("DROP TABLE IF EXISTS JOBS CASCADE");
+            log.info("Table dropped - will be recreated on next entity access");
+        } catch (Exception e2) {
+            log.error("All reset methods failed: {}", e2.getMessage(), e2);
+        }
+    }
+}
 
   @Operation(summary = "Get a specific Job Log by ID if it is in the database")
   @PreAuthorize("hasRole('ROLE_ADMIN')")

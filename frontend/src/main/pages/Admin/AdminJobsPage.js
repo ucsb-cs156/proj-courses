@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
-import { Button, Pagination } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
+import OurPagination from "main/components/Utils/OurPagination";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
@@ -14,8 +15,8 @@ import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCours
 
 const AdminJobsPage = () => {
   const refreshJobsIntervalMilliseconds = 5000;
-  const [page, setPage] = useState(0);
-  const size = 10; // 每页条数
+  const [page, setPage] = useState(1);
+  const size = 10;
   // test job
 
   const objectToAxiosParamsTestJob = (data) => ({
@@ -116,23 +117,25 @@ const AdminJobsPage = () => {
   };
 
   // Stryker disable all
-  // ── 2. 带分页参数去拉后端 ────────────────────
   const { data } = useBackend(
-    ["/api/jobs/all", page, size],
+    ["/api/jobs/all", page - 1, size],
     {
       method: "GET",
       url: "/api/jobs/all",
-      params: { page, size },
+      params: { page: page - 1, size },
     },
     [],
     { refetchInterval: refreshJobsIntervalMilliseconds },
   );
 
-  // 兼容：如果 data 是一个数组，就直接用它；否则用 data.content，并取 totalPages
   const jobs = Array.isArray(data) ? data : data?.content || [];
   const totalPages = Array.isArray(data) ? 1 : (data?.totalPages ?? 1);
 
   // Stryker restore  all
+
+  const updateActivePage = (newPage) => {
+    setPage(newPage);
+  };
 
   const jobLaunchers = [
     {
@@ -193,27 +196,12 @@ const AdminJobsPage = () => {
       >
         Purge Job Log
       </Button>
-      {/* ── 3. 渲染分页条 ───────────────────────── */}
+
       <div className="d-flex justify-content-center">
-        <Pagination.Prev
-          data-testid="pagination-prev"
-          disabled={page === 0}
-          onClick={() => setPage((p) => Math.max(p - 1, 0))}
-        />
-        {Array.from({ length: totalPages }).map((_, idx) => (
-          <Pagination.Item
-            key={idx}
-            data-testid={`pagination-button-${idx + 1}`}
-            active={idx === page}
-            onClick={() => setPage(idx)}
-          >
-            {idx + 1}
-          </Pagination.Item>
-        ))}
-        <Pagination.Next
-          data-testid="pagination-next"
-          disabled={page + 1 >= totalPages}
-          onClick={() => setPage((p) => Math.min(p + 1, totalPages - 1))}
+        <OurPagination
+          updateActivePage={updateActivePage}
+          totalPages={totalPages}
+          testId="AdminJobsPagination"
         />
       </div>
     </BasicLayout>
