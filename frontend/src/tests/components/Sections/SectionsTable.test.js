@@ -567,7 +567,7 @@ describe("Section tests", () => {
     const expectedFields = [
       "quarter",
       "courseInfo.courseId",
-      "courseInfo.title",
+      "Title",
       "status",
       "enrolled",
       "location",
@@ -642,7 +642,7 @@ describe("Section tests", () => {
     const expectedFields = [
       "quarter",
       "courseInfo.courseId",
-      "courseInfo.title",
+      "Title",
       "status",
       "enrolled",
       "location",
@@ -667,8 +667,12 @@ describe("Section tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`),
     ).toHaveTextContent("ECE 1A");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.title`),
+      screen.getByTestId(`${testId}-cell-row-0-col-Title`),
     ).toHaveTextContent("COMP ENGR SEMINAR");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Title`)
+        .querySelector('a[href$="/coursedetails/20221/12583"]'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-quarter`),
     ).toHaveTextContent("W22");
