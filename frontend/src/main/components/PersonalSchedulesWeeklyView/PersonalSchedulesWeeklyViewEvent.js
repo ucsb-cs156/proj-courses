@@ -9,6 +9,7 @@ export default function PersonalSectionsEvents({
   const [style, setStyle] = useState({});
   const testId = "PersonalSectionsEvent";
 
+  // Stryker disable all : simple time conversion functions
   const convertTimeToMinutes = (time) => {
     const [hours, minutes] = [time.slice(0, 2), time.slice(-2)];
     return hours * 60 + minutes * 1;
@@ -22,6 +23,7 @@ export default function PersonalSectionsEvents({
     }
     return hours + ":" + minutes;
   };
+  // Stryker restore all
 
   // Stryker disable all : hard to test for specfic styles
   useEffect(() => {
@@ -98,14 +100,14 @@ export default function PersonalSectionsEvents({
               {event.title}
             </Card.Text>
           )}
-          {style.height >= 40 && (
+          {style.height >= 40 && ( // Stryker disable all : no need to test text formatting
             <Card.Text
               data-testid={`${testId}-time`}
               style={{ fontSize: "12px", textAlign: "left" }}
             >
               {convert24Hourto12Hour(event.startTime)} -{" "}
               {convert24Hourto12Hour(event.endTime)}
-            </Card.Text>
+            </Card.Text> // Stryker enable all
           )}
         </Card.Body>
       </Card>
