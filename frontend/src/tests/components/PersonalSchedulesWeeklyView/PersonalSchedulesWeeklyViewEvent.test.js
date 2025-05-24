@@ -121,7 +121,7 @@ describe("PersonalSectionsEvents tests", () => {
         /* eslint-disable -- need to check different cards, so conditional expect is necessary */
         if (expectedFontSize === null) {
           expect(
-            screen.getByTestId("PersonalSectionsEvent-title"),
+            screen.queryByTestId("PersonalSectionsEvent-title"),
           ).not.toBeInTheDocument();
         } else {
           const cardText = await screen.findByText(event.title);
