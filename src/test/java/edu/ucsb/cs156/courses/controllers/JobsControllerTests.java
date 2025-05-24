@@ -37,12 +37,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MvcResult;
 
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
@@ -78,7 +78,7 @@ public class JobsControllerTests extends ControllerTestCase {
       new PageImpl<Job>(emptyArray, pageRequest_0_10_ASC_createdAt, 0);
   private final Page<Job> emptyPage_0_10_DESC_updatedAt =
       new PageImpl<Job>(emptyArray, pageRequest_0_10_DESC_updatedAt, 0);
-      private final Page<Job> emptyPage_0_10_DESC_status =
+  private final Page<Job> emptyPage_0_10_DESC_status =
       new PageImpl<Job>(emptyArray, pageRequest_0_10_DESC_status, 0);
   private final Page<Job> emptyPage_0_10_ASC_createdBy =
       new PageImpl<Job>(emptyArray, pageRequest_0_10_ASC_createdBy, 0);
@@ -454,7 +454,6 @@ public class JobsControllerTests extends ControllerTestCase {
     assertNotNull(jobReturned.getStatus());
   }
 
-  
   @WithMockUser(roles = {"ADMIN"})
   @Test
   public void test_paginatedJobs_empty_DESC_status() throws Exception {
