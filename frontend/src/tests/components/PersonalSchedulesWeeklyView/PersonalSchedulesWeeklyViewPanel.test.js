@@ -97,14 +97,16 @@ describe("PersonalSchedulesWeeklyViewPanel tests", () => {
       expect(
         screen.getAllByTestId(`PersonalSectionsEvent-${event.id}`).length,
       ).toBe(event.day.length);
-      const dayColumn = screen.getByTestId(
-        `PersonalSchedulesWeeklyView-${event.day}-column`,
-      );
-      expect(dayColumn).toBeInTheDocument();
-      const { getByTestId } = within(dayColumn);
-      expect(
-        getByTestId(`PersonalSectionsEvent-${event.id}`),
-      ).toBeInTheDocument();
+      event.day.forEach((dayElement) => {
+        const dayColumn = screen.getByTestId(
+          `PersonalSchedulesWeeklyView-${dayElement}-column`,
+        );
+        expect(dayColumn).toBeInTheDocument();
+        const { getByTestId } = within(dayColumn);
+        expect(
+          getByTestId(`PersonalSectionsEvent-${event.id}`),
+        ).toBeInTheDocument();
+      });
     });
   });
 
