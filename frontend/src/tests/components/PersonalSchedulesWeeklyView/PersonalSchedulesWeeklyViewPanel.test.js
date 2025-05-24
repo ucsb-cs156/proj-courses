@@ -96,7 +96,7 @@ describe("PersonalSchedulesWeeklyViewPanel tests", () => {
     events.forEach((event) => {
       expect(
         screen.getAllByTestId(`PersonalSectionsEvent-${event.id}`).length,
-      ).toBe(1);
+      ).toBe(event.day.length);
       const dayColumn = screen.getByTestId(
         `PersonalSchedulesWeeklyView-${event.day}-column`,
       );
