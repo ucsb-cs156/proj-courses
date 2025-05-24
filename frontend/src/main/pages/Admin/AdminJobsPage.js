@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
@@ -6,7 +6,6 @@ import { Button } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
-import OurPagination from "main/components/Utils/OurPagination";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
@@ -15,8 +14,7 @@ import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCours
 
 const AdminJobsPage = () => {
   const refreshJobsIntervalMilliseconds = 5000;
-  const [page, setPage] = useState(1);
-  const size = 10;
+
   // test job
 
   const objectToAxiosParamsTestJob = (data) => ({
@@ -117,25 +115,20 @@ const AdminJobsPage = () => {
   };
 
   // Stryker disable all
-  const { data } = useBackend(
-    ["/api/jobs/all", page - 1, size],
+  const {
+    data: jobs,
+    error: _error,
+    status: _status,
+  } = useBackend(
+    ["/api/jobs/all"],
     {
       method: "GET",
       url: "/api/jobs/all",
-      params: { page: page - 1, size },
     },
     [],
     { refetchInterval: refreshJobsIntervalMilliseconds },
   );
-
-  const jobs = Array.isArray(data) ? data : data?.content || [];
-  const totalPages = Array.isArray(data) ? 1 : (data?.totalPages ?? 1);
-
   // Stryker restore  all
-
-  const updateActivePage = (newPage) => {
-    setPage(newPage);
-  };
 
   const jobLaunchers = [
     {
@@ -188,22 +181,9 @@ const AdminJobsPage = () => {
       <h2 className="p-3">Job Status</h2>
 
       <JobsTable jobs={jobs} />
-      <Button
-        variant="danger"
-        onClick={purgeJobLog}
-        data-testid="purgeJobLog"
-        className="mb-3"
-      >
+      <Button variant="danger" onClick={purgeJobLog} data-testid="purgeJobLog">
         Purge Job Log
       </Button>
-
-      <div className="d-flex justify-content-center">
-        <OurPagination
-          updateActivePage={updateActivePage}
-          totalPages={totalPages}
-          testId="AdminJobsPagination"
-        />
-      </div>
     </BasicLayout>
   );
 };

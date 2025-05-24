@@ -14,17 +14,14 @@ import edu.ucsb.cs156.courses.services.jobs.JobService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
+
+import java.util.Arrays;
 import java.util.Map;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 
 @Tag(name = "Jobs")
 @RequestMapping("/api/jobs")
@@ -50,81 +50,20 @@ public class JobsController extends ApiController {
 
   @Autowired UploadGradeDataJobFactory updateGradeDataJobFactory;
 
-  @Autowired private JdbcTemplate jdbcTemplate;
-
-  @Operation(summary = "List all jobs(Paged)")
+  @Operation(summary = "List all jobs")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/all")
-  public Page<Job> allJobs(
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "10") int size,
-      @RequestParam(defaultValue = "createdAt") String sortField,
-      @RequestParam(defaultValue = "DESC") String sortDir) {
-    // only these fields are allowed for sorting
-    List<String> allowed = List.of("id", "createdAt", "updatedAt", "status");
-    if (!allowed.contains(sortField)) {
-      throw new IllegalArgumentException(sortField + " is not a valid sort field");
-    }
-
-    Sort.Direction dir =
-        sortDir.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC;
-    Pageable pageable = PageRequest.of(page, size, dir, sortField);
-
-    return jobsRepository.findAll(pageable);
+  public Iterable<Job> allJobs() {
+    Iterable<Job> jobs = jobsRepository.findAll();
+    return jobs;
   }
 
   @Operation(summary = "Delete all job records")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @DeleteMapping("/all")
-  @Transactional
   public Map<String, String> deleteAllJobs() {
     jobsRepository.deleteAll();
-    resetJobSequence();
     return Map.of("message", "All jobs deleted");
-  }
-
-  private void resetJobSequence() {
-    try {
-      log.info("=== STARTING SEQUENCE RESET ===");
-
-      String dbUrl = jdbcTemplate.getDataSource().getConnection().getMetaData().getURL();
-      log.info("Database URL: {}", dbUrl);
-
-      if (dbUrl.contains("h2")) {
-        log.info("Detected H2 database, resetting IDENTITY");
-
-        jdbcTemplate.execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-        log.info("H2 IDENTITY reset command executed");
-
-      } else if (dbUrl.contains("postgresql")) {
-        log.info("Detected PostgreSQL database, using PostgreSQL syntax");
-        jdbcTemplate.execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
-        log.info("PostgreSQL sequence reset command executed");
-
-      } else {
-        log.info("Using generic method for database: {}", dbUrl);
-        try {
-          jdbcTemplate.execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-          log.info("IDENTITY reset succeeded");
-        } catch (Exception e1) {
-          jdbcTemplate.execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
-          log.info("SEQUENCE reset succeeded");
-        }
-      }
-
-      log.info("=== SEQUENCE/IDENTITY RESET COMPLETED ===");
-
-    } catch (Exception e) {
-      log.error("Failed to reset job ID: {}", e.getMessage(), e);
-
-      try {
-        log.info("Trying alternative method - recreate table...");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS JOBS CASCADE");
-        log.info("Table dropped - will be recreated on next entity access");
-      } catch (Exception e2) {
-        log.error("All reset methods failed: {}", e2.getMessage(), e2);
-      }
-    }
   }
 
   @Operation(summary = "Get a specific Job Log by ID if it is in the database")
@@ -267,5 +206,64 @@ public class JobsController extends ApiController {
   public Job launchUploadGradeData() {
     UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();
     return jobService.runAsJob(updateGradeDataJob);
+  }
+
+  @Operation(summary = "Get a paginated jobs")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping(value = "/paginated", produces = "application/json")
+  public Page<Job> getJobs(
+      @Parameter(
+              name = "page",
+              description = "what page of the data",
+              example = "0",
+              required = true)
+          @RequestParam
+          int page,
+      @Parameter(
+              name = "pageSize",
+              description = "size of each page",
+              example = "10",
+              required = true)
+          @RequestParam
+          int pageSize,
+      @Parameter(
+              name = "sortField",
+              description = "sort field",
+              example = "createdAt",
+              required = false)
+          @RequestParam(defaultValue = "status")
+          String sortField,
+      @Parameter(
+              name = "sortDirection",
+              description = "sort direction",
+              example = "ASC",
+              required = false)
+          @RequestParam(defaultValue = "DESC")
+          String sortDirection) {
+
+    List<String> allowedSortFields =
+        Arrays.asList("createdBy", "status", "createdAt", "completedAt");
+
+    if (!allowedSortFields.contains(sortField)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "%s is not a valid sort field. Valid values are %s", sortField, allowedSortFields));
+    }
+
+    List<String> allowedSortDirections = Arrays.asList("ASC", "DESC");
+    if (!allowedSortDirections.contains(sortDirection)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "%s is not a valid sort direction. Valid values are %s",
+              sortDirection, allowedSortDirections));
+    }
+
+    Direction sortDirectionObject = Direction.DESC;
+    if (sortDirection.equals("ASC")) {
+      sortDirectionObject = Direction.ASC;
+    }
+
+    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);
+    return jobsRepository.findAll(pageRequest);
   }
 }

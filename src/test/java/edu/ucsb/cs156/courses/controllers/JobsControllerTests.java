@@ -1,13 +1,10 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -15,7 +12,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,12 +26,10 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +37,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
@@ -74,69 +68,45 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @MockBean ConvertedSectionCollection convertedSectionCollection;
 
-  @MockBean private JdbcTemplate jdbcTemplate;
+  ArrayList<Job> emptyArray = new ArrayList<Job>();
+  PageRequest pageRequest_0_10_ASC_createdAt = PageRequest.of(0, 10, Direction.ASC, "createdAt");
+  PageRequest pageRequest_0_10_DESC_updatedAt = PageRequest.of(0, 10, Direction.DESC, "updatedAt");
+  PageRequest pageRequest_0_10_DESC_status = PageRequest.of(0, 10, Direction.DESC, "status");
+  PageRequest pageRequest_0_10_ASC_createdBy = PageRequest.of(0, 10, Direction.ASC, "createdBy");
+
+  private final Page<Job> emptyPage_0_10_ASC_createdAt =
+      new PageImpl<Job>(emptyArray, pageRequest_0_10_ASC_createdAt, 0);
+  private final Page<Job> emptyPage_0_10_DESC_updatedAt =
+      new PageImpl<Job>(emptyArray, pageRequest_0_10_DESC_updatedAt, 0);
+      private final Page<Job> emptyPage_0_10_DESC_status =
+      new PageImpl<Job>(emptyArray, pageRequest_0_10_DESC_status, 0);
+  private final Page<Job> emptyPage_0_10_ASC_createdBy =
+      new PageImpl<Job>(emptyArray, pageRequest_0_10_ASC_createdBy, 0);
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
-  public void admin_can_get_all_jobs_paged() throws Exception {
+  public void admin_can_get_all_jobs() throws Exception {
 
     // arrange
+
     Job job1 = Job.builder().log("this is job 1").build();
     Job job2 = Job.builder().log("this is job 2").build();
-    List<Job> expectedJobs = List.of(job1, job2);
 
-    // wrap in a PageImpl and stub the paged findAll(Pageable)
-    PageImpl<Job> page = new PageImpl<>(expectedJobs);
-    when(jobsRepository.findAll(any(Pageable.class))).thenReturn(page);
+    ArrayList<Job> expectedJobs = new ArrayList<>();
+    expectedJobs.addAll(Arrays.asList(job1, job2));
 
-    // act & assert
-    mockMvc
-        .perform(get("/api/jobs/all"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content.length()").value(2))
-        .andExpect(jsonPath("$.totalElements").value(2));
+    when(jobsRepository.findAll()).thenReturn(expectedJobs);
 
-    verify(jobsRepository, atLeastOnce()).findAll(any(Pageable.class));
-  }
+    // act
+    MvcResult response =
+        mockMvc.perform(get("/api/jobs/all")).andExpect(status().isOk()).andReturn();
 
-  @WithMockUser(roles = "ADMIN")
-  @Test
-  public void getAllJobs__invalidSortField__returns400() throws Exception {
-    mockMvc
-        .perform(
-            get("/api/jobs/all")
-                .param("page", "0")
-                .param("size", "5")
-                .param("sortField", "notAField")
-                .param("sortDir", "DESC"))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.message").value("notAField is not a valid sort field"));
-  }
+    // assert
 
-  @WithMockUser(roles = "ADMIN")
-  @Test
-  public void getAllJobs__nonDescSortDir__usesAsc() throws Exception {
-    // stub the repository to return a one-element page
-    PageImpl<Job> page = new PageImpl<>(List.of(Job.builder().build()));
-    when(jobsRepository.findAll(any(Pageable.class))).thenReturn(page);
-
-    mockMvc
-        .perform(
-            get("/api/jobs/all")
-                .param("page", "0")
-                .param("size", "1")
-                .param("sortField", "createdAt")
-                .param("sortDir", "ASC") // not DESC => should pick ASC branch
-            )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content.length()").value(1));
-
-    // verify that we passed Sort.Direction.ASC into the Pageable
-    verify(jobsRepository)
-        .findAll(
-            argThat(
-                (Pageable p) ->
-                    p.getSort().getOrderFor("createdAt").getDirection() == Sort.Direction.ASC));
+    verify(jobsRepository, atLeastOnce()).findAll();
+    String expectedJson = mapper.writeValueAsString(expectedJobs);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
   }
 
   @WithMockUser(roles = {"ADMIN"})
@@ -484,210 +454,95 @@ public class JobsControllerTests extends ControllerTestCase {
     assertNotNull(jobReturned.getStatus());
   }
 
+  
   @WithMockUser(roles = {"ADMIN"})
   @Test
-  public void admin_can_delete_all_jobs_with_postgresql_database() throws Exception {
+  public void test_paginatedJobs_empty_DESC_status() throws Exception {
     // arrange
-    doNothing().when(jobsRepository).deleteAll();
-    when(jobsRepository.count()).thenReturn(3L).thenReturn(0L);
-
-    DataSource mockDataSource = mock(DataSource.class);
-    Connection mockConnection = mock(Connection.class);
-    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-
-    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-    when(mockDataSource.getConnection()).thenReturn(mockConnection);
-    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-    when(mockMetaData.getURL()).thenReturn("jdbc:postgresql://localhost:5432/test");
-
-    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
-    doNothing().when(jdbcTemplate).execute(anyString());
-
-    // act
-    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
-
-    // assert - 验证实际调用的方法
-    verify(jdbcTemplate).getDataSource();
-    verify(jdbcTemplate).execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_delete_all_jobs_with_generic_database_identity_success() throws Exception {
-    // arrange
-    doNothing().when(jobsRepository).deleteAll();
-    when(jobsRepository.count()).thenReturn(2L).thenReturn(0L);
-
-    DataSource mockDataSource = mock(DataSource.class);
-    Connection mockConnection = mock(Connection.class);
-    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-
-    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-    when(mockDataSource.getConnection()).thenReturn(mockConnection);
-    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-    when(mockMetaData.getURL()).thenReturn("jdbc:someother:database");
-
-    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
-    doNothing().when(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-
-    // act
-    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
-
-    // assert
-    verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_delete_all_jobs_with_generic_database_sequence_fallback() throws Exception {
-    // arrange
-    doNothing().when(jobsRepository).deleteAll();
-    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-
-    DataSource mockDataSource = mock(DataSource.class);
-    Connection mockConnection = mock(Connection.class);
-    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-
-    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-    when(mockDataSource.getConnection()).thenReturn(mockConnection);
-    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-    when(mockMetaData.getURL()).thenReturn("jdbc:someother:database");
-
-    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
-
-    doThrow(new RuntimeException("IDENTITY not supported"))
-        .when(jdbcTemplate)
-        .execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-
-    doNothing().when(jdbcTemplate).execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
-
-    // act
-    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
-
-    // assert
-    verify(jdbcTemplate).execute("ALTER SEQUENCE jobs_id_seq RESTART WITH 1");
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_delete_all_jobs_without_job_logs_table() throws Exception {
-    // arrange
-    doNothing().when(jobsRepository).deleteAll();
-    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-
-    DataSource mockDataSource = mock(DataSource.class);
-    Connection mockConnection = mock(Connection.class);
-    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-
-    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-    when(mockDataSource.getConnection()).thenReturn(mockConnection);
-    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-    when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
-
-    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(0);
-    doNothing().when(jdbcTemplate).execute(anyString());
-
-    // act
-    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
-
-    // assert
-
-    verify(jdbcTemplate, never()).execute("DELETE FROM job_logs");
-
-    verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_delete_all_jobs_with_clear_job_logs_exception() throws Exception {
-    // arrange
-    doNothing().when(jobsRepository).deleteAll();
-    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-
-    DataSource mockDataSource = mock(DataSource.class);
-    Connection mockConnection = mock(Connection.class);
-    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-
-    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-    when(mockDataSource.getConnection()).thenReturn(mockConnection);
-    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-    when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
-
-    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class)))
-        .thenThrow(new RuntimeException("Table check failed"));
-    doNothing().when(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-
-    // act
-    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
-
-    verify(jobsRepository).deleteAll();
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_delete_all_jobs_with_sequence_reset_failure_and_fallback()
-      throws Exception {
-    // arrange
-    doNothing().when(jobsRepository).deleteAll();
-    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-
-    DataSource mockDataSource = mock(DataSource.class);
-    Connection mockConnection = mock(Connection.class);
-    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-
-    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-    when(mockDataSource.getConnection()).thenReturn(mockConnection);
-    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-    when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
-
-    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
-
-    doThrow(new RuntimeException("Reset failed"))
-        .when(jdbcTemplate)
-        .execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-
-    doThrow(new RuntimeException("Fallback failed"))
-        .when(jdbcTemplate)
-        .execute("ALTER SEQUENCE IF EXISTS jobs_id_seq RESTART WITH 1");
-    doNothing().when(jdbcTemplate).execute("DROP TABLE IF EXISTS JOBS CASCADE");
-
-    // act
-    mockMvc.perform(delete("/api/jobs/all").with(csrf())).andExpect(status().isOk());
-
-    verify(jdbcTemplate).getDataSource();
-    verify(jdbcTemplate).execute("ALTER TABLE JOBS ALTER COLUMN ID RESTART WITH 1");
-    verify(jdbcTemplate).execute("DROP TABLE IF EXISTS JOBS CASCADE");
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_delete_all_jobs_with_all_sequence_reset_methods_failing() throws Exception {
-    // arrange
-    doNothing().when(jobsRepository).deleteAll();
-    when(jobsRepository.count()).thenReturn(1L).thenReturn(0L);
-
-    DataSource mockDataSource = mock(DataSource.class);
-    Connection mockConnection = mock(Connection.class);
-    DatabaseMetaData mockMetaData = mock(DatabaseMetaData.class);
-
-    when(jdbcTemplate.getDataSource()).thenReturn(mockDataSource);
-    when(mockDataSource.getConnection()).thenReturn(mockConnection);
-    when(mockConnection.getMetaData()).thenReturn(mockMetaData);
-    when(mockMetaData.getURL()).thenReturn("jdbc:h2:file:./target/db-test");
-
-    when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class))).thenReturn(1);
-
-    doThrow(new RuntimeException("Reset failed")).when(jdbcTemplate).execute(anyString());
+    when(jobsRepository.findAll(pageRequest_0_10_DESC_status))
+        .thenReturn(emptyPage_0_10_DESC_status);
 
     // act
     MvcResult response =
         mockMvc
-            .perform(delete("/api/jobs/all").with(csrf()))
+            .perform(
+                get("/api/jobs/paginated?page=0&pageSize=10&sortField=status&sortDirection=DESC"))
             .andExpect(status().isOk())
             .andReturn();
 
-    verify(jobsRepository).deleteAll();
-    String responseString = response.getResponse().getContentAsString();
-    assertThat(responseString).contains("All jobs deleted");
+    // assert
+    String expectedResponseAsJson = objectMapper.writeValueAsString(emptyPage_0_10_DESC_status);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_paginatedJobs_empty_ASC_createdAt() throws Exception {
+    // arrange
+    when(jobsRepository.findAll(pageRequest_0_10_ASC_createdAt))
+        .thenReturn(emptyPage_0_10_ASC_createdAt);
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/jobs/paginated?page=0&pageSize=10&sortField=createdAt&sortDirection=ASC"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    String expectedResponseAsJson = objectMapper.writeValueAsString(emptyPage_0_10_ASC_createdAt);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void when_sortField_is_invalid_throws_exception() throws Exception {
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/jobs/paginated?page=0&pageSize=10&sortField=invalid&sortDirection=DESC"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    // assert
+    Map<String, String> expectedResponse =
+        Map.of(
+            "message",
+            "invalid is not a valid sort field. Valid values are [createdBy, status, createdAt, completedAt]",
+            "type",
+            "IllegalArgumentException");
+
+    String expectedResponseAsJson = objectMapper.writeValueAsString(expectedResponse);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void when_sortDirection_is_invalid_throws_exception() throws Exception {
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                get(
+                    "/api/jobs/paginated?page=0&pageSize=10&sortField=status&sortDirection=INVALID"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    // assert
+    Map<String, String> expectedResponse =
+        Map.of(
+            "message",
+            "INVALID is not a valid sort direction. Valid values are [ASC, DESC]",
+            "type",
+            "IllegalArgumentException");
+
+    String expectedResponseAsJson = objectMapper.writeValueAsString(expectedResponse);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
   }
 }
