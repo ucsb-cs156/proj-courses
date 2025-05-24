@@ -39,9 +39,7 @@ describe("PersonalSectionsEvents tests", () => {
     expect(card).toHaveStyle("background-color: lightblue");
     expect(card).toHaveStyle("border: 2px solid blue");
 
-    expect(
-      screen.getByText(/2:00\s*-\s*3:15/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/2:00\s*-\s*3:15/)).toBeInTheDocument();
 
     // Simulate a click to show the popover
     fireEvent.click(card);
