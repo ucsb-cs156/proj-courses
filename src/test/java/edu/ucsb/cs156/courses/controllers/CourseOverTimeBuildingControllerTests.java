@@ -242,7 +242,6 @@ public class CourseOverTimeBuildingControllerTests {
     assertEquals(expected, actual);
   }
 
-  // old test
   @Test
   public void test_old_endpoint_returns_course_sections() throws Exception {
     CourseInfo info =
