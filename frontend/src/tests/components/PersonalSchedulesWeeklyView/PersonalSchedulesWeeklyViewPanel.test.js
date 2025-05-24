@@ -1,6 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import { within } from "@testing-library/dom";
+import { render, screen, within } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import PersonalSchedulesWeeklyView from "main/components/PersonalSchedulesWeeklyView/PersonalSchedulesWeeklyViewPanel";
@@ -124,9 +123,7 @@ describe("PersonalSchedulesWeeklyViewPanel tests", () => {
     });
 
     hours.forEach((hour) => {
-      if (hour) {
-        expect(screen.getByText(hour)).toBeInTheDocument();
-      }
+      expect(screen.getByText(hour)).toBeInTheDocument();
     });
   });
 });
