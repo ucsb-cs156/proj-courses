@@ -120,7 +120,7 @@ describe("PersonalSectionsEvents tests", () => {
         );
 
         // Check if the event card has correct font size
-        // eslint-disable -- need to check different cards, so conditional expect is necessary
+        /* eslint-disable -- need to check different cards, so conditional expect is necessary */
         if (expectedFontSize === null) {
           expect(
             screen.getByTestId("PersonalSectionsEvent-title"),
@@ -157,7 +157,7 @@ describe("PersonalSectionsEvents tests", () => {
             screen.getyByTestId("PersonalSectionsEvent-time"),
           ).not.toBeInTheDocument();
         }
-        // eslint-enable
+        /* eslint-enable */
       });
     },
   );
