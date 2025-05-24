@@ -147,14 +147,14 @@ describe("PersonalSectionsEvents tests", () => {
             screen.getByTestId("PersonalSectionsEvent-title"),
           ).toBeInTheDocument();
           expect(
-            screen.getByTestId("PersonalSectionsEvent-time"),
+            screen.queryByTestId("PersonalSectionsEvent-time"),
           ).not.toBeInTheDocument();
         } else {
           expect(
-            screen.getByTestId("PersonalSectionsEvent-title"),
+            screen.queryByTestId("PersonalSectionsEvent-title"),
           ).not.toBeInTheDocument();
           expect(
-            screen.getyByTestId("PersonalSectionsEvent-time"),
+            screen.queryByTestId("PersonalSectionsEvent-time"),
           ).not.toBeInTheDocument();
         }
         /* eslint-enable */
