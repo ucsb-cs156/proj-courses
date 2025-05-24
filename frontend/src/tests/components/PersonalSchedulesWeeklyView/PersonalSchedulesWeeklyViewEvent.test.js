@@ -120,9 +120,10 @@ describe("PersonalSectionsEvents tests", () => {
         );
 
         // Check if the event card has correct font size
+        // eslint-disable -- need to check different cards, so conditional expect is necessary
         if (expectedFontSize === null) {
           expect(
-            screen.queryByTestId("PersonalSectionsEvent-title"),
+            screen.getByTestId("PersonalSectionsEvent-title"),
           ).not.toBeInTheDocument();
         } else {
           const cardText = await screen.findByText(event.title);
@@ -143,19 +144,20 @@ describe("PersonalSectionsEvents tests", () => {
           expect(time).toHaveStyle("text-align: left");
         } else if (expectedHeight >= 20) {
           expect(
-            screen.queryByTestId("PersonalSectionsEvent-title"),
+            screen.getByTestId("PersonalSectionsEvent-title"),
           ).toBeInTheDocument();
           expect(
-            screen.queryByTestId("PersonalSectionsEvent-time"),
+            screen.getByTestId("PersonalSectionsEvent-time"),
           ).not.toBeInTheDocument();
         } else {
           expect(
-            screen.queryByTestId("PersonalSectionsEvent-title"),
+            screen.getByTestId("PersonalSectionsEvent-title"),
           ).not.toBeInTheDocument();
           expect(
-            screen.queryByTestId("PersonalSectionsEvent-time"),
+            screen.getyByTestId("PersonalSectionsEvent-time"),
           ).not.toBeInTheDocument();
         }
+        // eslint-enable
       });
     },
   );
