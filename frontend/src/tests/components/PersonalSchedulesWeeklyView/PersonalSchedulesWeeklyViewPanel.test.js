@@ -124,7 +124,7 @@ describe("PersonalSchedulesWeeklyViewPanel tests", () => {
 
     /* eslint-disable -- hour edge case */
     hours.forEach((hour) => {
-      if(hour) {
+      if (hour) {
         expect(screen.getByText(hour)).toBeInTheDocument();
       }
     });

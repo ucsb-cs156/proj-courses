@@ -67,7 +67,8 @@ export default function PersonalSchedulesWeeklyView({
                   {day}
                 </Card.Title>
               </Card.Body>
-              {Events.filter( // Stryker disable next-line all : no need to test startTime edge case
+              {Events.filter(
+                // Stryker disable next-line all : no need to test startTime edge case
                 (event) => event.day.includes(day) && event.startTime !== "",
               ).map((event) => (
                 <PersonalSectionsEvents
