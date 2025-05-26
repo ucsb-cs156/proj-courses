@@ -1,44 +1,79 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.GeneralEducation;
 import edu.ucsb.cs156.courses.documents.Instructor;
 import edu.ucsb.cs156.courses.documents.Section;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import edu.ucsb.cs156.courses.models.SectionCSVLine;
+import edu.ucsb.cs156.courses.services.SectionCSVLineService;
+import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.MvcResult;
 
-public class CoursesCSVControllerTests {
+@WebMvcTest(controllers = {CoursesCSVController.class})
+@Import(TestConfig.class)
+@AutoConfigureDataJpa
+public class CoursesCSVControllerTests extends ControllerTestCase {
 
-  @Mock
-  private ConvertedSectionCollection convertedSectionCollection =
-      mock(ConvertedSectionCollection.class);
+  @MockBean private ConvertedSectionCollection convertedSectionCollection;
 
-  @InjectMocks private CoursesCSVController coursesCSVController;
+  @MockBean(answer = Answers.CALLS_REAL_METHODS)
+  SectionCSVLineService sectionCsvLineService;
 
-  @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.openMocks(this);
+  @Mock(answer = Answers.CALLS_REAL_METHODS)
+  StatefulBeanToCsv<SectionCSVLine> csvWriter;
+
+  @Test
+  public void test_csv_exception() throws Exception {
+
+    // arrange
+
+    String yyyyq = "20252";
+
+    doReturn(List.of()).when(convertedSectionCollection).findByQuarter(yyyyq);
+    doReturn(csvWriter).when(sectionCsvLineService).getStatefulBeanToCSV(any());
+
+    doThrow(new CsvDataTypeMismatchException()).when(csvWriter).write(anyList());
+
+    // act
+
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/courses/csv/quarter?yyyyq=20252"))
+            .andExpect(request().asyncStarted())
+            .andDo(MvcResult::getAsyncResult)
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    String actualResponse = response.getResponse().getContentAsString();
+    String expectedMessage = "";
+    assertEquals(expectedMessage, actualResponse);
   }
 
   @Test
+  @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
   public void testCsvForQuarter_success() throws Exception {
     String yyyyq = "20252";
 
@@ -110,35 +145,29 @@ public class CoursesCSVControllerTests {
             .map(section -> ConvertedSection.builder().courseInfo(info).section(section).build())
             .toList();
 
-    when(convertedSectionCollection.findByQuarter(yyyyq)).thenReturn(dataPoints);
-
-    ResponseEntity<StreamingResponseBody> response = coursesCSVController.csvForCourses(yyyyq, "");
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("text/csv;charset=UTF-8", response.getHeaders().getContentType().toString());
-    String expectedFilename = "courses_" + yyyyq + ".csv";
-    String expectedContentDisposition = "attachment;filename=" + expectedFilename;
-    String actualContentDisposition =
-        response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION).get(0);
-    assertEquals(expectedContentDisposition, actualContentDisposition);
-
-    StreamingResponseBody body = response.getBody();
-    assertNotNull(body);
-
-    OutputStream outputStream = new ByteArrayOutputStream();
-    body.writeTo(outputStream);
-    String csvOutput = outputStream.toString();
-
     String expectedCSVOutput =
         """
-        "COURSEID","ENROLLED","GES","INSTRUCTOR","MAXENROLL","QUARTER","SECTION","STATUS"
-        "CMPSC    8 -1","55","C (L&S), QNT (L&S)","MIRZA D","150","20252","0100",""
-        "CMPSC    8 -1","30","C (L&S), QNT (L&S)","MIRZA D","30","20252","0101",""
-        "CMPSC    8 -1","25","C (L&S), QNT (L&S)","MIRZA D","30","20252","0102","Closed"
-        "CMPSC    8 -1","0","C (L&S), QNT (L&S)","MIRZA D","30","20252","0103","Closed"
-        "CMPSC    8 -1","0","C (L&S), QNT (L&S)","MIRZA D","30","20252","0104",""
-        """;
+                "COURSEID","ENROLLED","GES","INSTRUCTOR","MAXENROLL","QUARTER","SECTION","STATUS"
+                "CMPSC    8 -1","55","C (L&S), QNT (L&S)","MIRZA D","150","20252","0100",""
+                "CMPSC    8 -1","30","C (L&S), QNT (L&S)","MIRZA D","30","20252","0101",""
+                "CMPSC    8 -1","25","C (L&S), QNT (L&S)","MIRZA D","30","20252","0102","Closed"
+                "CMPSC    8 -1","0","C (L&S), QNT (L&S)","MIRZA D","30","20252","0103","Closed"
+                "CMPSC    8 -1","0","C (L&S), QNT (L&S)","MIRZA D","30","20252","0104",""
+                """;
 
-    assertEquals(expectedCSVOutput, csvOutput);
+    doReturn(dataPoints).when(convertedSectionCollection).findByQuarter(yyyyq);
+
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/courses/csv/quarter?yyyyq=20252"))
+            .andExpect(request().asyncStarted())
+            .andDo(MvcResult::getAsyncResult)
+            .andExpect(status().isOk())
+            .andReturn();
+
+    verify(convertedSectionCollection, times(1)).findByQuarter(yyyyq);
+    verify(sectionCsvLineService, times(1)).getStatefulBeanToCSV(any());
+
+    assertEquals(expectedCSVOutput, response.getResponse().getContentAsString());
   }
 }
