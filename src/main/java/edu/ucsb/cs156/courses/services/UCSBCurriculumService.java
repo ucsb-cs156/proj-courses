@@ -51,6 +51,11 @@ public class UCSBCurriculumService {
   public static final String FINALS_ENDPOINT =
       "https://api.ucsb.edu/academics/curriculums/v3/finals";
 
+  public static final String[] GE_AREAS = {
+    "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+    "SUB", "WRT"
+  };
+
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
 
     HttpHeaders headers = new HttpHeaders();
@@ -267,5 +272,9 @@ public class UCSBCurriculumService {
 
     log.info("json: {} contentType: {} statusCode: {}", retVal, contentType, statusCode);
     return retVal;
+  }
+
+  public String[] getGEAreas() throws Exception {
+    return GE_AREAS;
   }
 }

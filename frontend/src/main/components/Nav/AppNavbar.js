@@ -98,6 +98,12 @@ export default function AppNavbar({
                 >
                   Search by Instructor
                 </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/enrollmentdata/search"
+                  data-testid="appnavbar-enrollment-data-search"
+                >
+                  Enrollment History
+                </NavDropdown.Item>
               </NavDropdown>
             </Nav>
 

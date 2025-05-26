@@ -11,9 +11,26 @@ import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 import UpdateCoursesByQuarterJobForm from "main/components/Jobs/UpdateCoursesByQuarterJobForm";
 import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCoursesByQuarterRangeJobForm";
+import useLocalStorage from "main/utils/useLocalStorage";
+import JobsSearchForm from "main/components/Jobs/JobsSearchForm";
+import { useState } from "react";
 
 const AdminJobsPage = () => {
   const refreshJobsIntervalMilliseconds = 5000;
+
+  const [selectedPage, setSelectedPage] = useState(1);
+
+  const [sortField, setSortField] = useLocalStorage(
+    "JobsSearch.SortField",
+    "createdAt",
+  );
+
+  const [sortDirection, setSortDirection] = useLocalStorage(
+    "JobsSearch.SortDirection",
+    "ASC",
+  );
+
+  const [pageSize, setPageSize] = useLocalStorage("JobsSearch.PageSize", "5");
 
   // test job
 
@@ -116,16 +133,22 @@ const AdminJobsPage = () => {
 
   // Stryker disable all
   const {
-    data: jobs,
+    data: page,
     error: _error,
     status: _status,
   } = useBackend(
-    ["/api/jobs/all"],
+    ["/api/jobs/paged", selectedPage, pageSize, sortField, sortDirection],
     {
       method: "GET",
-      url: "/api/jobs/all",
+      url: "/api/jobs/paged",
+      params: {
+        page: selectedPage - 1,
+        pageSize: pageSize,
+        sortField: sortField,
+        sortDirection: sortDirection,
+      },
     },
-    [],
+    { content: [], totalPages: 0 },
     { refetchInterval: refreshJobsIntervalMilliseconds },
   );
   // Stryker restore  all
@@ -178,9 +201,17 @@ const AdminJobsPage = () => {
         ))}
       </Accordion>
 
+      <JobsSearchForm
+        updateSortField={setSortField}
+        updateSortDirection={setSortDirection}
+        updatePageSize={setPageSize}
+        updateSelectedPage={setSelectedPage}
+        totalPages={page.totalPages}
+      />
+
       <h2 className="p-3">Job Status</h2>
 
-      <JobsTable jobs={jobs} />
+      <JobsTable jobs={page.content} />
       <Button variant="danger" onClick={purgeJobLog} data-testid="purgeJobLog">
         Purge Job Log
       </Button>
