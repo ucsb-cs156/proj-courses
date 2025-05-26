@@ -12,6 +12,8 @@ import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
 import "bootstrap/dist/css/bootstrap.css";
 
+import EnrollmentDataIndexPage from "main/pages/EnrollmentData/EnrollmentDataIndexPage";
+
 import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
@@ -98,11 +100,15 @@ function App() {
           path="/coursedetails/:qtr/:enrollCode"
           element={<CourseDetailsIndexPage />}
         />
-
         <Route
           exact
           path="/generaleducation/search"
           element={<GeneralEducationSearchPage />}
+        />
+        <Route
+          exact
+          path="/enrollmentdata/search"
+          element={<EnrollmentDataIndexPage />}
         />
       </Routes>
     </BrowserRouter>
