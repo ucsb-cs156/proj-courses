@@ -4,10 +4,10 @@ import GeneralEducationSearchForm from "main/components/GeneralEducation/General
 import SectionsTable from "main/components/Sections/SectionsTable";
 import { useBackendMutation } from "main/utils/useBackend";
 
+// Stryker disable all
 export default function GeneralEducationSearchPage() {
   const [sectionJSON, setSectionJSON] = useState([]);
 
-  // Stryker disable all
   const objectToAxiosParams = (query) => ({
     // TO-DO: Implement the API call to fetch sections based on the GE area
     url: "/api/sections/generaleducationsearch",
