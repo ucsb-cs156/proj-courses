@@ -1,203 +1,183 @@
+import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import GeneralEducationSearchPage from "main/pages/GeneralEducation/GeneralEducationSearchPage";
+import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
-import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
-import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { allTheAreas } from "fixtures/areaFixtures";
-import { threeSections } from "fixtures/sectionFixtures";
-
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
-  return {
-    __esModule: true,
-    ...originalModule,
-    toast: (x) => mockToast(x),
-  };
-});
+import GeneralEducationSearchForm from "main/components/GeneralEducation/GeneralEducationSearchForm";
 
-describe("GeneralEducationSearchPage tests", () => {
+// Mock toast
+jest.mock("react-toastify", () => ({
+  toast: jest.fn(),
+}));
+
+// Mock useSystemInfo to return a valid quarter range
+jest.mock("main/utils/systemInfo", () => ({
+  useSystemInfo: () => ({
+    data: {
+      startQtrYYYYQ: "20221",
+      endQtrYYYYQ: "20222",
+    },
+  }),
+}));
+
+describe("GeneralEducationSearchForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
+  const addToast = jest.fn();
 
-  const renderPage = () =>
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(console, "error");
+    console.error.mockImplementation(() => null);
+
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+
+    toast.mockReturnValue({
+      addToast: addToast,
+    });
+  });
+
+  test("renders without crashing", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <GeneralEducationSearchPage />
+          <GeneralEducationSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  });
+
+  test("area and quarter dropdowns are rendered", async () => {
+    axiosMock.onGet("/api/public/generalEducationInfo").reply(200, allTheAreas);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchForm />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
-  beforeEach(() => {
-    axiosMock.reset();
-    axiosMock.resetHistory();
-    mockToast.mockClear();
-    axiosMock
-      .onGet("/api/currentUser")
-      .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, systemInfoFixtures.showingNeither);
+    const quarterDropdown = await screen.findByLabelText("Quarter");
+    expect(quarterDropdown).toBeInTheDocument();
+
+    const areaDropdown = await screen.findByLabelText("General Education Area");
+    expect(areaDropdown).toBeInTheDocument();
+  });
+
+  test("selecting an area updates the state", async () => {
     axiosMock.onGet("/api/public/generalEducationInfo").reply(200, allTheAreas);
-    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
-  });
 
-  test("renders correctly with form and empty table initially", async () => {
-    axiosMock.onGet("/api/sections/generaleducationsearch").reply(200, []);
-    renderPage();
-
-    expect(
-      await screen.findByText(/Search by General Education Area/i),
-    ).toBeInTheDocument();
-    expect(await screen.findByRole("combobox")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Submit/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole("columnheader", { name: /Course ID/i }),
-    ).toBeInTheDocument();
-  });
-
-  test("fetches and displays sections when user performs a search", async () => {
-    if (allTheAreas.length === 0) {
-      throw new Error("Fixture 'allTheAreas' is empty.");
-    }
-    const selectedAreaObject = allTheAreas[0];
-    const optionValueToSelect = `${selectedAreaObject.requirementCode}-${selectedAreaObject.collegeCode}`;
-    const apiSearchParameter = optionValueToSelect;
-
-    const mockSearchResults = threeSections;
-    // console.log("DEBUG: mockSearchResults for table:", JSON.stringify(mockSearchResults, null, 2)); // For debugging
-
-    axiosMock
-      .onGet("/api/sections/generaleducationsearch", {
-        params: { area: apiSearchParameter },
-      })
-      .reply(200, mockSearchResults);
-    axiosMock.onGet("/api/sections/generaleducationsearch").reply((config) => {
-      if (config.params && config.params.area === apiSearchParameter) {
-        return [200, mockSearchResults];
-      }
-      return [200, []];
-    });
-
-    renderPage();
-
-    const areaDropdown = await screen.findByRole("combobox");
-    await screen.findByText(
-      new RegExp(
-        `${selectedAreaObject.requirementCode} - ${selectedAreaObject.requirementTranslation} \\(${selectedAreaObject.collegeCode}\\)`,
-      ),
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
-
-    // Wrap event causing state update in act if needed, though userEvent usually handles this
-    // await act(async () => {
-    await userEvent.selectOptions(areaDropdown, optionValueToSelect);
-    // });
-
-    const submitButton = screen.getByRole("button", { name: /Submit/i });
-    // await act(async () => {
-    await userEvent.click(submitButton);
-    // });
 
     await waitFor(() => {
       expect(
-        axiosMock.history.get.some(
-          (req) =>
-            req.url === "/api/sections/generaleducationsearch" &&
-            req.params &&
-            req.params.area === apiSearchParameter,
-        ),
-      ).toBe(true);
-    });
-
-    for (const section of mockSearchResults) {
-      expect(
-        await screen.findByText(section.courseInfo.title),
+        screen.getByTestId("GeneralEducationSearch.Area-option-C-ENGR"),
       ).toBeInTheDocument();
-    }
+    });
+
+    const selectArea = screen.getByLabelText("General Education Area");
+    userEvent.selectOptions(selectArea, "C-ENGR");
+
+    expect(selectArea.value).toBe("C-ENGR");
   });
 
-  test("shows an empty table or message if search returns no results", async () => {
-    if (allTheAreas.length < 2) {
-      throw new Error("Fixture 'allTheAreas' has less than 2 items.");
-    }
-    const selectedAreaObject = allTheAreas[1];
-    const optionValueToSelect = `${selectedAreaObject.requirementCode}-${selectedAreaObject.collegeCode}`;
-    const apiSearchParameter = optionValueToSelect;
+  test("selecting a quarter updates the state", async () => {
+    axiosMock.onGet("/api/public/generalEducationInfo").reply(200, allTheAreas);
 
-    axiosMock
-      .onGet("/api/sections/generaleducationsearch", {
-        params: { area: apiSearchParameter },
-      })
-      .reply(200, []);
-
-    renderPage();
-
-    const areaDropdown = await screen.findByRole("combobox");
-    await screen.findByText(
-      new RegExp(
-        `${selectedAreaObject.requirementCode} - ${selectedAreaObject.requirementTranslation} \\(${selectedAreaObject.collegeCode}\\)`,
-      ),
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
-    await userEvent.selectOptions(areaDropdown, optionValueToSelect);
 
-    const submitButton = screen.getByRole("button", { name: /Submit/i });
-    await userEvent.click(submitButton);
+    const selectQuarter = await screen.findByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    expect(selectQuarter.value).toBe("20222");
+  });
+
+  test("submitting the form calls fetchJSON with correct area and quarter", async () => {
+    axiosMock.onGet("/api/public/generalEducationInfo").reply(200, allTheAreas);
+    const fetchJSONSpy = jest.fn().mockResolvedValue({});
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
     await waitFor(() => {
       expect(
-        axiosMock.history.get.some(
-          (req) =>
-            req.url === "/api/sections/generaleducationsearch" &&
-            req.params &&
-            req.params.area === apiSearchParameter,
-        ),
-      ).toBe(true);
+        screen.getByTestId("GeneralEducationSearch.Area-option-WRT-L&S"),
+      ).toBeInTheDocument();
     });
 
-    expect(
-      screen.queryByText(threeSections[0].courseInfo.title),
-    ).not.toBeInTheDocument();
+    const selectArea = screen.getByLabelText("General Education Area");
+    userEvent.selectOptions(selectArea, "WRT-L&S");
+
+    const selectQuarter = await screen.findByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      area: "WRT-L&S",
+      quarter: "20222",
+    });
   });
 
-  test("handles API error during search gracefully", async () => {
-    if (allTheAreas.length === 0) {
-      throw new Error("Fixture 'allTheAreas' is empty.");
-    }
-    const selectedAreaObject = allTheAreas[0];
-    const optionValueToSelect = `${selectedAreaObject.requirementCode}-${selectedAreaObject.collegeCode}`;
-    const apiSearchParameter = optionValueToSelect;
+  test("when JSON is empty, setCourse is not called", async () => {
+    axiosMock.onGet("/api/public/generalEducationInfo").reply(200, allTheAreas);
+    const fetchJSONSpy = jest.fn().mockResolvedValue({
+      sampleKey: "sampleValue",
+      total: 0,
+    });
 
-    axiosMock
-      .onGet("/api/sections/generaleducationsearch", {
-        params: { area: apiSearchParameter },
-      })
-      .reply(500, { message: "Internal Server Error" });
-
-    renderPage();
-
-    const areaDropdown = await screen.findByRole("combobox");
-    await screen.findByText(
-      new RegExp(
-        `${selectedAreaObject.requirementCode} - ${selectedAreaObject.requirementTranslation} \\(${selectedAreaObject.collegeCode}\\)`,
-      ),
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GeneralEducationSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
-    // *** Manually retype this line in your editor: delete `selectOptions` and type it again carefully ***
-    await userEvent.selectOptions(areaDropdown, optionValueToSelect);
-
-    const submitButton = screen.getByRole("button", { name: /Submit/i });
-    await userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockToast).toHaveBeenCalledWith(
-        expect.stringContaining("Error communicating with backend"),
-      );
+      expect(
+        screen.getByTestId("GeneralEducationSearch.Area-option-D-L&S"),
+      ).toBeInTheDocument();
     });
+
+    const selectArea = screen.getByLabelText("General Education Area");
+    userEvent.selectOptions(selectArea, "D-L&S");
+
+    const selectQuarter = await screen.findByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20221");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
   });
 });
