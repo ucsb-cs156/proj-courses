@@ -1,7 +1,6 @@
 import React from "react";
-import { render, screen, waitFor, act } from "@testing-library/react"; // Added act
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { toast } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
@@ -12,6 +11,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 
 import GeneralEducationSearchForm from "main/components/GeneralEducation/GeneralEducationSearchForm";
 
+// stryker-disable all : not sure how to test/mock local storage
 jest.mock("react-toastify", () => ({
   toast: jest.fn(),
 }));
