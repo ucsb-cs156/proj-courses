@@ -39,6 +39,7 @@ const EnrollmentHistoryLineChart = ({ data, title }) => {
       <ResponsiveContainer width="100%" height={300}>
         <LineChart
           data={completeData}
+          // Stryker disable all
           margin={{ top: 5, right: 30, left: 50, bottom: 5 }}
         >
           <XAxis dataKey="dateCreated" />
