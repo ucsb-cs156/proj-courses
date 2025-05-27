@@ -113,7 +113,7 @@ export default function PersonalSchedulesDetailsPage() {
 
             return (
               loc.days?.split("")?.map((dayAbbrev) => {
-                const day = dayMap[dayAbbrev] || "Monday";
+                const day = dayMap[dayAbbrev];
 
                 return {
                   id: `${sectionIdx}-${clsIdx}-${locIdx}-${dayAbbrev}`,
