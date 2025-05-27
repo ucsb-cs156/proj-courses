@@ -104,3 +104,15 @@ export const renderInfoLink = ({ cell: { value } }) => (
     </a>
   </p>
 );
+
+export const formatTitleLink = (row) => (
+  <a
+    href={`/coursedetails/${row.courseInfo.quarter}/${row.section.enrollCode}`}
+  >
+    {row.courseInfo.title}
+  </a>
+);
+
+export const renderTitleLink = ({ cell: { value } }) => (
+  <p align="center">{value}</p>
+);
