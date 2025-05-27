@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.courses.services;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -317,5 +318,17 @@ public class UCSBCurriculumServiceTests {
     String result = ucs.getFinalsInfo(quarter, enrollCode);
 
     assertEquals(expectedResult, result);
+  }
+
+  @Test
+  public void test_getGEAreas_success() throws Exception {
+    String[] expectedResult = {
+      "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+      "SUB", "WRT"
+    };
+
+    String[] result = ucs.getGEAreas();
+
+    assertArrayEquals(expectedResult, result);
   }
 }

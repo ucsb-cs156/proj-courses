@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
@@ -66,5 +67,29 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     String responseString = response.getResponse().getContentAsString();
 
     assertEquals(expectedResult, responseString);
+  }
+
+  // Tests for the general education area information controller
+  @Test
+  public void test_generalEducationAreas() throws Exception {
+    String[] expectedResult = {
+      "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+      "SUB", "WRT"
+    };
+
+    String url = "/api/public/generalEducationInfo";
+    when(ucsbCurriculumService.getGEAreas()).thenReturn(expectedResult);
+
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+    String responseString = response.getResponse().getContentAsString();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    String expectedString = objectMapper.writeValueAsString(expectedResult);
+
+    assertEquals(expectedString, responseString);
   }
 }

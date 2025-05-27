@@ -80,6 +80,14 @@ export default function AppNavbar({
                 >
                   Course Descriptions
                 </NavDropdown.Item>
+
+                <NavDropdown.Item
+                  href="/generaleducation/search"
+                  data-testid="appnavbar-course-ge-search"
+                >
+                  GE Search
+                </NavDropdown.Item>
+
                 <NavDropdown.Item
                   href="/courseovertime/search"
                   data-testid="appnavbar-course-over-time-search"
@@ -97,6 +105,12 @@ export default function AppNavbar({
                   data-testid="appnavbar-course-over-time-instructor-search"
                 >
                   Search by Instructor
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/enrollmentdata/search"
+                  data-testid="appnavbar-enrollment-data-search"
+                >
+                  Enrollment History
                 </NavDropdown.Item>
               </NavDropdown>
             </Nav>
