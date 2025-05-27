@@ -16,7 +16,6 @@ export default function GeneralEducationSearchPage() {
       area: query.area,
     },
   });
-  // Stryker restore all
 
   // Callback function to update state with fetched sections
   const onSuccess = (sections) => {
@@ -27,8 +26,7 @@ export default function GeneralEducationSearchPage() {
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess },
-    // Stryker disable next-line all : hard to set up test for caching
-    [], // Dependencies array for the mutation hook
+    [],
   );
 
   // Function to trigger the API call, passed to the search form

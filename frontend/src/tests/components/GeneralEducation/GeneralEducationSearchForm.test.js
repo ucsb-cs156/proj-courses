@@ -11,7 +11,6 @@ import AxiosMockAdapter from "axios-mock-adapter";
 
 import GeneralEducationSearchForm from "main/components/GeneralEducation/GeneralEducationSearchForm";
 
-// stryker-disable all : not sure how to test/mock local storage
 jest.mock("react-toastify", () => ({
   toast: jest.fn(),
 }));
