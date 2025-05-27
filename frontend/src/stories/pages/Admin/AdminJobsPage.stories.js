@@ -24,10 +24,17 @@ Default.parameters = {
         status: 200,
       });
     }),
-    http.get("/api/jobs/all", () => {
-      return HttpResponse.json(jobsFixtures.sixJobs, {
-        status: 200,
-      });
+    http.get("/api/jobs/paginated", () => {
+      return HttpResponse.json(
+        {
+          content: jobsFixtures.sixJobs,
+          totalPages: 1,
+          number: 0,
+          size: 10,
+          totalElements: jobsFixtures.sixJobs.length,
+        },
+        { status: 200 },
+      );
     }),
     http.get("/api/systemInfo", () => {
       return HttpResponse.json(systemInfoFixtures.showingBoth, {
