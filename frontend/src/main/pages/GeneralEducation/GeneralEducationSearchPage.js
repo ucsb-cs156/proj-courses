@@ -23,11 +23,7 @@ export default function GeneralEducationSearchPage() {
   };
 
   // Hook to handle the backend API mutation (search)
-  const mutation = useBackendMutation(
-    objectToAxiosParams,
-    { onSuccess },
-    [],
-  );
+  const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, []);
 
   // Function to trigger the API call, passed to the search form
   async function fetchGeneralEducationSectionsJSON(_event, query) {
