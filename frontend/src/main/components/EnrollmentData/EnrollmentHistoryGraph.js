@@ -9,8 +9,6 @@ import {
   Legend,
 } from "recharts";
 
-// Stryker disable all: This is not to be run until the tests are written as it is a placeholder.
-
 export const formatTooltip = (value, _, props) => {
   return [
     `Enrollment: ${value.toFixed(1)}, Date Created: ${props.payload.dateCreated}`,
