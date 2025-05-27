@@ -1,12 +1,16 @@
 package edu.ucsb.cs156.courses.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +59,8 @@ public class UCSBCurriculumService {
     "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
     "SUB", "WRT"
   };
+
+  public static final String GE_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/requirements";
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
 
@@ -274,7 +280,46 @@ public class UCSBCurriculumService {
     return retVal;
   }
 
-  public String[] getGeInfo() {
+  public String[] getStaticGeInfo() {
     return GE_CODES;
+  }
+
+  public String getGeInfo() throws Exception {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    headers.set("ucsb-api-version", "3.0");
+    headers.set("ucsb-api-key", this.apiKey);
+
+    HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+    String url = GE_ENDPOINT;
+
+    log.info("url=" + url);
+
+    ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+    MediaType contentType = re.getHeaders().getContentType();
+    HttpStatus statusCode = (HttpStatus) re.getStatusCode();
+    String fullResponse = re.getBody();
+
+    log.info("json: {} contentType: {} statusCode: {}", fullResponse, contentType, statusCode);
+
+    // Parse the full JSON response
+    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode rootNode = objectMapper.readTree(fullResponse);
+
+    // Create a new array with just teh requirement coes as strings
+    Set<String> uniqueCodes = new TreeSet<>();
+    for (JsonNode item : rootNode) {
+      uniqueCodes.add(item.get("requirementCode").asText());
+    }
+
+    // Convert the Set to a JSON array
+    ArrayNode resultArray = objectMapper.createArrayNode();
+    for (String code : uniqueCodes) {
+      resultArray.add(code);
+    }
+
+    // Convert the filtered array back to JSON string
+    return objectMapper.writeValueAsString(resultArray);
   }
 }
