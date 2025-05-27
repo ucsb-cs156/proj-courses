@@ -29,7 +29,9 @@ const GeneralEducationSearchForm = ({ fetchJSON }) => {
   );
 
   const [area, setArea] = useState(localArea || "A");
-  const [quarter, setQuarter] = useState(localQuarter || quarters[0]?.yyyyq || "20211");
+  const [quarter, setQuarter] = useState(
+    localQuarter || quarters[0]?.yyyyq || "20211",
+  );
 
   const handleSubmit = (event) => {
     event.preventDefault();
