@@ -7,7 +7,6 @@ import { quarterRange } from "main/utils/quarterUtilities";
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleBuildingDropdown from "../Buildings/SingleBuildingDropdown";
-import SingleClassroomDropdown from "../Classrooms/SingleClassroomDropdown";
 
 const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
@@ -29,9 +28,6 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const localBuildingCode = localStorage.getItem(
     "CourseOverTimeBuildingsSearch.BuildingCode",
   );
-  const localClassroomCode = localStorage.getItem(
-    "CourseOverTimeBuildingsSearch.ClassroomCode",
-  );
 
   const [startQuarter, setStartQuarter] = useState(
     localStartQuarter || quarters[0].yyyyq,
@@ -40,13 +36,12 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
     localEndQuarter || quarters[0].yyyyq,
   );
   const [buildingCode, setBuildingCode] = useState(localBuildingCode || {});
-  const [classroomCode, setClassroomCode] = useState(localClassroomCode || "");
 
   // Stryker restore all
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { startQuarter, endQuarter, buildingCode, classroomCode });
+    fetchJSON(event, { startQuarter, endQuarter, buildingCode });
   };
 
   return (
@@ -80,18 +75,6 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
               label={"Building Name"}
             />
           </Col>
-          {buildingCode && startQtr && (
-            <Col md="auto">
-              <SingleClassroomDropdown
-                buildingCode={buildingCode}
-                quarter={startQuarter}
-                classroomCode={classroomCode}
-                setClassroom={setClassroomCode}
-                controlId={"CourseOverTimeBuildingsSearch.ClassroomCode"}
-                label={"Classroom Name"}
-              />
-            </Col>
-          )}
         </Row>
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">

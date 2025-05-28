@@ -118,7 +118,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       startQuarter: "20211",
       endQuarter: "20214",
       buildingCode: "GIRV",
-      classroomCode: "",
     };
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
@@ -183,8 +182,8 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,
-      startQtrYYYYQ: null,
-      endQtrYYYYQ: null,
+      startQtrYYYYQ: null, // use fallback value
+      endQtrYYYYQ: null, // use fallback value
     });
 
     render(
@@ -195,6 +194,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       </QueryClientProvider>,
     );
 
+    // Make sure the first and last options
     expect(
       await screen.findByTestId(
         "CourseOverTimeBuildingsSearch.StartQuarter-option-0",
@@ -232,32 +232,5 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       "style",
       "padding-top: 10px; padding-bottom: 10px;",
     );
-  });
-  test("classroom dropdown appears when building and start quarter are selected", async () => {
-    axiosMock
-      .onGet(/\/api\/public\/classrooms\/roomnumbers.*/)
-      .reply(200, ["1101"]);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeBuildingsSearchForm />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    userEvent.selectOptions(
-      await screen.findByLabelText("Building Name"),
-      "GIRV",
-    );
-    userEvent.selectOptions(screen.getByLabelText("Start Quarter"), "20211");
-
-    await waitFor(() => {
-      expect(
-        screen.getByTestId(
-          "CourseOverTimeBuildingsSearch.Classroom-option-1101",
-        ),
-      ).toBeInTheDocument();
-    });
   });
 });
