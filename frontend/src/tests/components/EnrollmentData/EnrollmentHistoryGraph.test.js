@@ -81,7 +81,7 @@ describe("Enrollment history tests", () => {
 
   // Tests for multiple graphs to be implemented.
 
-  test("Correctly outputs data for one class", async () => {
+  test("Correctly outputs data for one course", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -96,14 +96,15 @@ describe("Enrollment history tests", () => {
       "enrollment-history-graphs",
     );
 
-    //<circle r="3" stroke="#3182bd" stroke-width="1" fill="#fff" width="1448" height="236" cx="110" cy="30.285714285714274" class="recharts-dot recharts-line-dot"></circle>
-
-    await waitFor(() => {
-      const points =
-        enrollmentHistoryGraphsContainer.querySelectorAll(".recharts-dot");
-      console.log("Number of points: " + points.length);
-      expect(points.length).toBe(3);
-    });
+    await waitFor(
+      () => {
+        const points =
+          enrollmentHistoryGraphsContainer.querySelectorAll(".recharts-dot");
+        console.log("Number of points: " + points.length);
+        expect(points.length).toBe(3);
+      },
+      { timeout: 3000 },
+    ); // This test takes longer to render than usual.
 
     const allWrappers =
       enrollmentHistoryGraphsContainer.querySelectorAll(".recharts-wrapper");
@@ -129,7 +130,7 @@ describe("formatTooltip", () => {
 });
 
 describe("createCompleteEnrollmentData", () => {
-  it("get enrollment data displayed correctly", () => {
+  it("get enrollment data points displayed correctly", () => {
     const data = [
       { enrollment: 50, dateCreated: "2020-05-14T17:50:52.360000" },
       { enrollment: 24, dateCreated: "2025-05-14T17:50:52.361636" },
@@ -145,7 +146,7 @@ describe("createCompleteEnrollmentData", () => {
     ]);
   });
 
-  it("returns points at the x-axis when total count is zero", () => {
+  it("returns points at the x-axis when enrollment is zero", () => {
     const data = [
       { enrollment: 0, dateCreated: "2020-05-14T17:50:52.360000" },
       { enrollment: 0, dateCreated: "2025-05-14T17:50:52.361636" },
