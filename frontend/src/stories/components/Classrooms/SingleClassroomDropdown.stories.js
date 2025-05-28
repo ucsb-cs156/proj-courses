@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SingleClassroomDropdown from "main/components/Classrooms/SingleClassroomDropdown";
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export default {
   title: "components/Classrooms/SingleClassroomDropdown",
@@ -8,21 +8,21 @@ export default {
 };
 
 const classroomHandler = http.get(
-  '/api/public/classrooms/roomnumbers',
+  "/api/public/classrooms/roomnumbers",
   (req) => {
     const url = new URL(req.request.url);
-    const buildingCode = url.searchParams.get('buildingCode');
-    const quarter = url.searchParams.get('quarter');
+    const buildingCode = url.searchParams.get("buildingCode");
+    const quarter = url.searchParams.get("quarter");
 
-    if (buildingCode === 'GIRV' && quarter === '20221') {
-      return HttpResponse.json(['1430', '1108', '2128'], { status: 200 });
+    if (buildingCode === "GIRV" && quarter === "20221") {
+      return HttpResponse.json(["1430", "1108", "2128"], { status: 200 });
     }
 
     return HttpResponse.json(
-      { message: 'No classrooms found' },
-      { status: 404 }
+      { message: "No classrooms found" },
+      { status: 404 },
     );
-  }
+  },
 );
 
 const Template = (args) => {
