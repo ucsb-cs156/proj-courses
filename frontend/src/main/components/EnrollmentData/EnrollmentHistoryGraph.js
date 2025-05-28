@@ -57,6 +57,8 @@ const EnrollmentHistoryLineChart = ({ data, title }) => {
   );
 };
 
+
+// Stryker restore all
 const EnrollmentHistoryGraphs = ({ enrollmentHistory }) => {
   return (
     <div data-testid="enrollment-history-graphs">

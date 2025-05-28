@@ -81,7 +81,7 @@ describe("Enrollment history tests", () => {
 
   // Tests for multiple graphs to be implemented.
 
-  test("Correctly outputs data for one quarter", async () => {
+  test("Correctly outputs data for one class", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -96,10 +96,13 @@ describe("Enrollment history tests", () => {
       "enrollment-history-graphs",
     );
 
+    //<circle r="3" stroke="#3182bd" stroke-width="1" fill="#fff" width="1448" height="236" cx="110" cy="30.285714285714274" class="recharts-dot recharts-line-dot"></circle>
+
     await waitFor(() => {
       const points =
-        enrollmentHistoryGraphsContainer.querySelectorAll(".recharts-point");
-      expect(points.length).toBe(0);
+        enrollmentHistoryGraphsContainer.querySelectorAll(".recharts-line-dot");
+        console.log("Number of points: " + points.length);
+      expect(points.length).toBe(3);
     });
 
     const allWrappers =
