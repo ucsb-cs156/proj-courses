@@ -24,7 +24,9 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock
+      .onGet("/api/jobs/paginate")
+      .reply(200, { content: jobsFixtures.sixJobs, totalPages: 1 });
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -79,7 +81,7 @@ describe("AdminJobsPage tests", () => {
 
     const testJobButton = screen.getByText("Test Job");
     expect(testJobButton).toBeInTheDocument();
-    testJobButton.click();
+    await userEvent.click(testJobButton);
 
     expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
 
@@ -120,7 +122,7 @@ describe("AdminJobsPage tests", () => {
 
     const updateCoursesButton = screen.getByText("Update Courses Database");
     expect(updateCoursesButton).toBeInTheDocument();
-    updateCoursesButton.click();
+    await userEvent.click(updateCoursesButton);
 
     expect(await screen.findByTestId("updateCourses")).toBeInTheDocument();
     const submitButton = screen.getByTestId("updateCourses");
@@ -168,7 +170,7 @@ describe("AdminJobsPage tests", () => {
       "Update Courses Database by quarter",
     );
     expect(updateCoursesButton).toBeInTheDocument();
-    updateCoursesButton.click();
+    await userEvent.click(updateCoursesButton);
 
     const submitButton = screen.getByTestId("updateCoursesByQuarter");
     expect(
@@ -209,7 +211,7 @@ describe("AdminJobsPage tests", () => {
       "Update Courses Database by quarter range",
     );
     expect(updateCoursesButton).toBeInTheDocument();
-    updateCoursesButton.click();
+    await userEvent.click(updateCoursesButton);
 
     const submitButton = screen.getByTestId("updateCoursesByQuarterRange");
     expect(
@@ -245,7 +247,7 @@ describe("AdminJobsPage tests", () => {
 
     const dropDownButton = screen.getByText("Update Grade Info");
     expect(dropDownButton).toBeInTheDocument();
-    dropDownButton.click();
+    await userEvent.click(dropDownButton);
 
     const updateGradeButton = screen.getByText("Update Grades");
     expect(updateGradeButton).toBeInTheDocument();
@@ -275,5 +277,54 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
 
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
+  });
+
+  test("When localStorage is empty, fallback values are used", async () => {
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    const useLocalStorageSpy = jest.spyOn(
+      require("main/utils/useLocalStorage"),
+      "default",
+    );
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "JobsSearch.SortField",
+      "createdAt",
+    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "10");
+
+    const jobsRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/jobs/paginate",
+    );
+    expect(jobsRequest.params).toEqual({
+      page: 0,
+      pageSize: "10",
+      sortField: "createdAt",
+      sortDirection: "ASC",
+    });
+
+    const calls = useLocalStorageSpy.mock.calls.map((call) => call.join(","));
+    const counts = {};
+    calls.forEach((k) => (counts[k] = (counts[k] || 0) + 1));
+
+    expect(counts).toEqual({
+      "JobsSearch.SortField,createdAt": 1,
+      "JobsSearch.SortField,createdBy": 1,
+      "JobsSearch.SortDirection,ASC": 2,
+      "JobsSearch.PageSize,5": 1,
+      "JobsSearch.PageSize,10": 1,
+    });
   });
 });
