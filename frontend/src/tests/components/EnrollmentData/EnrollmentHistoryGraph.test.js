@@ -100,8 +100,8 @@ describe("Enrollment history tests", () => {
 
     await waitFor(() => {
       const points =
-        enrollmentHistoryGraphsContainer.querySelectorAll(".recharts-line-dot");
-        console.log("Number of points: " + points.length);
+        enrollmentHistoryGraphsContainer.querySelectorAll(".recharts-dot");
+      console.log("Number of points: " + points.length);
       expect(points.length).toBe(3);
     });
 

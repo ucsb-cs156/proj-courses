@@ -57,7 +57,6 @@ const EnrollmentHistoryLineChart = ({ data, title }) => {
   );
 };
 
-
 // Stryker restore all
 const EnrollmentHistoryGraphs = ({ enrollmentHistory }) => {
   return (
