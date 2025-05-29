@@ -43,8 +43,6 @@ const GeneralEducationSearchForm = ({ fetchJSON }) => {
     fetchJSON(event, { quarter, geArea });
   };
 
-  //   const testid = "GeneralEducationSearchForm";
-
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
