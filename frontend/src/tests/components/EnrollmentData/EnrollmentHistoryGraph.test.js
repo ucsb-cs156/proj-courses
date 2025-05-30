@@ -96,7 +96,7 @@ describe("Enrollment history tests", () => {
       () => {
         const points =
           enrollmentHistoryGraphsContainer.querySelectorAll(".recharts-dot");
-        console.log("Number of points: " + points.length);
+          
         expect(points.length).toBe(3);
       },
       { timeout: 3000 },
