@@ -2,7 +2,6 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import {
   oneEnrollmentDataPointArray,
   threeEnrollmentDataPointsArray,
-  // twoDifferentCourses,
 } from "fixtures/enrollmentDataPointFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -31,9 +30,6 @@ class ResizeObserver {
 
 global.ResizeObserver = ResizeObserver;
 
-// Credit to joshua-phillips's commment at the below link
-// I was debugging this for so long and this finally rendered the ResponsiveContainer
-// https://github.com/recharts/recharts/issues/2268#issuecomment-832287798
 jest.mock("recharts", () => {
   const OriginalModule = jest.requireActual("recharts");
 
