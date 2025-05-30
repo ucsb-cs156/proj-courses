@@ -43,4 +43,12 @@ public class UCSBCurriculumController extends ApiController {
 
     return ResponseEntity.ok().body(body);
   }
+
+  // Backend for General Education Areas
+  @Operation(summary = "Get all general education areas")
+  @GetMapping(value = "/generalEducationInfo", produces = "application/json")
+  public ResponseEntity<String[]> generalEducationAreas() throws Exception {
+    String[] generalEducationAreas = ucsbCurriculumService.getGEAreas();
+    return ResponseEntity.ok().body(generalEducationAreas);
+  }
 }

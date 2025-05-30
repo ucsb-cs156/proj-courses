@@ -80,6 +80,14 @@ export default function AppNavbar({
                 >
                   Course Descriptions
                 </NavDropdown.Item>
+
+                <NavDropdown.Item
+                  href="/generaleducation/search"
+                  data-testid="appnavbar-course-ge-search"
+                >
+                  GE Search
+                </NavDropdown.Item>
+
                 <NavDropdown.Item
                   href="/courseovertime/search"
                   data-testid="appnavbar-course-over-time-search"
