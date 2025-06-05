@@ -17,7 +17,7 @@ env:
   # The columns in the Kanban board that we are interested in
   COLUMNS: "Todo, In Progress, In Review, Done"
   START_DATE: "2025-05-10"
-  END_DATE: "2025-06-06"  # Set the end date for the workflow
+  END_DATE: "2025-06-03"  # Set the end date for the workflow
 
 jobs:
 
