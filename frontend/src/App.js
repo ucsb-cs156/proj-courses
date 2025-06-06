@@ -12,6 +12,8 @@ import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
 import "bootstrap/dist/css/bootstrap.css";
 
+import EnrollmentDataIndexPage from "main/pages/EnrollmentData/EnrollmentDataIndexPage";
+
 import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
@@ -25,6 +27,8 @@ import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseO
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
+
+import GeneralEducationSearchPage from "main/pages/GeneralEducation/GeneralEducationSearchPage";
 function App() {
   const { data: currentUser } = useCurrentUser();
 
@@ -95,6 +99,16 @@ function App() {
           exact
           path="/coursedetails/:qtr/:enrollCode"
           element={<CourseDetailsIndexPage />}
+        />
+        <Route
+          exact
+          path="/generaleducation/search"
+          element={<GeneralEducationSearchPage />}
+        />
+        <Route
+          exact
+          path="/enrollmentdata/search"
+          element={<EnrollmentDataIndexPage />}
         />
       </Routes>
     </BrowserRouter>

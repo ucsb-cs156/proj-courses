@@ -37,6 +37,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -63,6 +67,21 @@ public class JobsControllerTests extends ControllerTestCase {
   @MockBean UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
   @MockBean ConvertedSectionCollection convertedSectionCollection;
+
+  ArrayList<Job> emptyArray = new ArrayList<Job>();
+  PageRequest pageRequest_0_10_DESC_createdAt = PageRequest.of(0, 10, Direction.DESC, "createdAt");
+  PageRequest pageRequest_0_10_DESC_updatedAt = PageRequest.of(0, 10, Direction.DESC, "updatedAt");
+  PageRequest pageRequest_0_10_ASC_createdBy = PageRequest.of(0, 10, Direction.ASC, "createdBy");
+  PageRequest pageRequest_0_10_ASC_status = PageRequest.of(0, 10, Direction.ASC, "status");
+
+  private final Page<Job> emptyPage_0_10_DESC_createdAt =
+      new PageImpl<Job>(emptyArray, pageRequest_0_10_DESC_createdAt, 0);
+  private final Page<Job> emptyPage_0_10_DESC_updatedAt =
+      new PageImpl<Job>(emptyArray, pageRequest_0_10_DESC_updatedAt, 0);
+  private final Page<Job> emptyPage_0_10_ASC_createdBy =
+      new PageImpl<Job>(emptyArray, pageRequest_0_10_ASC_createdBy, 0);
+  private final Page<Job> emptyPage_0_10_ASC_status =
+      new PageImpl<Job>(emptyArray, pageRequest_0_10_ASC_status, 0);
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
@@ -433,5 +452,144 @@ public class JobsControllerTests extends ControllerTestCase {
     Job jobReturned = objectMapper.readValue(responseString, Job.class);
 
     assertNotNull(jobReturned.getStatus());
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_getSomeJobs_createdAt_empty() throws Exception {
+
+    // arrange
+
+    when(jobsRepository.findAll(pageRequest_0_10_DESC_createdAt))
+        .thenReturn(emptyPage_0_10_DESC_createdAt);
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/jobs/paged?page=0&pageSize=10&sortField=createdAt&sortDirection=DESC"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    String expectedResponseAsJson = objectMapper.writeValueAsString(emptyPage_0_10_DESC_createdAt);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_getSomeJobs_updatedAt_empty() throws Exception {
+
+    // arrange
+
+    when(jobsRepository.findAll(pageRequest_0_10_DESC_updatedAt))
+        .thenReturn(emptyPage_0_10_DESC_updatedAt);
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/jobs/paged?page=0&pageSize=10&sortField=updatedAt&sortDirection=DESC"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    String expectedResponseAsJson = objectMapper.writeValueAsString(emptyPage_0_10_DESC_updatedAt);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_getSomeJobs_createdBy_empty() throws Exception {
+
+    // arrange
+
+    when(jobsRepository.findAll(pageRequest_0_10_ASC_createdBy))
+        .thenReturn(emptyPage_0_10_ASC_createdBy);
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/jobs/paged?page=0&pageSize=10&sortField=createdBy&sortDirection=ASC"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    String expectedResponseAsJson = objectMapper.writeValueAsString(emptyPage_0_10_ASC_createdBy);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void test_getSomeJobs_status_empty() throws Exception {
+
+    // arrange
+
+    when(jobsRepository.findAll(pageRequest_0_10_ASC_status)).thenReturn(emptyPage_0_10_ASC_status);
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/jobs/paged?page=0&pageSize=10&sortField=status&sortDirection=ASC"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    String expectedResponseAsJson = objectMapper.writeValueAsString(emptyPage_0_10_ASC_status);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void when_sortField_is_invalid_throws_exception() throws Exception {
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/jobs/paged?page=0&pageSize=10&sortField=invalid&sortDirection=DESC"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    // assert
+    Map<String, String> expectedResponse =
+        Map.of(
+            "message",
+            "invalid is not a valid sort field.  Valid values are [createdAt, updatedAt, createdBy, status]",
+            "type",
+            "IllegalArgumentException");
+
+    String expectedResponseAsJson = objectMapper.writeValueAsString(expectedResponse);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
+  }
+
+  @WithMockUser(roles = {"ADMIN"})
+  @Test
+  public void when_sortDirection_is_invalid_throws_exception() throws Exception {
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/jobs/paged?page=0&pageSize=10&sortField=createdBy&sortDirection=INVALID"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    // assert
+    Map<String, String> expectedResponse =
+        Map.of(
+            "message",
+            "INVALID is not a valid sort direction.  Valid values are [ASC, DESC]",
+            "type",
+            "IllegalArgumentException");
+
+    String expectedResponseAsJson = objectMapper.writeValueAsString(expectedResponse);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
   }
 }

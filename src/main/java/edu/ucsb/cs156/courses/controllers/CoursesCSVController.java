@@ -1,11 +1,12 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.models.SectionCSVLine;
+import edu.ucsb.cs156.courses.services.SectionCSVLineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,6 +39,8 @@ public class CoursesCSVController extends ApiController {
 
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
+  @Autowired private SectionCSVLineService sectionCsvLineService;
+
   @Operation(
       summary = "Download Course List as CSV File",
       description = "Returns a CSV file as a response",
@@ -55,13 +58,7 @@ public class CoursesCSVController extends ApiController {
   public ResponseEntity<StreamingResponseBody> csvForCourses(
       @Parameter(name = "yyyyq", description = "quarter in yyyyq format", example = "20252")
           @RequestParam
-          String yyyyq,
-      @Parameter(
-              name = "testException",
-              description = "test exception (e.g. CsvDataTypeMismatchException)",
-              example = "")
-          @RequestParam(required = false, defaultValue = "")
-          String testException)
+          String yyyyq)
       throws Exception, IOException {
     StreamingResponseBody stream =
         (outputStream) -> {
@@ -77,10 +74,9 @@ public class CoursesCSVController extends ApiController {
 
           try (Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
             try {
-              if (testException.equals("CsvDataTypeMismatchException")) {
-                throw new CsvDataTypeMismatchException("test exception");
-              }
-              new StatefulBeanToCsvBuilder<SectionCSVLine>(writer).build().write(list);
+              StatefulBeanToCsv<SectionCSVLine> beanToCsvWriter =
+                  sectionCsvLineService.getStatefulBeanToCSV(writer);
+              beanToCsvWriter.write(list);
             } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
               log.error("Error writing CSV file", e);
               throw new IOException("Error writing CSV file: " + e.getMessage());
