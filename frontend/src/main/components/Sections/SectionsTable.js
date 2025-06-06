@@ -246,7 +246,6 @@ export default function SectionsTable({ sections }) {
       aggregate: getFirstVal,
       Aggregated: renderInfoLink,
     },
-    // Stryker disable all : difficult to test modal interaction but we should try in future work
     {
       Header: "Action",
       id: "action",
@@ -299,8 +298,6 @@ export default function SectionsTable({ sections }) {
       },
     },
   ];
-
-  // Stryker enable all
 
   const testid = "SectionsTable";
 

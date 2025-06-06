@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
@@ -25,10 +26,8 @@ import org.springframework.test.web.servlet.MvcResult;
 public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
   @MockBean UserRepository userRepository;
-
-  @Autowired private MockMvc mockMvc;
-
   @MockBean private UCSBCurriculumService ucsbCurriculumService;
+  @Autowired private MockMvc mockMvc;
 
   @Test
   public void test_search() throws Exception {
@@ -63,6 +62,50 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
             .perform(get(url).contentType("application/json"))
             .andExpect(status().isOk())
             .andReturn();
+    String responseString = response.getResponse().getContentAsString();
+
+    assertEquals(expectedResult, responseString);
+  }
+
+  // Test for static ge info controller
+  @Test
+  public void test_StaticGeInfo() throws Exception {
+    String[] expectedArray = {
+      "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+      "SUB", "WRT"
+    };
+    String url = "/api/public/staticGeneralEducationInfo";
+
+    when(ucsbCurriculumService.getStaticGeInfo()).thenReturn(expectedArray);
+
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String responseString = response.getResponse().getContentAsString();
+
+    ObjectMapper mapper = new ObjectMapper();
+    String expectedJson = mapper.writeValueAsString(expectedArray);
+
+    assertEquals(expectedJson, responseString);
+  }
+
+  // Test for ge info controller that calls API
+  @Test
+  public void test_GeInfo() throws Exception {
+    String expectedResult = "expectedJSONResult";
+    String url = "/api/public/generalEducationInfo";
+
+    when(ucsbCurriculumService.getGeInfo()).thenReturn(expectedResult);
+
+    MvcResult response =
+        mockMvc
+            .perform(get(url).contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+
     String responseString = response.getResponse().getContentAsString();
 
     assertEquals(expectedResult, responseString);

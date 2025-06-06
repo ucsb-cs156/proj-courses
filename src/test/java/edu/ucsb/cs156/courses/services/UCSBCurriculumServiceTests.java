@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.courses.services;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -11,6 +12,7 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -317,5 +319,91 @@ public class UCSBCurriculumServiceTests {
     String result = ucs.getFinalsInfo(quarter, enrollCode);
 
     assertEquals(expectedResult, result);
+  }
+
+  @Test
+  public void test_getStaticGeInfo_success() throws Exception {
+    String[] expected = {
+      "A1", "A2", "AMH", "B", "C", "D", "E", "E1", "E2", "ETH", "EUR", "F", "G", "H", "NWC", "QNT",
+      "SUB", "WRT"
+    };
+
+    String[] result = ucs.getStaticGeInfo();
+    System.out.println(Arrays.toString(result));
+    assertArrayEquals(expected, result);
+  }
+
+  @Test
+  public void test_getGeInfo() throws Exception {
+    String mockResponse =
+        """
+    [
+      {
+        "requirementCode": "B",
+        "requirementTranslation": "Foreign Language",
+        "collegeCode": "L&S",
+        "objCode": "BA",
+        "courseCount": 3,
+        "units": 0,
+        "inactive": false
+      },
+      {
+        "requirementCode": "A1",
+        "requirementTranslation": "English Reading & Composition",
+        "collegeCode": "ENGR",
+        "objCode": "BS",
+        "courseCount": 1,
+        "units": 4,
+        "inactive": false
+      },
+      {
+        "requirementCode": "A1",
+        "requirementTranslation": "English Reading & Composition",
+        "collegeCode": "L&S",
+        "objCode": "BA",
+        "courseCount": 1,
+        "units": 4,
+        "inactive": false
+      },
+      {
+        "requirementCode": "WRT",
+        "requirementTranslation": "Writing",
+        "collegeCode": "L&S",
+        "objCode": "BA",
+        "courseCount": 1,
+        "units": 4,
+        "inactive": false
+      }
+    ]
+    """;
+
+    String expectedResult =
+        """
+        [
+          "A1",
+          "B",
+          "WRT"
+        ]
+        """;
+
+    this.mockRestServiceServer
+        .expect(requestTo(UCSBCurriculumService.GE_ENDPOINT))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "3.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(mockResponse, MediaType.APPLICATION_JSON));
+
+    // Call the method to test
+    String result = ucs.getGeInfo();
+
+    // parse and compare as List<String>
+    ObjectMapper mapper = new ObjectMapper();
+    List<String> actualResult = mapper.readValue(result, new TypeReference<List<String>>() {});
+
+    List<String> listResults = Arrays.asList("A1", "B", "WRT");
+
+    assertEquals(listResults, actualResult);
+
+    this.mockRestServiceServer.verify();
   }
 }
