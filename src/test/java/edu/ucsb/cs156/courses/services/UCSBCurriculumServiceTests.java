@@ -318,4 +318,20 @@ public class UCSBCurriculumServiceTests {
 
     assertEquals(expectedResult, result);
   }
+
+  @Test
+  public void test_getGeInfo_success() throws Exception {
+    String expectedResult = "[{\"code\":\"A1\",\"description\":\"English Reading & Composition\"}]";
+
+    this.mockRestServiceServer
+        .expect(requestTo(UCSBCurriculumService.GE_ENDPOINT))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "3.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+    String result = ucs.getGeInfo();
+
+    assertEquals(expectedResult, result);
+  }
 }

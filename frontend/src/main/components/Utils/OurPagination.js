@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Pagination } from "react-bootstrap";
 
 export const emptyArray = () => []; // factored out for Stryker testing
@@ -8,27 +8,24 @@ const OurPagination = ({
   totalPages = 10,
   maxPages = 8,
   testId = "OurPagination",
+  currentPage = 1,
 }) => {
-  const [activePage, setActivePage] = useState(1);
   const nextPage = () => {
-    const newPage = Math.min(activePage + 1, totalPages);
-    setActivePage(newPage);
+    const newPage = Math.min(currentPage + 1, totalPages);
     updateActivePage(newPage);
   };
   const prevPage = () => {
-    const newPage = Math.max(activePage - 1, 1);
-    setActivePage(newPage);
+    const newPage = Math.max(currentPage - 1, 1);
     updateActivePage(newPage);
   };
   const thisPage = (page) => {
-    setActivePage(page);
     updateActivePage(page);
   };
 
   const pageButton = (number) => (
     <Pagination.Item
       key={number}
-      active={number === activePage}
+      active={number === currentPage}
       onClick={() => thisPage(number)}
       data-testid={`${testId}-${number}`}
     >
@@ -47,8 +44,8 @@ const OurPagination = ({
   const generatePaginationItemsWithEllipsis = () => {
     const paginationItems = emptyArray();
 
-    const leftEllipsis = activePage > 3;
-    const rightEllipsis = activePage < totalPages - 2;
+    const leftEllipsis = currentPage > 3;
+    const rightEllipsis = currentPage < totalPages - 2;
 
     paginationItems.push(pageButton(1));
     if (leftEllipsis) {
@@ -60,8 +57,8 @@ const OurPagination = ({
       );
     }
     // Show a range of pages around the active page
-    let start = Math.max(activePage - 1, 2);
-    let end = Math.min(activePage + 1, totalPages - 1);
+    let start = Math.max(currentPage - 1, 2);
+    let end = Math.min(currentPage + 1, totalPages - 1);
 
     for (let number = start; number <= end; number++) {
       paginationItems.push(pageButton(number));

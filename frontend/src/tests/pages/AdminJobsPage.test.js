@@ -10,6 +10,7 @@ import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import jobsFixtures from "fixtures/jobsFixtures";
+import React from "react";
 
 describe("AdminJobsPage tests", () => {
   const queryClient = new QueryClient();
@@ -24,7 +25,30 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock.onGet(/\/api\/jobs\/paginated.*/).reply((config) => {
+      let page = 0;
+      let pageSize = 10;
+      if (config.params && config.params.page !== undefined) {
+        page = Number(config.params.page);
+      }
+      if (config.params && config.params.pageSize !== undefined) {
+        pageSize = Number(config.params.pageSize);
+      }
+      // Calculate totalPages based on jobsFixtures.sixJobs.length and pageSize
+      const totalElements = jobsFixtures.sixJobs.length;
+      const totalPages = Math.ceil(totalElements / pageSize);
+
+      return [
+        200,
+        {
+          content: jobsFixtures.sixJobs,
+          totalPages,
+          number: page,
+          size: pageSize,
+          totalElements,
+        },
+      ];
+    });
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -275,5 +299,146 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
 
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
+  });
+
+  test("AdminJobsPage uses correct localStorage keys for search form", async () => {
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Job Status");
+
+    // Simulate user changing dropdowns
+    userEvent.selectOptions(screen.getByLabelText("Sort By"), "updatedAt");
+    userEvent.selectOptions(screen.getByLabelText("Sort Direction"), "DESC");
+    userEvent.selectOptions(screen.getByLabelText("Page Size"), "20");
+
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "JobsSearch.SortField",
+      "updatedAt",
+    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "20");
+  });
+
+  test("AdminJobsPage renders spacing divs with correct margin styles", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const divs = document.querySelectorAll("div");
+    const hasMarginTopDiv = Array.from(divs).some(
+      (div) => div.style && div.style.marginTop === "1rem",
+    );
+    expect(hasMarginTopDiv).toBe(true);
+
+    const hasMarginBottomDiv = Array.from(divs).some(
+      (div) => div.style && div.style.marginBottom === "1rem",
+    );
+    expect(hasMarginBottomDiv).toBe(true);
+  });
+
+  test("When localstorage is empty, fallback values are used", async () => {
+    jest.spyOn(Storage.prototype, "getItem").mockImplementation(() => null);
+
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+
+    const useLocalStorageSpy = jest.spyOn(
+      require("main/utils/useLocalStorage"),
+      "default",
+    );
+
+    axiosMock.onGet("/api/jobs/paginated").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 3,
+      number: 0,
+      size: 10,
+      totalElements: jobsFixtures.sixJobs.length,
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
+    expect(await screen.findByText("Job Status")).toBeInTheDocument();
+
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "status");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "5");
+
+    const calls = useLocalStorageSpy.mock.calls;
+    let counts = {};
+    for (const call of calls) {
+      const key = `${call[0]},${call[1]}`;
+      counts[key] = counts[key] ? counts[key] + 1 : 1;
+    }
+
+    expect(counts).toEqual({
+      "JobsSearch.PageSize,5": 6,
+      "JobsSearch.SortDirection,ASC": 6,
+      "JobsSearch.SortField,status": 6,
+    });
+
+    expect(axiosMock.history.get.length).toBe(4);
+    const urls = axiosMock.history.get.map((req) => req.url);
+    expect(urls).toContain("/api/systemInfo");
+    expect(urls).toContain("/api/UCSBSubjects/all");
+    expect(urls).toContain("/api/currentUser");
+    expect(urls).toContain("/api/jobs/paginated");
+
+    const updatesRequest = axiosMock.history.get.find(
+      (req) => req.url && req.url.includes("/api/jobs/paginated"),
+    );
+    expect(updatesRequest.params).toEqual({
+      page: 0,
+      pageSize: 5,
+      sortField: "status",
+      sortDirection: "ASC",
+    });
+
+    expect(screen.getByTestId("OurPagination-1")).toBeInTheDocument();
+    expect(screen.getByTestId("OurPagination-2")).toBeInTheDocument();
+
+    expect(screen.queryByTestId("OurPagination-3")).not.toBeInTheDocument();
+
+    const page2 = await screen.findByTestId("OurPagination-2");
+    await waitFor(() => {
+      const lastRequest = axiosMock.history.get
+        .filter((req) => req.url && req.url.includes("/api/jobs/paginated"))
+        .pop();
+      expect(lastRequest.params.page).toBe(0); // or whatever the expected page is
+    });
+    userEvent.click(page2);
+    await waitFor(() => {
+      const lastRequest = axiosMock.history.get
+        .filter((req) => req.url && req.url.includes("/api/jobs/paginated"))
+        .pop();
+      expect(lastRequest.params.page).toBe(1); // or whatever the expected page is
+    });
+
+    userEvent.selectOptions(screen.getByLabelText("Page Size"), "10");
+
+    await waitFor(() => {
+      const lastRequest = axiosMock.history.get
+        .filter((req) => req.url && req.url.includes("/api/jobs/paginated"))
+        .pop();
+
+      expect(lastRequest.params.page).toBe(0); // or whatever the expected page is
+    });
   });
 });

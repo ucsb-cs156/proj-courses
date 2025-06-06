@@ -3,8 +3,8 @@ package edu.ucsb.cs156.courses.controllers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
@@ -32,7 +32,6 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
   @Test
   public void test_search() throws Exception {
-
     String expectedResult = "{expectedJSONResult}";
     String urlTemplate = "/api/public/basicsearch?qtr=%s&dept=%s&level=%s";
     String url = String.format(urlTemplate, "20204", "CMPSC", "L");
@@ -49,7 +48,6 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     assertEquals(expectedResult, responseString);
   }
 
-  // Tests for the final exam information controller
   @Test
   public void test_finalsInfo() throws Exception {
     String expectedResult = "{expectedJSONResult}";
@@ -65,6 +63,21 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
             .andReturn();
     String responseString = response.getResponse().getContentAsString();
 
+    assertEquals(expectedResult, responseString);
+  }
+
+  @Test
+  public void test_generalEducationInfo() throws Exception {
+    String expectedResult = "[{\"code\":\"A1\",\"description\":\"English Reading & Composition\"}]";
+    when(ucsbCurriculumService.getGeInfo()).thenReturn(expectedResult);
+
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/public/generalEducationInfo").contentType("application/json"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedResult, responseString);
   }
 }

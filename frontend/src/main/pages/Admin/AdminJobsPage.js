@@ -7,12 +7,29 @@ import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import SingleButtonJobForm from "main/components/Jobs/SingleButtonJobForm";
 
+import { useState } from "react";
+import JobsSearchForm from "main/components/Jobs/JobsSearchForm";
+import OurPagination from "main/components/Utils/OurPagination";
+import useLocalStorage from "main/utils/useLocalStorage";
+
 import { useBackendMutation } from "main/utils/useBackend";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
 import UpdateCoursesByQuarterJobForm from "main/components/Jobs/UpdateCoursesByQuarterJobForm";
 import UpdateCoursesByQuarterRangeJobForm from "main/components/Jobs/UpdateCoursesByQuarterRangeJobForm";
 
 const AdminJobsPage = () => {
+  const [selectedPage, setSelectedPage] = useState(1);
+
+  const [sortField, setSortField] = useLocalStorage(
+    "JobsSearch.SortField",
+    "status",
+  );
+  const [sortDirection, setSortDirection] = useLocalStorage(
+    "JobsSearch.SortDirection",
+    "ASC",
+  );
+  const [pageSize, setPageSize] = useLocalStorage("JobsSearch.PageSize", "5");
+
   const refreshJobsIntervalMilliseconds = 5000;
 
   // test job
@@ -116,16 +133,22 @@ const AdminJobsPage = () => {
 
   // Stryker disable all
   const {
-    data: jobs,
+    data: page,
     error: _error,
     status: _status,
   } = useBackend(
-    ["/api/jobs/all"],
+    ["/api/jobs/paginated", selectedPage, pageSize, sortField, sortDirection],
     {
       method: "GET",
-      url: "/api/jobs/all",
+      url: "/api/jobs/paginated",
+      params: {
+        page: Number(selectedPage - 1),
+        pageSize: Number(pageSize),
+        sortField: sortField,
+        sortDirection: sortDirection,
+      },
     },
-    [],
+    undefined,
     { refetchInterval: refreshJobsIntervalMilliseconds },
   );
   // Stryker restore  all
@@ -166,6 +189,11 @@ const AdminJobsPage = () => {
     },
   ];
 
+  const handlePageSizeChange = (newSize) => {
+    setPageSize(newSize);
+    setSelectedPage(1);
+  };
+
   return (
     <BasicLayout>
       <h2 className="p-3">Launch Jobs</h2>
@@ -178,9 +206,24 @@ const AdminJobsPage = () => {
         ))}
       </Accordion>
 
+      <div style={{ marginTop: "1rem" }} />
+
+      <JobsSearchForm
+        updateSortField={setSortField}
+        updateSortDirection={setSortDirection}
+        updatePageSize={handlePageSizeChange}
+      />
+
+      <div style={{ marginBottom: "1rem" }} />
+      <OurPagination
+        updateActivePage={setSelectedPage}
+        totalPages={page?.totalPages || 0}
+        currentPage={selectedPage}
+      />
+
       <h2 className="p-3">Job Status</h2>
 
-      <JobsTable jobs={jobs} />
+      <JobsTable jobs={page?.content || []} />
       <Button variant="danger" onClick={purgeJobLog} data-testid="purgeJobLog">
         Purge Job Log
       </Button>
