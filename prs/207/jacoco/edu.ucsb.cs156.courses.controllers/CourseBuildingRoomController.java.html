@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CourseBuildingRoomController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">CourseBuildingRoomController.java</span></div><h1>CourseBuildingRoomController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(&quot;/api/public/coursebuildingroom&quot;)
+<span class="fc" id="L22">public class CourseBuildingRoomController {</span>
+
+<span class="fc" id="L24">  private ObjectMapper mapper = new ObjectMapper();</span>
+
+  @Autowired ConvertedSectionCollection convertedSectionCollection;
+
+  @Operation(summary = &quot;Get a list of classroom numbers from a building for a specified quarter&quot;)
+  @GetMapping(value = &quot;/buildingroomsearch&quot;, produces = &quot;application/json&quot;)
+  public ResponseEntity&lt;String&gt; search(
+      @Parameter(
+              name = &quot;targetQtr&quot;,
+              description =
+                  &quot;Quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)&quot;,
+              example = &quot;20231&quot;,
+              required = true)
+          @RequestParam
+          String targetQtr,
+      @Parameter(
+              name = &quot;buildingCode&quot;,
+              description = &quot;Building code such as PHELP for Phelps, GIRV for Girvetz&quot;,
+              example = &quot;GIRV&quot;,
+              required = true)
+          @RequestParam
+          String buildingCode)
+      throws JsonProcessingException {
+
+    // Fetch courses for the specified quarter and building
+<span class="fc" id="L49">    List&lt;ConvertedSection&gt; courseResults =</span>
+<span class="fc" id="L50">        convertedSectionCollection.findByQuarterAndBuildingCode(targetQtr, buildingCode);</span>
+
+    // Use a Set to ensure unique room numbers
+<span class="fc" id="L53">    Set&lt;String&gt; classroomNumbers = new HashSet&lt;&gt;();</span>
+
+    // Iterate over each course and its timeLocations
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    for (ConvertedSection course : courseResults) {</span>
+      // Iterate over the timeLocation array of each section
+      for (edu.ucsb.cs156.courses.documents.TimeLocation timeLocation :
+<span class="fc bfc" id="L59" title="All 2 branches covered.">          course.getSection().getTimeLocations()) {</span>
+<span class="fc" id="L60">        String room =</span>
+            timeLocation
+<span class="fc" id="L62">                .getRoom(); // Assuming `getRoom()` fetches the room number from timeLocation</span>
+<span class="fc bfc" id="L63" title="All 4 branches covered.">        if (room != null &amp;&amp; !room.isEmpty()) {</span>
+<span class="fc" id="L64">          classroomNumbers.add(room); // Add room to the set, automatically ensuring uniqueness</span>
+        }
+<span class="fc" id="L66">      }</span>
+<span class="fc" id="L67">    }</span>
+
+    // Convert the set of unique classroom numbers to a list
+<span class="fc" id="L70">    List&lt;String&gt; uniqueClassrooms = new ArrayList&lt;&gt;(classroomNumbers);</span>
+
+    // Convert the classroom numbers list to JSON
+<span class="fc" id="L73">    String body = mapper.writeValueAsString(uniqueClassrooms);</span>
+<span class="fc" id="L74">    return ResponseEntity.ok().body(body);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
