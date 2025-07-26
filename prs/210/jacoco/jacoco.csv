@@ -15,11 +15,11 @@ courses,edu.ucsb.cs156.courses.controllers,JobsController,0,261,0,8,0,47,0,19,0,
 courses,edu.ucsb.cs156.courses.controllers,GradeHistoryController,0,18,0,0,0,5,0,3,0,3
 courses,edu.ucsb.cs156.courses.controllers,ApiController,0,33,0,0,0,10,0,6,0,6
 courses,edu.ucsb.cs156.courses.controllers,UserInfoController,0,6,0,0,0,2,0,2,0,2
-courses,edu.ucsb.cs156.courses.controllers,CoursesCSVController,0,107,0,2,0,25,0,6,0,5
+courses,edu.ucsb.cs156.courses.controllers,CoursesCSVController,0,98,0,0,0,25,0,5,0,5
 courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeBuildingController,0,93,0,12,0,22,0,13,0,7
 courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeController,0,89,0,2,0,15,0,4,0,3
 courses,edu.ucsb.cs156.courses.controllers,UCSBSubjectsController,0,73,0,0,0,17,0,9,0,9
-courses,edu.ucsb.cs156.courses.documents,CoursePage,0,233,0,18,0,64,0,15,0,6
+courses,edu.ucsb.cs156.courses.documents,CoursePage,0,229,0,18,0,64,0,15,0,6
 courses,edu.ucsb.cs156.courses.documents,ConvertedSection,0,52,0,0,0,15,0,2,0,2
 courses,edu.ucsb.cs156.courses.documents,Course,0,4,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,GeneralEducation,0,20,0,4,0,5,0,3,0,1
@@ -46,6 +46,7 @@ courses,edu.ucsb.cs156.courses.services,UCSBCurriculumService.new TypeReference(
 courses,edu.ucsb.cs156.courses.services,CurrentUserService,0,10,0,2,0,2,0,3,0,2
 courses,edu.ucsb.cs156.courses.services,IsStaleService,0,68,0,6,0,20,0,7,0,4
 courses,edu.ucsb.cs156.courses.services,UCSBAPIQuarterService.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
+courses,edu.ucsb.cs156.courses.services,SectionCSVLineService,0,13,0,0,0,3,0,3,0,3
 courses,edu.ucsb.cs156.courses.services,UCSBAPIQuarterService,0,439,0,34,0,103,0,35,0,18
 courses,edu.ucsb.cs156.courses.services,UCSBSubjectsService.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.services,UCSBGradeHistoryServiceImpl,0,205,0,6,0,51,0,11,0,8
