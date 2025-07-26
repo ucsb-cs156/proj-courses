@@ -3,7 +3,9 @@
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;UCSBCurriculumController&quot;)
 @RestController
 @RequestMapping(&quot;/api/public&quot;)
-<span class="fc" id="L18">@Slf4j</span>
-<span class="fc" id="L19">public class UCSBCurriculumController extends ApiController {</span>
+<span class="fc" id="L20">@Slf4j</span>
+<span class="fc" id="L21">public class UCSBCurriculumController extends ApiController {</span>
 
   @Autowired UserRepository userRepository;
   @Autowired UCSBCurriculumService ucsbCurriculumService;
@@ -27,9 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
       @RequestParam String qtr, @RequestParam String dept, @RequestParam String level)
       throws Exception {
 
-<span class="fc" id="L30">    String body = ucsbCurriculumService.getJSON(dept, qtr, level);</span>
+<span class="fc" id="L32">    String body = ucsbCurriculumService.getJSON(dept, qtr, level);</span>
 
-<span class="fc" id="L32">    return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L34">    return ResponseEntity.ok().body(body);</span>
   }
 
   // Backend for final exam info, similar to the above operation:
@@ -39,9 +41,28 @@ import org.springframework.web.bind.annotation.RestController;
       @RequestParam String quarterYYYYQ, @RequestParam String enrollCd)
       throws Exception { // Looks for quarter and code
 
-<span class="fc" id="L42">    String body = ucsbCurriculumService.getFinalsInfo(quarterYYYYQ, enrollCd);</span>
+<span class="fc" id="L44">    String body = ucsbCurriculumService.getFinalsInfo(quarterYYYYQ, enrollCd);</span>
 
-<span class="fc" id="L44">    return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L46">    return ResponseEntity.ok().body(body);</span>
+  }
+
+  @Operation(summary = &quot;Get General Education areas, optionally filtered by collegeCode&quot;)
+  @GetMapping(value = &quot;/generalEducationInfo&quot;, produces = &quot;application/json&quot;)
+  public ResponseEntity&lt;?&gt; generalEducationInfo(
+      @Parameter(description = &quot;Enter either L&amp;S, ENGR, or CRST&quot;)
+          @RequestParam(value = &quot;collegeCode&quot;, required = false)
+          String collegeCode)
+      throws Exception {
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (collegeCode != null) {</span>
+      // returns List&lt;String&gt; of requirementCode
+<span class="fc" id="L59">      List&lt;String&gt; codes = ucsbCurriculumService.getRequirementCodesByCollege(collegeCode);</span>
+<span class="fc" id="L60">      return ResponseEntity.ok().body(codes);</span>
+    } else {
+      // returns the full raw JSON array
+<span class="fc" id="L63">      String body = ucsbCurriculumService.getGeneralEducationInfo();</span>
+<span class="fc" id="L64">      return ResponseEntity.ok().body(body);</span>
+    }
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
