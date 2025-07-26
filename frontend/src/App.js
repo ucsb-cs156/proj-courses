@@ -15,16 +15,17 @@ import "bootstrap/dist/css/bootstrap.css";
 import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
-
 import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailsPage";
+import PersonalSchedulesWeeklyViewPage from "main/pages/PersonalSchedules/PersonalSchedulesWeeklyViewPage";
 import SectionSearchesIndexPage from "main/pages/SectionSearches/SectionSearchesIndexPage";
 
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
-
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 
+import GeneralEducationSearchPage from "main/pages/GeneralEducation/Search/GeneralEducationSearchPage";
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
+
 function App() {
   const { data: currentUser } = useCurrentUser();
 
@@ -69,6 +70,11 @@ function App() {
               path="/personalschedules/details/:id"
               element={<PersonalSchedulesDetailsPage />}
             />
+            <Route
+              exact
+              path="/personalschedules/weekly/:id"
+              element={<PersonalSchedulesWeeklyViewPage />}
+            />
           </>
         )}
         <Route
@@ -83,7 +89,7 @@ function App() {
         />
         <Route
           exact
-          path="/courseovertime/buildingsearch"
+          path="/courseovertime/buildingsearch/classrooms"
           element={<CourseOverTimeBuildingsIndexPage />}
         />
         <Route
@@ -95,6 +101,11 @@ function App() {
           exact
           path="/coursedetails/:qtr/:enrollCode"
           element={<CourseDetailsIndexPage />}
+        />
+        <Route
+          exact
+          path="/generaleducation/search"
+          element={<GeneralEducationSearchPage />}
         />
       </Routes>
     </BrowserRouter>

@@ -246,16 +246,13 @@ export default function SectionsTable({ sections }) {
       aggregate: getFirstVal,
       Aggregated: renderInfoLink,
     },
-    // Stryker disable all : difficult to test modal interaction but we should try in future work
     {
       Header: "Action",
       id: "action",
       accessor: "section.enrollCode",
       disableGroupBy: true,
       // No need for accessor if it's purely for actions like expand/collapse
-      // Stryker disable all : difficult to test modal interaction
       Cell: ({ row }) => {
-        /* istanbul ignore next : difficult to test modal interaction*/
         if (isSection(row.original.section.section) && currentUser.loggedIn) {
           return (
             <div className="d-flex align-items-center gap-2">
@@ -269,11 +266,11 @@ export default function SectionsTable({ sections }) {
             </div>
           );
         } else {
-          return null;
+          return <div data-testid="empty-action-cell"></div>;
         }
       },
       aggregate: getFirstVal,
-      Aggregated: ({ cell: { value }, row }) => /* istanbul ignore next */ {
+      Aggregated: ({ cell: { value }, row }) => {
         const testId = `${testid}-cell-row-${row.index}-col-${value}-expand-symbols`;
         if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
           return (
@@ -288,7 +285,7 @@ export default function SectionsTable({ sections }) {
             </div>
           );
         } else if (!isLectureWithSections(value, sections)) {
-          return null;
+          return <div data-testid="empty-action-cell"></div>;
         } else {
           return (
             <span {...row.getToggleRowExpandedProps()} data-testid={testId}>

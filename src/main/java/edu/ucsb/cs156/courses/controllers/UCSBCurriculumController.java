@@ -3,7 +3,9 @@ package edu.ucsb.cs156.courses.controllers;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +44,24 @@ public class UCSBCurriculumController extends ApiController {
     String body = ucsbCurriculumService.getFinalsInfo(quarterYYYYQ, enrollCd);
 
     return ResponseEntity.ok().body(body);
+  }
+
+  @Operation(summary = "Get General Education areas, optionally filtered by collegeCode")
+  @GetMapping(value = "/generalEducationInfo", produces = "application/json")
+  public ResponseEntity<?> generalEducationInfo(
+      @Parameter(description = "Enter either L&S, ENGR, or CRST")
+          @RequestParam(value = "collegeCode", required = false)
+          String collegeCode)
+      throws Exception {
+
+    if (collegeCode != null) {
+      // returns List<String> of requirementCode
+      List<String> codes = ucsbCurriculumService.getRequirementCodesByCollege(collegeCode);
+      return ResponseEntity.ok().body(codes);
+    } else {
+      // returns the full raw JSON array
+      String body = ucsbCurriculumService.getGeneralEducationInfo();
+      return ResponseEntity.ok().body(body);
+    }
   }
 }

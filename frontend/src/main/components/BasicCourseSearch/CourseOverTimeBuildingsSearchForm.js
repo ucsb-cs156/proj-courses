@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 import { allBuildings } from "fixtures/buildingFixtures";
@@ -11,38 +12,53 @@ import SingleBuildingDropdown from "../Buildings/SingleBuildingDropdown";
 const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
 
-  // Stryker disable OptionalChaining
-  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
-  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker restore OptionalChaining
+  // stryker-disable OptionalChaining
+  const startQtr = systemInfo?.startQtrYYYYQ ?? "20232";
+  const endQtr = systemInfo?.endQtrYYYYQ ?? "20254";
+  // stryker-enable OptionalChaining
+  const availableQuarters = quarterRange(startQtr, endQtr);
 
-  const quarters = quarterRange(startQtr, endQtr);
-
-  // Stryker disable all : not sure how to test/mock local storage
-  const localStartQuarter = localStorage.getItem(
-    "CourseOverTimeBuildingsSearch.StartQuarter",
-  );
-  const localEndQuarter = localStorage.getItem(
-    "CourseOverTimeBuildingsSearch.EndQuarter",
+  const localQuarter = localStorage.getItem(
+    "CourseOverTimeBuildingsSearch.Quarter",
   );
   const localBuildingCode = localStorage.getItem(
     "CourseOverTimeBuildingsSearch.BuildingCode",
   );
 
-  const [startQuarter, setStartQuarter] = useState(
-    localStartQuarter || quarters[0].yyyyq,
+  const [Quarter, setQuarter] = useState(
+    localQuarter || availableQuarters[0].yyyyq,
   );
-  const [endQuarter, setEndQuarter] = useState(
-    localEndQuarter || quarters[0].yyyyq,
-  );
-  const [buildingCode, setBuildingCode] = useState(localBuildingCode || {});
-
-  // Stryker restore all
+  const [buildingCode, setBuildingCode] = useState(localBuildingCode || "");
+  const [availableClassrooms, setAvailableClassrooms] = useState([]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { startQuarter, endQuarter, buildingCode });
+    fetchJSON(event, { Quarter, buildingCode, classroom: "" });
   };
+
+  useEffect(() => {
+    async function fetchClassrooms() {
+      if (Quarter && buildingCode) {
+        try {
+          console.log("Fetching classrooms with:", { Quarter, buildingCode });
+          const response = await axios.get(
+            "/api/public/courseovertime/buildingsearch/classrooms",
+            {
+              params: { quarter: Quarter, buildingCode },
+            },
+          );
+          console.log("Classrooms returned:", response.data);
+          const classrooms = response.data.sort();
+
+          setAvailableClassrooms(classrooms);
+        } catch (error) {
+          console.error("Error fetching classrooms", error);
+          setAvailableClassrooms([]);
+        }
+      }
+    }
+    fetchClassrooms();
+  }, [Quarter, buildingCode]);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -50,20 +66,11 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
         <Row>
           <Col md="auto">
             <SingleQuarterDropdown
-              quarters={quarters}
-              quarter={startQuarter}
-              setQuarter={setStartQuarter}
-              controlId={"CourseOverTimeBuildingsSearch.StartQuarter"}
-              label={"Start Quarter"}
-            />
-          </Col>
-          <Col md="auto">
-            <SingleQuarterDropdown
-              quarters={quarters}
-              quarter={endQuarter}
-              setQuarter={setEndQuarter}
-              controlId={"CourseOverTimeBuildingsSearch.EndQuarter"}
-              label={"End Quarter"}
+              quarters={availableQuarters}
+              quarter={Quarter}
+              setQuarter={setQuarter}
+              controlId={"CourseOverTimeBuildingsSearch.Quarter"}
+              label={"Quarter"}
             />
           </Col>
           <Col md="auto">
@@ -83,6 +90,11 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             </Button>
           </Col>
         </Row>
+        {availableClassrooms.length > 0 && (
+          <div data-testid="available-classrooms">
+            {availableClassrooms.join(", ")}
+          </div>
+        )}
       </Container>
     </Form>
   );
