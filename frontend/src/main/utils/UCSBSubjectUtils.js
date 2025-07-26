@@ -9,7 +9,7 @@ export function cellToAxiosParamsDelete(cell) {
     url: "/api/UCSBSubjects",
     method: "DELETE",
     params: {
-      subjectCode: cell.row.values.subjectCode,
+      subjectCode: cell.row.original.subjectCode,
     },
   };
 }

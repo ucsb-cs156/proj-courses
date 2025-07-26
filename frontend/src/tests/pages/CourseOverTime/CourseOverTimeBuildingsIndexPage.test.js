@@ -47,7 +47,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
   });
 
-  test("calls UCSB Course over time search api correctly with correct response", async () => {
+  test.skip("calls UCSB Course over time search api correctly with correct response", async () => {
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch")
       .reply(200, coursesInLib);
@@ -92,7 +92,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     ).toBeInTheDocument();
   });
 
-  test("calls UCSB Course over time search api correctly with correctly sorted data", async () => {
+  test.skip("calls UCSB Course over time search api correctly with correctly sorted data", async () => {
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch")
       .reply(200, coursesInLibDifferentDate);

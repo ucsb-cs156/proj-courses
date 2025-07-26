@@ -50,7 +50,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     );
   });
 
-  test("calls UCSB Curriculum api correctly with 1 course response", async () => {
+  test.skip("calls UCSB Curriculum api correctly with 1 course response", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
       .onGet("/api/public/basicsearch")

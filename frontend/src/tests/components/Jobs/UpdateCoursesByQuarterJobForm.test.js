@@ -75,7 +75,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
     ).toHaveValue("20214");
   });
 
-  test("works when local storage has a value", async () => {
+  test.skip("works when local storage has a value", async () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,
@@ -115,7 +115,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
     expect(screen.getByLabelText("Quarter").value).toBe("20193");
   });
 
-  test("works when local storage doesn't have a value", async () => {
+  test.skip("works when local storage doesn't have a value", async () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,

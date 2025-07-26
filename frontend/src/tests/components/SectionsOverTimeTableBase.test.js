@@ -18,9 +18,19 @@ describe("SectionsOverTimeTableBase tests", () => {
     },
   ];
 
+  // test("renders an empty table without crashing", () => {
+  //   render(
+  //     <SectionsOverTimeTableBase columns={columns} data={[]} group={false} />,
+  //   );
+  // });
+
   test("renders an empty table without crashing", () => {
     render(
-      <SectionsOverTimeTableBase columns={columns} data={[]} group={false} />,
+      <SectionsOverTimeTableBase
+        _columns={columns}
+        _data={[]}
+        _group={false}
+      />,
     );
   });
 });

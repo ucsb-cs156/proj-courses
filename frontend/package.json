@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@jest/core": "^29.7.0",
+    "@tanstack/react-table": "^8.21.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.4",
@@ -20,7 +21,6 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
-    "react-table": "^7.8.0",
     "react-toastify": "^10.0.5",
     "react18-json-view": "^0.2.8",
     "recharts": "^2.12.7",

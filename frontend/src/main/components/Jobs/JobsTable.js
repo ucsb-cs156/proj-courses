@@ -8,19 +8,19 @@ export default function JobsTable({ jobs }) {
 
   const columns = [
     {
-      Header: "id",
-      accessor: "id", // accessor is the "key" in the data
+      header: "id",
+      accessorKey: "id", // accessor is the "key" in the data
     },
     DateColumn("Created", (cell) => cell.row.original.createdAt),
     DateColumn("Updated", (cell) => cell.row.original.updatedAt),
     {
-      Header: "Status",
-      accessor: "status",
+      header: "Status",
+      accessorKey: "status",
     },
     {
-      Header: "Log",
-      accessor: "log",
-      Cell: ({ cell }) => {
+      header: "Log",
+      accessorKey: "log",
+      cell: ({ cell }) => {
         const log = cell.row.original.log;
         if (!log) {
           return (

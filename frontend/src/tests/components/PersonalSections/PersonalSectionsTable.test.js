@@ -20,7 +20,7 @@ jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
-describe("UserTable tests", () => {
+describe("PersonalSectionsTable tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table with user not logged in", () => {
@@ -97,12 +97,12 @@ describe("UserTable tests", () => {
     ];
     const expectedFields = [
       "courseId",
-      "classSections[0].enrollCode",
-      "classSections[0].section",
+      "enrollCode",
+      "section",
       "title",
       "enrolled",
       "location",
-      "classSections[0].timeLocations[0].days",
+      "days",
       "time",
       "instructor",
     ];
@@ -121,12 +121,10 @@ describe("UserTable tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-courseId`),
     ).toHaveTextContent("ECE 1A");
     expect(
-      screen.getByTestId(
-        `${testId}-cell-row-0-col-classSections[0].enrollCode`,
-      ),
+      screen.getByTestId(`${testId}-cell-row-0-col-enrollCode`),
     ).toHaveTextContent("12583");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].section`),
+      screen.getByTestId(`${testId}-cell-row-0-col-section`),
     ).toHaveTextContent("0100");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-title`),
@@ -138,9 +136,7 @@ describe("UserTable tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-location`),
     ).toHaveTextContent("BUCHN 1930");
     expect(
-      screen.getByTestId(
-        `${testId}-cell-row-0-col-classSections[0].timeLocations[0].days`,
-      ),
+      screen.getByTestId(`${testId}-cell-row-0-col-days`),
     ).toHaveTextContent("M");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-time`),

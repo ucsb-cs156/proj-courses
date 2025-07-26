@@ -7,6 +7,7 @@ import {
 } from "main/utils/PersonalSectionsUtils";
 import {
   convertToFraction,
+  formatDays,
   formatInstructors,
   formatLocation,
   formatTime,
@@ -34,16 +35,20 @@ export default function PersonalSectionsTable({
 
   const columns = [
     {
-      Header: "Course ID",
-      accessor: "courseId",
+      header: "Course ID",
+      accessorKey: "courseId",
     },
     {
       Header: "Enroll Code",
-      accessor: "classSections[0].enrollCode",
+      cell: ({ cell }) => cell.row.original.classSections[0].enrollCode,
+      id: "enrollCode",
+      accessorKey: "enrollCode",
     },
     {
       Header: "Section",
-      accessor: "classSections[0].section",
+      cell: ({ cell }) => cell.row.original.classSections[0].section,
+      id: "section",
+      accessorKey: "section",
     },
     {
       Header: "Title",
@@ -51,30 +56,36 @@ export default function PersonalSectionsTable({
     },
     {
       Header: "Enrolled",
-      accessor: (row) =>
+      cell: ({ cell }) =>
         convertToFraction(
-          row.classSections[0].enrolledTotal,
-          row.classSections[0].maxEnroll,
+          cell.row.original.classSections[0].enrolledTotal,
+          cell.row.original.classSections[0].maxEnroll,
         ),
       id: "enrolled",
     },
     {
       Header: "Location",
-      accessor: (row) => formatLocation(row.classSections[0].timeLocations),
+      cell: ({ cell }) =>
+        formatLocation(cell.row.original.classSections[0].timeLocations),
       id: "location",
     },
     {
       Header: "Days",
-      accessor: "classSections[0].timeLocations[0].days",
+      cell: ({ cell }) =>
+        formatDays(cell.row.original.classSections[0].timeLocations),
+      id: "days",
+      accessorKey: "days",
     },
     {
       Header: "Time",
-      accessor: (row) => formatTime(row.classSections[0].timeLocations),
+      cell: ({ cell }) =>
+        formatTime(cell.row.original.classSections[0].timeLocations),
       id: "time",
     },
     {
       Header: "Instructor",
-      accessor: (row) => formatInstructors(row.classSections[0].instructors),
+      accessor: ({ cell }) =>
+        formatInstructors(cell.row.original.classSections[0].instructors),
       id: "instructor",
     },
   ];
