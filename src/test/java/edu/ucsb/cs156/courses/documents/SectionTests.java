@@ -62,4 +62,17 @@ public class SectionTests {
     s.setInstructors(instructors);
     assertEquals("CONRAD P T, WANG R K", s.instructorList());
   }
+
+  @Test
+  public void test_isPrimary() {
+    Section s = new Section();
+    s.setSection("12300");
+    assertEquals(true, s.isPrimary());
+    s.setSection("12301");
+    assertEquals(false, s.isPrimary());
+    s.setSection("123");
+    assertEquals(false, s.isPrimary());
+    s.setSection(null);
+    assertEquals(false, s.isPrimary());
+  }
 }

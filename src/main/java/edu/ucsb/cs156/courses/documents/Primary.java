@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.courses.documents;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,15 +13,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(
-    ignoreUnknown = true,
-    value = {"contactHours"})
-@Document(collection = "courses")
-public class Course {
+@Document(collection = "primaries")
+public class Primary {
   private String quarter;
   private String courseId;
   private String title;
   private String description;
-  private List<Section> classSections;
+  private Section primary;
+  private List<Section> secondaries;
   private List<GeneralEducation> generalEducation;
 }

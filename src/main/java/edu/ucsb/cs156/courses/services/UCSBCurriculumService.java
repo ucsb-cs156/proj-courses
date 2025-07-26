@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.GERequirement;
+import edu.ucsb.cs156.courses.documents.Primary;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +102,41 @@ public class UCSBCurriculumService {
     String json = getJSON(subjectArea, quarter, courseLevel);
     CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);
     List<ConvertedSection> result = coursePage.convertedSections();
+    return result;
+  }
+
+  /**
+   * This method retrieves course information and reformats it so that each primary is a single
+   * object, that has a list of all of it's secondaries.
+   *
+   * <p>As a reminder, the UCSB course registration systems (GOLD, Blue, Star, etc.) treat all
+   * courses as "sections", even what we typically call "lectures". In the database, some courses
+   * have both primary and secondary sections. Primary sections have section numbers ending in 00
+   * (e.g. 100, 200, 300, up to 9900), while secondaries have numbers ending with 01, 02, 03, etc.
+   * and "belong" with a primary.
+   *
+   * <p>What we typically refer to as "lectures" are primary sections ending in 00 (e.g. 100, 200,
+   * 300). What we typically refer to as discussion sections are secondaries and end with 01, 02,
+   * 03, etc.
+   *
+   * <p>
+   *
+   * <p>The UCSB API <i>almost</i> does this, but not quite. It returns a list of all sections, but
+   * does not group them into primaries and secondaries. This method relies on the <code>
+   * getPrimaries</code> method of the <code>Page</code> class to reformat the data so that each
+   * primary section is a single object, with a list of all of its secondaries.
+   *
+   * @param subjectArea
+   * @param quarter
+   * @param courseLevel
+   * @return a list of Primaries
+   * @throws Exception
+   */
+  public List<Primary> getPrimaries(String subjectArea, String quarter, String courseLevel)
+      throws Exception {
+    String json = getJSON(subjectArea, quarter, courseLevel);
+    CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);
+    List<Primary> result = coursePage.getPrimaries();
     return result;
   }
 
