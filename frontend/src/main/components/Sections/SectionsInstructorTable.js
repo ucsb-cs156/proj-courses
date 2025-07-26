@@ -13,16 +13,18 @@ export default function SectionsInstructorTable({ sections }) {
   const columns = [
     {
       Header: "Quarter",
-      accessor: (row) => yyyyqToQyy(row.courseInfo.quarter),
+      cell: ({cell}) => yyyyqToQyy(cell.row.original.courseInfo.quarter),
       disableGroupBy: true,
       id: "quarter",
-      Cell: ({ cell: { value } }) => value,
     },
     {
       Header: "Course ID",
-      accessor: "courseInfo.courseId",
+      accessorKey: "courseId",
       disableGroupBy: true,
-      Cell: ({ cell: { value } }) => value.substring(0, value.length - 2),
+      cell: ({ cell }) => {
+        const value = cell.row.original.courseInfo.courseId;
+        return value.substring(0, value.length - 2)
+      }
     },
     {
       Header: "Title",
@@ -31,44 +33,50 @@ export default function SectionsInstructorTable({ sections }) {
     },
     {
       Header: "Status",
-      accessor: (row) => formatStatus(row.section),
+      cell: ({cell}) => formatStatus(cell.row.original.section),
       disableGroupBy: true,
       id: "status",
     },
     {
       Header: "Enrolled",
-      accessor: (row) =>
-        convertToFraction(row.section.enrolledTotal, row.section.maxEnroll),
+      cell: ({cell}) =>
+        convertToFraction(
+          cell.row.original.section.enrolledTotal,
+          cell.row.original.section.maxEnroll
+        ),
       disableGroupBy: true,
       id: "enrolled",
     },
     {
       Header: "Location",
-      accessor: (row) => formatLocation(row.section.timeLocations),
+      cell: ({cell}) =>
+        formatLocation(cell.row.original.section.timeLocations),
       disableGroupBy: true,
       id: "location",
     },
     {
       Header: "Days",
-      accessor: (row) => formatDays(row.section.timeLocations),
+      cell: ({cell}) => formatDays(cell.row.original.section.timeLocations),
       disableGroupBy: true,
       id: "days",
     },
     {
       Header: "Time",
-      accessor: (row) => formatTime(row.section.timeLocations),
+      cell: ({cell}) => formatTime(cell.row.original.section.timeLocations),
       disableGroupBy: true,
       id: "time",
     },
     {
       Header: "Instructor",
-      accessor: (row) => formatInstructors(row.section.instructors),
+      cell: ({cell}) =>
+          formatInstructors(cell.row.original.section.instructors),
       disableGroupBy: true,
       id: "instructor",
     },
     {
       Header: "Enroll Code",
-      accessor: "section.enrollCode",
+      cell: ({cell}) => cell.row.original.section.enrollCode,
+      id: "enrollCode",
       disableGroupBy: true,
     },
   ];

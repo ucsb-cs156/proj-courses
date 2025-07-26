@@ -11,7 +11,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-describe.skip("Section tests", () => {
+describe("Section tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table", () => {
@@ -24,7 +24,7 @@ describe.skip("Section tests", () => {
     );
   });
 
-  test("Has the expected cell values", () => {
+  test.skip("Has the expected cell values", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -47,15 +47,15 @@ describe.skip("Section tests", () => {
     ];
     const expectedFields = [
       "quarter",
-      "courseInfo.courseId",
-      "courseInfo.title",
+      "courseId",
+      "title",
       "status",
       "enrolled",
       "location",
       "days",
       "time",
       "instructor",
-      "section.enrollCode",
+      "enrollCode",
     ];
     const testId = "SectionsInstructorTable";
 
@@ -95,7 +95,7 @@ describe.skip("Section tests", () => {
     ).not.toHaveTextContent("CMPSC 130A -1");
   });
 
-  test("Has the expected column headers and content", async () => {
+  test.skip("Has the expected column headers and content", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -118,15 +118,15 @@ describe.skip("Section tests", () => {
     ];
     const expectedFields = [
       "quarter",
-      "courseInfo.courseId",
-      "courseInfo.title",
+      "courseId",
+      "title",
       "status",
       "enrolled",
       "location",
       "days",
       "time",
       "instructor",
-      "section.enrollCode",
+      "enrollCode",
     ];
     const testId = "SectionsInstructorTable";
 
@@ -140,13 +140,13 @@ describe.skip("Section tests", () => {
       expect(header).toBeInTheDocument();
     });
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`),
+      screen.getByTestId(`${testId}-cell-row-0-col-courseId`),
     ).toHaveTextContent("CMPSC 130A");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.courseId`),
+      screen.getByTestId(`${testId}-cell-row-0-col-courseId`),
     ).not.toHaveTextContent("CMPSC 130A -1");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-courseInfo.title`),
+      screen.getByTestId(`${testId}-cell-row-0-col-title`),
     ).toHaveTextContent("DATA STRUCT ALGOR");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-quarter`),
@@ -170,11 +170,11 @@ describe.skip("Section tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
     ).toHaveTextContent("LOKSHTANOV D");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-section.enrollCode`),
+      screen.getByTestId(`${testId}-cell-row-0-col-enrollCode`),
     ).toHaveTextContent("08078");
   });
 
-  test("First dropdown is different than last dropdown", () => {
+  test.skip("First dropdown is different than last dropdown", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -193,7 +193,7 @@ describe.skip("Section tests", () => {
     ).toHaveTextContent("21/21");
   });
 
-  test("Status utility identifies each type of status", () => {
+  test.skip("Status utility identifies each type of status", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

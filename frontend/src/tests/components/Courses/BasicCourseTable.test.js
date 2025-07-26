@@ -11,7 +11,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-describe.skip("BasicCourseTable tests", () => {
+describe("BasicCourseTable tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table", () => {
@@ -24,7 +24,7 @@ describe.skip("BasicCourseTable tests", () => {
     );
   });
 
-  test.skip("Has the expected column headers and content", () => {
+  test("Has the expected column headers and content", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
