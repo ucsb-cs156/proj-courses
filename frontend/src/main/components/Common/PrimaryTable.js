@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React,{ useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,9 +7,25 @@ import {
 } from '@tanstack/react-table';
 import primaryFixtures from 'fixtures/primaryFixtures';
 
+
+function formatInstructorsToString(instructorsArray) {
+  if (!Array.isArray(instructorsArray) || instructorsArray.length === 0) {
+    return ""; 
+  }
+  const instructorNames = instructorsArray.map((instructorObj) => instructorObj.instructor);
+  return instructorNames.join(", ");
+}
+
 function PrimaryTable({testId = "PrimaryTable" }) {
 
   const data = primaryFixtures.f24_math_lowerDiv;
+
+  const getSectionField = (row, key) => ('primary' in row.original) ? row.original.primary[key] : row.original[key]
+  const getSectionTimeLocationField = (row, key) => ('primary' in row.original) ? row.original.primary.timeLocations?.[0][key] : row.original.timeLocations?.[0][key]
+  const getSectionInstructors = (row) => {
+    const instructors = 'primary' in row.original ? row.original.primary.instructors : row.original.instructors;
+    return formatInstructorsToString(instructors)
+  }
 
   const columns = React.useMemo(
     () => [
@@ -21,7 +37,7 @@ function PrimaryTable({testId = "PrimaryTable" }) {
               onClick: table.getToggleAllRowsExpandedHandler(),
             }}
           >
-            {table.getIsAllRowsExpanded() ? '👇' : '👉'}
+            {table.getIsAllRowsExpanded() ? '-' : '+'}
           </button>
         ),
         cell: ({ row }) =>
@@ -32,7 +48,7 @@ function PrimaryTable({testId = "PrimaryTable" }) {
                 style: { cursor: 'pointer' },
               }}
             >
-              {row.getIsExpanded() ? '👇' : '👉'}
+              {row.getIsExpanded() ? '-' : '+'}
             </button>
           ) : (
             '🔵' // Or null, or an empty span for rows that can't expand
@@ -57,43 +73,49 @@ function PrimaryTable({testId = "PrimaryTable" }) {
       {
         accessorKey: 'enrollCode',
         header: 'Enroll Code',
+        cell: ({row}) => getSectionField(row, "enrollCode")
       },
       {
         accessorKey: 'section',
         header: 'Section',
+        cell: ({row}) => getSectionField(row, 'section')
       },
       {
         accessorKey: 'enrolledTotal',
         header: 'Enrolled',
+        cell: ({row}) => getSectionField(row, 'enrolledTotal')
       },
       {
         accessorKey: 'maxEnroll',
         header: 'Max Enroll',
+        cell: ({row}) => getSectionField(row, 'maxEnroll')
       },
       {
-        accessorFn: row => row.timeLocations?.[0]?.days, // Accessing nested data for primary row
         id: 'days',
         header: 'Days',
+        cell: ({row}) => getSectionTimeLocationField(row, 'days')
       },
       {
-        accessorFn: row => row.timeLocations?.[0]?.beginTime,
         id: 'beginTime',
         header: 'Begin Time',
+        cell: ({row}) => getSectionTimeLocationField(row, 'beginTime')
+
       },
       {
-        accessorFn: row => row.timeLocations?.[0]?.endTime,
         id: 'endTime',
         header: 'End Time',
+        cell: ({row}) => getSectionTimeLocationField(row, 'endTime')
+
       },
       {
-        accessorFn: row => row.timeLocations?.[0]?.room,
         id: 'room',
         header: 'Room',
+        cell: ({row}) => getSectionTimeLocationField(row, 'room')
       },
       {
-        accessorFn: row => row.instructors?.[0]?.instructor,
         id: 'instructor',
         header: 'Instructor',
+        cell: ({row}) => getSectionInstructors(row)
       },
       // You can add more columns for secondary sections here,
       // and they will automatically apply to subRows as well if the accessor matches.
@@ -115,9 +137,6 @@ function PrimaryTable({testId = "PrimaryTable" }) {
     getExpandedRowModel: getExpandedRowModel(), // Required for expansion
   });
  
-  console.log("Table Row Model:", table.getRowModel().rows);
-  console.log("Table State Expanded:", table.getState().expanded);
-
   return (
     <>
       <table data-testid={testId} className="table">
@@ -173,4 +192,5 @@ function PrimaryTable({testId = "PrimaryTable" }) {
 }
 
 export default PrimaryTable;
+
 
