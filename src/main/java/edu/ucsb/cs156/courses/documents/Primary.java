@@ -20,6 +20,6 @@ public class Primary {
   private String title;
   private String description;
   private Section primary;
-  private List<Section> secondaries;
+  private List<Section> subRows;
   private List<GeneralEducation> generalEducation;
 }
