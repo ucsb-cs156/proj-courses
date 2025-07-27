@@ -1,5 +1,50 @@
 
 const primaryFixtures = {
+    singleLectureSectionWithNoDiscussion: [
+        {
+            "quarter": "20244",
+            "courseId": "MATH     94  ",
+            "title": "GROUP STUDIES-MATH",
+            "description": "Lectures and discussions on special topics. Designed for transfer students only.",
+            "primary": {
+                "enrollCode": "32383",
+                "section": "0100",
+                "session": null,
+                "classClosed": null,
+                "courseCancelled": null,
+                "gradingOptionCode": null,
+                "enrolledTotal": 23,
+                "maxEnroll": 35,
+                "secondaryStatus": null,
+                "departmentApprovalRequired": false,
+                "instructorApprovalRequired": false,
+                "restrictionLevel": "K",
+                "restrictionMajor": "+PRAMA+PRMTH",
+                "restrictionMajorPass": null,
+                "restrictionMinor": null,
+                "restrictionMinorPass": null,
+                "concurrentCourses": [],
+                "timeLocations": [
+                    {
+                        "room": "1607",
+                        "building": "SH",
+                        "roomCapacity": null,
+                        "days": "  W    ",
+                        "beginTime": "11:00",
+                        "endTime": "11:50"
+                    }
+                ],
+                "instructors": [
+                    {
+                        "instructor": "OGRAIN C M",
+                        "functionCode": "Teaching and in charge"
+                    }
+                ]
+            },
+            "subRows": [],
+            "generalEducation": []
+        }
+    ],
     f24_math_lowerDiv: [
         {
             "quarter": "20244",

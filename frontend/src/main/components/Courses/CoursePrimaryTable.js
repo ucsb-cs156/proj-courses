@@ -4,31 +4,14 @@ import PrimaryTable from "main/components/Common/PrimaryTable";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 
 import {
-  convertToFraction,
   formatDays,
   formatInstructors,
   formatLocation,
   formatTime,
+  getSection,
+  getSectionField,
+  enrollmentFraction
 } from "main/utils/sectionUtils.js";
-
-export function getSection(row) {
-  return ('primary' in row.original) ? row.original.primary : row.original;
-}
-
-export function getSectionField(row, key) {
-  return getSection(row)[key];
-}
-
-export function enrollmentFraction(row) {
-  const num = getSectionField(row, 'enrolledTotal') 
-  const denom = getSectionField(row, 'maxEnroll')
-  const result = convertToFraction(num, denom);
-  return result;
-}
-
-
-    
-
 
 export default function CoursePrimaryTable({ primaries, testId="CoursePrimaryTable"}) {
   

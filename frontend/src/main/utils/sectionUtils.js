@@ -1,4 +1,6 @@
 import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 export const convertToFraction = (en1, en2) => {
   return en1 != null && en2 != null ? `${en1}/${en2}` : "";
@@ -94,13 +96,38 @@ export const formatStatus = (section) => {
   }
 };
 
-export const formatInfoLink = (row) =>
-  `/coursedetails/${row.courseInfo.quarter}/${row.section.enrollCode}`;
+export const getQuarter = (row) => row.depth === 0 ? row.original.quarter : row.getParentRow().original.quarter;
 
-export const renderInfoLink = ({ cell: { value } }) => (
+export const formatInfoLink = (row) => `/coursedetails/${getQuarter(row)}/${getSectionField(row, "enrollCode")}`;
+
+export const renderInfoLink = (row) => (
   <p align="center">
-    <a href={value} style={{ color: "white" }}>
-      <i className="fa fa-info-circle"></i>
+    <a href={formatInfoLink(row)} 
+       target={"_blank"} rel="noopener noreferrer"
+       style={{ color: "black", backgroundColor: "inherit" }}>
+      <FontAwesomeIcon icon={faInfoCircle} />
     </a>
   </p>
 );
+
+export function enrollmentFraction(row) {
+  const num = getSectionField(row, 'enrolledTotal')
+  const denom = getSectionField(row, 'maxEnroll')
+  const result = convertToFraction(num, denom);
+  return result;
+}
+
+export const isPrimary = (row) => 'primary' in row.original;
+
+export const isLectureWithNoSections = (row) => isPrimary(row) && row.original.subRows.length === 0;
+
+export const shouldShowAddToScheduleLink = (row) => !isPrimary(row) || row.original.subRows.length === 0;
+
+export function getSection(row) {
+  return ('primary' in row.original) ? row.original.primary : row.original;
+}
+
+export function getSectionField(row, key) {
+  return getSection(row)[key];
+}
+

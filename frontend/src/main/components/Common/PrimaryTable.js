@@ -41,7 +41,7 @@ function PrimaryTable({ data, columns, testId = "PrimaryTable" }) {
               </th>
             ))}
           </tr>
-        ))}˝
+        ))}
       </thead>
       <tbody>
         {table.getRowModel().rows.map((row) => {
@@ -52,7 +52,7 @@ function PrimaryTable({ data, columns, testId = "PrimaryTable" }) {
                 <td key={cell.id}
                   style={{
                     backgroundColor: "inherit",
-                    fontWeight: row.depth == 0
+                    fontWeight: row.depth === 0
                       ? "bold"
                       : "normal",
                   }}
