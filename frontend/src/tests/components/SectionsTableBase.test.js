@@ -1,37 +1,22 @@
 import { render, screen } from "@testing-library/react";
 import SectionsTableBase from "main/components/SectionsTableBase";
-import {
-  oneLectureSectionWithNoDiscussion,
-  gigaSections,
-  fiveSections,
-} from "fixtures/sectionFixtures";
 import primaryFixtures from "fixtures/primaryFixtures";
-import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
-import {
-  convertToFraction,
-  formatDays,
-  formatInstructors,
-  formatLocation,
-  formatTime,
-  isSection,
-} from "main/utils/sectionUtils.js";
 import sectionsTableBaseFixtures from "fixtures/sectionsTableBaseFixtures";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 describe("SectionsTableBase tests", () => {
-  function getFirstVal(values) {
-    return values[0];
-  }
+
   const testid = "testid";
   const columns = sectionsTableBaseFixtures.getExampleColumns(testid);
   const columnsWithInfoAndAddToSchedule = sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule(testid);
 
   test("renders an empty table without crashing", () => {
-    render(<SectionsTableBase columns={columns} data={[]}  />);
+    render(<SectionsTableBase columns={columns} data={[]} />);
   });
 
   test("renders an full table without crashing", () => {
     render(
-      <SectionsTableBase columns={columns} data={primaryFixtures.f24_math_lowerDiv}  />,
+      <SectionsTableBase columns={columns} data={primaryFixtures.f24_math_lowerDiv} />,
     );
   });
 
@@ -50,7 +35,7 @@ describe("SectionsTableBase tests", () => {
 
   test("renders rows with alternating background colors correctly", async () => {
     render(
-      <SectionsTableBase columns={columns} data={primaryFixtures.f24_math_lowerDiv}  />,
+      <SectionsTableBase columns={columns} data={primaryFixtures.f24_math_lowerDiv} />,
     );
 
     // Check the background color of the first few rows
@@ -84,8 +69,12 @@ describe("SectionsTableBase tests", () => {
     });
   });
   test("renders a table with info column and add  buttons", () => {
+    const queryClient = new QueryClient();
     render(
-      <SectionsTableBase columns={columnsWithInfoAndAddToSchedule} data={primaryFixtures.f24_math_lowerDiv} testid={testid} />,
+      <QueryClientProvider client={queryClient}>
+        <SectionsTableBase columns={columnsWithInfoAndAddToSchedule} data={primaryFixtures.f24_math_lowerDiv} testid={testid} />
+      </QueryClientProvider>
     );
+    expect(screen.getByTestId(`${testid}-expand-all-rows`)).toBeInTheDocument();
   });
 });

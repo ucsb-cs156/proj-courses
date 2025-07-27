@@ -11,6 +11,8 @@ import {
 } from "main/utils/sectionUtils";
 import { oneSection } from "../../fixtures/sectionFixtures";
 
+import primaryFixtures from "fixtures/primaryFixtures";
+
 const testTimeLocations = [
   {
     room: "1",
@@ -129,18 +131,39 @@ describe("section utils tests", () => {
   });
 
   describe("formatInfoLink tests", () => {
-    test("formatInfoLink test", () => {
-      expect(formatInfoLink(oneSection[0])).toBe("/coursedetails/20221/12583");
+    const course = primaryFixtures.f24_math_lowerDiv[0];
+    test("formatInfoLink works on a primary", () => {
+      const row = {
+        depth: 0,
+        original: { ...course }
+      }
+      expect(formatInfoLink(row)).toBe("/coursedetails/20244/30247");
+    });
+    test("formatInfoLink works on a primary", () => {
+      const section = primaryFixtures.f24_math_lowerDiv[0];
+      const row = {
+        depth: 1,
+        original: { ...course.subRows[0] },
+        getParentRow: () => (
+          { depth: 0,
+            original: { ...course } 
+          }
+        )
+      }
+      expect(formatInfoLink(row)).toBe("/coursedetails/20244/30254");
     });
   });
 
   describe("renderInfoLink tests", () => {
+    const course = primaryFixtures.f24_math_lowerDiv[0];
     test("renderInfoLink test", () => {
-      const view = renderInfoLink({
-        cell: { value: "/coursedetails/20221/12583" },
-      });
-      expect(view.props.children.props.style.color).toBe("white");
-      expect(view.props.children.props.href).toBe("/coursedetails/20221/12583");
+      const row = {
+        depth: 0,
+        original: { ...course }
+      }
+      const view = renderInfoLink(row);
+      expect(view.props.children.props.style.color).toBe("black");
+      expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");
     });
   });
 
