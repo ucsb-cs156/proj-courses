@@ -145,14 +145,10 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-name`),
     ).toHaveTextContent("CS156");
     expect(
-      screen.getByTestId(
-        `PersonalSectionsTable-cell-row-0-col-enrollCode`,
-      ),
+      screen.getByTestId(`PersonalSectionsTable-cell-row-0-col-enrollCode`),
     ).toHaveTextContent("12583");
     expect(
-      screen.getByTestId(
-        `PersonalSectionsTable-cell-row-0-col-section`,
-      ),
+      screen.getByTestId(`PersonalSectionsTable-cell-row-0-col-section`),
     ).toHaveTextContent("0100");
     expect(
       screen.getByTestId(`PersonalSectionsTable-cell-row-0-col-title`),
@@ -164,9 +160,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       screen.getByTestId(`PersonalSectionsTable-cell-row-0-col-location`),
     ).toHaveTextContent("BUCHN 1930");
     expect(
-      screen.getByTestId(
-        `PersonalSectionsTable-cell-row-0-col-days`,
-      ),
+      screen.getByTestId(`PersonalSectionsTable-cell-row-0-col-days`),
     ).toHaveTextContent("M");
     expect(
       screen.getByTestId(`PersonalSectionsTable-cell-row-0-col-time`),

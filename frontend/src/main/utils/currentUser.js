@@ -19,7 +19,7 @@ export function useCurrentUser() {
         return returnValue;
       } catch (e) {
         console.error("Error invoking axios.get: ", e);
-        return {};
+        return { loggedIn: false, root: null, initialData: true };
       }
     },
     {

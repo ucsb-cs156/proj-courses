@@ -135,8 +135,8 @@ describe("section utils tests", () => {
     test("formatInfoLink works on a primary", () => {
       const row = {
         depth: 0,
-        original: { ...course }
-      }
+        original: { ...course },
+      };
       expect(formatInfoLink(row)).toBe("/coursedetails/20244/30247");
     });
     test("formatInfoLink works on a primary", () => {
@@ -144,12 +144,8 @@ describe("section utils tests", () => {
       const row = {
         depth: 1,
         original: { ...course.subRows[0] },
-        getParentRow: () => (
-          { depth: 0,
-            original: { ...course } 
-          }
-        )
-      }
+        getParentRow: () => ({ depth: 0, original: { ...course } }),
+      };
       expect(formatInfoLink(row)).toBe("/coursedetails/20244/30254");
     });
   });
@@ -159,8 +155,8 @@ describe("section utils tests", () => {
     test("renderInfoLink test", () => {
       const row = {
         depth: 0,
-        original: { ...course }
-      }
+        original: { ...course },
+      };
       const view = renderInfoLink(row, "testid");
       expect(view.props.children.props.style.color).toBe("black");
       expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");

@@ -19,15 +19,18 @@ const testid = "SectionsTable";
 export const f24_math_lowerDiv = Template.bind({});
 f24_math_lowerDiv.args = {
   data: primaryFixtures.f24_math_lowerDiv,
-  columns: sectionsTableBaseFixtures.getExampleColumns(`${testid}-f24_math_lowerDiv`),
+  columns: sectionsTableBaseFixtures.getExampleColumns(
+    `${testid}-f24_math_lowerDiv`,
+  ),
   testid: `${testid}-f24_math_lowerDiv`,
 };
-
 
 export const singleLectureSectionWithNoDiscussion = Template.bind({});
 singleLectureSectionWithNoDiscussion.args = {
   data: primaryFixtures.singleLectureSectionWithNoDiscussion,
-  columns: sectionsTableBaseFixtures.getExampleColumns(`${testid}-singleLectureSectionWithNoDiscussion`),
+  columns: sectionsTableBaseFixtures.getExampleColumns(
+    `${testid}-singleLectureSectionWithNoDiscussion`,
+  ),
   testid: `${testid}-singleLectureSectionWithNoDiscussion`,
 };
 
@@ -41,7 +44,9 @@ Empty.args = {
 export const f24_math_lowerDiv_expanded_columns = Template.bind({});
 f24_math_lowerDiv_expanded_columns.args = {
   data: primaryFixtures.f24_math_lowerDiv,
-  columns: sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule(`${testid}-f24_math_lowerDiv_expanded_columns`),
+  columns: sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule(
+    `${testid}-f24_math_lowerDiv_expanded_columns`,
+  ),
   testid: `${testid}-f24_math_lowerDiv_expanded_columns`,
 };
 
@@ -57,5 +62,3 @@ f24_math_lowerDiv_expanded_columns.parameters = {
     }),
   ],
 };
-
-

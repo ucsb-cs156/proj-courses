@@ -2,11 +2,20 @@ import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourseSearchForm";
 import _BasicCourseTable from "main/components/Courses/BasicCourseTable";
-import { useBackendMutation } from "main/utils/useBackend";
+import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import SectionsTable from "main/components/Sections/SectionsTable";
 
-export default function SectionSearchesIndexPage() {
-  // Stryker disable next-line all : Can't test state because hook is internal
+export default function SectionSearchesIndexPageLoggedIn() {
+  const {
+    data: schedules,
+    error: _error,
+    status: _status,
+  } = useBackend(
+    ["/api/personalschedules/all"],
+    { method: "GET", url: "/api/personalschedules/all" },
+    [],
+  );
+
   const [sectionJSON, setSectionJSON] = useState([]);
 
   const objectToAxiosParams = (query) => ({
@@ -37,7 +46,7 @@ export default function SectionSearchesIndexPage() {
       <div className="pt-2">
         <h5>Welcome to the UCSB Courses Search App!</h5>
         <BasicCourseSearchForm fetchJSON={fetchBasicSectionJSON} />
-        <SectionsTable sections={sectionJSON} />
+        <SectionsTable sections={sectionJSON} schedules={schedules} />
       </div>
     </BasicLayout>
   );

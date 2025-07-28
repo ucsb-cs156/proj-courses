@@ -4,10 +4,7 @@ import { oneSection } from "fixtures/sectionFixtures";
 
 describe("ConvertedSectionTable tests", () => {
   test("renders with expected headers", () => {
-
-    render(
-      <ConvertedSectionTable sections={[]} />
-    );
+    render(<ConvertedSectionTable sections={[]} />);
 
     expect(screen.getByTestId("ConvertedSectionTable")).toBeInTheDocument();
 
@@ -30,12 +27,8 @@ describe("ConvertedSectionTable tests", () => {
   });
 
   test("renders with expected fields", () => {
-   
-
     const testid = "AnotherTestId";
-    render(
-      <ConvertedSectionTable sections={oneSection} testid={testid} />
-    );
+    render(<ConvertedSectionTable sections={oneSection} testid={testid} />);
 
     const quarter = screen.getByTestId(`${testid}-cell-row-0-col-quarter`);
     expect(quarter).toBeInTheDocument();
@@ -73,9 +66,10 @@ describe("ConvertedSectionTable tests", () => {
     expect(location).toBeInTheDocument();
     expect(location).toHaveTextContent("BUCHN 1930");
 
-    const instructors = screen.getByTestId(`${testid}-cell-row-0-col-instructors`);
+    const instructors = screen.getByTestId(
+      `${testid}-cell-row-0-col-instructors`,
+    );
     expect(instructors).toBeInTheDocument();
     expect(instructors).toHaveTextContent("WANG L C");
-
   });
 });

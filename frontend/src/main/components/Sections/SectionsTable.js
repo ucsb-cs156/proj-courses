@@ -2,24 +2,23 @@ import SectionsTableBase from "main/components/SectionsTableBase";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
-// import { useCurrentUser } from "main/utils/currentUser.js";
+import { useCurrentUser } from "main/utils/currentUser.js";
 
 import {
-    formatDays,
-    formatInstructors,
-    formatLocation,
-    formatTime,
-    formatStatus,
-    enrollmentFraction,
-    getSection,
-    getSectionField,
-    renderInfoLink,
-    shouldShowAddToScheduleLink,
-    getQuarter
+  formatDays,
+  formatInstructors,
+  formatLocation,
+  formatTime,
+  formatStatus,
+  enrollmentFraction,
+  getSection,
+  getSectionField,
+  renderInfoLink,
+  shouldShowAddToScheduleLink,
+  getQuarter,
 } from "main/utils/sectionUtils.js";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
-
 
 export const objectToAxiosParams = (data) => {
   return {
@@ -43,12 +42,10 @@ export const handleAddToSchedule = (section, schedule, mutation) => {
 
 export const handleLectureAddToSchedule = (section, schedule, mutation) => {
   // Execute the mutation with the provided data
-  console.log(section);
   const dataFinal = {
     enrollCd: section,
     psId: schedule,
   };
-  console.log(dataFinal);
   mutation.mutate(dataFinal);
 };
 
@@ -70,7 +67,11 @@ export const onError = (error) => {
   toast.error(message);
 };
 
-export default function SectionsTable({ sections }) {
+export default function SectionsTable({ sections, schedules = [] }) {
+  const { data: currentUser } = useCurrentUser();
+
+  console.log("SectionsTable: currentUser.loggedIn=", currentUser.loggedIn);
+
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess, onError },
@@ -89,7 +90,7 @@ export default function SectionsTable({ sections }) {
 
   const columns = [
     {
-      id: 'expander', // Unique ID for the expander column
+      id: "expander", // Unique ID for the expander column
       header: ({ table }) => (
         <button
           data-testid={`${testid}-expand-all-rows`}
@@ -106,7 +107,7 @@ export default function SectionsTable({ sections }) {
             data-testid={`${testid}-row-${row.index}-expand-button`}
             {...{
               onClick: row.getToggleExpandedHandler(),
-              style: { cursor: 'pointer' },
+              style: { cursor: "pointer" },
             }}
           >
             {row.getIsExpanded() ? "➖" : "➕"}
@@ -121,20 +122,19 @@ export default function SectionsTable({ sections }) {
     {
       header: "Quarter",
       accessorKey: "quarter",
-      cell: ({ row }) => row.original.quarter ? yyyyqToQyy(row.original.quarter) : "",
+      cell: ({ row }) =>
+        row.original.quarter ? yyyyqToQyy(row.original.quarter) : "",
     },
     {
-      accessorKey: 'courseId',
-      header: 'Course ID',
+      accessorKey: "courseId",
+      header: "Course ID",
       cell: ({ row, getValue }) => (
-        <div style={{ paddingLeft: `${row.depth * 2}rem` }}>
-          {getValue()}
-        </div>
+        <div style={{ paddingLeft: `${row.depth * 2}rem` }}>{getValue()}</div>
       ),
     },
     {
-      accessorKey: 'title',
-      header: 'Title',
+      accessorKey: "title",
+      header: "Title",
     },
     {
       header: "Status",
@@ -147,29 +147,29 @@ export default function SectionsTable({ sections }) {
       cell: ({ row }) => enrollmentFraction(row),
     },
     {
-      id: 'location',
-      header: 'Location',
-      cell: ({ row }) => formatLocation(getSection(row).timeLocations)
+      id: "location",
+      header: "Location",
+      cell: ({ row }) => formatLocation(getSection(row).timeLocations),
     },
     {
-      id: 'days',
+      id: "days",
       header: "Days",
-      cell: ({ row }) => formatDays(getSection(row).timeLocations)
+      cell: ({ row }) => formatDays(getSection(row).timeLocations),
     },
     {
-      id: 'time',
+      id: "time",
       header: "Time",
-      cell: ({ row }) => formatTime(getSection(row).timeLocations)
+      cell: ({ row }) => formatTime(getSection(row).timeLocations),
     },
     {
       id: "instructor",
       header: "Instructor",
-      cell: ({ row }) => formatInstructors(getSection(row).instructors)
+      cell: ({ row }) => formatInstructors(getSection(row).instructors),
     },
     {
-      accessorKey: 'enrollCode',
-      header: 'Enroll Code',
-      cell: ({ row }) => getSectionField(row, "enrollCode")
+      accessorKey: "enrollCode",
+      header: "Enroll Code",
+      cell: ({ row }) => getSectionField(row, "enrollCode"),
     },
     {
       header: "Info",
@@ -181,32 +181,26 @@ export default function SectionsTable({ sections }) {
       header: "Action",
       id: "action",
       cell: ({ row }) => {
-        if (shouldShowAddToScheduleLink(row)) {
+        if (currentUser.loggedIn && shouldShowAddToScheduleLink(row)) {
           return (
-            <div className="d-flex align-items-center gap-2" >
+            <div className="d-flex align-items-center gap-2">
               <AddToScheduleModal
                 section={getSection(row)}
                 quarter={getQuarter(row)}
                 onAdd={(section, schedule) =>
                   addToScheduleCallback(section, schedule, mutation)
                 }
+                schedules={schedules}
               />
             </div>
-          )
+          );
         }
-        return (
-          <span data-testid={`${testid}-row-${row.index}-no-action`} />
-        )
-      }
-    }
-  ]
-
+        return <span data-testid={`${testid}-row-${row.index}-no-action`} />;
+      },
+    },
+  ];
 
   return (
-    <SectionsTableBase
-      columns={columns}
-      data={sections}
-      testid={testid}
-    />
+    <SectionsTableBase columns={columns} data={sections} testid={testid} />
   );
 }

@@ -1,15 +1,14 @@
 /* istanbul ignore file */
-import React, { useState } from 'react';
-import { Table } from "react-bootstrap"
+import React, { useState } from "react";
+import { Table } from "react-bootstrap";
 import {
   useReactTable,
   getCoreRowModel,
   getExpandedRowModel,
   flexRender,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
 
 function PrimaryTable({ data, columns, testId = "PrimaryTable" }) {
-
   const [expanded, setExpanded] = useState({});
 
   const altColor = "#e3ebfc";
@@ -36,9 +35,9 @@ function PrimaryTable({ data, columns, testId = "PrimaryTable" }) {
                 {header.isPlaceholder
                   ? null
                   : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
               </th>
             ))}
           </tr>
@@ -46,25 +45,25 @@ function PrimaryTable({ data, columns, testId = "PrimaryTable" }) {
       </thead>
       <tbody>
         {table.getRowModel().rows.map((row) => {
-          const rowStyle = { backgroundColor: row.index % 2 === 0 ? altColor : "white"};
+          const rowStyle = {
+            backgroundColor: row.index % 2 === 0 ? altColor : "white",
+          };
           return (
-            <tr key={`rowId-${row.id}`} style={rowStyle} >
+            <tr key={`rowId-${row.id}`} style={rowStyle}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}
+                <td
+                  key={cell.id}
                   style={{
                     backgroundColor: "inherit",
-                    fontWeight: row.depth === 0
-                      ? "bold"
-                      : "normal",
+                    fontWeight: row.depth === 0 ? "bold" : "normal",
                   }}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
             </tr>
-          )
-        }
-        )}
+          );
+        })}
       </tbody>
       <tfoot>
         {table.getFooterGroups().map((footerGroup) => (
@@ -74,9 +73,9 @@ function PrimaryTable({ data, columns, testId = "PrimaryTable" }) {
                 {header.isPlaceholder
                   ? null
                   : flexRender(
-                    header.column.columnDef.footer,
-                    header.getContext()
-                  )}
+                      header.column.columnDef.footer,
+                      header.getContext(),
+                    )}
               </th>
             ))}
           </tr>
@@ -87,5 +86,3 @@ function PrimaryTable({ data, columns, testId = "PrimaryTable" }) {
 }
 
 export default PrimaryTable;
-
-

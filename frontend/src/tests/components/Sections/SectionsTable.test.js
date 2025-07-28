@@ -34,7 +34,6 @@ jest.mock("main/utils/useBackend", () => ({
 }));
 
 describe("SectionsTable tests", () => {
-
   describe("handleAddToSchedule", () => {
     it("calls mutate with correct data", () => {
       const mockMutation = { mutate: jest.fn() };
@@ -163,9 +162,7 @@ describe("SectionsTable tests", () => {
         expect(header).toBeInTheDocument();
       });
 
-      const expandRow = screen.getByTestId(
-        `${testId}-cell-row-1-col-expander`,
-      );
+      const expandRow = screen.getByTestId(`${testId}-cell-row-1-col-expander`);
       fireEvent.click(expandRow);
 
       expect(
@@ -272,7 +269,6 @@ describe("SectionsTable tests", () => {
       ).toBeDefined();
     });
 
-
     test("Info link is correct", async () => {
       render(
         <QueryClientProvider client={queryClient}>
@@ -283,26 +279,23 @@ describe("SectionsTable tests", () => {
       );
 
       const testId = "SectionsTable";
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-instructor`)).toHaveTextContent("PORTER M J");
-      const expandButton = screen.getByTestId(
-        `${testId}-row-0-expand-button`,
-      );
-
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
+      ).toHaveTextContent("PORTER M J");
+      const expandButton = screen.getByTestId(`${testId}-row-0-expand-button`);
 
       expect(expandButton).toBeInTheDocument();
       expect(expandButton).toHaveTextContent("➕");
       fireEvent.click(expandButton);
 
-      await (waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText("➖")).toBeInTheDocument();
-      }));
-
+      });
 
       const infoLink = screen.getByTestId(`${testId}-row-1-col-info-link`);
       expect(infoLink).toBeInTheDocument();
       expect(infoLink.tagName).toBe("A");
-      expect(infoLink).toHaveAttribute('href', '/coursedetails/20244/30312');
-
+      expect(infoLink).toHaveAttribute("href", "/coursedetails/20244/30312");
     });
 
     test("Expand all button works properly", async () => {
@@ -316,13 +309,15 @@ describe("SectionsTable tests", () => {
 
       const testId = "SectionsTable";
       expect(screen.queryByText("➖")).not.toBeInTheDocument();
-        
+
       const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
       expect(expandAllRows).toBeInTheDocument();
       expect(expandAllRows).toHaveTextContent("➕");
       fireEvent.click(expandAllRows);
 
-      const expandAllRowsAfter = screen.getByTestId(`${testId}-expand-all-rows`);
+      const expandAllRowsAfter = screen.getByTestId(
+        `${testId}-expand-all-rows`,
+      );
       expect(expandAllRowsAfter).toHaveTextContent("➖");
     });
   });

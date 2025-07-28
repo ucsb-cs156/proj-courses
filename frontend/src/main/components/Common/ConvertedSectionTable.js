@@ -1,26 +1,25 @@
 import OurTable from "main/components/OurTable";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import {
-    formatDays,
-    formatInstructors,
-    formatLocation,
-    formatTime,
-    formatStatus,
-    convertToFraction,
+  formatDays,
+  formatInstructors,
+  formatLocation,
+  formatTime,
+  formatStatus,
+  convertToFraction,
 } from "main/utils/sectionUtils.js";
-
 
 function ConvertedSectionTable({ sections, testid = "ConvertedSectionTable" }) {
   const columns = [
     {
       header: "Quarter",
       accessorKey: "quarter",
-      cell: ({ row }) =>  yyyyqToQyy(row.original.courseInfo.quarter)
+      cell: ({ row }) => yyyyqToQyy(row.original.courseInfo.quarter),
     },
     {
       header: "CourseId",
       accessorKey: "courseId",
-      cell: ({ row }) => row.original.courseInfo.courseId 
+      cell: ({ row }) => row.original.courseInfo.courseId,
     },
     {
       header: "Title",
@@ -40,7 +39,11 @@ function ConvertedSectionTable({ sections, testid = "ConvertedSectionTable" }) {
     {
       header: "Enrolled",
       accessorKey: "enrolled",
-      cell: ({ row }) => convertToFraction(row.original.section.enrolledTotal, row.original.section.maxEnroll),
+      cell: ({ row }) =>
+        convertToFraction(
+          row.original.section.enrolledTotal,
+          row.original.section.maxEnroll,
+        ),
     },
     {
       header: "Days",
@@ -66,18 +69,10 @@ function ConvertedSectionTable({ sections, testid = "ConvertedSectionTable" }) {
       header: "Section",
       accessorKey: "section",
       cell: ({ row }) => row.original.section.section,
-    }
+    },
   ];
 
-  return (
-    <OurTable
-      data={sections}
-      columns={columns}
-      testid={testid}
-    />
-  );
+  return <OurTable data={sections} columns={columns} testid={testid} />;
 }
 
 export default ConvertedSectionTable;
-
-

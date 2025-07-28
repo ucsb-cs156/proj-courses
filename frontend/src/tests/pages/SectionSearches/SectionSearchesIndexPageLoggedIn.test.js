@@ -3,16 +3,13 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
-import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
-import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
-import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import {
-  threeSections,
-  differentQuarterSections,
-} from "fixtures/sectionFixtures";
-import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
+
+import SectionSearchesIndexPageLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageLoggedIn";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
+import { allTheSubjects } from "fixtures/subjectFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import primaryFixtures from "fixtures/primaryFixtures";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -24,9 +21,8 @@ jest.mock("react-toastify", () => {
   };
 });
 
-describe("CourseOverTimeIndexPage tests", () => {
+describe("SectionSearchesIndexPageLoggedIn tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
-
   beforeEach(() => {
     axiosMock.resetHistory();
     axiosMock
@@ -42,42 +38,38 @@ describe("CourseOverTimeIndexPage tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseOverTimeIndexPage />
+          <SectionSearchesIndexPageLoggedIn />
         </MemoryRouter>
       </QueryClientProvider>,
     );
   });
 
-  test("calls UCSB Course over time search api correctly with 3 section response", async () => {
+  test("calls UCSB section search api correctly with 1 section response", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
-      .onGet("/api/public/courseovertime/search")
-      .reply(200, threeSections);
+      .onGet("/api/public/primaries")
+      .reply(200, primaryFixtures.f24_math_lowerDiv);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseOverTimeIndexPage />
+          <SectionSearchesIndexPageLoggedIn />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
-    const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
-    const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
 
-    const expectedKey = "CourseOverTimeSearch.Subject-option-ANTH";
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
     await waitFor(() =>
       expect(screen.getByTestId(expectedKey).toBeInTheDocument),
     );
 
     userEvent.selectOptions(selectSubject, "ANTH");
-    const enterCourseNumber = screen.getByLabelText(
-      "Course Number (Try searching '16' or '130A')",
-    );
-    userEvent.type(enterCourseNumber, "130A");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "G");
 
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
@@ -90,12 +82,15 @@ describe("CourseOverTimeIndexPage tests", () => {
     });
 
     expect(axiosMock.history.get[0].params).toEqual({
-      startQtr: "20222",
-      endQtr: "20222",
-      subjectArea: "ANTH",
-      courseNumber: "130A",
+      qtr: "20222",
+      dept: "ANTH",
+      level: "G",
     });
 
-    expect(screen.getByText("ECE 1A -1")).toBeInTheDocument();
+    const expectedFirstRow = screen.getByTestId(
+      "SectionsTable-cell-row-0-col-courseId",
+    );
+    expect(expectedFirstRow).toBeInTheDocument();
+    expect(expectedFirstRow).toHaveTextContent("MATH 2A");
   });
 });

@@ -5,10 +5,10 @@ import sectionsTableBaseFixtures from "fixtures/sectionsTableBaseFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 describe("SectionsTableBase tests", () => {
-
   const testid = "testid";
   const columns = sectionsTableBaseFixtures.getExampleColumns(testid);
-  const columnsWithInfoAndAddToSchedule = sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule(testid);
+  const columnsWithInfoAndAddToSchedule =
+    sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule(testid);
 
   test("renders an empty table without crashing", () => {
     render(<SectionsTableBase columns={columns} data={[]} />);
@@ -16,7 +16,10 @@ describe("SectionsTableBase tests", () => {
 
   test("renders an full table without crashing", () => {
     render(
-      <SectionsTableBase columns={columns} data={primaryFixtures.f24_math_lowerDiv} />,
+      <SectionsTableBase
+        columns={columns}
+        data={primaryFixtures.f24_math_lowerDiv}
+      />,
     );
   });
 
@@ -31,27 +34,20 @@ describe("SectionsTableBase tests", () => {
     expect(screen.getAllByText("➕")).toHaveLength(1);
   });
 
-
-
   test("renders rows with alternating background colors correctly", async () => {
     render(
-      <SectionsTableBase columns={columns} data={primaryFixtures.f24_math_lowerDiv} />,
+      <SectionsTableBase
+        columns={columns}
+        data={primaryFixtures.f24_math_lowerDiv}
+      />,
     );
 
     // Check the background color of the first few rows
     const rows = [
-      screen
-        .getByTestId("testid-cell-row-0-col-courseId")
-        .closest("tr"),
-      screen
-        .getByTestId("testid-cell-row-1-col-courseId")
-        .closest("tr"),
-      screen
-        .getByTestId("testid-cell-row-2-col-courseId")
-        .closest("tr"),
-      screen
-        .getByTestId("testid-cell-row-3-col-courseId")
-        .closest("tr"),
+      screen.getByTestId("testid-cell-row-0-col-courseId").closest("tr"),
+      screen.getByTestId("testid-cell-row-1-col-courseId").closest("tr"),
+      screen.getByTestId("testid-cell-row-2-col-courseId").closest("tr"),
+      screen.getByTestId("testid-cell-row-3-col-courseId").closest("tr"),
     ];
 
     // Expected background colors
@@ -72,8 +68,12 @@ describe("SectionsTableBase tests", () => {
     const queryClient = new QueryClient();
     render(
       <QueryClientProvider client={queryClient}>
-        <SectionsTableBase columns={columnsWithInfoAndAddToSchedule} data={primaryFixtures.f24_math_lowerDiv} testid={testid} />
-      </QueryClientProvider>
+        <SectionsTableBase
+          columns={columnsWithInfoAndAddToSchedule}
+          data={primaryFixtures.f24_math_lowerDiv}
+          testid={testid}
+        />
+      </QueryClientProvider>,
     );
     expect(screen.getByTestId(`${testid}-expand-all-rows`)).toBeInTheDocument();
   });

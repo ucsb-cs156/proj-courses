@@ -89,6 +89,5 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
       instructor: "CONRAD",
       lectureOnly: true,
     });
-
   });
 });

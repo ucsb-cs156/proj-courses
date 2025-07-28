@@ -51,7 +51,7 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
     },
     {
       header: "Inactive",
-      cell: ({row}) => String(row.original.inactive),
+      cell: ({ row }) => String(row.original.inactive),
       id: "inactive",
     },
   ];

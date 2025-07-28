@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { Table } from "react-bootstrap"
+import React, { useState } from "react";
+import { Table } from "react-bootstrap";
 import {
   useReactTable,
   getCoreRowModel,
   getExpandedRowModel,
   flexRender,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
 
 function SectionsTableBase({ data, columns, testid = "testid" }) {
-
   const [expanded, setExpanded] = useState({});
 
   const altColor = "#e3ebfc";
@@ -36,9 +35,9 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
                 {header.isPlaceholder
                   ? null
                   : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
               </th>
             ))}
           </tr>
@@ -46,31 +45,30 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
       </thead>
       <tbody>
         {table.getRowModel().rows.map((row) => {
-          const rowStyle = { backgroundColor: row.index % 2 === 0 ? altColor : whiteColor};
+          const rowStyle = {
+            backgroundColor: row.index % 2 === 0 ? altColor : whiteColor,
+          };
           return (
-            <tr 
-            key={`rowId-${row.id}`} 
-            style={rowStyle} 
-            data-testid={`${testid}-row-${row.index}`}
+            <tr
+              key={`rowId-${row.id}`}
+              style={rowStyle}
+              data-testid={`${testid}-row-${row.index}`}
             >
               {row.getVisibleCells().map((cell) => (
-                <td 
+                <td
                   key={cell.id}
                   data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                   style={{
                     backgroundColor: "inherit",
-                    fontWeight: row.depth === 0
-                      ? "bold"
-                      : "normal",
+                    fontWeight: row.depth === 0 ? "bold" : "normal",
                   }}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
             </tr>
-          )
-        }
-        )}
+          );
+        })}
       </tbody>
       <tfoot>
         {table.getFooterGroups().map((footerGroup) => (
@@ -80,9 +78,9 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
                 {header.isPlaceholder
                   ? null
                   : flexRender(
-                    header.column.columnDef.footer,
-                    header.getContext()
-                  )}
+                      header.column.columnDef.footer,
+                      header.getContext(),
+                    )}
               </th>
             ))}
           </tr>
@@ -93,7 +91,6 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
 }
 
 export default SectionsTableBase;
-
 
 // import React, { Fragment } from "react";
 // import { useTable, useGroupBy, useExpanded } from "react-table";

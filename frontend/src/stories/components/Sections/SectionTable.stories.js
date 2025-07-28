@@ -39,12 +39,12 @@ Empty.parameters = {
       );
     }),
   ],
-};  
+};
 
 export const f24_math_lowerDiv = Template.bind({});
 
 f24_math_lowerDiv.args = {
-  sections: primaryFixtures.f24_math_lowerDiv
+  sections: primaryFixtures.f24_math_lowerDiv,
 };
 f24_math_lowerDiv.parameters = {
   msw: [

@@ -19,10 +19,6 @@ export function convertOldStyleColumnsToNewStyle(oldStyleColumns) {
       accessorKey: col.accessor || col.accessorKey, // Use accessor or accessorKey
       ...col,
     };
-    if (newCol.accessorKey instanceof Function) {
-      newCol.cell = col.accessor;
-      newCol.accessorKey = col.header;
-    }
     result.push({ ...newCol });
   }
   return result;

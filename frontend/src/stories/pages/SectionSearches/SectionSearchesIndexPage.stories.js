@@ -1,5 +1,5 @@
 import React from "react";
-import SectionSearchesIndexpage from "main/pages/SectionSearches/SectionSearchesIndexPage";
+import SectionSearchesIndexpage from "main/pages/SectionSearches/SectionSearchesIndexPageLoggedIn";
 
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";

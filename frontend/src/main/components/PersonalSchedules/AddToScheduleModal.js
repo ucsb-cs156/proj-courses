@@ -1,37 +1,21 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+
 import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { Link } from "react-router-dom";
 import { schedulesFilter } from "main/utils/PersonalScheduleUtils";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
-// import { useBackend } from "main/utils/useBackend";
 
-
-export default function AddToScheduleModal({ quarter, section, onAdd }) {
+export default function AddToScheduleModal({
+  quarter,
+  section,
+  onAdd,
+  schedules = [],
+}) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
-
-  // const {
-  //   data: schedules,
-  //   error: _error,
-  //   status: _status,
-  // } = useBackend(
-  //   ["/api/personalschedules/all"],
-  //   { method: "GET", url: "/api/personalschedules/all" },
-  //   [],
-  // );
-
-  const {
-    data: schedules,
-    error: _error,
-    status: _status,
-  } = {
-    data: [],
-    error: null,
-    status: "success",
-  }
 
   const filteringSchedules = schedulesFilter(schedules, quarter);
 
@@ -44,7 +28,6 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
     handleModalClose();
   };
 
-  // Stryker disable all : tested manually, complicated to test
   return (
     <>
       <Button variant="success" onClick={() => setShowModal(true)}>
@@ -57,7 +40,8 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
         <Modal.Body>
           <Form>
             {
-              /* istanbul ignore next */ filteringSchedules.length > 0 ? (
+              /* istanbul ignore next */
+              filteringSchedules.length > 0 ? (
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
@@ -89,5 +73,4 @@ export default function AddToScheduleModal({ quarter, section, onAdd }) {
       </Modal>
     </>
   );
-  // Stryker restore all
 }
