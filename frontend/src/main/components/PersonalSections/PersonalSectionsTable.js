@@ -39,23 +39,23 @@ export default function PersonalSectionsTable({
       accessorKey: "courseId",
     },
     {
-      Header: "Enroll Code",
+      header: "Enroll Code",
       cell: ({ cell }) => cell.row.original.classSections[0].enrollCode,
       id: "enrollCode",
       accessorKey: "enrollCode",
     },
     {
-      Header: "Section",
+      header: "Section",
       cell: ({ cell }) => cell.row.original.classSections[0].section,
       id: "section",
       accessorKey: "section",
     },
     {
-      Header: "Title",
+      header: "Title",
       accessor: "title",
     },
     {
-      Header: "Enrolled",
+      header: "Enrolled",
       cell: ({ cell }) =>
         convertToFraction(
           cell.row.original.classSections[0].enrolledTotal,
@@ -64,27 +64,27 @@ export default function PersonalSectionsTable({
       id: "enrolled",
     },
     {
-      Header: "Location",
+      header: "Location",
       cell: ({ cell }) =>
         formatLocation(cell.row.original.classSections[0].timeLocations),
       id: "location",
     },
     {
-      Header: "Days",
+      header: "Days",
       cell: ({ cell }) =>
         formatDays(cell.row.original.classSections[0].timeLocations),
       id: "days",
       accessorKey: "days",
     },
     {
-      Header: "Time",
+      header: "Time",
       cell: ({ cell }) =>
         formatTime(cell.row.original.classSections[0].timeLocations),
       id: "time",
     },
     {
-      Header: "Instructor",
-      accessor: ({ cell }) =>
+      header: "Instructor",
+      cell: ({ cell }) =>
         formatInstructors(cell.row.original.classSections[0].instructors),
       id: "instructor",
     },

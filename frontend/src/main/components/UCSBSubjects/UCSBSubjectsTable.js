@@ -50,8 +50,8 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
       accessor: "relatedDeptCode",
     },
     {
-      Header: "Inactive",
-      accessor: (row) => String(row.inactive),
+      header: "Inactive",
+      cell: ({row}) => String(row.original.inactive),
       id: "inactive",
     },
   ];

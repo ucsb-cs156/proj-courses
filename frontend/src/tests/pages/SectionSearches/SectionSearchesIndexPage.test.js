@@ -10,6 +10,7 @@ import { oneSection } from "fixtures/sectionFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import primaryFixtures from "fixtures/primaryFixtures";
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -44,9 +45,9 @@ describe("SectionSearchesIndexPage tests", () => {
     );
   });
 
-  test.skip("calls UCSB section search api correctly with 1 section response", async () => {
+  test("calls UCSB section search api correctly with 1 section response", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock.onGet("/api/sections/basicsearch").reply(200, oneSection);
+    axiosMock.onGet("/api/sections/primaries").reply(200, primaryFixtures.f24_math_lowerDiv);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -85,6 +86,8 @@ describe("SectionSearchesIndexPage tests", () => {
       level: "G",
     });
 
-    expect(screen.getByText("ECE 1A")).toBeInTheDocument();
+    const expectedFirstRow = screen.getByTestId("SectionsTable-cell-row-0-col-courseId");
+    expect(expectedFirstRow).toBeInTheDocument();
+    expect(expectedFirstRow).toHaveTextContent("MATH 2A");
   });
 });

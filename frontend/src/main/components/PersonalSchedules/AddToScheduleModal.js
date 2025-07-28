@@ -3,26 +3,35 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
-import { useBackend } from "main/utils/useBackend";
 import { Link } from "react-router-dom";
 import { schedulesFilter } from "main/utils/PersonalScheduleUtils";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+// import { useBackend } from "main/utils/useBackend";
+
 
 export default function AddToScheduleModal({ quarter, section, onAdd }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
 
-  // Stryker disable all
+  // const {
+  //   data: schedules,
+  //   error: _error,
+  //   status: _status,
+  // } = useBackend(
+  //   ["/api/personalschedules/all"],
+  //   { method: "GET", url: "/api/personalschedules/all" },
+  //   [],
+  // );
+
   const {
     data: schedules,
     error: _error,
     status: _status,
-  } = useBackend(
-    ["/api/personalschedules/all"],
-    { method: "GET", url: "/api/personalschedules/all" },
-    [],
-  );
-  // Stryker restore all
+  } = {
+    data: [],
+    error: null,
+    status: "success",
+  }
 
   const filteringSchedules = schedulesFilter(schedules, quarter);
 

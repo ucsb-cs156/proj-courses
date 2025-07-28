@@ -100,9 +100,10 @@ export const getQuarter = (row) => row.depth === 0 ? row.original.quarter : row.
 
 export const formatInfoLink = (row) => `/coursedetails/${getQuarter(row)}/${getSectionField(row, "enrollCode")}`;
 
-export const renderInfoLink = (row) => (
+export const renderInfoLink = (row, testid) => (
   <p align="center">
     <a href={formatInfoLink(row)} 
+       data-testid={`${testid}-row-${row.id}-col-info-link`}
        target={"_blank"} rel="noopener noreferrer"
        style={{ color: "black", backgroundColor: "inherit" }}>
       <FontAwesomeIcon icon={faInfoCircle} />

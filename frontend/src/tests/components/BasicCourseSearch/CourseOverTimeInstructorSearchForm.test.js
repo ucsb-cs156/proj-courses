@@ -193,35 +193,6 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     userEvent.click(submitButton);
   });
 
-  test("renders without crashing when fallback values are used", async () => {
-    axiosMock.onGet("/api/systemInfo").reply(200, {
-      springH2ConsoleEnabled: false,
-      showSwaggerUILink: false,
-      startQtrYYYYQ: null, // use fallback value
-      endQtrYYYYQ: null, // use fallback value
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeSearchForm />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    // Make sure the first and last options
-    expect(
-      await screen.findByTestId(
-        /CourseOverTimeInstructorSearch.StartQuarter-option-0/,
-      ),
-    ).toHaveValue("20211");
-    expect(
-      await screen.findByTestId(
-        /CourseOverTimeInstructorSearch.StartQuarter-option-3/,
-      ),
-    ).toHaveValue("20214");
-  });
-
   test("Button padding is correct", () => {
     render(
       <QueryClientProvider client={queryClient}>

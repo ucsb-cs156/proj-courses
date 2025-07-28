@@ -121,7 +121,7 @@ sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule = (testid) =
         header: "Info",
         accessorKey: "info",
         id: "info",
-        cell: ({ row }) => renderInfoLink(row),
+        cell: ({ row }) => renderInfoLink(row, testid),
     },
     {
         header: "Action",

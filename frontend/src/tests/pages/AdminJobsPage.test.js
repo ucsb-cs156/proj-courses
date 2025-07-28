@@ -28,7 +28,7 @@ describe("AdminJobsPage tests", () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
-  test.skip("renders without crashing", async () => {
+  test("renders without crashing", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

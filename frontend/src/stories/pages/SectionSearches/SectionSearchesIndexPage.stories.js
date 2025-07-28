@@ -3,10 +3,10 @@ import SectionSearchesIndexpage from "main/pages/SectionSearches/SectionSearches
 
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { oneSection } from "fixtures/sectionFixtures";
 
 import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
+import primaryFixtures from "fixtures/primaryFixtures";
 
 export default {
   title: "pages/SectionSearches/SectionSearchesIndexPage",
@@ -31,9 +31,9 @@ Default.parameters = {
     http.get("/api/currentUser", () => {
       return HttpResponse.status(403); // returns 403 when not logged in
     }),
-    http.get("/api/sections/basicsearch", ({ request }) => {
+    http.get("/api/sections/primaries", ({ request }) => {
       toast(`Generating ${request.method} ${request.url}`);
-      return HttpResponse.json(oneSection, {
+      return HttpResponse.json(primaryFixtures.f24_math_lowerDiv, {
         status: 200,
       });
     }),

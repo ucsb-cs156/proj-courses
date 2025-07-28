@@ -96,7 +96,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     });
   });
 
-  test.skip("shows the correct info for admin users", async () => {
+  test("shows the correct info for admin users", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();
     axiosMock
@@ -146,12 +146,12 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     ).toHaveTextContent("CS156");
     expect(
       screen.getByTestId(
-        `PersonalSectionsTable-cell-row-0-col-classSections[0].enrollCode`,
+        `PersonalSectionsTable-cell-row-0-col-enrollCode`,
       ),
     ).toHaveTextContent("12583");
     expect(
       screen.getByTestId(
-        `PersonalSectionsTable-cell-row-0-col-classSections[0].section`,
+        `PersonalSectionsTable-cell-row-0-col-section`,
       ),
     ).toHaveTextContent("0100");
     expect(
@@ -165,7 +165,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     ).toHaveTextContent("BUCHN 1930");
     expect(
       screen.getByTestId(
-        `PersonalSectionsTable-cell-row-0-col-classSections[0].timeLocations[0].days`,
+        `PersonalSectionsTable-cell-row-0-col-days`,
       ),
     ).toHaveTextContent("M");
     expect(
@@ -210,7 +210,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     expect(weeklyViewButton).toBeInTheDocument();
   });
 
-  test.skip("navigates to weekly view when 'View Weekly Schedule' button is clicked", async () => {
+  test("navigates to weekly view when 'View Weekly Schedule' button is clicked", async () => {
     const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
@@ -237,7 +237,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     });
   });
 
-  test.skip("navigates to list page when 'Back' button is clicked", async () => {
+  test("navigates to list page when 'Back' button is clicked", async () => {
     const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
@@ -262,7 +262,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     });
   });
 
-  test.skip("PersonalSchedulesTable should have showButtons set to false", async () => {
+  test("PersonalSchedulesTable should have showButtons set to false", async () => {
     const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)

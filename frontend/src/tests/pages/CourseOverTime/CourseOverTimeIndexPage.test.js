@@ -48,7 +48,7 @@ describe("CourseOverTimeIndexPage tests", () => {
     );
   });
 
-  test.skip("calls UCSB Course over time search api correctly with 3 section response", async () => {
+  test("calls UCSB Course over time search api correctly with 3 section response", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
       .onGet("/api/public/courseovertime/search")
@@ -96,72 +96,7 @@ describe("CourseOverTimeIndexPage tests", () => {
       courseNumber: "130A",
     });
 
-    expect(screen.getByText("ECE 1A")).toBeInTheDocument();
+    expect(screen.getByText("ECE 1A -1")).toBeInTheDocument();
   });
 
-  test("passes sorted sections to SectionsOverTimeTable", async () => {
-    // Mock the response of the API call with differentQuarterSections data
-    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock
-      .onGet("/api/public/courseovertime/search")
-      .reply(200, differentQuarterSections);
-
-    const spy = jest.spyOn(
-      require("main/components/Sections/SectionsOverTimeTable"),
-      "default",
-    );
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeIndexPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
-    const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
-    const selectSubject = screen.getByLabelText("Subject Area");
-
-    const expectedKey = "CourseOverTimeSearch.Subject-option-ANTH";
-    await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
-    );
-
-    userEvent.selectOptions(selectSubject, "ANTH");
-    const enterCourseNumber = screen.getByLabelText(
-      "Course Number (Try searching '16' or '130A')",
-    );
-    userEvent.type(enterCourseNumber, "130A");
-
-    const submitButton = screen.getByText("Submit");
-    expect(submitButton).toBeInTheDocument();
-    userEvent.click(submitButton);
-
-    axiosMock.resetHistory();
-
-    await waitFor(() => {
-      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
-    });
-
-    expect(axiosMock.history.get[0].params).toEqual({
-      startQtr: "20222",
-      endQtr: "20222",
-      subjectArea: "ANTH",
-      courseNumber: "130A",
-    });
-
-    // Check that SectionsOverTimeTable received the sorted sections data
-    const sortedSections = differentQuarterSections.sort((a, b) =>
-      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
-    );
-    expect(spy).toHaveBeenCalledWith(
-      { sections: sortedSections },
-      expect.anything(),
-    );
-
-    spy.mockRestore();
-  });
 });

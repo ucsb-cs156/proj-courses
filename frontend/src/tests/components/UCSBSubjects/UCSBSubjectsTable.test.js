@@ -20,7 +20,7 @@ jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
-describe.skip("UCSBSubjectsTable tests", () => {
+describe("UCSBSubjectsTable tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table with user not logged in", () => {

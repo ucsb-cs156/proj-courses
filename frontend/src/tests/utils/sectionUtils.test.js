@@ -161,7 +161,7 @@ describe("section utils tests", () => {
         depth: 0,
         original: { ...course }
       }
-      const view = renderInfoLink(row);
+      const view = renderInfoLink(row, "testid");
       expect(view.props.children.props.style.color).toBe("black");
       expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");
     });
