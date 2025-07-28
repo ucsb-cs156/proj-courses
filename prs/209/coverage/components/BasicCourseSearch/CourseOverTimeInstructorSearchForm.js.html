@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -179,48 +179,48 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -228,9 +228,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -290,20 +290,22 @@ import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) =&gt; {
   const { data: systemInfo } = useSystemInfo();
 &nbsp;
-  // Stryker disable OptionalChaining
-  const startQtr = systemInfo?.startQtrYYYYQ || <span class="branch-1 cbranch-no" title="branch not covered" >"20211";</span>
-  const endQtr = systemInfo?.endQtrYYYYQ || <span class="branch-1 cbranch-no" title="branch not covered" >"20214";</span>
-  // Stryker restore OptionalChaining
+  // Don't confuse the startQtr and endQtr which are the system defaults
+  // for the first and last values in the dropdown lists, with the actual
+  // *currently selectted* start and end quarters for the search!
 &nbsp;
-  const quarters = quarterRange(startQtr, endQtr);
+  const firstQtr = systemInfo?.startQtrYYYYQ || "20211";
+  const lastQtr = systemInfo?.endQtrYYYYQ || "20214";
 &nbsp;
-  // Stryker disable all : not sure how to test/mock local storage
+  const quarters = quarterRange(firstQtr, lastQtr);
+&nbsp;
   const localStartQuarter = localStorage.getItem(
     "CourseOverTimeInstructorSearch.StartQuarter",
   );
   const localEndQuarter = localStorage.getItem(
     "CourseOverTimeInstructorSearch.EndQuarter",
   );
+&nbsp;
   const localInstructor = localStorage.getItem(
     "CourseOverTimeInstructorSearch.Instructor",
   );
@@ -311,11 +313,9 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) =&gt; {
     localStorage.getItem("CourseOverTimeInstructorSearch.Checkbox") === "true";
 &nbsp;
   const [startQuarter, setStartQuarter] = useState(
-    localStartQuarter || quarters[0].yyyyq,
+    localStartQuarter || firstQtr,
   );
-  const [endQuarter, setEndQuarter] = useState(
-    localEndQuarter || quarters[0].yyyyq,
-  );
+  const [endQuarter, setEndQuarter] = useState(localEndQuarter || lastQtr);
   const [instructor, setInstructor] = useState(localInstructor || "");
   const [checkbox, setCheckbox] = useState(localStorageCheckbox || false);
   // Stryker restore all
@@ -397,7 +397,7 @@ export default CourseOverTimeInstructorSearchForm;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-28T04:05:03.082Z
+                at 2025-07-28T06:28:17.106Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
