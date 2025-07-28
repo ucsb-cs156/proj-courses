@@ -8,8 +8,10 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
 import edu.ucsb.cs156.courses.documents.PersonalSectionsFixtures;
+import edu.ucsb.cs156.courses.documents.Primary;
 import edu.ucsb.cs156.courses.documents.SectionFixtures;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -369,5 +371,38 @@ public class UCSBCurriculumServiceTests {
     // invoke the filter
     List<String> codes = ucs.getRequirementCodesByCollege("ENGR");
     assertEquals(List.of("A1", "A2"), codes);
+  }
+
+  @Test
+  public void test_getPrimaries() throws Exception {
+
+    // arrange
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    String expectedCoursePageJSON = CoursePageFixtures.COURSE_PAGE_JSON_MATH3B;
+    CoursePage expectedCoursePage =
+        objectMapper.readValue(expectedCoursePageJSON, CoursePage.class);
+    List<Primary> expectedConvertedPrimaries = expectedCoursePage.getPrimaries();
+
+    String subjectArea = "MATH";
+    String quarter = "20222";
+    String level = "L";
+
+    String expectedParams =
+        String.format(
+            "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
+            quarter, subjectArea, level, 1, 100, "true");
+    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedCoursePageJSON, MediaType.APPLICATION_JSON));
+
+    List<Primary> result = ucs.getPrimaries(subjectArea, quarter, level);
+    assertEquals(expectedConvertedPrimaries, result);
   }
 }

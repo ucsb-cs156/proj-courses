@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.courses.controllers;
 
+import edu.ucsb.cs156.courses.documents.Primary;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +24,9 @@ public class UCSBCurriculumController extends ApiController {
   @Autowired UserRepository userRepository;
   @Autowired UCSBCurriculumService ucsbCurriculumService;
 
-  @Operation(summary = "Get course data for a given quarter, department, and level")
+  @Operation(
+      summary =
+          "Get course data (in original UCSB API format) for a given quarter, department, and level")
   @GetMapping(value = "/basicsearch", produces = "application/json")
   public ResponseEntity<String> basicsearch(
       @RequestParam String qtr, @RequestParam String dept, @RequestParam String level)
@@ -32,6 +35,26 @@ public class UCSBCurriculumController extends ApiController {
     String body = ucsbCurriculumService.getJSON(dept, qtr, level);
 
     return ResponseEntity.ok().body(body);
+  }
+
+  /**
+   * Get primaries for a given quarter, department, and level. This endpoint returns a list of
+   * Primary objects.
+   *
+   * @param qtr the quarter in YYYYQ format
+   * @param dept the department code (e.g., "CS")
+   * @param level the course level (e.g., "UG" for undergraduate)
+   * @return a list of Primary objects
+   */
+  @Operation(summary = "Get primaries for a given quarter, department, and level")
+  @GetMapping(value = "/primaries", produces = "application/json")
+  public List<Primary> primaries(
+      @RequestParam String qtr, @RequestParam String dept, @RequestParam String level)
+      throws Exception {
+
+    List<Primary> primaries = ucsbCurriculumService.getPrimaries(dept, qtr, level);
+
+    return primaries;
   }
 
   // Backend for final exam info, similar to the above operation:

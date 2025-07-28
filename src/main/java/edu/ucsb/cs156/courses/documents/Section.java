@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.courses.documents;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -98,5 +99,15 @@ public class Section implements Cloneable {
 
     Section newSection = (Section) super.clone();
     return newSection;
+  }
+
+  /**
+   * Check if the section is a primary section (i.e. section number ends with "00").
+   *
+   * @return true if the section is a primary section, false otherwise
+   */
+  @JsonIgnore
+  public boolean isPrimary() {
+    return section != null && section.matches("\\d+00");
   }
 }

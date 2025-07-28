@@ -6,8 +6,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
+import edu.ucsb.cs156.courses.documents.CoursePage;
+import edu.ucsb.cs156.courses.documents.CoursePageFixtures;
+import edu.ucsb.cs156.courses.documents.Primary;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import java.util.List;
@@ -112,5 +116,33 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     // JSON representation of ["A1","A2"]
     assertEquals("[\"A1\",\"A2\"]", body);
   }
+
+  @Test
+  public void test_getPrimaries() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper();
+    String subjectArea = "MATH";
+    String quarter = "20222";
+    String level = "L";
+    String expectedCoursePageJSON = CoursePageFixtures.COURSE_PAGE_JSON_MATH3B;
+    CoursePage expectedCoursePage =
+        objectMapper.readValue(expectedCoursePageJSON, CoursePage.class);
+    List<Primary> expectedConvertedPrimaries = expectedCoursePage.getPrimaries();
+
+    when(ucsbCurriculumService.getPrimaries(subjectArea, quarter, level))
+        .thenReturn(expectedConvertedPrimaries);
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/public/primaries")
+                    .param("dept", subjectArea)
+                    .param("qtr", quarter)
+                    .param("level", level)
+                    .contentType("application/json"))
+            .andExpect(status().isOk())
+            .andExpect(content().json(objectMapper.writeValueAsString(expectedConvertedPrimaries)))
+            .andReturn();
+
+    String body = response.getResponse().getContentAsString();
+    assertEquals(objectMapper.writeValueAsString(expectedConvertedPrimaries), body);
+  }
 }
-;
