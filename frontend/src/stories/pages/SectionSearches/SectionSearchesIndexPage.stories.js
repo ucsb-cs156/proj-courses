@@ -31,7 +31,7 @@ Default.parameters = {
     http.get("/api/currentUser", () => {
       return HttpResponse.status(403); // returns 403 when not logged in
     }),
-    http.get("/api/sections/primaries", ({ request }) => {
+    http.get("/api/public/primaries", ({ request }) => {
       toast(`Generating ${request.method} ${request.url}`);
       return HttpResponse.json(primaryFixtures.f24_math_lowerDiv, {
         status: 200,

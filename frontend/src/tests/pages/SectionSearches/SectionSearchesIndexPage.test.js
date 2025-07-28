@@ -47,7 +47,7 @@ describe("SectionSearchesIndexPage tests", () => {
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock.onGet("/api/sections/primaries").reply(200, primaryFixtures.f24_math_lowerDiv);
+    axiosMock.onGet("/api/public/primaries").reply(200, primaryFixtures.f24_math_lowerDiv);
 
     render(
       <QueryClientProvider client={queryClient}>

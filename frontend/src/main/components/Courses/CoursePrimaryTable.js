@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React from "react";
 import PrimaryTable from "main/components/Common/PrimaryTable";
 

@@ -10,7 +10,7 @@ export default function SectionSearchesIndexPage() {
   const [sectionJSON, setSectionJSON] = useState([]);
 
   const objectToAxiosParams = (query) => ({
-    url: "/api/sections/primaries",
+    url: "/api/public/primaries",
     params: {
       qtr: query.quarter,
       dept: query.subject,
