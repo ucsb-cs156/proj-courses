@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -139,7 +139,25 @@
 <a name='L74'></a><a href='#L74'>74</a>
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
-<a name='L77'></a><a href='#L77'>77</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -155,23 +173,41 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">221x</span>
-<span class="cline-any cline-yes">221x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">221x</span>
+<span class="cline-any cline-yes">786x</span>
+<span class="cline-any cline-yes">786x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">221x</span>
+<span class="cline-any cline-yes">786x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">786x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">786x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">221x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">786x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">221x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -230,6 +266,7 @@ export default function AddToScheduleModal({
   section,
   onAdd,
   schedules = [],
+  testid = "AddToScheduleModal"
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
@@ -247,10 +284,18 @@ export default function AddToScheduleModal({
 &nbsp;
   return (
     &lt;&gt;
-      &lt;Button variant="success" onClick={() =&gt; setShowModal(true)}&gt;
+      &lt;Button
+        variant="success"
+        onClick={() =&gt; setShowModal(true)}
+        data-testid={`${testid}-add-to-schedule-button`}
+      &gt;
         Add
       &lt;/Button&gt;
-      &lt;Modal show={showModal} onHide={handleModalClose}&gt;
+      &lt;Modal
+        show={showModal}
+        onHide={handleModalClose}
+        data-testid={`${testid}-modal`}
+      &gt;
         &lt;Modal.Header closeButton&gt;
           &lt;Modal.Title&gt;Add to Schedule&lt;/Modal.Title&gt;
         &lt;/Modal.Header&gt;
@@ -262,6 +307,7 @@ export default function AddToScheduleModal({
                 &lt;Form.Group controlId="scheduleSelect"&gt;
                   &lt;Form.Label&gt;Select Schedule&lt;/Form.Label&gt;
                   &lt;PersonalScheduleSelector
+                    data-testid={`${testid}-schedule-selector`}
                     schedule={selectedSchedule}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
@@ -269,7 +315,7 @@ export default function AddToScheduleModal({
                   /&gt;
                 &lt;/Form.Group&gt;
               ) : (
-                &lt;p&gt;
+                &lt;p data-testid={`${testid}-no-schedules`}&gt;
                   There are no personal schedules for {yyyyqToQyy(quarter)}.
                   &lt;Link to="/personalschedules/create"&gt;
                     [Create Personal Schedule]
@@ -280,10 +326,18 @@ export default function AddToScheduleModal({
           &lt;/Form&gt;
         &lt;/Modal.Body&gt;
         &lt;Modal.Footer&gt;
-          &lt;Button variant="secondary" onClick={handleModalClose}&gt;
+          &lt;Button
+            variant="secondary"
+            onClick={handleModalClose}
+            data-testid={`${testid}-modal-close-button`}
+          &gt;
             Close
           &lt;/Button&gt;
-          &lt;Button variant="primary" onClick={handleModalSave}&gt;
+          &lt;Button
+            variant="primary"
+            onClick={handleModalSave}
+            data-testid={`${testid}-modal-save-button`}
+          &gt;
             Save Changes
           &lt;/Button&gt;
         &lt;/Modal.Footer&gt;
@@ -298,7 +352,7 @@ export default function AddToScheduleModal({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-28T06:28:17.106Z
+                at 2025-07-29T03:20:33.410Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
