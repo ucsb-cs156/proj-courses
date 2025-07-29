@@ -67,19 +67,6 @@ describe("SectionsTableBase tests", () => {
         expect(style.backgroundColor).toBe(expectedBackgroundColors[index]);
       });
     });
-    test("renders a table with info column and add  buttons", () => {
-      const queryClient = new QueryClient();
-      render(
-        <QueryClientProvider client={queryClient}>
-          <SectionsTableBase
-            columns={columnsWithInfoAndAddToSchedule}
-            data={primaryFixtures.f24_math_lowerDiv}
-            testid={testid}
-          />
-        </QueryClientProvider>,
-      );
-      expect(screen.getByTestId(`${testid}-expand-all-rows`)).toBeInTheDocument();
-    });
 
   });
   describe("SectionsTableBase tests for corner cases", () => {

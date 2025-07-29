@@ -17,7 +17,7 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
   const localArea = localStorage.getItem("GEAreaSearch.Area");
 
   const {
-    data: areas = [],
+    data: areas,
     _error,
     _status,
   } = useBackend(

@@ -52,12 +52,12 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
             <tr
               key={`rowId-${row.id}`}
               style={rowStyle}
-              data-testid={`${testid}-row-${row.index}`}
+              data-testid={`${testid}-row-${row.id}`}
             >
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
+                  data-testid={`${testid}-cell-row-${cell.row.id}-col-${cell.column.id}`}
                   style={{
                     backgroundColor: "inherit",
                     fontWeight: row.depth === 0 ? "bold" : "normal",

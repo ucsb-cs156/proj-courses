@@ -13,6 +13,7 @@ export default function AddToScheduleModal({
   section,
   onAdd,
   schedules = [],
+  testid = "AddToScheduleModal"
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
@@ -30,10 +31,18 @@ export default function AddToScheduleModal({
 
   return (
     <>
-      <Button variant="success" onClick={() => setShowModal(true)}>
+      <Button
+        variant="success"
+        onClick={() => setShowModal(true)}
+        data-testid={`${testid}-add-to-schedule-button`}
+      >
         Add
       </Button>
-      <Modal show={showModal} onHide={handleModalClose}>
+      <Modal
+        show={showModal}
+        onHide={handleModalClose}
+        data-testid={`${testid}-modal`}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Add to Schedule</Modal.Title>
         </Modal.Header>
@@ -45,6 +54,7 @@ export default function AddToScheduleModal({
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
+                    data-testid={`${testid}-schedule-selector`}
                     schedule={selectedSchedule}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
@@ -52,7 +62,7 @@ export default function AddToScheduleModal({
                   />
                 </Form.Group>
               ) : (
-                <p>
+                <p data-testid={`${testid}-no-schedules`}>
                   There are no personal schedules for {yyyyqToQyy(quarter)}.
                   <Link to="/personalschedules/create">
                     [Create Personal Schedule]
@@ -63,10 +73,18 @@ export default function AddToScheduleModal({
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleModalClose}>
+          <Button
+            variant="secondary"
+            onClick={handleModalClose}
+            data-testid={`${testid}-modal-close-button`}
+          >
             Close
           </Button>
-          <Button variant="primary" onClick={handleModalSave}>
+          <Button
+            variant="primary"
+            onClick={handleModalSave}
+            data-testid={`${testid}-modal-save-button`}
+          >
             Save Changes
           </Button>
         </Modal.Footer>

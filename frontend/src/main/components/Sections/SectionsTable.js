@@ -32,10 +32,7 @@ export const objectToAxiosParams = (data) => {
   };
 };
 
-
-
 export const onSuccess = (response) => {
-  console.log("onSuccess: response=", response);
   if (response.length < 3) {
     toast(
       `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
@@ -56,8 +53,6 @@ export const onError = (error) => {
 
 export default function SectionsTable({ sections, schedules = [] }) {
   const { data: currentUser } = useCurrentUser();
-
-  console.log("SectionsTable: currentUser.loggedIn=", currentUser.loggedIn);
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
@@ -181,16 +176,19 @@ export default function SectionsTable({ sections, schedules = [] }) {
                   addToScheduleCallback(section, schedule, mutation)
                 }
                 schedules={schedules}
+                testid={`${testid}-cell-row-${row.id}-col-action`}
               />
             </div>
           );
         }
-        return <span data-testid={`${testid}-row-${row.index}-no-action`} />;
+        return <span data-testid={`${testid}-row-${row.id}-no-action`} />;
       },
     },
   ];
 
   return (
-    <SectionsTableBase columns={columns} data={sections} testid={testid} />
+    <>
+      <SectionsTableBase columns={columns} data={sections} testid={testid} />
+    </>
   );
 }

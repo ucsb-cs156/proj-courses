@@ -8,9 +8,8 @@ import {
   formatInfoLink,
   renderInfoLink,
   formatStatus,
+  isLectureWithNoSections
 } from "main/utils/sectionUtils";
-import { oneSection } from "../../fixtures/sectionFixtures";
-
 import primaryFixtures from "fixtures/primaryFixtures";
 
 const testTimeLocations = [
@@ -182,6 +181,28 @@ describe("section utils tests", () => {
     test("formatStatus open test", () => {
       const section = { enrolledTotal: 20, maxEnroll: 30 };
       expect(formatStatus(section)).toBe("Open");
+    });
+  });
+  describe("isLectureWithNoSections tests", () => {
+
+    const rowForLectureWithSubRows = {
+      original: { ... primaryFixtures.f24_math_lowerDiv[0]}
+    };
+    const rowForLectureWithNoSubrows = {
+      original: {... primaryFixtures.singleLectureSectionWithNoDiscussion[0] }
+    };
+    const subrowForDiscussionSection = {
+      original: { ... primaryFixtures.f24_math_lowerDiv[0].subRows[0] }
+    }
+
+    test("isLectureWithNoSections true test", () => {
+      console.log(rowForLectureWithNoSubrows);
+      expect(isLectureWithNoSections(rowForLectureWithNoSubrows)).toBe(true);
+    });
+
+    test("isLectureWithNoSections false test", () => {
+      expect(isLectureWithNoSections(rowForLectureWithSubRows)).toBe(false);
+      expect(isLectureWithNoSections(subrowForDiscussionSection)).toBe(false);
     });
   });
 });

@@ -10,7 +10,6 @@ const qtrNumToQuarter = {
 };
 
 const yyyyqToQyy = (yyyyq) => {
-  if (!yyyyq) return "";
   return `${shortQuarters[parseInt(yyyyq.charAt(4)) - 1]}${yyyyq.substring(
     2,
     4,
