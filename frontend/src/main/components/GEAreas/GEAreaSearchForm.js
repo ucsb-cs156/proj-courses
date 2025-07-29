@@ -13,7 +13,6 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
     systemInfo.endQtrYYYYQ,
   );
 
-  // Stryker disable all : not sure how to test/mock local storage
   const localQuarter = localStorage.getItem("GEAreaSearch.Quarter");
   const localArea = localStorage.getItem("GEAreaSearch.Area");
 

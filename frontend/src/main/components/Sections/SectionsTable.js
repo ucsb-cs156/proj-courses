@@ -21,6 +21,7 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
 export const objectToAxiosParams = (data) => {
+  console.log("objectToAxiosParams: data=", data);
   return {
     url: "/api/courses/post",
     method: "POST",
@@ -31,25 +32,10 @@ export const objectToAxiosParams = (data) => {
   };
 };
 
-export const handleAddToSchedule = (section, schedule, mutation) => {
-  // Execute the mutation with the provided data
-  const dataFinal = {
-    enrollCd: section.section.enrollCode,
-    psId: schedule,
-  };
-  mutation.mutate(dataFinal);
-};
 
-export const handleLectureAddToSchedule = (section, schedule, mutation) => {
-  // Execute the mutation with the provided data
-  const dataFinal = {
-    enrollCd: section,
-    psId: schedule,
-  };
-  mutation.mutate(dataFinal);
-};
 
 export const onSuccess = (response) => {
+  console.log("onSuccess: response=", response);
   if (response.length < 3) {
     toast(
       `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
@@ -62,8 +48,9 @@ export const onSuccess = (response) => {
 };
 
 export const onError = (error) => {
+  console.error("onError: error=", error);
   const message =
-    error.response?.data?.message || "An unexpected error occurred";
+    error.response?.data?.message || `An unexpected error occurred adding the schedule: ${JSON.stringify(error)}`;
   toast.error(message);
 };
 
@@ -79,8 +66,11 @@ export default function SectionsTable({ sections, schedules = [] }) {
   );
 
   const addToScheduleCallback = (section, schedule, mutation) => {
+    console.log(
+      `addToScheduleCallback: section=${JSON.stringify(section)} schedule=${schedule}`,
+    );
     const dataFinal = {
-      enrollCd: section.section.enrollCode,
+      enrollCd: section.enrollCode,
       psId: schedule,
     };
     mutation.mutate(dataFinal);

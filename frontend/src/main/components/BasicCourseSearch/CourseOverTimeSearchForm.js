@@ -11,14 +11,11 @@ import { useBackend } from "main/utils/useBackend";
 const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
 
-  // Stryker disable OptionalChaining
   const startQtr = systemInfo?.startQtrYYYYQ || "20211";
   const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker enable OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
 
-  // Stryker disable all : not sure how to test/mock local storage
   const localStartQuarter = localStorage.getItem(
     "CourseOverTimeSearch.StartQuarter",
   );
@@ -35,7 +32,6 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     error: _error,
     status: _status,
   } = useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
     ["/api/UCSBSubjects/all"],
     { method: "GET", url: "/api/UCSBSubjects/all" },
     [],
@@ -68,37 +64,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
 
   const handleCourseNumberOnChange = (event) => {
     const rawCourse = event.target.value;
-    const inputtedSubject = rawCourse.match(/^[a-zA-Z]+/);
 
-    if (inputtedSubject) {
-      const upperSubject = inputtedSubject[0].toUpperCase().replace(/s/g, "");
-      if (subject.toUpperCase() === upperSubject) {
-        setCourseSuf(
-          rawCourse.match(/[a-zA-Z]+$/)
-            ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
-            : "",
-        );
-        setCourseNumber(
-          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
-        );
-      } else if (
-        subject.toUpperCase() === "CMPSC" &&
-        (upperSubject === "CS" || upperSubject === "COMS")
-      ) {
-        setCourseSuf(
-          rawCourse.match(/[a-zA-Z]+$/)
-            ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
-            : "",
-        );
-        setCourseNumber(
-          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
-        );
-      } else {
-        setCourseNumber("");
-        setCourseSuf("");
-        return;
-      }
-    }
     setCourseSuf(
       rawCourse.match(/[a-zA-Z]+$/)
         ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
@@ -107,7 +73,6 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     setCourseNumber(rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "");
   };
 
-  // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
   return (
     <Form onSubmit={handleSubmit}>
       <Container>
