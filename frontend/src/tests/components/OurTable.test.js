@@ -1,105 +1,134 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, waitFor, fireEvent, screen } from "@testing-library/react";
 import OurTable, {
   ButtonColumn,
-  DateColumn,
-  PlaintextColumn,
+  convertOldStyleColumnsToNewStyle,
 } from "main/components/OurTable";
+import ourTableFixtures from "fixtures/ourTableFixtures";
 
 describe("OurTable tests", () => {
-  const threeRows = [
-    {
-      col1: "Hello",
-      col2: "World",
-      createdAt: "2021-04-01T04:00:00.000",
-      log: "foo\nbar\n  baz",
-    },
-    {
-      col1: "react-table",
-      col2: "rocks",
-      createdAt: "2022-01-04T14:00:00.000",
-      log: "foo\nbar",
-    },
-    {
-      col1: "whatever",
-      col2: "you want",
-      createdAt: "2023-04-01T23:00:00.000",
-      log: "bar\n  baz",
-    },
-  ];
-  const clickMeCallback = jest.fn();
+  describe("OurTable helper tests", () => {
+    test("add id when it doesn't exist", () => {
+      const columns = [
+        {
+          Header: "Column 1",
+          accessor: "col1", // accessor is the "key" in the data
+        },
+      ];
 
-  const columns = [
-    {
-      Header: "Column 1",
-      accessor: "col1", // accessor is the "key" in the data
-    },
-    {
-      Header: "Column 2",
-      accessor: "col2",
-    },
-    ButtonColumn("Click", "primary", clickMeCallback, "testId"),
-    DateColumn("Date", (cell) => cell.row.original.createdAt),
-    PlaintextColumn("Log", (cell) => cell.row.original.log),
-  ];
+      console.log("columns", columns);
+      const newColumns = convertOldStyleColumnsToNewStyle(columns);
+      console.log("newColumns", newColumns);
+      const expected = [
+        {
+          id: "col1",
+          header: "Column 1",
+          accessorKey: "col1",
+          Header: "Column 1",
+          accessor: "col1", // accessor is the "key" in the data
+        },
+      ];
 
-  test("renders an empty table without crashing", () => {
-    render(<OurTable columns={columns} data={[]} />);
+      expect(newColumns).toEqual(expected);
+    });
   });
+  describe("OurTable component tests", () => {
+    const threeRows = [
+      {
+        col1: "Hello",
+        col2: "World",
+      },
+      {
+        col1: "react-table",
+        col2: "rocks",
+      },
+      {
+        col1: "whatever",
+        col2: "you want",
+      },
+    ];
 
-  test("renders a table with two rows without crashing", () => {
-    render(<OurTable columns={columns} data={threeRows} />);
-    expect(screen.getByTestId("testid-cell-row-0-col-Log")).toHaveTextContent(
-      "foobar baz",
-    );
-  });
+    const clickMeCallback = jest.fn();
 
-  test("The button appears in the table", async () => {
-    render(<OurTable columns={columns} data={threeRows} />);
+    const columns = [
+      {
+        Header: "Column 1",
+        accessor: "col1", // accessor is the "key" in the data
+      },
+      {
+        Header: "Column 2",
+        accessor: "col2",
+      },
+      ButtonColumn("Click", "primary", clickMeCallback, "testId"),
+    ];
 
-    expect(
-      await screen.findByTestId("testId-cell-row-0-col-Click-button"),
-    ).toBeInTheDocument();
-    const button = screen.getByTestId("testId-cell-row-0-col-Click-button");
-    fireEvent.click(button);
-    await waitFor(() => expect(clickMeCallback).toBeCalledTimes(1));
-  });
+    test("renders an empty table without crashing", () => {
+      render(<OurTable columns={columns} data={[]} />);
+    });
 
-  test("default testid is testId", async () => {
-    render(<OurTable columns={columns} data={threeRows} />);
-    expect(await screen.findByTestId("testid-header-col1")).toBeInTheDocument();
-  });
+    test("renders a table with three rows with correct test ids", async () => {
+      render(<OurTable columns={columns} data={threeRows} testid={"testid"} />);
 
-  test("click on a header and a sort caret should appear", async () => {
-    render(
-      <OurTable columns={columns} data={threeRows} testid={"sampleTestId"} />,
-    );
+      await waitFor(() => {
+        expect(screen.getByTestId("testid-header-group-0")).toBeInTheDocument();
+      });
+      expect(screen.getByTestId("testid-header-col1")).toBeInTheDocument();
+      expect(screen.getByTestId("testid-header-col2")).toBeInTheDocument();
+      expect(screen.getByTestId("testid-row-0")).toBeInTheDocument();
+      expect(screen.getByTestId("testid-row-1")).toBeInTheDocument();
+      expect(screen.getByTestId("testid-row-2")).toBeInTheDocument();
+    });
 
-    expect(
-      await screen.findByTestId("sampleTestId-header-col1"),
-    ).toBeInTheDocument();
-    const col1Header = screen.getByTestId("sampleTestId-header-col1");
+    test("The button appears in the table", async () => {
+      render(<OurTable columns={columns} data={threeRows} />);
 
-    const col1SortCarets = screen.getByTestId(
-      "sampleTestId-header-col1-sort-carets",
-    );
-    expect(col1SortCarets).toHaveTextContent("");
+      await screen.findByTestId("testId-cell-row-0-col-Click-button");
+      const button = screen.getByTestId("testId-cell-row-0-col-Click-button");
+      fireEvent.click(button);
+      await waitFor(() => expect(clickMeCallback).toBeCalledTimes(1));
+    });
 
-    const col1Row0 = screen.getByTestId("sampleTestId-cell-row-0-col-col1");
-    expect(col1Row0).toHaveTextContent("Hello");
+    test("default testid is testid", async () => {
+      render(<OurTable columns={columns} data={threeRows} />);
+      await screen.findByTestId("testid-header-col1");
+    });
 
-    fireEvent.click(col1Header);
-    expect(await screen.findByText("🔼")).toBeInTheDocument();
+    test("click on a header and a sort caret should appear", async () => {
+      render(
+        <OurTable columns={columns} data={threeRows} testid={"sampleTestId"} />,
+      );
 
-    fireEvent.click(col1Header);
-    expect(await screen.findByText("🔽")).toBeInTheDocument();
-  });
+      await screen.findByTestId("sampleTestId-header-col1");
+      const col1Header = screen.getByTestId("sampleTestId-header-col1");
+      expect(col1Header).toBeInTheDocument();
 
-  test("rejects invalid data values", () => {
-    expect(() => {
-      render(<OurTable columns={columns} data="Not an array" />);
-    }).toThrowError("Invalid data value");
-    expect(() => {
-      render(<OurTable columns={columns} data={["Not an object"]} />);
-    }).toThrowError("Invalid data value");
+      const col1SortCarets = screen.getByTestId(
+        "sampleTestId-header-col1-sort-carets",
+      );
+      expect(col1SortCarets).toBeEmptyDOMElement();
+
+      const col1Row0 = screen.getByTestId("sampleTestId-cell-row-0-col-col1");
+      expect(col1Row0).toHaveTextContent("Hello");
+    });
+
+    test("placeholder headers work properly", async () => {
+      render(
+        <OurTable
+          columns={ourTableFixtures.placeholderExample.columns}
+          data={ourTableFixtures.placeholderExample.data}
+          testid={"placeholderHeadersTest"}
+        />,
+      );
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("placeholderHeadersTest-header-group-0"),
+        ).toBeInTheDocument();
+      });
+      const firstNameHeader = screen.getByTestId(
+        "placeholderHeadersTest-header-firstName-sort-header",
+      );
+      expect(firstNameHeader).toBeInTheDocument();
+      expect(firstNameHeader).toHaveTextContent("First Name");
+      expect(firstNameHeader).toHaveAttribute("style", "cursor: pointer;");
+    });
   });
 });

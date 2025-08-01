@@ -10,47 +10,59 @@ import {
 export default function CourseDetailsTable({ details }) {
   const columns = [
     {
-      Header: "Course ID",
-      accessor: "courseId",
+      header: "Course ID",
+      accessorKey: "courseId",
     },
     {
-      Header: "Enroll Code",
-      accessor: "classSections[0].enrollCode",
+      header: "Enroll Code",
+      accessorKey: "enrollCode",
+      cell: ({ cell }) => cell.row.original.classSections[0].enrollCode,
     },
     {
-      Header: "Section",
-      accessor: "classSections[0].section",
+      header: "Section",
+      accessorKey: "section",
+      cell: ({ cell }) => cell.row.original.classSections[0].section,
     },
     {
-      Header: "Title",
-      accessor: "title",
+      header: "Title",
+      accessorKey: "title",
     },
     {
-      Header: "Enrolled",
-      accessor: (row) =>
+      header: "Enrolled",
+      accessorKey: "enrolled",
+      cell: ({ cell }) =>
         convertToFraction(
-          row.classSections[0].enrolledTotal,
-          row.classSections[0].maxEnroll,
+          cell.row.original.classSections[0].enrolledTotal,
+          cell.row.original.classSections[0].maxEnroll,
         ),
       id: "enrolled",
     },
     {
-      Header: "Location",
-      accessor: (row) => formatLocation(row.classSections[0].timeLocations),
+      header: "Location",
+      accessorKey: "location",
+      cell: ({ cell }) =>
+        formatLocation(cell.row.original.classSections[0].timeLocations),
       id: "location",
     },
     {
-      Header: "Days",
-      accessor: "classSections[0].timeLocations[0].days",
+      header: "Days",
+      accessorKey: "days",
+      cell: ({ cell }) =>
+        cell.row.original.classSections[0].timeLocations[0].days,
+      id: "days",
     },
     {
-      Header: "Time",
-      accessor: (row) => formatTime(row.classSections[0].timeLocations),
+      header: "Time",
+      cell: ({ cell }) =>
+        formatTime(cell.row.original.classSections[0].timeLocations),
       id: "time",
+      accessorKey: "time",
     },
     {
-      Header: "Instructor",
-      accessor: (row) => formatInstructors(row.classSections[0].instructors),
+      header: "Instructor",
+      accessorKey: "instructor",
+      cell: ({ cell }) =>
+        formatInstructors(cell.row.original.classSections[0].instructors),
       id: "instructor",
     },
   ];

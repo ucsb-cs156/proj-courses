@@ -35,7 +35,7 @@ describe("UCSBSubjectUtils", () => {
   describe("cellToAxiosParamsDelete", () => {
     test("It returns the correct params", () => {
       // arrange
-      const cell = { row: { values: { subjectCode: "ANTH" } } };
+      const cell = { row: { original: { subjectCode: "ANTH" } } };
 
       // act
       const result = cellToAxiosParamsDelete(cell);

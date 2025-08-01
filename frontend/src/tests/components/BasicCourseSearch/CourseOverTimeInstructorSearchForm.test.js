@@ -17,6 +17,14 @@ jest.mock("react-toastify", () => ({
   toast: jest.fn(),
 }));
 
+import { useSystemInfo } from "main/utils/systemInfo";
+
+jest.mock("main/utils/systemInfo", () => ({
+  useSystemInfo: jest.fn(),
+}));
+
+// import { useSystemInfo } from "main/utils/systemInfo";
+
 describe("CourseOverTimeInstructorSearchForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
@@ -32,11 +40,16 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/systemInfo").reply(200, {
-      ...systemInfoFixtures.showingNeither,
-      startQtrYYYYQ: "20201",
-      endQtrYYYYQ: "20214",
+    useSystemInfo.mockReturnValue({
+      data: systemInfoFixtures.showingNeither,
+      isLoading: false,
+      isError: false,
     });
+    // axiosMock.onGet("/api/systemInfo").reply(200, {
+    //   ...systemInfoFixtures.showingNeither,
+    //   startQtrYYYYQ: "20201",
+    //   endQtrYYYYQ: "20214",
+    // });
 
     toast.mockReturnValue({
       addToast: addToast,
@@ -193,35 +206,6 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     userEvent.click(submitButton);
   });
 
-  test("renders without crashing when fallback values are used", async () => {
-    axiosMock.onGet("/api/systemInfo").reply(200, {
-      springH2ConsoleEnabled: false,
-      showSwaggerUILink: false,
-      startQtrYYYYQ: null, // use fallback value
-      endQtrYYYYQ: null, // use fallback value
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeSearchForm />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    // Make sure the first and last options
-    expect(
-      await screen.findByTestId(
-        /CourseOverTimeInstructorSearch.StartQuarter-option-0/,
-      ),
-    ).toHaveValue("20211");
-    expect(
-      await screen.findByTestId(
-        /CourseOverTimeInstructorSearch.StartQuarter-option-3/,
-      ),
-    ).toHaveValue("20214");
-  });
-
   test("Button padding is correct", () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -237,5 +221,51 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       "style",
       "padding-top: 10px; padding-bottom: 10px;",
     );
+  });
+
+  test("Fallbacks render correctly", () => {
+    jest.clearAllMocks();
+    axiosMock.reset();
+    axiosMock.onGet("/api/systemInfo").reply(500);
+
+    useSystemInfo.mockReturnValue({
+      data: {},
+      isLoading: false,
+      isError: false,
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    // Get all of the drop down options
+    // Don't confuse the first and last option in the list with the
+    // default values of start and end quarter; those are not the same thing!
+
+    // Get just the options for the start quarter
+    const startQtrOptions = Array.from(
+      screen.getByLabelText("Start Quarter").querySelectorAll("option"),
+    );
+
+    expect(startQtrOptions[0].textContent).toBe("W21");
+    expect(startQtrOptions[1].textContent).toBe("S21");
+    expect(startQtrOptions[2].textContent).toBe("M21");
+    expect(startQtrOptions[3].textContent).toBe("F21");
+    expect(startQtrOptions.length).toBe(4);
+
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    // Get all of the drop down options
+    const endQtrOptions = Array.from(
+      screen.getByLabelText("End Quarter").querySelectorAll("option"),
+    );
+    expect(endQtrOptions[0].textContent).toBe("W21");
+    expect(endQtrOptions[1].textContent).toBe("S21");
+    expect(endQtrOptions[2].textContent).toBe("M21");
+    expect(endQtrOptions[3].textContent).toBe("F21");
+    expect(endQtrOptions.length).toBe(4);
   });
 });

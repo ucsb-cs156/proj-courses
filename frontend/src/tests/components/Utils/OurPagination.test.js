@@ -15,6 +15,26 @@ describe("OurPagination tests", () => {
     expect(emptyArray()).toStrictEqual([]);
   });
 
+  test("renders correctly for default values", async () => {
+    const updateActivePage = jest.fn();
+    render(
+      <OurPagination updateActivePage={updateActivePage} />,
+    );
+
+     // Expected: 1, 2, 3, 4, 5, ..., 10
+    checkTestIdsInOrder([
+      "OurPagination-prev",
+      "OurPagination-1",
+      "OurPagination-2",
+      "OurPagination-3",
+      "OurPagination-4",
+      "OurPagination-5",
+      "OurPagination-right-ellipsis",
+      "OurPagination-10",
+      "OurPagination-next",
+    ]);
+  });
+
   test("renders correctly for totalPages = 5 (less than or equal to 7)", async () => {
     const updateActivePage = jest.fn();
     render(

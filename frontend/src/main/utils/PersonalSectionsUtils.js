@@ -10,7 +10,7 @@ export function cellToAxiosParamsDelete({ cell, psId }) {
     url: "/api/courses/user/psid",
     method: "DELETE",
     params: {
-      enrollCd: cell.row.values["classSections[0].enrollCode"],
+      enrollCd: cell.row.original["classSections[0].enrollCode"],
       psId: psId,
     },
   };

@@ -66,7 +66,7 @@ jest.mock("recharts", () => {
   };
 });
 
-describe("Course Details Index Page tests", () => {
+describe("CourseDetailsIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
     jest.spyOn(console, "error");

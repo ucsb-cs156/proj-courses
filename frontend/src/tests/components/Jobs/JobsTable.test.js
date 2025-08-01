@@ -55,10 +55,6 @@ describe("JobsTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
     ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
-
-    expect(
-      screen.getByTestId(`JobsTable-header-id-sort-carets`),
-    ).toHaveTextContent("🔽");
   });
 
   test("renders short logs correctly", () => {

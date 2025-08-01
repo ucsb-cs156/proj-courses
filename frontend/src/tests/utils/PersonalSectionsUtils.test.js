@@ -36,7 +36,7 @@ describe("CoursesUtils", () => {
     test("It returns the correct params", () => {
       // arrange
       const cell = {
-        row: { values: { "classSections[0].enrollCode": "03452" } },
+        row: { original: { "classSections[0].enrollCode": "03452" } },
       };
       const psId = 3;
       // act

@@ -129,7 +129,7 @@ public class CoursePage {
               .title(course.getTitle())
               .description(course.getDescription())
               .primary(thisSection)
-              .secondaries(secondaries)
+              .subRows(secondaries)
               .generalEducation(course.getGeneralEducation())
               .build();
       result.add(primary);

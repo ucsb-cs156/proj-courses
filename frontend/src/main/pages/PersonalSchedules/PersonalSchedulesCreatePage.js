@@ -34,9 +34,7 @@ export default function PersonalSchedulesCreatePage() {
     const quarter = {
       quarter: localStorage["PersonalScheduleForm-quarter"],
     };
-    console.log(quarter);
     const dataFinal = Object.assign(data, quarter);
-    console.log(dataFinal);
     mutation.mutate(dataFinal);
   };
 
