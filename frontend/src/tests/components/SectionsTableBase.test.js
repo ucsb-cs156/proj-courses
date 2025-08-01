@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import SectionsTableBase from "main/components/SectionsTableBase";
 import primaryFixtures from "fixtures/primaryFixtures";
 import sectionsTableBaseFixtures from "fixtures/sectionsTableBaseFixtures";
@@ -17,15 +17,34 @@ describe("SectionsTableBase tests", () => {
       render(<SectionsTableBase columns={columns} data={[]} />);
     });
 
-    test("renders an full table without crashing", () => {
+    test("renders an full table correctly", () => {
       render(
         <SectionsTableBase
           columns={columns}
           data={primaryFixtures.f24_math_lowerDiv}
         />,
       );
+      expect(screen.getByTestId("testid-row-0")).toBeInTheDocument();
+      const cellInFirstRow = screen.getByTestId(
+        "testid-cell-row-0-col-courseId"
+      );
+      expect(cellInFirstRow).toBeInTheDocument();
+      expect(cellInFirstRow.textContent).toBe("MATH      2A ");
+      expect(cellInFirstRow).toHaveAttribute("style", "background-color: inherit; font-weight: bold;");
+
+      const openAllRowsButton = screen.getByTestId(`${testid}-expand-all-rows`);
+      expect(openAllRowsButton).toBeInTheDocument();
+      expect(openAllRowsButton.textContent).toBe("➕");
+      fireEvent.click(openAllRowsButton);
+      expect(openAllRowsButton.textContent).toBe("➖");
+
+      const cellInFirstSubRow = screen.getByTestId("testid-cell-row-0.1-col-courseId")
+      expect(cellInFirstSubRow).toBeInTheDocument();
+      expect(cellInFirstSubRow.textContent).toBe("");
+      expect(cellInFirstSubRow).toHaveAttribute("style", "background-color: inherit; font-weight: normal;");
     });
 
+  
     test("renders a single lecture section correctly", async () => {
       render(
         <SectionsTableBase
