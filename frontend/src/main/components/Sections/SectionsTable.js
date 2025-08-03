@@ -21,7 +21,6 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
 export const objectToAxiosParams = (data) => {
-  console.log("objectToAxiosParams: data=", data);
   return {
     url: "/api/courses/post",
     method: "POST",
@@ -47,23 +46,28 @@ export const onSuccess = (response) => {
 export const onError = (error) => {
   console.error("onError: error=", error);
   const message =
-    error.response?.data?.message || `An unexpected error occurred adding the schedule: ${JSON.stringify(error)}`;
+    error.response.data?.message || `An unexpected error occurred adding the schedule: ${JSON.stringify(error)}`;
   toast.error(message);
 };
 
 export default function SectionsTable({ sections, schedules = [] }) {
-  const { data: currentUser } = useCurrentUser();
 
+  if ( ! (schedules instanceof Array) ) {
+    throw new Error("schedules prop must be an array");
+  }
+
+  if ( schedules.length > 0 && ! (schedules[0].hasOwnProperty("id")) ) {
+    throw new Error("schedules prop must be an array of objects with an 'id' property");
+  }
+
+  const { data: currentUser } = useCurrentUser();
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess, onError },
-    ["/api/courses/user/all"],
+    [],
   );
 
   const addToScheduleCallback = (section, schedule, mutation) => {
-    console.log(
-      `addToScheduleCallback: section=${JSON.stringify(section)} schedule=${schedule}`,
-    );
     const dataFinal = {
       enrollCd: section.enrollCode,
       psId: schedule,
@@ -113,9 +117,9 @@ export default function SectionsTable({ sections, schedules = [] }) {
     {
       accessorKey: "courseId",
       header: "Course ID",
-      cell: ({ row, getValue }) => (
-        <div style={{ paddingLeft: `${row.depth * 2}rem` }}>{getValue()}</div>
-      ),
+      // cell: ({ row, getValue }) => (
+      //   <div style={{ paddingLeft: `${row.depth * 2}rem` }}>{getValue()}</div>
+      // ),
     },
     {
       accessorKey: "title",
@@ -158,7 +162,6 @@ export default function SectionsTable({ sections, schedules = [] }) {
     },
     {
       header: "Info",
-      accessorKey: "info",
       id: "info",
       cell: ({ row }) => renderInfoLink(row, testid),
     },
@@ -166,24 +169,26 @@ export default function SectionsTable({ sections, schedules = [] }) {
       header: "Action",
       id: "action",
       cell: ({ row }) => {
-        if (currentUser.loggedIn && shouldShowAddToScheduleLink(row)) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <AddToScheduleModal
-                section={getSection(row)}
-                quarter={getQuarter(row)}
-                onAdd={(section, schedule) =>
-                  addToScheduleCallback(section, schedule, mutation)
-                }
-                schedules={schedules}
-                testid={`${testid}-cell-row-${row.id}-col-action`}
-              />
-            </div>
-          );
+        if (!currentUser.loggedIn) {
+          return <span data-testid={`${testid}-row-${row.id}-not-logged-in`} />;
+        } else if (!shouldShowAddToScheduleLink(row)) {
+          return <span data-testid={`${testid}-row-${row.id}-no-action`} />;
         }
-        return <span data-testid={`${testid}-row-${row.id}-no-action`} />;
+        return (
+          <div className="d-flex align-items-center gap-2">
+            <AddToScheduleModal
+              section={getSection(row)}
+              quarter={getQuarter(row)}
+              onAdd={(section, schedule) =>
+                addToScheduleCallback(section, schedule, mutation)
+              }
+              schedules={schedules}
+              testid={`${testid}-cell-row-${row.id}-col-action`}
+            />
+          </div>
+        );
       },
-    },
+    }
   ];
 
   return (

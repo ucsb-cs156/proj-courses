@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import SectionsTable, {onError, onSuccess} from "main/components/Sections/SectionsTable";
+import SectionsTable, { onError, onSuccess } from "main/components/Sections/SectionsTable";
 import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
 
 import primaryFixtures from "fixtures/primaryFixtures";
@@ -14,6 +14,10 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
 import { useBackendMutation } from "main/utils/useBackend";
+
+// mock the error console to avoid cluttering the test output
+import mockConsole from "jest-mock-console";
+let restoreConsole;
 
 const mockedNavigate = jest.fn();
 
@@ -27,12 +31,25 @@ jest.mock("react-toastify", () => {
   toast.error = jest.fn();
   return { toast };
 });
+
 jest.mock("main/utils/useBackend", () => ({
   useBackend: jest.fn(),
   useBackendMutation: jest.fn(),
 }));
 
+
+jest.mock("main/utils/currentUser", () => ({
+  useCurrentUser: () => ({
+    data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
+  }),
+  useLogout: () => ({ mutate: jest.fn() }),
+  hasRole: (_user, _role) => false, // or customize per role
+}));
+
+
+
 describe("SectionsTable tests", () => {
+
 
   describe("objectToAxiosParams", () => {
     it("should return the correct axios parameters", () => {
@@ -64,7 +81,7 @@ describe("SectionsTable tests", () => {
       expect(toast).toHaveBeenCalledWith(
         "New course Created - id: 1 enrollCd: 12345",
       );
-    });   
+    });
 
     it("should display a success message for course replacement", () => {
       const response = [
@@ -81,26 +98,68 @@ describe("SectionsTable tests", () => {
   });
 
   describe("onError", () => {
+
+    beforeEach(() => {
+      restoreConsole = mockConsole();
+      useBackendMutation.mockClear();
+    });
+
+    afterEach(() => {
+      restoreConsole();
+      jest.resetAllMocks();
+    });
+
     it("should display an error message with the response data", () => {
+
+      // arrange
+
+      const queryClient = new QueryClient();
+      const toast = require("react-toastify").toast;
+      useBackendMutation.mockReturnValue({
+        mutate: jest.fn(),
+      });
+
+      // Render a component that will call useBackendMutation
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
+          </MemoryRouter>
+        </QueryClientProvider>
+      );
+
+
       const error = {
         response: {
           data: { message: "An error occurred" },
         },
       };
-      const toast = require("react-toastify").toast;
+
+      // act
       onError(error);
+
+
+      // assert
+      expect(useBackendMutation).toHaveBeenCalledTimes(1);
+      expect(useBackendMutation).toHaveBeenCalledWith(
+        objectToAxiosParams,
+        { onSuccess, onError },
+        []
+      );
+
       expect(toast.error).toHaveBeenCalledWith("An error occurred");
-    });   
+      expect(console.error).toHaveBeenCalledWith("onError: error=", error);
+    });
 
     it("should display a generic error message when no response data is available", () => {
       const error = {
         response: {},
       };
       const toast = require("react-toastify").toast;
-      onError(error);     
+      onError(error);
       expect(toast.error).toHaveBeenCalledWith(
         "An unexpected error occurred adding the schedule: " +
-          JSON.stringify(error),
+        JSON.stringify(error),
       );
     });
   });
@@ -120,18 +179,47 @@ describe("SectionsTable tests", () => {
       axiosMock
         .onGet("/api/personalschedules/all")
         .reply(200, personalScheduleFixtures.threePersonalSchedules);
+      restoreConsole = mockConsole();
     });
 
     afterEach(() => {
       jest.clearAllMocks();
       axiosMock.restore();
+      restoreConsole(); // Restore the console after each test
     });
+
+
+    test("Error checking that schedules is an array works", () => {
+      expect(() => {
+      render(
+        <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={[]} schedules={{message: "Not An Array"}}/>
+        </MemoryRouter>
+        </QueryClientProvider>,
+      );
+      }).toThrowError("schedules prop must be an array");
+    });
+
+
+    test("Error checking that schedules is an array of objects with id property works", () => {
+      expect(() => {
+      render(
+        <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={[]} schedules={["Stryker was here"]}/>
+        </MemoryRouter>
+        </QueryClientProvider>,
+      );
+      }).toThrowError("schedules prop must be an array of objects with an 'id' property");
+    });
+
 
     test("renders without crashing for empty table", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
-            <SectionsTable sections={[]} />
+            <SectionsTable sections={[]} schedules={[{id: "1"}]}/>
           </MemoryRouter>
         </QueryClientProvider>,
       );
@@ -304,8 +392,12 @@ describe("SectionsTable tests", () => {
       expect(
         screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
       ).toHaveTextContent("PORTER M J");
-      const expandButton = screen.getByTestId(`${testId}-row-0-expand-button`);
 
+      expect(screen.getByTestId(`${testId}-row-9-no-action`)).toBeInTheDocument();
+
+      expect(screen.getByTestId(`${testId}-row-26-cannot-expand`)).toBeInTheDocument();
+
+      const expandButton = screen.getByTestId(`${testId}-row-0-expand-button`);
       expect(expandButton).toBeInTheDocument();
       expect(expandButton).toHaveTextContent("➕");
       fireEvent.click(expandButton);
@@ -318,6 +410,11 @@ describe("SectionsTable tests", () => {
       expect(infoLink).toBeInTheDocument();
       expect(infoLink.tagName).toBe("A");
       expect(infoLink).toHaveAttribute("href", "/coursedetails/20244/30312");
+      expect(infoLink).toHaveAttribute("style", "color: black; background-color: inherit;");
+
+      const noQuarterSubRow = screen.getByTestId(`${testId}-cell-row-0.0-col-quarter`);
+      expect(noQuarterSubRow).toBeInTheDocument();
+      expect(noQuarterSubRow).toBeEmptyDOMElement();
     });
 
     test("Expand all button works properly", async () => {
@@ -350,13 +447,6 @@ describe("SectionsTable tests", () => {
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
       jest.clearAllMocks();
-      jest.mock("main/utils/currentUser", () => ({
-        useCurrentUser: () => ({
-          data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
-        }),
-        useLogout: () => ({ mutate: jest.fn() }),
-        hasRole: (_user, _role) => false, // or customize per role
-      }));
       axiosMock
         .onGet("/api/currentUser")
         .reply(200, apiCurrentUserFixtures.userOnly);
@@ -523,27 +613,30 @@ describe("SectionsTable tests", () => {
     });
   });
 
+
   describe("AddToScheduleModal interactions when there are no schedules", () => {
+
+    jest.mock("main/utils/currentUser", () => ({
+      useCurrentUser: () => {
+        console.log("useCurrentUser called in SectionsTable.test.js");
+        return {
+          data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
+        }
+      },
+      useLogout: () => ({ mutate: jest.fn() }),
+      hasRole: (_user, _role) => false, // or customize per role
+    }));
 
     const queryClient = new QueryClient();
     let axiosMock;
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
-      jest.clearAllMocks();
-      jest.mock("main/utils/currentUser", () => ({
-        useCurrentUser: () => ({
-          data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
-        }),
-        useLogout: () => ({ mutate: jest.fn() }),
-        hasRole: (_user, _role) => false, // or customize per role
-      }));
       axiosMock
         .onGet("/api/currentUser")
         .reply(200, apiCurrentUserFixtures.userOnly);
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
       axiosMock.restore();
     });
 
@@ -554,7 +647,7 @@ describe("SectionsTable tests", () => {
           <MemoryRouter>
             <SectionsTable
               sections={primaryFixtures.f24_math_lowerDiv}
-              schedules={[]}
+              // take the default to check that the default is no schedules
             />
           </MemoryRouter>
         </QueryClientProvider>,

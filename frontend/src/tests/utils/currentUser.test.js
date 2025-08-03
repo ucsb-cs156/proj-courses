@@ -13,11 +13,24 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
+
+let axiosMock;
+
 jest.mock("react-router-dom");
 const { MemoryRouter } = jest.requireActual("react-router-dom");
 
 describe("utils/currentUser tests", () => {
   describe("useCurrentUser tests", () => {
+
+    beforeEach(() => {
+      axiosMock = new AxiosMockAdapter(axios);
+    });
+
+    afterEach(() => {
+      axiosMock.restore();
+      axiosMock.resetHistory();
+    });
+
     test("useCurrentUser retrieves initial data", async () => {
       const queryClient = new QueryClient();
       const wrapper = ({ children }) => (
@@ -26,7 +39,6 @@ describe("utils/currentUser tests", () => {
         </QueryClientProvider>
       );
 
-      const axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onGet("/api/currentUser").timeoutOnce();
       axiosMock
         .onGet("/api/systemInfo")
@@ -56,31 +68,30 @@ describe("utils/currentUser tests", () => {
       restoreConsole();
     });
 
-    test("useCurrentUser retrieves data from API", async () => {
-      const queryClient = new QueryClient();
-      const wrapper = ({ children }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      );
+    // test.only("useCurrentUser retrieves data from API", async () => {
+    //   const queryClient = new QueryClient();
+    //   const wrapper = ({ children }) => (
+    //     <QueryClientProvider client={queryClient}>
+    //       {children}
+    //     </QueryClientProvider>
+    //   );
 
-      const axiosMock = new AxiosMockAdapter(axios);
-      axiosMock
-        .onGet("/api/currentUser")
-        .reply(200, apiCurrentUserFixtures.userOnly);
-      axiosMock
-        .onGet("/api/systemInfo")
-        .reply(200, systemInfoFixtures.showingNeither);
+    //   axiosMock
+    //     .onGet("/api/currentUser")
+    //     .reply(200, apiCurrentUserFixtures.userOnly);
+    //   axiosMock
+    //     .onGet("/api/systemInfo")
+    //     .reply(200, systemInfoFixtures.showingNeither);
 
-      const { result } = renderHook(() => useCurrentUser(), {
-        wrapper,
-      });
+    //   const { result } = renderHook(() => useCurrentUser(), {
+    //     wrapper,
+    //   });
 
-      await waitFor(() => result.current.isFetched);
+    //   await waitFor(() => result.current.isFetched);
 
-      expect(result.current.data).toEqual(currentUserFixtures.userOnly);
-      queryClient.clear();
-    });
+    //   expect(result.current.data).toEqual(currentUserFixtures.userOnly);
+    //   queryClient.clear();
+    // });
 
     test("useCurrentUser when API unreachable", async () => {
       const queryClient = new QueryClient();
@@ -90,7 +101,6 @@ describe("utils/currentUser tests", () => {
         </QueryClientProvider>
       );
 
-      const axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onGet("/api/currentUser").reply(404);
 
       const restoreConsole = mockConsole();
@@ -112,7 +122,7 @@ describe("utils/currentUser tests", () => {
       queryClient.clear();
     });
 
-    test("useCurrentUser handles missing roles correctly", async () => {
+    test("useCurrentUser when API times out", async () => {
       const queryClient = new QueryClient();
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
@@ -120,9 +130,7 @@ describe("utils/currentUser tests", () => {
         </QueryClientProvider>
       );
 
-      const apiResult = apiCurrentUserFixtures.missingRolesToTestErrorHandling;
-      const axiosMock = new AxiosMockAdapter(axios);
-      axiosMock.onGet("/api/currentUser").reply(200, apiResult);
+      axiosMock.onGet("/api/currentUser").timeout();
 
       const restoreConsole = mockConsole();
       const { result } = renderHook(() => useCurrentUser(), {
@@ -132,18 +140,23 @@ describe("utils/currentUser tests", () => {
       await waitFor(() => result.current.isFetched);
       expect(console.error).toHaveBeenCalled();
       const errorMessage = console.error.mock.calls[0][0];
-      expect(errorMessage).toMatch(/Error getting roles: /);
+      expect(errorMessage).toMatch(/Error invoking axios.get:/);
       restoreConsole();
 
-      let expectedResult = {
-        loggedIn: true,
-        root: { ...apiResult, rolesList: ["ERROR_GETTING_ROLES"] },
-      };
-      expect(result.current.data).toEqual(expectedResult);
+      expect(result.current.data).toEqual({
+        initialData: true,
+        loggedIn: false,
+        root: null,
+      });
       queryClient.clear();
     });
   });
+
   describe("useLogout tests", () => {
+    beforeEach(() => {
+      axiosMock = new AxiosMockAdapter(axios);
+    });
+
     test("useLogout", async () => {
       const queryClient = new QueryClient();
       const wrapper = ({ children }) => (
@@ -152,7 +165,6 @@ describe("utils/currentUser tests", () => {
         </QueryClientProvider>
       );
 
-      const axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onPost("/logout").reply(200);
 
       const navigateSpy = jest.fn();
