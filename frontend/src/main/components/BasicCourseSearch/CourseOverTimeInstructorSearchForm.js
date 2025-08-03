@@ -11,17 +11,17 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
   // for the first and last values in the dropdown lists, with the actual
   // *currently selectted* start and end quarters for the search!
 
-  const firstQtr = systemInfo?.startQtrYYYYQ || "20211";
-  const lastQtr = systemInfo?.endQtrYYYYQ || "20214";
+  const firstQtr = systemInfo.startQtrYYYYQ || "20211";
+  const lastQtr = systemInfo.endQtrYYYYQ || "20214";
 
   const quarters = quarterRange(firstQtr, lastQtr);
 
   const localStartQuarter = localStorage.getItem(
     "CourseOverTimeInstructorSearch.StartQuarter",
   );
-  const localEndQuarter = localStorage.getItem(
-    "CourseOverTimeInstructorSearch.EndQuarter",
-  );
+  // const localEndQuarter = localStorage.getItem(
+  //   "CourseOverTimeInstructorSearch.EndQuarter",
+  // );
 
   const localInstructor = localStorage.getItem(
     "CourseOverTimeInstructorSearch.Instructor",
@@ -32,7 +32,7 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
   const [startQuarter, setStartQuarter] = useState(
     localStartQuarter || firstQtr,
   );
-  const [endQuarter, setEndQuarter] = useState(localEndQuarter || lastQtr);
+  const [endQuarter, setEndQuarter] = useState(); // default is handled by SingleQuarterDropdown
   const [instructor, setInstructor] = useState(localInstructor || "");
   const [checkbox, setCheckbox] = useState(localStorageCheckbox || false);
   // Stryker restore all
@@ -94,7 +94,7 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
             checked={checkbox}
           ></FormCheck>
         </Form.Group>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row data-testid={`${testid}-bottom-row`} style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit

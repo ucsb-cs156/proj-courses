@@ -7,8 +7,13 @@ export function useCurrentUser() {
     "current user",
     async () => {
       try {
+        let rolesList;
         const response = await axios.get("/api/currentUser");
-        rolesList = response.data.roles.map((r) => r.authority);
+        if ("roles" in response.data) {
+          rolesList = response.data.roles.map((r) => r.authority);
+        } else {
+          rolesList = []
+        }
         response.data = { ...response.data, rolesList: rolesList };
         const returnValue = { loggedIn: true, root: response.data };
         return returnValue;
