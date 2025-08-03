@@ -12,7 +12,7 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    navigate(`/UCSBSubjects/edit/${cell.row.values.subjectCode}`);
+    navigate(`/UCSBSubjects/edit/${cell.row.original.subjectCode}`);
   };
 
   // Stryker disable all : hard to test for query caching
@@ -50,8 +50,8 @@ export default function UCSBSubjectsTable({ subjects, currentUser }) {
       accessor: "relatedDeptCode",
     },
     {
-      Header: "Inactive",
-      accessor: (row) => String(row.inactive),
+      header: "Inactive",
+      cell: ({ row }) => String(row.original.inactive),
       id: "inactive",
     },
   ];

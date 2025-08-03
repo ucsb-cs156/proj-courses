@@ -11,7 +11,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-describe("CourseTable tests", () => {
+describe("BasicCourseTable tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table", () => {

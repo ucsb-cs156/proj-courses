@@ -88,22 +88,6 @@ const apiCurrentUserFixtures = {
       },
     ],
   },
-  missingRolesToTestErrorHandling: {
-    user: {
-      id: 2,
-      email: "pconrad.cis@gmail.com",
-      googleSub: "102656447703889917227",
-      pictureUrl:
-        "https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c",
-      fullName: "Phillip Conrad",
-      givenName: "Phillip",
-      familyName: "Conrad",
-      emailVerified: true,
-      locale: "en",
-      hostedDomain: null,
-      admin: false,
-    },
-  },
 };
 
 const currentUserFixtures = {

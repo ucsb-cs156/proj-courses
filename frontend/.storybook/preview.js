@@ -2,12 +2,20 @@ import "../src/index.css";
 import "bootstrap/dist/css/bootstrap.css";
 import 'react-toastify/dist/ReactToastify.css';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons'; // All solid icons
+import { fab } from '@fortawesome/free-brands-svg-icons'; // All brand icons
+import { far } from '@fortawesome/free-regular-svg-icons'; // All regular icons
+
 import { initialize, mswLoader } from 'msw-storybook-addon'
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { useEffect } from "react";
+
+// Add all icons from the imported styles to the library
+library.add(fas, fab, far);
 
 const queryClient = new QueryClient();
 

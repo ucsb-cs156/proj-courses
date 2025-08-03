@@ -15,11 +15,11 @@ export default function PersonalSchedulesTable({
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    navigate(`/personalschedules/edit/${cell.row.values.id}`);
+    navigate(`/personalschedules/edit/${cell.row.original.id}`);
   };
 
   const detailsCallback = (cell) => {
-    navigate(`/personalschedules/details/${cell.row.values.id}`);
+    navigate(`/personalschedules/details/${cell.row.original.id}`);
   };
   // Stryker disable all : hard to test for query caching
   const deleteMutation = useBackendMutation(
@@ -31,7 +31,7 @@ export default function PersonalSchedulesTable({
 
   // Stryker disable all : TODO try to make a good test for this
   const deleteCallback = async (cell) => {
-    const id = String(cell.row.values.id);
+    const id = String(cell.row.original.id);
     if (localStorage["CourseForm-psId"] === id) {
       localStorage.removeItem("CourseForm-psId");
     }
@@ -41,21 +41,22 @@ export default function PersonalSchedulesTable({
 
   const columns = [
     {
-      Header: "id",
-      accessor: "id", // accessor is the "key" in the data
+      header: "id",
+      accessorKey: "id", // accessor is the "key" in the data
     },
 
     {
-      Header: "Name",
-      accessor: "name",
+      header: "Name",
+      accessorKey: "name",
     },
     {
-      Header: "Description",
-      accessor: "description",
+      header: "Description",
+      accessorKey: "description",
     },
     {
-      Header: "Quarter",
-      accessor: (row, _rowIndex) => yyyyqToQyy(row.quarter),
+      header: "Quarter",
+      accessorKey: "quarter",
+      cell: ({ cell }) => yyyyqToQyy(cell.row.original.quarter),
       id: "quarter",
     },
   ];
