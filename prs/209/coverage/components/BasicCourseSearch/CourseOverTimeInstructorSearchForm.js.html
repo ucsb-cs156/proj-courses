@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/23</span>
+                <span class='fraction'>22/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>23/23</span>
+                <span class='fraction'>22/22</span>
             </div>
         
             
@@ -179,48 +179,48 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">49x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
+<span class="cline-any cline-yes">49x</span>
+<span class="cline-any cline-yes">49x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -228,9 +228,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -294,17 +294,17 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) =&gt; {
   // for the first and last values in the dropdown lists, with the actual
   // *currently selectted* start and end quarters for the search!
 &nbsp;
-  const firstQtr = systemInfo?.startQtrYYYYQ || "20211";
-  const lastQtr = systemInfo?.endQtrYYYYQ || "20214";
+  const firstQtr = systemInfo.startQtrYYYYQ || "20211";
+  const lastQtr = systemInfo.endQtrYYYYQ || "20214";
 &nbsp;
   const quarters = quarterRange(firstQtr, lastQtr);
 &nbsp;
   const localStartQuarter = localStorage.getItem(
     "CourseOverTimeInstructorSearch.StartQuarter",
   );
-  const localEndQuarter = localStorage.getItem(
-    "CourseOverTimeInstructorSearch.EndQuarter",
-  );
+  // const localEndQuarter = localStorage.getItem(
+  //   "CourseOverTimeInstructorSearch.EndQuarter",
+  // );
 &nbsp;
   const localInstructor = localStorage.getItem(
     "CourseOverTimeInstructorSearch.Instructor",
@@ -315,7 +315,7 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) =&gt; {
   const [startQuarter, setStartQuarter] = useState(
     localStartQuarter || firstQtr,
   );
-  const [endQuarter, setEndQuarter] = useState(localEndQuarter || lastQtr);
+  const [endQuarter, setEndQuarter] = useState(); // default is handled by SingleQuarterDropdown
   const [instructor, setInstructor] = useState(localInstructor || "");
   const [checkbox, setCheckbox] = useState(localStorageCheckbox || false);
   // Stryker restore all
@@ -377,7 +377,7 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) =&gt; {
             checked={checkbox}
           &gt;&lt;/FormCheck&gt;
         &lt;/Form.Group&gt;
-        &lt;Row style={{ paddingTop: 10, paddingBottom: 10 }}&gt;
+        &lt;Row data-testid={`${testid}-bottom-row`} style={{ paddingTop: 10, paddingBottom: 10 }}&gt;
           &lt;Col md="auto"&gt;
             &lt;Button variant="primary" type="submit"&gt;
               Submit
@@ -397,7 +397,7 @@ export default CourseOverTimeInstructorSearchForm;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-03T19:18:01.924Z
+                at 2025-08-03T21:31:22.065Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
