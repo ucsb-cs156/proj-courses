@@ -7,10 +7,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import {
-  threeSections,
-  differentQuarterSections,
-} from "fixtures/sectionFixtures";
+import { threeSections } from "fixtures/sectionFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 

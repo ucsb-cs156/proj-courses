@@ -7,10 +7,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import {
-  coursesInLib,
-  coursesInLibDifferentDate,
-} from "fixtures/buildingFixtures";
+import { coursesInLib } from "fixtures/buildingFixtures";
 import userEvent from "@testing-library/user-event";
 
 const mockToast = jest.fn();

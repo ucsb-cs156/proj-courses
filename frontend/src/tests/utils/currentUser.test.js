@@ -1,10 +1,6 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useCurrentUser, useLogout, hasRole } from "main/utils/currentUser";
 import { renderHook, waitFor } from "@testing-library/react";
-import {
-  apiCurrentUserFixtures,
-  currentUserFixtures,
-} from "fixtures/currentUserFixtures";
 import mockConsole from "jest-mock-console";
 import { act } from "react";
 import { useNavigate } from "react-router-dom";
@@ -65,31 +61,6 @@ describe("utils/currentUser tests", () => {
       expect(errorMessage).toMatch(/Error invoking axios.get:/);
       restoreConsole();
     });
-
-    // test.only("useCurrentUser retrieves data from API", async () => {
-    //   const queryClient = new QueryClient();
-    //   const wrapper = ({ children }) => (
-    //     <QueryClientProvider client={queryClient}>
-    //       {children}
-    //     </QueryClientProvider>
-    //   );
-
-    //   axiosMock
-    //     .onGet("/api/currentUser")
-    //     .reply(200, apiCurrentUserFixtures.userOnly);
-    //   axiosMock
-    //     .onGet("/api/systemInfo")
-    //     .reply(200, systemInfoFixtures.showingNeither);
-
-    //   const { result } = renderHook(() => useCurrentUser(), {
-    //     wrapper,
-    //   });
-
-    //   await waitFor(() => result.current.isFetched);
-
-    //   expect(result.current.data).toEqual(currentUserFixtures.userOnly);
-    //   queryClient.clear();
-    // });
 
     test("useCurrentUser when API unreachable", async () => {
       const queryClient = new QueryClient();

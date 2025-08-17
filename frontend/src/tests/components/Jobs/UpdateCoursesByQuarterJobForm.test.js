@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { useSystemInfo } from "main/utils/systemInfo";
-import { use } from "react";
 
 const mockedNavigate = jest.fn();
 

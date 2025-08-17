@@ -138,8 +138,7 @@ describe("section utils tests", () => {
       };
       expect(formatInfoLink(row)).toBe("/coursedetails/20244/30247");
     });
-    test("formatInfoLink works on a primary", () => {
-      const section = primaryFixtures.f24_math_lowerDiv[0];
+    test("formatInfoLink works on another primary", () => {
       const row = {
         depth: 1,
         original: { ...course.subRows[0] },

@@ -22,24 +22,6 @@ describe("CourseOverTimeSearchForm tests", () => {
   const queryClient = new QueryClient();
   const addToast = jest.fn();
 
-  const mockSections = [
-    {
-      courseInfo: {
-        quarter: "20231",
-        courseId: "CMPSC156",
-        title: "Advanced Applications Programming",
-      },
-      section: {
-        section: "0100",
-        enrolledTotal: 30,
-        maxEnroll: 50,
-        timeLocations: [],
-        instructors: [],
-        enrollCode: "12345",
-      },
-    },
-  ];
-
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, "error").mockImplementation(() => null);

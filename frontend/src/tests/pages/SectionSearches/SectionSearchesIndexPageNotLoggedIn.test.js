@@ -6,13 +6,9 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import userEvent from "@testing-library/user-event";
 
 import SectionSearchesIndexPageNotLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageNotLoggedIn";
-import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import primaryFixtures from "fixtures/primaryFixtures";
-
-import { useCurrentUser } from "main/utils/currentUser";
-import { use } from "react";
 
 jest.mock("main/utils/currentUser", () => ({
   useCurrentUser: () => ({

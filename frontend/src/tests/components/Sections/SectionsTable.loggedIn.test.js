@@ -713,9 +713,7 @@ describe("SectionsTable tests", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId(
-            `${testId}-cell-row-0.2-col-action-no-schedules`,
-          ),
+          screen.getByTestId(`${testId}-cell-row-0.2-col-action-no-schedules`),
         ).toBeInTheDocument();
       });
     });

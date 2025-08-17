@@ -2,16 +2,11 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import SectionsTableBase from "main/components/SectionsTableBase";
 import primaryFixtures from "fixtures/primaryFixtures";
 import sectionsTableBaseFixtures from "fixtures/sectionsTableBaseFixtures";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 describe("SectionsTableBase tests", () => {
   describe("SectionsTableBase regular tests", () => {
     const testid = "testid";
     const columns = sectionsTableBaseFixtures.getExampleColumns(testid);
-    const columnsWithInfoAndAddToSchedule =
-      sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule(
-        testid,
-      );
 
     test("renders an empty table without crashing", () => {
       render(<SectionsTableBase columns={columns} data={[]} />);

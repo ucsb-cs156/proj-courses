@@ -13,12 +13,11 @@ import AxiosMockAdapter from "axios-mock-adapter";
 
 import CourseOverTimeSearchForm from "main/components/BasicCourseSearch/CourseOverTimeInstructorSearchForm";
 
+import { useSystemInfo } from "main/utils/systemInfo";
+
 jest.mock("react-toastify", () => ({
   toast: jest.fn(),
 }));
-
-import { useSystemInfo } from "main/utils/systemInfo";
-import { wait } from "@testing-library/user-event/dist/utils";
 
 jest.mock("main/utils/systemInfo", () => ({
   useSystemInfo: jest.fn(),
@@ -233,7 +232,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
-      const selectStartQuarter = screen.getByLabelText("Start Quarter");
+
       // Get all of the drop down options
       // Don't confuse the first and last option in the list with the
       // default values of start and end quarter; those are not the same thing!
@@ -249,7 +248,6 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       expect(startQtrOptions[3].textContent).toBe("F21");
       expect(startQtrOptions.length).toBe(4);
 
-      const selectEndQuarter = screen.getByLabelText("End Quarter");
       // Get all of the drop down options
       const endQtrOptions = Array.from(
         screen.getByLabelText("End Quarter").querySelectorAll("option"),
@@ -284,7 +282,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
 
     test("renders correctly when local storage has no values", () => {
       const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      getItemSpy.mockImplementation((key) => null);
+      getItemSpy.mockImplementation(() => null);
 
       render(
         <QueryClientProvider client={queryClient}>
@@ -419,18 +417,15 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
 
       // Wait for the component to render and the state to be initialized
       await waitFor(() => {
-        const startQuarterDropdown = screen.getByLabelText("Start Quarter");
-        const endQuarterDropdown = screen.getByLabelText("End Quarter");
-
-        // Assert that the dropdowns have the default values from system info
-        expect(startQuarterDropdown).toBeInTheDocument();
-        expect(startQuarterDropdown.value).toBe("20221");
-        expect(endQuarterDropdown).toBeInTheDocument();
-        expect(endQuarterDropdown.value).toBe("20222");
-
-        // The mutation would cause endQuarter's value to be falsy (e.g., "").
-        // This assertion would fail against the mutation.
+        expect(screen.getByLabelText("Start Quarter")).toBeInTheDocument();
       });
+
+      const startQuarterDropdown = screen.getByLabelText("Start Quarter");
+      const endQuarterDropdown = screen.getByLabelText("End Quarter");
+
+      expect(startQuarterDropdown.value).toBe("20221");
+      expect(endQuarterDropdown).toBeInTheDocument();
+      expect(endQuarterDropdown.value).toBe("20222");
 
       expect(localStorage.getItem).toHaveBeenCalledWith(
         "CourseOverTimeInstructorSearch.StartQuarter",
