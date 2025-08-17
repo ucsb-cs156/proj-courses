@@ -12,7 +12,7 @@ export function useCurrentUser() {
         if ("roles" in response.data) {
           rolesList = response.data.roles.map((r) => r.authority);
         } else {
-          rolesList = []
+          rolesList = [];
         }
         response.data = { ...response.data, rolesList: rolesList };
         const returnValue = { loggedIn: true, root: response.data };

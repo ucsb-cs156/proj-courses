@@ -8,7 +8,7 @@ import {
   formatInfoLink,
   renderInfoLink,
   formatStatus,
-  isLectureWithNoSections
+  isLectureWithNoSections,
 } from "main/utils/sectionUtils";
 import primaryFixtures from "fixtures/primaryFixtures";
 
@@ -184,16 +184,15 @@ describe("section utils tests", () => {
     });
   });
   describe("isLectureWithNoSections tests", () => {
-
     const rowForLectureWithSubRows = {
-      original: { ... primaryFixtures.f24_math_lowerDiv[0]}
+      original: { ...primaryFixtures.f24_math_lowerDiv[0] },
     };
     const rowForLectureWithNoSubrows = {
-      original: {... primaryFixtures.singleLectureSectionWithNoDiscussion[0] }
+      original: { ...primaryFixtures.singleLectureSectionWithNoDiscussion[0] },
     };
     const subrowForDiscussionSection = {
-      original: { ... primaryFixtures.f24_math_lowerDiv[0].subRows[0] }
-    }
+      original: { ...primaryFixtures.f24_math_lowerDiv[0].subRows[0] },
+    };
 
     test("isLectureWithNoSections true test", () => {
       console.log(rowForLectureWithNoSubrows);

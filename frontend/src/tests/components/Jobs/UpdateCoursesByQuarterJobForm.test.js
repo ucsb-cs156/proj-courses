@@ -38,7 +38,6 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
     });
   });
 
-
   it("renders correctly with start and end values from systemInfo", async () => {
     useSystemInfo.mockReturnValue({
       data: {

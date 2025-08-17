@@ -28,7 +28,6 @@ jest.mock("main/utils/systemInfo", () => ({
 
 describe("CourseOverTimeInstructorSearchForm tests", () => {
   describe("CourseOverTimeInstructorSearchForm basic tests", () => {
-
     const axiosMock = new AxiosMockAdapter(axios);
 
     const queryClient = new QueryClient();
@@ -58,8 +57,6 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         addToast: addToast,
       });
     });
-
-
 
     test("when I select a start quarter, the state for start quarter changes", () => {
       render(
@@ -286,7 +283,6 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     });
 
     test("renders correctly when local storage has no values", () => {
-
       const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
       getItemSpy.mockImplementation((key) => null);
 
@@ -297,19 +293,24 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
-      const bottomRow = screen.getByTestId("CourseOverTimeInstructorSearchForm-bottom-row");
+      const bottomRow = screen.getByTestId(
+        "CourseOverTimeInstructorSearchForm-bottom-row",
+      );
       expect(bottomRow).toBeInTheDocument();
       expect(bottomRow).toHaveStyle("padding-top: 10px; padding-bottom: 10px;");
       const startQuarter = screen.getByLabelText("Start Quarter");
       expect(startQuarter).toBeInTheDocument();
-      expect(startQuarter.value).toBe(systemInfoFixtures.showingNeither.startQtrYYYYQ);
+      expect(startQuarter.value).toBe(
+        systemInfoFixtures.showingNeither.startQtrYYYYQ,
+      );
       const endQuarter = screen.getByLabelText("End Quarter");
       expect(endQuarter).toBeInTheDocument();
-      expect(endQuarter.value).toBe(systemInfoFixtures.showingNeither.endQtrYYYYQ);
+      expect(endQuarter.value).toBe(
+        systemInfoFixtures.showingNeither.endQtrYYYYQ,
+      );
     });
 
     it("checks the expected values in local storage", async () => {
-
       jest.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
         switch (key) {
           case "CourseOverTimeInstructorSearch.StartQuarter":
@@ -334,7 +335,6 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         </QueryClientProvider>,
       );
 
-
       expect(getItemSpy).toHaveBeenCalledWith(
         "CourseOverTimeInstructorSearch.StartQuarter",
       );
@@ -354,7 +354,10 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
 
       expect(screen.getByLabelText("End Quarter").value).toBe("20214");
       expect(screen.getByLabelText("Instructor Name").value).toBe("Conrad");
-      expect(screen.getByTestId("CourseOverTimeInstructorSearchForm-checkbox").checked).toBe(true);
+      expect(
+        screen.getByTestId("CourseOverTimeInstructorSearchForm-checkbox")
+          .checked,
+      ).toBe(true);
     });
 
     // test("when local storage has no end quarter value, it uses the default end quarter from system info", async () => {
@@ -389,7 +392,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     //   expect(localStorage.getItem).toHaveBeenCalledWith("CourseOverTimeInstructorSearch.EndQuarter");
     // });
 
-     test("when local storage is completely empty, it defaults to the system info quarters", async () => {
+    test("when local storage is completely empty, it defaults to the system info quarters", async () => {
       // Clear local storage and mock getItem to ensure all values are null
       localStorage.clear();
       jest.spyOn(Storage.prototype, "getItem").mockReturnValue(null);
@@ -418,7 +421,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       await waitFor(() => {
         const startQuarterDropdown = screen.getByLabelText("Start Quarter");
         const endQuarterDropdown = screen.getByLabelText("End Quarter");
-        
+
         // Assert that the dropdowns have the default values from system info
         expect(startQuarterDropdown).toBeInTheDocument();
         expect(startQuarterDropdown.value).toBe("20221");
@@ -428,9 +431,13 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         // The mutation would cause endQuarter's value to be falsy (e.g., "").
         // This assertion would fail against the mutation.
       });
-      
-      expect(localStorage.getItem).toHaveBeenCalledWith("CourseOverTimeInstructorSearch.StartQuarter");
-      expect(localStorage.getItem).toHaveBeenCalledWith("CourseOverTimeInstructorSearch.EndQuarter");
+
+      expect(localStorage.getItem).toHaveBeenCalledWith(
+        "CourseOverTimeInstructorSearch.StartQuarter",
+      );
+      expect(localStorage.getItem).toHaveBeenCalledWith(
+        "CourseOverTimeInstructorSearch.EndQuarter",
+      );
     });
   });
 });

@@ -61,7 +61,7 @@ const personalScheduleFixtures = {
       description: "My Plan for F24",
       quarter: "20244",
       name: "F24 Courses",
-    }
+    },
   ],
   threePersonalSchedules: [
     {

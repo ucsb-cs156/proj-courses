@@ -50,11 +50,7 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
           };
           const rowId = `row-${row.id}`;
           return (
-            <tr
-              key={rowId}
-              style={rowStyle}
-              data-testid={`${testid}-${rowId}`}
-            >
+            <tr key={rowId} style={rowStyle} data-testid={`${testid}-${rowId}`}>
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}

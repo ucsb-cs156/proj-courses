@@ -13,7 +13,7 @@ export default function AddToScheduleModal({
   section,
   onAdd,
   schedules = [],
-  testid = "AddToScheduleModal"
+  testid = "AddToScheduleModal",
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");

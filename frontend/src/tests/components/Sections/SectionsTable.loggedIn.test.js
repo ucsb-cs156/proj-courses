@@ -2,7 +2,10 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import SectionsTable, { onError, onSuccess } from "main/components/Sections/SectionsTable";
+import SectionsTable, {
+  onError,
+  onSuccess,
+} from "main/components/Sections/SectionsTable";
 import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
 
 import primaryFixtures from "fixtures/primaryFixtures";
@@ -37,7 +40,6 @@ jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: jest.fn(),
 }));
 
-
 jest.mock("main/utils/currentUser", () => ({
   useCurrentUser: () => ({
     data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
@@ -46,11 +48,7 @@ jest.mock("main/utils/currentUser", () => ({
   hasRole: (_user, _role) => false, // or customize per role
 }));
 
-
-
 describe("SectionsTable tests", () => {
-
-
   describe("objectToAxiosParams", () => {
     it("should return the correct axios parameters", () => {
       const data = {
@@ -73,9 +71,7 @@ describe("SectionsTable tests", () => {
 
   describe("onSuccess", () => {
     it("should display a success message for new course creation", () => {
-      const response = [
-        { id: 1, enrollCd: "12345" },
-      ];
+      const response = [{ id: 1, enrollCd: "12345" }];
       const toast = require("react-toastify").toast;
       onSuccess(response);
       expect(toast).toHaveBeenCalledWith(
@@ -98,7 +94,6 @@ describe("SectionsTable tests", () => {
   });
 
   describe("onError", () => {
-
     beforeEach(() => {
       restoreConsole = mockConsole();
       useBackendMutation.mockClear();
@@ -110,7 +105,6 @@ describe("SectionsTable tests", () => {
     });
 
     it("should display an error message with the response data", () => {
-
       // arrange
 
       const queryClient = new QueryClient();
@@ -125,9 +119,8 @@ describe("SectionsTable tests", () => {
           <MemoryRouter>
             <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
           </MemoryRouter>
-        </QueryClientProvider>
+        </QueryClientProvider>,
       );
-
 
       const error = {
         response: {
@@ -138,13 +131,12 @@ describe("SectionsTable tests", () => {
       // act
       onError(error);
 
-
       // assert
       expect(useBackendMutation).toHaveBeenCalledTimes(1);
       expect(useBackendMutation).toHaveBeenCalledWith(
         objectToAxiosParams,
         { onSuccess, onError },
-        []
+        [],
       );
 
       expect(toast.error).toHaveBeenCalledWith("An error occurred");
@@ -159,7 +151,7 @@ describe("SectionsTable tests", () => {
       onError(error);
       expect(toast.error).toHaveBeenCalledWith(
         "An unexpected error occurred adding the schedule: " +
-        JSON.stringify(error),
+          JSON.stringify(error),
       );
     });
   });
@@ -188,38 +180,40 @@ describe("SectionsTable tests", () => {
       restoreConsole(); // Restore the console after each test
     });
 
-
     test("Error checking that schedules is an array works", () => {
       expect(() => {
-      render(
-        <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <SectionsTable sections={[]} schedules={{message: "Not An Array"}}/>
-        </MemoryRouter>
-        </QueryClientProvider>,
-      );
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <SectionsTable
+                sections={[]}
+                schedules={{ message: "Not An Array" }}
+              />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
       }).toThrowError("schedules prop must be an array");
     });
 
-
     test("Error checking that schedules is an array of objects with id property works", () => {
       expect(() => {
-      render(
-        <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <SectionsTable sections={[]} schedules={["Stryker was here"]}/>
-        </MemoryRouter>
-        </QueryClientProvider>,
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <SectionsTable sections={[]} schedules={["Stryker was here"]} />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
+      }).toThrowError(
+        "schedules prop must be an array of objects with an 'id' property",
       );
-      }).toThrowError("schedules prop must be an array of objects with an 'id' property");
     });
-
 
     test("renders without crashing for empty table", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
-            <SectionsTable sections={[]} schedules={[{id: "1"}]}/>
+            <SectionsTable sections={[]} schedules={[{ id: "1" }]} />
           </MemoryRouter>
         </QueryClientProvider>,
       );
@@ -393,9 +387,13 @@ describe("SectionsTable tests", () => {
         screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
       ).toHaveTextContent("PORTER M J");
 
-      expect(screen.getByTestId(`${testId}-row-9-no-action`)).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`${testId}-row-9-no-action`),
+      ).toBeInTheDocument();
 
-      expect(screen.getByTestId(`${testId}-row-26-cannot-expand`)).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`${testId}-row-26-cannot-expand`),
+      ).toBeInTheDocument();
 
       const expandButton = screen.getByTestId(`${testId}-row-0-expand-button`);
       expect(expandButton).toBeInTheDocument();
@@ -410,9 +408,14 @@ describe("SectionsTable tests", () => {
       expect(infoLink).toBeInTheDocument();
       expect(infoLink.tagName).toBe("A");
       expect(infoLink).toHaveAttribute("href", "/coursedetails/20244/30312");
-      expect(infoLink).toHaveAttribute("style", "color: black; background-color: inherit;");
+      expect(infoLink).toHaveAttribute(
+        "style",
+        "color: black; background-color: inherit;",
+      );
 
-      const noQuarterSubRow = screen.getByTestId(`${testId}-cell-row-0.0-col-quarter`);
+      const noQuarterSubRow = screen.getByTestId(
+        `${testId}-cell-row-0.0-col-quarter`,
+      );
       expect(noQuarterSubRow).toBeInTheDocument();
       expect(noQuarterSubRow).toBeEmptyDOMElement();
     });
@@ -457,14 +460,11 @@ describe("SectionsTable tests", () => {
       axiosMock.restore();
     });
 
-
-
     test("Add button in modal works correctly", async () => {
-
       const mockMutate = jest.fn();
 
       useBackendMutation.mockReturnValue({
-        mutate: mockMutate
+        mutate: mockMutate,
       });
 
       render(
@@ -494,7 +494,11 @@ describe("SectionsTable tests", () => {
       expect(expandAllRowsAfter).toHaveTextContent("➖");
 
       await waitFor(() => {
-        expect(screen.getByTestId(`${testId}-cell-row-0.1-col-action-add-to-schedule-button`)).toBeInTheDocument();
+        expect(
+          screen.getByTestId(
+            `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+          ),
+        ).toBeInTheDocument();
       });
 
       const addToScheduleButton = screen.getByTestId(
@@ -504,11 +508,17 @@ describe("SectionsTable tests", () => {
       fireEvent.click(addToScheduleButton);
 
       await waitFor(() => {
-        expect(screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`)).toBeInTheDocument();
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+        ).toBeInTheDocument();
       });
 
       await waitFor(() => {
-        expect(screen.queryByTestId(`${testId}-cell-row-0.1-col-action-no-schedules`)).not.toBeInTheDocument();
+        expect(
+          screen.queryByTestId(
+            `${testId}-cell-row-0.1-col-action-no-schedules`,
+          ),
+        ).not.toBeInTheDocument();
       });
 
       // const scheduleSelect = screen.getByTestId(`${testId}-cell-row-0.1-col-action-schedule-selector`);
@@ -517,7 +527,9 @@ describe("SectionsTable tests", () => {
       //   target: { value: "2" }, // Assuming "2" is the ID of the schedule you want to select
       // });
 
-      const saveButton = screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal-save-button`);
+      const saveButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-modal-save-button`,
+      );
       expect(saveButton).toBeInTheDocument();
       fireEvent.click(saveButton);
 
@@ -534,7 +546,6 @@ describe("SectionsTable tests", () => {
   });
 
   describe("AddToScheduleModal interactions without mocking backend mutation", () => {
-
     const queryClient = new QueryClient();
     let axiosMock;
     beforeEach(() => {
@@ -542,7 +553,10 @@ describe("SectionsTable tests", () => {
       jest.clearAllMocks();
       jest.mock("main/utils/currentUser", () => ({
         useCurrentUser: () => ({
-          data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
+          data: {
+            loggedIn: true,
+            root: { user: { email: "test@example.com" } },
+          },
         }),
         useLogout: () => ({ mutate: jest.fn() }),
         hasRole: (_user, _role) => false, // or customize per role
@@ -557,15 +571,11 @@ describe("SectionsTable tests", () => {
       axiosMock.restore();
     });
 
-
     test("Add to schedule modal opens and closes correctly", async () => {
-
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
-            <SectionsTable
-              sections={primaryFixtures.f24_math_lowerDiv}
-            />
+            <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
           </MemoryRouter>
         </QueryClientProvider>,
       );
@@ -586,7 +596,11 @@ describe("SectionsTable tests", () => {
       expect(expandAllRowsAfter).toHaveTextContent("➖");
 
       await waitFor(() => {
-        expect(screen.getByTestId(`${testId}-cell-row-0.1-col-action-add-to-schedule-button`)).toBeInTheDocument();
+        expect(
+          screen.getByTestId(
+            `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+          ),
+        ).toBeInTheDocument();
       });
 
       const addToScheduleButton = screen.getByTestId(
@@ -600,9 +614,13 @@ describe("SectionsTable tests", () => {
         expect(document.body.classList.contains("modal-open")).toBe(true);
       });
 
-      expect(screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`)).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+      ).toBeInTheDocument();
 
-      const closeButton = screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal-close-button`);
+      const closeButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-modal-close-button`,
+      );
       expect(closeButton).toBeInTheDocument();
       fireEvent.click(closeButton);
 
@@ -613,15 +631,16 @@ describe("SectionsTable tests", () => {
     });
   });
 
-
   describe("AddToScheduleModal interactions when there are no schedules", () => {
-
     jest.mock("main/utils/currentUser", () => ({
       useCurrentUser: () => {
         console.log("useCurrentUser called in SectionsTable.test.js");
         return {
-          data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
-        }
+          data: {
+            loggedIn: true,
+            root: { user: { email: "test@example.com" } },
+          },
+        };
       },
       useLogout: () => ({ mutate: jest.fn() }),
       hasRole: (_user, _role) => false, // or customize per role
@@ -641,7 +660,6 @@ describe("SectionsTable tests", () => {
     });
 
     test("When there are no schedules, the message about there being no schedules shows up", async () => {
-
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -669,7 +687,11 @@ describe("SectionsTable tests", () => {
       expect(expandAllRowsAfter).toHaveTextContent("➖");
 
       await waitFor(() => {
-        expect(screen.getByTestId(`${testId}-cell-row-0.2-col-action-add-to-schedule-button`)).toBeInTheDocument();
+        expect(
+          screen.getByTestId(
+            `${testId}-cell-row-0.2-col-action-add-to-schedule-button`,
+          ),
+        ).toBeInTheDocument();
       });
 
       const addToScheduleButton = screen.getByTestId(
@@ -684,15 +706,18 @@ describe("SectionsTable tests", () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByTestId(`${testId}-cell-row-0.2-col-action-modal`)).toBeInTheDocument();
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0.2-col-action-modal`),
+        ).toBeInTheDocument();
       });
 
       await waitFor(() => {
-        expect(screen.queryByTestId(`${testId}-cell-row-0.2-col-action-no-schedules`)).toBeInTheDocument();
+        expect(
+          screen.queryByTestId(
+            `${testId}-cell-row-0.2-col-action-no-schedules`,
+          ),
+        ).toBeInTheDocument();
       });
-
     });
-
   });
-
 });

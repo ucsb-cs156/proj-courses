@@ -6,12 +6,12 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 describe("SectionsTableBase tests", () => {
   describe("SectionsTableBase regular tests", () => {
-
-
     const testid = "testid";
     const columns = sectionsTableBaseFixtures.getExampleColumns(testid);
     const columnsWithInfoAndAddToSchedule =
-      sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule(testid);
+      sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule(
+        testid,
+      );
 
     test("renders an empty table without crashing", () => {
       render(<SectionsTableBase columns={columns} data={[]} />);
@@ -26,11 +26,14 @@ describe("SectionsTableBase tests", () => {
       );
       expect(screen.getByTestId("testid-row-0")).toBeInTheDocument();
       const cellInFirstRow = screen.getByTestId(
-        "testid-cell-row-0-col-courseId"
+        "testid-cell-row-0-col-courseId",
       );
       expect(cellInFirstRow).toBeInTheDocument();
       expect(cellInFirstRow.textContent).toBe("MATH      2A ");
-      expect(cellInFirstRow).toHaveAttribute("style", "background-color: inherit; font-weight: bold;");
+      expect(cellInFirstRow).toHaveAttribute(
+        "style",
+        "background-color: inherit; font-weight: bold;",
+      );
 
       const openAllRowsButton = screen.getByTestId(`${testid}-expand-all-rows`);
       expect(openAllRowsButton).toBeInTheDocument();
@@ -38,13 +41,17 @@ describe("SectionsTableBase tests", () => {
       fireEvent.click(openAllRowsButton);
       expect(openAllRowsButton.textContent).toBe("➖");
 
-      const cellInFirstSubRow = screen.getByTestId("testid-cell-row-0.1-col-courseId")
+      const cellInFirstSubRow = screen.getByTestId(
+        "testid-cell-row-0.1-col-courseId",
+      );
       expect(cellInFirstSubRow).toBeInTheDocument();
       expect(cellInFirstSubRow.textContent).toBe("");
-      expect(cellInFirstSubRow).toHaveAttribute("style", "background-color: inherit; font-weight: normal;");
+      expect(cellInFirstSubRow).toHaveAttribute(
+        "style",
+        "background-color: inherit; font-weight: normal;",
+      );
     });
 
-  
     test("renders a single lecture section correctly", async () => {
       render(
         <SectionsTableBase
@@ -86,7 +93,6 @@ describe("SectionsTableBase tests", () => {
         expect(style.backgroundColor).toBe(expectedBackgroundColors[index]);
       });
     });
-
   });
   describe("SectionsTableBase tests for corner cases", () => {
     test("renders header with placeholder (null) when header.isPlaceholder is true", () => {
@@ -105,42 +111,60 @@ describe("SectionsTableBase tests", () => {
       ];
 
       // Mock data
-      const data = [
-        { placeholderCol: "foo", realCol: "bar" },
-      ];
+      const data = [{ placeholderCol: "foo", realCol: "bar" }];
 
       // Import the actual useReactTable before mocking
       const actualReactTable = require("@tanstack/react-table");
       const actualUseReactTable = actualReactTable.useReactTable;
 
-      jest.spyOn(actualReactTable, "useReactTable").mockImplementation((opts) => {
-        // Call the real hook to get the table object
-        const realTable = actualUseReactTable(opts);
-        // Override getHeaderGroups and getFooterGroups to simulate a placeholder header/footer
-        return {
-          ...realTable,
-          getHeaderGroups: () => [
-            {
-              id: "headerGroup1",
-              headers: [
-                { id: "placeholderCol", colSpan: 1, isPlaceholder: true },
-                { id: "realCol", colSpan: 1, isPlaceholder: false, column: { columnDef: { header: "Real Header" } }, getContext: () => ({}) },
-              ],
-            },
-          ],
-          getFooterGroups: () => [
-            {
-              id: "footerGroup1",
-              headers: [
-                { id: "placeholderCol", colSpan: 1, isPlaceholder: true },
-                { id: "realCol", colSpan: 1, isPlaceholder: false, column: { columnDef: { footer: "Real Footer" } }, getContext: () => ({}) },
-              ],
-            },
-          ],
-        };
-      });
+      jest
+        .spyOn(actualReactTable, "useReactTable")
+        .mockImplementation((opts) => {
+          // Call the real hook to get the table object
+          const realTable = actualUseReactTable(opts);
+          // Override getHeaderGroups and getFooterGroups to simulate a placeholder header/footer
+          return {
+            ...realTable,
+            getHeaderGroups: () => [
+              {
+                id: "headerGroup1",
+                headers: [
+                  { id: "placeholderCol", colSpan: 1, isPlaceholder: true },
+                  {
+                    id: "realCol",
+                    colSpan: 1,
+                    isPlaceholder: false,
+                    column: { columnDef: { header: "Real Header" } },
+                    getContext: () => ({}),
+                  },
+                ],
+              },
+            ],
+            getFooterGroups: () => [
+              {
+                id: "footerGroup1",
+                headers: [
+                  { id: "placeholderCol", colSpan: 1, isPlaceholder: true },
+                  {
+                    id: "realCol",
+                    colSpan: 1,
+                    isPlaceholder: false,
+                    column: { columnDef: { footer: "Real Footer" } },
+                    getContext: () => ({}),
+                  },
+                ],
+              },
+            ],
+          };
+        });
 
-      render(<SectionsTableBase columns={columnsWithPlaceholder} data={data} testid="testid" />);
+      render(
+        <SectionsTableBase
+          columns={columnsWithPlaceholder}
+          data={data}
+          testid="testid"
+        />,
+      );
 
       // The placeholder header should not be rendered
       expect(screen.queryByText("Should not render")).not.toBeInTheDocument();
@@ -156,5 +180,4 @@ describe("SectionsTableBase tests", () => {
       jest.resetAllMocks();
     });
   });
-
 });

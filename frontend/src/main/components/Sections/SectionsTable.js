@@ -46,18 +46,20 @@ export const onSuccess = (response) => {
 export const onError = (error) => {
   console.error("onError: error=", error);
   const message =
-    error.response.data?.message || `An unexpected error occurred adding the schedule: ${JSON.stringify(error)}`;
+    error.response.data?.message ||
+    `An unexpected error occurred adding the schedule: ${JSON.stringify(error)}`;
   toast.error(message);
 };
 
 export default function SectionsTable({ sections, schedules = [] }) {
-
-  if ( ! (schedules instanceof Array) ) {
+  if (!(schedules instanceof Array)) {
     throw new Error("schedules prop must be an array");
   }
 
-  if ( schedules.length > 0 && ! (schedules[0].hasOwnProperty("id")) ) {
-    throw new Error("schedules prop must be an array of objects with an 'id' property");
+  if (schedules.length > 0 && !schedules[0].hasOwnProperty("id")) {
+    throw new Error(
+      "schedules prop must be an array of objects with an 'id' property",
+    );
   }
 
   const { data: currentUser } = useCurrentUser();
@@ -188,7 +190,7 @@ export default function SectionsTable({ sections, schedules = [] }) {
           </div>
         );
       },
-    }
+    },
   ];
 
   return (

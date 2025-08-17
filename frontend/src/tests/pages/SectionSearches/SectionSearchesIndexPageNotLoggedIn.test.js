@@ -22,7 +22,6 @@ jest.mock("main/utils/currentUser", () => ({
   hasRole: (_user, _role) => false, // or customize per role
 }));
 
-
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
   const originalModule = jest.requireActual("react-toastify");

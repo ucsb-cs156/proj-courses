@@ -15,7 +15,6 @@ import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import mockConsole from "jest-mock-console";
 
 describe("SectionsTable.loggedOut tests", () => {
-
   let axiosMock;
   let restoreConsole;
   const queryClient = new QueryClient();
@@ -28,14 +27,12 @@ describe("SectionsTable.loggedOut tests", () => {
     jest.clearAllMocks();
     axiosMock.reset();
     axiosMock.resetHistory();
-    axiosMock
-      .onGet("/api/currentUser")
-      .reply(403, {
-        "timestamp": "2025-08-03T10:51:29.907-07:00",
-        "status": 403,
-        "error": "Forbidden",
-        "path": "/api/currentUser"
-      });
+    axiosMock.onGet("/api/currentUser").reply(403, {
+      timestamp: "2025-08-03T10:51:29.907-07:00",
+      status: 403,
+      error: "Forbidden",
+      path: "/api/currentUser",
+    });
     axiosMock
       .onGet("/api/personalschedules/all")
       .reply(200, personalScheduleFixtures.threePersonalSchedules);
@@ -57,19 +54,23 @@ describe("SectionsTable.loggedOut tests", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId(`${testId}-expand-all-rows`)).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`${testId}-expand-all-rows`),
+      ).toBeInTheDocument();
     });
     const expandAll = screen.getByTestId(`${testId}-expand-all-rows`);
     fireEvent.click(expandAll);
 
     await waitFor(() => {
-      expect(screen.getByTestId(`${testId}-row-0-not-logged-in`)).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`${testId}-row-0-not-logged-in`),
+      ).toBeInTheDocument();
     });
 
-    const row0ExpandButton = screen.getByTestId(`${testId}-row-0-expand-button`);
+    const row0ExpandButton = screen.getByTestId(
+      `${testId}-row-0-expand-button`,
+    );
     expect(row0ExpandButton).toBeInTheDocument();
-    expect(row0ExpandButton).toHaveAttribute("style","cursor: pointer;");
-
+    expect(row0ExpandButton).toHaveAttribute("style", "cursor: pointer;");
   });
-
 });

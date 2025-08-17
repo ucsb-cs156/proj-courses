@@ -3,8 +3,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
 import { http, HttpResponse } from "msw";
 
-
-
 // Default export with title, component, decorators and MSW mock
 const meta = {
   title: "Components/GEAreas/GEAreaSearchForm",
@@ -63,18 +61,20 @@ const Template = (args) => <GEAreaSearchForm {...args} />;
 // In a real application, this function would make an API call to the backend
 // Here, we just log the event and params to the console
 const sampleFetchJSON = (event, params) => {
-  window.alert(`fetchJSON called, event: ${event.type}, params: ${JSON.stringify(params)}`);
+  window.alert(
+    `fetchJSON called, event: ${event.type}, params: ${JSON.stringify(params)}`,
+  );
 };
 
 // Default story: logs the query params on submit
 export const Default = Template.bind({});
 Default.args = {
-  fetchJSON: sampleFetchJSON
+  fetchJSON: sampleFetchJSON,
 };
 
 export const BackendRespondingAfter4secDelay = Template.bind({});
 BackendRespondingAfter4secDelay.args = {
-  fetchJSON: sampleFetchJSON
+  fetchJSON: sampleFetchJSON,
 };
 BackendRespondingAfter4secDelay.parameters = {
   msw: [
@@ -111,10 +111,9 @@ BackendRespondingAfter4secDelay.parameters = {
   ],
 };
 
-
 export const BackendNotResponding = Template.bind({});
 BackendNotResponding.args = {
-  fetchJSON: sampleFetchJSON
+  fetchJSON: sampleFetchJSON,
 };
 BackendNotResponding.parameters = {
   msw: [
@@ -131,5 +130,3 @@ BackendNotResponding.parameters = {
     }),
   ],
 };
-
-

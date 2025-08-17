@@ -17,11 +17,9 @@ describe("OurPagination tests", () => {
 
   test("renders correctly for default values", async () => {
     const updateActivePage = jest.fn();
-    render(
-      <OurPagination updateActivePage={updateActivePage} />,
-    );
+    render(<OurPagination updateActivePage={updateActivePage} />);
 
-     // Expected: 1, 2, 3, 4, 5, ..., 10
+    // Expected: 1, 2, 3, 4, 5, ..., 10
     checkTestIdsInOrder([
       "OurPagination-prev",
       "OurPagination-1",

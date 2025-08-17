@@ -94,7 +94,10 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
             checked={checkbox}
           ></FormCheck>
         </Form.Group>
-        <Row data-testid={`${testid}-bottom-row`} style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row
+          data-testid={`${testid}-bottom-row`}
+          style={{ paddingTop: 10, paddingBottom: 10 }}
+        >
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit

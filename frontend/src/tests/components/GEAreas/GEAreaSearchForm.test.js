@@ -15,11 +15,8 @@ jest.mock("react-toastify", () => ({
 
 let axiosMock;
 
-
 describe("GEAreaSearchForm tests", () => {
-
   describe("GEAreaSearchForm tests with healthy backend", () => {
-
     const queryClient = new QueryClient();
     const addToast = jest.fn();
 
@@ -30,7 +27,7 @@ describe("GEAreaSearchForm tests", () => {
 
       jest.clearAllMocks();
       // Silence console.error
-      jest.spyOn(console, "error").mockImplementation(() => { });
+      jest.spyOn(console, "error").mockImplementation(() => {});
 
       // Mock current user + system info
       axiosMock
@@ -84,7 +81,9 @@ describe("GEAreaSearchForm tests", () => {
     test("renders without crashing", () => {
       render(<WrappedForm />);
       expect(screen.getByLabelText("Quarter")).toBeInTheDocument();
-      expect(screen.getByLabelText("General Education Area")).toBeInTheDocument();
+      expect(
+        screen.getByLabelText("General Education Area"),
+      ).toBeInTheDocument();
     });
 
     test("selecting quarter updates state", () => {
@@ -105,8 +104,6 @@ describe("GEAreaSearchForm tests", () => {
     });
 
     test("submit button calls fetchJSON with correct args", async () => {
-      
-
       const fetchJSONSpy = jest.fn();
       render(<WrappedForm fetchJSON={fetchJSONSpy} />);
 
@@ -130,7 +127,6 @@ describe("GEAreaSearchForm tests", () => {
     });
   });
   describe("GEAreaSearchForm tests with unhealthy backend", () => {
-
     const queryClient = new QueryClient();
 
     beforeEach(() => {
@@ -140,7 +136,7 @@ describe("GEAreaSearchForm tests", () => {
 
       jest.clearAllMocks();
       // Silence console.error
-      jest.spyOn(console, "error").mockImplementation(() => { });
+      jest.spyOn(console, "error").mockImplementation(() => {});
 
       // Mock current user + system info
       axiosMock
