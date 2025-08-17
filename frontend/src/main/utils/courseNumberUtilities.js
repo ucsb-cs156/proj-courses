@@ -1,15 +1,13 @@
-
-
-const regex= /^(\d+)([a-zA-Z]{0,2})$/;
+const courseNumRegex = /^(\d{1,3})([a-zA-Z]{0,2})$/;
 
 const getCourseNumber = (rawCourseNumber) => {
-    return rawCourseNumber.match(regex)
-        ? rawCourseNumber.match(regex)[1]
-        : "";
-}
+  return rawCourseNumber.match(courseNumRegex)
+    ? rawCourseNumber.match(courseNumRegex)[1]
+    : "";
+};
 const getSuffix = (rawCourseNumber) => {
-    return rawCourseNumber.match(regex)
-        ? rawCourseNumber.match(regex)[2].toUpperCase()
-        : "";
-}
-export { getSuffix, getCourseNumber };
+  return rawCourseNumber.match(courseNumRegex)
+    ? rawCourseNumber.match(courseNumRegex)[2].toUpperCase()
+    : "";
+};
+export { getSuffix, getCourseNumber, courseNumRegex };

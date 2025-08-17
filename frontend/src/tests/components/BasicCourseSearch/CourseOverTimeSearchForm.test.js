@@ -13,16 +13,12 @@ import AxiosMockAdapter from "axios-mock-adapter";
 
 import CourseOverTimeSearchForm from "main/components/BasicCourseSearch/CourseOverTimeSearchForm";
 
-
-
 jest.mock("react-toastify", () => ({
   toast: jest.fn(),
 }));
 
 let axiosMock;
 describe("CourseOverTimeSearchForm tests", () => {
-
-
   describe("CourseOverTimeSearchForm regular tests", () => {
     const addToast = jest.fn();
     const queryClient = new QueryClient();
@@ -73,22 +69,30 @@ describe("CourseOverTimeSearchForm tests", () => {
       expect(screen.getByLabelText("Start Quarter")).toBeInTheDocument();
       expect(screen.getByLabelText("End Quarter")).toBeInTheDocument();
       expect(screen.getByLabelText("Subject Area")).toBeInTheDocument();
-      expect(
-        screen.getByLabelText("Course Number (Try searching '16' or '130A')"),
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText("Course Number")).toBeInTheDocument();
       expect(screen.getByText("Submit")).toBeInTheDocument();
-      const buttonRow = screen.getByTestId("CourseOverTimeSearchForm.ButtonRow");
+      const buttonRow = screen.getByTestId(
+        "CourseOverTimeSearchForm.ButtonRow",
+      );
       expect(buttonRow).toBeInTheDocument();
       expect(buttonRow).toHaveClass("my-2");
-      expect(buttonRow.querySelector("button")).toHaveTextContent("Submit");
+      expect(buttonRow.querySelector("button")).toHaveTextContent(/^Submit$/);
       expect(buttonRow.querySelector("button")).toHaveClass("btn-primary");
-      expect(buttonRow.querySelector("button")).toHaveAttribute("type", "submit");
+      expect(buttonRow.querySelector("button")).toHaveAttribute(
+        "type",
+        "submit",
+      );
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
-
+      expect(
+        screen.getByTestId("CourseOverTimeSearchForm.SearchString"),
+      ).toHaveTextContent(/^ANTH$/);
     });
 
     test("renders correctly with mocked localStorage values", async () => {
@@ -99,7 +103,6 @@ describe("CourseOverTimeSearchForm tests", () => {
         if (key === "CourseOverTimeSearch.StartQuarter") return "20211";
         if (key === "CourseOverTimeSearch.EndQuarter") return "20214";
         if (key === "CourseOverTimeSearch.Subject") return "CMPSC";
-        if (key === "CourseOverTimeSearch.CourseNumber") return "130A";
         return null;
       });
 
@@ -108,55 +111,75 @@ describe("CourseOverTimeSearchForm tests", () => {
           <MemoryRouter>
             <CourseOverTimeSearchForm />
           </MemoryRouter>
-        </QueryClientProvider>
+        </QueryClientProvider>,
       );
 
       // The component should read from localStorage and set the state accordingly.
       // The mutation will fail this test if the key is incorrect.
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
 
       // Now, check that the rendered form elements have the correct initial values.
       await waitFor(() => {
         expect(screen.getByLabelText("Start Quarter")).toHaveValue("20211");
       });
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.Subject-option-MATH")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.Subject-option-MATH"),
+        ).toBeInTheDocument();
       });
       expect(screen.getByLabelText("End Quarter")).toHaveValue("20214");
       expect(screen.getByLabelText("Subject Area")).toHaveValue("CMPSC");
-      expect(screen.getByLabelText("Course Number (Try searching '16' or '130A')")).toHaveValue("130A");
+      expect(
+        screen.getByTestId("CourseOverTimeSearchForm.SearchString"),
+      ).toHaveTextContent(/^CMPSC$/);
+      expect(
+        screen.getByTestId("CourseOverTimeSearchForm.FullSearchString"),
+      ).toHaveTextContent(/for quarters W21 through F21/);
     });
 
     test("renders with correct default subject area", async () => {
       const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
       axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
 
-      getItemSpy.mockImplementation(() => {return null;});
+      getItemSpy.mockImplementation(() => {
+        return null;
+      });
 
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
             <CourseOverTimeSearchForm />
           </MemoryRouter>
-        </QueryClientProvider>
+        </QueryClientProvider>,
       );
 
       // The component should read from localStorage and set the state accordingly.
       // The mutation will fail this test if the key is incorrect.
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
 
       // Now, check that the rendered form elements have the correct initial values.
-   
+
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.Subject-option-ANTH")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.Subject-option-ANTH"),
+        ).toBeInTheDocument();
       });
       expect(screen.getByLabelText("Subject Area")).toHaveValue("ANTH");
+      expect(
+        screen.getByTestId("CourseOverTimeSearchForm.SearchString"),
+      ).toHaveTextContent(/^ANTH$/);
     });
 
     test("when I select an end quarter, the state for end quarter changes", async () => {
@@ -174,19 +197,26 @@ describe("CourseOverTimeSearchForm tests", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20201");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20201");
       });
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.Subject-option-MATH")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.Subject-option-MATH"),
+        ).toBeInTheDocument();
       });
       const selectEndQuarter = screen.getByLabelText("End Quarter");
       userEvent.selectOptions(selectEndQuarter, "20204");
       expect(selectEndQuarter.value).toBe("20204");
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
     });
 
     test("when I select a subject, the state for subject changes", async () => {
@@ -205,7 +235,9 @@ describe("CourseOverTimeSearchForm tests", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20201");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20201");
       });
       const expectedKey = await screen.findByTestId(
         "CourseOverTimeSearch.Subject-option-MATH",
@@ -217,14 +249,19 @@ describe("CourseOverTimeSearchForm tests", () => {
 
       expect(selectSubject.value).toBe("MATH");
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
+      expect(
+        screen.getByTestId("CourseOverTimeSearchForm.SearchString"),
+      ).toHaveTextContent(/^MATH$/);
     });
 
     test("when I select a course number without suffix, the state for course number changes", async () => {
-
       const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
       const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
@@ -238,18 +275,24 @@ describe("CourseOverTimeSearchForm tests", () => {
         </QueryClientProvider>,
       );
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20201");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20201");
       });
-      const selectCourseNumber = screen.getByLabelText(
-        "Course Number (Try searching '16' or '130A')",
-      );
+      const selectCourseNumber = screen.getByLabelText("Course Number");
       userEvent.type(selectCourseNumber, "24");
       expect(selectCourseNumber.value).toBe("24");
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
+      expect(
+        screen.getByTestId("CourseOverTimeSearchForm.SearchString"),
+      ).toHaveTextContent(/^ANTH 24$/);
     });
 
     test("when I select a course number with suffix, the state for course number changes", async () => {
@@ -258,7 +301,6 @@ describe("CourseOverTimeSearchForm tests", () => {
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
-
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -267,19 +309,22 @@ describe("CourseOverTimeSearchForm tests", () => {
         </QueryClientProvider>,
       );
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20201");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20201");
       });
 
-      const selectCourseNumber = screen.getByLabelText(
-        "Course Number (Try searching '16' or '130A')",
-      );
+      const selectCourseNumber = screen.getByLabelText("Course Number");
       userEvent.type(selectCourseNumber, "130A");
       expect(selectCourseNumber.value).toBe("130A");
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
     });
 
     test("when I select a course number without number, the state for course number changes", async () => {
@@ -295,18 +340,21 @@ describe("CourseOverTimeSearchForm tests", () => {
         </QueryClientProvider>,
       );
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20201");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20201");
       });
-      const selectCourseNumber = screen.getByLabelText(
-        "Course Number (Try searching '16' or '130A')",
-      );
+      const selectCourseNumber = screen.getByLabelText("Course Number");
       userEvent.type(selectCourseNumber, "A");
       expect(selectCourseNumber.value).toBe("A");
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
     });
 
     test("when I click submit, the right stuff happens", async () => {
@@ -331,10 +379,14 @@ describe("CourseOverTimeSearchForm tests", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20201");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20201");
       });
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.Subject-option-MATH")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.Subject-option-MATH"),
+        ).toBeInTheDocument();
       });
       const expectedFields = {
         startQuarter: "20211",
@@ -356,9 +408,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       const selectSubject = screen.getByLabelText("Subject Area");
       expect(selectSubject).toBeInTheDocument();
       userEvent.selectOptions(selectSubject, "CMPSC");
-      const selectCourseNumber = screen.getByLabelText(
-        "Course Number (Try searching '16' or '130A')",
-      );
+      const selectCourseNumber = screen.getByLabelText("Course Number");
       userEvent.type(selectCourseNumber, "130A");
       const submitButton = screen.getByText("Submit");
       userEvent.click(submitButton);
@@ -370,10 +420,18 @@ describe("CourseOverTimeSearchForm tests", () => {
         expectedFields,
       );
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
+      expect(
+        screen.queryByText(
+          /Course number should be a 1 to 3 digit number, optionally followed by up to two letters./,
+        ),
+      ).not.toBeInTheDocument();
     });
 
     test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
@@ -398,7 +456,9 @@ describe("CourseOverTimeSearchForm tests", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20201");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20201");
       });
       const expectedKey = await screen.findByTestId(
         "CourseOverTimeSearch.Subject-option-CMPSC",
@@ -411,21 +471,21 @@ describe("CourseOverTimeSearchForm tests", () => {
       userEvent.selectOptions(selectEndQuarter, "20204");
       const selectSubject = screen.getByLabelText("Subject Area");
       userEvent.selectOptions(selectSubject, "CMPSC");
-      const selectCourseNumber = screen.getByLabelText(
-        "Course Number (Try searching '16' or '130A')",
-      );
+      const selectCourseNumber = screen.getByLabelText("Course Number");
       userEvent.type(selectCourseNumber, "130A");
       const submitButton = screen.getByText("Submit");
       userEvent.click(submitButton);
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
     });
 
     test("renders without crashing when fallback values are used", async () => {
-
       const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
       const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
@@ -447,7 +507,9 @@ describe("CourseOverTimeSearchForm tests", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20211");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20211");
       });
       expect(
         await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-0/),
@@ -456,16 +518,16 @@ describe("CourseOverTimeSearchForm tests", () => {
         await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-3/),
       ).toHaveValue("20214");
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
     });
-
-
   });
   describe("CourseOverTimeSearchForm with null system info", () => {
-
     const addToast = jest.fn();
     const queryClient = new QueryClient();
 
@@ -503,7 +565,6 @@ describe("CourseOverTimeSearchForm tests", () => {
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
-
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -512,7 +573,9 @@ describe("CourseOverTimeSearchForm tests", () => {
         </QueryClientProvider>,
       );
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20211");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20211");
       });
       expect(
         await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-0/),
@@ -521,12 +584,13 @@ describe("CourseOverTimeSearchForm tests", () => {
         await screen.findByTestId(/CourseOverTimeSearch.StartQuarter-option-3/),
       ).toHaveValue("20214");
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
-
-
     });
   });
   describe("CourseOverTimeSearchForm queryClient tests", () => {
@@ -564,7 +628,10 @@ describe("CourseOverTimeSearchForm tests", () => {
       });
       invalidateQueriesSpy = jest.spyOn(queryClient, "invalidateQueries");
       getQueryDataSpy = jest.spyOn(queryClient, "getQueryData");
-      useBackendSpy = jest.spyOn(require("main/utils/useBackend"), "useBackend");
+      useBackendSpy = jest.spyOn(
+        require("main/utils/useBackend"),
+        "useBackend",
+      );
     });
 
     afterEach(() => {
@@ -575,6 +642,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       cleanup();
       invalidateQueriesSpy.mockRestore(); // Restore original implementation of the spy
       queryClient.clear(); // Clear the React Query cache
+      useBackendSpy.mockRestore();
     });
 
     test("correct cache keys are set up and invalidated", async () => {
@@ -588,20 +656,104 @@ describe("CourseOverTimeSearchForm tests", () => {
         </QueryClientProvider>,
       );
       await waitFor(() => {
-        expect(screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0")).toHaveValue("20201");
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20201");
       });
       expect(useBackendSpy).toHaveBeenCalledWith(
         ["/api/UCSBSubjects/all"],
-        { "method": "GET", "url": "/api/UCSBSubjects/all" },
-        []
+        { method: "GET", url: "/api/UCSBSubjects/all" },
+        [],
       );
 
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.StartQuarter");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.EndQuarter");
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.StartQuarter",
+      );
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "CourseOverTimeSearch.EndQuarter",
+      );
       expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.Subject");
-      expect(getItemSpy).toHaveBeenCalledWith("CourseOverTimeSearch.CourseNumber");
-
     });
+  });
+  describe("CourseOverTimeSearchForm test for form validations on CourseNumber", () => {
+    const queryClient = new QueryClient();
+    beforeEach(() => {
+      axiosMock = new AxiosMockAdapter(axios);
+      jest.clearAllMocks();
+    });
+    afterEach(() => {
+      axiosMock.restore();
+      axiosMock.reset();
+      jest.clearAllMocks();
+      axiosMock.resetHistory();
+      cleanup();
+      localStorage.clear();
+    });
+    it("validates course number format", async () => {
+      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      getItemSpy.mockImplementation(() => null);
+      setItemSpy.mockImplementation(() => null);
 
+      axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+      const sampleReturnValue = {
+        sampleKey: "sampleValue",
+      };
+
+      const fetchJSONSpy = jest.fn().mockResolvedValue(sampleReturnValue);
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <CourseOverTimeSearchForm fetchJSON={fetchJSONSpy} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.StartQuarter-option-0"),
+        ).toHaveValue("20211");
+      });
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("CourseOverTimeSearch.Subject-option-MATH"),
+        ).toBeInTheDocument();
+      });
+      const expectedFields = {
+        startQuarter: "20211",
+        endQuarter: "20214",
+        subject: "CMPSC",
+        courseNumber: "130",
+        courseSuf: "A",
+      };
+
+      const expectedKey = await screen.findByTestId(
+        "CourseOverTimeSearch.Subject-option-CMPSC",
+      );
+      expect(expectedKey).toBeInTheDocument();
+
+      const selectStartQuarter = screen.getByLabelText("Start Quarter");
+      userEvent.selectOptions(selectStartQuarter, "20211");
+      const selectEndQuarter = screen.getByLabelText("End Quarter");
+      userEvent.selectOptions(selectEndQuarter, "20214");
+      const selectSubject = screen.getByLabelText("Subject Area");
+      expect(selectSubject).toBeInTheDocument();
+      userEvent.selectOptions(selectSubject, "CMPSC");
+      const selectCourseNumber = screen.getByLabelText("Course Number");
+      userEvent.type(selectCourseNumber, "130ABC");
+      const submitButton = screen.getByText("Submit");
+      userEvent.click(submitButton);
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Course Number is required./),
+        ).toBeInTheDocument();
+      });
+      expect(
+        screen.getByText(
+          /Course number should be a 1 to 3 digit number, optionally followed by up to two letters./,
+        ),
+      ).toBeInTheDocument();
+    });
   });
 });

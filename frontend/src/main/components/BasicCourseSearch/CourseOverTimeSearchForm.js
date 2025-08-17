@@ -1,14 +1,19 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-import { quarterRange } from "main/utils/quarterUtilities";
+import { quarterRange, yyyyqToQyy } from "main/utils/quarterUtilities";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import { useBackend } from "main/utils/useBackend";
 
-import {getCourseNumber, getSuffix} from "main/utils/courseNumberUtilities";
+import {
+  getCourseNumber,
+  getSuffix,
+  courseNumRegex,
+} from "main/utils/courseNumberUtilities";
 
 const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
@@ -25,9 +30,6 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     "CourseOverTimeSearch.EndQuarter",
   );
   const localSubject = localStorage.getItem("CourseOverTimeSearch.Subject");
-  const localCourseNumber = localStorage.getItem(
-    "CourseOverTimeSearch.CourseNumber",
-  );
 
   const {
     data: subjects,
@@ -54,11 +56,10 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const [subject, setSubject] = useState(
     localSubject || subjects[0]?.subjectCode || defaultSubjectArea,
   );
-  const [courseNumber, setCourseNumber] = useState(localCourseNumber || "");
+  const [courseNumber, setCourseNumber] = useState("");
   const [courseSuf, setCourseSuf] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const submitAction = (event) => {
     fetchJSON(event, {
       startQuarter,
       endQuarter,
@@ -74,8 +75,17 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     setCourseNumber(getCourseNumber(rawCourse));
   };
 
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
+
   return (
-    <Form onSubmit={handleSubmit} data-testid="CourseOverTimeSearchForm">
+    <Form
+      onSubmit={handleSubmit(submitAction)}
+      data-testid="CourseOverTimeSearchForm"
+    >
       <Container>
         <Row>
           <Col md="auto">
@@ -105,19 +115,41 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
               label={"Subject Area"}
             />
           </Col>
+          <Col>
+            <Form.Group controlId="CourseOverTimeSearchCourseNumber">
+              <Form.Label>Course Number</Form.Label>
+              <Form.Control
+                isInvalid={Boolean(errors.CourseOverTimeSearchCourseNumber)}
+                {...register("CourseOverTimeSearchCourseNumber", {
+                  pattern: courseNumRegex,
+                  onChange: (e) => handleCourseNumberOnChange(e), // Here's the fix!
+                })}
+              />
+              <Form.Text muted>
+                For example: '16' or '130A'; omit the subject area prefix.
+              </Form.Text>
+              <Form.Control.Feedback type="invalid">
+                {errors.CourseOverTimeSearchCourseNumber &&
+                  "Course Number is required. "}
+                {errors.CourseOverTimeSearchCourseNumber?.type === "pattern" &&
+                  "Course number should be a 1 to 3 digit number, optionally followed by up to two letters."}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
         </Row>
-        <Form.Group controlId="CourseOverTimeSearch.CourseNumber">
-          <Form.Label>Course Number (Try searching '16' or '130A')</Form.Label>
-          <Form.Control
-            onChange={handleCourseNumberOnChange}
-            defaultValue={courseNumber}
-          />
-        </Form.Group>
         <Row className="my-2" data-testid="CourseOverTimeSearchForm.ButtonRow">
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit
             </Button>
+          </Col>
+          <Col md="auto">
+            <p data-testid="CourseOverTimeSearchForm.FullSearchString">
+              Searching for:{" "}
+              <code data-testid="CourseOverTimeSearchForm.SearchString">{`${subject} ${courseNumber}${courseSuf}`}</code>{" "}
+              for quarters {`${yyyyqToQyy(startQuarter)}`} through{" "}
+              {`${yyyyqToQyy(endQuarter)}`}
+            </p>
           </Col>
         </Row>
       </Container>

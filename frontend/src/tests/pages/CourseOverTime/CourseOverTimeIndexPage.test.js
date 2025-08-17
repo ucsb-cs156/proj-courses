@@ -71,9 +71,7 @@ describe("CourseOverTimeIndexPage tests", () => {
     );
 
     userEvent.selectOptions(selectSubject, "ANTH");
-    const enterCourseNumber = screen.getByLabelText(
-      "Course Number (Try searching '16' or '130A')",
-    );
+    const enterCourseNumber = screen.getByLabelText("Course Number");
     userEvent.type(enterCourseNumber, "130A");
 
     const submitButton = screen.getByText("Submit");
