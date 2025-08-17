@@ -8,6 +8,8 @@ import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import { useBackend } from "main/utils/useBackend";
 
+import {getCourseNumber, getSuffix} from "main/utils/courseNumberUtilities";
+
 const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
 
@@ -33,7 +35,11 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     status: _status,
   } = useBackend(
     ["/api/UCSBSubjects/all"],
-    { method: "GET", url: "/api/UCSBSubjects/all" },
+    {
+      // Stryker disable next-line StringLiteral : GET is the default, so replacing with empty string is an equivalent mutation
+      method: "GET",
+      url: "/api/UCSBSubjects/all",
+    },
     [],
   );
 
@@ -64,17 +70,12 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
 
   const handleCourseNumberOnChange = (event) => {
     const rawCourse = event.target.value;
-
-    setCourseSuf(
-      rawCourse.match(/[a-zA-Z]+$/)
-        ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
-        : "",
-    );
-    setCourseNumber(rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "");
+    setCourseSuf(getSuffix(rawCourse));
+    setCourseNumber(getCourseNumber(rawCourse));
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} data-testid="CourseOverTimeSearchForm">
       <Container>
         <Row>
           <Col md="auto">
@@ -112,7 +113,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
             defaultValue={courseNumber}
           />
         </Form.Group>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row className="my-2" data-testid="CourseOverTimeSearchForm.ButtonRow">
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit
