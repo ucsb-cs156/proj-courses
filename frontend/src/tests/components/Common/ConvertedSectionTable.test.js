@@ -19,7 +19,7 @@ describe("ConvertedSectionTable tests", () => {
       "Time",
       "Location",
       "Instructors",
-      "Section"
+      "Section",
     ];
 
     expectedHeaders.forEach((header) => {
