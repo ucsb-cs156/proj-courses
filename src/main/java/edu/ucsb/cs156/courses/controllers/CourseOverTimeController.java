@@ -6,6 +6,8 @@ import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,9 +58,12 @@ public class CourseOverTimeController {
           @RequestParam
           String courseNumber)
       throws JsonProcessingException {
-    List<ConvertedSection> courseResults =
+    List<ConvertedSection> courseResults = new ArrayList<ConvertedSection>(
         convertedSectionCollection.findByQuarterRangeAndCourseId(
-            startQtr, endQtr, makeFormattedCourseId(subjectArea, courseNumber));
+            startQtr, endQtr, makeFormattedCourseId(subjectArea, courseNumber)));
+
+    courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());
+
     String body = mapper.writeValueAsString(courseResults);
     return ResponseEntity.ok().body(body);
   }
