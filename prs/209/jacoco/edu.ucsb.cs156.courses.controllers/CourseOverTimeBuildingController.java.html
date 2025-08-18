@@ -54,11 +54,15 @@ import org.springframework.web.bind.annotation.RestController;
           String buildingCode)
       throws JsonProcessingException {
 <span class="fc" id="L56">    List&lt;ConvertedSection&gt; courseResults =</span>
-<span class="fc" id="L57">        convertedSectionCollection.findByQuarterRangeAndBuildingCode(</span>
-            startQtr, endQtr, buildingCode);
-<span class="fc" id="L59">    String body = mapper.writeValueAsString(courseResults);</span>
+        new java.util.ArrayList&lt;&gt;(
+<span class="fc" id="L58">            convertedSectionCollection.findByQuarterRangeAndBuildingCode(</span>
+                startQtr, endQtr, buildingCode));
 
-<span class="fc" id="L61">    return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L61">    courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());</span>
+
+<span class="fc" id="L63">    String body = mapper.writeValueAsString(courseResults);</span>
+
+<span class="fc" id="L65">    return ResponseEntity.ok().body(body);</span>
   }
 
   @Operation(
@@ -82,29 +86,29 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam
           String buildingCode)
       throws JsonProcessingException {
-<span class="fc" id="L85">    List&lt;ConvertedSection&gt; courseResults =</span>
-<span class="fc" id="L86">        convertedSectionCollection.findByQuarterAndBuildingCode(quarter, buildingCode);</span>
+<span class="fc" id="L89">    List&lt;ConvertedSection&gt; courseResults =</span>
+<span class="fc" id="L90">        convertedSectionCollection.findByQuarterAndBuildingCode(quarter, buildingCode);</span>
 
-<span class="fc" id="L88">    Set&lt;String&gt; classrooms =</span>
-<span class="fc" id="L89">        courseResults.stream()</span>
-<span class="fc" id="L90">            .flatMap(</span>
+<span class="fc" id="L92">    Set&lt;String&gt; classrooms =</span>
+<span class="fc" id="L93">        courseResults.stream()</span>
+<span class="fc" id="L94">            .flatMap(</span>
                 result -&gt; {
-<span class="fc bfc" id="L92" title="All 2 branches covered.">                  if (result.getSection() != null</span>
-<span class="fc bfc" id="L93" title="All 2 branches covered.">                      &amp;&amp; result.getSection().getTimeLocations() != null) {</span>
-<span class="fc" id="L94">                    return result.getSection().getTimeLocations().stream();</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">                  if (result.getSection() != null</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">                      &amp;&amp; result.getSection().getTimeLocations() != null) {</span>
+<span class="fc" id="L98">                    return result.getSection().getTimeLocations().stream();</span>
                   } else {
-<span class="fc" id="L96">                    return Stream.empty();</span>
+<span class="fc" id="L100">                    return Stream.empty();</span>
                   }
                 })
-<span class="fc" id="L99">            .filter(</span>
+<span class="fc" id="L103">            .filter(</span>
                 loc -&gt;
-<span class="fc bfc" id="L101" title="All 4 branches covered.">                    loc.getBuilding() != null &amp;&amp; loc.getBuilding().equalsIgnoreCase(buildingCode))</span>
-<span class="fc" id="L102">            .map(loc -&gt; loc.getRoom())</span>
-<span class="fc bfc" id="L103" title="All 4 branches covered.">            .filter(room -&gt; room != null &amp;&amp; !room.isEmpty())</span>
-<span class="fc" id="L104">            .collect(Collectors.toCollection(TreeSet::new));</span>
+<span class="fc bfc" id="L105" title="All 4 branches covered.">                    loc.getBuilding() != null &amp;&amp; loc.getBuilding().equalsIgnoreCase(buildingCode))</span>
+<span class="fc" id="L106">            .map(loc -&gt; loc.getRoom())</span>
+<span class="fc bfc" id="L107" title="All 4 branches covered.">            .filter(room -&gt; room != null &amp;&amp; !room.isEmpty())</span>
+<span class="fc" id="L108">            .collect(Collectors.toCollection(TreeSet::new));</span>
 
-<span class="fc" id="L106">    String body = mapper.writeValueAsString(classrooms);</span>
-<span class="fc" id="L107">    return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L110">    String body = mapper.writeValueAsString(classrooms);</span>
+<span class="fc" id="L111">    return ResponseEntity.ok().body(body);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
