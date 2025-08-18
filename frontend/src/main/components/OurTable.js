@@ -27,11 +27,10 @@ export function convertOldStyleColumnsToNewStyle(oldStyleColumns) {
 function OurTable({ data, columns, testid = "testid" }) {
   const newColumns = convertOldStyleColumnsToNewStyle(columns);
   const memoizedData = useMemo(() => data, [data]);
-  const memoizedColumns = useMemo(() => newColumns, [newColumns]);
 
   const table = useReactTable({
     data: memoizedData,
-    columns: memoizedColumns,
+    columns: newColumns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -121,16 +120,6 @@ export function ButtonColumn(label, variant, callback, testid) {
   });
   return buttonColumn;
 }
-
-// export function PlaintextColumn(label, getText) {
-//   const columnHelper = createColumnHelper();
-//   const column = columnHelper.display({
-//     id: label,
-//     header: label,
-//     cell: ({ cell }) => <Plaintext text={getText(cell)} />,
-//   });
-//   return column;
-// }
 
 export function DateColumn(label, getDate) {
   const columnHelper = createColumnHelper();

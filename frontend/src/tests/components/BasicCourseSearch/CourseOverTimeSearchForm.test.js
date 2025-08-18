@@ -596,7 +596,6 @@ describe("CourseOverTimeSearchForm tests", () => {
   describe("CourseOverTimeSearchForm queryClient tests", () => {
     let queryClient;
     let invalidateQueriesSpy;
-    let getQueryDataSpy;
     let useBackendSpy;
 
     const addToast = jest.fn();
@@ -627,7 +626,6 @@ describe("CourseOverTimeSearchForm tests", () => {
         },
       });
       invalidateQueriesSpy = jest.spyOn(queryClient, "invalidateQueries");
-      getQueryDataSpy = jest.spyOn(queryClient, "getQueryData");
       useBackendSpy = jest.spyOn(
         require("main/utils/useBackend"),
         "useBackend",
@@ -647,7 +645,6 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     test("correct cache keys are set up and invalidated", async () => {
       const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -720,13 +717,6 @@ describe("CourseOverTimeSearchForm tests", () => {
           screen.getByTestId("CourseOverTimeSearch.Subject-option-MATH"),
         ).toBeInTheDocument();
       });
-      const expectedFields = {
-        startQuarter: "20211",
-        endQuarter: "20214",
-        subject: "CMPSC",
-        courseNumber: "130",
-        courseSuf: "A",
-      };
 
       const expectedKey = await screen.findByTestId(
         "CourseOverTimeSearch.Subject-option-CMPSC",

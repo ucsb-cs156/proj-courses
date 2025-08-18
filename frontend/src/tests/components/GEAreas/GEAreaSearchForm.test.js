@@ -23,7 +23,7 @@ describe("GEAreaSearchForm tests", () => {
     let getItemSpy, setItemSpy;
 
     beforeEach(() => {
-      const axiosMock = new AxiosMockAdapter(axios);
+      axiosMock = new AxiosMockAdapter(axios);
       axiosMock.reset();
       axiosMock.resetHistory();
 
@@ -143,6 +143,24 @@ describe("GEAreaSearchForm tests", () => {
       expect(areaSelect.value).toBe("ALL");
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
         "Searching for ALL in S21",
+      );
+    });
+
+    test("when local state for quarter is empty, we get ALL", () => {
+      getItemSpy.mockImplementation((key) => {
+        if (key === "GEAreaSearch.Quarter") {
+          return null;
+        }
+        if (key === "GEAreaSearch.Area") {
+          return "MATH"; // Simulate empty local state
+        }
+        return null;
+      });
+      render(<WrappedForm />);
+      const quarterSelect = screen.getByLabelText("Quarter");
+      expect(quarterSelect.value).toBe("20211");
+      expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
+        "Searching for MATH in W21",
       );
     });
 

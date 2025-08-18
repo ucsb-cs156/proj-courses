@@ -1,4 +1,3 @@
-import { get } from "react-hook-form";
 import {
   getCourseNumber,
   getSuffix,
@@ -32,11 +31,11 @@ describe("courseNumberUtilities tests", () => {
     expect(getSuffix("130A")).toBe("A");
   });
 
-  test("getSuffix extracts suffix from 'MATH 16B'", () => {
+  test("getSuffix extracts suffix from '16B'", () => {
     expect(getSuffix("16B")).toBe("B");
   });
 
-  test("getSuffix extracts suffix from 'MATH 16B'", () => {
+  test("getSuffix extracts suffix from '1ab'", () => {
     expect(getSuffix("1ab")).toBe("AB");
   });
 
