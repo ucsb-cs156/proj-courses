@@ -29,7 +29,6 @@ export default function CourseDetailsTable({ details }) {
     },
     {
       header: "Enrolled",
-      accessorKey: "enrolled",
       cell: ({ cell }) =>
         convertToFraction(
           cell.row.original.classSections[0].enrolledTotal,
@@ -39,14 +38,12 @@ export default function CourseDetailsTable({ details }) {
     },
     {
       header: "Location",
-      accessorKey: "location",
       cell: ({ cell }) =>
         formatLocation(cell.row.original.classSections[0].timeLocations),
       id: "location",
     },
     {
       header: "Days",
-      accessorKey: "days",
       cell: ({ cell }) =>
         cell.row.original.classSections[0].timeLocations[0].days,
       id: "days",
@@ -56,11 +53,9 @@ export default function CourseDetailsTable({ details }) {
       cell: ({ cell }) =>
         formatTime(cell.row.original.classSections[0].timeLocations),
       id: "time",
-      accessorKey: "time",
     },
     {
       header: "Instructor",
-      accessorKey: "instructor",
       cell: ({ cell }) =>
         formatInstructors(cell.row.original.classSections[0].instructors),
       id: "instructor",

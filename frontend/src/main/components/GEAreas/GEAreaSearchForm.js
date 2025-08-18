@@ -5,6 +5,7 @@ import { quarterRange } from "main/utils/quarterUtilities";
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import { useBackend } from "main/utils/useBackend";
+import { yyyyqToQyy } from "main/utils/quarterUtilities";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
@@ -13,8 +14,11 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
     systemInfo.endQtrYYYYQ,
   );
 
-  const localQuarter = localStorage.getItem("GEAreaSearch.Quarter");
-  const localArea = localStorage.getItem("GEAreaSearch.Area");
+  const quarterKey = "GEAreaSearch.Quarter";
+  const areaKey = "GEAreaSearch.Area";
+
+  const localQuarter = localStorage.getItem(quarterKey);
+  const localArea = localStorage.getItem(areaKey);
 
   const {
     data: areas,
@@ -28,12 +32,12 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
 
   const areaCodes = areas.map((r) => r.requirementCode);
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
-  const [area, setArea] = useState(localArea || "");
+  const [area, setArea] = useState(localArea || "ALL");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    localStorage.setItem("GEAreaSearch.Quarter", quarter);
-    localStorage.setItem("GEAreaSearch.Area", area);
+    localStorage.setItem(quarterKey, quarter);
+    localStorage.setItem(areaKey, area);
     fetchJSON(event, { quarter, area });
   };
 
@@ -46,9 +50,9 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
               quarters={quarters}
               quarter={quarter}
               setQuarter={setQuarter}
-              controlId={"GEAreaSearch.Quarter"}
+              controlId={quarterKey}
             />
-            <Form.Group controlId="GEAreaSearch.Area">
+            <Form.Group controlId={areaKey}>
               <Form.Label>General Education Area</Form.Label>
               <Form.Control
                 as="select"
@@ -70,11 +74,16 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
             </Form.Group>
           </Col>
         </Row>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row className="my-2" data-testid="GEAreaSearch.ButtonRow">
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit
             </Button>
+          </Col>
+          <Col>
+            <p data-testid="GEAreaSearch.Status">
+              Searching for {area} in {yyyyqToQyy(quarter)}
+            </p>
           </Col>
         </Row>
       </Container>

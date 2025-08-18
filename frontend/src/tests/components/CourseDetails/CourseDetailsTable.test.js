@@ -98,5 +98,8 @@ describe("CourseDetailsTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-time`),
     ).toHaveTextContent("3:00 PM - 3:50 PM");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-enrolled`),
+    ).toHaveTextContent("84/100");
   });
 });
