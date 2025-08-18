@@ -137,6 +137,7 @@ sectionsTableBaseFixtures.getExampleColumnsWithInfoAndAddToSchedule = (
               onAdd={(section, schedule) =>
                 exampleAddToScheduleCallback(section, schedule)
               }
+              schedules={[]}
             />
           </div>
         );

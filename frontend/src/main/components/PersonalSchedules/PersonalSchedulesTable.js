@@ -55,7 +55,6 @@ export default function PersonalSchedulesTable({
     },
     {
       header: "Quarter",
-      accessorKey: "quarter",
       cell: ({ cell }) => yyyyqToQyy(cell.row.original.quarter),
       id: "quarter",
     },

@@ -12,7 +12,7 @@ export default function AddToScheduleModal({
   quarter,
   section,
   onAdd,
-  schedules = [],
+  schedules,
   testid = "AddToScheduleModal",
 }) {
   const [showModal, setShowModal] = useState(false);
