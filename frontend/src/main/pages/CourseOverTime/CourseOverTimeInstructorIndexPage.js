@@ -30,7 +30,7 @@ export default function CourseOverTimeInstructorIndexPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h5>Welcome to the UCSB Course Instructor Search!</h5>
+        <h5>UCSB Course Instructor Search</h5>
         <CourseOverTimeInstructorSearchForm
           fetchJSON={fetchCourseOverTimeJSON}
         />
