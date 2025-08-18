@@ -51,23 +51,21 @@ export default function JobsTable({ jobs }) {
     },
   ];
 
-  const sortees = React.useMemo(
-    () => [
+  const sortByIdDescending = {
+    sorting: [
       {
         id: "id",
-        desc: true,
+        desc: true, // sort by name in descending order by default
       },
     ],
-    // Stryker disable next-line all
-    [],
-  );
+  };
 
   return (
     <OurTable
       data={jobs}
       columns={columns}
       testid={testid}
-      initialState={{ sortBy: sortees }}
+      initialState={sortByIdDescending}
     />
   );
 }

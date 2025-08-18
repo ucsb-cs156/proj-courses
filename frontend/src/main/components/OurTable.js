@@ -8,7 +8,6 @@ import {
 } from "@tanstack/react-table";
 import { Button } from "react-bootstrap";
 import SortCaret from "main/components/Common/SortCaret";
-// import Plaintext from "main/components/Utils/Plaintext";
 
 export function convertOldStyleColumnsToNewStyle(oldStyleColumns) {
   const result = [];
@@ -24,7 +23,7 @@ export function convertOldStyleColumnsToNewStyle(oldStyleColumns) {
   return result;
 }
 
-function OurTable({ data, columns, testid = "testid" }) {
+function OurTable({ data, columns, testid = "testid", initialState = {} }) {
   const newColumns = convertOldStyleColumnsToNewStyle(columns);
   const memoizedData = useMemo(() => data, [data]);
 
@@ -33,6 +32,7 @@ function OurTable({ data, columns, testid = "testid" }) {
     columns: newColumns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    initialState: initialState,
   });
 
   return (
