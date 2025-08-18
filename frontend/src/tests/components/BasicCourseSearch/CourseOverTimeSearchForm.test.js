@@ -93,6 +93,9 @@ describe("CourseOverTimeSearchForm tests", () => {
       expect(
         screen.getByTestId("CourseOverTimeSearchForm.SearchString"),
       ).toHaveTextContent(/^ANTH$/);
+      expect(
+        screen.getByTestId("CourseOverTimeSearchForm.FullSearchString"),
+      ).toHaveTextContent(/^Searching for: ANTH for quarters W22 through W22$/);
     });
 
     test("renders correctly with mocked localStorage values", async () => {

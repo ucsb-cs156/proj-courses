@@ -146,7 +146,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
           <Col md="auto">
             <p data-testid="CourseOverTimeSearchForm.FullSearchString">
               Searching for:{" "}
-              <code data-testid="CourseOverTimeSearchForm.SearchString">{`${subject} ${courseNumber}${courseSuf}`}</code>{" "}
+              <code data-testid="CourseOverTimeSearchForm.SearchString">{`${subject} ${courseNumber}${courseSuf}`}</code>
               for quarters {`${yyyyqToQyy(startQuarter)}`} through{" "}
               {`${yyyyqToQyy(endQuarter)}`}
             </p>
