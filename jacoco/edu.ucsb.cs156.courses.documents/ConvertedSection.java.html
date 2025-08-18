@@ -47,5 +47,13 @@ public class ConvertedSection {
 <span class="fc" id="L47">            .build();</span>
 <span class="fc" id="L48">    return edp;</span>
   }
+
+<span class="fc" id="L51">  public static class ConvertedSectionSortDescendingByQuarterComparator</span>
+      implements java.util.Comparator&lt;ConvertedSection&gt; {
+    @Override
+    public int compare(ConvertedSection o1, ConvertedSection o2) {
+<span class="fc" id="L55">      return o2.getCourseInfo().getQuarter().compareTo(o1.getCourseInfo().getQuarter());</span>
+    }
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

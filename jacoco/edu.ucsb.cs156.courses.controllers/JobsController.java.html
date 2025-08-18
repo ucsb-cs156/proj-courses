@@ -52,7 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @GetMapping(&quot;/all&quot;)
   public Iterable&lt;Job&gt; allJobs() {
-<span class="fc" id="L55">    Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
+<span class="fc" id="L55">    Iterable&lt;Job&gt; jobs = jobsRepository.findAllByOrderByIdDesc();</span>
 <span class="fc" id="L56">    return jobs;</span>
   }
 
