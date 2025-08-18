@@ -54,8 +54,12 @@ public class CourseOverTimeBuildingController {
           String buildingCode)
       throws JsonProcessingException {
     List<ConvertedSection> courseResults =
-        convertedSectionCollection.findByQuarterRangeAndBuildingCode(
-            startQtr, endQtr, buildingCode);
+        new java.util.ArrayList<>(
+            convertedSectionCollection.findByQuarterRangeAndBuildingCode(
+                startQtr, endQtr, buildingCode));
+
+    courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());
+
     String body = mapper.writeValueAsString(courseResults);
 
     return ResponseEntity.ok().body(body);

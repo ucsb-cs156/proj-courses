@@ -47,4 +47,12 @@ public class ConvertedSection {
             .build();
     return edp;
   }
+
+  public static class ConvertedSectionSortDescendingByQuarterComparator
+      implements java.util.Comparator<ConvertedSection> {
+    @Override
+    public int compare(ConvertedSection o1, ConvertedSection o2) {
+      return o2.getCourseInfo().getQuarter().compareTo(o1.getCourseInfo().getQuarter());
+    }
+  }
 }

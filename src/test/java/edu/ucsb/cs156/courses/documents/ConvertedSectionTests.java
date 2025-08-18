@@ -50,4 +50,19 @@ public class ConvertedSectionTests {
     assertEquals("0100", edp.getSection());
     assertEquals(142, edp.getEnrollment());
   }
+
+  @Test
+  public void test_ConvertedSectionSortDescendingByQuarterComparator()
+      throws JsonProcessingException {
+    List<ConvertedSection> cs =
+        mapper.readValue(
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
+            new TypeReference<List<ConvertedSection>>() {});
+    ConvertedSection cs1 = cs.get(0);
+    ConvertedSection cs2 = cs.get(1);
+    ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator comparator =
+        new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator();
+    int result = comparator.compare(cs1, cs2);
+    assertEquals(0, result); // Both sections have the same quarter "20222"
+  }
 }

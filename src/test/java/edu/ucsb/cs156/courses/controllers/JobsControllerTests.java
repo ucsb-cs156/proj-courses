@@ -95,7 +95,7 @@ public class JobsControllerTests extends ControllerTestCase {
     ArrayList<Job> expectedJobs = new ArrayList<>();
     expectedJobs.addAll(Arrays.asList(job1, job2));
 
-    when(jobsRepository.findAll()).thenReturn(expectedJobs);
+    when(jobsRepository.findAllByOrderByIdDesc()).thenReturn(expectedJobs);
 
     // act
     MvcResult response =
@@ -103,7 +103,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     // assert
 
-    verify(jobsRepository, atLeastOnce()).findAll();
+    verify(jobsRepository, atLeastOnce()).findAllByOrderByIdDesc();
     String expectedJson = mapper.writeValueAsString(expectedJobs);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
