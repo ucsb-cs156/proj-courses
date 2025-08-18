@@ -54,7 +54,6 @@ export default function AddToScheduleModal({
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
-                    data-testid={`${testid}-schedule-selector`}
                     schedule={selectedSchedule}
                     setSchedule={setSelectedSchedule}
                     controlId="scheduleSelect"
