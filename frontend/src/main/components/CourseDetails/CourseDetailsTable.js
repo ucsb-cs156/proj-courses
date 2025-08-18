@@ -15,12 +15,12 @@ export default function CourseDetailsTable({ details }) {
     },
     {
       header: "Enroll Code",
-      accessorKey: "enrollCode",
+      id: "enrollCode",
       cell: ({ cell }) => cell.row.original.classSections[0].enrollCode,
     },
     {
       header: "Section",
-      accessorKey: "section",
+      id: "section",
       cell: ({ cell }) => cell.row.original.classSections[0].section,
     },
     {
