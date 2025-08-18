@@ -21,7 +21,6 @@ const columns = [
   {
     header: "Admin",
     id: "admin",
-    accessorKey: "admin",
     cell: ({ cell }) => String(cell.row.original.admin), // hack needed for boolean values to show up
   },
 ];

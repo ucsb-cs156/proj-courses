@@ -42,13 +42,11 @@ export default function PersonalSectionsTable({
       header: "Enroll Code",
       cell: ({ cell }) => cell.row.original.classSections[0].enrollCode,
       id: "enrollCode",
-      accessorKey: "enrollCode",
     },
     {
       header: "Section",
       cell: ({ cell }) => cell.row.original.classSections[0].section,
       id: "section",
-      accessorKey: "section",
     },
     {
       header: "Title",
@@ -74,7 +72,6 @@ export default function PersonalSectionsTable({
       cell: ({ cell }) =>
         formatDays(cell.row.original.classSections[0].timeLocations),
       id: "days",
-      accessorKey: "days",
     },
     {
       header: "Time",
