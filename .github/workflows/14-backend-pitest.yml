@@ -66,6 +66,7 @@ jobs:
 
     - name: Get PR number
       id: get-pr-num
+      if: always() # always upload artifacts, even if tests fail
       run: |
         echo "GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH}"
         pr_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
