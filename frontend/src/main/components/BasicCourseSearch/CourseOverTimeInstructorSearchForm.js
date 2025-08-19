@@ -19,9 +19,6 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
   const localStartQuarter = localStorage.getItem(
     "CourseOverTimeInstructorSearch.StartQuarter",
   );
-  // const localEndQuarter = localStorage.getItem(
-  //   "CourseOverTimeInstructorSearch.EndQuarter",
-  // );
 
   const localInstructor = localStorage.getItem(
     "CourseOverTimeInstructorSearch.Instructor",
