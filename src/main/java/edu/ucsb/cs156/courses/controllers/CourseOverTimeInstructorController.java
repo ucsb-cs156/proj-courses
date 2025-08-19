@@ -6,7 +6,6 @@ import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,13 +59,15 @@ public class CourseOverTimeInstructorController {
       throws JsonProcessingException {
     List<ConvertedSection> courseResults;
     if (lectureOnly) {
-      courseResults = new ArrayList<>(
-          convertedSectionCollection.findByQuarterRangeAndInstructor(
-              startQtr, endQtr, "^" + instructor.toUpperCase(), "^(Teaching and in charge)"));
+      courseResults =
+          new ArrayList<>(
+              convertedSectionCollection.findByQuarterRangeAndInstructor(
+                  startQtr, endQtr, "^" + instructor.toUpperCase(), "^(Teaching and in charge)"));
     } else {
-      courseResults = new ArrayList<>(
-          convertedSectionCollection.findByQuarterRangeAndInstructor(
-              startQtr, endQtr, "^" + instructor.toUpperCase(), "^.*"));
+      courseResults =
+          new ArrayList<>(
+              convertedSectionCollection.findByQuarterRangeAndInstructor(
+                  startQtr, endQtr, "^" + instructor.toUpperCase(), "^.*"));
     }
     courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());
     String body = mapper.writeValueAsString(courseResults);
