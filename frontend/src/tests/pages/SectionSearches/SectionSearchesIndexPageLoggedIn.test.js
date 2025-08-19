@@ -45,6 +45,10 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
   });
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
+    const useBackendSpy = jest.spyOn(
+      require("main/utils/useBackend"),
+      "useBackend",
+    );
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
       .onGet("/api/public/primaries")
@@ -92,5 +96,11 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     );
     expect(expectedFirstRow).toBeInTheDocument();
     expect(expectedFirstRow).toHaveTextContent("MATH 2A");
+
+    expect(useBackendSpy).toHaveBeenCalledWith(
+      ["/api/personalschedules/all"],
+      { method: "GET", url: "/api/personalschedules/all" },
+      [],
+    );
   });
 });
