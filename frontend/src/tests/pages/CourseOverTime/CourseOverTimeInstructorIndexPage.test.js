@@ -46,6 +46,10 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
   });
 
   test("calls UCSB Course over time search api correctly with 3 section response", async () => {
+    const useBackendMutationSpy = jest.spyOn(
+      require("main/utils/useBackend"),
+      "useBackendMutation",
+    );
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
       .onGet("/api/public/courseovertime/instructorsearch")
@@ -86,5 +90,16 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
       instructor: "CONRAD",
       lectureOnly: true,
     });
+    expect(axiosMock.history.get[0].url).toBe(
+      "/api/public/courseovertime/instructorsearch",
+    );
+
+    expect(useBackendMutationSpy).toHaveBeenCalledWith(
+      expect.any(Function),
+      { onSuccess: expect.any(Function) },
+      [],
+    );
+
+    expect(screen.getByText("COMP ENGR SEMINAR")).toBeInTheDocument();
   });
 });

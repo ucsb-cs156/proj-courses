@@ -34,11 +34,7 @@ export default function CourseOverTimeInstructorIndexPage() {
         <CourseOverTimeInstructorSearchForm
           fetchJSON={fetchCourseOverTimeJSON}
         />
-        <ConvertedSectionTable
-          sections={courseJSON.sort((a, b) =>
-            b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
-          )}
-        />
+        <ConvertedSectionTable sections={courseJSON} />
       </div>
     </BasicLayout>
   );
