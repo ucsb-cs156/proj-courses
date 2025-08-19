@@ -36,7 +36,7 @@ export default function SectionSearchesIndexPageNotLoggedIn() {
       <div className="pt-2">
         <h5>UCSB Courses Search</h5>
         <BasicCourseSearchForm fetchJSON={fetchBasicSectionJSON} />
-        <SectionsTable sections={sectionJSON} />
+        <SectionsTable sections={sectionJSON} schedules={[]} />
       </div>
     </BasicLayout>
   );
