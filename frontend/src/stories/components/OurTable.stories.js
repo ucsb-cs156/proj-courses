@@ -1,5 +1,5 @@
-import React from "react";
-import OurTable from "main/components/OurTable";
+import OurTable, { ButtonColumn } from "main/components/OurTable";
+import ourTableFixtures from "fixtures/ourTableFixtures";
 
 export default {
   title: "components/OurTable",
@@ -10,31 +10,50 @@ const Template = (args) => {
   return <OurTable {...args} />;
 };
 
-export const Sample = Template.bind({});
+export const SimpleExample = Template.bind({});
 
-Sample.args = {
-  columns: [
-    {
-      Header: "Column 1",
-      accessor: "col1", // accessor is the "key" in the data
-    },
-    {
-      Header: "Column 2",
-      accessor: "col2",
-    },
-  ],
-  data: [
-    {
-      col1: "Hello",
-      col2: "World",
-    },
-    {
-      col1: "react-table",
-      col2: "rocks",
-    },
-    {
-      col1: "whatever",
-      col2: "you want",
-    },
-  ],
+SimpleExample.args = {
+  data: ourTableFixtures.simpleExample.data,
+  columns: ourTableFixtures.simpleExample.columns,
+};
+
+export const SimpleLegacyExample = Template.bind({});
+
+SimpleLegacyExample.args = {
+  data: ourTableFixtures.simpleLegacyExample.data,
+  columns: ourTableFixtures.simpleLegacyExample.columns,
+};
+
+export const NewStyleTable = Template.bind({});
+
+NewStyleTable.args = {
+  columns: ourTableFixtures.newStyleColumns.columns,
+  data: ourTableFixtures.newStyleColumns.data,
+};
+
+export const ComplexArgs = Template.bind({});
+
+ComplexArgs.args = {
+  data: ourTableFixtures.complexData.data,
+  columns: ourTableFixtures.complexData.columns,
+};
+
+const columnsWithButton = [
+  ...ourTableFixtures.simpleExample.columns,
+  ButtonColumn("Click", "primary", () => {}, "myTestId"),
+];
+
+export const SampleWithButtonColumn = Template.bind({});
+
+SampleWithButtonColumn.args = {
+  columns: columnsWithButton,
+  data: ourTableFixtures.simpleExample.data,
+  testid: "myTestId",
+};
+
+export const PlaceholderExample = Template.bind({});
+
+PlaceholderExample.args = {
+  columns: ourTableFixtures.placeholderExample.columns,
+  data: ourTableFixtures.placeholderExample.data,
 };

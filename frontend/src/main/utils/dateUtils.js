@@ -82,7 +82,6 @@ export const mapDays = (daysString) => {
     U: "Sunday",
   };
   const activeDays = [];
-  // Stryker disable once all : no need to test for loop variable
   for (let i = 0; i < daysString.length; i++) {
     const char = daysString[i];
     if (dayMapping[char]) {

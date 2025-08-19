@@ -15,19 +15,30 @@ describe("AddToScheduleModal", () => {
     mockOnAdd = jest.fn();
   });
 
-  test("renders without crashing", () => {
+  test("renders button correctly", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
+        <AddToScheduleModal
+          quarter={quarter}
+          onAdd={mockOnAdd}
+          schedules={[]}
+        />
       </QueryClientProvider>,
     );
+    expect(
+      screen.getByTestId("AddToScheduleModal-add-to-schedule-button"),
+    ).toBeInTheDocument();
   });
 
   test("opens and closes the modal", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -47,7 +58,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -72,7 +87,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -96,6 +115,7 @@ describe("AddToScheduleModal", () => {
             quarter={quarter}
             onAdd={mockOnAdd}
             section={"Stryker was here!"}
+            schedules={[]}
           />
         </Router>
       </QueryClientProvider>,

@@ -1,78 +1,94 @@
-import React from "react";
-import { useSortBy, useTable } from "react-table";
-import { Button, Table } from "react-bootstrap";
-import Plaintext from "main/components/Utils/Plaintext";
-import { removeKey } from "main/utils/removeKey";
+import React, { useMemo } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  createColumnHelper, // Optional, but good practice for defining columns
+  getSortedRowModel,
+} from "@tanstack/react-table";
+import { Button } from "react-bootstrap";
+import SortCaret from "main/components/Common/SortCaret";
 
-export default function OurTable({
-  columns,
-  data,
-  testid = "testid",
-  ...rest
-}) {
-  // this kills some mutation tests where incorrect values are passed
-  if (
-    !(Array.isArray(data) && data.every((value) => typeof value === "object"))
-  ) {
-    throw new Error("Invalid data value");
+export function convertOldStyleColumnsToNewStyle(oldStyleColumns) {
+  const result = [];
+  for (const col of oldStyleColumns) {
+    const newCol = {
+      id: col.accessor || col.accessorKey, // Use accessor or accessorKey as id
+      header: col.Header || col.header, // Use Header or header for the column title
+      accessorKey: col.accessor || col.accessorKey, // Use accessor or accessorKey
+      ...col,
+    };
+    result.push({ ...newCol });
   }
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-        ...(rest.initialState && {
-          initialState: rest.initialState,
-        }),
-      },
-      useSortBy,
-    );
+  return result;
+}
+
+function OurTable({ data, columns, testid = "testid", initialState = {} }) {
+  const newColumns = convertOldStyleColumnsToNewStyle(columns);
+  const memoizedData = useMemo(() => data, [data]);
+
+  const table = useReactTable({
+    data: memoizedData,
+    columns: newColumns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    initialState: initialState,
+  });
 
   return (
-    <Table {...getTableProps()} striped bordered hover>
+    <table className="table table-striped table-bordered" data-testid={testid}>
       <thead>
-        {headerGroups.map((headerGroup, i) => (
+        {table.getHeaderGroups().map((headerGroup, i) => (
           <tr
-            // Stryker disable next-line all: can't test keys since they are internal to React
-            key={`row-${i}`}
-            {...removeKey(headerGroup.getHeaderGroupProps())}
+            data-testid={`${testid}-header-group-${i}`}
+            // Stryker disable next-line StringLiteral : React key property not exposed in dom
+            key={`${testid}-header-group-${i}`}
           >
-            {headerGroup.headers.map((column) => (
+            {headerGroup.headers.map((header) => (
               <th
-                // Stryker disable next-line all: can't test keys since they are internal to React
-                key={column.id}
-                {...removeKey(
-                  column.getHeaderProps(column.getSortByToggleProps()),
-                )}
-                data-testid={`${testid}-header-${column.id}`}
+                data-testid={`${testid}-header-${header.column.id}`}
+                key={`${testid}-header-${header.column.id}`}
+                colSpan={header.colSpan}
               >
-                {column.render("Header")}
-                <span data-testid={`${testid}-header-${column.id}-sort-carets`}>
-                  {column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}
-                </span>
+                {header.isPlaceholder ? null : (
+                  <div
+                    // Add onClick handler for sorting if the column is sortable
+                    {...(header.column.getCanSort() && {
+                      onClick: header.column.getToggleSortingHandler(),
+                      style: { cursor: "pointer" }, // Add cursor style for visual cue
+                    })}
+                    data-testid={`${testid}-header-${header.column.id}-sort-header`}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                    <SortCaret header={header} testId={testid} />
+                  </div>
+                )}
               </th>
             ))}
           </tr>
         ))}
       </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row);
+      <tbody>
+        {table.getRowModel().rows.map((row) => {
+          const rowTestId = `${testid}-row-${row.index}`;
           return (
             <tr
-              // Stryker disable next-line all: can't test keys since they are internal to React
-              key={`row-${i}`}
-              {...removeKey(row.getRowProps())}
+              data-testid={rowTestId}
+              // Stryker disable next-line StringLiteral : React key property not exposed in dom
+              key={rowTestId}
             >
-              {row.cells.map((cell, _index) => {
+              {row.getVisibleCells().map((cell) => {
+                const testId = `${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`;
                 return (
                   <td
-                    // Stryker disable next-line all: can't test keys since they are internal to React
-                    key={cell.column.id}
-                    {...removeKey(cell.getCellProps())}
-                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
+                    data-testid={testId}
+                    // Stryker disable next-line StringLiteral : React key property not exposed in dom
+                    key={testId}
                   >
-                    {cell.render("Cell")}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 );
               })}
@@ -80,40 +96,19 @@ export default function OurTable({
           );
         })}
       </tbody>
-    </Table>
+    </table>
   );
 }
 
-// The callback function for ButtonColumn should have the form
-// (cell) => { doSomethingWith(cell); }
-// The fields in cell are:
-//   ["column","row","value","getCellProps","render"]
-// Documented here: https://react-table.tanstack.com/docs/api/useTable#cell-properties
-// Typically, you want cell.row.values, which is where you can get the individual
-//   fields of the object representing the row in the table.
-// Example:
-//   const deleteCallback = (cell) =>
-//      toast(`Delete Callback called on id: ${cell.row.values.id} name: ${cell.row.values.name}`);
-
-// Add it to table like this:
-// const columns = [
-//   {
-//       Header: 'id',
-//       accessor: 'id', // accessor is the "key" in the data
-//   },
-//   {
-//       Header: 'Name',
-//       accessor: 'name',
-//   },
-//   ButtonColumn("Edit", "primary", editCallback),
-//   ButtonColumn("Delete", "danger", deleteCallback)
-// ];
+export default OurTable;
 
 export function ButtonColumn(label, variant, callback, testid) {
-  const column = {
-    Header: label,
-    id: label,
-    Cell: ({ cell }) => (
+  const columnHelper = createColumnHelper();
+
+  const buttonColumn = columnHelper.display({
+    id: label, // Unique ID for display columns
+    header: label,
+    cell: ({ cell }) => (
       <Button
         variant={variant}
         onClick={() => callback(cell)}
@@ -122,20 +117,12 @@ export function ButtonColumn(label, variant, callback, testid) {
         {label}
       </Button>
     ),
-  };
-  return column;
-}
-
-export function PlaintextColumn(label, getText) {
-  const column = {
-    Header: label,
-    id: label,
-    Cell: ({ cell }) => <Plaintext text={getText(cell)} />,
-  };
-  return column;
+  });
+  return buttonColumn;
 }
 
 export function DateColumn(label, getDate) {
+  const columnHelper = createColumnHelper();
   const options = {
     year: "numeric",
     month: "numeric",
@@ -146,16 +133,17 @@ export function DateColumn(label, getDate) {
     hour12: false,
     timeZone: "America/Los_Angeles",
   };
-  const column = {
-    Header: label,
+  const column = columnHelper.display({
+    header: label,
     id: label,
-    Cell: ({ cell }) => {
+    cell: ({ cell }) => {
       const date = new Date(getDate(cell));
       const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
         date,
       );
       return <>{formattedDate}</>;
     },
-  };
+  });
+
   return column;
 }

@@ -5,12 +5,11 @@ import _BasicCourseTable from "main/components/Courses/BasicCourseTable";
 import { useBackendMutation } from "main/utils/useBackend";
 import SectionsTable from "main/components/Sections/SectionsTable";
 
-export default function SectionSearchesIndexPage() {
-  // Stryker disable next-line all : Can't test state because hook is internal
+export default function SectionSearchesIndexPageNotLoggedIn() {
   const [sectionJSON, setSectionJSON] = useState([]);
 
   const objectToAxiosParams = (query) => ({
-    url: "/api/sections/basicsearch",
+    url: "/api/public/primaries",
     params: {
       qtr: query.quarter,
       dept: query.subject,
@@ -35,9 +34,9 @@ export default function SectionSearchesIndexPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h5>Welcome to the UCSB Courses Search App!</h5>
+        <h5>UCSB Courses Search</h5>
         <BasicCourseSearchForm fetchJSON={fetchBasicSectionJSON} />
-        <SectionsTable sections={sectionJSON} />
+        <SectionsTable sections={sectionJSON} schedules={[]} />
       </div>
     </BasicLayout>
   );

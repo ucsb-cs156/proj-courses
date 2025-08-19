@@ -10,9 +10,7 @@ export default function AdminLoadSubjectsPage() {
     error: _error,
     status: _status,
   } = useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
     ["/api/UCSBSubjects/all"],
-    // Stryker disable next-line all : stryker changing "GET" to "" does nothing; "get" is the default method
     { method: "GET", url: "/api/UCSBSubjects/all" },
     [],
   );

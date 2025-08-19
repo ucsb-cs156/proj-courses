@@ -1,86 +1,24 @@
 import SectionsTableBase from "main/components/SectionsTableBase";
-import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 import { useCurrentUser } from "main/utils/currentUser.js";
 
-import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
 import {
-  convertToFraction,
   formatDays,
   formatInstructors,
   formatLocation,
   formatTime,
-  isSection,
   formatStatus,
-  formatInfoLink,
+  enrollmentFraction,
+  getSection,
+  getSectionField,
   renderInfoLink,
+  shouldShowAddToScheduleLink,
+  getQuarter,
 } from "main/utils/sectionUtils.js";
-
-function getFirstVal(values) {
-  return values[0];
-}
-
-export function isLectureWithNoSections(enrollCode, sections) {
-  // Find the section with the given enrollCode
-  const section = sections.find(
-    (section) => section.section.enrollCode === enrollCode,
-  );
-
-  if (section) {
-    // Extract the courseId and section number from the found section
-    const courseId = section.courseInfo.courseId;
-    const sectionNumber = section.section.section;
-    const courseSections = sections.filter(
-      (section) => section.courseInfo.courseId === courseId,
-    );
-    const timeLocations = section.section.timeLocations;
-
-    // Check if the section number is '0100', indicating a lecture
-    if (sectionNumber === "0100") {
-      // Filter all sections with the same courseId
-      // Stryker disable all
-      // Stryker restore all
-      // Check if there is only one section for the course
-      return courseSections.length === 1;
-    } else if (sectionNumber.slice(-2) === "00") {
-      // Check if the section has a location to make sure its a course
-      return (
-        courseSections.length === 1 &&
-        typeof timeLocations !== "undefined" &&
-        timeLocations.length === 1
-      );
-    }
-  }
-
-  return false;
-}
-export function isLectureWithSections(enrollCode, sections) {
-  // Find the section with the given enrollCode
-  const section = sections.find(
-    (section) => section.section.enrollCode === enrollCode,
-  );
-
-  if (section) {
-    // Extract the courseId and section number from the found section
-    const courseId = section.courseInfo.courseId;
-    const sectionNumberEnd = section.section.section.slice(2);
-
-    if (sectionNumberEnd === "00") {
-      // Filter all sections with the same courseId
-      // Stryker disable all
-      const courseSections = sections.filter(
-        (section) => section.courseInfo.courseId === courseId,
-      );
-      // Stryker restore all
-      // Check if there is only one section for the course
-      return courseSections.length > 1;
-    }
-  }
-
-  return false;
-}
+import { yyyyqToQyy } from "main/utils/quarterUtilities";
+import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
 export const objectToAxiosParams = (data) => {
   return {
@@ -91,26 +29,6 @@ export const objectToAxiosParams = (data) => {
       psId: data.psId.toString(),
     },
   };
-};
-
-export const handleAddToSchedule = (section, schedule, mutation) => {
-  // Execute the mutation with the provided data
-  const dataFinal = {
-    enrollCd: section.section.enrollCode,
-    psId: schedule,
-  };
-  mutation.mutate(dataFinal);
-};
-
-export const handleLectureAddToSchedule = (section, schedule, mutation) => {
-  // Execute the mutation with the provided data
-  console.log(section);
-  const dataFinal = {
-    enrollCd: section,
-    psId: schedule,
-  };
-  console.log(dataFinal);
-  mutation.mutate(dataFinal);
 };
 
 export const onSuccess = (response) => {
@@ -126,188 +44,158 @@ export const onSuccess = (response) => {
 };
 
 export const onError = (error) => {
+  console.error("onError: error=", error);
   const message =
-    error.response?.data?.message || "An unexpected error occurred";
+    error.response.data?.message ||
+    `An unexpected error occurred adding the schedule: ${JSON.stringify(error)}`;
   toast.error(message);
 };
 
-export default function SectionsTable({ sections }) {
-  // Stryker restore all
-  // Stryker disable BooleanLiteral
-  const { data: currentUser } = useCurrentUser();
+export default function SectionsTable({ sections, schedules = [] }) {
+  if (!(schedules instanceof Array)) {
+    throw new Error("schedules prop must be an array");
+  }
 
+  if (schedules.length > 0 && !schedules[0].hasOwnProperty("id")) {
+    throw new Error(
+      "schedules prop must be an array of objects with an 'id' property",
+    );
+  }
+
+  const { data: currentUser } = useCurrentUser();
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess, onError },
-    // Stryker disable next-line all : hard to set up test for caching
-    ["/api/courses/user/all"],
+    [],
   );
+
+  const addToScheduleCallback = (section, schedule, mutation) => {
+    const dataFinal = {
+      enrollCd: section.enrollCode,
+      psId: schedule,
+    };
+    mutation.mutate(dataFinal);
+  };
+
+  const testid = "SectionsTable";
 
   const columns = [
     {
-      Header: "Quarter",
-      accessor: (row) => yyyyqToQyy(row.courseInfo.quarter),
-      disableGroupBy: true,
-      id: "quarter",
-
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      id: "expander", // Unique ID for the expander column
+      header: ({ table }) => (
+        <button
+          data-testid={`${testid}-expand-all-rows`}
+          {...{
+            onClick: table.getToggleAllRowsExpandedHandler(),
+          }}
+        >
+          {table.getIsAllRowsExpanded() ? "➖" : "➕"}
+        </button>
+      ),
+      cell: ({ row }) =>
+        row.getCanExpand() ? (
+          <button
+            data-testid={`${testid}-row-${row.index}-expand-button`}
+            {...{
+              onClick: row.getToggleExpandedHandler(),
+              style: { cursor: "pointer" },
+            }}
+          >
+            {row.getIsExpanded() ? "➖" : "➕"}
+          </button>
+        ) : (
+          <span data-testid={`${testid}-row-${row.index}-cannot-expand`} />
+        ),
+      // This is important for indenting sub-rows
+      // We'll apply this style in the render, but you can define it here too
+      // For sub-rows, you might want to adjust cell content for clarity
     },
     {
-      Header: "Course ID",
-      accessor: "courseInfo.courseId",
-
-      Cell: ({ cell: { value } }) => value.substring(0, value.length - 2),
+      header: "Quarter",
+      accessorKey: "quarter",
+      cell: ({ row }) =>
+        row.original.quarter ? yyyyqToQyy(row.original.quarter) : "",
     },
     {
-      Header: "Title",
-      accessor: "courseInfo.title",
-      disableGroupBy: true,
-
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      accessorKey: "courseId",
+      header: "Course ID",
+      // cell: ({ row, getValue }) => (
+      //   <div style={{ paddingLeft: `${row.depth * 2}rem` }}>{getValue()}</div>
+      // ),
     },
     {
-      // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
-      Header: "Is Section?",
-      accessor: (row) => isSection(row.section.section),
-      // Stryker disable next-line StringLiteral: this column is hidden, very hard to test
-      id: "isSection",
+      accessorKey: "title",
+      header: "Title",
     },
     {
-      Header: "Status",
-      accessor: (row) => formatStatus(row.section),
-      disableGroupBy: true,
-      id: "status",
-
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      header: "Status",
+      accessorKey: "status",
+      cell: ({ row }) => formatStatus(getSection(row)),
     },
     {
-      Header: "Enrolled",
-      accessor: (row) =>
-        convertToFraction(row.section.enrolledTotal, row.section.maxEnroll),
-      disableGroupBy: true,
-      id: "enrolled",
-
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      header: "Enrolled",
+      accessorKey: "enrolled",
+      cell: ({ row }) => enrollmentFraction(row),
     },
     {
-      Header: "Location",
-      accessor: (row) => formatLocation(row.section.timeLocations),
-      disableGroupBy: true,
       id: "location",
-
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      header: "Location",
+      cell: ({ row }) => formatLocation(getSection(row).timeLocations),
     },
     {
-      Header: "Days",
-      accessor: (row) => formatDays(row.section.timeLocations),
-      disableGroupBy: true,
       id: "days",
-
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      header: "Days",
+      cell: ({ row }) => formatDays(getSection(row).timeLocations),
     },
     {
-      Header: "Time",
-      accessor: (row) => formatTime(row.section.timeLocations),
-      disableGroupBy: true,
       id: "time",
-
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      header: "Time",
+      cell: ({ row }) => formatTime(getSection(row).timeLocations),
     },
     {
-      Header: "Instructor",
-      accessor: (row) => formatInstructors(row.section.instructors),
-      disableGroupBy: true,
       id: "instructor",
-
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      header: "Instructor",
+      cell: ({ row }) => formatInstructors(getSection(row).instructors),
     },
     {
-      Header: "Enroll Code",
-      accessor: "section.enrollCode",
-      disableGroupBy: true,
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value } }) => `${value}`,
+      accessorKey: "enrollCode",
+      header: "Enroll Code",
+      cell: ({ row }) => getSectionField(row, "enrollCode"),
     },
     {
-      Header: "Info",
-      accessor: formatInfoLink,
-      Cell: renderInfoLink,
-      disableGroupBy: true,
+      header: "Info",
       id: "info",
-
-      aggregate: getFirstVal,
-      Aggregated: renderInfoLink,
+      cell: ({ row }) => renderInfoLink(row, testid),
     },
     {
-      Header: "Action",
+      header: "Action",
       id: "action",
-      accessor: "section.enrollCode",
-      disableGroupBy: true,
-      // No need for accessor if it's purely for actions like expand/collapse
-      Cell: ({ row }) => {
-        if (isSection(row.original.section.section) && currentUser.loggedIn) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <AddToScheduleModal
-                section={row.original}
-                quarter={row.original.courseInfo.quarter}
-                onAdd={(section, schedule) =>
-                  handleAddToSchedule(section, schedule, mutation)
-                }
-              />
-            </div>
-          );
-        } else {
-          return <div data-testid="empty-action-cell"></div>;
+      cell: ({ row }) => {
+        if (!currentUser.loggedIn) {
+          return <span data-testid={`${testid}-row-${row.id}-not-logged-in`} />;
+        } else if (!shouldShowAddToScheduleLink(row)) {
+          return <span data-testid={`${testid}-row-${row.id}-no-action`} />;
         }
-      },
-      aggregate: getFirstVal,
-      Aggregated: ({ cell: { value }, row }) => {
-        const testId = `${testid}-cell-row-${row.index}-col-${value}-expand-symbols`;
-        if (isLectureWithNoSections(value, sections) && currentUser.loggedIn) {
-          return (
-            <div className="d-flex align-items-center gap-2">
-              <AddToScheduleModal
-                section={value}
-                quarter={sections[0].courseInfo.quarter}
-                onAdd={(section, schedule) =>
-                  handleLectureAddToSchedule(section, schedule, mutation)
-                }
-              />
-            </div>
-          );
-        } else if (!isLectureWithSections(value, sections)) {
-          return <div data-testid="empty-action-cell"></div>;
-        } else {
-          return (
-            <span {...row.getToggleRowExpandedProps()} data-testid={testId}>
-              {row.isExpanded ? "➖" : "➕"}
-            </span>
-          );
-        }
+        return (
+          <div className="d-flex align-items-center gap-2">
+            <AddToScheduleModal
+              section={getSection(row)}
+              quarter={getQuarter(row)}
+              onAdd={(section, schedule) =>
+                addToScheduleCallback(section, schedule, mutation)
+              }
+              schedules={schedules}
+              testid={`${testid}-cell-row-${row.id}-col-action`}
+            />
+          </div>
+        );
       },
     },
   ];
 
-  // Stryker enable all
-
-  const testid = "SectionsTable";
-
-  const columnsToDisplay = columns;
-
   return (
-    <SectionsTableBase
-      data={sections}
-      columns={columnsToDisplay}
-      testid={testid}
-    />
+    <>
+      <SectionsTableBase columns={columns} data={sections} testid={testid} />
+    </>
   );
 }

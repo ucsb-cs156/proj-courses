@@ -5,11 +5,18 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import userEvent from "@testing-library/user-event";
 
-import SectionSearchesIndexPage from "main/pages/SectionSearches/SectionSearchesIndexPage";
-import { oneSection } from "fixtures/sectionFixtures";
-import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
+import SectionSearchesIndexPageNotLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageNotLoggedIn";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import primaryFixtures from "fixtures/primaryFixtures";
+
+jest.mock("main/utils/currentUser", () => ({
+  useCurrentUser: () => ({
+    data: { loggedIn: false, root: { user: { email: "test@example.com" } } },
+  }),
+  useLogout: () => ({ mutate: jest.fn() }),
+  hasRole: (_user, _role) => false, // or customize per role
+}));
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {
@@ -21,13 +28,11 @@ jest.mock("react-toastify", () => {
   };
 });
 
-describe("Section Searches Index Page tests", () => {
-  const axiosMock = new AxiosMockAdapter(axios);
+const axiosMock = new AxiosMockAdapter(axios);
+describe("SectionSearchesIndexPageNotLoggedIn tests", () => {
   beforeEach(() => {
+    axiosMock.reset();
     axiosMock.resetHistory();
-    axiosMock
-      .onGet("/api/currentUser")
-      .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
@@ -38,7 +43,7 @@ describe("Section Searches Index Page tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <SectionSearchesIndexPage />
+          <SectionSearchesIndexPageNotLoggedIn />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -46,12 +51,14 @@ describe("Section Searches Index Page tests", () => {
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock.onGet("/api/sections/basicsearch").reply(200, oneSection);
+    axiosMock
+      .onGet("/api/public/primaries")
+      .reply(200, primaryFixtures.f24_math_lowerDiv);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <SectionSearchesIndexPage />
+          <SectionSearchesIndexPageNotLoggedIn />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -85,6 +92,10 @@ describe("Section Searches Index Page tests", () => {
       level: "G",
     });
 
-    expect(screen.getByText("ECE 1A")).toBeInTheDocument();
+    const expectedFirstRow = screen.getByTestId(
+      "SectionsTable-cell-row-0-col-courseId",
+    );
+    expect(expectedFirstRow).toBeInTheDocument();
+    expect(expectedFirstRow).toHaveTextContent("MATH 2A");
   });
 });

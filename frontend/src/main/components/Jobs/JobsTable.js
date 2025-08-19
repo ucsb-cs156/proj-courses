@@ -8,19 +8,19 @@ export default function JobsTable({ jobs }) {
 
   const columns = [
     {
-      Header: "id",
-      accessor: "id", // accessor is the "key" in the data
+      header: "id",
+      accessorKey: "id", // accessor is the "key" in the data
     },
     DateColumn("Created", (cell) => cell.row.original.createdAt),
     DateColumn("Updated", (cell) => cell.row.original.updatedAt),
     {
-      Header: "Status",
-      accessor: "status",
+      header: "Status",
+      accessorKey: "status",
     },
     {
-      Header: "Log",
-      accessor: "log",
-      Cell: ({ cell }) => {
+      header: "Log",
+      accessorKey: "log",
+      cell: ({ cell }) => {
         const log = cell.row.original.log;
         if (!log) {
           return (
@@ -51,23 +51,21 @@ export default function JobsTable({ jobs }) {
     },
   ];
 
-  const sortees = React.useMemo(
-    () => [
+  const sortByIdDescending = {
+    sorting: [
       {
         id: "id",
-        desc: true,
+        desc: true, // sort by name in descending order by default
       },
     ],
-    // Stryker disable next-line all
-    [],
-  );
+  };
 
   return (
     <OurTable
       data={jobs}
       columns={columns}
       testid={testid}
-      initialState={{ sortBy: sortees }}
+      initialState={sortByIdDescending}
     />
   );
 }

@@ -12,10 +12,10 @@ export default function UpdatesTable({
       accessor: "subjectArea",
     },
     {
-      Header: "Quarter", // formatted in QXX
-      accessor: "quarter",
-      Cell: ({ value }) => {
-        return yyyyqToQyy(value);
+      header: "Quarter", // formatted in QXX
+      accessorKey: "quarter",
+      cell: ({ cell }) => {
+        return yyyyqToQyy(cell.row.original.quarter);
       },
     },
     {
