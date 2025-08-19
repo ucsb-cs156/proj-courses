@@ -9,6 +9,7 @@ import {
   renderInfoLink,
   formatStatus,
   isLectureWithNoSections,
+  shouldShowAddToScheduleLink,
 } from "main/utils/sectionUtils";
 import primaryFixtures from "fixtures/primaryFixtures";
 
@@ -158,6 +159,7 @@ describe("section utils tests", () => {
       const view = renderInfoLink(row, "testid");
       expect(view.props.children.props.style.color).toBe("black");
       expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");
+      expect(view.props.children.props["target"]).toBe("_blank");
     });
   });
 
@@ -182,7 +184,7 @@ describe("section utils tests", () => {
       expect(formatStatus(section)).toBe("Open");
     });
   });
-  describe("isLectureWithNoSections tests", () => {
+  describe("tests that depend on what kind of row it is", () => {
     const rowForLectureWithSubRows = {
       original: { ...primaryFixtures.f24_math_lowerDiv[0] },
     };
@@ -194,13 +196,19 @@ describe("section utils tests", () => {
     };
 
     test("isLectureWithNoSections true test", () => {
-      console.log(rowForLectureWithNoSubrows);
       expect(isLectureWithNoSections(rowForLectureWithNoSubrows)).toBe(true);
-    });
-
-    test("isLectureWithNoSections false test", () => {
       expect(isLectureWithNoSections(rowForLectureWithSubRows)).toBe(false);
       expect(isLectureWithNoSections(subrowForDiscussionSection)).toBe(false);
+    });
+
+    test("shouldShowAddToScheduleLink returns correct values", () => {
+      expect(shouldShowAddToScheduleLink(rowForLectureWithSubRows)).toBe(false);
+      expect(shouldShowAddToScheduleLink(rowForLectureWithNoSubrows)).toBe(
+        true,
+      );
+      expect(shouldShowAddToScheduleLink(subrowForDiscussionSection)).toBe(
+        true,
+      );
     });
   });
 });
