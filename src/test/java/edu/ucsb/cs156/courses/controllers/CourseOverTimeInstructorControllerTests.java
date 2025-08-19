@@ -118,7 +118,9 @@ public class CourseOverTimeInstructorControllerTests {
 
     ConvertedSection cs1 = ConvertedSection.builder().courseInfo(info).section(section1).build();
 
-    ConvertedSection cs2 = ConvertedSection.builder().courseInfo(info).section(section2).build();
+    ConvertedSection cs2 = (ConvertedSection) cs1.clone();
+    cs2.setSection(section2);
+    cs2.getCourseInfo().setQuarter("20244");
 
     String urlTemplate =
         "/api/public/courseovertime/instructorsearch?startQtr=%s&endQtr=%s&instructor=%s&lectureOnly=%s";
@@ -128,19 +130,27 @@ public class CourseOverTimeInstructorControllerTests {
     List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
     expectedSecs.addAll(Arrays.asList(cs1, cs2));
 
+    List<ConvertedSection> expectedSecsOutOfOrder = new ArrayList<ConvertedSection>();
+    expectedSecsOutOfOrder.addAll(
+        Arrays.asList(cs1, cs2)); // Order that should be returned is descending by quarter
+
+    List<ConvertedSection> expectedSecsInOrder = new ArrayList<ConvertedSection>();
+    expectedSecsInOrder.addAll(
+        Arrays.asList(cs2, cs1)); // This is the order that should be returned when sorted
+
     // mock
     when(convertedSectionCollection.findByQuarterRangeAndInstructor(
             any(String.class),
             any(String.class),
             eq("^CONRAD P T"),
             eq("^(Teaching and in charge)")))
-        .thenReturn(expectedSecs);
+        .thenReturn(expectedSecsOutOfOrder); // as they would be returned from the database
 
     // act
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
     // assert
-    String expectedString = mapper.writeValueAsString(expectedSecs);
+    String expectedString = mapper.writeValueAsString(expectedSecsInOrder);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedString, responseString);
   }
