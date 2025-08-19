@@ -5,7 +5,6 @@ import { http, HttpResponse } from "msw";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import primaryFixtures from "fixtures/primaryFixtures";
 
-
 export default {
   title: "components/Sections/SectionsTable",
   component: SectionsTable,
@@ -50,9 +49,3 @@ f24_math_lowerDiv.parameters = {
     }),
   ],
 };
-
-
-
-
-
-
