@@ -119,7 +119,7 @@ const ourTableFixtures = {
               onClick={() => alert(`Editing ${props.row.original.firstName}`)}
             >
               Edit
-            </button>{" "}
+            </button>&nbsp;
             <button
               onClick={() => alert(`Deleting ${props.row.original.firstName}`)}
             >
