@@ -5,14 +5,6 @@ import { http, HttpResponse } from "msw";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import primaryFixtures from "fixtures/primaryFixtures";
 
-// import {
-//   oneSection,
-//   threeSections,
-//   fiveSections,
-//   gigaSections,
-// } from "fixtures/sectionFixtures";
-
-// import primaryFixtures from "fixtures/primaryFixtures";
 
 export default {
   title: "components/Sections/SectionsTable",
@@ -61,24 +53,7 @@ f24_math_lowerDiv.parameters = {
 
 // export const OneSection = Template.bind({});
 
-// OneSection.args = {
-//   sections: oneSection,
-// };
 
-// export const ThreeSections = Template.bind({});
 
-// ThreeSections.args = {
-//   sections: threeSections,
-// };
 
-// export const FiveSections = Template.bind({});
 
-// FiveSections.args = {
-//   sections: fiveSections,
-// };
-
-// export const GigaSections = Template.bind({});
-
-// GigaSections.args = {
-//   sections: gigaSections,
-// };
