@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UCSBCurriculumController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">UCSBCurriculumController.java</span></div><h1>UCSBCurriculumController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import edu.ucsb.cs156.courses.documents.Primary;
+import edu.ucsb.cs156.courses.repositories.UserRepository;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = &quot;UCSBCurriculumController&quot;)
+@RestController
+@RequestMapping(&quot;/api/public&quot;)
+<span class="fc" id="L21">@Slf4j</span>
+<span class="fc" id="L22">public class UCSBCurriculumController extends ApiController {</span>
+
+  @Autowired UserRepository userRepository;
+  @Autowired UCSBCurriculumService ucsbCurriculumService;
+
+  @Operation(
+      summary =
+          &quot;Get course data (in original UCSB API format) for a given quarter, department, and level&quot;)
+  @GetMapping(value = &quot;/basicsearch&quot;, produces = &quot;application/json&quot;)
+  public ResponseEntity&lt;String&gt; basicsearch(
+      @RequestParam String qtr, @RequestParam String dept, @RequestParam String level)
+      throws Exception {
+
+<span class="fc" id="L35">    String body = ucsbCurriculumService.getJSON(dept, qtr, level);</span>
+
+<span class="fc" id="L37">    return ResponseEntity.ok().body(body);</span>
+  }
+
+  /**
+   * Get primaries for a given quarter, department, and level. This endpoint returns a list of
+   * Primary objects.
+   *
+   * @param qtr the quarter in YYYYQ format
+   * @param dept the department code (e.g., &quot;CS&quot;)
+   * @param level the course level (e.g., &quot;UG&quot; for undergraduate)
+   * @return a list of Primary objects
+   */
+  @Operation(summary = &quot;Get primaries for a given quarter, department, and level&quot;)
+  @GetMapping(value = &quot;/primaries&quot;, produces = &quot;application/json&quot;)
+  public List&lt;Primary&gt; primaries(
+      @RequestParam String qtr, @RequestParam String dept, @RequestParam String level)
+      throws Exception {
+
+<span class="fc" id="L55">    List&lt;Primary&gt; primaries = ucsbCurriculumService.getPrimaries(dept, qtr, level);</span>
+
+<span class="fc" id="L57">    return primaries;</span>
+  }
+
+  // Backend for final exam info, similar to the above operation:
+  @Operation(summary = &quot;Get final exam information for a given quarter and course enrollment code&quot;)
+  @GetMapping(value = &quot;/finalsInfo&quot;, produces = &quot;application/json&quot;)
+  public ResponseEntity&lt;String&gt; finalsInfo(
+      @RequestParam String quarterYYYYQ, @RequestParam String enrollCd)
+      throws Exception { // Looks for quarter and code
+
+<span class="fc" id="L67">    String body = ucsbCurriculumService.getFinalsInfo(quarterYYYYQ, enrollCd);</span>
+
+<span class="fc" id="L69">    return ResponseEntity.ok().body(body);</span>
+  }
+
+  @Operation(summary = &quot;Get General Education areas, optionally filtered by collegeCode&quot;)
+  @GetMapping(value = &quot;/generalEducationInfo&quot;, produces = &quot;application/json&quot;)
+  public ResponseEntity&lt;?&gt; generalEducationInfo(
+      @Parameter(description = &quot;Enter either L&amp;S, ENGR, or CRST&quot;)
+          @RequestParam(value = &quot;collegeCode&quot;, required = false)
+          String collegeCode)
+      throws Exception {
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">    if (collegeCode != null) {</span>
+      // returns List&lt;String&gt; of requirementCode
+<span class="fc" id="L82">      List&lt;String&gt; codes = ucsbCurriculumService.getRequirementCodesByCollege(collegeCode);</span>
+<span class="fc" id="L83">      return ResponseEntity.ok().body(codes);</span>
+    } else {
+      // returns the full raw JSON array
+<span class="fc" id="L86">      String body = ucsbCurriculumService.getGeneralEducationInfo();</span>
+<span class="fc" id="L87">      return ResponseEntity.ok().body(body);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
