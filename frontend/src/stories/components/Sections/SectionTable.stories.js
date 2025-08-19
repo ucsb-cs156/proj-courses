@@ -51,7 +51,6 @@ f24_math_lowerDiv.parameters = {
   ],
 };
 
-// export const OneSection = Template.bind({});
 
 
 
