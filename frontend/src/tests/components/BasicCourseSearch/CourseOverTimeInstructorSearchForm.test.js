@@ -46,12 +46,6 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         isLoading: false,
         isError: false,
       });
-      // axiosMock.onGet("/api/systemInfo").reply(200, {
-      //   ...systemInfoFixtures.showingNeither,
-      //   startQtrYYYYQ: "20201",
-      //   endQtrYYYYQ: "20214",
-      // });
-
       toast.mockReturnValue({
         addToast: addToast,
       });
@@ -219,6 +213,8 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       axiosMock.reset();
       axiosMock.onGet("/api/systemInfo").reply(500);
 
+      jest.spyOn(Storage.prototype, "getItem").mockImplementation(() => null);
+
       useSystemInfo.mockReturnValue({
         data: {},
         isLoading: false,
@@ -248,6 +244,9 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       expect(startQtrOptions[3].textContent).toBe("F21");
       expect(startQtrOptions.length).toBe(4);
 
+      const startQuarter = screen.getByLabelText("Start Quarter");
+      expect(startQuarter.value).toBe("20211");
+
       // Get all of the drop down options
       const endQtrOptions = Array.from(
         screen.getByLabelText("End Quarter").querySelectorAll("option"),
@@ -257,6 +256,9 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       expect(endQtrOptions[2].textContent).toBe("M21");
       expect(endQtrOptions[3].textContent).toBe("F21");
       expect(endQtrOptions.length).toBe(4);
+
+      const endQuarter = screen.getByLabelText("End Quarter");
+      expect(endQuarter.value).toBe("20214");
     });
   });
   describe("CourseOverTimeInstructorSearchForm interactions with local storage", () => {

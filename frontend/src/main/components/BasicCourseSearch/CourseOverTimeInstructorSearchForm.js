@@ -20,6 +20,9 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
     "CourseOverTimeInstructorSearch.StartQuarter",
   );
 
+  const localEndQuarter = localStorage.getItem(
+    "CourseOverTimeInstructorSearch.EndQuarter",
+  );
   const localInstructor = localStorage.getItem(
     "CourseOverTimeInstructorSearch.Instructor",
   );
@@ -29,10 +32,12 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
   const [startQuarter, setStartQuarter] = useState(
     localStartQuarter || firstQtr,
   );
-  const [endQuarter, setEndQuarter] = useState(); // default is handled by SingleQuarterDropdown
+
+  // Stryker disable next-line all : TODO: write a good test for this or refactor
+  const [endQuarter, setEndQuarter] = useState(localEndQuarter || lastQtr);
+
   const [instructor, setInstructor] = useState(localInstructor || "");
   const [checkbox, setCheckbox] = useState(localStorageCheckbox || false);
-  // Stryker restore all
 
   const handleSubmit = (event) => {
     event.preventDefault();
