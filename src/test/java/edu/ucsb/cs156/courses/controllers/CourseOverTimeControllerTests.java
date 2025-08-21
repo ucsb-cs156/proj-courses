@@ -118,26 +118,31 @@ public class CourseOverTimeControllerTests {
 
     ConvertedSection cs1 = ConvertedSection.builder().courseInfo(info).section(section1).build();
 
-    ConvertedSection cs2 = ConvertedSection.builder().courseInfo(info).section(section2).build();
+    ConvertedSection cs2 = (ConvertedSection) cs1.clone();
+    cs2.setSection(section2);
+    cs2.getCourseInfo().setQuarter("20244");
 
     String urlTemplate =
         "/api/public/courseovertime/search?startQtr=%s&endQtr=%s&subjectArea=%s&courseNumber=%s";
 
     String url = String.format(urlTemplate, "20222", "20222", "CMPSC", "130A");
 
-    List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
-    expectedSecs.addAll(Arrays.asList(cs1, cs2));
+    List<ConvertedSection> expectedSecsOutOfOrder = new ArrayList<ConvertedSection>();
+    expectedSecsOutOfOrder.addAll(Arrays.asList(cs1, cs2));
+
+    List<ConvertedSection> expectedSecsInOrder = new ArrayList<ConvertedSection>();
+    expectedSecsInOrder.addAll(Arrays.asList(cs2, cs1));
 
     // mock
     when(convertedSectionCollection.findByQuarterRangeAndCourseId(
             any(String.class), any(String.class), eq("CMPSC   130A ")))
-        .thenReturn(expectedSecs);
+        .thenReturn(expectedSecsOutOfOrder);
 
     // act
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
     // assert
-    String expectedString = mapper.writeValueAsString(expectedSecs);
+    String expectedString = mapper.writeValueAsString(expectedSecsInOrder);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedString, responseString);
   }

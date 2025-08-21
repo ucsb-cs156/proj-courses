@@ -75,6 +75,10 @@ describe("AdminLoadSubjectsPage tests", () => {
   });
 
   test("what happens when you click load, admin - originally nothing in table, load 3 subjects", async () => {
+    const useBackendSpy = jest.spyOn(
+      require("main/utils/useBackend"),
+      "useBackend",
+    );
     setupAdminUser();
     const queryClient = new QueryClient();
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, []);
@@ -100,6 +104,13 @@ describe("AdminLoadSubjectsPage tests", () => {
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(mockToast).toHaveBeenCalledWith("Number of Subjects Loaded : 3");
+
+    expect(useBackendSpy).toHaveBeenCalledWith(
+      ["/api/UCSBSubjects/all"],
+      { method: "GET", url: "/api/UCSBSubjects/all" },
+      [],
+    );
+    useBackendSpy.mockRestore();
   });
 
   test("what happens when you click load, admin - originally 3 subjects, load nothing", async () => {

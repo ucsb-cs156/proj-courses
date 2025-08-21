@@ -1,24 +1,28 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
-import { quarterRange } from "main/utils/quarterUtilities";
+import { quarterRange, yyyyqToQyy } from "main/utils/quarterUtilities";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleSubjectDropdown from "../Subjects/SingleSubjectDropdown";
 import { useBackend } from "main/utils/useBackend";
 
+import {
+  getCourseNumber,
+  getSuffix,
+  courseNumRegex,
+} from "main/utils/courseNumberUtilities";
+
 const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
 
-  // Stryker disable OptionalChaining
   const startQtr = systemInfo?.startQtrYYYYQ || "20211";
   const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker enable OptionalChaining
 
   const quarters = quarterRange(startQtr, endQtr);
 
-  // Stryker disable all : not sure how to test/mock local storage
   const localStartQuarter = localStorage.getItem(
     "CourseOverTimeSearch.StartQuarter",
   );
@@ -26,18 +30,18 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
     "CourseOverTimeSearch.EndQuarter",
   );
   const localSubject = localStorage.getItem("CourseOverTimeSearch.Subject");
-  const localCourseNumber = localStorage.getItem(
-    "CourseOverTimeSearch.CourseNumber",
-  );
 
   const {
     data: subjects,
     error: _error,
     status: _status,
   } = useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
     ["/api/UCSBSubjects/all"],
-    { method: "GET", url: "/api/UCSBSubjects/all" },
+    {
+      // Stryker disable next-line StringLiteral : GET is the default, so replacing with empty string is an equivalent mutation
+      method: "GET",
+      url: "/api/UCSBSubjects/all",
+    },
     [],
   );
 
@@ -52,11 +56,10 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
   const [subject, setSubject] = useState(
     localSubject || subjects[0]?.subjectCode || defaultSubjectArea,
   );
-  const [courseNumber, setCourseNumber] = useState(localCourseNumber || "");
+  const [courseNumber, setCourseNumber] = useState("");
   const [courseSuf, setCourseSuf] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const submitAction = (event) => {
     fetchJSON(event, {
       startQuarter,
       endQuarter,
@@ -68,48 +71,21 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
 
   const handleCourseNumberOnChange = (event) => {
     const rawCourse = event.target.value;
-    const inputtedSubject = rawCourse.match(/^[a-zA-Z]+/);
-
-    if (inputtedSubject) {
-      const upperSubject = inputtedSubject[0].toUpperCase().replace(/s/g, "");
-      if (subject.toUpperCase() === upperSubject) {
-        setCourseSuf(
-          rawCourse.match(/[a-zA-Z]+$/)
-            ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
-            : "",
-        );
-        setCourseNumber(
-          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
-        );
-      } else if (
-        subject.toUpperCase() === "CMPSC" &&
-        (upperSubject === "CS" || upperSubject === "COMS")
-      ) {
-        setCourseSuf(
-          rawCourse.match(/[a-zA-Z]+$/)
-            ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
-            : "",
-        );
-        setCourseNumber(
-          rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "",
-        );
-      } else {
-        setCourseNumber("");
-        setCourseSuf("");
-        return;
-      }
-    }
-    setCourseSuf(
-      rawCourse.match(/[a-zA-Z]+$/)
-        ? rawCourse.match(/[a-zA-Z]+$/)[0].toUpperCase()
-        : "",
-    );
-    setCourseNumber(rawCourse.match(/\d+/) ? rawCourse.match(/\d+/)[0] : "");
+    setCourseSuf(getSuffix(rawCourse));
+    setCourseNumber(getCourseNumber(rawCourse));
   };
 
-  // Stryker disable all : Stryker is testing by changing the padding to 0. But this is simply a visual optimization as it makes it look better
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
+
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form
+      onSubmit={handleSubmit(submitAction)}
+      data-testid="CourseOverTimeSearchForm"
+    >
       <Container>
         <Row>
           <Col md="auto">
@@ -139,19 +115,41 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
               label={"Subject Area"}
             />
           </Col>
+          <Col>
+            <Form.Group controlId="CourseOverTimeSearchCourseNumber">
+              <Form.Label>Course Number</Form.Label>
+              <Form.Control
+                isInvalid={Boolean(errors.CourseOverTimeSearchCourseNumber)}
+                {...register("CourseOverTimeSearchCourseNumber", {
+                  pattern: courseNumRegex,
+                  onChange: (e) => handleCourseNumberOnChange(e), // Here's the fix!
+                })}
+              />
+              <Form.Text muted>
+                For example: '16' or '130A'; omit the subject area prefix.
+              </Form.Text>
+              <Form.Control.Feedback type="invalid">
+                {errors.CourseOverTimeSearchCourseNumber &&
+                  "Course Number is required. "}
+                {errors.CourseOverTimeSearchCourseNumber?.type === "pattern" &&
+                  "Course number should be a 1 to 3 digit number, optionally followed by up to two letters."}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
         </Row>
-        <Form.Group controlId="CourseOverTimeSearch.CourseNumber">
-          <Form.Label>Course Number (Try searching '16' or '130A')</Form.Label>
-          <Form.Control
-            onChange={handleCourseNumberOnChange}
-            defaultValue={courseNumber}
-          />
-        </Form.Group>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row className="my-2" data-testid="CourseOverTimeSearchForm.ButtonRow">
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit
             </Button>
+          </Col>
+          <Col md="auto">
+            <p data-testid="CourseOverTimeSearchForm.FullSearchString">
+              Searching for:&nbsp;
+              <code data-testid="CourseOverTimeSearchForm.SearchString">{`${subject} ${courseNumber}${courseSuf}`}</code>
+              for quarters {`${yyyyqToQyy(startQuarter)}`} through&nbsp;
+              {`${yyyyqToQyy(endQuarter)}`}
+            </p>
           </Col>
         </Row>
       </Container>

@@ -7,7 +7,7 @@ import jobsFixtures from "fixtures/jobsFixtures";
 describe("JobsTable tests", () => {
   const queryClient = new QueryClient();
 
-  test("renders without crashing for empty table", () => {
+  test("renders correctly for empty table", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -40,25 +40,15 @@ describe("JobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      "1",
-    );
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Created`),
-    ).toHaveTextContent("1");
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Updated`),
-    ).toHaveTextContent("11/13/2022, 19:49:59");
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-status`),
-    ).toHaveTextContent("complete");
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Log`),
-    ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
-
-    expect(
-      screen.getByTestId(`JobsTable-header-id-sort-carets`),
-    ).toHaveTextContent("🔽");
+    // Check that rows are sorted by id in descending order
+    const rows = screen.getAllByRole("row");
+    expect(rows).toHaveLength(7); // 6 jobs + 1 header row
+    expect(rows[1]).toHaveTextContent("6");
+    expect(rows[2]).toHaveTextContent("5");
+    expect(rows[3]).toHaveTextContent("4");
+    expect(rows[4]).toHaveTextContent("3");
+    expect(rows[5]).toHaveTextContent("2");
+    expect(rows[6]).toHaveTextContent("1");
   });
 
   test("renders short logs correctly", () => {

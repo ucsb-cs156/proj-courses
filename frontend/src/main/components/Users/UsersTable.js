@@ -3,25 +3,25 @@ import OurTable from "main/components/OurTable";
 
 const columns = [
   {
-    Header: "id",
-    accessor: "id", // accessor is the "key" in the data
+    header: "id",
+    accessorKey: "id", // accessor is the "key" in the data
   },
   {
-    Header: "First Name",
-    accessor: "givenName",
+    header: "First Name",
+    accessorKey: "givenName",
   },
   {
-    Header: "Last Name",
-    accessor: "familyName",
+    header: "Last Name",
+    accessorKey: "familyName",
   },
   {
-    Header: "Email",
-    accessor: "email",
+    header: "Email",
+    accessorKey: "email",
   },
   {
-    Header: "Admin",
+    header: "Admin",
     id: "admin",
-    accessor: (row, _rowIndex) => String(row.admin), // hack needed for boolean values to show up
+    cell: ({ cell }) => String(cell.row.original.admin), // hack needed for boolean values to show up
   },
 ];
 

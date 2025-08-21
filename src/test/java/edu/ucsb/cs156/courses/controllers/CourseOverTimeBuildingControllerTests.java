@@ -252,10 +252,20 @@ public class CourseOverTimeBuildingControllerTests {
             .description("Desc")
             .build();
 
-    ConvertedSection cs = ConvertedSection.builder().courseInfo(info).build();
+    TimeLocation loc1 = TimeLocation.builder().building("SH").room(null).build();
+
+    // room is empty
+    TimeLocation loc2 = TimeLocation.builder().building("SH").room("").build();
+
+    Section section = Section.builder().timeLocations(List.of(loc1, loc2)).build();
+
+    ConvertedSection cs = ConvertedSection.builder().courseInfo(info).section(section).build();
+
+    ConvertedSection cs1 = (ConvertedSection) cs.clone();
+    cs1.getCourseInfo().setQuarter("20264"); // Change quarter for sorting
 
     when(convertedSectionCollection.findByQuarterRangeAndBuildingCode("20232", "20254", "GIRV"))
-        .thenReturn(List.of(cs));
+        .thenReturn(List.of(cs, cs1));
 
     MvcResult response =
         mockMvc
@@ -267,7 +277,8 @@ public class CourseOverTimeBuildingControllerTests {
             .andExpect(status().isOk())
             .andReturn();
 
-    String expected = mapper.writeValueAsString(List.of(cs));
+    String expected =
+        mapper.writeValueAsString(List.of(cs1, cs)); // should sort by quarter descending
     String actual = response.getResponse().getContentAsString();
 
     assertEquals(expected, actual);

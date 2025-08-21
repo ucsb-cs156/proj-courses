@@ -2,10 +2,9 @@ import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CourseOverTimeInstructorSearchForm from "main/components/BasicCourseSearch/CourseOverTimeInstructorSearchForm";
 import { useBackendMutation } from "main/utils/useBackend";
-import SectionsInstructorTable from "main/components/Sections/SectionsInstructorTable";
+import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable";
 
 export default function CourseOverTimeInstructorIndexPage() {
-  // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
 
   const objectToAxiosParams = (query) => ({
@@ -22,12 +21,7 @@ export default function CourseOverTimeInstructorIndexPage() {
     setCourseJSON(courses);
   };
 
-  const mutation = useBackendMutation(
-    objectToAxiosParams,
-    { onSuccess },
-    // Stryker disable next-line all : hard to set up test for caching
-    [],
-  );
+  const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, []);
 
   async function fetchCourseOverTimeJSON(_event, query) {
     mutation.mutate(query);
@@ -36,15 +30,11 @@ export default function CourseOverTimeInstructorIndexPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h5>Welcome to the UCSB Course Instructor Search!</h5>
+        <h5>UCSB Course Instructor Search</h5>
         <CourseOverTimeInstructorSearchForm
           fetchJSON={fetchCourseOverTimeJSON}
         />
-        <SectionsInstructorTable
-          sections={courseJSON.sort((a, b) =>
-            b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
-          )}
-        />
+        <ConvertedSectionTable sections={courseJSON} />
       </div>
     </BasicLayout>
   );

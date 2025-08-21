@@ -7,10 +7,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import {
-  coursesInLib,
-  coursesInLibDifferentDate,
-} from "fixtures/buildingFixtures";
+import { coursesInLib } from "fixtures/buildingFixtures";
 import userEvent from "@testing-library/user-event";
 
 const mockToast = jest.fn();
@@ -90,64 +87,5 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     expect(
       screen.getByText((text) => text.includes("184")),
     ).toBeInTheDocument();
-  });
-
-  test("calls UCSB Course over time search api correctly with correctly sorted data", async () => {
-    axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch")
-      .reply(200, coursesInLibDifferentDate);
-
-    const spy = jest.spyOn(
-      require("main/components/Sections/SectionsTable"),
-      "default",
-    );
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeBuildingsIndexPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
-    const selectBuilding = screen.getByLabelText("Building Name");
-
-    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await screen.findByTestId(expectedKey);
-
-    userEvent.selectOptions(selectBuilding, "GIRV");
-
-    const submitButton = screen.getByText("Submit");
-    expect(submitButton).toBeInTheDocument();
-    userEvent.click(submitButton);
-
-    axiosMock.resetHistory();
-
-    await waitFor(() => {
-      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
-    });
-
-    expect(axiosMock.history.get[0].params).toEqual({
-      startQtr: "20222",
-      endQtr: "20222",
-      buildingCode: "GIRV",
-    });
-
-    expect(
-      screen.getByText((text) => text.includes("184")),
-    ).toBeInTheDocument();
-
-    // Check that CoursesOverTimeBuildings received the sorted sections data
-    const sortedSections = coursesInLibDifferentDate.sort((a, b) =>
-      b.courseInfo.quarter.localeCompare(a.courseInfo.quarter),
-    );
-    expect(spy).toHaveBeenCalledWith(
-      { sections: sortedSections },
-      expect.anything(),
-    );
-
-    spy.mockRestore();
   });
 });

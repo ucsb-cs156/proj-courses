@@ -273,6 +273,8 @@
                         <avoidCallsTo>com.opencsv.CSVReader</avoidCallsTo>
                     </avoidCallsTo>
                     <timestampedReports>false</timestampedReports>
+                    <mutationThreshold>100</mutationThreshold>
+                    <coverageThreshold>90</coverageThreshold>
                 </configuration>
             </plugin>
             <plugin>

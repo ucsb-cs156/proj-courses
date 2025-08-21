@@ -17,7 +17,8 @@ import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSc
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
 import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailsPage";
 import PersonalSchedulesWeeklyViewPage from "main/pages/PersonalSchedules/PersonalSchedulesWeeklyViewPage";
-import SectionSearchesIndexPage from "main/pages/SectionSearches/SectionSearchesIndexPage";
+import SectionSearchesIndexPageLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageLoggedIn";
+import SectionSearchesIndexPageNotLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageNotLoggedIn";
 
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
@@ -32,7 +33,21 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/" element={<SectionSearchesIndexPage />} />
+        {hasRole(currentUser, "ROLE_USER") && (
+          <Route
+            exact
+            path="/"
+            element={<SectionSearchesIndexPageLoggedIn />}
+          />
+        )}
+        {!hasRole(currentUser, "ROLE_USER") && (
+          <Route
+            exact
+            path="/"
+            element={<SectionSearchesIndexPageNotLoggedIn />}
+          />
+        )}
+
         <Route exact path="/profile" element={<ProfilePage />} />
         {hasRole(currentUser, "ROLE_ADMIN") && (
           <>

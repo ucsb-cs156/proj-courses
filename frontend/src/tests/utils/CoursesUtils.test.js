@@ -35,7 +35,7 @@ describe("CoursesUtils", () => {
   describe("cellToAxiosParamsDelete", () => {
     test("It returns the correct params", () => {
       // arrange
-      const cell = { row: { values: { id: 17 } } };
+      const cell = { row: { original: { id: 17 } } };
 
       // act
       const result = cellToAxiosParamsDelete(cell);

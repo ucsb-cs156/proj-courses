@@ -6,6 +6,7 @@ import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,13 +60,16 @@ public class CourseOverTimeInstructorController {
     List<ConvertedSection> courseResults;
     if (lectureOnly) {
       courseResults =
-          convertedSectionCollection.findByQuarterRangeAndInstructor(
-              startQtr, endQtr, "^" + instructor.toUpperCase(), "^(Teaching and in charge)");
+          new ArrayList<>(
+              convertedSectionCollection.findByQuarterRangeAndInstructor(
+                  startQtr, endQtr, "^" + instructor.toUpperCase(), "^(Teaching and in charge)"));
     } else {
       courseResults =
-          convertedSectionCollection.findByQuarterRangeAndInstructor(
-              startQtr, endQtr, "^" + instructor.toUpperCase(), "^.*");
+          new ArrayList<>(
+              convertedSectionCollection.findByQuarterRangeAndInstructor(
+                  startQtr, endQtr, "^" + instructor.toUpperCase(), "^.*"));
     }
+    courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());
     String body = mapper.writeValueAsString(courseResults);
     return ResponseEntity.ok().body(body);
   }

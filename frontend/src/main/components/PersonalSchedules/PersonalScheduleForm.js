@@ -29,11 +29,8 @@ function PersonalScheduleForm({
 
   const navigate = useNavigate();
 
-  const [quarter, setQuarter] = useState(
-    {
-      quarters: quarters,
-    }.quarters[quarters.length - 1],
-  );
+  // Stryker disable next-line all : TODO: Fix the state handling for quarters
+  const [quarter, setQuarter] = useState(quarters[quarters.length - 1]);
 
   const quarterMap = {
     1: "W",

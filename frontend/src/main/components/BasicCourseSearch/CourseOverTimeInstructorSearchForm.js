@@ -7,17 +7,19 @@ import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
 
-  // Stryker disable OptionalChaining
-  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
-  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  // Stryker restore OptionalChaining
+  // Don't confuse the startQtr and endQtr which are the system defaults
+  // for the first and last values in the dropdown lists, with the actual
+  // *currently selectted* start and end quarters for the search!
 
-  const quarters = quarterRange(startQtr, endQtr);
+  const firstQtr = systemInfo.startQtrYYYYQ || "20211";
+  const lastQtr = systemInfo.endQtrYYYYQ || "20214";
 
-  // Stryker disable all : not sure how to test/mock local storage
+  const quarters = quarterRange(firstQtr, lastQtr);
+
   const localStartQuarter = localStorage.getItem(
     "CourseOverTimeInstructorSearch.StartQuarter",
   );
+
   const localEndQuarter = localStorage.getItem(
     "CourseOverTimeInstructorSearch.EndQuarter",
   );
@@ -28,14 +30,14 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
     localStorage.getItem("CourseOverTimeInstructorSearch.Checkbox") === "true";
 
   const [startQuarter, setStartQuarter] = useState(
-    localStartQuarter || quarters[0].yyyyq,
+    localStartQuarter || firstQtr,
   );
-  const [endQuarter, setEndQuarter] = useState(
-    localEndQuarter || quarters[0].yyyyq,
-  );
+
+  // Stryker disable next-line all : TODO: write a good test for this or refactor
+  const [endQuarter, setEndQuarter] = useState(localEndQuarter || lastQtr);
+
   const [instructor, setInstructor] = useState(localInstructor || "");
   const [checkbox, setCheckbox] = useState(localStorageCheckbox || false);
-  // Stryker restore all
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -94,7 +96,10 @@ const CourseOverTimeInstructorSearchForm = ({ fetchJSON }) => {
             checked={checkbox}
           ></FormCheck>
         </Form.Group>
-        <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <Row
+          data-testid={`${testid}-bottom-row`}
+          style={{ paddingTop: 10, paddingBottom: 10 }}
+        >
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit

@@ -19,7 +19,7 @@ jest.mock("main/utils/useBackend", () => ({
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
-describe("UserTable tests", () => {
+describe("CourseDetailsTable tests", () => {
   const queryClient = new QueryClient();
   test("renders without crashing for empty table", () => {
     render(
@@ -56,8 +56,8 @@ describe("UserTable tests", () => {
     ];
     const expectedFields = [
       "courseId",
-      "classSections[0].enrollCode",
-      "classSections[0].section",
+      "enrollCode",
+      "section",
       "title",
       "enrolled",
       "location",
@@ -78,12 +78,10 @@ describe("UserTable tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-courseId`),
     ).toHaveTextContent("ECE 1A");
     expect(
-      screen.getByTestId(
-        `${testId}-cell-row-0-col-classSections[0].enrollCode`,
-      ),
+      screen.getByTestId(`${testId}-cell-row-0-col-enrollCode`),
     ).toHaveTextContent("12583");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-classSections[0].section`),
+      screen.getByTestId(`${testId}-cell-row-0-col-section`),
     ).toHaveTextContent("0100");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-title`),
@@ -95,12 +93,13 @@ describe("UserTable tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
     ).toHaveTextContent("WANG L C");
     expect(
-      screen.getByTestId(
-        `${testId}-cell-row-0-col-classSections[0].timeLocations[0].days`,
-      ),
+      screen.getByTestId(`${testId}-cell-row-0-col-days`),
     ).toHaveTextContent("M");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-time`),
     ).toHaveTextContent("3:00 PM - 3:50 PM");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-enrolled`),
+    ).toHaveTextContent("84/100");
   });
 });

@@ -236,4 +236,22 @@ describe("dateUtils tests", () => {
       expect(result[0].day).toBe("Monday");
     });
   });
+  test("Handle when classSections has no timeLocations", () => {
+    const mockData = [
+      {
+        courseId: "CMPSC 156",
+        title: "Advanced Applications Programming",
+        classSections: [
+          {
+            enrollCode: "12345",
+            section: "0100",
+            timeLocations: null, // No time locations
+          },
+        ],
+      },
+    ];
+
+    const result = transformToEvents(mockData);
+    expect(result.length).toBe(0); // Should return empty array since no time locations
+  });
 });
