@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -126,7 +126,14 @@
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -144,22 +151,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -174,6 +166,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,47 +215,54 @@ import {
 export default function CourseDetailsTable({ details }) {
   const columns = [
     {
-      Header: "Course ID",
-      accessor: "courseId",
+      header: "Course ID",
+      accessorKey: "courseId",
     },
     {
-      Header: "Enroll Code",
-      accessor: "classSections[0].enrollCode",
+      header: "Enroll Code",
+      id: "enrollCode",
+      cell: ({ cell }) =&gt; cell.row.original.classSections[0].enrollCode,
     },
     {
-      Header: "Section",
-      accessor: "classSections[0].section",
+      header: "Section",
+      id: "section",
+      cell: ({ cell }) =&gt; cell.row.original.classSections[0].section,
     },
     {
-      Header: "Title",
-      accessor: "title",
+      header: "Title",
+      accessorKey: "title",
     },
     {
-      Header: "Enrolled",
-      accessor: (row) =&gt;
+      header: "Enrolled",
+      cell: ({ cell }) =&gt;
         convertToFraction(
-          row.classSections[0].enrolledTotal,
-          row.classSections[0].maxEnroll,
+          cell.row.original.classSections[0].enrolledTotal,
+          cell.row.original.classSections[0].maxEnroll,
         ),
       id: "enrolled",
     },
     {
-      Header: "Location",
-      accessor: (row) =&gt; formatLocation(row.classSections[0].timeLocations),
+      header: "Location",
+      cell: ({ cell }) =&gt;
+        formatLocation(cell.row.original.classSections[0].timeLocations),
       id: "location",
     },
     {
-      Header: "Days",
-      accessor: "classSections[0].timeLocations[0].days",
+      header: "Days",
+      cell: ({ cell }) =&gt;
+        cell.row.original.classSections[0].timeLocations[0].days,
+      id: "days",
     },
     {
-      Header: "Time",
-      accessor: (row) =&gt; formatTime(row.classSections[0].timeLocations),
+      header: "Time",
+      cell: ({ cell }) =&gt;
+        formatTime(cell.row.original.classSections[0].timeLocations),
       id: "time",
     },
     {
-      Header: "Instructor",
-      accessor: (row) =&gt; formatInstructors(row.classSections[0].instructors),
+      header: "Instructor",
+      cell: ({ cell }) =&gt;
+        formatInstructors(cell.row.original.classSections[0].instructors),
       id: "instructor",
     },
   ];
@@ -259,7 +280,7 @@ export default function CourseDetailsTable({ details }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-26T02:10:13.907Z
+                at 2025-08-21T20:42:44.609Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
