@@ -6,7 +6,6 @@ import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(&quot;/api/public/courseovertime&quot;)
-<span class="fc" id="L21">public class CourseOverTimeInstructorController {</span>
+<span class="fc" id="L20">public class CourseOverTimeInstructorController {</span>
 
-<span class="fc" id="L23">  private ObjectMapper mapper = new ObjectMapper();</span>
+<span class="fc" id="L22">  private ObjectMapper mapper = new ObjectMapper();</span>
 
   @Autowired ConvertedSectionCollection convertedSectionCollection;
 
@@ -59,18 +58,20 @@ import org.springframework.web.bind.annotation.RestController;
           boolean lectureOnly)
       throws JsonProcessingException {
     List&lt;ConvertedSection&gt; courseResults;
-<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (lectureOnly) {</span>
-<span class="fc" id="L63">      courseResults = new ArrayList&lt;&gt;(</span>
-<span class="fc" id="L64">          convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
-<span class="fc" id="L65">              startQtr, endQtr, &quot;^&quot; + instructor.toUpperCase(), &quot;^(Teaching and in charge)&quot;));</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (lectureOnly) {</span>
+<span class="fc" id="L62">      courseResults =</span>
+          new ArrayList&lt;&gt;(
+<span class="fc" id="L64">              convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
+<span class="fc" id="L65">                  startQtr, endQtr, &quot;^&quot; + instructor.toUpperCase(), &quot;^(Teaching and in charge)&quot;));</span>
     } else {
-<span class="fc" id="L67">      courseResults = new ArrayList&lt;&gt;(</span>
-<span class="fc" id="L68">          convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
-<span class="fc" id="L69">              startQtr, endQtr, &quot;^&quot; + instructor.toUpperCase(), &quot;^.*&quot;));</span>
+<span class="fc" id="L67">      courseResults =</span>
+          new ArrayList&lt;&gt;(
+<span class="fc" id="L69">              convertedSectionCollection.findByQuarterRangeAndInstructor(</span>
+<span class="fc" id="L70">                  startQtr, endQtr, &quot;^&quot; + instructor.toUpperCase(), &quot;^.*&quot;));</span>
     }
-<span class="fc" id="L71">    courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());</span>
-<span class="fc" id="L72">    String body = mapper.writeValueAsString(courseResults);</span>
-<span class="fc" id="L73">    return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L72">    courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());</span>
+<span class="fc" id="L73">    String body = mapper.writeValueAsString(courseResults);</span>
+<span class="fc" id="L74">    return ResponseEntity.ok().body(body);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
