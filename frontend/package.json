@@ -81,6 +81,7 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-storybook": "^0.8.0",
     "globals": "^15.9.0",
+    "jest-mock-console": "^2.0.0",
     "jsdom": "^26.1.0",
     "msw": "^2.4.1",
     "msw-storybook-addon": "^2.0.3",
