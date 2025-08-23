@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: []
+pull_requests: [{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/fix-223","number":224,"title":"[WIP] Update repo to use vite/vitest instead of CRA/jest","url":"https://github.com/ucsb-cs156/proj-courses/pull/224"}]
