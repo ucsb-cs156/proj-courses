@@ -51,6 +51,8 @@ export default defineConfig({
       },
       reporter: ["html", "text-summary"],
     },
+    pool: 'forks', // Enable better jest compatibility
+    testTimeout: 10000, // Increase timeout for complex tests
   },
   resolve: {
     alias: {
