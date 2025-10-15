@@ -58,7 +58,7 @@ ADMIN_EMAILS=phtcon@ucsb.edu
 
 Replace `see-instructions` with the appropriate values.
 
-# Setting up `ADMIN_EMAILS`
+### Setting up `ADMIN_EMAILS`
 
 The `ADMIN_EMAILS` value is used to determine which users have access to administrative features in the app.  One of those
 is the ability to list the users that have logged in.
