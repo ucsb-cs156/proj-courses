@@ -1,7 +1,7 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import _BasicCourseTable from "main/components/Courses/BasicCourseTable";
 import { useParams } from "react-router-dom";
-import { useBackend, _useBackendMutation } from "main/utils/useBackend";
+import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import CourseDetailsTable from "main/components/CourseDetails/CourseDetailsTable";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import CourseDescriptionTable from "main/components/Courses/CourseDescriptionTable";
