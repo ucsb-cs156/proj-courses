@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import useLocalStorage from "main/utils/useLocalStorage";
 import mockConsole from "tests/testutils/mockConsole";;
@@ -5,17 +6,17 @@ import mockConsole from "tests/testutils/mockConsole";;
 describe("useLocalStorage tests", () => {
   beforeEach(() => {
     localStorage.clear();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("if no value in local storage, the default is used and stored", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) => {
       const values = {};
       return key in values ? values[key] : null;
     });
 
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     const { result } = renderHook(() =>
       useLocalStorage("testKey", "testValue"),
@@ -27,7 +28,7 @@ describe("useLocalStorage tests", () => {
   });
 
   test("if there is a value local storage, it is used, not the default", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) => {
       const values = {
         testKey: "localStoredValue",
@@ -36,7 +37,7 @@ describe("useLocalStorage tests", () => {
       return result;
     });
 
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     const { result } = renderHook(() =>
       useLocalStorage("testKey", "testValue"),
@@ -48,7 +49,7 @@ describe("useLocalStorage tests", () => {
   });
 
   test("if there is a value in local storage and a new value is set, it is used", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) => {
       const values = {
         testKey: "localStoredValue",
@@ -57,7 +58,7 @@ describe("useLocalStorage tests", () => {
       return result;
     });
 
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     const { result } = renderHook(() =>
       useLocalStorage("testKey", "testValue"),
@@ -77,12 +78,12 @@ describe("useLocalStorage tests", () => {
   test("error handler in useState call works as expected", async () => {
     const restoreConsole = mockConsole();
 
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => {
       throw new Error("getItem error");
     });
 
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     const { result } = renderHook(() =>
       useLocalStorage("testKey", "testValue"),
@@ -103,13 +104,13 @@ describe("useLocalStorage tests", () => {
 
   test("error handler in setter works as expected", async () => {
     const restoreConsole = mockConsole();
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) => {
       const values = {};
       return key in values ? values[key] : null;
     });
 
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     const { result } = renderHook(() =>
       useLocalStorage("testKey", "testValue"),

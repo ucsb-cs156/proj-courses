@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import React from "react";
 import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -10,22 +11,23 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import * as useBackend from "main/utils/useBackend.jsx";
 
 import CourseOverTimeSearchForm from "main/components/BasicCourseSearch/CourseOverTimeSearchForm";
 
-jest.mock("react-toastify", () => ({
-  toast: jest.fn(),
+vi.mock("react-toastify", () => ({
+  toast: vi.fn(),
 }));
 
 let axiosMock;
 describe("CourseOverTimeSearchForm tests", () => {
   describe("CourseOverTimeSearchForm regular tests", () => {
-    const addToast = jest.fn();
+    const addToast = vi.fn();
     const queryClient = new QueryClient();
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
-      jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => null);
+      vi.clearAllMocks();
+      vi.spyOn(console, "error").mockImplementation(() => null);
 
       axiosMock
         .onGet("/api/currentUser")
@@ -44,7 +46,7 @@ describe("CourseOverTimeSearchForm tests", () => {
     afterEach(() => {
       axiosMock.restore();
       axiosMock.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.resetHistory();
       cleanup();
       localStorage.clear();
@@ -52,8 +54,8 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     test("renders correctly", () => {
       axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
       render(
@@ -99,7 +101,7 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
 
     test("renders correctly with mocked localStorage values", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
       axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
 
       getItemSpy.mockImplementation((key) => {
@@ -147,7 +149,7 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
 
     test("renders with correct default subject area", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
       axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
 
       getItemSpy.mockImplementation(() => {
@@ -187,8 +189,8 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     test("when I select an end quarter, the state for end quarter changes", async () => {
       axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
       render(
@@ -224,8 +226,8 @@ describe("CourseOverTimeSearchForm tests", () => {
 
     test("when I select a subject, the state for subject changes", async () => {
       axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
@@ -265,8 +267,8 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
 
     test("when I select a course number without suffix, the state for course number changes", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
@@ -299,8 +301,8 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
 
     test("when I select a course number with suffix, the state for course number changes", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
@@ -331,8 +333,8 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
 
     test("when I select a course number without number, the state for course number changes", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
       render(
@@ -361,8 +363,8 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
 
     test("when I click submit, the right stuff happens", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
@@ -371,7 +373,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         sampleKey: "sampleValue",
       };
 
-      const fetchJSONSpy = jest.fn().mockResolvedValue(sampleReturnValue);
+      const fetchJSONSpy = vi.fn().mockResolvedValue(sampleReturnValue);
 
       render(
         <QueryClientProvider client={queryClient}>
@@ -445,9 +447,9 @@ describe("CourseOverTimeSearchForm tests", () => {
         total: 0,
       };
 
-      const fetchJSONSpy = jest.fn().mockResolvedValue(sampleReturnValue);
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const fetchJSONSpy = vi.fn().mockResolvedValue(sampleReturnValue);
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
       render(
@@ -489,8 +491,8 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
 
     test("renders without crashing when fallback values are used", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
@@ -531,13 +533,13 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
   });
   describe("CourseOverTimeSearchForm with null system info", () => {
-    const addToast = jest.fn();
+    const addToast = vi.fn();
     const queryClient = new QueryClient();
 
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
-      jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => null);
+      vi.clearAllMocks();
+      vi.spyOn(console, "error").mockImplementation(() => null);
 
       axiosMock
         .onGet("/api/currentUser")
@@ -556,15 +558,15 @@ describe("CourseOverTimeSearchForm tests", () => {
     afterEach(() => {
       axiosMock.restore();
       axiosMock.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.resetHistory();
       cleanup();
     });
     test("when system info is null, fallback values are used", async () => {
       axiosMock.onGet("/api/systemInfo").reply(200, null);
 
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
@@ -601,12 +603,12 @@ describe("CourseOverTimeSearchForm tests", () => {
     let invalidateQueriesSpy;
     let useBackendSpy;
 
-    const addToast = jest.fn();
+    const addToast = vi.fn();
 
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
-      jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => null);
+      vi.clearAllMocks();
+      vi.spyOn(console, "error").mockImplementation(() => null);
 
       axiosMock
         .onGet("/api/currentUser")
@@ -628,9 +630,9 @@ describe("CourseOverTimeSearchForm tests", () => {
           },
         },
       });
-      invalidateQueriesSpy = jest.spyOn(queryClient, "invalidateQueries");
-      useBackendSpy = jest.spyOn(
-        require("main/utils/useBackend"),
+      invalidateQueriesSpy = vi.spyOn(queryClient, "invalidateQueries");
+      useBackendSpy = vi.spyOn(
+        useBackend,
         "useBackend",
       );
     });
@@ -638,7 +640,7 @@ describe("CourseOverTimeSearchForm tests", () => {
     afterEach(() => {
       axiosMock.restore();
       axiosMock.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.resetHistory();
       cleanup();
       invalidateQueriesSpy.mockRestore(); // Restore original implementation of the spy
@@ -647,7 +649,7 @@ describe("CourseOverTimeSearchForm tests", () => {
     });
 
     test("correct cache keys are set up and invalidated", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -679,19 +681,19 @@ describe("CourseOverTimeSearchForm tests", () => {
     const queryClient = new QueryClient();
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
     afterEach(() => {
       axiosMock.restore();
       axiosMock.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.resetHistory();
       cleanup();
       localStorage.clear();
     });
     it("validates course number format", async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
@@ -700,7 +702,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         sampleKey: "sampleValue",
       };
 
-      const fetchJSONSpy = jest.fn().mockResolvedValue(sampleReturnValue);
+      const fetchJSONSpy = vi.fn().mockResolvedValue(sampleReturnValue);
 
       render(
         <QueryClientProvider client={queryClient}>

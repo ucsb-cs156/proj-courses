@@ -1,7 +1,10 @@
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import AdminUpdatesPage from "main/pages/Admin/AdminUpdatesPage.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
+import * as useLocalStorage from "main/utils/useLocalStorage";
+
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -14,7 +17,7 @@ describe("AdminUpdatesPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -45,12 +48,12 @@ describe("AdminUpdatesPage tests", () => {
   });
 
   test("When localstorage is empty, fallback values are used", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
-    const useLocalStorageSpy = jest.spyOn(
-      require("main/utils/useLocalStorage"),
+    const useLocalStorageSpy = vi.spyOn(
+      useLocalStorage,
       "default",
     );
 

@@ -1,12 +1,13 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import TestJobsForm from "main/components/Jobs/TestJobForm";
 import jobsFixtures from "fixtures/jobsFixtures";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -26,7 +27,7 @@ describe("TestJobsForm tests", () => {
   });
 
   it("has validation errors for required fields", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     render(
       <Router>
@@ -52,7 +53,7 @@ describe("TestJobsForm tests", () => {
   });
 
   it("rejects sleepMs values below the minimum threshold", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     render(
       <Router>
@@ -75,7 +76,7 @@ describe("TestJobsForm tests", () => {
   });
 
   it("displays an error when sleepMs is not provided", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     render(
       <Router>
@@ -94,7 +95,7 @@ describe("TestJobsForm tests", () => {
   });
 
   it("should handle non-numeric value for sleepMs when valueAsNumber is true", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     render(
       <Router>
@@ -112,7 +113,7 @@ describe("TestJobsForm tests", () => {
 
   it("submits the form with a number for sleepMs", async () => {
     // Create a mock submit function
-    const mockSubmitAction = jest.fn();
+    const mockSubmitAction = vi.fn();
 
     render(
       <Router>

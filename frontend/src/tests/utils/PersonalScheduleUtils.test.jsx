@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import {
   onDeleteSuccess,
   cellToAxiosParamsDelete,
@@ -5,9 +6,9 @@ import {
 } from "main/utils/PersonalScheduleUtils";
 import mockConsole from "tests/testutils/mockConsole";;
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,

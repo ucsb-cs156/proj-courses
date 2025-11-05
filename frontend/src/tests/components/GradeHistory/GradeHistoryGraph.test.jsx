@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import {
   oneQuarterCourse,
@@ -13,7 +14,7 @@ import {
   groupDataByQuarterAndInstructor,
 } from "main/components/GradeHistory/GradeHistoryGraph";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
 class ResizeObserver {
   constructor(callback) {
@@ -35,8 +36,8 @@ global.ResizeObserver = ResizeObserver;
 // Credit to joshua-phillips's commment at the below link
 // I was debugging this for so long and this finally rendered the ResponsiveContainer
 // https://github.com/recharts/recharts/issues/2268#issuecomment-832287798
-jest.mock("recharts", () => {
-  const OriginalModule = jest.requireActual("recharts");
+vi.mock("recharts", async () => {
+  const OriginalModule = await vi.importActual("recharts");
 
   return {
     ...OriginalModule,
@@ -48,8 +49,8 @@ jest.mock("recharts", () => {
   };
 });
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 

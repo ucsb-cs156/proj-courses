@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import React from "react";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
@@ -12,7 +13,7 @@ describe("AddToScheduleModal", () => {
   let mockOnAdd;
 
   beforeEach(() => {
-    mockOnAdd = jest.fn();
+    mockOnAdd = vi.fn();
   });
 
   test("renders button correctly", () => {
@@ -73,13 +74,15 @@ describe("AddToScheduleModal", () => {
     expect(mockOnAdd).toHaveBeenCalled();
   });
 
-  jest.mock(
+  vi.mock(
     "main/components/PersonalSchedules/PersonalScheduleSelector",
     () => {
-      return ({ setHasSchedules }) => {
+      return {
+        default: ({ setHasSchedules }) => {
         setHasSchedules(false);
         return null;
-      };
+      }
+      }
     },
   );
 

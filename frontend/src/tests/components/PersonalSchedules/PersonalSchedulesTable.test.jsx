@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -6,22 +7,27 @@ import PersonalSchedulesTable from "main/components/PersonalSchedules/PersonalSc
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
-const mockedMutate = jest.fn();
+const mockedMutate = vi.fn();
 
-jest.mock("main/utils/useBackend", () => ({
-  ...jest.requireActual("main/utils/useBackend"),
+vi.mock("main/utils/useBackend", async () => ({
+  ...await vi.importActual("main/utils/useBackend"),
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
 describe("PersonalSchedulesTable tests", () => {
   const queryClient = new QueryClient();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+  })
 
   test("renders without crashing for empty table with user not logged in", () => {
     const currentUser = null;

@@ -1,9 +1,11 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import userEvent from "@testing-library/user-event";
+import * as useBackend from "main/utils/useBackend.jsx";
 
 import SectionSearchesIndexPageLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageLoggedIn";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -11,9 +13,9 @@ import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import primaryFixtures from "fixtures/primaryFixtures";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -45,9 +47,9 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
   });
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
-    const useBackendSpy = jest.spyOn(
-      require("main/utils/useBackend"),
-      "useBackend",
+    const useBackendSpy = vi.spyOn(
+        useBackend,
+        "useBackend",
     );
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock

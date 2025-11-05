@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -6,17 +7,17 @@ import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import UCSBSubjectsTable from "main/components/UCSBSubjects/UCSBSubjectsTable";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
-const mockedMutate = jest.fn();
+const mockedMutate = vi.fn();
 
-jest.mock("main/utils/useBackend", () => ({
-  ...jest.requireActual("main/utils/useBackend"),
+vi.mock("main/utils/useBackend", async () => ({
+  ...await vi.importActual("main/utils/useBackend"),
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 

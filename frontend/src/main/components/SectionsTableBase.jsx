@@ -24,7 +24,6 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(), // Required for expansion
   });
-
   return (
     <Table data-testid={testid} bordered hover className="table-hover">
       <thead>

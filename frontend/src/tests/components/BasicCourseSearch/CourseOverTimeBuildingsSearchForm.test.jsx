@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -13,25 +14,25 @@ import CourseOverTimeBuildingsSearchForm from "main/components/BasicCourseSearch
 
 import { useSystemInfo } from "main/utils/systemInfo";
 
-jest.mock("main/utils/systemInfo", () => ({
-  useSystemInfo: jest.fn(),
+vi.mock("main/utils/systemInfo", () => ({
+  useSystemInfo: vi.fn(),
 }));
 
-jest.mock("react-toastify", () => ({
-  toast: jest.fn(),
+vi.mock("react-toastify", () => ({
+  toast: vi.fn(),
 }));
 
 describe("CourseOverTimeBuildingsSearchForm tests", () => {
-  const mockFn = jest.fn();
+  const mockFn = vi.fn();
   const axiosMock = new AxiosMockAdapter(axios);
 
   const queryClient = new QueryClient();
-  const addToast = jest.fn();
+  const addToast = vi.fn();
 
   beforeEach(() => {
     localStorage.clear();
-    jest.clearAllMocks();
-    jest.spyOn(console, "error");
+    vi.clearAllMocks();
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
     useSystemInfo.mockReturnValue({
@@ -105,7 +106,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       sampleKey: "sampleValue",
     };
 
-    const fetchJSONSpy = jest.fn();
+    const fetchJSONSpy = vi.fn();
 
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
 
@@ -314,21 +315,21 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     });
     localStorage.removeItem("CourseOverTimeBuildingsSearch.Quarter");
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", null);
-    render(<CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />);
+    render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
     expect(screen.getByLabelText("Quarter")).toBeInTheDocument();
     expect(screen.getByLabelText("Building Name")).toBeInTheDocument();
   });
 
   test("does not fetch classrooms if Quarter or buildingCode is missing", async () => {
     useSystemInfo.mockReturnValue({ data: {} });
-    const getSpy = jest.spyOn(axios, "get");
+    const getSpy = vi.spyOn(axios, "get");
 
-    render(<CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />);
+    render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
     await waitFor(() => expect(getSpy).not.toHaveBeenCalled());
 
     localStorage.removeItem("CourseOverTimeBuildingsSearch.Quarter");
     localStorage.removeItem("CourseOverTimeBuildingsSearch.BuildingCode");
-    render(<CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />);
+    render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
     await waitFor(() => expect(getSpy).not.toHaveBeenCalled());
   });
 
@@ -337,7 +338,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
     axios.get.mockResolvedValue({ data: ["CLSS1", "CLSS2"] });
-    render(<CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />);
+    render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
     await waitFor(() => expect(axios.get).toHaveBeenCalled());
   });
 
@@ -349,9 +350,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const error = new Error("Network error");
     axios.get.mockRejectedValue(error);
 
-    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    render(<CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />);
+    render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
 
     await waitFor(() => {
       expect(errorSpy).toHaveBeenCalledWith("Error fetching classrooms", error);
@@ -364,9 +365,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     useSystemInfo.mockReturnValue({ data: {} });
     localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
-    const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     axios.get.mockResolvedValue({ data: ["CLSS1"] });
-    render(<CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />);
+    render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
     await waitFor(() =>
       expect(logSpy).toHaveBeenCalledWith(
         expect.stringContaining("Fetching classrooms with:"),
@@ -387,7 +388,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
     axios.get.mockResolvedValue({ data: ["Z101", "A202", "M303"] });
-    render(<CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />);
+    render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
     await waitFor(() =>
       expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
         "A202, M303, Z101",
@@ -401,7 +402,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />
+          <CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -416,7 +417,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <MemoryRouter>
-          <CourseOverTimeBuildingsSearchForm fetchJSON={jest.fn()} />
+          <CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />
         </MemoryRouter>
       </QueryClientProvider>,
     );

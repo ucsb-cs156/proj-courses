@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
@@ -9,10 +10,10 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -84,7 +85,7 @@ describe("PersonalScheduleForm tests", () => {
   });
 
   test("No Error messages on good input", async () => {
-    const mockSubmitAction = jest.fn();
+    const mockSubmitAction = vi.fn();
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -136,7 +137,7 @@ describe("PersonalScheduleForm tests", () => {
   });
 
   test("Fallback hardcoded values for startQtr and endQtr work when systemInfo doesn't provide any", async () => {
-    const mockSubmitAction = jest.fn();
+    const mockSubmitAction = vi.fn();
 
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,

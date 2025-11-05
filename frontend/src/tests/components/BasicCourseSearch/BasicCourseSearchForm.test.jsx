@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -13,19 +14,19 @@ import AxiosMockAdapter from "axios-mock-adapter";
 
 import BasicCourseSearchForm from "main/components/BasicCourseSearch/BasicCourseSearchForm";
 
-jest.mock("react-toastify", () => ({
-  toast: jest.fn(),
+vi.mock("react-toastify", () => ({
+  toast: vi.fn(),
 }));
 
 describe("BasicCourseSearchForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   const queryClient = new QueryClient();
-  const addToast = jest.fn();
+  const addToast = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error");
+    vi.clearAllMocks();
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
     axiosMock
@@ -106,7 +107,7 @@ describe("BasicCourseSearchForm tests", () => {
       sampleKey: "sampleValue",
     };
 
-    const fetchJSONSpy = jest.fn();
+    const fetchJSONSpy = vi.fn();
 
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
 
@@ -155,7 +156,7 @@ describe("BasicCourseSearchForm tests", () => {
       total: 0,
     };
 
-    const fetchJSONSpy = jest.fn();
+    const fetchJSONSpy = vi.fn();
 
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
 

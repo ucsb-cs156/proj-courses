@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import UpdateCoursesJobForm from "main/components/Jobs/UpdateCoursesJobForm";
@@ -6,10 +7,10 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -19,7 +20,7 @@ describe("UpdateCoursesJobForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     // @ts-ignore jest.spyOn adds this functionallity
     console.error.mockImplementation(() => null);
   });

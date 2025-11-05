@@ -1,26 +1,26 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import * as react from "react";
 
 import SingleLevelDropdown from "main/components/Levels/SingleLevelDropdown";
 import { allTheLevels } from "fixtures/levelsFixtures";
 
-jest.mock("react", () => ({
-  ...jest.requireActual("react"),
-  useState: jest.fn(),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
 }));
 
 describe("SingleLevelDropdown tests", () => {
   beforeEach(() => {
-    useState.mockImplementation(jest.requireActual("react").useState);
+    vi.spyOn(react, "useState");
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  const level = jest.fn();
-  const setLevel = jest.fn();
+  const level = vi.fn();
+  const setLevel = vi.fn();
 
   test("renders without crashing", () => {
     render(
@@ -50,7 +50,7 @@ describe("SingleLevelDropdown tests", () => {
   });
 
   test("if I pass a non-null onChange, it gets called when the value changes", async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <SingleLevelDropdown
         levels={allTheLevels}
@@ -68,7 +68,7 @@ describe("SingleLevelDropdown tests", () => {
     await waitFor(() => expect(setLevel).toBeCalledWith("U"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
 
-    // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
+    // x.mock.calls[0][0] is the first argument of the first call to the vi.fn() mock x
     const event = onChange.mock.calls[0][0];
     expect(event.target.value).toBe("U");
   });
@@ -101,11 +101,11 @@ describe("SingleLevelDropdown tests", () => {
   });
 
   test("when localstorage has a value, it is passed to useState", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => "G");
 
-    const setLevelStateSpy = jest.fn();
-    useState.mockImplementation((x) => [x, setLevelStateSpy]);
+    const setLevelStateSpy = vi.fn();
+    react.useState.mockImplementation((x) => [x, setLevelStateSpy]);
 
     render(
       <SingleLevelDropdown
@@ -116,15 +116,15 @@ describe("SingleLevelDropdown tests", () => {
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("G"));
+    await waitFor(() => expect(react.useState).toBeCalledWith("G"));
   });
 
   test("when localstorage has no value, U is passed to useState", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
-    const setLevelStateSpy = jest.fn();
-    useState.mockImplementation((x) => [x, setLevelStateSpy]);
+    const setLevelStateSpy = vi.fn();
+    react.useState.mockImplementation((x) => [x, setLevelStateSpy]);
 
     render(
       <SingleLevelDropdown
@@ -135,6 +135,6 @@ describe("SingleLevelDropdown tests", () => {
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("U"));
+    await waitFor(() => expect(react.useState).toBeCalledWith("U"));
   });
 });

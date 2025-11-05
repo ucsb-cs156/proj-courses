@@ -1,8 +1,10 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import * as useBackend from "main/utils/useBackend.jsx";
 
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -11,9 +13,9 @@ import { threeSections } from "fixtures/sectionFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -46,9 +48,9 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
   });
 
   test("calls UCSB Course over time search api correctly with 3 section response", async () => {
-    const useBackendMutationSpy = jest.spyOn(
-      require("main/utils/useBackend"),
-      "useBackendMutation",
+    const useBackendMutationSpy = vi.spyOn(
+      useBackend,
+      "useBackendMutation"
     );
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock

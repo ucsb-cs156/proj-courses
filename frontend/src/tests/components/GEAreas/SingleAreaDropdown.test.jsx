@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
@@ -6,24 +7,23 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import React from "react";
+import * as react from "react";
 import * as backend from "main/utils/useBackend";
 import SingleAreaDropdown from "main/components/GEAreas/SingleAreaDropdown";
 import allGEAreas from "fixtures/singleAreaDropdownFixtures";
 
-jest.mock("react", () => ({
-  ...jest.requireActual("react"),
-  useState: jest.fn(),
-  compareValues: jest.fn(),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
+  compareValues: vi.fn(),
 }));
 
 describe("SingleAreaDropdown tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
-    useState.mockImplementation(jest.requireActual("react").useState);
+    vi.spyOn(react, "useState");
   });
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
     axiosMock.resetHistory();
@@ -56,12 +56,12 @@ describe("SingleAreaDropdown tests", () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     console.error.mockRestore();
   });
 
-  const setArea = jest.fn();
-  const area = jest.fn();
+  const setArea = vi.fn();
+  const area = vi.fn();
 
   test("renders without crashing and loads dropdown options from backend", async () => {
     const queryClient = new QueryClient();
@@ -143,7 +143,7 @@ describe("SingleAreaDropdown tests", () => {
 
   test("when I select an object, the value changes", async () => {
     const queryClient = new QueryClient(); // ✅ Create a QueryClient
-    const setArea = jest.fn(); // ✅ Mock setArea
+    const setArea = vi.fn(); // ✅ Mock setArea
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -185,7 +185,7 @@ describe("SingleAreaDropdown tests", () => {
   });
 
   test("if I pass a non-null onChange, it gets called when the value changes", async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const queryClient = new QueryClient(); // ✅ Create a QueryClient
 
     render(
@@ -220,7 +220,7 @@ describe("SingleAreaDropdown tests", () => {
   });
 
   test('onChange is called when value is "ALL"', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const queryClient = new QueryClient(); // ✅ Create a QueryClient
 
     render(
@@ -282,7 +282,7 @@ describe("SingleAreaDropdown tests", () => {
 
   test("when localstorage has a value, it is passed to useState", async () => {
     // Arrange: simulate localStorage having a value
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => "A1");
 
     const queryClient = new QueryClient();
@@ -310,7 +310,7 @@ describe("SingleAreaDropdown tests", () => {
   test("when localstorage has no value, first element of subject list is passed to useState", async () => {
     localStorage.clear();
 
-    const setArea = jest.fn();
+    const setArea = vi.fn();
     const queryClient = new QueryClient();
     const axiosMock = new AxiosMockAdapter(axios);
 
@@ -374,7 +374,7 @@ describe("SingleAreaDropdown tests", () => {
 
   describe("SingleAreaDropdown tests", () => {
     it("makes GET request to /api/public/generalEducationInfo", async () => {
-      const spy = jest.spyOn(backend, "useBackend").mockImplementation(() => ({
+      const spy = vi.spyOn(backend, "useBackend").mockImplementation(() => ({
         data: ["A1", "A2", "B", "C"],
       }));
       const queryClient = new QueryClient();

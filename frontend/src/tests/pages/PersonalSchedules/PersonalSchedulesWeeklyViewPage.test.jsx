@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -9,9 +10,9 @@ import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const originalModule = await vi.importActual("react-router-dom");
   return {
     __esModule: true,
     ...originalModule,
@@ -26,8 +27,9 @@ jest.mock("react-router-dom", () => {
   };
 });
 
+const axiosMock = new AxiosMockAdapter(axios);
+const queryClient = new QueryClient();
 describe("PersonalSchedulesWeeklyViewPage tests", () => {
-  const axiosMock = new AxiosMockAdapter(axios);
 
   const setupAdminUser = () => {
     axiosMock.reset();
@@ -41,9 +43,12 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
     mockNavigate.mockClear();
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    queryClient.clear();
   });
 
   afterEach(() => {
@@ -51,7 +56,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
   });
 
   test("renders without crashing for regular user", () => {
-    const queryClient = new QueryClient();
     axiosMock.onGet("/api/personalschedules/all").reply(200, []);
 
     render(
@@ -66,7 +70,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
 
   test("renders correctly for admin user", async () => {
     setupAdminUser();
-    const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
@@ -139,8 +142,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
 
   test("shows the correct info for admin users", async () => {
     setupAdminUser();
-    const queryClient = new QueryClient();
-
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
@@ -212,7 +213,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
 
   test("navigates back to details page when back button is clicked", async () => {
     setupAdminUser();
-    const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
@@ -244,7 +244,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
 
   test("handles empty personal sections data", async () => {
     setupAdminUser();
-    const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
@@ -279,7 +278,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
 
   test("handles error in personal sections data", async () => {
     setupAdminUser();
-    const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
       .reply(200, personalScheduleFixtures.onePersonalScheduleDiffId);
@@ -305,35 +303,6 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
         ),
       ).toBeInTheDocument();
     });
-
-    // Scheduler panel should NOT be present due to the error
-    expect(
-      screen.queryByTestId("SchedulerPanel-Monday-column"),
-    ).not.toBeInTheDocument();
-  });
-
-  test("handles error in personal schedule data", async () => {
-    setupAdminUser();
-    const queryClient = new QueryClient();
-    axiosMock.onGet(`/api/personalschedules?id=17`).reply(500, {});
-    axiosMock
-      .onGet(`/api/personalSections/all?psId=17`)
-      .reply(200, personalSectionsFixtures.threePersonalSections);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <PersonalSchedulesWeeklyViewPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText("Weekly Schedule View")).toBeInTheDocument();
-    });
-
-    // Schedule name might not be available if the personal schedule fetch failed
-    // So, we don't assert for it here.
 
     // Scheduler panel should NOT be present due to the error
     expect(

@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import UpdateCoursesByQuarterJobForm from "main/components/Jobs/UpdateCoursesByQuarterJobForm";
@@ -7,15 +8,15 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { useSystemInfo } from "main/utils/systemInfo";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
-jest.mock("main/utils/systemInfo", () => ({
-  useSystemInfo: jest.fn(),
+vi.mock("main/utils/systemInfo", async () => ({
+  useSystemInfo: vi.fn(),
 }));
 
 const queryClient = new QueryClient();
@@ -24,7 +25,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
     axiosMock.reset();
 
     useSystemInfo.mockReturnValue({
@@ -109,7 +110,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
         endQtrYYYYQ: "20194",
       },
     });
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
 
     getItemSpy.mockImplementation((key) => {
       const values = {
@@ -152,7 +153,7 @@ describe("UpdateCoursesByQuarterJobForm tests", () => {
       },
     });
 
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) => {
       const values = {};
       return key in values ? values[key] : null;

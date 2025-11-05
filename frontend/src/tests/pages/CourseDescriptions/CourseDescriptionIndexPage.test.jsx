@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -11,9 +12,9 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -25,7 +26,7 @@ describe("CourseDescriptionIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 

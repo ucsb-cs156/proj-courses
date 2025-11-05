@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -17,34 +18,37 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
 import { useBackendMutation } from "main/utils/useBackend";
+import { toast } from "react-toastify";
 
 // mock the error console to avoid cluttering the test output
-import mockConsole from "tests/testutils/mockConsole";;
+import mockConsole from "tests/testutils/mockConsole";
 let restoreConsole;
+const toast = vi.fn();
+const mockedNavigate = vi.fn();
 
-const mockedNavigate = jest.fn();
-
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
-jest.mock("react-toastify", () => {
-  const toast = jest.fn();
-  toast.error = jest.fn();
-  return { toast };
+vi.mock("react-toastify", async (importOriginal) => {
+  const mockToast = vi.fn();
+  mockToast.error = vi.fn();
+  return {
+  ...(await importOriginal()),
+  toast: mockToast};
 });
 
-jest.mock("main/utils/useBackend", () => ({
-  useBackend: jest.fn(),
-  useBackendMutation: jest.fn(),
+vi.mock("main/utils/useBackend", async () => ({
+  useBackend: vi.fn(),
+  useBackendMutation: vi.fn(),
 }));
 
-jest.mock("main/utils/currentUser", () => ({
+vi.mock("main/utils/currentUser", async () => ({
   useCurrentUser: () => ({
     data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
   }),
-  useLogout: () => ({ mutate: jest.fn() }),
+  useLogout: () => ({ mutate: vi.fn() }),
   hasRole: (_user, _role) => false, // or customize per role
 }));
 
@@ -72,7 +76,6 @@ describe("SectionsTable tests", () => {
   describe("onSuccess", () => {
     it("should display a success message for new course creation", () => {
       const response = [{ id: 1, enrollCd: "12345" }];
-      const toast = require("react-toastify").toast;
       onSuccess(response);
       expect(toast).toHaveBeenCalledWith(
         "New course Created - id: 1 enrollCd: 12345",
@@ -85,7 +88,6 @@ describe("SectionsTable tests", () => {
         { enrollCd: "67890" },
         { enrollCd: "54321" },
       ];
-      const toast = require("react-toastify").toast;
       onSuccess(response);
       expect(toast).toHaveBeenCalledWith(
         "Course 12345 replaced old section 54321 with new section 67890",
@@ -101,16 +103,15 @@ describe("SectionsTable tests", () => {
 
     afterEach(() => {
       restoreConsole();
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
 
     it("should display an error message with the response data", () => {
       // arrange
 
       const queryClient = new QueryClient();
-      const toast = require("react-toastify").toast;
       useBackendMutation.mockReturnValue({
-        mutate: jest.fn(),
+        mutate: vi.fn(),
       });
 
       // Render a component that will call useBackendMutation
@@ -147,7 +148,6 @@ describe("SectionsTable tests", () => {
       const error = {
         response: {},
       };
-      const toast = require("react-toastify").toast;
       onError(error);
       expect(toast.error).toHaveBeenCalledWith(
         "An unexpected error occurred adding the schedule: " +
@@ -162,7 +162,7 @@ describe("SectionsTable tests", () => {
 
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.reset();
       axiosMock.resetHistory();
       axiosMock
@@ -175,7 +175,7 @@ describe("SectionsTable tests", () => {
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.restore();
       restoreConsole(); // Restore the console after each test
     });
@@ -449,19 +449,19 @@ describe("SectionsTable tests", () => {
     const queryClient = new QueryClient();
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock
         .onGet("/api/currentUser")
         .reply(200, apiCurrentUserFixtures.userOnly);
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.restore();
     });
 
     test("Add button in modal works correctly", async () => {
-      const mockMutate = jest.fn();
+      const mockMutate = vi.fn();
 
       useBackendMutation.mockReturnValue({
         mutate: mockMutate,
@@ -550,15 +550,15 @@ describe("SectionsTable tests", () => {
     let axiosMock;
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
-      jest.clearAllMocks();
-      jest.mock("main/utils/currentUser", () => ({
+      vi.clearAllMocks();
+      vi.mock("main/utils/currentUser", async () => ({
         useCurrentUser: () => ({
           data: {
             loggedIn: true,
             root: { user: { email: "test@example.com" } },
           },
         }),
-        useLogout: () => ({ mutate: jest.fn() }),
+        useLogout: () => ({ mutate: vi.fn() }),
         hasRole: (_user, _role) => false, // or customize per role
       }));
       axiosMock
@@ -567,7 +567,7 @@ describe("SectionsTable tests", () => {
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.restore();
     });
 
@@ -632,7 +632,7 @@ describe("SectionsTable tests", () => {
   });
 
   describe("AddToScheduleModal interactions when there are no schedules", () => {
-    jest.mock("main/utils/currentUser", () => ({
+    vi.mock("main/utils/currentUser", async () => ({
       useCurrentUser: () => {
         console.log("useCurrentUser called in SectionsTable.test.jsx");
         return {
@@ -642,7 +642,7 @@ describe("SectionsTable tests", () => {
           },
         };
       },
-      useLogout: () => ({ mutate: jest.fn() }),
+      useLogout: () => ({ mutate: vi.fn() }),
       hasRole: (_user, _role) => false, // or customize per role
     }));
 
