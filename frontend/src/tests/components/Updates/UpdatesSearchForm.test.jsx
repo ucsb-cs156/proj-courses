@@ -99,7 +99,7 @@ describe("UpdatesSearchForm tests", () => {
 
     const expectedKey = "UpdatesSearch.SubjectArea-option-MATH";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     const selectSubject = screen.getByLabelText("Subject Area");

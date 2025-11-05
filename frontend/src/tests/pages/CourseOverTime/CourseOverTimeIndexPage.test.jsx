@@ -68,7 +68,7 @@ describe("CourseOverTimeIndexPage tests", () => {
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-ANTH";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     userEvent.selectOptions(selectSubject, "ANTH");

@@ -127,7 +127,7 @@ describe("AdminJobsPage tests", () => {
 
     const expectedKey = "UpdateCoursesJobForm.Subject-option-ANTH";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     const selectQuarter = screen.getByTestId("UpdateCoursesJobForm.Quarter");

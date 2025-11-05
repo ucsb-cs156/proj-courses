@@ -23,7 +23,6 @@ import { toast } from "react-toastify";
 // mock the error console to avoid cluttering the test output
 import mockConsole from "tests/testutils/mockConsole";
 let restoreConsole;
-const toast = vi.fn();
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({

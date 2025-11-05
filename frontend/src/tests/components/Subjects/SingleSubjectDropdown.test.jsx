@@ -61,9 +61,9 @@ describe("SingleSubjectDropdown tests", () => {
     const ARTHI = "ssd1-option-ARTHI";
 
     // Check that blanks are replaced with hyphens
-    await waitFor(() => expect(screen.getByTestId(ART_CS).toBeInTheDocument));
-    await waitFor(() => expect(screen.getByTestId(ANTH).toBeInTheDocument));
-    await waitFor(() => expect(screen.getByTestId(ARTHI).toBeInTheDocument));
+    await waitFor(() => expect(screen.getByTestId(ART_CS)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId(ANTH)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId(ARTHI)).toBeInTheDocument());
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
@@ -277,7 +277,7 @@ describe("SingleSubjectDropdown tests", () => {
 
     const expectedKey = "ssd1-option-ANTH";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
   });
 

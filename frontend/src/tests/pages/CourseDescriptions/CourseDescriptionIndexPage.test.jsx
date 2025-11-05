@@ -72,7 +72,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     const expectedKey = "BasicSearch.Subject-option-ANTH";
 
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     expect(await screen.findByLabelText("Subject Area")).toHaveTextContent(
