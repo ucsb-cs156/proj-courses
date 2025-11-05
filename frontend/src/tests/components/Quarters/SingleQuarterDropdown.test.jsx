@@ -1,19 +1,18 @@
 import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import * as react from "react";
 
 import SingleQuarterDropdown from "main/components/Quarters/SingleQuarterDropdown";
 import { quarterRange } from "main/utils/quarterUtilities";
 
 vi.mock("react", async () => ({
   ...await vi.importActual("react"),
-  useState: vi.fn(),
 }));
 
 describe("SingleQuarterSelector tests", () => {
   beforeEach(() => {
-    useState.mockImplementation(await vi.importActual("react").useState);
+    vi.spyOn(react, "useState");
   });
 
   afterEach(() => {

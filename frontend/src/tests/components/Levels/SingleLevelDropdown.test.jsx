@@ -1,19 +1,18 @@
 import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import * as react from "react";
 
 import SingleLevelDropdown from "main/components/Levels/SingleLevelDropdown";
 import { allTheLevels } from "fixtures/levelsFixtures";
 
 vi.mock("react", async () => ({
   ...await vi.importActual("react"),
-  useState: vi.fn(),
 }));
 
 describe("SingleLevelDropdown tests", () => {
   beforeEach(() => {
-    useState.mockImplementation(await vi.importActual("react").useState);
+    vi.spyOn(react, "useState");
   });
 
   afterEach(() => {
@@ -106,7 +105,7 @@ describe("SingleLevelDropdown tests", () => {
     getItemSpy.mockImplementation(() => "G");
 
     const setLevelStateSpy = vi.fn();
-    useState.mockImplementation((x) => [x, setLevelStateSpy]);
+    react.useState.mockImplementation((x) => [x, setLevelStateSpy]);
 
     render(
       <SingleLevelDropdown
@@ -117,7 +116,7 @@ describe("SingleLevelDropdown tests", () => {
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("G"));
+    await waitFor(() => expect(react.useState).toBeCalledWith("G"));
   });
 
   test("when localstorage has no value, U is passed to useState", async () => {
@@ -125,7 +124,7 @@ describe("SingleLevelDropdown tests", () => {
     getItemSpy.mockImplementation(() => null);
 
     const setLevelStateSpy = vi.fn();
-    useState.mockImplementation((x) => [x, setLevelStateSpy]);
+    react.useState.mockImplementation((x) => [x, setLevelStateSpy]);
 
     render(
       <SingleLevelDropdown
@@ -136,6 +135,6 @@ describe("SingleLevelDropdown tests", () => {
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("U"));
+    await waitFor(() => expect(react.useState).toBeCalledWith("U"));
   });
 });

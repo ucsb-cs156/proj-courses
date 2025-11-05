@@ -2,14 +2,13 @@ import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
-import { useState } from "react";
+import * as react from "react";
 
 import PersonalScheduleDropdown from "main/components/PersonalSchedules/PersonalScheduleDropdown";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
 vi.mock("react", async () => ({
   ...await vi.importActual("react"),
-  useState: vi.fn(),
   compareValues: vi.fn(),
 }));
 
@@ -20,7 +19,7 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   beforeEach(() => {
-    useState.mockImplementation(await vi.importActual("react").useState);
+    vi.spyOn(react, "useState");
   });
 
   afterEach(() => {
@@ -126,7 +125,7 @@ describe("SingleSubjectDropdown tests", () => {
     getItemSpy.mockImplementation(() => "1");
 
     const setScheduleStateSpy = vi.fn();
-    useState.mockImplementation((x) => [x, setScheduleStateSpy]);
+    react.useState.mockImplementation((x) => [x, setScheduleStateSpy]);
 
     render(
       <PersonalScheduleDropdown
@@ -137,7 +136,7 @@ describe("SingleSubjectDropdown tests", () => {
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("1"));
+    await waitFor(() => expect(react.useState).toBeCalledWith("1"));
   });
 
   test("when localstorage has no value, first element of schedule is passed to useState", async () => {
@@ -145,7 +144,7 @@ describe("SingleSubjectDropdown tests", () => {
     getItemSpy.mockImplementation(() => null);
 
     const setScheduleStateSpy = vi.fn();
-    useState.mockImplementation((x) => [x, setScheduleStateSpy]);
+    react.useState.mockImplementation((x) => [x, setScheduleStateSpy]);
 
     render(
       <PersonalScheduleDropdown
@@ -157,7 +156,7 @@ describe("SingleSubjectDropdown tests", () => {
     );
 
     await waitFor(() =>
-      expect(useState).toBeCalledWith(expect.objectContaining({})),
+      expect(react.useState).toBeCalledWith(expect.objectContaining({})),
     );
   });
 
