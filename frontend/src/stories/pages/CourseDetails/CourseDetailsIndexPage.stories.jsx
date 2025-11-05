@@ -9,27 +9,19 @@ import { oneQuarterCourse } from "fixtures/gradeHistoryFixtures";
 
 import { http, HttpResponse } from "msw";
 
-import {
-  withRouter,
-  reactRouterParameters,
-} from "storybook-addon-remix-react-router";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 export default {
   title: "pages/CourseDetails/CourseDetailsIndexPage",
   component: CourseDetailsIndexPage,
-  decorators: [withRouter],
-  parameters: {
-    reactRouter: reactRouterParameters({
-      location: {
-        pathParams: { qtr: "20221", enrollCode: "06619" },
-      },
-      routing: { path: "/coursedetails/:qtr/:enrollCode" },
-    }),
-  },
 };
 
 const Template = (args) => {
-  return <CourseDetailsIndexPage {...args} />;
+  return <MemoryRouter initialEntries={["/coursedetails/20221/06619"]}>
+    <Routes>
+      <Route path="/coursedetails/:qtr/:enrollCode" element={<CourseDetailsIndexPage {...args} />} />
+    </Routes>
+  </MemoryRouter>;
 };
 
 export const Default = Template.bind({});
