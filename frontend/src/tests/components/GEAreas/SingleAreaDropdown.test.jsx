@@ -7,21 +7,20 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import React from "react";
+import * as react from "react";
 import * as backend from "main/utils/useBackend";
 import SingleAreaDropdown from "main/components/GEAreas/SingleAreaDropdown";
 import allGEAreas from "fixtures/singleAreaDropdownFixtures";
 
 vi.mock("react", async () => ({
   ...await vi.importActual("react"),
-  useState: vi.fn(),
   compareValues: vi.fn(),
 }));
 
 describe("SingleAreaDropdown tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
-    useState.mockImplementation(await vi.importActual("react").useState);
+    vi.spyOn(react, "useState");
   });
   beforeEach(() => {
     vi.spyOn(console, "error");

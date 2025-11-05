@@ -7,6 +7,7 @@ import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { toast } from "react-toastify";
+import * as useBackend from "main/utils/useBackend.jsx";
 
 import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
 
@@ -83,7 +84,7 @@ describe("GEAreaSearchForm tests", () => {
 
       setItemSpy.mockImplementation(() => null);
       useBackendSpy = vi.spyOn(
-        require("main/utils/useBackend"),
+        useBackend,
         "useBackend",
       );
     });

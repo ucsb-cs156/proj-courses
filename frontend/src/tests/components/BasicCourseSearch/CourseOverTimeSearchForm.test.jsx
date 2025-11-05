@@ -11,6 +11,7 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import * as useBackend from "main/utils/useBackend.jsx";
 
 import CourseOverTimeSearchForm from "main/components/BasicCourseSearch/CourseOverTimeSearchForm";
 
@@ -631,7 +632,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       });
       invalidateQueriesSpy = vi.spyOn(queryClient, "invalidateQueries");
       useBackendSpy = vi.spyOn(
-        require("main/utils/useBackend"),
+        useBackend,
         "useBackend",
       );
     });

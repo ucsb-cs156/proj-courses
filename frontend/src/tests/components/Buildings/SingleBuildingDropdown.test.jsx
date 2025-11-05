@@ -2,7 +2,7 @@ import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
-import { useState } from "react";
+import * as react from "react";
 
 import SingleBuildingDropdown from "main/components/Buildings/SingleBuildingDropdown";
 import { oneBuilding } from "fixtures/buildingFixtures";
@@ -10,7 +10,6 @@ import { threeBuildings } from "fixtures/buildingFixtures";
 
 vi.mock("react", async () => ({
   ...await vi.importActual("react"),
-  useState: vi.fn(),
   compareValues: vi.fn(),
 }));
 
@@ -21,7 +20,7 @@ describe("SingleBuildingDropdown tests", () => {
   });
 
   beforeEach(() => {
-    useState.mockImplementation(await vi.importActual("react").useState);
+    vi.spyOn(react, "useState");
   });
 
   afterEach(() => {
@@ -162,7 +161,7 @@ describe("SingleBuildingDropdown tests", () => {
     getItemSpy.mockImplementation(() => "ELLSN");
 
     const setBuildingStateSpy = vi.fn();
-    useState.mockImplementation((x) => [x, setBuildingStateSpy]);
+    react.useState.mockImplementation((x) => [x, setBuildingStateSpy]);
 
     render(
       <SingleBuildingDropdown
@@ -173,7 +172,7 @@ describe("SingleBuildingDropdown tests", () => {
       />,
     );
 
-    await waitFor(() => expect(useState).toBeCalledWith("ELLSN"));
+    await waitFor(() => expect(react.useState).toBeCalledWith("ELLSN"));
   });
 
   test("when localstorage has no value, first element of building list is passed to useState", async () => {
@@ -181,7 +180,7 @@ describe("SingleBuildingDropdown tests", () => {
     getItemSpy.mockImplementation(() => null);
 
     const setBuildingStateSpy = vi.fn();
-    useState.mockImplementation((x) => [x, setBuildingStateSpy]);
+    react.useState.mockImplementation((x) => [x, setBuildingStateSpy]);
 
     render(
       <SingleBuildingDropdown
@@ -193,7 +192,7 @@ describe("SingleBuildingDropdown tests", () => {
     );
 
     await waitFor(() =>
-      expect(useState).toBeCalledWith(expect.objectContaining({})),
+      expect(react.useState).toBeCalledWith(expect.objectContaining({})),
     );
   });
 

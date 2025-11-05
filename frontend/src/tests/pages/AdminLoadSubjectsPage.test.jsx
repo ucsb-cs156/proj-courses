@@ -9,6 +9,7 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import AdminLoadSubjectsPage from "main/pages/Admin/AdminLoadSubjectsPage";
+import * as useBackend from "main/utils/useBackend.jsx";
 
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
@@ -77,7 +78,7 @@ describe("AdminLoadSubjectsPage tests", () => {
 
   test("what happens when you click load, admin - originally nothing in table, load 3 subjects", async () => {
     const useBackendSpy = vi.spyOn(
-      require("main/utils/useBackend"),
+      useBackend,
       "useBackend",
     );
     setupAdminUser();

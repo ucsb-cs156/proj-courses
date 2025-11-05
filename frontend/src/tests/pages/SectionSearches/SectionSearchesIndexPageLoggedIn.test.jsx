@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import userEvent from "@testing-library/user-event";
+import * as useBackend from "main/utils/useBackend.jsx";
 
 import SectionSearchesIndexPageLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageLoggedIn";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -47,8 +48,8 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
     const useBackendSpy = vi.spyOn(
-      require("main/utils/useBackend"),
-      "useBackend",
+        useBackend,
+        "useBackend",
     );
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock

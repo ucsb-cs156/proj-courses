@@ -1,19 +1,16 @@
 import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import * as react from "react";
 
 import GenericDropdown from "main/components/Utils/GenericDropdown";
 
 vi.mock("react", async () => ({
   ...await vi.importActual("react"),
-  useState: vi.fn(),
 }));
 
 describe("GenericDropdown tests", () => {
-  beforeEach(() => {
-    useState.mockImplementation(await vi.importActual("react").useState);
-  });
+  vi.spyOn(react, "useState");
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -43,7 +40,7 @@ describe("GenericDropdown tests", () => {
     getItemSpy.mockImplementation(() => "Pepperoni");
 
     const setQuarterStateSpy = vi.fn();
-    useState.mockImplementation((x) => [x, setQuarterStateSpy]);
+    react.useState.mockImplementation((x) => [x, setQuarterStateSpy]);
 
     render(
       <GenericDropdown

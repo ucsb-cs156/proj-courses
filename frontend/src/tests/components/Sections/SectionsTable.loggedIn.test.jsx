@@ -18,11 +18,12 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
 import { useBackendMutation } from "main/utils/useBackend";
+import { toast } from "react-toastify";
 
 // mock the error console to avoid cluttering the test output
-import mockConsole from "tests/testutils/mockConsole";;
+import mockConsole from "tests/testutils/mockConsole";
 let restoreConsole;
-
+const toast = vi.fn();
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
@@ -30,10 +31,12 @@ vi.mock("react-router-dom", async () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-vi.mock("react-toastify", async () => {
-  const toast = vi.fn();
-  toast.error = vi.fn();
-  return { toast };
+vi.mock("react-toastify", async (importOriginal) => {
+  const mockToast = vi.fn();
+  mockToast.error = vi.fn();
+  return {
+  ...(await importOriginal()),
+  toast: mockToast};
 });
 
 vi.mock("main/utils/useBackend", async () => ({
@@ -73,7 +76,6 @@ describe("SectionsTable tests", () => {
   describe("onSuccess", () => {
     it("should display a success message for new course creation", () => {
       const response = [{ id: 1, enrollCd: "12345" }];
-      const toast = require("react-toastify").toast;
       onSuccess(response);
       expect(toast).toHaveBeenCalledWith(
         "New course Created - id: 1 enrollCd: 12345",
@@ -86,7 +88,6 @@ describe("SectionsTable tests", () => {
         { enrollCd: "67890" },
         { enrollCd: "54321" },
       ];
-      const toast = require("react-toastify").toast;
       onSuccess(response);
       expect(toast).toHaveBeenCalledWith(
         "Course 12345 replaced old section 54321 with new section 67890",
@@ -109,7 +110,6 @@ describe("SectionsTable tests", () => {
       // arrange
 
       const queryClient = new QueryClient();
-      const toast = require("react-toastify").toast;
       useBackendMutation.mockReturnValue({
         mutate: vi.fn(),
       });
@@ -148,7 +148,6 @@ describe("SectionsTable tests", () => {
       const error = {
         response: {},
       };
-      const toast = require("react-toastify").toast;
       onError(error);
       expect(toast.error).toHaveBeenCalledWith(
         "An unexpected error occurred adding the schedule: " +

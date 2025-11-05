@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import * as useBackend from "main/utils/useBackend.jsx";
 
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -48,8 +49,8 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
 
   test("calls UCSB Course over time search api correctly with 3 section response", async () => {
     const useBackendMutationSpy = vi.spyOn(
-      require("main/utils/useBackend"),
-      "useBackendMutation",
+      useBackend,
+      "useBackendMutation"
     );
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
