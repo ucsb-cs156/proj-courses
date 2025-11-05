@@ -79,7 +79,7 @@ describe("BasicCourseSearchForm tests", () => {
 
     const expectedKey = "BasicSearch.Subject-option-MATH";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     const selectSubject = screen.getByLabelText("Subject Area");
@@ -127,7 +127,7 @@ describe("BasicCourseSearchForm tests", () => {
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
@@ -170,7 +170,7 @@ describe("BasicCourseSearchForm tests", () => {
 
     const expectedKey = "BasicSearch.Subject-option-MATH";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
