@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useCurrentUser, useLogout, hasRole } from "main/utils/currentUser";
 import { renderHook, waitFor } from "@testing-library/react";
-import mockConsole from "jest-mock-console";
+import mockConsole from "tests/testutils/mockConsole";;
 import { act } from "react";
 import { useNavigate } from "react-router-dom";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";

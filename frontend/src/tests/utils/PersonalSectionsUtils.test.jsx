@@ -2,7 +2,7 @@ import {
   onDeleteSuccess,
   cellToAxiosParamsDelete,
 } from "main/utils/PersonalSectionsUtils";
-import mockConsole from "jest-mock-console";
+import mockConsole from "tests/testutils/mockConsole";;
 
 const mockToast = jest.fn();
 jest.mock("react-toastify", () => {

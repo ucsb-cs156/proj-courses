@@ -19,7 +19,7 @@ import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import { useBackendMutation } from "main/utils/useBackend";
 
 // mock the error console to avoid cluttering the test output
-import mockConsole from "jest-mock-console";
+import mockConsole from "tests/testutils/mockConsole";;
 let restoreConsole;
 
 const mockedNavigate = jest.fn();

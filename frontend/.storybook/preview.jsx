@@ -61,7 +61,7 @@ export const decorators = [
 ];
 
 
-/** @type { import('@storybook/react').Preview } */
+/** @type { import('@storybook/react-webpack5').Preview } */
 const preview = {
   parameters: {
     controls: {

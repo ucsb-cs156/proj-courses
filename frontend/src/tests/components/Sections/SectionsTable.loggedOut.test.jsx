@@ -12,7 +12,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
 // mock the error console to avoid cluttering the test output
-import mockConsole from "jest-mock-console";
+import mockConsole from "tests/testutils/mockConsole";;
 
 describe("SectionsTable.loggedOut tests", () => {
   let axiosMock;

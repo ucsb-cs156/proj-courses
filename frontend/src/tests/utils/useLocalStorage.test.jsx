@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
 import useLocalStorage from "main/utils/useLocalStorage";
-import mockConsole from "jest-mock-console";
+import mockConsole from "tests/testutils/mockConsole";;
 
 describe("useLocalStorage tests", () => {
   beforeEach(() => {
