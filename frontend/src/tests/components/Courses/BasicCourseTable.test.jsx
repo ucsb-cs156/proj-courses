@@ -1,13 +1,14 @@
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { coursesFixtures } from "fixtures/courseFixtures";
 import BasicCourseTable from "main/components/Courses/BasicCourseTable";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", () => ({
+  ...vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 

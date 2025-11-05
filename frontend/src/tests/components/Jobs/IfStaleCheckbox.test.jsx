@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -7,7 +8,7 @@ describe("IfStaleCheckbox tests", () => {
   const queryClient = new QueryClient();
 
   test("Has the expected content", () => {
-    const mockSetIfStale = jest.fn();
+    const mockSetIfStale = vi.fn();
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -28,7 +29,7 @@ describe("IfStaleCheckbox tests", () => {
       ifStale = stale;
     };
 
-    const mockOnChange = jest.fn();
+    const mockOnChange = vi.fn();
 
     render(
       <QueryClientProvider client={queryClient}>

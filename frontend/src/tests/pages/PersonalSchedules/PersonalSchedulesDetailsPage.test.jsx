@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -8,9 +9,9 @@ import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", () => {
+  const originalModule = vi.importActual("react-router-dom");
   return {
     __esModule: true,
     ...originalModule,
@@ -25,9 +26,9 @@ jest.mock("react-router-dom", () => {
   };
 });
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", () => {
+  const originalModule = vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -52,7 +53,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 

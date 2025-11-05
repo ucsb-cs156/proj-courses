@@ -1,16 +1,17 @@
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import GeneralEducationSearchPage from "main/pages/GeneralEducation/Search/GeneralEducationSearchPage";
 
-jest.mock("main/utils/currentUser", () => ({
+vi.mock("main/utils/currentUser", () => ({
   useCurrentUser: () => ({
     data: { loggedIn: false, root: { user: { email: "test@example.com" } } },
   }),
-  useLogout: () => ({ mutate: jest.fn() }),
+  useLogout: () => ({ mutate: vi.fn() }),
   hasRole: (_user, _role) => false, // or customize per role
 }));
 
-jest.mock("main/utils/systemInfo", () => ({
+vi.mock("main/utils/systemInfo", () => ({
   useSystemInfo: () => ({ data: {} }),
 }));
 

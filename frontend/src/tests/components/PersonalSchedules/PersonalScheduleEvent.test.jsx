@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 /* eslint-disable jest/no-conditional-expect */
 import React from "react";
 import { render, screen, fireEvent, within } from "@testing-library/react";
@@ -5,9 +7,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import PersonalScheduleEvent from "main/components/PersonalSchedules/PersonalScheduleEvent";
 
-const mockedNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockedNavigate = vi.fn();
+vi.mock("react-router-dom", () => ({
+  ...vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -115,7 +117,7 @@ describe("PersonalScheduleEvent tests", () => {
   });
 
   test("renders action buttons in popover and calls callback on click", async () => {
-    const mockActionCallback = jest.fn();
+    const mockActionCallback = vi.fn();
     const eventWithActions = {
       ...mockEventBase,
       actions: [
@@ -184,12 +186,12 @@ describe("PersonalScheduleEvent tests", () => {
         {
           text: "Edit",
           variant: "primary",
-          callback: jest.fn(),
+          callback: vi.fn(),
         },
         {
           text: "Delete",
           variant: "danger",
-          callback: jest.fn(),
+          callback: vi.fn(),
         },
       ],
     };

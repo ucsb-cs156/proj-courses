@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -9,9 +10,9 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import AdminLoadSubjectsPage from "main/pages/Admin/AdminLoadSubjectsPage";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", () => {
+  const originalModule = vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -75,7 +76,7 @@ describe("AdminLoadSubjectsPage tests", () => {
   });
 
   test("what happens when you click load, admin - originally nothing in table, load 3 subjects", async () => {
-    const useBackendSpy = jest.spyOn(
+    const useBackendSpy = vi.spyOn(
       require("main/utils/useBackend"),
       "useBackend",
     );

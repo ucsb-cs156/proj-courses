@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import {
   daysOfWeek,
   hours,
@@ -7,8 +8,8 @@ import {
 import * as timeUtils from "main/utils/timeUtils";
 
 // Mock the timeUtils dependency
-jest.mock("main/utils/timeUtils", () => ({
-  hhmmTohhmma: jest.fn().mockImplementation((time) => {
+vi.mock("main/utils/timeUtils", () => ({
+  hhmmTohhmma: vi.fn().mockImplementation((time) => {
     // Simple mock implementation for test
     if (time === "10:00") return "10:00 AM";
     if (time === "14:30") return "2:30 PM";

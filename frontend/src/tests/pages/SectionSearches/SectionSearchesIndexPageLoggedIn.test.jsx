@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -11,9 +12,9 @@ import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import primaryFixtures from "fixtures/primaryFixtures";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", () => {
+  const originalModule = vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -45,7 +46,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
   });
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
-    const useBackendSpy = jest.spyOn(
+    const useBackendSpy = vi.spyOn(
       require("main/utils/useBackend"),
       "useBackend",
     );

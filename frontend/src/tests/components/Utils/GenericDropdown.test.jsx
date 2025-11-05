@@ -1,24 +1,25 @@
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 
 import GenericDropdown from "main/components/Utils/GenericDropdown";
 
-jest.mock("react", () => ({
-  ...jest.requireActual("react"),
-  useState: jest.fn(),
+vi.mock("react", () => ({
+  ...vi.importActual("react"),
+  useState: vi.fn(),
 }));
 
 describe("GenericDropdown tests", () => {
   beforeEach(() => {
-    useState.mockImplementation(jest.requireActual("react").useState);
+    useState.mockImplementation(vi.importActual("react").useState);
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  const setPizzaTopping = jest.fn();
+  const setPizzaTopping = vi.fn();
 
   test("when I select an object, the value changes", async () => {
     render(
@@ -38,10 +39,10 @@ describe("GenericDropdown tests", () => {
   });
 
   test("when localstorage has a value, it is passed to useState", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => "Pepperoni");
 
-    const setQuarterStateSpy = jest.fn();
+    const setQuarterStateSpy = vi.fn();
     useState.mockImplementation((x) => [x, setQuarterStateSpy]);
 
     render(

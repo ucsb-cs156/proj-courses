@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -6,11 +7,11 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import AdminJobLogPage from "main/pages/Admin/AdminJobLogPage";
 import { useBackend } from "main/utils/useBackend";
 
-jest.mock("main/utils/useBackend");
+vi.mock("main/utils/useBackend");
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", () => ({
+  ...vi.importActual("react-router-dom"),
   useNavigate: () => mockNavigate,
 }));
 
@@ -18,7 +19,7 @@ describe("AdminJobLogPage tests", () => {
   const queryClient = new QueryClient();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("renders the AdminJobLogPage with back button and header", async () => {

@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import SectionsTableBase from "main/components/SectionsTableBase";
 import primaryFixtures from "fixtures/primaryFixtures";
@@ -112,7 +113,7 @@ describe("SectionsTableBase tests", () => {
       const actualReactTable = require("@tanstack/react-table");
       const actualUseReactTable = actualReactTable.useReactTable;
 
-      jest
+      vi
         .spyOn(actualReactTable, "useReactTable")
         .mockImplementation((opts) => {
           // Call the real hook to get the table object
@@ -172,7 +173,7 @@ describe("SectionsTableBase tests", () => {
       expect(screen.getByText("Real Footer")).toBeInTheDocument();
 
       // Restore the original implementation
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
   });
 });

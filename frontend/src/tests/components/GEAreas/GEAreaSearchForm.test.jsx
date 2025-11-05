@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -9,8 +10,8 @@ import { toast } from "react-toastify";
 
 import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
 
-jest.mock("react-toastify", () => ({
-  toast: jest.fn(),
+vi.mock("react-toastify", () => ({
+  toast: vi.fn(),
 }));
 
 let axiosMock;
@@ -19,7 +20,7 @@ let useBackendSpy;
 describe("GEAreaSearchForm tests", () => {
   describe("GEAreaSearchForm tests with healthy backend", () => {
     const queryClient = new QueryClient();
-    const addToast = jest.fn();
+    const addToast = vi.fn();
     let getItemSpy, setItemSpy;
 
     beforeEach(() => {
@@ -27,9 +28,9 @@ describe("GEAreaSearchForm tests", () => {
       axiosMock.reset();
       axiosMock.resetHistory();
 
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       // Silence console.error
-      jest.spyOn(console, "error").mockImplementation(() => {});
+      vi.spyOn(console, "error").mockImplementation(() => {});
 
       // Mock current user + system info
       axiosMock
@@ -65,8 +66,8 @@ describe("GEAreaSearchForm tests", () => {
       ]);
 
       toast.mockReturnValue({ addToast });
-      getItemSpy = jest.spyOn(Storage.prototype, "getItem");
-      setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+      getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+      setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
       // FIX: Mock getItem to return a value ONLY for the correct key.
       // This will cause the test to fail if the key is mutated.
@@ -81,14 +82,14 @@ describe("GEAreaSearchForm tests", () => {
       });
 
       setItemSpy.mockImplementation(() => null);
-      useBackendSpy = jest.spyOn(
+      useBackendSpy = vi.spyOn(
         require("main/utils/useBackend"),
         "useBackend",
       );
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       getItemSpy.mockRestore();
       setItemSpy.mockRestore();
       toast.mockClear();
@@ -185,7 +186,7 @@ describe("GEAreaSearchForm tests", () => {
     });
 
     test("submit button calls fetchJSON with correct args and sets local storage", async () => {
-      const fetchJSONSpy = jest.fn();
+      const fetchJSONSpy = vi.fn();
       render(<WrappedForm fetchJSON={fetchJSONSpy} />);
 
       // wait for areas

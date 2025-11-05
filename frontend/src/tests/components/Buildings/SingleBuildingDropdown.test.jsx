@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
@@ -7,32 +8,32 @@ import SingleBuildingDropdown from "main/components/Buildings/SingleBuildingDrop
 import { oneBuilding } from "fixtures/buildingFixtures";
 import { threeBuildings } from "fixtures/buildingFixtures";
 
-jest.mock("react", () => ({
-  ...jest.requireActual("react"),
-  useState: jest.fn(),
-  compareValues: jest.fn(),
+vi.mock("react", () => ({
+  ...vi.importActual("react"),
+  useState: vi.fn(),
+  compareValues: vi.fn(),
 }));
 
 describe("SingleBuildingDropdown tests", () => {
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 
   beforeEach(() => {
-    useState.mockImplementation(jest.requireActual("react").useState);
+    useState.mockImplementation(vi.importActual("react").useState);
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
     console.error.mockRestore();
   });
 
-  const building = jest.fn();
-  const setBuilding = jest.fn();
+  const building = vi.fn();
+  const setBuilding = vi.fn();
 
   test("renders without crashing on one building", () => {
     render(
@@ -103,8 +104,8 @@ describe("SingleBuildingDropdown tests", () => {
   });
 
   test("if I pass a non-null onChange, it gets called when the value changes", async () => {
-    const onChange = jest.fn();
-    const setBuilding = jest.fn();
+    const onChange = vi.fn();
+    const setBuilding = vi.fn();
     render(
       <SingleBuildingDropdown
         buildings={threeBuildings}
@@ -122,7 +123,7 @@ describe("SingleBuildingDropdown tests", () => {
     await waitFor(() => expect(setBuilding).toBeCalledWith("ELLSN"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
 
-    // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
+    // x.mock.calls[0][0] is the first argument of the first call to the vi.fn() mock x
     const event = onChange.mock.calls[0][0];
     expect(event.target.value).toBe("ELLSN");
   });
@@ -157,10 +158,10 @@ describe("SingleBuildingDropdown tests", () => {
   });
 
   test("when localstorage has a value, it is passed to useState", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => "ELLSN");
 
-    const setBuildingStateSpy = jest.fn();
+    const setBuildingStateSpy = vi.fn();
     useState.mockImplementation((x) => [x, setBuildingStateSpy]);
 
     render(
@@ -176,10 +177,10 @@ describe("SingleBuildingDropdown tests", () => {
   });
 
   test("when localstorage has no value, first element of building list is passed to useState", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
-    const setBuildingStateSpy = jest.fn();
+    const setBuildingStateSpy = vi.fn();
     useState.mockImplementation((x) => [x, setBuildingStateSpy]);
 
     render(

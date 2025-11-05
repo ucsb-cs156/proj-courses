@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -10,18 +11,18 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 import { oneQuarterCourse } from "fixtures/gradeHistoryFixtures";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", () => {
+  const originalModule = vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
     toast: (x) => mockToast(x),
   };
 });
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", () => {
+  const originalModule = vi.importActual("react-router-dom");
   return {
     __esModule: true,
     ...originalModule,
@@ -53,8 +54,8 @@ class ResizeObserver {
 
 window.ResizeObserver = ResizeObserver;
 
-jest.mock("recharts", () => {
-  const OriginalModule = jest.requireActual("recharts");
+vi.mock("recharts", () => {
+  const OriginalModule = vi.importActual("recharts");
 
   return {
     ...OriginalModule,
@@ -69,7 +70,7 @@ jest.mock("recharts", () => {
 describe("CourseDetailsIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 

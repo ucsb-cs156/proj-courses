@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
@@ -6,32 +7,32 @@ import { useState } from "react";
 import PersonalScheduleDropdown from "main/components/PersonalSchedules/PersonalScheduleDropdown";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
-jest.mock("react", () => ({
-  ...jest.requireActual("react"),
-  useState: jest.fn(),
-  compareValues: jest.fn(),
+vi.mock("react", () => ({
+  ...vi.importActual("react"),
+  useState: vi.fn(),
+  compareValues: vi.fn(),
 }));
 
 describe("SingleSubjectDropdown tests", () => {
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 
   beforeEach(() => {
-    useState.mockImplementation(jest.requireActual("react").useState);
+    useState.mockImplementation(vi.importActual("react").useState);
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
     console.error.mockRestore();
   });
 
-  const schedule = jest.fn();
-  const setSchedule = jest.fn();
+  const schedule = vi.fn();
+  const setSchedule = vi.fn();
 
   test("renders without crashing on one schedule", () => {
     render(
@@ -71,7 +72,7 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   test("if I pass a non-null onChange, it gets called when the value changes", async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <PersonalScheduleDropdown
         schedules={personalScheduleFixtures.threePersonalSchedules}
@@ -88,7 +89,7 @@ describe("SingleSubjectDropdown tests", () => {
     await waitFor(() => expect(setSchedule).toBeCalledWith("1"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
 
-    // x.mock.calls[0][0] is the first argument of the first call to the jest.fn() mock x
+    // x.mock.calls[0][0] is the first argument of the first call to the vi.fn() mock x
     const event = onChange.mock.calls[0][0];
     expect(event.target.value).toBe("1");
   });
@@ -121,10 +122,10 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   test("when localstorage has a value, it is passed to useState", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => "1");
 
-    const setScheduleStateSpy = jest.fn();
+    const setScheduleStateSpy = vi.fn();
     useState.mockImplementation((x) => [x, setScheduleStateSpy]);
 
     render(
@@ -140,10 +141,10 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   test("when localstorage has no value, first element of schedule is passed to useState", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
-    const setScheduleStateSpy = jest.fn();
+    const setScheduleStateSpy = vi.fn();
     useState.mockImplementation((x) => [x, setScheduleStateSpy]);
 
     render(

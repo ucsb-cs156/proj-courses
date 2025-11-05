@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -24,7 +25,7 @@ describe("SectionsTable.loggedOut tests", () => {
   beforeEach(() => {
     restoreConsole = mockConsole();
     axiosMock = new AxiosMockAdapter(axios);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock.onGet("/api/currentUser").reply(403, {
@@ -39,7 +40,7 @@ describe("SectionsTable.loggedOut tests", () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     axiosMock.restore();
     restoreConsole();
   });

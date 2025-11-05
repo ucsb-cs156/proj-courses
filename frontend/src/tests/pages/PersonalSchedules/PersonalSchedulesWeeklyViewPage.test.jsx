@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -9,9 +10,9 @@ import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => {
-  const originalModule = jest.requireActual("react-router-dom");
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", () => {
+  const originalModule = vi.importActual("react-router-dom");
   return {
     __esModule: true,
     ...originalModule,
@@ -41,7 +42,7 @@ describe("PersonalSchedulesWeeklyViewPage tests", () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
     mockNavigate.mockClear();
   });

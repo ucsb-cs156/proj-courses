@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import mockConsole from "tests/testutils/mockConsole";;
@@ -6,11 +7,11 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { useBackendMutation } from "main/utils/useBackend";
 
-jest.mock("react-router-dom");
+vi.mock("react-router-dom");
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", () => {
+  const originalModule = vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -57,7 +58,7 @@ describe("utils/useBackend tests", () => {
         },
       });
 
-      const onSuccess = jest.fn().mockImplementation((ucsbDate) => {
+      const onSuccess = vi.fn().mockImplementation((ucsbDate) => {
         mockToast(
           `New ucsbDate Created - id: ${ucsbDate.id} name: ${ucsbDate.name}`,
         );

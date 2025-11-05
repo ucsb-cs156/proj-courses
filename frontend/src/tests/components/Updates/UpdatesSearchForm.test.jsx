@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -15,15 +16,15 @@ describe("UpdatesSearchForm tests", () => {
 
   const queryClient = new QueryClient();
 
-  const updateSubjectArea = jest.fn();
-  const updateQuarter = jest.fn();
-  const updateSortField = jest.fn();
-  const updateSortDirection = jest.fn();
-  const updatePageSize = jest.fn();
+  const updateSubjectArea = vi.fn();
+  const updateQuarter = vi.fn();
+  const updateSortField = vi.fn();
+  const updateSortDirection = vi.fn();
+  const updatePageSize = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error");
+    vi.clearAllMocks();
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
     axiosMock.onGet("/api/systemInfo").reply(200, {
       ...systemInfoFixtures.showingNeither,
@@ -56,7 +57,7 @@ describe("UpdatesSearchForm tests", () => {
   });
 
   test("when I select a quarter, the state for quarter changes and local storage is updated", () => {
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -80,7 +81,7 @@ describe("UpdatesSearchForm tests", () => {
 
   test("when I select a subject, the state for subject changes", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -113,7 +114,7 @@ describe("UpdatesSearchForm tests", () => {
   });
 
   test("when I select a sortField, the state for sortField changes", () => {
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -138,7 +139,7 @@ describe("UpdatesSearchForm tests", () => {
   });
 
   test("when I select a sortDirection, the state for sortDirection changes", () => {
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -170,7 +171,7 @@ describe("UpdatesSearchForm tests", () => {
   });
 
   test("when I select a pageSize, the state for pageSize changes", () => {
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -192,9 +193,9 @@ describe("UpdatesSearchForm tests", () => {
   });
 
   test("renders correctly when fallback values are used", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
-    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,

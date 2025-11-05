@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -15,12 +16,12 @@ import CourseOverTimeSearchForm from "main/components/BasicCourseSearch/CourseOv
 
 import { useSystemInfo } from "main/utils/systemInfo";
 
-jest.mock("react-toastify", () => ({
-  toast: jest.fn(),
+vi.mock("react-toastify", () => ({
+  toast: vi.fn(),
 }));
 
-jest.mock("main/utils/systemInfo", () => ({
-  useSystemInfo: jest.fn(),
+vi.mock("main/utils/systemInfo", () => ({
+  useSystemInfo: vi.fn(),
 }));
 
 // import { useSystemInfo } from "main/utils/systemInfo";
@@ -30,12 +31,12 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     const axiosMock = new AxiosMockAdapter(axios);
 
     const queryClient = new QueryClient();
-    const addToast = jest.fn();
+    const addToast = vi.fn();
 
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       localStorage.clear();
-      jest.spyOn(console, "error");
+      vi.spyOn(console, "error");
       console.error.mockImplementation(() => null);
 
       axiosMock
@@ -91,7 +92,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     });
 
     test("when I select the checkbox, the state for checkbox changes", () => {
-      jest.spyOn(Storage.prototype, "setItem");
+      vi.spyOn(Storage.prototype, "setItem");
 
       render(
         <QueryClientProvider client={queryClient}>
@@ -117,7 +118,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         sampleKey: "sampleValue",
       };
 
-      const fetchJSONSpy = jest.fn();
+      const fetchJSONSpy = vi.fn();
 
       fetchJSONSpy.mockResolvedValue(sampleReturnValue);
 
@@ -165,7 +166,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         total: 0,
       };
 
-      const fetchJSONSpy = jest.fn();
+      const fetchJSONSpy = vi.fn();
 
       fetchJSONSpy.mockResolvedValue(sampleReturnValue);
 
@@ -209,11 +210,11 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     });
 
     test("Fallbacks render correctly", () => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       axiosMock.reset();
       axiosMock.onGet("/api/systemInfo").reply(500);
 
-      jest.spyOn(Storage.prototype, "getItem").mockImplementation(() => null);
+      vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => null);
 
       useSystemInfo.mockReturnValue({
         data: {},
@@ -267,9 +268,9 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     const queryClient = new QueryClient();
 
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       localStorage.clear();
-      jest.spyOn(console, "error");
+      vi.spyOn(console, "error");
       console.error.mockImplementation(() => null);
 
       axiosMock
@@ -283,7 +284,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     });
 
     test("renders correctly when local storage has no values", () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
       getItemSpy.mockImplementation(() => null);
 
       render(
@@ -311,7 +312,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     });
 
     it("checks the expected values in local storage", async () => {
-      jest.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
+      vi.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
         switch (key) {
           case "CourseOverTimeInstructorSearch.StartQuarter":
             return "20211";
@@ -325,7 +326,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
             return null;
         }
       });
-      const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
 
       render(
         <QueryClientProvider client={queryClient}>
@@ -363,7 +364,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     // test("when local storage has no end quarter value, it uses the default end quarter from system info", async () => {
     //   // We are using systemInfoFixtures.showingBoth, which has endQtrYYYYQ as "20222"
     //   // We will mock localStorage to return null for the end quarter specifically.
-    //   jest.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
+    //   vi.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
     //     if (key === "CourseOverTimeInstructorSearch.EndQuarter") {
     //       return null;
     //     }
@@ -395,7 +396,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
     test("when local storage is completely empty, it defaults to the system info quarters", async () => {
       // Clear local storage and mock getItem to ensure all values are null
       localStorage.clear();
-      jest.spyOn(Storage.prototype, "getItem").mockReturnValue(null);
+      vi.spyOn(Storage.prototype, "getItem").mockReturnValue(null);
 
       // We are using systemInfoFixtures.showingBoth, which has startQtrYYYYQ as "20221"
       // and endQtrYYYYQ as "20222".

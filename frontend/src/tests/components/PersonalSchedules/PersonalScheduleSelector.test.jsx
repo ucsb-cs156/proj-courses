@@ -1,10 +1,11 @@
+import { vi } from "vitest";
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import PersonalScheduleSelector from "main/components/PersonalSchedules/PersonalScheduleSelector";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.jsx";
 
-jest.mock("main/utils/quarterUtilities.jsx", () => ({
-  yyyyqToQyy: jest.fn(),
+vi.mock("main/utils/quarterUtilities.jsx", () => ({
+  yyyyqToQyy: vi.fn(),
 }));
 
 describe("PersonalScheduleSelector", () => {
@@ -32,7 +33,7 @@ describe("PersonalScheduleSelector", () => {
   });
 
   test("updates the schedule state and calls setSchedule when a schedule is selected", () => {
-    const setSchedule = jest.fn();
+    const setSchedule = vi.fn();
     render(
       <PersonalScheduleSelector
         controlId="controlId"
@@ -48,8 +49,8 @@ describe("PersonalScheduleSelector", () => {
   });
 
   test("updates the schedule state, calls setSchedule, and calls onChange when a schedule is selected", () => {
-    const setSchedule = jest.fn();
-    const onChange = jest.fn();
+    const setSchedule = vi.fn();
+    const onChange = vi.fn();
     render(
       <PersonalScheduleSelector
         controlId="controlId"
@@ -70,7 +71,7 @@ describe("PersonalScheduleSelector", () => {
   });
 
   test("sets the initial schedule when schedules are loaded", () => {
-    const setSchedule = jest.fn();
+    const setSchedule = vi.fn();
 
     const { rerender } = render(
       <PersonalScheduleSelector
