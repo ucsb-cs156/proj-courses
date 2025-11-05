@@ -8,8 +8,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import PersonalScheduleEvent from "main/components/PersonalSchedules/PersonalScheduleEvent";
 
 const mockedNavigate = vi.fn();
-vi.mock("react-router-dom", () => ({
-  ...vi.importActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 

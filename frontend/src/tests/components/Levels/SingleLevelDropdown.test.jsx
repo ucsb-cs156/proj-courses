@@ -6,14 +6,14 @@ import { useState } from "react";
 import SingleLevelDropdown from "main/components/Levels/SingleLevelDropdown";
 import { allTheLevels } from "fixtures/levelsFixtures";
 
-vi.mock("react", () => ({
-  ...vi.importActual("react"),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
   useState: vi.fn(),
 }));
 
 describe("SingleLevelDropdown tests", () => {
   beforeEach(() => {
-    useState.mockImplementation(vi.importActual("react").useState);
+    useState.mockImplementation(await vi.importActual("react").useState);
   });
 
   afterEach(() => {

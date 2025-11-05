@@ -25,23 +25,23 @@ let restoreConsole;
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", () => ({
-  ...vi.importActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
-vi.mock("react-toastify", () => {
+vi.mock("react-toastify", async () => {
   const toast = vi.fn();
   toast.error = vi.fn();
   return { toast };
 });
 
-vi.mock("main/utils/useBackend", () => ({
+vi.mock("main/utils/useBackend", async () => ({
   useBackend: vi.fn(),
   useBackendMutation: vi.fn(),
 }));
 
-vi.mock("main/utils/currentUser", () => ({
+vi.mock("main/utils/currentUser", async () => ({
   useCurrentUser: () => ({
     data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
   }),
@@ -552,7 +552,7 @@ describe("SectionsTable tests", () => {
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
       vi.clearAllMocks();
-      vi.mock("main/utils/currentUser", () => ({
+      vi.mock("main/utils/currentUser", async () => ({
         useCurrentUser: () => ({
           data: {
             loggedIn: true,
@@ -633,7 +633,7 @@ describe("SectionsTable tests", () => {
   });
 
   describe("AddToScheduleModal interactions when there are no schedules", () => {
-    vi.mock("main/utils/currentUser", () => ({
+    vi.mock("main/utils/currentUser", async () => ({
       useCurrentUser: () => {
         console.log("useCurrentUser called in SectionsTable.test.jsx");
         return {

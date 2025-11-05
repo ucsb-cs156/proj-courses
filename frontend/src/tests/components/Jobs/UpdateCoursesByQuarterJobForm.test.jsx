@@ -10,12 +10,12 @@ import { useSystemInfo } from "main/utils/systemInfo";
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", () => ({
-  ...vi.importActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
-vi.mock("main/utils/systemInfo", () => ({
+vi.mock("main/utils/systemInfo", async () => ({
   useSystemInfo: vi.fn(),
 }));
 

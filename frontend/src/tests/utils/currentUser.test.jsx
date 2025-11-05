@@ -13,7 +13,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 let axiosMock;
 
 vi.mock("react-router-dom");
-const { MemoryRouter } = vi.importActual("react-router-dom");
+const { MemoryRouter } = await vi.importActual("react-router-dom");
 
 describe("utils/currentUser tests", () => {
   describe("useCurrentUser tests", () => {

@@ -12,8 +12,8 @@ import AxiosMockAdapter from "axios-mock-adapter";
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", () => ({
-  ...vi.importActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 

@@ -13,8 +13,8 @@ import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 const mockToast = vi.fn();
-vi.mock("react-toastify", () => {
-  const originalModule = vi.importActual("react-toastify");
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,

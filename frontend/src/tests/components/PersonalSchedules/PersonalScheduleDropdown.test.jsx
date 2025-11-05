@@ -7,8 +7,8 @@ import { useState } from "react";
 import PersonalScheduleDropdown from "main/components/PersonalSchedules/PersonalScheduleDropdown";
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
-vi.mock("react", () => ({
-  ...vi.importActual("react"),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
   useState: vi.fn(),
   compareValues: vi.fn(),
 }));
@@ -20,7 +20,7 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   beforeEach(() => {
-    useState.mockImplementation(vi.importActual("react").useState);
+    useState.mockImplementation(await vi.importActual("react").useState);
   });
 
   afterEach(() => {

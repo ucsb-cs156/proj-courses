@@ -5,14 +5,14 @@ import { useState } from "react";
 
 import GenericDropdown from "main/components/Utils/GenericDropdown";
 
-vi.mock("react", () => ({
-  ...vi.importActual("react"),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
   useState: vi.fn(),
 }));
 
 describe("GenericDropdown tests", () => {
   beforeEach(() => {
-    useState.mockImplementation(vi.importActual("react").useState);
+    useState.mockImplementation(await vi.importActual("react").useState);
   });
 
   afterEach(() => {

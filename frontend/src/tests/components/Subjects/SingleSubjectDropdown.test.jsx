@@ -9,8 +9,8 @@ import { oneSubject } from "fixtures/subjectFixtures";
 import { threeSubjects } from "fixtures/subjectFixtures";
 import { outOfOrderSubjects } from "fixtures/subjectFixtures";
 
-vi.mock("react", () => ({
-  ...vi.importActual("react"),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
   useState: vi.fn(),
   compareValues: vi.fn(),
 }));
@@ -22,7 +22,7 @@ describe("SingleSubjectDropdown tests", () => {
   });
 
   beforeEach(() => {
-    useState.mockImplementation(vi.importActual("react").useState);
+    useState.mockImplementation(await vi.importActual("react").useState);
   });
 
   afterEach(() => {

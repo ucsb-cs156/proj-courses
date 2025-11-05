@@ -8,8 +8,8 @@ import SingleBuildingDropdown from "main/components/Buildings/SingleBuildingDrop
 import { oneBuilding } from "fixtures/buildingFixtures";
 import { threeBuildings } from "fixtures/buildingFixtures";
 
-vi.mock("react", () => ({
-  ...vi.importActual("react"),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
   useState: vi.fn(),
   compareValues: vi.fn(),
 }));
@@ -21,7 +21,7 @@ describe("SingleBuildingDropdown tests", () => {
   });
 
   beforeEach(() => {
-    useState.mockImplementation(vi.importActual("react").useState);
+    useState.mockImplementation(await vi.importActual("react").useState);
   });
 
   afterEach(() => {

@@ -12,8 +12,8 @@ import * as backend from "main/utils/useBackend";
 import SingleAreaDropdown from "main/components/GEAreas/SingleAreaDropdown";
 import allGEAreas from "fixtures/singleAreaDropdownFixtures";
 
-vi.mock("react", () => ({
-  ...vi.importActual("react"),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
   useState: vi.fn(),
   compareValues: vi.fn(),
 }));
@@ -21,7 +21,7 @@ vi.mock("react", () => ({
 describe("SingleAreaDropdown tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
-    useState.mockImplementation(vi.importActual("react").useState);
+    useState.mockImplementation(await vi.importActual("react").useState);
   });
   beforeEach(() => {
     vi.spyOn(console, "error");

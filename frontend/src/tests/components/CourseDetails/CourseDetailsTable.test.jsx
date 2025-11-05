@@ -8,15 +8,15 @@ import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", () => ({
-  ...vi.importActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
 const mockedMutate = vi.fn();
 
-vi.mock("main/utils/useBackend", () => ({
-  ...vi.importActual("main/utils/useBackend"),
+vi.mock("main/utils/useBackend", async () => ({
+  ...await vi.importActual("main/utils/useBackend"),
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 

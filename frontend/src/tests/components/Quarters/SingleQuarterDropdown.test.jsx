@@ -6,14 +6,14 @@ import { useState } from "react";
 import SingleQuarterDropdown from "main/components/Quarters/SingleQuarterDropdown";
 import { quarterRange } from "main/utils/quarterUtilities";
 
-vi.mock("react", () => ({
-  ...vi.importActual("react"),
+vi.mock("react", async () => ({
+  ...await vi.importActual("react"),
   useState: vi.fn(),
 }));
 
 describe("SingleQuarterSelector tests", () => {
   beforeEach(() => {
-    useState.mockImplementation(vi.importActual("react").useState);
+    useState.mockImplementation(await vi.importActual("react").useState);
   });
 
   afterEach(() => {

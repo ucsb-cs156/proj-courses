@@ -9,7 +9,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 vi.mock("react-router-dom");
-const { _MemoryRouter } = vi.importActual("react-router-dom");
+const { _MemoryRouter } = await vi.importActual("react-router-dom");
 
 describe("utils/systemInfo tests", () => {
   describe("useSystemInfo tests", () => {

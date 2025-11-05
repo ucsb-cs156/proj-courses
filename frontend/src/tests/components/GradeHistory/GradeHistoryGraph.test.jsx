@@ -36,8 +36,8 @@ global.ResizeObserver = ResizeObserver;
 // Credit to joshua-phillips's commment at the below link
 // I was debugging this for so long and this finally rendered the ResponsiveContainer
 // https://github.com/recharts/recharts/issues/2268#issuecomment-832287798
-vi.mock("recharts", () => {
-  const OriginalModule = vi.importActual("recharts");
+vi.mock("recharts", async () => {
+  const OriginalModule = await vi.importActual("recharts");
 
   return {
     ...OriginalModule,
@@ -49,8 +49,8 @@ vi.mock("recharts", () => {
   };
 });
 
-vi.mock("react-router-dom", () => ({
-  ...vi.importActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 

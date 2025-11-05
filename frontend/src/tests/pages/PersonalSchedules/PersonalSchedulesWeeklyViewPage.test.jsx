@@ -11,8 +11,8 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 const mockNavigate = vi.fn();
-vi.mock("react-router-dom", () => {
-  const originalModule = vi.importActual("react-router-dom");
+vi.mock("react-router-dom", async () => {
+  const originalModule = await vi.importActual("react-router-dom");
   return {
     __esModule: true,
     ...originalModule,

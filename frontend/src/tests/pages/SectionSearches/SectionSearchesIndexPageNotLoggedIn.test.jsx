@@ -11,7 +11,7 @@ import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import primaryFixtures from "fixtures/primaryFixtures";
 
-vi.mock("main/utils/currentUser", () => ({
+vi.mock("main/utils/currentUser", async () => ({
   useCurrentUser: () => ({
     data: { loggedIn: false, root: { user: { email: "test@example.com" } } },
   }),
@@ -20,8 +20,8 @@ vi.mock("main/utils/currentUser", () => ({
 }));
 
 const mockToast = vi.fn();
-vi.mock("react-toastify", () => {
-  const originalModule = vi.importActual("react-toastify");
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
