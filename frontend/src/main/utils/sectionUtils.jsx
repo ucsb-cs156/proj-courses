@@ -1,4 +1,4 @@
-import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.js";
+import { hhmmTohhmma, convertToTimeRange } from "main/utils/timeUtils.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 

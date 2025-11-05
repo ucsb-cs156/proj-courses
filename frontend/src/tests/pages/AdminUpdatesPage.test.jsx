@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import AdminUpdatesPage from "main/pages/Admin/AdminUpdatesPage.js";
+import AdminUpdatesPage from "main/pages/Admin/AdminUpdatesPage.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 

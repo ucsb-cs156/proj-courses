@@ -12,7 +12,7 @@ import {
   renderInfoLink,
   shouldShowAddToScheduleLink,
   getQuarter,
-} from "main/utils/sectionUtils.js";
+} from "main/utils/sectionUtils.jsx";
 
 const exampleAddToScheduleCallback = (section, schedule) => {
   // Execute the mutation with the provided data

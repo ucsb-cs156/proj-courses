@@ -1,9 +1,9 @@
 import React from "react";
-import UpdatesTable from "main/components/Updates/UpdatesTable.js";
-import { updatesFixtures } from "fixtures/updatesFixtures.js";
+import UpdatesTable from "main/components/Updates/UpdatesTable.jsx";
+import { updatesFixtures } from "fixtures/updatesFixtures.jsx";
 
 export default {
-  title: "components/Updates/UpdatesTable.js",
+  title: "components/Updates/UpdatesTable.jsx",
   component: UpdatesTable,
 };
 

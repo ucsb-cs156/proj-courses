@@ -7,7 +7,7 @@ import {
   formatTime,
   formatStatus,
   convertToFraction,
-} from "main/utils/sectionUtils.js";
+} from "main/utils/sectionUtils.jsx";
 
 function ConvertedSectionTable({ sections, testid = "ConvertedSectionTable" }) {
   const columns = [

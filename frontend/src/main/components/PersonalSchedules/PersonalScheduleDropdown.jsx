@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
-import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.jsx";
 
 const PersonalScheduleDropdown = ({
   schedules,

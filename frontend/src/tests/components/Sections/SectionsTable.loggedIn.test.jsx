@@ -634,7 +634,7 @@ describe("SectionsTable tests", () => {
   describe("AddToScheduleModal interactions when there are no schedules", () => {
     jest.mock("main/utils/currentUser", () => ({
       useCurrentUser: () => {
-        console.log("useCurrentUser called in SectionsTable.test.js");
+        console.log("useCurrentUser called in SectionsTable.test.jsx");
         return {
           data: {
             loggedIn: true,

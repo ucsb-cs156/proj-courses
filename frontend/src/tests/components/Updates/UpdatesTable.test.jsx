@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
-import UpdatesTable from "main/components/Updates/UpdatesTable.js";
-import { updatesFixtures } from "fixtures/updatesFixtures.js";
+import UpdatesTable from "main/components/Updates/UpdatesTable.jsx";
+import { updatesFixtures } from "fixtures/updatesFixtures.jsx";
 
 describe("UpdatesTable tests", () => {
   const queryClient = new QueryClient();

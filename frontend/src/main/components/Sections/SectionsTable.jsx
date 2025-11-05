@@ -2,7 +2,7 @@ import SectionsTableBase from "main/components/SectionsTableBase";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
-import { useCurrentUser } from "main/utils/currentUser.js";
+import { useCurrentUser } from "main/utils/currentUser.jsx";
 
 import {
   formatDays,
@@ -16,7 +16,7 @@ import {
   renderInfoLink,
   shouldShowAddToScheduleLink,
   getQuarter,
-} from "main/utils/sectionUtils.js";
+} from "main/utils/sectionUtils.jsx";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 

@@ -6,7 +6,7 @@ import {
   onDeleteSuccess,
 } from "main/utils/PersonalScheduleUtils";
 import { useNavigate } from "react-router-dom";
-import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.jsx";
 
 export default function PersonalSchedulesTable({
   personalSchedules,

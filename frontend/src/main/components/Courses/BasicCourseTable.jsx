@@ -1,7 +1,7 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
 
-import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.jsx";
 
 export default function BasicCourseTable({ courses }) {
   const columns = [

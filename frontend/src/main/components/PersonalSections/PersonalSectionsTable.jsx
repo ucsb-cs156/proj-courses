@@ -11,7 +11,7 @@ import {
   formatInstructors,
   formatLocation,
   formatTime,
-} from "main/utils/sectionUtils.js";
+} from "main/utils/sectionUtils.jsx";
 import { hasRole } from "main/utils/currentUser";
 
 export default function PersonalSectionsTable({

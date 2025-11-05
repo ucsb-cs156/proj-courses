@@ -1,9 +1,9 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import PersonalScheduleSelector from "main/components/PersonalSchedules/PersonalScheduleSelector";
-import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.jsx";
 
-jest.mock("main/utils/quarterUtilities.js", () => ({
+jest.mock("main/utils/quarterUtilities.jsx", () => ({
   yyyyqToQyy: jest.fn(),
 }));
 

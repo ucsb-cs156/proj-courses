@@ -5,7 +5,7 @@ import {
   formatInstructors,
   formatLocation,
   formatTime,
-} from "main/utils/sectionUtils.js";
+} from "main/utils/sectionUtils.jsx";
 
 export default function CourseDetailsTable({ details }) {
   const columns = [

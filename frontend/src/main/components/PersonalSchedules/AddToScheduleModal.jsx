@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
 import { Link } from "react-router-dom";
 import { schedulesFilter } from "main/utils/PersonalScheduleUtils";
-import { yyyyqToQyy } from "main/utils/quarterUtilities.js";
+import { yyyyqToQyy } from "main/utils/quarterUtilities.jsx";
 
 export default function AddToScheduleModal({
   quarter,
