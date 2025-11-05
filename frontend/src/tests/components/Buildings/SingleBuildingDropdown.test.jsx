@@ -60,9 +60,9 @@ describe("SingleBuildingDropdown tests", () => {
     const EMBAR = "sbd1-option-2";
 
     // Check that blanks are replaced with hyphens
-    await waitFor(() => expect(screen.getByTestId(ELLSN).toBeInTheDocument));
-    await waitFor(() => expect(screen.getByTestId(ELNGS).toBeInTheDocument));
-    await waitFor(() => expect(screen.getByTestId(EMBAR).toBeInTheDocument));
+    await waitFor(() => expect(screen.getByTestId(ELLSN)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId(ELNGS)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId(EMBAR)).toBeInTheDocument());
 
     // Check that the options are sorted
     // See: https://www.atkinsondev.com/post/react-testing-library-order/
@@ -152,7 +152,7 @@ describe("SingleBuildingDropdown tests", () => {
 
     const expectedKey = "sbd1-option-0";
     await waitFor(() =>
-      expect(screen.getByTestId(expectedKey).toBeInTheDocument),
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
   });
 
