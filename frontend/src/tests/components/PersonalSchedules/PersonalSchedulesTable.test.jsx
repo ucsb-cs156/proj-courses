@@ -24,6 +24,11 @@ vi.mock("main/utils/useBackend", async () => ({
 describe("PersonalSchedulesTable tests", () => {
   const queryClient = new QueryClient();
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+  })
+
   test("renders without crashing for empty table with user not logged in", () => {
     const currentUser = null;
 

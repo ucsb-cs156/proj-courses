@@ -3,6 +3,15 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import SectionsTableBase from "main/components/SectionsTableBase";
 import primaryFixtures from "fixtures/primaryFixtures";
 import sectionsTableBaseFixtures from "fixtures/sectionsTableBaseFixtures";
+import {useReactTable} from "@tanstack/react-table";
+
+vi.mock("@tanstack/react-table", async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        useReactTable: vi.fn((opts) => actual.useReactTable(opts)), // wrapped mock
+    };
+});
 
 describe("SectionsTableBase tests", () => {
   describe("SectionsTableBase regular tests", () => {
@@ -91,7 +100,7 @@ describe("SectionsTableBase tests", () => {
     });
   });
   describe("SectionsTableBase tests for corner cases", () => {
-    test("renders header with placeholder (null) when header.isPlaceholder is true", () => {
+    test("renders header with placeholder (null) when header.isPlaceholder is true", async () => {
       // Create a columns array with a placeholder header
       const columnsWithPlaceholder = [
         {
@@ -110,49 +119,46 @@ describe("SectionsTableBase tests", () => {
       const data = [{ placeholderCol: "foo", realCol: "bar" }];
 
       // Import the actual useReactTable before mocking
-      const actualReactTable = require("@tanstack/react-table");
-      const actualUseReactTable = actualReactTable.useReactTable;
-
-      vi
-        .spyOn(actualReactTable, "useReactTable")
-        .mockImplementation((opts) => {
-          // Call the real hook to get the table object
-          const realTable = actualUseReactTable(opts);
-          // Override getHeaderGroups and getFooterGroups to simulate a placeholder header/footer
-          return {
-            ...realTable,
-            getHeaderGroups: () => [
-              {
-                id: "headerGroup1",
-                headers: [
-                  { id: "placeholderCol", colSpan: 1, isPlaceholder: true },
-                  {
-                    id: "realCol",
-                    colSpan: 1,
-                    isPlaceholder: false,
-                    column: { columnDef: { header: "Real Header" } },
-                    getContext: () => ({}),
-                  },
-                ],
-              },
-            ],
-            getFooterGroups: () => [
-              {
-                id: "footerGroup1",
-                headers: [
-                  { id: "placeholderCol", colSpan: 1, isPlaceholder: true },
-                  {
-                    id: "realCol",
-                    colSpan: 1,
-                    isPlaceholder: false,
-                    column: { columnDef: { footer: "Real Footer" } },
-                    getContext: () => ({}),
-                  },
-                ],
-              },
-            ],
-          };
-        });
+    const actual = await vi.importActual("@tanstack/react-table");
+     useReactTable.mockImplementation((opts) => {
+              // Call the real hook to get the table object
+              const realTable = actual.useReactTable(opts);
+              console.log("running fake table")
+              // Override getHeaderGroups and getFooterGroups to simulate a placeholder header/footer
+              return {
+                  ...realTable,
+                  getHeaderGroups: () => [
+                      {
+                          id: "headerGroup1",
+                          headers: [
+                              { id: "placeholderCol", colSpan: 1, isPlaceholder: true },
+                              {
+                                  id: "realCol",
+                                  colSpan: 1,
+                                  isPlaceholder: false,
+                                  column: { columnDef: { header: "Real Header" } },
+                                  getContext: () => ({}),
+                              },
+                          ],
+                      },
+                  ],
+                  getFooterGroups: () => [
+                      {
+                          id: "footerGroup1",
+                          headers: [
+                              { id: "placeholderCol", colSpan: 1, isPlaceholder: true },
+                              {
+                                  id: "realCol",
+                                  colSpan: 1,
+                                  isPlaceholder: false,
+                                  column: { columnDef: { footer: "Real Footer" } },
+                                  getContext: () => ({}),
+                              },
+                          ],
+                      },
+                  ],
+              };
+      });
 
       render(
         <SectionsTableBase
@@ -161,6 +167,8 @@ describe("SectionsTableBase tests", () => {
           testid="testid"
         />,
       );
+
+      screen.debug();
 
       // The placeholder header should not be rendered
       expect(screen.queryByText("Should not render")).not.toBeInTheDocument();
@@ -173,7 +181,6 @@ describe("SectionsTableBase tests", () => {
       expect(screen.getByText("Real Footer")).toBeInTheDocument();
 
       // Restore the original implementation
-      vi.resetAllMocks();
     });
   });
 });

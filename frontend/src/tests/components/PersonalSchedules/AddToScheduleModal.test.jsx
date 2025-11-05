@@ -77,10 +77,12 @@ describe("AddToScheduleModal", () => {
   vi.mock(
     "main/components/PersonalSchedules/PersonalScheduleSelector",
     () => {
-      return ({ setHasSchedules }) => {
+      return {
+        default: ({ setHasSchedules }) => {
         setHasSchedules(false);
         return null;
-      };
+      }
+      }
     },
   );
 
