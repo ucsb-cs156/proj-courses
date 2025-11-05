@@ -11,7 +11,7 @@ vi.mock("main/utils/useBackend");
 
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockNavigate,
 }));
 

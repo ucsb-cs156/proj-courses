@@ -13,7 +13,7 @@ import SingleAreaDropdown from "main/components/GEAreas/SingleAreaDropdown";
 import allGEAreas from "fixtures/singleAreaDropdownFixtures";
 
 vi.mock("react", async () => ({
-  ...await vi.importActual("react"),
+  ...(await vi.importActual("react")),
   compareValues: vi.fn(),
 }));
 

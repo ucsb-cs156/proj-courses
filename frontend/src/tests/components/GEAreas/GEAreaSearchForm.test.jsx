@@ -83,10 +83,7 @@ describe("GEAreaSearchForm tests", () => {
       });
 
       setItemSpy.mockImplementation(() => null);
-      useBackendSpy = vi.spyOn(
-        useBackend,
-        "useBackend",
-      );
+      useBackendSpy = vi.spyOn(useBackend, "useBackend");
     });
 
     afterEach(() => {

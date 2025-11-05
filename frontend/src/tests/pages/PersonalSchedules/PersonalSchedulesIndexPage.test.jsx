@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import mockConsole from "tests/testutils/mockConsole";;
+import mockConsole from "tests/testutils/mockConsole";
 
 import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSchedulesIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";

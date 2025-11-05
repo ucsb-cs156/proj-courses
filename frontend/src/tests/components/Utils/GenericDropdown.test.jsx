@@ -6,7 +6,7 @@ import * as react from "react";
 import GenericDropdown from "main/components/Utils/GenericDropdown";
 
 vi.mock("react", async () => ({
-  ...await vi.importActual("react"),
+  ...(await vi.importActual("react")),
 }));
 
 describe("GenericDropdown tests", () => {

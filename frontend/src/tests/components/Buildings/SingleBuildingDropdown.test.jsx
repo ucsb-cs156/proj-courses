@@ -9,7 +9,7 @@ import { oneBuilding } from "fixtures/buildingFixtures";
 import { threeBuildings } from "fixtures/buildingFixtures";
 
 vi.mock("react", async () => ({
-  ...await vi.importActual("react"),
+  ...(await vi.importActual("react")),
   compareValues: vi.fn(),
 }));
 

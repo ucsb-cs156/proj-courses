@@ -77,10 +77,7 @@ describe("AdminLoadSubjectsPage tests", () => {
   });
 
   test("what happens when you click load, admin - originally nothing in table, load 3 subjects", async () => {
-    const useBackendSpy = vi.spyOn(
-      useBackend,
-      "useBackend",
-    );
+    const useBackendSpy = vi.spyOn(useBackend, "useBackend");
     setupAdminUser();
     const queryClient = new QueryClient();
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, []);

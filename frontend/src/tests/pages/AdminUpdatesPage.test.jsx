@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import * as useLocalStorage from "main/utils/useLocalStorage";
 
-
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import axios from "axios";
@@ -52,10 +51,7 @@ describe("AdminUpdatesPage tests", () => {
     getItemSpy.mockImplementation(() => null);
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
-    const useLocalStorageSpy = vi.spyOn(
-      useLocalStorage,
-      "default",
-    );
+    const useLocalStorageSpy = vi.spyOn(useLocalStorage, "default");
 
     // act
     render(

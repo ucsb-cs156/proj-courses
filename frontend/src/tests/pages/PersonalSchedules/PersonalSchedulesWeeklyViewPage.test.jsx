@@ -30,7 +30,6 @@ vi.mock("react-router-dom", async () => {
 const axiosMock = new AxiosMockAdapter(axios);
 const queryClient = new QueryClient();
 describe("PersonalSchedulesWeeklyViewPage tests", () => {
-
   const setupAdminUser = () => {
     axiosMock.reset();
     axiosMock.resetHistory();

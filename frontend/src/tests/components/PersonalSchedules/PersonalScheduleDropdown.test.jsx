@@ -8,7 +8,7 @@ import PersonalScheduleDropdown from "main/components/PersonalSchedules/Personal
 import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 
 vi.mock("react", async () => ({
-  ...await vi.importActual("react"),
+  ...(await vi.importActual("react")),
   compareValues: vi.fn(),
 }));
 

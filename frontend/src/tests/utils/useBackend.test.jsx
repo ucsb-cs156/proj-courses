@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { renderHook, waitFor } from "@testing-library/react";
-import mockConsole from "tests/testutils/mockConsole";;
+import mockConsole from "tests/testutils/mockConsole";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";

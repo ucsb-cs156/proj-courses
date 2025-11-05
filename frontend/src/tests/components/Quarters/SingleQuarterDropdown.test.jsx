@@ -7,7 +7,7 @@ import SingleQuarterDropdown from "main/components/Quarters/SingleQuarterDropdow
 import { quarterRange } from "main/utils/quarterUtilities";
 
 vi.mock("react", async () => ({
-  ...await vi.importActual("react"),
+  ...(await vi.importActual("react")),
 }));
 
 describe("SingleQuarterSelector tests", () => {

@@ -48,10 +48,7 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
   });
 
   test("calls UCSB Course over time search api correctly with 3 section response", async () => {
-    const useBackendMutationSpy = vi.spyOn(
-      useBackend,
-      "useBackendMutation"
-    );
+    const useBackendMutationSpy = vi.spyOn(useBackend, "useBackendMutation");
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
       .onGet("/api/public/courseovertime/instructorsearch")

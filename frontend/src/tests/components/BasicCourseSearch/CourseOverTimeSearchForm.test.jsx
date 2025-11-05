@@ -631,10 +631,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         },
       });
       invalidateQueriesSpy = vi.spyOn(queryClient, "invalidateQueries");
-      useBackendSpy = vi.spyOn(
-        useBackend,
-        "useBackend",
-      );
+      useBackendSpy = vi.spyOn(useBackend, "useBackend");
     });
 
     afterEach(() => {

@@ -47,10 +47,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
   });
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
-    const useBackendSpy = vi.spyOn(
-        useBackend,
-        "useBackend",
-    );
+    const useBackendSpy = vi.spyOn(useBackend, "useBackend");
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
       .onGet("/api/public/primaries")

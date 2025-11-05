@@ -7,7 +7,7 @@ import SingleLevelDropdown from "main/components/Levels/SingleLevelDropdown";
 import { allTheLevels } from "fixtures/levelsFixtures";
 
 vi.mock("react", async () => ({
-  ...await vi.importActual("react"),
+  ...(await vi.importActual("react")),
 }));
 
 describe("SingleLevelDropdown tests", () => {

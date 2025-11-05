@@ -27,7 +27,7 @@ const toast = vi.fn();
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -35,8 +35,9 @@ vi.mock("react-toastify", async (importOriginal) => {
   const mockToast = vi.fn();
   mockToast.error = vi.fn();
   return {
-  ...(await importOriginal()),
-  toast: mockToast};
+    ...(await importOriginal()),
+    toast: mockToast,
+  };
 });
 
 vi.mock("main/utils/useBackend", async () => ({

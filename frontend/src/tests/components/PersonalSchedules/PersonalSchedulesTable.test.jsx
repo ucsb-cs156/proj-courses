@@ -10,14 +10,14 @@ import { personalScheduleFixtures } from "fixtures/personalScheduleFixtures";
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockedNavigate,
 }));
 
 const mockedMutate = vi.fn();
 
 vi.mock("main/utils/useBackend", async () => ({
-  ...await vi.importActual("main/utils/useBackend"),
+  ...(await vi.importActual("main/utils/useBackend")),
   useBackendMutation: () => ({ mutate: mockedMutate }),
 }));
 
@@ -27,7 +27,7 @@ describe("PersonalSchedulesTable tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
-  })
+  });
 
   test("renders without crashing for empty table with user not logged in", () => {
     const currentUser = null;

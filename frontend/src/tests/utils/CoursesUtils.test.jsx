@@ -3,7 +3,7 @@ import {
   onDeleteSuccess,
   cellToAxiosParamsDelete,
 } from "main/utils/CoursesUtils";
-import mockConsole from "tests/testutils/mockConsole";;
+import mockConsole from "tests/testutils/mockConsole";
 
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
