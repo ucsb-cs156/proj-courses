@@ -29,7 +29,7 @@ export function compareValues(key, order = "asc") {
     // Conditional Expression: Changing to false could have both properties be undefined but < > comparisons to undefeind are equivalent to false, returning 0 anyway
     // BlockStatement: Removing "Return 0" reults in equivalent mutant since one or both elements will be undefined and < > comparisons will evaluate to false
     // Stryker disable next-line LogicalOperator, ConditionalExpression, BlockStatement: Each mutant results in equivalent code (reasons in above code comment)
-    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+    if (!Object.hasOwn(a, key) || !Object.hasOwn(b, key)) {
       // property doesn't exist on either object
       return 0;
     }

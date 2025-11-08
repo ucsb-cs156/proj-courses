@@ -17,11 +17,16 @@ export default {
 };
 
 const Template = (args) => {
-  return <MemoryRouter initialEntries={["/coursedetails/20221/06619"]}>
-    <Routes>
-      <Route path="/coursedetails/:qtr/:enrollCode" element={<CourseDetailsIndexPage {...args} />} />
-    </Routes>
-  </MemoryRouter>;
+  return (
+    <MemoryRouter initialEntries={["/coursedetails/20221/06619"]}>
+      <Routes>
+        <Route
+          path="/coursedetails/:qtr/:enrollCode"
+          element={<CourseDetailsIndexPage {...args} />}
+        />
+      </Routes>
+    </MemoryRouter>
+  );
 };
 
 export const Default = Template.bind({});

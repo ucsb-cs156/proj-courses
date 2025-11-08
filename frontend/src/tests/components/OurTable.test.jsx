@@ -1,10 +1,8 @@
 import { vi } from "vitest";
 import { render, waitFor, fireEvent, screen } from "@testing-library/react";
-import OurTable, {
-  ButtonColumn,
-  convertOldStyleColumnsToNewStyle,
-} from "main/components/OurTable";
+import OurTable, { ButtonColumn } from "main/components/OurTable";
 import ourTableFixtures from "fixtures/ourTableFixtures";
+import { convertOldStyleColumnsToNewStyle } from "main/components/OurTableUtils";
 
 describe("OurTable tests", () => {
   describe("OurTable helper tests", () => {

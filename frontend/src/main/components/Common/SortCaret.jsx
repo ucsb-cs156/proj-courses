@@ -1,13 +1,4 @@
-export function getSortCaret(header) {
-  if (!header.column.getCanSort()) return "";
-  if (header.column.getIsSorted() === "asc") {
-    return "🔼";
-  }
-  if (header.column.getIsSorted() === "desc") {
-    return "🔽";
-  }
-  return "";
-}
+import { getSortCaret } from "main/components/Common/SortCaretUtils";
 
 export default function SortCaret({ header, testId = "testid" }) {
   return (

@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import reactPlugin from "eslint-plugin-react";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 // Import the vitest plugin
@@ -28,7 +29,10 @@ export default defineConfig([
         ],
         languageOptions: {
             ecmaVersion: 2020,
-            globals: globals.browser,
+            globals: {
+              ...globals.browser,
+              React: "writable",
+            },
             parserOptions: {
                 ecmaVersion: "latest",
                 ecmaFeatures: { jsx: true },
@@ -41,6 +45,12 @@ export default defineConfig([
                 { varsIgnorePattern: "^[A-Z_].*", argsIgnorePattern: "^_" },
             ],
         },
+      settings: {
+        react: {
+          version: "detect", // or explicit like "18.3"
+          jsxRuntime: "automatic", // 👈 tells ESLint we're using the new JSX transform
+        },
+      },
     },
     {
         ...plugin.configs["flat/react"],
@@ -50,7 +60,11 @@ export default defineConfig([
             vitest,
         },
         languageOptions: {
-            globals: vitest.environments.env.globals, // Use vitest's globals
+            globals: {
+              ...vitest.environments.env.globals,
+              ...globals.node,
+              React: "writable",
+            }, // Use vitest's globals
         },
         rules: {
             // Vitest recommended rules

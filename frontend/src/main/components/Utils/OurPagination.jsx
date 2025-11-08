@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Pagination } from "react-bootstrap";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const emptyArray = () => []; // factored out for Stryker testing
 
 const OurPagination = ({

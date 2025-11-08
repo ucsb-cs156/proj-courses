@@ -20,6 +20,8 @@ import {
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
+/* eslint-disable react-refresh/only-export-components*/
+
 export const objectToAxiosParams = (data) => {
   return {
     url: "/api/courses/post",
@@ -51,12 +53,14 @@ export const onError = (error) => {
   toast.error(message);
 };
 
+/* eslint-enable react-refresh/only-export-components*/
+
 export default function SectionsTable({ sections, schedules = [] }) {
   if (!(schedules instanceof Array)) {
     throw new Error("schedules prop must be an array");
   }
 
-  if (schedules.length > 0 && !schedules[0].hasOwnProperty("id")) {
+  if (schedules.length > 0 && !Object.hasOwn(schedules[0], "id")) {
     throw new Error(
       "schedules prop must be an array of objects with an 'id' property",
     );

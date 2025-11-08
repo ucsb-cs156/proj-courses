@@ -361,38 +361,6 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       ).toBe(true);
     });
 
-    // test("when local storage has no end quarter value, it uses the default end quarter from system info", async () => {
-    //   // We are using systemInfoFixtures.showingBoth, which has endQtrYYYYQ as "20222"
-    //   // We will mock localStorage to return null for the end quarter specifically.
-    //   vi.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
-    //     if (key === "CourseOverTimeInstructorSearch.EndQuarter") {
-    //       return null;
-    //     }
-    //     // For other keys, we can just return a non-null value so the component renders correctly.
-    //     return "20211";
-    //   });
-
-    //   render(
-    //     <QueryClientProvider client={queryClient}>
-    //       <MemoryRouter>
-    //         <CourseOverTimeSearchForm />
-    //       </MemoryRouter>
-    //     </QueryClientProvider>,
-    //   );
-
-    //   // Wait for the component to render and the state to be updated
-    //   await waitFor(() => {
-    //     // We expect the end quarter dropdown to be set to the default from the system info,
-    //     // which you've identified as "20222".
-    //     const endQuarterDropdown = screen.getByLabelText("End Quarter");
-    //     expect(endQuarterDropdown).toBeInTheDocument();
-    //     expect(endQuarterDropdown.value).toBe("20222");
-    //   });
-
-    //   // To be extra sure the mock is working, we can check if getItem was called correctly.
-    //   expect(localStorage.getItem).toHaveBeenCalledWith("CourseOverTimeInstructorSearch.EndQuarter");
-    // });
-
     test("when local storage is completely empty, it defaults to the system info quarters", async () => {
       // Clear local storage and mock getItem to ensure all values are null
       localStorage.clear();

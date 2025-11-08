@@ -38,7 +38,7 @@ const qtrNumToQuarter = {
   4: "Fall",
 };
 // Stryker restore all
-
+/* eslint-disable react-refresh/only-export-components*/
 //from an input YYYYQ, create a prettier formated output that I like
 const yyyyqToPrettyStr = (yyyyq) => {
   const [year, qtr] = [yyyyq.slice(0, 4), yyyyq[4]];
@@ -96,6 +96,8 @@ export const groupDataByQuarterAndInstructor = (data) => {
 
   return groupedData;
 };
+
+/* eslint-enable react-refresh/only-export-components*/
 
 // Component to render a single bar chart for a specific group of data
 const GradeBarChart = ({ data, title }) => {

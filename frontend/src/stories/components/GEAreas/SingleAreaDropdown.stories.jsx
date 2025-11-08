@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { http, HttpResponse } from "msw";
 import SingleAreaDropdown from "main/components/GEAreas/SingleAreaDropdown"; // Update path if needed
-import {
-  allGEAreas,
-} from "fixtures/singleAreaDropdownFixtures";
+import { allGEAreas } from "fixtures/singleAreaDropdownFixtures";
 
 export default {
   title: "components/GEAreas/SingleAreaDropdown",
