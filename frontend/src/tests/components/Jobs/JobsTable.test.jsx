@@ -106,7 +106,7 @@ describe("JobsTable tests", () => {
     expect(link).toHaveAttribute("href", "/admin/jobs/logs/2");
   });
 
-  test("renders long logs and handles truncation (snapshot)", () => {
+  test("renders long logs and handles truncation (snapshot)", async () => {
     const queryClient = new QueryClient();
     const jobsWithLongLog = [
       {
@@ -126,6 +126,7 @@ describe("JobsTable tests", () => {
       </QueryClientProvider>,
     );
 
+    await screen.findByText("See entire log");
     const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
     expect(logCell).toMatchSnapshot();
   });
