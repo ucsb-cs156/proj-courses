@@ -127,6 +127,7 @@ describe("JobsTable tests", () => {
     );
 
     await screen.findByText("See entire log");
+    screen.debug(null, 10000000);
     const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
     expect(logCell).toMatchSnapshot();
   });
