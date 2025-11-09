@@ -106,9 +106,7 @@ describe("JobsTable tests", () => {
     expect(link).toHaveAttribute("href", "/admin/jobs/logs/2");
   });
 
-  //CI/CD sees this test slightly differently and fails, but our logs aren't good enough
-  //for me to determine why in time before project release.
-  test.skip("renders long logs and handles truncation (snapshot)", async () => {
+  test("renders long logs and handles truncation (snapshot)", async () => {
     const queryClient = new QueryClient();
     const jobsWithLongLog = [
       {

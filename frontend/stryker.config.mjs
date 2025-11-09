@@ -9,7 +9,7 @@ const config = {
     vitest:{
       configFile: "vite.config.js",
     },
-    mutate: ["src/main/**/*.js", "src/main/**/*.jsx"],
+    mutate: ["src/main/**/*.js", "src/main/**/*.jsx", "!src/main/**/*_NoStryker.{js,jsx,ts,tsx}"],
     testRunner_comment:
         "Take a look at https://stryker-mutator.io/docs/stryker-js/vitest-runner for information about the vitest plugin.",
     coverageAnalysis: "perTest",

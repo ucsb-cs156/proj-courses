@@ -122,5 +122,11 @@ describe("AdminJobLogPage tests", () => {
 
     const logContent = await screen.findByText("Sample job log content");
     expect(logContent).toBeInTheDocument();
+    expect(useBackend).toHaveBeenCalled();
+    expect(useBackend.mock.calls[0][0]).toEqual([`/api/jobs/logs/1`]);
+    expect(useBackend.mock.calls[0][1]).toEqual({
+      method: "GET",
+      url: `/api/jobs/logs/1`,
+    });
   });
 });

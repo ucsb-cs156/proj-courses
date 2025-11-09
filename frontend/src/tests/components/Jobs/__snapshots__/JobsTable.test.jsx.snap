@@ -1,0 +1,60 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`JobsTable tests > renders long logs and handles truncation (snapshot) 1`] = `
+<div
+  data-testid="JobsTable-cell-row-0-col-Log"
+>
+  <pre
+    data-testid="plaintext"
+  >
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+    <br />
+    <span>
+      Line 
+    </span>
+  </pre>
+  <span>
+    ...
+  </span>
+  <br />
+  <a
+    href="/admin/jobs/logs/2"
+  >
+    See entire log
+  </a>
+</div>
+`;
