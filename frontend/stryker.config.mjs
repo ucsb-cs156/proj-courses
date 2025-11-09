@@ -6,6 +6,9 @@ const config = {
     packageManager: "npm",
     reporters: ["html", "clear-text", "progress"],
     testRunner: "vitest",
+    vitest:{
+      configFile: "vite.config.js",
+    },
     mutate: ["src/main/**/*.js", "src/main/**/*.jsx"],
     testRunner_comment:
         "Take a look at https://stryker-mutator.io/docs/stryker-js/vitest-runner for information about the vitest plugin.",

@@ -107,7 +107,7 @@ describe("JobsTable tests", () => {
   });
 
   //CI/CD sees this test slightly differently and fails, but our logs aren't good enough
-  //for me to determine why in before project release.
+  //for me to determine why in time before project release.
   test.skip("renders long logs and handles truncation (snapshot)", async () => {
     const queryClient = new QueryClient();
     const jobsWithLongLog = [
@@ -128,7 +128,7 @@ describe("JobsTable tests", () => {
       </QueryClientProvider>,
     );
 
-    const logCell = screen.getByTestId("JobsTable-cell-row-0-col-Log");
+    const logCell = await screen.findByTestId("JobsTable-cell-row-0-col-Log");
     expect(logCell).toMatchSnapshot();
   });
 

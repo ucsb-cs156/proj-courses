@@ -54,7 +54,6 @@ export const onError = (error) => {
 };
 
 /* eslint-enable react-refresh/only-export-components*/
-
 export default function SectionsTable({ sections, schedules = [] }) {
   if (!(schedules instanceof Array)) {
     throw new Error("schedules prop must be an array");
