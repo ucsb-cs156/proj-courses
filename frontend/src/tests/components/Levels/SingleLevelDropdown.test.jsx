@@ -1,0 +1,140 @@
+import { vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import * as react from "react";
+
+import SingleLevelDropdown from "main/components/Levels/SingleLevelDropdown";
+import { allTheLevels } from "fixtures/levelsFixtures";
+
+vi.mock("react", async () => ({
+  ...(await vi.importActual("react")),
+}));
+
+describe("SingleLevelDropdown tests", () => {
+  beforeEach(() => {
+    vi.spyOn(react, "useState");
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const level = vi.fn();
+  const setLevel = vi.fn();
+
+  test("renders without crashing", () => {
+    render(
+      <SingleLevelDropdown
+        levels={allTheLevels}
+        level={level}
+        setLevel={setLevel}
+        controlId="sld1"
+      />,
+    );
+  });
+
+  test("when I select an level, the value changes", async () => {
+    render(
+      <SingleLevelDropdown
+        levels={allTheLevels}
+        level={level}
+        setLevel={setLevel}
+        controlId="sld1"
+      />,
+    );
+
+    expect(await screen.findByLabelText("Course Level")).toBeInTheDocument();
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "U");
+    expect(setLevel).toBeCalledWith("U");
+  });
+
+  test("if I pass a non-null onChange, it gets called when the value changes", async () => {
+    const onChange = vi.fn();
+    render(
+      <SingleLevelDropdown
+        levels={allTheLevels}
+        level={level}
+        setLevel={setLevel}
+        controlId="sld1"
+        onChange={onChange}
+      />,
+    );
+
+    expect(await screen.findByLabelText("Course Level")).toBeInTheDocument();
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "U");
+
+    await waitFor(() => expect(setLevel).toBeCalledWith("U"));
+    await waitFor(() => expect(onChange).toBeCalledTimes(1));
+
+    // x.mock.calls[0][0] is the first argument of the first call to the vi.fn() mock x
+    const event = onChange.mock.calls[0][0];
+    expect(event.target.value).toBe("U");
+  });
+
+  test("default label is Course Level", async () => {
+    render(
+      <SingleLevelDropdown
+        levels={allTheLevels}
+        level={level}
+        setLevel={setLevel}
+        controlId="sld1"
+      />,
+    );
+
+    expect(await screen.findByLabelText("Course Level")).toBeInTheDocument();
+  });
+
+  test("keys / testids are set correctly on options", async () => {
+    render(
+      <SingleLevelDropdown
+        levels={allTheLevels}
+        level={level}
+        setLevel={setLevel}
+        controlId="sld1"
+      />,
+    );
+
+    const expectedKey = "sld1-option-0";
+    expect(await screen.findByTestId(expectedKey)).toBeInTheDocument();
+  });
+
+  test("when localstorage has a value, it is passed to useState", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => "G");
+
+    const setLevelStateSpy = vi.fn();
+    react.useState.mockImplementation((x) => [x, setLevelStateSpy]);
+
+    render(
+      <SingleLevelDropdown
+        levels={allTheLevels}
+        level={level}
+        setLevel={setLevel}
+        controlId="sld1"
+      />,
+    );
+
+    await waitFor(() => expect(react.useState).toBeCalledWith("G"));
+  });
+
+  test("when localstorage has no value, U is passed to useState", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+
+    const setLevelStateSpy = vi.fn();
+    react.useState.mockImplementation((x) => [x, setLevelStateSpy]);
+
+    render(
+      <SingleLevelDropdown
+        levels={allTheLevels}
+        level={level}
+        setLevel={setLevel}
+        controlId="sld1"
+      />,
+    );
+
+    await waitFor(() => expect(react.useState).toBeCalledWith("U"));
+  });
+});

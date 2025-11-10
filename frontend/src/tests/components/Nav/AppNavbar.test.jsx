@@ -1,0 +1,303 @@
+import { vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { MemoryRouter } from "react-router-dom";
+
+import AppNavbar from "main/components/Nav/AppNavbar";
+import { currentUserFixtures } from "fixtures/currentUserFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+
+describe("AppNavbar tests", () => {
+  const queryClient = new QueryClient();
+
+  test("renders correctly for regular logged in user", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar currentUser={currentUser} doLogin={doLogin} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Welcome, pconrad.cis@gmail.com"),
+    ).toBeInTheDocument();
+  });
+
+  test("renders correctly for admin user", async () => {
+    const currentUser = currentUserFixtures.adminUser;
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar currentUser={currentUser} doLogin={doLogin} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Welcome, phtcon@ucsb.edu"),
+    ).toBeInTheDocument();
+    const adminMenu = screen.getByTestId("appnavbar-admin-dropdown");
+
+    expect(adminMenu).toBeInTheDocument();
+
+    const aElement = adminMenu.querySelector("a");
+    expect(aElement).toBeInTheDocument();
+    aElement?.click();
+
+    expect(
+      await screen.findByTestId(/appnavbar-admin-users/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("appnavbar-admin-loadsubjects"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(/appnavbar-admin-personalschedule/),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("appnavbar-admin-jobs")).toBeInTheDocument();
+    expect(screen.getByTestId("appnavbar-developer")).toBeInTheDocument();
+  });
+
+  test("renders H2Console and Swagger links correctly", async () => {
+    const currentUser = currentUserFixtures.adminUser;
+    const systemInfo = systemInfoFixtures.showingBoth;
+
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("H2Console")).toBeInTheDocument();
+    expect(screen.getByText("Swagger")).toBeInTheDocument();
+  });
+
+  test("renders image correctly", async () => {
+    const currentUser = currentUserFixtures.adminUser;
+    const systemInfo = systemInfoFixtures.showingBoth;
+
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("AppNavbarImage")).toHaveAttribute(
+      "style",
+      "width: 80px; height: 80px; margin-right: 10px;",
+    );
+  });
+
+  test("renders the AppNavbarLocalhost when on http://localhost:3000", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.showingBoth;
+    const doLogin = vi.fn();
+
+    delete window.location;
+    window.location = new URL("http://localhost:3000");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("AppNavbarLocalhost")).toBeInTheDocument();
+  });
+
+  test("renders the AppNavbarLocalhost when on http://127.0.0.1:3000", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.showingBoth;
+    const doLogin = vi.fn();
+
+    delete window.location;
+    window.location = new URL("http://127.0.0.1:3000");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("AppNavbarLocalhost")).toBeInTheDocument();
+  });
+
+  test("does NOT render the AppNavbarLocalhost when on localhost:8080", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.showingBoth;
+    const doLogin = vi.fn();
+
+    delete window.location;
+    window.location = new URL("http://localhost:8080");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("AppNavbar")).toBeInTheDocument();
+    expect(screen.queryByTestId(/AppNavbarLocalhost/i)).toBeNull();
+  });
+
+  test("renders Personal Schedules and Courses links correctly for regular logged in user", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.showingBoth;
+
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Personal Schedules")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("appnavbar-personalschedules-list"),
+    ).toBeInTheDocument();
+
+    expect(await screen.findByText("Main Search")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("appnavbar-mainsearch-list"),
+    ).toBeInTheDocument();
+  });
+
+  test("renders the Course Description menu correctly", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.showingBoth;
+
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("appnavbar-course-infos-dropdown"),
+    ).toBeInTheDocument();
+    const dropdown = screen.getByTestId("appnavbar-course-infos-dropdown");
+    const aElement = dropdown.querySelector("a");
+    expect(aElement).toBeInTheDocument();
+    aElement?.click();
+
+    expect(
+      await screen.findByTestId("appnavbar-course-descriptions-search"),
+    ).toBeInTheDocument();
+  });
+
+  test("renders the Course History/Course Over Time menu correctly", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.showingBoth;
+
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("appnavbar-course-infos-dropdown"),
+    ).toBeInTheDocument();
+    const dropdown = screen.getByTestId("appnavbar-course-infos-dropdown");
+    const aElement = dropdown.querySelector("a");
+    expect(aElement).toBeInTheDocument();
+    aElement?.click();
+
+    expect(
+      await screen.findByTestId("appnavbar-course-over-time-search"),
+    ).toBeInTheDocument();
+  });
+
+  test("renders the Instructor Course Over Time menu correctly", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.showingBoth;
+
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("appnavbar-course-infos-dropdown"),
+    ).toBeInTheDocument();
+    const dropdown = screen.getByTestId("appnavbar-course-infos-dropdown");
+    const aElement = dropdown.querySelector("a");
+    expect(aElement).toBeInTheDocument();
+    aElement?.click();
+
+    expect(
+      await screen.findByTestId("appnavbar-course-over-time-instructor-search"),
+    ).toBeInTheDocument();
+  });
+});

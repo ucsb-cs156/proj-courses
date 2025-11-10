@@ -65,6 +65,7 @@ jobs:
         run: | 
             git diff --name-only -r origin/main HEAD |              # get changed files in PR
             grep "\.js" |                                           # remove non .js files from list
+            grep -Ev ".*_NoStryker.(test\.)?(js|jsx|ts|tsx)" |      # remove legacy NoStryker files from the list
             sed 's|\(.*\)tests\(.*\)\.test.js|\1main\2.js|' |       # alters test files to main files to account for changed tests
             grep -v "\.stories\.js" |                               # remove .stories.js files from list
             grep "src/main/" |                                      # remove files outside of src/main
