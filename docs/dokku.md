@@ -20,6 +20,8 @@ The lines in the instructions where you need to modify something are marked with
 
 The other line you can copy/paste as is, except for changing `courses` to whatever your app name will be (e.g. `courses-qa`, `courses-dev-cgaucho`, `courses-pr235`).
 
+### Create `courses`
+
 ```
 # Create app
 dokku apps:create courses
@@ -41,20 +43,62 @@ dokku config:set --no-restart courses GOOGLE_CLIENT_ID=get-value-from-google-dev
 dokku config:set --no-restart courses GOOGLE_CLIENT_SECRET=get-value-from-google-developer-console # modify this
 dokku config:set --no-restart courses UCSB_API_KEY=get-from-developer.ucsb.edu  # modify this
 dokku config:set --no-restart courses START_QTR=20244  # modify this
-dokku config:set --no-restart courses END_QTR=20254    # modify this
+dokku config:set --no-restart courses END_QTR=20261    # modify this
 
 # Set SOURCE_REPO to your repo (modify the url)
 # This is for the link in the footer, and for the link to currently deployed branch in /api/systemInfo
-dokku config:set --no-restart courses SOURCE_REPO=https://github.com/ucsb-cs156-s25/proj-courses-s25-xx 
+dokku config:set --no-restart courses SOURCE_REPO=https://github.com/ucsb-cs156-f25/proj-courses-f25-xx 
 
 # Set ADMIN_EMAILS to staff emails and team emails
 dokku config:set --no-restart courses ADMIN_EMAILS=list-of-admin-emails # modify this
 
 # git sync for first deploy (http)
-dokku git:sync courses https://github.com/ucsb-cs156-s25/proj-courses-s25-xx main  # modify this 
+dokku git:sync courses https://github.com/ucsb-cs156-f25/proj-courses-f25-xx main  # modify this 
 dokku ps:rebuild courses
 
 # Enable https
 dokku letsencrypt:set courses email yourEmail@ucsb.edu # modify email
 dokku letsencrypt:enable courses
+```
+
+
+### Create `courses-qa`
+
+```
+# Create app
+dokku apps:create courses-qa
+
+# Create and link postgres database
+dokku postgres:create courses-qa-db
+dokku postgres:link courses-qa-db courses-qa --no-restart
+
+# Create and link mongodb database
+dokku mongo:create courses-qa-m-db
+dokku mongo:link courses-qa-m-db courses-qa --no-restart
+
+# Modify dokku settings
+dokku git:set courses-qa keep-git-dir true
+
+# Set config vars
+dokku config:set --no-restart courses-qa PRODUCTION=true
+dokku config:set --no-restart courses-qa GOOGLE_CLIENT_ID=get-value-from-google-developer-console # modify this
+dokku config:set --no-restart courses-qa GOOGLE_CLIENT_SECRET=get-value-from-google-developer-console # modify this
+dokku config:set --no-restart courses-qa UCSB_API_KEY=get-from-developer.ucsb.edu  # modify this
+dokku config:set --no-restart courses-qa START_QTR=20244  # modify this
+dokku config:set --no-restart courses-qa END_QTR=20261    # modify this
+
+# Set SOURCE_REPO to your repo (modify the url)
+# This is for the link in the footer, and for the link to currently deployed branch in /api/systemInfo
+dokku config:set --no-restart courses-qa SOURCE_REPO=https://github.com/ucsb-cs156-f25/proj-courses-f25-xx 
+
+# Set ADMIN_EMAILS to staff emails and team emails
+dokku config:set --no-restart courses-qa ADMIN_EMAILS=list-of-admin-emails # modify this
+
+# git sync for first deploy (http)
+dokku git:sync courses-qa https://github.com/ucsb-cs156-f25/proj-courses-f25-xx main  # modify this 
+dokku ps:rebuild courses-qa
+
+# Enable https
+dokku letsencrypt:set courses-qa email yourEmail@ucsb.edu # modify email
+dokku letsencrypt:enable courses-qa
 ```
