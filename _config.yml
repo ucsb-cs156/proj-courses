@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjI2MzQ3ODk3","is_bot":false,"login":"Division7","name":"Daniel Jensen"},"headRefName":"dj-localhostFix","number":238,"title":"dj - bumped dependencies for possible localhost fix","url":"https://github.com/ucsb-cs156/proj-courses/pull/238"}]
+pull_requests: []
