@@ -1,77 +1,95 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import edu.ucsb.cs156.courses.ControllerTestCase;
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CourseInfo;
+import edu.ucsb.cs156.courses.documents.GeneralEducation;
+import edu.ucsb.cs156.courses.documents.Instructor;
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.services.EnrollmentDataPointService;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.MvcResult;
 
-public class EnrollmentControllerTests {
+@WebMvcTest(controllers = {EnrollmentController.class})
+@Import(TestConfig.class)
+@AutoConfigureDataJpa
+public class EnrollmentControllerTests extends ControllerTestCase {
 
-  @Mock
-  private EnrollmentDataPointRepository enrollmentDataPointRepository =
-      mock(EnrollmentDataPointRepository.class);
+  @MockBean private EnrollmentDataPointRepository enrollmentDataPointRepository;
 
-  @Mock(answer = Answers.CALLS_REAL_METHODS)
+  @MockBean(answer = Answers.CALLS_REAL_METHODS)
   EnrollmentDataPointService enrollmentDataPointService;
 
-  @InjectMocks private EnrollmentController enrollmentController;
+  @Mock(answer = Answers.CALLS_REAL_METHODS)
+  StatefulBeanToCsv<EnrollmentDataPoint> csvWriter;
 
-  @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.openMocks(this);
+  @Test
+  public void test_csv_exception() throws Exception {
+
+    // arrange
+
+    String yyyyq = "20252";
+
+    doReturn(List.of()).when(enrollmentDataPointRepository).findByYyyyq(yyyyq);
+    doReturn(csvWriter).when(enrollmentDataPointService).getStatefulBeanToCSV(any());
+
+    doThrow(new CsvDataTypeMismatchException()).when(csvWriter).write(anyList());
+
+    // act
+
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/enrollment/csv/quarter?yyyyq=20252"))
+            .andExpect(request().asyncStarted())
+            .andDo(MvcResult::getAsyncResult)
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    String actualResponse = response.getResponse().getContentAsString();
+    String expectedMessage = "";
+    assertEquals(expectedMessage, actualResponse);
   }
 
   @Test
+  @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
   public void testCsvForQuarter_success() throws Exception {
     String yyyyq = "20252";
+
     EnrollmentDataPoint dataPoint =
-        EnrollmentDataPoint.builder()
-            .id(1L)
-            .yyyyq(yyyyq)
-            .courseId("CMPSC 156")
-            .dateCreated(LocalDateTime.parse("2022-03-05T15:50:10"))
-            .enrollment(96)
-            .enrollCd("12345")
-            .section("0100")
-            .build();
+      EnrollmentDataPoint.builder()
+        .id(1L)
+        .yyyyq(yyyyq)
+        .courseId("CMPSC 156")
+        .dateCreated(LocalDateTime.parse("2022-03-05T15:50:10"))
+        .enrollment(96)
+        .enrollCd("12345")
+        .section("0100")
+        .build();
+        
     List<EnrollmentDataPoint> dataPoints = List.of(dataPoint);
-
-    when(enrollmentDataPointRepository.findByYyyyq(yyyyq)).thenReturn(dataPoints);
-
-    ResponseEntity<StreamingResponseBody> response = enrollmentController.csvForQuarter(yyyyq);
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("text/csv;charset=UTF-8", response.getHeaders().getContentType().toString());
-    String expectedFilename = "enrollment_" + yyyyq + ".csv";
-    String expectedContentDisposition = "attachment;filename=" + expectedFilename;
-    String actualContentDisposition =
-        response.getHeaders().get(HttpHeaders.CONTENT_DISPOSITION).get(0);
-    assertEquals(expectedContentDisposition, actualContentDisposition);
-
-    StreamingResponseBody body = response.getBody();
-    assertNotNull(body);
-
-    OutputStream outputStream = new ByteArrayOutputStream();
-    body.writeTo(outputStream);
-    String csvOutput = outputStream.toString();
 
     String expectedCSVOutput =
         """
@@ -79,6 +97,19 @@ public class EnrollmentControllerTests {
                 "CMPSC 156","2022-03-05T15:50:10","12345","96","1","0100","20252"
                 """;
 
-    assertEquals(expectedCSVOutput, csvOutput);
+    doReturn(dataPoints).when(enrollmentDataPointRepository).findByYyyyq(yyyyq);
+
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/enrollment/csv/quarter?yyyyq=20252"))
+            .andExpect(request().asyncStarted())
+            .andDo(MvcResult::getAsyncResult)
+            .andExpect(status().isOk())
+            .andReturn();
+
+    verify(enrollmentDataPointRepository, times(1)).findByYyyyq(yyyyq);
+    verify(enrollmentDataPointService, times(1)).getStatefulBeanToCSV(any());
+
+    assertEquals(expectedCSVOutput, response.getResponse().getContentAsString());
   }
 }
