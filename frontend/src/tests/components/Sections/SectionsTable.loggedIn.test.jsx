@@ -631,10 +631,12 @@ describe("SectionsTable tests", () => {
         // Get the actual implementation of useBackendMutation
         const actualModule = await vi.importActual("main/utils/useBackend");
         const actualUseBackendMutation = actualModule.useBackendMutation;
-        
+
         // Replace the mock with the actual implementation
-        vi.mocked(useBackendMutation).mockImplementation(actualUseBackendMutation);
-        
+        vi.mocked(useBackendMutation).mockImplementation(
+          actualUseBackendMutation,
+        );
+
         axiosMock = new AxiosMockAdapter(axios);
         vi.clearAllMocks();
         axiosMock
@@ -651,9 +653,9 @@ describe("SectionsTable tests", () => {
 
       test("onSuccess displays a success message for new course creation", async () => {
         // Mock the POST request to /api/courses/post
-        axiosMock.onPost("/api/courses/post").reply(200, [
-          { id: 1, enrollCd: "12345" },
-        ]);
+        axiosMock
+          .onPost("/api/courses/post")
+          .reply(200, [{ id: 1, enrollCd: "12345" }]);
 
         render(
           <QueryClientProvider client={queryClient}>
@@ -706,11 +708,13 @@ describe("SectionsTable tests", () => {
 
       test("onSuccess displays a success message for course replacement", async () => {
         // Mock the POST request to /api/courses/post with 3 items (replacement scenario)
-        axiosMock.onPost("/api/courses/post").reply(200, [
-          { enrollCd: "12345" },
-          { enrollCd: "67890" },
-          { enrollCd: "54321" },
-        ]);
+        axiosMock
+          .onPost("/api/courses/post")
+          .reply(200, [
+            { enrollCd: "12345" },
+            { enrollCd: "67890" },
+            { enrollCd: "54321" },
+          ]);
 
         render(
           <QueryClientProvider client={queryClient}>
@@ -775,9 +779,11 @@ describe("SectionsTable tests", () => {
       beforeEach(async () => {
         const actualModule = await vi.importActual("main/utils/useBackend");
         const actualUseBackendMutation = actualModule.useBackendMutation;
-        
-        vi.mocked(useBackendMutation).mockImplementation(actualUseBackendMutation);
-        
+
+        vi.mocked(useBackendMutation).mockImplementation(
+          actualUseBackendMutation,
+        );
+
         axiosMock = new AxiosMockAdapter(axios);
         vi.clearAllMocks();
         axiosMock
