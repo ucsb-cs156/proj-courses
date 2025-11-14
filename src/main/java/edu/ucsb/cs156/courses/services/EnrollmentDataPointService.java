@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 @Service("enrollmentDataPointService")
 @Slf4j
 public class EnrollmentDataPointService {
-  public StatefulBeanToCsv<EnrollmentDataPoint> getStatefulBeanToCSV(Writer writer) throws IOException {
+  public StatefulBeanToCsv<EnrollmentDataPoint> getStatefulBeanToCSV(Writer writer)
+      throws IOException {
     return new StatefulBeanToCsvBuilder<EnrollmentDataPoint>(writer).build();
   }
 }

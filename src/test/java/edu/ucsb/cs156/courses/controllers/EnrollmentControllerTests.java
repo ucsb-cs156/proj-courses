@@ -73,16 +73,16 @@ public class EnrollmentControllerTests extends ControllerTestCase {
     String yyyyq = "20252";
 
     EnrollmentDataPoint dataPoint =
-      EnrollmentDataPoint.builder()
-        .id(1L)
-        .yyyyq(yyyyq)
-        .courseId("CMPSC 156")
-        .dateCreated(LocalDateTime.parse("2022-03-05T15:50:10"))
-        .enrollment(96)
-        .enrollCd("12345")
-        .section("0100")
-        .build();
-        
+        EnrollmentDataPoint.builder()
+            .id(1L)
+            .yyyyq(yyyyq)
+            .courseId("CMPSC 156")
+            .dateCreated(LocalDateTime.parse("2022-03-05T15:50:10"))
+            .enrollment(96)
+            .enrollCd("12345")
+            .section("0100")
+            .build();
+
     List<EnrollmentDataPoint> dataPoints = List.of(dataPoint);
 
     String expectedCSVOutput =
