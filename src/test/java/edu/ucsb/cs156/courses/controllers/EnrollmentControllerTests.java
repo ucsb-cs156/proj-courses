@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class EnrollmentControllerTests {
   private EnrollmentDataPointRepository enrollmentDataPointRepository =
       mock(EnrollmentDataPointRepository.class);
 
-  @Spy
+  @Mock(answer = Answers.CALLS_REAL_METHODS)
   EnrollmentDataPointService enrollmentDataPointService;
 
   @InjectMocks private EnrollmentController enrollmentController;
