@@ -53,17 +53,23 @@ export default function PersonalSectionsTable({
     },
     {
       header: "Title",
-      accessor: "title",
-      cell: ({ cell }) => renderInfoLink(
-    {
-      id: cell.row.original.classSections[0].enrollCode,
-      quarter: cell.row.original.quarter,
-      courseId: cell.row.original.courseId,
-      enrollCode: cell.row.original.classSections[0].enrollCode,
-    },
-      testid,
-      cell.row.original.title
-    )
+      id: "title",
+      cell: ({ row }) => {
+      const section = row.original.classSections[0];
+
+      const simpleRow = {
+        id: row.id,
+        original: {
+          quarter: row.original.quarter,
+          primary: {
+            enrollCode: section.enrollCode
+          }
+        },
+        depth: 0
+      };
+
+      return renderInfoLink(simpleRow, "PersonalSectionsTable", row.original.title);
+      },
     },
     {
       header: "Enrolled",
