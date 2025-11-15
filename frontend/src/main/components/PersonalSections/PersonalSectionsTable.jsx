@@ -11,6 +11,7 @@ import {
   formatInstructors,
   formatLocation,
   formatTime,
+  renderInfoLink
 } from "main/utils/sectionUtils.jsx";
 import { hasRole } from "main/utils/currentUser";
 
@@ -51,6 +52,7 @@ export default function PersonalSectionsTable({
     {
       header: "Title",
       accessor: "title",
+      cell: ({ row }) => renderInfoLink(row, testid, row.original.title),
     },
     {
       header: "Enrolled",
