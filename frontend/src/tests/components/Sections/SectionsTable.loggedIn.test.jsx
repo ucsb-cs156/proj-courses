@@ -3,11 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import SectionsTable, {
-  onError,
-  onSuccess,
-} from "main/components/Sections/SectionsTable";
-import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
+import SectionsTable from "main/components/Sections/SectionsTable";
 
 import primaryFixtures from "fixtures/primaryFixtures";
 
@@ -53,109 +49,6 @@ vi.mock("main/utils/currentUser", async () => ({
 }));
 
 describe("SectionsTable tests", () => {
-  describe("objectToAxiosParams", () => {
-    it("should return the correct axios parameters", () => {
-      const data = {
-        enrollCd: 12345,
-        psId: 15,
-      };
-
-      const result = objectToAxiosParams(data);
-
-      expect(result).toEqual({
-        url: "/api/courses/post",
-        method: "POST",
-        params: {
-          enrollCd: "12345",
-          psId: "15",
-        },
-      });
-    });
-  });
-
-  describe("onSuccess", () => {
-    it("should display a success message for new course creation", () => {
-      const response = [{ id: 1, enrollCd: "12345" }];
-      onSuccess(response);
-      expect(toast).toHaveBeenCalledWith(
-        "New course Created - id: 1 enrollCd: 12345",
-      );
-    });
-
-    it("should display a success message for course replacement", () => {
-      const response = [
-        { enrollCd: "12345" },
-        { enrollCd: "67890" },
-        { enrollCd: "54321" },
-      ];
-      onSuccess(response);
-      expect(toast).toHaveBeenCalledWith(
-        "Course 12345 replaced old section 54321 with new section 67890",
-      );
-    });
-  });
-
-  describe("onError", () => {
-    beforeEach(() => {
-      restoreConsole = mockConsole();
-      useBackendMutation.mockClear();
-    });
-
-    afterEach(() => {
-      restoreConsole();
-      vi.resetAllMocks();
-    });
-
-    it("should display an error message with the response data", () => {
-      // arrange
-
-      const queryClient = new QueryClient();
-      useBackendMutation.mockReturnValue({
-        mutate: vi.fn(),
-      });
-
-      // Render a component that will call useBackendMutation
-      render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      );
-
-      const error = {
-        response: {
-          data: { message: "An error occurred" },
-        },
-      };
-
-      // act
-      onError(error);
-
-      // assert
-      expect(useBackendMutation).toHaveBeenCalledTimes(1);
-      expect(useBackendMutation).toHaveBeenCalledWith(
-        objectToAxiosParams,
-        { onSuccess, onError },
-        [],
-      );
-
-      expect(toast.error).toHaveBeenCalledWith("An error occurred");
-      expect(console.error).toHaveBeenCalledWith("onError: error=", error);
-    });
-
-    it("should display a generic error message when no response data is available", () => {
-      const error = {
-        response: {},
-      };
-      onError(error);
-      expect(toast.error).toHaveBeenCalledWith(
-        "An unexpected error occurred adding the schedule: " +
-          JSON.stringify(error),
-      );
-    });
-  });
-
   describe("Section Table tests", () => {
     let axiosMock;
     const queryClient = new QueryClient();
@@ -453,6 +346,10 @@ describe("SectionsTable tests", () => {
       axiosMock
         .onGet("/api/currentUser")
         .reply(200, apiCurrentUserFixtures.userOnly);
+      // Mock useBackendMutation for this test suite
+      vi.mocked(useBackendMutation).mockImplementation(() => ({
+        mutate: vi.fn(),
+      }));
     });
 
     afterEach(() => {
@@ -715,6 +612,303 @@ describe("SectionsTable tests", () => {
         expect(
           screen.getByTestId(`${testId}-cell-row-0.2-col-action-no-schedules`),
         ).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("Callback functions tested through user interactions", () => {
+    describe("onSuccess callback tests", () => {
+      let axiosMock;
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+        },
+      });
+
+      beforeEach(async () => {
+        // Get the actual implementation of useBackendMutation
+        const actualModule = await vi.importActual("main/utils/useBackend");
+        const actualUseBackendMutation = actualModule.useBackendMutation;
+
+        // Replace the mock with the actual implementation
+        vi.mocked(useBackendMutation).mockImplementation(
+          actualUseBackendMutation,
+        );
+
+        axiosMock = new AxiosMockAdapter(axios);
+        vi.clearAllMocks();
+        axiosMock
+          .onGet("/api/currentUser")
+          .reply(200, apiCurrentUserFixtures.userOnly);
+        restoreConsole = mockConsole();
+      });
+
+      afterEach(() => {
+        vi.clearAllMocks();
+        axiosMock.restore();
+        restoreConsole();
+      });
+
+      test("onSuccess displays a success message for new course creation", async () => {
+        // Mock the POST request to /api/courses/post
+        axiosMock
+          .onPost("/api/courses/post")
+          .reply(200, [{ id: 1, enrollCd: "12345" }]);
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <SectionsTable
+                sections={primaryFixtures.f24_math_lowerDiv}
+                schedules={[{ id: "1", name: "Test Schedule" }]}
+              />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
+
+        const testId = "SectionsTable";
+
+        // Expand all rows to find the "Add to Schedule" button
+        const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
+        fireEvent.click(expandAllRows);
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(
+              `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+            ),
+          ).toBeInTheDocument();
+        });
+
+        const addToScheduleButton = screen.getByTestId(
+          `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+        );
+        fireEvent.click(addToScheduleButton);
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+          ).toBeInTheDocument();
+        });
+
+        const saveButton = screen.getByTestId(
+          `${testId}-cell-row-0.1-col-action-modal-save-button`,
+        );
+        fireEvent.click(saveButton);
+
+        // Wait for the success toast to be called
+        await waitFor(() => {
+          expect(toast).toHaveBeenCalledWith(
+            "New course Created - id: 1 enrollCd: 12345",
+          );
+        });
+      });
+
+      test("onSuccess displays a success message for course replacement", async () => {
+        // Mock the POST request to /api/courses/post with 3 items (replacement scenario)
+        axiosMock
+          .onPost("/api/courses/post")
+          .reply(200, [
+            { enrollCd: "12345" },
+            { enrollCd: "67890" },
+            { enrollCd: "54321" },
+          ]);
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <SectionsTable
+                sections={primaryFixtures.f24_math_lowerDiv}
+                schedules={[{ id: "1", name: "Test Schedule" }]}
+              />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
+
+        const testId = "SectionsTable";
+
+        // Expand all rows to find the "Add to Schedule" button
+        const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
+        fireEvent.click(expandAllRows);
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(
+              `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+            ),
+          ).toBeInTheDocument();
+        });
+
+        const addToScheduleButton = screen.getByTestId(
+          `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+        );
+        fireEvent.click(addToScheduleButton);
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+          ).toBeInTheDocument();
+        });
+
+        const saveButton = screen.getByTestId(
+          `${testId}-cell-row-0.1-col-action-modal-save-button`,
+        );
+        fireEvent.click(saveButton);
+
+        // Wait for the replacement toast to be called
+        await waitFor(() => {
+          expect(toast).toHaveBeenCalledWith(
+            "Course 12345 replaced old section 54321 with new section 67890",
+          );
+        });
+      });
+    });
+
+    describe("onError callback tests", () => {
+      let axiosMock;
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+        },
+      });
+
+      beforeEach(async () => {
+        const actualModule = await vi.importActual("main/utils/useBackend");
+        const actualUseBackendMutation = actualModule.useBackendMutation;
+
+        vi.mocked(useBackendMutation).mockImplementation(
+          actualUseBackendMutation,
+        );
+
+        axiosMock = new AxiosMockAdapter(axios);
+        vi.clearAllMocks();
+        axiosMock
+          .onGet("/api/currentUser")
+          .reply(200, apiCurrentUserFixtures.userOnly);
+        restoreConsole = mockConsole();
+      });
+
+      afterEach(() => {
+        vi.clearAllMocks();
+        axiosMock.restore();
+        restoreConsole();
+      });
+
+      test("onError displays an error message with the response data", async () => {
+        axiosMock.onPost("/api/courses/post").reply(400, {
+          message: "Course already enrolled",
+        });
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <SectionsTable
+                sections={primaryFixtures.f24_math_lowerDiv}
+                schedules={[{ id: "1", name: "Test Schedule" }]}
+              />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
+
+        const testId = "SectionsTable";
+
+        // Expand all rows to find the "Add to Schedule" button
+        const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
+        fireEvent.click(expandAllRows);
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(
+              `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+            ),
+          ).toBeInTheDocument();
+        });
+
+        const addToScheduleButton = screen.getByTestId(
+          `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+        );
+        fireEvent.click(addToScheduleButton);
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+          ).toBeInTheDocument();
+        });
+
+        const saveButton = screen.getByTestId(
+          `${testId}-cell-row-0.1-col-action-modal-save-button`,
+        );
+        fireEvent.click(saveButton);
+
+        // Wait for the error toast to be called
+        await waitFor(() => {
+          expect(toast.error).toHaveBeenCalledWith("Course already enrolled");
+        });
+
+        // Verify console.error was called with the error
+        expect(console.error).toHaveBeenCalled();
+      });
+
+      test("onError displays a generic error message when no response data is available", async () => {
+        // Mock the POST request to /api/courses/post to return an error without a message
+        axiosMock.onPost("/api/courses/post").reply(500);
+
+        render(
+          <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+              <SectionsTable
+                sections={primaryFixtures.f24_math_lowerDiv}
+                schedules={[{ id: "1", name: "Test Schedule" }]}
+              />
+            </MemoryRouter>
+          </QueryClientProvider>,
+        );
+
+        const testId = "SectionsTable";
+
+        // Expand all rows to find the "Add to Schedule" button
+        const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
+        fireEvent.click(expandAllRows);
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(
+              `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+            ),
+          ).toBeInTheDocument();
+        });
+
+        const addToScheduleButton = screen.getByTestId(
+          `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+        );
+        fireEvent.click(addToScheduleButton);
+
+        await waitFor(() => {
+          expect(
+            screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+          ).toBeInTheDocument();
+        });
+
+        const saveButton = screen.getByTestId(
+          `${testId}-cell-row-0.1-col-action-modal-save-button`,
+        );
+        fireEvent.click(saveButton);
+
+        // Wait for the error toast to be called with a generic message
+        await waitFor(() => {
+          expect(toast.error).toHaveBeenCalled();
+          const errorCall = toast.error.mock.calls[0][0];
+          expect(errorCall).toContain(
+            "An unexpected error occurred adding the schedule:",
+          );
+        });
+
+        // Verify console.error was called with the error
+        expect(console.error).toHaveBeenCalled();
       });
     });
   });
