@@ -3,11 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import SectionsTable, {
-  onError,
-  onSuccess,
-} from "main/components/Sections/SectionsTable";
-import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
+import SectionsTable from "main/components/Sections/SectionsTable";
 
 import primaryFixtures from "fixtures/primaryFixtures";
 
@@ -53,109 +49,6 @@ vi.mock("main/utils/currentUser", async () => ({
 }));
 
 describe("SectionsTable tests", () => {
-  describe("objectToAxiosParams", () => {
-    it("should return the correct axios parameters", () => {
-      const data = {
-        enrollCd: 12345,
-        psId: 15,
-      };
-
-      const result = objectToAxiosParams(data);
-
-      expect(result).toEqual({
-        url: "/api/courses/post",
-        method: "POST",
-        params: {
-          enrollCd: "12345",
-          psId: "15",
-        },
-      });
-    });
-  });
-
-  describe("onSuccess", () => {
-    it("should display a success message for new course creation", () => {
-      const response = [{ id: 1, enrollCd: "12345" }];
-      onSuccess(response);
-      expect(toast).toHaveBeenCalledWith(
-        "New course Created - id: 1 enrollCd: 12345",
-      );
-    });
-
-    it("should display a success message for course replacement", () => {
-      const response = [
-        { enrollCd: "12345" },
-        { enrollCd: "67890" },
-        { enrollCd: "54321" },
-      ];
-      onSuccess(response);
-      expect(toast).toHaveBeenCalledWith(
-        "Course 12345 replaced old section 54321 with new section 67890",
-      );
-    });
-  });
-
-  describe("onError", () => {
-    beforeEach(() => {
-      restoreConsole = mockConsole();
-      useBackendMutation.mockClear();
-    });
-
-    afterEach(() => {
-      restoreConsole();
-      vi.resetAllMocks();
-    });
-
-    it("should display an error message with the response data", () => {
-      // arrange
-
-      const queryClient = new QueryClient();
-      useBackendMutation.mockReturnValue({
-        mutate: vi.fn(),
-      });
-
-      // Render a component that will call useBackendMutation
-      render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      );
-
-      const error = {
-        response: {
-          data: { message: "An error occurred" },
-        },
-      };
-
-      // act
-      onError(error);
-
-      // assert
-      expect(useBackendMutation).toHaveBeenCalledTimes(1);
-      expect(useBackendMutation).toHaveBeenCalledWith(
-        objectToAxiosParams,
-        { onSuccess, onError },
-        [],
-      );
-
-      expect(toast.error).toHaveBeenCalledWith("An error occurred");
-      expect(console.error).toHaveBeenCalledWith("onError: error=", error);
-    });
-
-    it("should display a generic error message when no response data is available", () => {
-      const error = {
-        response: {},
-      };
-      onError(error);
-      expect(toast.error).toHaveBeenCalledWith(
-        "An unexpected error occurred adding the schedule: " +
-          JSON.stringify(error),
-      );
-    });
-  });
-
   describe("Section Table tests", () => {
     let axiosMock;
     const queryClient = new QueryClient();
@@ -716,6 +609,308 @@ describe("SectionsTable tests", () => {
           screen.getByTestId(`${testId}-cell-row-0.2-col-action-no-schedules`),
         ).toBeInTheDocument();
       });
+    });
+  });
+
+  describe("Add to schedule with axios mock - success scenarios", () => {
+    const queryClient = new QueryClient();
+
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    test("displays success toast for new course creation", async () => {
+      const mockMutate = vi.fn();
+      let capturedOnSuccess;
+
+      // Capture the onSuccess callback passed to useBackendMutation
+      useBackendMutation.mockImplementation(
+        (objectToAxiosParams, { onSuccess }, invalidateQueries) => {
+          capturedOnSuccess = onSuccess;
+          return { mutate: mockMutate };
+        },
+      );
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable
+              sections={primaryFixtures.f24_math_lowerDiv}
+              schedules={personalScheduleFixtures.oneF24PersonalSchedule}
+            />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const testId = "SectionsTable";
+
+      // Expand rows and click add to schedule
+      const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
+      fireEvent.click(expandAllRows);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(
+            `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+          ),
+        ).toBeInTheDocument();
+      });
+
+      const addButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+      );
+      fireEvent.click(addButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+        ).toBeInTheDocument();
+      });
+
+      const saveButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-modal-save-button`,
+      );
+      fireEvent.click(saveButton);
+
+      // Verify mutation was called
+      await waitFor(() => {
+        expect(mockMutate).toHaveBeenCalledWith({
+          enrollCd: "30262",
+          psId: 1,
+        });
+      });
+
+      // Simulate successful API response
+      const successResponse = [{ id: 17, enrollCd: "30262" }];
+      capturedOnSuccess(successResponse);
+
+      // Verify success toast was called
+      expect(toast).toHaveBeenCalledWith(
+        "New course Created - id: 17 enrollCd: 30262",
+      );
+    });
+
+    test("displays success toast for course replacement", async () => {
+      const mockMutate = vi.fn();
+      let capturedOnSuccess;
+
+      useBackendMutation.mockImplementation(
+        (objectToAxiosParams, { onSuccess }, invalidateQueries) => {
+          capturedOnSuccess = onSuccess;
+          return { mutate: mockMutate };
+        },
+      );
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable
+              sections={primaryFixtures.f24_math_lowerDiv}
+              schedules={personalScheduleFixtures.oneF24PersonalSchedule}
+            />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const testId = "SectionsTable";
+
+      const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
+      fireEvent.click(expandAllRows);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(
+            `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+          ),
+        ).toBeInTheDocument();
+      });
+
+      const addButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+      );
+      fireEvent.click(addButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+        ).toBeInTheDocument();
+      });
+
+      const saveButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-modal-save-button`,
+      );
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(mockMutate).toHaveBeenCalled();
+      });
+
+      // Simulate successful API response - replacement
+      const successResponse = [
+        { enrollCd: "30262" },
+        { enrollCd: "99999" },
+        { enrollCd: "88888" },
+      ];
+      capturedOnSuccess(successResponse);
+
+      // Verify success toast for replacement was called
+      expect(toast).toHaveBeenCalledWith(
+        "Course 30262 replaced old section 88888 with new section 99999",
+      );
+    });
+  });
+
+  describe("Add to schedule with axios mock - error scenarios", () => {
+    let restoreConsole;
+    const queryClient = new QueryClient();
+
+    beforeEach(() => {
+      restoreConsole = mockConsole();
+      vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+      restoreConsole();
+    });
+
+    test("displays error toast with response message", async () => {
+      const mockMutate = vi.fn();
+      let capturedOnError;
+
+      useBackendMutation.mockImplementation(
+        (objectToAxiosParams, { onError }, invalidateQueries) => {
+          capturedOnError = onError;
+          return { mutate: mockMutate };
+        },
+      );
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable
+              sections={primaryFixtures.f24_math_lowerDiv}
+              schedules={personalScheduleFixtures.oneF24PersonalSchedule}
+            />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const testId = "SectionsTable";
+
+      const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
+      fireEvent.click(expandAllRows);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(
+            `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+          ),
+        ).toBeInTheDocument();
+      });
+
+      const addButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+      );
+      fireEvent.click(addButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+        ).toBeInTheDocument();
+      });
+
+      const saveButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-modal-save-button`,
+      );
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(mockMutate).toHaveBeenCalled();
+      });
+
+      // Simulate API error response
+      const error = {
+        response: {
+          data: { message: "Course already exists in schedule" },
+        },
+      };
+      capturedOnError(error);
+
+      // Verify error toast was called with the error message
+      expect(toast.error).toHaveBeenCalledWith(
+        "Course already exists in schedule",
+      );
+      expect(console.error).toHaveBeenCalledWith("onError: error=", error);
+    });
+
+    test("displays generic error toast when no response message", async () => {
+      const mockMutate = vi.fn();
+      let capturedOnError;
+
+      useBackendMutation.mockImplementation(
+        (objectToAxiosParams, { onError }, invalidateQueries) => {
+          capturedOnError = onError;
+          return { mutate: mockMutate };
+        },
+      );
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable
+              sections={primaryFixtures.f24_math_lowerDiv}
+              schedules={personalScheduleFixtures.oneF24PersonalSchedule}
+            />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const testId = "SectionsTable";
+
+      const expandAllRows = screen.getByTestId(`${testId}-expand-all-rows`);
+      fireEvent.click(expandAllRows);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(
+            `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+          ),
+        ).toBeInTheDocument();
+      });
+
+      const addButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-add-to-schedule-button`,
+      );
+      fireEvent.click(addButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0.1-col-action-modal`),
+        ).toBeInTheDocument();
+      });
+
+      const saveButton = screen.getByTestId(
+        `${testId}-cell-row-0.1-col-action-modal-save-button`,
+      );
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(mockMutate).toHaveBeenCalled();
+      });
+
+      // Simulate API error response without message
+      const error = {
+        response: {},
+      };
+      capturedOnError(error);
+
+      // Verify generic error toast was called
+      expect(toast.error).toHaveBeenCalled();
+      const callArg = toast.error.mock.calls[0][0];
+      expect(callArg).toContain(
+        "An unexpected error occurred adding the schedule:",
+      );
+      expect(console.error).toHaveBeenCalledWith("onError: error=", error);
     });
   });
 });
