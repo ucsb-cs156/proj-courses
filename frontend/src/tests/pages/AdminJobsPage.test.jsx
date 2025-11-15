@@ -25,6 +25,7 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock.onGet("/api/jobs/paginated").reply(200, jobsFixtures.threeJobsPage);
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -50,16 +51,16 @@ describe("AdminJobsPage tests", () => {
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Created`),
-    ).toHaveTextContent("1");
+    ).toHaveTextContent("11/15/2025, 10:00:00");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Updated`),
-    ).toHaveTextContent("11/13/2022, 19:49:59");
+    ).toHaveTextContent("11/15/2025, 10:15:00");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-status`),
     ).toHaveTextContent("complete");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
-    ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
+    ).toHaveTextContent("Started test job #1! Finished test job #1!");
   });
 
   test("user can submit a test job", async () => {
