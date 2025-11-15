@@ -2,7 +2,6 @@ package edu.ucsb.cs156.courses.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.ucsb.cs156.courses.entities.User;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,8 +35,7 @@ public class UsersController extends ApiController {
   @Operation(summary = "Get a paged list of users")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/paged")
-  public ResponseEntity<String> usersPaged(Pageable pageable)
-      throws JsonProcessingException {
+  public ResponseEntity<String> usersPaged(Pageable pageable) throws JsonProcessingException {
 
     var usersPage = userRepository.findAll(pageable);
     String body = mapper.writeValueAsString(usersPage);
