@@ -21,22 +21,12 @@ public class UsersController extends ApiController {
 
   @Autowired ObjectMapper mapper;
 
-@Operation(summary = "Get a list of all users")
-@PreAuthorize("hasRole('ROLE_ADMIN')")
-@GetMapping("")
-public ResponseEntity<String> users() throws JsonProcessingException {
-    Iterable<User> users = userRepository.findAll();
-    String body = mapper.writeValueAsString(users);
-    return ResponseEntity.ok().body(body);
-}
-
-
   @Operation(summary = "Get a list of all users")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("")
   public ResponseEntity<String> users() throws JsonProcessingException {
-    Page<User> usersPage = userRepository.findAll(pageable);
-    String body = mapper.writeValueAsString(usersPage);
+    Iterable<User> users = userRepository.findAll();
+    String body = mapper.writeValueAsString(users);
     return ResponseEntity.ok().body(body);
   }
 }
