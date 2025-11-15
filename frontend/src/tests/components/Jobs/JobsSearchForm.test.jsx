@@ -32,15 +32,9 @@ describe("JobsSearchForm tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      screen.getByLabelText("Sort By"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("Sort Direction"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("Page Size"),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Sort By")).toBeInTheDocument();
+    expect(screen.getByLabelText("Sort Direction")).toBeInTheDocument();
+    expect(screen.getByLabelText("Page Size")).toBeInTheDocument();
   });
 
   test("when I select a sortField, the state for sortField changes", () => {
@@ -83,17 +77,11 @@ describe("JobsSearchForm tests", () => {
     const selectSortDirection = screen.getByLabelText("Sort Direction");
     userEvent.selectOptions(selectSortDirection, "ASC");
     expect(selectSortDirection.value).toBe("ASC");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "JobsSearch.SortDirection",
-      "ASC",
-    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
 
     userEvent.selectOptions(selectSortDirection, "DESC");
     expect(selectSortDirection.value).toBe("DESC");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "JobsSearch.SortDirection",
-      "DESC",
-    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
   });
 
   test("when I select a pageSize, the state for pageSize changes", () => {
@@ -134,8 +122,8 @@ describe("JobsSearchForm tests", () => {
     );
 
     const setItemCalls = setItemSpy.mock.calls;
-    expect(setItemCalls).toContainEqual(["JobsSearch.SortField", "createdBy"]);
-    expect(setItemCalls).toContainEqual(["JobsSearch.SortDirection", "ASC"]);
+    expect(setItemCalls).toContainEqual(["JobsSearch.SortField", "status"]);
+    expect(setItemCalls).toContainEqual(["JobsSearch.SortDirection", "DESC"]);
     expect(setItemCalls).toContainEqual(["JobsSearch.PageSize", "10"]);
   });
 });

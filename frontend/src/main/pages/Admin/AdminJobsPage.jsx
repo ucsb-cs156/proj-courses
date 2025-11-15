@@ -17,10 +17,7 @@ import OurPagination from "main/components/Utils/OurPagination";
 
 const AdminJobsPage = () => {
   const [selectedPage, setSelectedPage] = useState(1);
-  const [pageSize, setPageSize] = useLocalStorage(
-    "JobsSearch.PageSize",
-    "10",
-  );
+  const [pageSize, setPageSize] = useLocalStorage("JobsSearch.PageSize", "10");
   const [sortField, setSortField] = useLocalStorage(
     "JobsSearch.SortField",
     "status",
@@ -130,22 +127,6 @@ const AdminJobsPage = () => {
     updateGradeInfoJobMutation.mutate();
   };
 
-  // Stryker disable all
-  const {
-    data: jobs,
-    error: _error,
-    status: _status,
-  } = useBackend(
-    ["/api/jobs/all"],
-    {
-      method: "GET",
-      url: "/api/jobs/all",
-    },
-    [],
-    { refetchInterval: refreshJobsIntervalMilliseconds },
-  );
-  // Stryker restore  all
-
   const jobLaunchers = [
     {
       name: "Test Job",
@@ -212,7 +193,7 @@ const AdminJobsPage = () => {
         ))}
       </Accordion>
 
-      <h2 className="p-3">Job Status</h2>         
+      <h2 className="p-3">Job Status</h2>
       <JobsSearchForm
         updateSortField={setSortField}
         updateSortDirection={setSortDirection}

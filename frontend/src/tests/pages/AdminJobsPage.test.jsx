@@ -6,6 +6,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
+import * as useLocalStorage from "main/utils/useLocalStorage";
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -25,7 +26,9 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
-    axiosMock.onGet("/api/jobs/paginated").reply(200, jobsFixtures.threeJobsPage);
+    axiosMock
+      .onGet("/api/jobs/paginated")
+      .reply(200, jobsFixtures.threeJobsPage);
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -61,6 +64,50 @@ describe("AdminJobsPage tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
     ).toHaveTextContent("Started test job #1! Finished test job #1!");
+  });
+
+  test("When localstorage is empty, fallback values are used", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+
+    const useLocalStorageSpy = vi.spyOn(useLocalStorage, "default");
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Job Status");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "10");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "status");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
+
+    const calls = useLocalStorageSpy.mock.calls;
+    let counts = {};
+    for (const call of calls) {
+      counts[call] = counts[call] ? counts[call] + 1 : 1;
+    }
+
+    expect(counts).toEqual({
+      "JobsSearch.PageSize,10": 4,
+      "JobsSearch.SortDirection,DESC": 4,
+      "JobsSearch.SortField,status": 4,
+    });
+
+    const jobsPaginatedRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/jobs/paginated",
+    );
+    expect(jobsPaginatedRequest.params).toEqual({
+      page: 0,
+      pageSize: "10",
+      sortField: "status",
+      sortDirection: "DESC",
+    });
   });
 
   test("user can submit a test job", async () => {

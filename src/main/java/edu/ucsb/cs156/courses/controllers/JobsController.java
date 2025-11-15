@@ -239,8 +239,7 @@ public class JobsController extends ApiController {
           @RequestParam(defaultValue = "DESC")
           String sortDirection) {
 
-    List<String> allowedSortFields =
-        Arrays.asList("createdBy", "status", "createdAt", "updatedAt");
+    List<String> allowedSortFields = Arrays.asList("createdBy", "status", "createdAt", "updatedAt");
 
     if (!allowedSortFields.contains(sortField)) {
       throw new IllegalArgumentException(

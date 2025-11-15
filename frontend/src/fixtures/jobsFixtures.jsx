@@ -79,22 +79,22 @@ const jobsFixtures = {
         createdAt: "2025-11-15T10:00:00.000000-08:00",
         updatedAt: "2025-11-15T10:15:00.000000-08:00",
         status: "complete",
-        log: "Started test job #1!\nFinished test job #1!\n"
+        log: "Started test job #1!\nFinished test job #1!\n",
       },
       {
         id: 2,
         createdAt: "2025-11-15T10:30:00.000000-08:00",
         updatedAt: "2025-11-15T10:45:00.000000-08:00",
         status: "complete",
-        log: "Started test job #2!\nFinished test job #2!\n"
+        log: "Started test job #2!\nFinished test job #2!\n",
       },
       {
         id: 3,
         createdAt: "2025-11-15T11:00:00.000000-08:00",
         updatedAt: "2025-11-15T11:00:01.000000-08:00",
         status: "running",
-        log: "Started test job #3!\n"
-      }
+        log: "Started test job #3!\n",
+      },
     ],
     pageable: {
       pageNumber: 0,
@@ -102,11 +102,11 @@ const jobsFixtures = {
       sort: {
         sorted: true,
         unsorted: false,
-        empty: false
+        empty: false,
       },
       offset: 0,
       paged: true,
-      unpaged: false
+      unpaged: false,
     },
     totalElements: 3,
     totalPages: 1,
@@ -117,10 +117,10 @@ const jobsFixtures = {
     sort: {
       sorted: true,
       unsorted: false,
-      empty: false
+      empty: false,
     },
     numberOfElements: 3,
-    empty: false
+    empty: false,
   },
 };
 
