@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.courses.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.ConnectException;
 import org.springframework.cloud.gateway.mvc.ProxyExchange;
 import org.springframework.context.annotation.Profile;
@@ -12,16 +13,20 @@ import org.springframework.web.client.ResourceAccessException;
 @RestController
 public class FrontendProxyController {
   @GetMapping({"/", "/{path:^(?!api|oauth2|swagger-ui).*}/**"})
-  public ResponseEntity<?> proxy(ProxyExchange<byte[]> proxy) {
+  public ResponseEntity<?> proxy(ProxyExchange<byte[]> proxy, HttpServletRequest request) {
     String path = proxy.path("/");
+    String query = "";
+    if (request.getQueryString() != null) {
+      query = "?" + request.getQueryString();
+    }
     try {
-      return proxy.uri("http://localhost:3000/" + path).get();
+      return proxy.uri("http://localhost:3000/" + path + query).get();
     } catch (ResourceAccessException e) {
       if (e.getCause() instanceof ConnectException) {
         String instructions =
             """
                 <p>Failed to connect to the frontend server...</p>
-                <p>On Heroku, be sure that <code>PRODUCTION</code> is defined.</p>
+                <p>On Dokku, be sure that <code>PRODUCTION</code> is defined.</p>
                 <p>On localhost, open a second terminal window, cd into <code>frontend</code> and type: <code>npm install; npm start</code></p>
                 <p>Or, you may click to access: </p>
                 <ul>
