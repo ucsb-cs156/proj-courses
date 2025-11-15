@@ -54,7 +54,12 @@ export default function PersonalSectionsTable({
     {
       header: "Title",
       accessor: "title",
-      cell: ({ row }) => renderInfoLink(row, testid, row.original.title),
+      cell: ({ row }) => {
+      const { courseId, title } = row.original;
+      const enrollCode = row.original.classSections[0]?.enrollCode; 
+      
+      return renderInfoLink({ courseId, enrollCode }, testid, title);
+    },
     },
     {
       header: "Enrolled",
