@@ -168,4 +168,47 @@ describe("CourseDescriptionIndexPage tests", () => {
       screen.queryByText("No courses found for the selected criteria."),
     ).not.toBeInTheDocument();
   });
+
+  test("handles API response with null classes field", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/basicsearch").reply(200, { classes: null });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseDescriptionIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20211");
+    const selectSubject = screen.getByLabelText("Subject Area");
+
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    userEvent.selectOptions(selectSubject, "ANTH");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "G");
+
+    const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
+    userEvent.click(submitButton);
+
+    axiosMock.resetHistory();
+
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("No courses found for the selected criteria."),
+      ).toBeInTheDocument();
+    });
+  });
 });
