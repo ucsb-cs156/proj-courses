@@ -224,11 +224,11 @@ describe("GEAreaSearchForm tests", () => {
     axiosMock = new AxiosMockAdapter(axios);
     axiosMock.reset();
     axiosMock.resetHistory();
-    
+
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, { loggedIn: true, username: "testuser" });
-    
+
     axiosMock.onGet("/api/public/generalEducationInfo").reply(200, [
       {
         requirementCode: "A1",
@@ -255,11 +255,11 @@ describe("GEAreaSearchForm tests", () => {
     expect(
       await screen.findByTestId("GEAreaSearch.Quarter-option-0"),
     ).toHaveValue("20211");
-    
+
     expect(
       await screen.findByTestId("GEAreaSearch.Quarter-option-3"),
     ).toHaveValue("20214");
-    
+
     useSystemInfoSpy.mockRestore();
   });
 
@@ -268,12 +268,12 @@ describe("GEAreaSearchForm tests", () => {
     axiosMock = new AxiosMockAdapter(axios);
     axiosMock.reset();
     axiosMock.resetHistory();
-    
+
     // Mock current user
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, { loggedIn: true, username: "testuser" });
-    
+
     // Mock system info with null fallback values - should use "20211" and "20214"
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
@@ -281,7 +281,7 @@ describe("GEAreaSearchForm tests", () => {
       startQtrYYYYQ: null, // should fallback to "20211"
       endQtrYYYYQ: null, // should fallback to "20214"
     });
-    
+
     // Mock GE areas endpoint
     axiosMock.onGet("/api/public/generalEducationInfo").reply(200, [
       {
@@ -307,7 +307,7 @@ describe("GEAreaSearchForm tests", () => {
     expect(
       await screen.findByTestId("GEAreaSearch.Quarter-option-0"),
     ).toHaveValue("20211");
-    
+
     // Verify fallback endQtrYYYYQ = "20214" is used (last quarter option)
     expect(
       await screen.findByTestId("GEAreaSearch.Quarter-option-3"),
