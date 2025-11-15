@@ -129,10 +129,7 @@ export default function SectionsTable({ sections, schedules = [] }) {
     {
       accessorKey: "title",
       header: "Title",
-      cell: ({ row }) => {
-      console.log(row.original); // This will log the whole section object
-      return renderInfoLink(row, testid, row.original.title); 
-  }
+      cell: ({ row }) => renderInfoLink(row, testid, row.original.title),
     },
     {
       header: "Status",
