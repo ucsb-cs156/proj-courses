@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import * as useBackend from "main/utils/useBackend.jsx";
 
 import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
+import * as systemInfoModule from "main/utils/systemInfo";
 
 vi.mock("react-toastify", () => ({
   toast: vi.fn(),
@@ -216,5 +217,100 @@ describe("GEAreaSearchForm tests", () => {
       expect(setItemSpy).toHaveBeenCalledWith("GEAreaSearch.Quarter", "20212");
       expect(setItemSpy).toHaveBeenCalledWith("GEAreaSearch.Area", "A1");
     });
+  });
+
+  test("renders with fallback values when systemInfo is undefined", async () => {
+    const queryClient = new QueryClient();
+    axiosMock = new AxiosMockAdapter(axios);
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, { loggedIn: true, username: "testuser" });
+    
+    axiosMock.onGet("/api/public/generalEducationInfo").reply(200, [
+      {
+        requirementCode: "A1",
+        requirementTranslation: "English Reading & Composition",
+        collegeCode: "ENGR",
+        objCode: "BS",
+        courseCount: 1,
+        units: 4,
+        inactive: false,
+      },
+    ]);
+
+    const useSystemInfoSpy = vi.spyOn(systemInfoModule, "useSystemInfo");
+    useSystemInfoSpy.mockReturnValue({ data: undefined });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GEAreaSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("GEAreaSearch.Quarter-option-0"),
+    ).toHaveValue("20211");
+    
+    expect(
+      await screen.findByTestId("GEAreaSearch.Quarter-option-3"),
+    ).toHaveValue("20214");
+    
+    useSystemInfoSpy.mockRestore();
+  });
+
+  test("renders without crashing when fallback values are used", async () => {
+    const queryClient = new QueryClient();
+    axiosMock = new AxiosMockAdapter(axios);
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    
+    // Mock current user
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, { loggedIn: true, username: "testuser" });
+    
+    // Mock system info with null fallback values - should use "20211" and "20214"
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: null, // should fallback to "20211"
+      endQtrYYYYQ: null, // should fallback to "20214"
+    });
+    
+    // Mock GE areas endpoint
+    axiosMock.onGet("/api/public/generalEducationInfo").reply(200, [
+      {
+        requirementCode: "A1",
+        requirementTranslation: "English Reading & Composition",
+        collegeCode: "ENGR",
+        objCode: "BS",
+        courseCount: 1,
+        units: 4,
+        inactive: false,
+      },
+    ]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GEAreaSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Verify fallback startQtrYYYYQ = "20211" is used (first quarter option)
+    expect(
+      await screen.findByTestId("GEAreaSearch.Quarter-option-0"),
+    ).toHaveValue("20211");
+    
+    // Verify fallback endQtrYYYYQ = "20214" is used (last quarter option)
+    expect(
+      await screen.findByTestId("GEAreaSearch.Quarter-option-3"),
+    ).toHaveValue("20214");
   });
 });
