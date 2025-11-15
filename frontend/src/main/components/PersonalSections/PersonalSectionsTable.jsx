@@ -55,20 +55,24 @@ export default function PersonalSectionsTable({
       header: "Title",
       id: "title",
       cell: ({ row }) => {
-      const section = row.original.classSections[0];
+        const section = row.original.classSections[0];
 
-      const simpleRow = {
-        id: row.id,
-        original: {
-          quarter: row.original.quarter,
-          primary: {
-            enrollCode: section.enrollCode
-          }
-        },
-        depth: 0
-      };
+        const simpleRow = {
+          id: row.id,
+          original: {
+            quarter: row.original.quarter,
+            primary: {
+              enrollCode: section.enrollCode,
+            },
+          },
+          depth: 0,
+        };
 
-      return renderInfoLink(simpleRow, "PersonalSectionsTable", row.original.title);
+        return renderInfoLink(
+          simpleRow,
+          "PersonalSectionsTable",
+          row.original.title,
+        );
       },
     },
     {
@@ -114,7 +118,6 @@ export default function PersonalSectionsTable({
   const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
     ? columnsIfUser
     : columns;
-
 
   return (
     <OurTable
