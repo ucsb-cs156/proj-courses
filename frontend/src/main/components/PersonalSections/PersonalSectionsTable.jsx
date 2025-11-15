@@ -15,8 +15,6 @@ import {
 } from "main/utils/sectionUtils.jsx";
 import { hasRole } from "main/utils/currentUser";
 
-const testid = "PersonalSectionsTable";
-
 export default function PersonalSectionsTable({
   personalSections,
   psId,
@@ -52,8 +50,8 @@ export default function PersonalSectionsTable({
       id: "section",
     },
     {
+      accessorKey: "title",
       header: "Title",
-      id: "title",
       cell: ({ row }) => {
         const section = row.original.classSections[0];
 
@@ -118,6 +116,8 @@ export default function PersonalSectionsTable({
   const columnsToDisplay = hasRole(currentUser, "ROLE_USER")
     ? columnsIfUser
     : columns;
+
+  const testid = "PersonalSectionsTable";
 
   return (
     <OurTable
