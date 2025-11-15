@@ -20,9 +20,7 @@ import {
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
-/* eslint-disable react-refresh/only-export-components*/
-
-export const objectToAxiosParams = (data) => {
+const objectToAxiosParams = (data) => {
   return {
     url: "/api/courses/post",
     method: "POST",
@@ -33,7 +31,7 @@ export const objectToAxiosParams = (data) => {
   };
 };
 
-export const onSuccess = (response) => {
+const onSuccess = (response) => {
   if (response.length < 3) {
     toast(
       `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
@@ -45,7 +43,7 @@ export const onSuccess = (response) => {
   }
 };
 
-export const onError = (error) => {
+const onError = (error) => {
   console.error("onError: error=", error);
   const message =
     error.response.data?.message ||
@@ -53,7 +51,6 @@ export const onError = (error) => {
   toast.error(message);
 };
 
-/* eslint-enable react-refresh/only-export-components*/
 export default function SectionsTable({ sections, schedules = [] }) {
   if (!(schedules instanceof Array)) {
     throw new Error("schedules prop must be an array");
