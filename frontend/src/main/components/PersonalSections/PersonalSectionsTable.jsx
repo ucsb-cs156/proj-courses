@@ -11,9 +11,11 @@ import {
   formatInstructors,
   formatLocation,
   formatTime,
-  renderInfoLink
+  renderInfoLink,
 } from "main/utils/sectionUtils.jsx";
 import { hasRole } from "main/utils/currentUser";
+
+const testid = "SectionsTable";
 
 export default function PersonalSectionsTable({
   personalSections,
