@@ -15,7 +15,7 @@ import {
 } from "main/utils/sectionUtils.jsx";
 import { hasRole } from "main/utils/currentUser";
 
-const testid = "SectionsTable";
+const testid = "PersonalSectionsTable";
 
 export default function PersonalSectionsTable({
   personalSections,
