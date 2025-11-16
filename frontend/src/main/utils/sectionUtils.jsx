@@ -103,7 +103,7 @@ export const formatInfoLink = (row) =>
   `/coursedetails/${getQuarter(row)}/${getSectionField(row, "enrollCode")}`;
 
 export const renderInfoLink = (row, testid) => (
-  <p align="center">
+  <p className="text-center">
     <a
       href={formatInfoLink(row)}
       data-testid={`${testid}-row-${row.id}-col-info-link`}
