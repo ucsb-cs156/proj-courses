@@ -195,8 +195,10 @@ describe("PersonalSectionsTable tests", () => {
       </QueryClientProvider>,
     );
 
-    const cell = screen.getByTestId(`${testId}-cell-row-0-col-courseId`);
-    expect(cell).toBeInTheDocument();
+    const link = screen.getByTestId(`${testId}-row-0-col-info-link`);
+
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", expect.stringContaining("12583"));
   });
 
   test("Delete button calls delete callback for ordinary user", async () => {
