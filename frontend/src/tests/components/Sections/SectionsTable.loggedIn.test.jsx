@@ -206,6 +206,7 @@ describe("SectionsTable tests", () => {
         "Instructor",
         "Enroll Code",
         "Action",
+        "Info",
       ];
       const expectedFields = [
         "quarter",
@@ -219,6 +220,7 @@ describe("SectionsTable tests", () => {
         "instructor",
         "enrollCode",
         "action",
+        "info",
       ];
       const testId = "SectionsTable";
 

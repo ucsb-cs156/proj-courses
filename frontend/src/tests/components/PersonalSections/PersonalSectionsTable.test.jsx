@@ -156,6 +156,49 @@ describe("PersonalSectionsTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
+  test("Title column renderInfoLink contains correct enrollCode", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSectionsTable
+            personalSections={personalSectionsFixtures.threePersonalSections}
+            currentUser={currentUser}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const titleCell = screen.getByTestId(
+      `PersonalSectionsTable-cell-row-0-col-title`,
+    );
+
+    expect(titleCell.querySelector("a")).toHaveAttribute(
+      "href",
+      expect.stringContaining("12583"),
+    );
+  });
+
+  test("Title column renderInfoLink has correct testid containing table name", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const testId = "PersonalSectionsTable";
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PersonalSectionsTable
+            personalSections={personalSectionsFixtures.threePersonalSections}
+            currentUser={currentUser}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const cell = screen.getByTestId(`${testId}-cell-row-0-col-courseId`);
+    expect(cell).toBeInTheDocument();
+  });
+
   test("Delete button calls delete callback for ordinary user", async () => {
     const testId = "PersonalSectionsTable";
     const currentUser = currentUserFixtures.userOnly;
