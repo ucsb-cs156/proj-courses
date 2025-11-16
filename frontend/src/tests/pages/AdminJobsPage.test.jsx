@@ -126,8 +126,8 @@ describe("AdminJobsPage tests", () => {
 
     await screen.findByText("Job Status");
     const validPageSizeRegex = /^[1-9]\d*$/;
-    const validSortFieldRegex = /^(?:status|createdBy|createdAt|updatedAt)$/
-    const validSortDirectionRegex = /^(?:ASC|DESC)$/
+    const validSortFieldRegex = /^(?:status|createdBy|createdAt|updatedAt)$/;
+    const validSortDirectionRegex = /^(?:ASC|DESC)$/;
     expect(useBackendSpy).toHaveBeenCalledWith(
       ["/api/jobs"],
       {
@@ -137,11 +137,11 @@ describe("AdminJobsPage tests", () => {
           page: expect.any(Number),
           pageSize: expect.stringMatching(validPageSizeRegex),
           sortField: expect.stringMatching(validSortFieldRegex),
-          sortDirection: expect.stringMatching(validSortDirectionRegex)
+          sortDirection: expect.stringMatching(validSortDirectionRegex),
         },
       },
       { content: [], totalPages: 0 },
-      { refetchInterval: 500 }
+      { refetchInterval: 500 },
     );
 
     useBackendSpy.mockRestore();
