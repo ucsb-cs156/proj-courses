@@ -7,10 +7,12 @@ import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
 import * as useLocalStorage from "main/utils/useLocalStorage";
+import * as useBackend from "main/utils/useBackend";
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import jobsFixtures from "fixtures/jobsFixtures";
+import { vi } from "vitest";
 
 describe("AdminJobsPage tests", () => {
   const queryClient = new QueryClient();
@@ -108,6 +110,41 @@ describe("AdminJobsPage tests", () => {
       sortField: "status",
       sortDirection: "DESC",
     });
+  });
+
+  test("useBackend is called with correct arguments", async () => {
+    const useBackendSpy = vi.spyOn(useBackend, "useBackend");
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Job Status");
+    const validPageSizeRegex = /^[1-9]\d*$/;
+    const validSortFieldRegex = /^(?:status|createdBy|createdAt|updatedAt)$/
+    const validSortDirectionRegex = /^(?:ASC|DESC)$/
+    expect(useBackendSpy).toHaveBeenCalledWith(
+      ["/api/jobs"],
+      {
+        method: "GET",
+        url: "/api/jobs/paginated",
+        params: {
+          page: expect.any(Number),
+          pageSize: expect.stringMatching(validPageSizeRegex),
+          sortField: expect.stringMatching(validSortFieldRegex),
+          sortDirection: expect.stringMatching(validSortDirectionRegex)
+        },
+      },
+      { content: [], totalPages: 0 },
+      { refetchInterval: 500 }
+    );
+
+    useBackendSpy.mockRestore();
   });
 
   test("user can submit a test job", async () => {

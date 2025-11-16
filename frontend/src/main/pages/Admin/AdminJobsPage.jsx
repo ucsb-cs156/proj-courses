@@ -163,7 +163,6 @@ const AdminJobsPage = () => {
     },
   ];
 
-  // Stryker disable all
   const { data: page } = useBackend(
     ["/api/jobs"],
     {
@@ -179,7 +178,6 @@ const AdminJobsPage = () => {
     { content: [], totalPages: 0 },
     { refetchInterval: refreshJobsIntervalMilliseconds },
   );
-  // Stryker restore all
 
   return (
     <BasicLayout>
