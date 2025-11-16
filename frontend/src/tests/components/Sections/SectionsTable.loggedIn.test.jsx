@@ -626,7 +626,7 @@ describe("SectionsTable tests", () => {
 
       // Capture the onSuccess callback and objectToAxiosParams function passed to useBackendMutation
       useBackendMutation.mockImplementation(
-  (objectToAxiosParams, { onSuccess }, _invalidateQueries) => {
+        (objectToAxiosParams, { onSuccess }, _invalidateQueries) => {
           capturedOnSuccess = onSuccess;
           capturedObjectToAxiosParams = objectToAxiosParams;
           return { mutate: mockMutate };
@@ -712,7 +712,7 @@ describe("SectionsTable tests", () => {
       let capturedOnSuccess;
 
       useBackendMutation.mockImplementation(
-  (objectToAxiosParams, { onSuccess }, _invalidateQueries) => {
+        (objectToAxiosParams, { onSuccess }, _invalidateQueries) => {
           capturedOnSuccess = onSuccess;
           return { mutate: mockMutate };
         },
@@ -795,7 +795,7 @@ describe("SectionsTable tests", () => {
       let capturedOnError;
 
       useBackendMutation.mockImplementation(
-  (objectToAxiosParams, { onError }, _invalidateQueries) => {
+        (objectToAxiosParams, { onError }, _invalidateQueries) => {
           capturedOnError = onError;
           return { mutate: mockMutate };
         },
@@ -865,7 +865,7 @@ describe("SectionsTable tests", () => {
       let capturedOnError;
 
       useBackendMutation.mockImplementation(
-  (objectToAxiosParams, { onError }, _invalidateQueries) => {
+        (objectToAxiosParams, { onError }, _invalidateQueries) => {
           capturedOnError = onError;
           return { mutate: mockMutate };
         },
