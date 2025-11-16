@@ -79,7 +79,6 @@
     "eslint-plugin-storybook": "9.1.16",
     "eslint-plugin-testing-library": "^7.6.6",
     "globals": "^15.9.0",
-    "jsdom": "^27.2.0",
     "msw": "^2.4.1",
     "msw-storybook-addon": "^2.0.3",
     "nyc": "^17.0.0",

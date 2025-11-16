@@ -622,11 +622,13 @@ describe("SectionsTable tests", () => {
     test("displays success toast for new course creation", async () => {
       const mockMutate = vi.fn();
       let capturedOnSuccess;
+      let capturedObjectToAxiosParams;
 
-      // Capture the onSuccess callback passed to useBackendMutation
+      // Capture the onSuccess callback and objectToAxiosParams function passed to useBackendMutation
       useBackendMutation.mockImplementation(
   (objectToAxiosParams, { onSuccess }, _invalidateQueries) => {
           capturedOnSuccess = onSuccess;
+          capturedObjectToAxiosParams = objectToAxiosParams;
           return { mutate: mockMutate };
         },
       );
@@ -678,6 +680,21 @@ describe("SectionsTable tests", () => {
           enrollCd: "30262",
           psId: 1,
         });
+      });
+
+      // Test objectToAxiosParams function
+      expect(capturedObjectToAxiosParams).toBeDefined();
+      const axiosParams = capturedObjectToAxiosParams({
+        enrollCd: "30262",
+        psId: 1,
+      });
+      expect(axiosParams).toEqual({
+        url: "/api/courses/post",
+        method: "POST",
+        params: {
+          enrollCd: "30262",
+          psId: "1",
+        },
       });
 
       // Simulate successful API response
