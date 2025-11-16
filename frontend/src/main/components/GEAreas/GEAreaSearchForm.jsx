@@ -9,10 +9,11 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
-  const quarters = quarterRange(
-    systemInfo.startQtrYYYYQ,
-    systemInfo.endQtrYYYYQ,
-  );
+
+  const startQtr = systemInfo?.startQtrYYYYQ || "20211";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+
+  const quarters = quarterRange(startQtr, endQtr);
 
   const quarterKey = "GEAreaSearch.Quarter";
   const areaKey = "GEAreaSearch.Area";
