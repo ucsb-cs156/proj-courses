@@ -24,7 +24,10 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock.onGet("/api/jobs/paginated").reply(200, {
+    content: jobsFixtures.sixJobs,
+    totalPages: 1
+  });
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
