@@ -238,9 +238,13 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    const classroomSelect = await screen.findByTestId("CourseOverTimeBuildingsSearch.ClassroomSelect");
+    const classroomSelect = await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
 
-    const optionTexts = Array.from(classroomSelect.options).map((opt) => opt.textContent);
+    const optionTexts = Array.from(classroomSelect.options).map(
+      (opt) => opt.textContent,
+    );
 
     expect(optionTexts[0]).toBe("ALL");
     expect(optionTexts.slice(1)).toEqual([
@@ -300,9 +304,13 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
-    const classroomSelect = await screen.findByTestId("CourseOverTimeBuildingsSearch.ClassroomSelect");
+    const classroomSelect = await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
 
-    const optionTexts = Array.from(classroomSelect.options).map((opt) => opt.textContent);
+    const optionTexts = Array.from(classroomSelect.options).map(
+      (opt) => opt.textContent,
+    );
 
     expect(optionTexts).toEqual(["ALL", "1004", "1106", "1108"]);
   });
@@ -418,9 +426,13 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
     axios.get.mockResolvedValue({ data: ["Z101", "A202", "M303"] });
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
-    const classroomSelect = await screen.findByTestId("CourseOverTimeBuildingsSearch.ClassroomSelect");
+    const classroomSelect = await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
 
-    const optionTexts = Array.from(classroomSelect.options).map((opt) => opt.textContent);
+    const optionTexts = Array.from(classroomSelect.options).map(
+      (opt) => opt.textContent,
+    );
 
     expect(optionTexts).toEqual(["ALL", "A202", "M303", "Z101"]);
   });

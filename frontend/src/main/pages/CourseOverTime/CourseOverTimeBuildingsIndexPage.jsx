@@ -36,15 +36,16 @@ export default function CourseOverTimeBuildingsIndexPage() {
   }
 
   const filteredSections =
-  !selectedClassroom || selectedClassroom === "ALL"
-    ? courseJSON
-    : courseJSON.filter((cs) =>
-        cs.section &&
-        cs.section.timeLocations &&
-        cs.section.timeLocations.some(
-          (loc) => loc.room === selectedClassroom,
-        ),
-      );
+    !selectedClassroom || selectedClassroom === "ALL"
+      ? courseJSON
+      : courseJSON.filter(
+          (cs) =>
+            cs.section &&
+            cs.section.timeLocations &&
+            cs.section.timeLocations.some(
+              (loc) => loc.room === selectedClassroom,
+            ),
+        );
 
   return (
     <BasicLayout>
