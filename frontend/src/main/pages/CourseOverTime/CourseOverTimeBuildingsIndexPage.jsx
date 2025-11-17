@@ -3,7 +3,6 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CourseOverTimeBuildingsSearchForm from "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm";
 import { useBackendMutation } from "main/utils/useBackend";
 import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable";
-import { set } from "react-hook-form";
 
 export default function CourseOverTimeBuildingsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
