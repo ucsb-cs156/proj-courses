@@ -49,6 +49,7 @@ describe("utils/systemInfo tests", () => {
 
       const queryState = queryClient.getQueryState("systemInfo");
       expect(queryState).toBeDefined();
+      queryClient.clear();
     });
 
     test("useSystemInfo retrieves data from API", async () => {
