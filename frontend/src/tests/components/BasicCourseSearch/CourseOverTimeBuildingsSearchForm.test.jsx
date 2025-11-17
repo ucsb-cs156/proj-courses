@@ -121,7 +121,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const expectedFields = {
       Quarter: "20232",
       buildingCode: "GIRV",
-      classroom: "",
+      classroom: "ALL",
     };
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
@@ -238,18 +238,44 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    await screen.findByTestId("available-classrooms");
+    const classroomSelect = await screen.findByTestId("CourseOverTimeBuildingsSearch.ClassroomSelect");
 
-    expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-      "1004, 1106, 1108, 1112, 1115, 1116, 1119, 2108, 2110, 2112, 2115, 2116, 2119, 2120, 2123, 2124, 2127, 2128, 2129, 2135",
-    );
+    const optionTexts = Array.from(classroomSelect.options).map((opt) => opt.textContent);
+
+    expect(optionTexts[0]).toBe("ALL");
+    expect(optionTexts.slice(1)).toEqual([
+      "1004",
+      "1106",
+      "1108",
+      "1112",
+      "1115",
+      "1116",
+      "1119",
+      "2108",
+      "2110",
+      "2112",
+      "2115",
+      "2116",
+      "2119",
+      "2120",
+      "2123",
+      "2124",
+      "2127",
+      "2128",
+      "2129",
+      "2135",
+    ]);
   });
 
   test("renders nothing when classrooms is empty", () => {
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={mockFn} />);
-    expect(
-      screen.queryByTestId("available-classrooms"),
-    ).not.toBeInTheDocument();
+    const classroomSelect = screen.getByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
+    expect(classroomSelect).toBeInTheDocument();
+    expect(classroomSelect).toBeDisabled();
+    expect(classroomSelect.options).toHaveLength(1);
+    expect(classroomSelect.options[0].textContent).toBe("ALL");
   });
 
   test("fetches classrooms and displays them in sorted order", async () => {
@@ -274,11 +300,11 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
-    await screen.findByTestId("available-classrooms");
+    const classroomSelect = await screen.findByTestId("CourseOverTimeBuildingsSearch.ClassroomSelect");
 
-    expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-      "1004, 1106, 1108",
-    );
+    const optionTexts = Array.from(classroomSelect.options).map((opt) => opt.textContent);
+
+    expect(optionTexts).toEqual(["ALL", "1004", "1106", "1108"]);
   });
 
   test("displays no classrooms and logs error when fetch fails", async () => {
@@ -304,9 +330,12 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
     await waitFor(() => expect(console.error).toHaveBeenCalled());
-    expect(
-      screen.queryByTestId("available-classrooms"),
-    ).not.toBeInTheDocument();
+    const classroomSelect = screen.getByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
+    expect(classroomSelect).toBeDisabled();
+    expect(classroomSelect.options).toHaveLength(1);
+    expect(classroomSelect.options[0].textContent).toBe("ALL");
   });
 
   test("uses fallback quarter/building when localStorage for quarter/building is null", () => {
@@ -389,11 +418,11 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
     axios.get.mockResolvedValue({ data: ["Z101", "A202", "M303"] });
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
-    await waitFor(() =>
-      expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-        "A202, M303, Z101",
-      ),
-    );
+    const classroomSelect = await screen.findByTestId("CourseOverTimeBuildingsSearch.ClassroomSelect");
+
+    const optionTexts = Array.from(classroomSelect.options).map((opt) => opt.textContent);
+
+    expect(optionTexts).toEqual(["ALL", "A202", "M303", "Z101"]);
   });
 
   test("uses first available quarter if localQuarter is falsy", () => {

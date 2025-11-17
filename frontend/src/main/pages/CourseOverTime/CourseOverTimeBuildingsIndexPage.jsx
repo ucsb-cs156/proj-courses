@@ -3,10 +3,12 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CourseOverTimeBuildingsSearchForm from "main/components/BasicCourseSearch/CourseOverTimeBuildingsSearchForm";
 import { useBackendMutation } from "main/utils/useBackend";
 import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable";
+import { set } from "react-hook-form";
 
 export default function CourseOverTimeBuildingsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
+  const [selectedClassroom, setSelectedClassroom] = useState("ALL");
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/courseovertime/buildingsearch",
@@ -29,8 +31,20 @@ export default function CourseOverTimeBuildingsIndexPage() {
   );
 
   async function fetchCourseOverTimeJSON(_event, query) {
+    setSelectedClassroom(query.classroom || "ALL");
     mutation.mutate(query);
   }
+
+  const filteredSections =
+  !selectedClassroom || selectedClassroom === "ALL"
+    ? courseJSON
+    : courseJSON.filter((cs) =>
+        cs.section &&
+        cs.section.timeLocations &&
+        cs.section.timeLocations.some(
+          (loc) => loc.room === selectedClassroom,
+        ),
+      );
 
   return (
     <BasicLayout>
@@ -39,7 +53,7 @@ export default function CourseOverTimeBuildingsIndexPage() {
         <CourseOverTimeBuildingsSearchForm
           fetchJSON={fetchCourseOverTimeJSON}
         />
-        <ConvertedSectionTable sections={courseJSON} />
+        <ConvertedSectionTable sections={filteredSections} />
       </div>
     </BasicLayout>
   );
