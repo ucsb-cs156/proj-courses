@@ -5,7 +5,6 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
-import * as useLocalStorage from "main/utils/useLocalStorage";
 
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -264,8 +263,6 @@ describe("AdminJobsPage tests", () => {
     getItemSpy.mockImplementation(() => null);
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
-    const useLocalStorageSpy = vi.spyOn(useLocalStorage, "default");
-
     // act
     render(
       <QueryClientProvider client={queryClient}>
@@ -276,14 +273,9 @@ describe("AdminJobsPage tests", () => {
     );
 
     await screen.findByText("Job Status");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "JobsSearch.SortField",
-      "id",
-    );
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "JobsSearch.SortDirection",
-      "DESC",
-    );
+
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "id");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
     expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "10");
   });
 
