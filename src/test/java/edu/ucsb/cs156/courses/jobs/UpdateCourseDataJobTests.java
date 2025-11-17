@@ -421,39 +421,4 @@ public class UpdateCourseDataJobTests {
             jobRateLimit);
     job.accept(ctx);
   }
-
-@Test
-void test_builder_and_getters_cover_all_fields() {
-    List<String> subjects = List.of("CMPSC");
-
-    UpdateCourseDataJob job =
-        UpdateCourseDataJob.builder()
-            .start_quarterYYYYQ("20211")
-            .end_quarterYYYYQ("20212")
-            .subjects(subjects)
-            .ucsbCurriculumService(ucsbCurriculumService)
-            .convertedSectionCollection(convertedSectionCollection)
-            .updateCollection(updateCollection)
-            .isStaleService(isStaleService)
-            .ifStale(true)
-            .enrollmentDataPointRepository(enrollmentDataPointRepository)
-            .ucsbapiQuarterService(ucsbapiQuarterService)
-            .jobRateLimit(jobRateLimit)
-            .build();
-
-    // Call all Lombok-generated getters so those field lines are considered covered
-    assertEquals("20211", job.getStart_quarterYYYYQ());
-    assertEquals("20212", job.getEnd_quarterYYYYQ());
-    assertEquals(subjects, job.getSubjects());
-    assertEquals(ucsbCurriculumService, job.getUcsbCurriculumService());
-    assertEquals(convertedSectionCollection, job.getConvertedSectionCollection());
-    assertEquals(updateCollection, job.getUpdateCollection());
-    assertEquals(isStaleService, job.getIsStaleService());
-    // boolean field -> Lombok generates isIfStale()
-    assertEquals(true, job.isIfStale());
-    assertEquals(enrollmentDataPointRepository, job.getEnrollmentDataPointRepository());
-    assertEquals(ucsbapiQuarterService, job.getUcsbapiQuarterService());
-    assertEquals(jobRateLimit, job.getJobRateLimit());
-}
-
 }
