@@ -2,13 +2,17 @@ package edu.ucsb.cs156.courses.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
+import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +30,10 @@ public class EnrollmentControllerTests {
   @Mock
   private EnrollmentDataPointRepository enrollmentDataPointRepository =
       mock(EnrollmentDataPointRepository.class);
+
+  @Mock
+  private EnrollmentCSVService enrollmentCSVService =
+      mock(EnrollmentCSVService.class);
 
   @InjectMocks private EnrollmentController enrollmentController;
 
@@ -51,7 +59,18 @@ public class EnrollmentControllerTests {
 
     when(enrollmentDataPointRepository.findByYyyyq(yyyyq)).thenReturn(dataPoints);
 
-    ResponseEntity<StreamingResponseBody> response = enrollmentController.csvForQuarter(yyyyq, "");
+        // mock CSV writing to produce deterministic output
+        doAnswer(invocation -> {
+            Writer writer = invocation.getArgument(0);
+            writer.write("""
+                    "COURSEID","DATECREATED","ENROLLCD","ENROLLMENT","ID","SECTION","YYYYQ"
+                    "CMPSC 156","2022-03-05T15:50:10","12345","96","1","0100","20252"
+                    """);
+            return null;
+        }).when(enrollmentCSVService).writeEnrollmentCSV(any(Writer.class), any(List.class));
+
+        ResponseEntity<StreamingResponseBody> response =
+                enrollmentController.csvForQuarter(yyyyq);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("text/csv;charset=UTF-8", response.getHeaders().getContentType().toString());
