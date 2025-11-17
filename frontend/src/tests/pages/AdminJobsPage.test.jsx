@@ -5,6 +5,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
+import * as useLocalStorage from "main/utils/useLocalStorage";
 
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -256,6 +257,34 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(axiosMock.history.post[0].url).toBe(url);
+  });
+
+  test("When localstorage is empty, fallback values are used", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+
+    const useLocalStorageSpy = vi.spyOn(useLocalStorage, "default");
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Job Status");
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "JobsSearch.SortField",
+      "id",
+    );
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "JobsSearch.SortDirection",
+      "DESC",
+    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "10");
   });
 
   test("user can purge all jobs in the JobsTable", async () => {
