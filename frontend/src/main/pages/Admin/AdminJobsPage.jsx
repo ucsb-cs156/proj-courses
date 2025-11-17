@@ -25,7 +25,7 @@ const AdminJobsPage = () => {
   );
   const [sortDirection, setSortDirection] = useLocalStorage(
     "JobsSearch.SortDirection",
-    "DESC",
+    "ASC",
   );
   const [pageSize, setPageSize] = useLocalStorage("JobsSearch.PageSize", "10");
 
