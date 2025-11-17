@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
@@ -28,17 +29,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-
 public class EnrollmentControllerTests {
 
   @Mock
   private EnrollmentDataPointRepository enrollmentDataPointRepository =
       mock(EnrollmentDataPointRepository.class);
 
-  @Mock
-  private EnrollmentCSVService enrollmentCSVService =
-      mock(EnrollmentCSVService.class);
+  @Mock private EnrollmentCSVService enrollmentCSVService = mock(EnrollmentCSVService.class);
 
   @InjectMocks private EnrollmentController enrollmentController;
 
@@ -64,18 +61,21 @@ public class EnrollmentControllerTests {
 
     when(enrollmentDataPointRepository.findByYyyyq(yyyyq)).thenReturn(dataPoints);
 
-        // mock CSV writing to produce deterministic output
-        doAnswer(invocation -> {
-            Writer writer = invocation.getArgument(0);
-            writer.write("""
+    // mock CSV writing to produce deterministic output
+    doAnswer(
+            invocation -> {
+              Writer writer = invocation.getArgument(0);
+              writer.write(
+                  """
                     "COURSEID","DATECREATED","ENROLLCD","ENROLLMENT","ID","SECTION","YYYYQ"
                     "CMPSC 156","2022-03-05T15:50:10","12345","96","1","0100","20252"
                     """);
-            return null;
-        }).when(enrollmentCSVService).writeEnrollmentCSV(any(Writer.class), any(List.class));
+              return null;
+            })
+        .when(enrollmentCSVService)
+        .writeEnrollmentCSV(any(Writer.class), any(List.class));
 
-        ResponseEntity<StreamingResponseBody> response =
-                enrollmentController.csvForQuarter(yyyyq);
+    ResponseEntity<StreamingResponseBody> response = enrollmentController.csvForQuarter(yyyyq);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("text/csv;charset=UTF-8", response.getHeaders().getContentType().toString());
@@ -124,8 +124,7 @@ public class EnrollmentControllerTests {
         .when(enrollmentCSVService)
         .writeEnrollmentCSV(any(), anyList());
 
-    ResponseEntity<StreamingResponseBody> response =
-        enrollmentController.csvForQuarter(yyyyq);
+    ResponseEntity<StreamingResponseBody> response = enrollmentController.csvForQuarter(yyyyq);
 
     assertEquals("text/csv;charset=UTF-8", response.getHeaders().getContentType().toString());
 

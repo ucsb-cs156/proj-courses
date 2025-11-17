@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class EnrollmentCSVService {
 
-    public StatefulBeanToCsv<EnrollmentDataPoint> getStatefulBeanToCSV(Writer writer) {
-        return new StatefulBeanToCsvBuilder<EnrollmentDataPoint>(writer).build();
-    }
+  public StatefulBeanToCsv<EnrollmentDataPoint> getStatefulBeanToCSV(Writer writer) {
+    return new StatefulBeanToCsvBuilder<EnrollmentDataPoint>(writer).build();
+  }
 
-    public void writeEnrollmentCSV(Writer writer, List<EnrollmentDataPoint> list)
-            throws CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
+  public void writeEnrollmentCSV(Writer writer, List<EnrollmentDataPoint> list)
+      throws CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
 
-        StatefulBeanToCsv<EnrollmentDataPoint> beanToCsvWriter = getStatefulBeanToCSV(writer);
-        beanToCsvWriter.write(list);
-    }
+    StatefulBeanToCsv<EnrollmentDataPoint> beanToCsvWriter = getStatefulBeanToCSV(writer);
+    beanToCsvWriter.write(list);
+  }
 }

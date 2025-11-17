@@ -63,7 +63,7 @@ public class EnrollmentController extends ApiController {
 
           try (Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
             try {
-                enrollmentCSVService.writeEnrollmentCSV(writer, list);
+              enrollmentCSVService.writeEnrollmentCSV(writer, list);
             } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
               log.error("Error writing CSV file", e);
               throw new IOException("Error writing CSV file: " + e.getMessage());
