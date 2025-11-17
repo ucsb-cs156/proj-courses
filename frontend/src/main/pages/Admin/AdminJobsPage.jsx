@@ -21,16 +21,13 @@ const AdminJobsPage = () => {
 
   const [sortField, setSortField] = useLocalStorage(
     "JobsSearch.SortField",
-    "createdBy",
+    "id",
   );
   const [sortDirection, setSortDirection] = useLocalStorage(
     "JobsSearch.SortDirection",
     "DESC",
   );
-  const [pageSize, setPageSize] = useLocalStorage(
-    "JobsSearch.PageSize",
-    "10",
-  );
+  const [pageSize, setPageSize] = useLocalStorage("JobsSearch.PageSize", "10");
 
   // test job
 

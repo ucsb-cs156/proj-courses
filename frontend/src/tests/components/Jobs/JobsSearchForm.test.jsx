@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
@@ -24,7 +24,7 @@ describe("JobsSearchForm tests", () => {
     vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
     axiosMock.onGet("/api/systemInfo").reply(200, {
-      ...systemInfoFixtures.showingNeither
+      ...systemInfoFixtures.showingNeither,
     });
   });
 
@@ -89,17 +89,11 @@ describe("JobsSearchForm tests", () => {
     const selectSortDirection = screen.getByLabelText("Sort Direction");
     userEvent.selectOptions(selectSortDirection, "ASC");
     expect(selectSortDirection.value).toBe("ASC");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "JobsSearch.SortDirection",
-      "ASC",
-    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
 
     userEvent.selectOptions(selectSortDirection, "DESC");
     expect(selectSortDirection.value).toBe("DESC");
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "JobsSearch.SortDirection",
-      "DESC",
-    );
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
   });
 
   test("when I select a pageSize, the state for pageSize changes", () => {
@@ -144,10 +138,7 @@ describe("JobsSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const setItemCalls = setItemSpy.mock.calls;
-    expect(setItemCalls).toContainEqual([
-      "JobsSearch.SortField",
-      "id",
-    ]);
+    expect(setItemCalls).toContainEqual(["JobsSearch.SortField", "id"]);
     expect(setItemCalls).toContainEqual(["JobsSearch.SortDirection", "ASC"]);
     expect(setItemCalls).toContainEqual(["JobsSearch.PageSize", "10"]);
   });
