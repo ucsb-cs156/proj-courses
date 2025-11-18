@@ -271,6 +271,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       "2129",
       "2135",
     ]);
+    expect(classroomSelect.value).toBe("ALL");
   });
 
   test("renders nothing when classrooms is empty", () => {
@@ -574,5 +575,36 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const classroomRow = classroomLabel.closest(".row");
     expect(classroomRow).not.toBeNull();
     expect(classroomRow).toHaveAttribute("style", "padding-top: 10px;");
+  });
+
+  test("does not fetch classrooms when only Quarter is set but buildingCode is missing", async () => {
+    // Make systemInfo not provide any defaults that force buildingCode
+    useSystemInfo.mockReturnValue({ data: {} });
+
+    const getSpy = vi.spyOn(axios, "get");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Set Quarter to something valid
+    await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
+
+    // Leave Building Name at its default (should be "" / no building)
+
+    // Give effects time to run and then assert that the classrooms endpoint was NOT called
+    await waitFor(() => {
+      const classroomsCalls = getSpy.mock.calls.filter(
+        ([url]) =>
+          url === "/api/public/courseovertime/buildingsearch/classrooms",
+      );
+      expect(classroomsCalls.length).toBe(0);
+    });
+
+    getSpy.mockRestore();
   });
 });

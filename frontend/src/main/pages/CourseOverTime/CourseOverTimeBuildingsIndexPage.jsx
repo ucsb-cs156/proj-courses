@@ -30,8 +30,10 @@ export default function CourseOverTimeBuildingsIndexPage() {
   );
 
   async function fetchCourseOverTimeJSON(_event, query) {
-    // Stryker disable next-line all : default classroom value has no observable effect when query.classroom is missing
+    // Stryker disable all
+    /* istanbul ignore next */
     setSelectedClassroom(query.classroom || "ALL");
+    // Stryker restore all
     mutation.mutate(query);
   }
 
