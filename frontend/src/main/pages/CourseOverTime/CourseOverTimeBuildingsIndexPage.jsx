@@ -7,6 +7,7 @@ import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable"
 export default function CourseOverTimeBuildingsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
+  // Stryker disable next-line all : Can't test state because hook is internal
   const [selectedClassroom, setSelectedClassroom] = useState("ALL");
 
   const objectToAxiosParams = (query) => ({
