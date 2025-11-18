@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
@@ -7,7 +7,7 @@ import mockConsole from "tests/testutils/mockConsole";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import usersFixtures from "fixtures/usersFixtures";
+import usersFixturesPaged from "fixtures/usersFixturesPaged";
 import AdminUsersPage from "main/pages/Admin/AdminUsersPage";
 
 describe("AdminUsersPage tests", () => {
@@ -28,7 +28,10 @@ describe("AdminUsersPage tests", () => {
 
   test("renders without crashing on three users", async () => {
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/admin/users").reply(200, usersFixtures.threeUsers);
+
+    axiosMock
+      .onGet("/api/admin/users/paged?page=0&size=5")
+      .reply(200, usersFixturesPaged.threeUsersPaged);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -62,7 +65,7 @@ describe("AdminUsersPage tests", () => {
 
   test("renders empty table when backend unavailable", async () => {
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/admin/users").timeout();
+    axiosMock.onGet("/api/admin/users/paged?page=0&size=5").timeout();
 
     const restoreConsole = mockConsole();
 
@@ -80,12 +83,132 @@ describe("AdminUsersPage tests", () => {
 
     const errorMessage = console.error.mock.calls[0][0];
     expect(errorMessage).toMatch(
-      "Error communicating with backend via GET on /api/admin/users",
+      "Error communicating with backend via GET on /api/admin/users/paged",
     );
     restoreConsole();
 
     expect(
       screen.queryByTestId(`${testId}-cell-row-0-col-id`),
     ).not.toBeInTheDocument();
+  });
+
+  test("clicking Next loads page 1", async () => {
+    const queryClient = new QueryClient();
+
+    axiosMock
+      .onGet("/api/admin/users/paged?page=0&size=5")
+      .reply(200, usersFixturesPaged.page0);
+
+    axiosMock
+      .onGet("/api/admin/users/paged?page=1&size=5")
+      .reply(200, usersFixturesPaged.page1);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminUsersPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Users")).toBeInTheDocument();
+
+    const nextButton = await screen.findByText("Next");
+    fireEvent.click(nextButton);
+
+    await waitFor(() => {
+      const urls = axiosMock.history.get.map((r) => r.url);
+      expect(urls).toContain("/api/admin/users/paged?page=1&size=5");
+    });
+
+    expect(
+      await screen.findByTestId("UsersTable-cell-row-0-col-id"),
+    ).toHaveTextContent(String(usersFixturesPaged.page1.content[0].id));
+  });
+
+  test("clicking Previous loads page 0", async () => {
+    const queryClient = new QueryClient();
+
+    // First page load (page 0)
+    axiosMock
+      .onGet("/api/admin/users/paged?page=0&size=5")
+      .reply(200, usersFixturesPaged.page0);
+
+    // After clicking next (page 1)
+    axiosMock
+      .onGet("/api/admin/users/paged?page=1&size=5")
+      .reply(200, usersFixturesPaged.page1);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminUsersPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Page 0 should load first
+    await waitFor(() => {
+      const urls = axiosMock.history.get.map((r) => r.url);
+      expect(urls).toContain("/api/admin/users/paged?page=0&size=5");
+    });
+
+    // Click NEXT → move to page 1
+    const nextButton = await screen.findByText("Next");
+    fireEvent.click(nextButton);
+
+    await waitFor(() => {
+      const urls = axiosMock.history.get.map((r) => r.url);
+      expect(urls).toContain("/api/admin/users/paged?page=1&size=5");
+    });
+
+    // Click PREVIOUS → should return to page 0
+    const prevButton = await screen.findByText("Previous");
+    fireEvent.click(prevButton);
+
+    await waitFor(() => {
+      const urls = axiosMock.history.get.map((r) => r.url);
+      expect(urls).toContain("/api/admin/users/paged?page=0&size=5");
+    });
+
+    expect(
+      await screen.findByTestId("UsersTable-cell-row-0-col-id"),
+    ).toHaveTextContent(String(usersFixturesPaged.page0.content[0].id));
+  });
+  test("changing page size triggers reset to page 0", async () => {
+    const queryClient = new QueryClient();
+
+    // initial load page=0 size=5
+    axiosMock
+      .onGet("/api/admin/users/paged?page=0&size=5")
+      .reply(200, usersFixturesPaged.page0);
+
+    // expect request with page=0 size=10 after change
+    axiosMock
+      .onGet("/api/admin/users/paged?page=0&size=10")
+      .reply(200, usersFixturesPaged.page0_size10);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminUsersPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Wait for initial request to finish
+    await screen.findByTestId("UsersTable-cell-row-0-col-id");
+
+    // Select element
+    const select = screen.getByLabelText("Page Size:");
+
+    // Change page size to 10
+    fireEvent.change(select, { target: { value: "10" } });
+
+    // Ensure new request fires with page reset to 0
+    await waitFor(() => {
+      const urls = axiosMock.history.get.map((r) => r.url);
+      expect(urls).toContain("/api/admin/users/paged?page=0&size=10");
+    });
   });
 });
