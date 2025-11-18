@@ -14,6 +14,7 @@ import {
   getSection,
   getSectionField,
   renderInfoLink,
+  formatInfoLink,
   shouldShowAddToScheduleLink,
   getQuarter,
 } from "main/utils/sectionUtils.jsx";
@@ -119,9 +120,14 @@ export default function SectionsTable({ sections, schedules = [] }) {
     {
       accessorKey: "courseId",
       header: "Course ID",
-      // cell: ({ row, getValue }) => (
-      //   <div style={{ paddingLeft: `${row.depth * 2}rem` }}>{getValue()}</div>
-      // ),
+      cell: ({ row }) => (
+        <a
+          href={formatInfoLink(row)}
+          data-testid={`${testid}-row-${row.id}-col-courseId-link`}
+        >
+          {row.original.courseId}
+        </a>
+      ),
     },
     {
       accessorKey: "title",
