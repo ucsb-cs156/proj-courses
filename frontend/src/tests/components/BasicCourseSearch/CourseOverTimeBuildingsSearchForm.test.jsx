@@ -387,13 +387,11 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     await waitFor(() => {
       const calls = axiosMock.history.get.filter(
-        (c) =>
-          c.url === "/api/public/courseovertime/buildingsearch/classrooms",
+        (c) => c.url === "/api/public/courseovertime/buildingsearch/classrooms",
       );
       expect(calls.length).toBeGreaterThanOrEqual(1);
     });
   });
-
 
   test("handles error when classroom fetch fails", async () => {
     useSystemInfo.mockReturnValue({ data: {} });
@@ -419,7 +417,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     errorSpy.mockRestore();
   });
-
 
   test("logs classrooms when fetch is successful", async () => {
     useSystemInfo.mockReturnValue({ data: {} });
@@ -450,7 +447,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     logSpy.mockRestore();
   });
 
-
   test("sorts classroom list alphabetically", async () => {
     useSystemInfo.mockReturnValue({ data: {} });
     localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
@@ -474,7 +470,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     expect(optionTexts).toEqual(["ALL", "A202", "M303", "Z101"]);
   });
-
 
   test("uses first available quarter if localQuarter is falsy", () => {
     localStorage.removeItem("CourseOverTimeBuildingsSearch.Quarter");
@@ -506,79 +501,78 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   });
 
   test("when I select a specific classroom, it is sent to fetchJSON on submit", async () => {
-  // mock classrooms API
-  axiosMock
-    .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
-      params: { quarter: "20232", buildingCode: "GIRV" },
-    })
-    .reply(200, ["1108", "1004", "1106"]); // unsorted on purpose
+    // mock classrooms API
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1108", "1004", "1106"]); // unsorted on purpose
 
-  const fetchJSONSpy = vi.fn();
+    const fetchJSONSpy = vi.fn();
 
-  render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  // Pick quarter
-  await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
+    // Pick quarter
+    await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
 
-  // Wait for building dropdown options
-  const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-  await screen.findByTestId(expectedKey);
+    // Wait for building dropdown options
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
 
-  // Pick building
-  await userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
+    // Pick building
+    await userEvent.selectOptions(
+      screen.getByLabelText("Building Name"),
+      "GIRV",
+    );
 
-  // Wait for classrooms select to appear
-  const classroomSelect = await screen.findByTestId(
-    "CourseOverTimeBuildingsSearch.ClassroomSelect",
-  );
+    // Wait for classrooms select to appear
+    const classroomSelect = await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
 
-  // 🔑 Wait until "1106" is actually one of the option values
-  await waitFor(() => {
-    const values = Array.from(classroomSelect.options).map((opt) => opt.value);
-    expect(values).toContain("1106");
-  });
+    // 🔑 Wait until "1106" is actually one of the option values
+    await waitFor(() => {
+      const values = Array.from(classroomSelect.options).map(
+        (opt) => opt.value,
+      );
+      expect(values).toContain("1106");
+    });
 
-  // Now it's safe to select it
-  await userEvent.selectOptions(classroomSelect, "1106");
-  expect(classroomSelect.value).toBe("1106");
+    // Now it's safe to select it
+    await userEvent.selectOptions(classroomSelect, "1106");
+    expect(classroomSelect.value).toBe("1106");
 
-  // Submit
-  const submitButton = screen.getByText("Submit");
-  await userEvent.click(submitButton);
+    // Submit
+    const submitButton = screen.getByText("Submit");
+    await userEvent.click(submitButton);
 
-  await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
 
-  expect(fetchJSONSpy).toHaveBeenCalledWith(
-    expect.any(Object),
-    {
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
       Quarter: "20232",
       buildingCode: "GIRV",
       classroom: "1106",
-    },
-  );
-});
+    });
+  });
 
-test("Classroom row has correct top padding", () => {
-  render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        <CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
+  test("Classroom row has correct top padding", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  const classroomLabel = screen.getByLabelText("Classroom");
-  const classroomRow = classroomLabel.closest(".row");
-  expect(classroomRow).not.toBeNull();
-  expect(classroomRow).toHaveAttribute("style", "padding-top: 10px;");
-});
-
-
-
+    const classroomLabel = screen.getByLabelText("Classroom");
+    const classroomRow = classroomLabel.closest(".row");
+    expect(classroomRow).not.toBeNull();
+    expect(classroomRow).toHaveAttribute("style", "padding-top: 10px;");
+  });
 });

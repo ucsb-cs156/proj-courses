@@ -4,8 +4,7 @@ import CourseOverTimeBuildingsSearchForm from "main/components/BasicCourseSearch
 import { useBackendMutation } from "main/utils/useBackend";
 import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable";
 
-export const classroomOrAll = (query) =>
-  query.classroom || "ALL";
+export const classroomOrAll = (query) => query.classroom || "ALL";
 
 export default function CourseOverTimeBuildingsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
