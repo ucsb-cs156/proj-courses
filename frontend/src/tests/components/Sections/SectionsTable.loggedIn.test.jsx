@@ -431,10 +431,15 @@ describe("SectionsTable tests", () => {
 
       const testId = "SectionsTable";
 
-      const courseIdLink = screen.getByTestId(`${testId}-row-0-col-courseId-link`);
+      const courseIdLink = screen.getByTestId(
+        `${testId}-row-0-col-courseId-link`,
+      );
       expect(courseIdLink).toBeInTheDocument();
       expect(courseIdLink.tagName).toBe("A");
-      expect(courseIdLink).toHaveAttribute("href", "/coursedetails/20244/30247");
+      expect(courseIdLink).toHaveAttribute(
+        "href",
+        "/coursedetails/20244/30247",
+      );
       expect(courseIdLink).toHaveAttribute("target", "_blank");
       expect(courseIdLink).toHaveTextContent("MATH 2A");
     });

@@ -117,9 +117,10 @@ export const renderInfoLink = (row, testid) => (
 );
 
 export const renderCourseIdLink = (row, testid) => {
-  const courseId = row.depth === 0
-    ? row.original.courseId
-    : row.getParentRow().original.courseId;
+  const courseId =
+    row.depth === 0
+      ? row.original.courseId
+      : row.getParentRow().original.courseId;
 
   return (
     <a
