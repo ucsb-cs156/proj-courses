@@ -328,7 +328,10 @@ describe("SectionsTable tests", () => {
       );
       expect(courseIdLink).toBeInTheDocument();
       expect(courseIdLink.tagName).toBe("A");
-      expect(courseIdLink).toHaveAttribute("href", "/coursedetails/20244/30247");
+      expect(courseIdLink).toHaveAttribute(
+        "href",
+        "/coursedetails/20244/30247",
+      );
       expect(courseIdLink).toHaveTextContent("MATH 2A");
     });
 
