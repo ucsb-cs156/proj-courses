@@ -32,6 +32,8 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+    axiosMock.reset();
+    axiosMock.resetHistory();
     vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
 
@@ -374,37 +376,65 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     useSystemInfo.mockReturnValue({ data: {} });
     localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
-    axios.get.mockResolvedValue({ data: ["CLSS1", "CLSS2"] });
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20222", buildingCode: "PHELP" },
+      })
+      .reply(200, ["CLSS1", "CLSS2"]);
+
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
-    await waitFor(() => expect(axios.get).toHaveBeenCalled());
+
+    await waitFor(() => {
+      const calls = axiosMock.history.get.filter(
+        (c) =>
+          c.url === "/api/public/courseovertime/buildingsearch/classrooms",
+      );
+      expect(calls.length).toBeGreaterThanOrEqual(1);
+    });
   });
+
 
   test("handles error when classroom fetch fails", async () => {
     useSystemInfo.mockReturnValue({ data: {} });
     localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
 
-    const error = new Error("Network error");
-    axios.get.mockRejectedValue(error);
-
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20222", buildingCode: "PHELP" },
+      })
+      .networkError();
 
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
 
     await waitFor(() => {
-      expect(errorSpy).toHaveBeenCalledWith("Error fetching classrooms", error);
+      expect(errorSpy).toHaveBeenCalled();
+      const [msg, err] = errorSpy.mock.calls[0];
+      expect(msg).toBe("Error fetching classrooms");
+      expect(err).toBeInstanceOf(Error);
     });
 
     errorSpy.mockRestore();
   });
+
 
   test("logs classrooms when fetch is successful", async () => {
     useSystemInfo.mockReturnValue({ data: {} });
     localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-    axios.get.mockResolvedValue({ data: ["CLSS1"] });
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20222", buildingCode: "PHELP" },
+      })
+      .reply(200, ["CLSS1"]);
+
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
+
     await waitFor(() =>
       expect(logSpy).toHaveBeenCalledWith(
         expect.stringContaining("Fetching classrooms with:"),
@@ -420,12 +450,20 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     logSpy.mockRestore();
   });
 
+
   test("sorts classroom list alphabetically", async () => {
     useSystemInfo.mockReturnValue({ data: {} });
     localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
     localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
-    axios.get.mockResolvedValue({ data: ["Z101", "A202", "M303"] });
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20222", buildingCode: "PHELP" },
+      })
+      .reply(200, ["Z101", "A202", "M303"]);
+
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
+
     const classroomSelect = await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.ClassroomSelect",
     );
@@ -436,6 +474,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     expect(optionTexts).toEqual(["ALL", "A202", "M303", "Z101"]);
   });
+
 
   test("uses first available quarter if localQuarter is falsy", () => {
     localStorage.removeItem("CourseOverTimeBuildingsSearch.Quarter");
@@ -465,4 +504,81 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     expect(screen.getByLabelText("Quarter")).toBeInTheDocument();
   });
+
+  test("when I select a specific classroom, it is sent to fetchJSON on submit", async () => {
+  // mock classrooms API
+  axiosMock
+    .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+      params: { quarter: "20232", buildingCode: "GIRV" },
+    })
+    .reply(200, ["1108", "1004", "1106"]); // unsorted on purpose
+
+  const fetchJSONSpy = vi.fn();
+
+  render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+
+  // Pick quarter
+  await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
+
+  // Wait for building dropdown options
+  const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+  await screen.findByTestId(expectedKey);
+
+  // Pick building
+  await userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
+
+  // Wait for classrooms select to appear
+  const classroomSelect = await screen.findByTestId(
+    "CourseOverTimeBuildingsSearch.ClassroomSelect",
+  );
+
+  // 🔑 Wait until "1106" is actually one of the option values
+  await waitFor(() => {
+    const values = Array.from(classroomSelect.options).map((opt) => opt.value);
+    expect(values).toContain("1106");
+  });
+
+  // Now it's safe to select it
+  await userEvent.selectOptions(classroomSelect, "1106");
+  expect(classroomSelect.value).toBe("1106");
+
+  // Submit
+  const submitButton = screen.getByText("Submit");
+  await userEvent.click(submitButton);
+
+  await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+
+  expect(fetchJSONSpy).toHaveBeenCalledWith(
+    expect.any(Object),
+    {
+      Quarter: "20232",
+      buildingCode: "GIRV",
+      classroom: "1106",
+    },
+  );
+});
+
+test("Classroom row has correct top padding", () => {
+  render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+
+  const classroomLabel = screen.getByLabelText("Classroom");
+  const classroomRow = classroomLabel.closest(".row");
+  expect(classroomRow).not.toBeNull();
+  expect(classroomRow).toHaveAttribute("style", "padding-top: 10px;");
+});
+
+
+
 });
