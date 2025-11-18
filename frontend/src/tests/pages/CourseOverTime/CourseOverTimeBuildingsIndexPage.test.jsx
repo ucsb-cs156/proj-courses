@@ -5,15 +5,10 @@ import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
-import CourseOverTimeBuildingsIndexPage, {
-  classroomOrAll,
-} from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
+import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import {
-  coursesInLib,
-  coursesInLibDifferentRoom,
-} from "fixtures/buildingFixtures";
+import { coursesInLib } from "fixtures/buildingFixtures";
 import userEvent from "@testing-library/user-event";
 
 const mockToast = vi.fn();
@@ -28,7 +23,7 @@ vi.mock("react-toastify", async () => {
 
 describe("CourseOverTimeBuildingsIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
-
+  const classroomOrAll = (query) => query.classroom || "ALL";
   beforeEach(() => {
     axiosMock.resetHistory();
     axiosMock
