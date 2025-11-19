@@ -238,7 +238,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    await screen.findByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0");
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
 
     const selectClassroom = screen.getByLabelText("Classroom");
     expect(selectClassroom).toBeInTheDocument();
@@ -271,7 +273,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
-    await screen.findByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0");
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
 
     expect(
       screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
@@ -442,6 +446,19 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const fetchJSONSpy = vi.fn();
     fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
 
+    axiosMock.reset();
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: "20232",
+      endQtrYYYYQ: "20254",
+    });
+    axiosMock
+      .onGet("/api/public/basicQuarterDates")
+      .reply(200, [{ yyyyq: "20232" }, { yyyyq: "20242" }, { yyyyq: "20252" }]);
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
         params: { quarter: "20232", buildingCode: "GIRV" },
@@ -464,7 +481,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    await screen.findByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0");
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
 
     const selectClassroom = screen.getByLabelText("Classroom");
     userEvent.selectOptions(selectClassroom, "1106");
@@ -485,6 +504,19 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const fetchJSONSpy = vi.fn();
     fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
 
+    axiosMock.reset();
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: "20232",
+      endQtrYYYYQ: "20254",
+    });
+    axiosMock
+      .onGet("/api/public/basicQuarterDates")
+      .reply(200, [{ yyyyq: "20232" }, { yyyyq: "20242" }, { yyyyq: "20252" }]);
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
         params: { quarter: "20232", buildingCode: "GIRV" },
@@ -507,7 +539,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    await screen.findByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0");
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
 
     const selectClassroom = screen.getByLabelText("Classroom");
     userEvent.selectOptions(selectClassroom, "ALL");
