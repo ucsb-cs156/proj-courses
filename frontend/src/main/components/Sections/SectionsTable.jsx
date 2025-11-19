@@ -83,7 +83,6 @@ export default function SectionsTable({ sections, schedules = [] }) {
 
   const testid = "SectionsTable";
 
-  debugger;
 
   const columns = [
     {
