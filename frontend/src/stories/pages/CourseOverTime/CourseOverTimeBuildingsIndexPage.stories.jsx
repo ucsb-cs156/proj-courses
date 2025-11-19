@@ -30,6 +30,11 @@ Default.parameters = {
       return HttpResponse.status(403); // returns 403 when not logged in
     }),
     http.get("/api/public/courseovertime/buildingsearch/classrooms", () => {
+      return HttpResponse.json(["1312", "2020", "1108"], {
+        status: 200,
+      });
+    }),
+    http.get("/api/public/courseovertime/buildingsearch", () => {
       return HttpResponse.json(coursesInLib, {
         status: 200,
       });
