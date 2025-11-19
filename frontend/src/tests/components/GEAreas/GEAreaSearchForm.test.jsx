@@ -8,6 +8,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { toast } from "react-toastify";
 import * as useBackend from "main/utils/useBackend.jsx";
+import * as systemInfoModule from "main/utils/systemInfo";
 
 import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
 
@@ -234,6 +235,89 @@ describe("GEAreaSearchForm tests", () => {
         "GEAreaSearch.Area",
         "A1",
       );
+    });
+
+    test("renders with fallback values when systemInfo is undefined", async () => {
+      axiosMock.reset();
+      axiosMock.resetHistory();
+      axiosMock.onGet("/api/currentUser").reply(200, {
+        loggedIn: true,
+        username: "testuser",
+      });
+      axiosMock.onGet("/api/public/generalEducationInfo").reply(200, [
+        {
+          requirementCode: "A1",
+          requirementTranslation: "English Reading & Composition",
+          collegeCode: "ENGR",
+          objCode: "BS",
+          courseCount: 1,
+          units: 4,
+          inactive: false,
+        },
+      ]);
+
+      const useSystemInfoSpy = vi.spyOn(systemInfoModule, "useSystemInfo");
+      useSystemInfoSpy.mockReturnValue({ data: undefined });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <GEAreaSearchForm fetchJSON={vi.fn()} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByTestId("GEAreaSearch.Quarter-option-0"),
+      ).toHaveValue("20211");
+      expect(
+        await screen.findByTestId("GEAreaSearch.Quarter-option-3"),
+      ).toHaveValue("20214");
+
+      useSystemInfoSpy.mockRestore();
+    });
+
+    test("renders with fallback values when start/end quarters are null", async () => {
+      axiosMock.reset();
+      axiosMock.resetHistory();
+      axiosMock.onGet("/api/currentUser").reply(200, {
+        loggedIn: true,
+        username: "testuser",
+      });
+
+      axiosMock.onGet("/api/systemInfo").reply(200, {
+        springH2ConsoleEnabled: false,
+        showSwaggerUILink: false,
+        startQtrYYYYQ: null,
+        endQtrYYYYQ: null,
+      });
+
+      axiosMock.onGet("/api/public/generalEducationInfo").reply(200, [
+        {
+          requirementCode: "A1",
+          requirementTranslation: "English Reading & Composition",
+          collegeCode: "ENGR",
+          objCode: "BS",
+          courseCount: 1,
+          units: 4,
+          inactive: false,
+        },
+      ]);
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <GEAreaSearchForm fetchJSON={vi.fn()} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByTestId("GEAreaSearch.Quarter-option-0"),
+      ).toHaveValue("20211");
+      expect(
+        await screen.findByTestId("GEAreaSearch.Quarter-option-3"),
+      ).toHaveValue("20214");
     });
   });
 });
