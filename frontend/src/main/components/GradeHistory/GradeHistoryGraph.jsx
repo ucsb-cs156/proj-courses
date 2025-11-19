@@ -38,19 +38,19 @@ const qtrNumToQuarter = {
   4: "Fall",
 };
 // Stryker restore all
-/* eslint-disable react-refresh/only-export-components*/
-//from an input YYYYQ, create a prettier formated output that I like
+
+// from an input YYYYQ, create a prettier formatted output
 const yyyyqToPrettyStr = (yyyyq) => {
   const [year, qtr] = [yyyyq.slice(0, 4), yyyyq[4]];
   return `${qtrNumToQuarter[qtr]} ${year}`;
 };
 
-export const formatTooltip = (value, _, props) => {
+const formatTooltip = (value, _, props) => {
   return [`Percentage: ${value.toFixed(1)}%, Count: ${props.payload.count}`];
 };
 
 // Helper function to fill in for when 0 students got a grade
-export const createCompleteGradeData = (data) => {
+const createCompleteGradeData = (data) => {
   const gradeCounts = data.reduce((acc, item) => {
     acc[item.grade] = item.count;
     return acc;
@@ -70,8 +70,7 @@ export const createCompleteGradeData = (data) => {
 };
 
 // Helper function to group data by `yyyyq` and `instructor`
-// This will allow different instructors in the same quarter to be displayed seperatly
-export const groupDataByQuarterAndInstructor = (data) => {
+const groupDataByQuarterAndInstructor = (data) => {
   const groupedData = {};
 
   // Added sort function to be able to display data by most recent quarter
@@ -96,8 +95,6 @@ export const groupDataByQuarterAndInstructor = (data) => {
 
   return groupedData;
 };
-
-/* eslint-enable react-refresh/only-export-components*/
 
 // Component to render a single bar chart for a specific group of data
 const GradeBarChart = ({ data, title }) => {
