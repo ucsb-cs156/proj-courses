@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController extends ApiController {
   @Autowired UserRepository userRepository;
   @Autowired ObjectMapper mapper;
+
   @Operation(summary = "Get a paged list of users")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/paged")
