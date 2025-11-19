@@ -126,6 +126,8 @@ export default function SectionsTable({ sections, schedules = [] }) {
     {
       accessorKey: "title",
       header: "Title",
+      cell: ({ row }) =>
+        renderInfoLink(row, `${testid}-title`, row.original.title),
     },
     {
       header: "Status",
