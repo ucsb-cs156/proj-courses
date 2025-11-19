@@ -17,7 +17,6 @@ import {
   renderDetailPageLink,
   shouldShowAddToScheduleLink,
   getQuarter,
-  renderDetailPageLink,
 } from "main/utils/sectionUtils.jsx";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
