@@ -2,6 +2,7 @@
   "name": "proj-courses-frontend",
   "version": "0.2.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "^v22.18.0"
   },
