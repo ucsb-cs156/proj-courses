@@ -559,22 +559,18 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const selectQuarter = screen.getByLabelText("Quarter");
     const selectBuilding = screen.getByLabelText("Building Name");
 
-    // Wait for building options
     await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
     );
 
-    // First, select a quarter
     await userEvent.selectOptions(selectQuarter, "20232");
 
-    // Then select a building - this triggers the classroom fetch
     await userEvent.selectOptions(selectBuilding, "GIRV");
 
     const classroomSelect = screen.getByTestId(
       "CourseOverTimeBuildingsSearch.ClassroomSelect",
     );
 
-    // Wait for classrooms to be fetched and dropdown to be populated
     await waitFor(() => {
       const options = Array.from(classroomSelect.options).map(
         (opt) => opt.value,
@@ -582,10 +578,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       expect(options).toContain("1312");
     });
 
-    // CRITICAL: Verify that the selected value is "ALL", not empty string
     expect(classroomSelect.value).toBe("ALL");
 
-    // Also verify ALL option exists
+    // Verify ALL option exists
     const allOption = screen.getByRole("option", { name: "ALL" });
     expect(allOption.selected).toBe(true);
   });
