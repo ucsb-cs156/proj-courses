@@ -5,7 +5,6 @@ const html = readFileSync("index.html", "utf8");
 const dom = new DOMParser().parseFromString(html, "text/html");
 
 describe("index.html metadata tests", () => {
-
   test("title is 'UCSB Courses'", () => {
     const title = dom.querySelector("title");
     expect(title).not.toBeNull();
@@ -17,5 +16,4 @@ describe("index.html metadata tests", () => {
     expect(link).not.toBeNull();
     expect(link.getAttribute("href")).toBe("/tower-favicon.ico");
   });
-
 });
