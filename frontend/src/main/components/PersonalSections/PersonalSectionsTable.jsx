@@ -11,6 +11,7 @@ import {
   formatInstructors,
   formatLocation,
   formatTime,
+  renderInfoLink,
 } from "main/utils/sectionUtils.jsx";
 import { hasRole } from "main/utils/currentUser";
 
@@ -49,8 +50,28 @@ export default function PersonalSectionsTable({
       id: "section",
     },
     {
+      accessorKey: "title",
       header: "Title",
-      accessor: "title",
+      cell: ({ row }) => {
+        const section = row.original.classSections[0];
+
+        const simpleRow = {
+          id: row.id,
+          original: {
+            quarter: row.original.quarter,
+            primary: {
+              enrollCode: section.enrollCode,
+            },
+          },
+          depth: 0,
+        };
+
+        return renderInfoLink(
+          simpleRow,
+          "PersonalSectionsTable",
+          row.original.title,
+        );
+      },
     },
     {
       header: "Enrolled",
