@@ -59,20 +59,14 @@ describe("GradeHistoryGraph UI tests", () => {
   test("renders a single graph for one quarter of data", () => {
     renderGraph(oneQuarterCourse);
 
-    expect(
-      screen.getByText("Fall 2009 - GONZALEZ T F"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Fall 2009 - GONZALEZ T F")).toBeInTheDocument();
   });
 
   test("renders two graphs for two quarters", () => {
     renderGraph(twoQuarterCourse);
 
-    expect(
-      screen.getByText("Fall 2009 - GONZALEZ T F"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("Fall 2010 - GONZALEZ T F"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Fall 2009 - GONZALEZ T F")).toBeInTheDocument();
+    expect(screen.getByText("Fall 2010 - GONZALEZ T F")).toBeInTheDocument();
   });
 
   test("renders correct number of bars for one quarter and responds to hover", async () => {
