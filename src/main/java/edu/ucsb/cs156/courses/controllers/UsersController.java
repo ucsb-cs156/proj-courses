@@ -21,7 +21,7 @@ public class UsersController extends ApiController {
 
   @Autowired ObjectMapper mapper;
 
-  // KEEP UNTIL CLEANUP
+  // Keep until after frontend is implemented
   @Operation(summary = "Get a list of all users")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("")
