@@ -81,7 +81,9 @@ export default function PersonalSchedulesDetailsPage() {
           {personalSection && (
             <>
               <h2 className="mt-4">Weekly Schedule</h2>
-              <PersonalSchedulePanel Events={transformToEvents(personalSection)} />
+              <PersonalSchedulePanel
+                Events={transformToEvents(personalSection)}
+              />
             </>
           )}
         </div>

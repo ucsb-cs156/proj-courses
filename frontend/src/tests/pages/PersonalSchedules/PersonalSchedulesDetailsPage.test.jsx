@@ -73,9 +73,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      screen.getByText("Personal Schedules Details"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Personal Schedules Details")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
   });
 
@@ -200,9 +198,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     expect(backButton).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(
-        screen.getByText("Weekly Schedule"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("Weekly Schedule")).toBeInTheDocument();
     });
   });
 
