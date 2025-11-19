@@ -18,10 +18,8 @@ const AdminUsersPage = () => {
       method: "GET",
       url: `/api/admin/users/paged?page=${page}&size=${size}`,
     },
-    [page, size]
+    [page, size],
   );
-  
-
 
   const users = pagedUsers?.content || [];
   const totalPages = pagedUsers?.totalPages ?? 1;

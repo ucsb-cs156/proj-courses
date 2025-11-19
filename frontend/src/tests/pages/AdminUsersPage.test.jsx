@@ -7,7 +7,6 @@ import mockConsole from "tests/testutils/mockConsole";
 import { vi } from "vitest";
 import * as useBackendModule from "main/utils/useBackend";
 
-
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import usersFixturesPaged from "fixtures/usersFixturesPaged";
@@ -293,11 +292,10 @@ describe("AdminUsersPage tests", () => {
       .reply(200, usersFixturesPaged.page0);
 
     // page 1, size=20
-// page 1, size=20
-axiosMock
-  .onGet("/api/admin/users/paged?page=1&size=20")
-  .reply(200, usersFixturesPaged.page1_size20);
-
+    // page 1, size=20
+    axiosMock
+      .onGet("/api/admin/users/paged?page=1&size=20")
+      .reply(200, usersFixturesPaged.page1_size20);
 
     // page 2, size=20
     axiosMock
@@ -309,7 +307,7 @@ axiosMock
         <MemoryRouter>
           <AdminUsersPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // allow initial page 0 load
@@ -321,7 +319,7 @@ axiosMock
 
     // wait for page=0 size=20
     await waitFor(() => {
-      const urls = axiosMock.history.get.map(r => r.url);
+      const urls = axiosMock.history.get.map((r) => r.url);
       expect(urls).toContain("/api/admin/users/paged?page=0&size=20");
     });
 
@@ -329,7 +327,7 @@ axiosMock
     fireEvent.click(screen.getByText("Next"));
 
     await waitFor(() => {
-      const urls = axiosMock.history.get.map(r => r.url);
+      const urls = axiosMock.history.get.map((r) => r.url);
       expect(urls).toContain("/api/admin/users/paged?page=1&size=20");
     });
 
@@ -337,29 +335,27 @@ axiosMock
     fireEvent.click(screen.getByText("Next"));
 
     await waitFor(() => {
-      const urls = axiosMock.history.get.map(r => r.url);
+      const urls = axiosMock.history.get.map((r) => r.url);
       expect(urls).toContain("/api/admin/users/paged?page=2&size=20");
     });
   });
-  
-  
 
   test("uses fallback values when pagedUsers is null", async () => {
     const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/admin/users/paged?page=0&size=5")
-      .reply(200, null);
+    axiosMock.onGet("/api/admin/users/paged?page=0&size=5").reply(200, null);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <AdminUsersPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-    expect(screen.queryByTestId("UsersTable-cell-row-0-col-id")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("UsersTable-cell-row-0-col-id"),
+    ).not.toBeInTheDocument();
     expect(await screen.findByText("Page 1 of 1")).toBeInTheDocument();
-  });  
+  });
 
   test("uses correct query key including page and size", async () => {
     const queryClient = new QueryClient();
@@ -373,7 +369,7 @@ axiosMock
         <MemoryRouter>
           <AdminUsersPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(useBackendModule.useBackend).toHaveBeenCalled();
@@ -394,7 +390,7 @@ axiosMock
         <MemoryRouter>
           <AdminUsersPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(useBackendModule.useBackend).toHaveBeenCalled();
@@ -417,7 +413,7 @@ axiosMock
         <MemoryRouter>
           <AdminUsersPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const call = useBackendModule.useBackend.mock.calls[0];
@@ -425,6 +421,4 @@ axiosMock
     // call[2] === initialData argument
     expect(call[2]).toEqual([0, 5]);
   });
-  
-
 });
