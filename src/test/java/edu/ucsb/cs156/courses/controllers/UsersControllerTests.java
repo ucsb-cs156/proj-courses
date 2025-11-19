@@ -31,28 +31,29 @@ import org.springframework.test.web.servlet.MvcResult;
 @AutoConfigureDataJpa
 public class UsersControllerTests extends ControllerTestCase {
 
-  @MockBean
-  UserRepository userRepository;
+  @MockBean UserRepository userRepository;
 
   ArrayList<User> emptyArray = new ArrayList<User>();
   PageRequest pageRequest_0_10_ASC_id = PageRequest.of(0, 10, Direction.ASC, "id");
   PageRequest pageRequest_0_10_DESC_email = PageRequest.of(0, 10, Direction.DESC, "email");
 
-  private final Page<User> emptyPage_0_10_ASC_id = new PageImpl<User>(emptyArray, pageRequest_0_10_ASC_id, 0);
-  private final Page<User> emptyPage_0_10_DESC_email = new PageImpl<User>(emptyArray, pageRequest_0_10_DESC_email, 0);
+  private final Page<User> emptyPage_0_10_ASC_id =
+      new PageImpl<User>(emptyArray, pageRequest_0_10_ASC_id, 0);
+  private final Page<User> emptyPage_0_10_DESC_email =
+      new PageImpl<User>(emptyArray, pageRequest_0_10_DESC_email, 0);
 
   @Test
   public void users__logged_out() throws Exception {
     mockMvc.perform(get("/api/admin/users")).andExpect(status().is(403));
   }
 
-  @WithMockUser(roles = { "USER" })
+  @WithMockUser(roles = {"USER"})
   @Test
   public void users__user_logged_in() throws Exception {
     mockMvc.perform(get("/api/admin/users")).andExpect(status().is(403));
   }
 
-  @WithMockUser(roles = { "ADMIN", "USER" })
+  @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void users__admin_logged_in() throws Exception {
 
@@ -70,7 +71,8 @@ public class UsersControllerTests extends ControllerTestCase {
 
     // act
 
-    MvcResult response = mockMvc.perform(get("/api/admin/users")).andExpect(status().isOk()).andReturn();
+    MvcResult response =
+        mockMvc.perform(get("/api/admin/users")).andExpect(status().isOk()).andReturn();
 
     // assert
 
@@ -86,7 +88,7 @@ public class UsersControllerTests extends ControllerTestCase {
         .andExpect(status().is(403));
   }
 
-  @WithMockUser(roles = { "USER" })
+  @WithMockUser(roles = {"USER"})
   @Test
   public void getUsersPaginated__user_logged_in() throws Exception {
     mockMvc
@@ -94,17 +96,18 @@ public class UsersControllerTests extends ControllerTestCase {
         .andExpect(status().is(403));
   }
 
-  @WithMockUser(roles = { "ADMIN", "USER" })
+  @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void getUsersPaginated__admin_logged_in__empty_page_default_sort() throws Exception {
     // arrange
     when(userRepository.findAll(pageRequest_0_10_ASC_id)).thenReturn(emptyPage_0_10_ASC_id);
 
     // act
-    MvcResult response = mockMvc
-        .perform(get("/api/admin/users/paginated?page=0&pageSize=10"))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(get("/api/admin/users/paginated?page=0&pageSize=10"))
+            .andExpect(status().isOk())
+            .andReturn();
 
     // assert
     String expectedResponseAsJson = mapper.writeValueAsString(emptyPage_0_10_ASC_id);
@@ -112,18 +115,20 @@ public class UsersControllerTests extends ControllerTestCase {
     assertEquals(expectedResponseAsJson, actualResponse);
   }
 
-  @WithMockUser(roles = { "ADMIN", "USER" })
+  @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void getUsersPaginated__admin_logged_in__empty_page_DESC_email_sort() throws Exception {
     // arrange
     when(userRepository.findAll(pageRequest_0_10_DESC_email)).thenReturn(emptyPage_0_10_DESC_email);
 
     // act
-    MvcResult response = mockMvc
-        .perform(
-            get("/api/admin/users/paginated?page=0&pageSize=10&sortField=email&sortDirection=DESC"))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(
+                get(
+                    "/api/admin/users/paginated?page=0&pageSize=10&sortField=email&sortDirection=DESC"))
+            .andExpect(status().isOk())
+            .andReturn();
 
     // assert
     String expectedResponseAsJson = mapper.writeValueAsString(emptyPage_0_10_DESC_email);
@@ -131,46 +136,50 @@ public class UsersControllerTests extends ControllerTestCase {
     assertEquals(expectedResponseAsJson, actualResponse);
   }
 
-  @WithMockUser(roles = { "ADMIN" })
+  @WithMockUser(roles = {"ADMIN"})
   @Test
   public void getUsersPaginated__invalid_sort_field() throws Exception {
     // act
-    MvcResult response = mockMvc
-        .perform(
-            get(
-                "/api/admin/users/paginated?page=0&pageSize=10&sortField=invalid&sortDirection=ASC"))
-        .andExpect(status().isBadRequest())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(
+                get(
+                    "/api/admin/users/paginated?page=0&pageSize=10&sortField=invalid&sortDirection=ASC"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
 
     // assert
-    Map<String, String> expectedResponse = Map.of(
-        "message",
-        "invalid is not a valid sort field. Valid values are [id, email, givenName, familyName]",
-        "type",
-        "IllegalArgumentException");
+    Map<String, String> expectedResponse =
+        Map.of(
+            "message",
+            "invalid is not a valid sort field. Valid values are [id, email, givenName, familyName]",
+            "type",
+            "IllegalArgumentException");
 
     String expectedResponseAsJson = mapper.writeValueAsString(expectedResponse);
     String actualResponse = response.getResponse().getContentAsString();
     assertEquals(expectedResponseAsJson, actualResponse);
   }
 
-  @WithMockUser(roles = { "ADMIN" })
+  @WithMockUser(roles = {"ADMIN"})
   @Test
   public void getUsersPaginated__invalid_sort_direction() throws Exception {
     // act
-    MvcResult response = mockMvc
-        .perform(
-            get(
-                "/api/admin/users/paginated?page=0&pageSize=10&sortField=id&sortDirection=INVALID"))
-        .andExpect(status().isBadRequest())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(
+                get(
+                    "/api/admin/users/paginated?page=0&pageSize=10&sortField=id&sortDirection=INVALID"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
 
     // assert
-    Map<String, String> expectedResponse = Map.of(
-        "message",
-        "INVALID is not a valid sort direction. Valid values are [ASC, DESC]",
-        "type",
-        "IllegalArgumentException");
+    Map<String, String> expectedResponse =
+        Map.of(
+            "message",
+            "INVALID is not a valid sort direction. Valid values are [ASC, DESC]",
+            "type",
+            "IllegalArgumentException");
 
     String expectedResponseAsJson = mapper.writeValueAsString(expectedResponse);
     String actualResponse = response.getResponse().getContentAsString();
