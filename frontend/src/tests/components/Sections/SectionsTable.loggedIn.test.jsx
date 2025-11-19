@@ -373,6 +373,49 @@ describe("SectionsTable tests", () => {
       ).toBeDefined();
     });
 
+    test("Course ID link is correct", async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const testId = "SectionsTable";
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
+      ).toHaveTextContent("PORTER M J");
+
+      expect(
+        screen.getByTestId(`${testId}-row-9-no-action`),
+      ).toBeInTheDocument();
+
+      expect(
+        screen.getByTestId(`${testId}-row-26-cannot-expand`),
+      ).toBeInTheDocument();
+
+      const expandButton = screen.getByTestId(`${testId}-row-0-expand-button`);
+      expect(expandButton).toBeInTheDocument();
+      expect(expandButton).toHaveTextContent("➕");
+      fireEvent.click(expandButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("➖")).toBeInTheDocument();
+      });
+
+      const courseIDLink = screen.getByTestId(`${testId}-row-1-col-detail-link`);
+      expect(courseIDLink).toBeInTheDocument();
+      expect(courseIDLink.tagName).toBe("A");
+      expect(courseIDLink).toHaveAttribute("href", "/coursedetails/20244/30312");
+
+      const noQuarterSubRow = screen.getByTestId(
+        `${testId}-cell-row-0.0-col-quarter`,
+      );
+      expect(noQuarterSubRow).toBeInTheDocument();
+      expect(noQuarterSubRow).toBeEmptyDOMElement();
+    });
+
     test("Info link is correct", async () => {
       render(
         <QueryClientProvider client={queryClient}>
