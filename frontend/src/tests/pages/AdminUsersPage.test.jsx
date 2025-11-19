@@ -60,6 +60,17 @@ describe("AdminUsersPage tests", () => {
     expect(
       screen.getByTestId(`UsersPaginated-cell-row-0-col-admin`),
     ).toHaveTextContent("true");
+
+    // Verify API was called with correct pagination parameters
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
+    });
+    const getCall = axiosMock.history.get.find((request) =>
+      request.url.includes("/api/admin/users/paginated"),
+    );
+    expect(getCall).toBeDefined();
+    expect(getCall.params.page).toBe(0); // page 0-indexed (selectedPage - 1)
+    expect(getCall.params.sortDirection).toBe("ASC");
   });
 
   test("renders empty table when backend unavailable", async () => {
@@ -89,5 +100,33 @@ describe("AdminUsersPage tests", () => {
     expect(
       screen.queryByTestId(`${testId}-cell-row-0-col-id`),
     ).not.toBeInTheDocument();
+  });
+
+  test("passes correct pagination parameters to API", async () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/admin/users/paginated")
+      .reply(200, usersFixtures.threeUsersPage);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminUsersPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
+    });
+
+    // Verify the API call includes correct sort direction "ASC"
+    const getCall = axiosMock.history.get.find((request) =>
+      request.url.includes("/api/admin/users/paginated"),
+    );
+    expect(getCall.params.sortDirection).toBe("ASC");
+    expect(getCall.params.sortField).toBe("id");
+    // Verify page is 0-indexed (selectedPage - 1, where selectedPage defaults to 1)
+    expect(getCall.params.page).toBe(0);
   });
 });

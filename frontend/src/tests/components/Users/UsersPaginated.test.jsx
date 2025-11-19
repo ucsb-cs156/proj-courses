@@ -7,7 +7,11 @@ describe("UsersPaginated tests", () => {
   test("renders without crashing for empty table", () => {
     const mockOnPageChange = vi.fn();
     render(
-      <UsersPaginated users={[]} totalPages={0} onPageChange={mockOnPageChange} />,
+      <UsersPaginated
+        users={[]}
+        totalPages={0}
+        onPageChange={mockOnPageChange}
+      />,
     );
   });
 
@@ -57,9 +61,9 @@ describe("UsersPaginated tests", () => {
     const testId = "UsersPaginated";
 
     // Check first user's data
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-id`),
-    ).toHaveTextContent("1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-givenName`),
     ).toHaveTextContent("Phill");
@@ -74,9 +78,9 @@ describe("UsersPaginated tests", () => {
     ).toHaveTextContent("true");
 
     // Check second user's data
-    expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-id`),
-    ).toHaveTextContent("2");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
+      "2",
+    );
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-admin`),
     ).toHaveTextContent("false");
