@@ -49,7 +49,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             },
           );
           console.log("Classrooms returned:", response.data);
-          const classrooms = response.data.sort();
+          const classrooms = response.data;
 
           setAvailableClassrooms(classrooms);
 

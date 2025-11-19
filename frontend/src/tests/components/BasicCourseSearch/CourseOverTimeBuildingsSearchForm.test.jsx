@@ -285,39 +285,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     expect(classroomSelect.options[0].textContent).toBe("ALL");
   });
 
-  test("fetches classrooms and displays them in sorted order", async () => {
-    axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
-        params: { quarter: "20232", buildingCode: "GIRV" },
-      })
-      .reply(200, ["1108", "1004", "1106"]);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeBuildingsSearchForm />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
-
-    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
-    await screen.findByTestId(expectedKey);
-
-    userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
-
-    const classroomSelect = await screen.findByTestId(
-      "CourseOverTimeBuildingsSearch.ClassroomSelect",
-    );
-
-    const optionTexts = Array.from(classroomSelect.options).map(
-      (opt) => opt.textContent,
-    );
-
-    expect(optionTexts).toEqual(["ALL", "1004", "1106", "1108"]);
-  });
-
   test("displays no classrooms and logs error when fetch fails", async () => {
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
@@ -448,30 +415,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     logSpy.mockRestore();
   });
 
-  test("sorts classroom list alphabetically", async () => {
-    useSystemInfo.mockReturnValue({ data: {} });
-    localStorage.setItem("CourseOverTimeBuildingsSearch.Quarter", "20222");
-    localStorage.setItem("CourseOverTimeBuildingsSearch.BuildingCode", "PHELP");
-
-    axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
-        params: { quarter: "20222", buildingCode: "PHELP" },
-      })
-      .reply(200, ["Z101", "A202", "M303"]);
-
-    render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
-
-    const classroomSelect = await screen.findByTestId(
-      "CourseOverTimeBuildingsSearch.ClassroomSelect",
-    );
-
-    const optionTexts = Array.from(classroomSelect.options).map(
-      (opt) => opt.textContent,
-    );
-
-    expect(optionTexts).toEqual(["ALL", "A202", "M303", "Z101"]);
-  });
-
   test("uses first available quarter if localQuarter is falsy", () => {
     localStorage.removeItem("CourseOverTimeBuildingsSearch.Quarter");
 
@@ -519,25 +462,20 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       </QueryClientProvider>,
     );
 
-    // Pick quarter
     await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
 
-    // Wait for building dropdown options
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await screen.findByTestId(expectedKey);
 
-    // Pick building
     await userEvent.selectOptions(
       screen.getByLabelText("Building Name"),
       "GIRV",
     );
 
-    // Wait for classrooms select to appear
     const classroomSelect = await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.ClassroomSelect",
     );
 
-    // 🔑 Wait until "1106" is actually one of the option values
     await waitFor(() => {
       const values = Array.from(classroomSelect.options).map(
         (opt) => opt.value,
@@ -591,12 +529,8 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       </QueryClientProvider>,
     );
 
-    // Set Quarter to something valid
     await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
 
-    // Leave Building Name at its default (should be "" / no building)
-
-    // Give effects time to run and then assert that the classrooms endpoint was NOT called
     await waitFor(() => {
       const classroomsCalls = getSpy.mock.calls.filter(
         ([url]) =>
@@ -606,5 +540,53 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     });
 
     getSpy.mockRestore();
+  });
+
+  test("sets classroom to ALL after fetching classrooms successfully", async () => {
+    const fetchJSONMock = vi.fn();
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms")
+      .reply(200, ["1312", "2020", "1108"]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONMock} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    const selectBuilding = screen.getByLabelText("Building Name");
+
+    // Wait for building options
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
+    );
+
+    // First, select a quarter
+    await userEvent.selectOptions(selectQuarter, "20232");
+
+    // Then select a building - this triggers the classroom fetch
+    await userEvent.selectOptions(selectBuilding, "GIRV");
+
+    const classroomSelect = screen.getByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
+
+    // Wait for classrooms to be fetched and dropdown to be populated
+    await waitFor(() => {
+      const options = Array.from(classroomSelect.options).map(
+        (opt) => opt.value,
+      );
+      expect(options).toContain("1312");
+    });
+
+    // CRITICAL: Verify that the selected value is "ALL", not empty string
+    expect(classroomSelect.value).toBe("ALL");
+
+    // Also verify ALL option exists
+    const allOption = screen.getByRole("option", { name: "ALL" });
+    expect(allOption.selected).toBe(true);
   });
 });
