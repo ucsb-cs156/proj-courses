@@ -437,4 +437,90 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     expect(screen.getByLabelText("Quarter")).toBeInTheDocument();
   });
+
+  test("when I select a specific classroom and submit, it passes the classroom value", async () => {
+    const fetchJSONSpy = vi.fn();
+    fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106", "1108"]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    await screen.findByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0");
+
+    const selectClassroom = screen.getByLabelText("Classroom");
+    userEvent.selectOptions(selectClassroom, "1106");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      Quarter: "20232",
+      buildingCode: "GIRV",
+      classroom: "1106",
+    });
+  });
+
+  test("when I select ALL classroom and submit, it passes empty string", async () => {
+    const fetchJSONSpy = vi.fn();
+    fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106", "1108"]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    await screen.findByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0");
+
+    const selectClassroom = screen.getByLabelText("Classroom");
+    userEvent.selectOptions(selectClassroom, "ALL");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      Quarter: "20232",
+      buildingCode: "GIRV",
+      classroom: "",
+    });
+  });
 });
