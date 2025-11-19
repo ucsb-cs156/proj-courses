@@ -18,20 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UsersController extends ApiController {
   @Autowired UserRepository userRepository;
-
   @Autowired ObjectMapper mapper;
-
-  // KEEP UNTIL CLEANUP
-  @Operation(summary = "Get a list of all users")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @GetMapping("")
-  public ResponseEntity<String> users() throws JsonProcessingException {
-    var page = userRepository.findAll(Pageable.unpaged());
-    var users = page.getContent();
-    String body = mapper.writeValueAsString(users);
-    return ResponseEntity.ok().body(body);
-  }
-
   @Operation(summary = "Get a paged list of users")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/paged")
