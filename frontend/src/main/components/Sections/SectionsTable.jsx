@@ -125,7 +125,6 @@ export default function SectionsTable({ sections, schedules = [] }) {
       accessorKey: "courseId",
       header: "Course ID",
       cell: ({ row }) => {
-        debugger;
         return renderDetailPageLink(row, testid);
         
       },
