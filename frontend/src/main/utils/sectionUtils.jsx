@@ -125,7 +125,7 @@ export const renderDetailPageLink = (row, testid) => (
       target={"_blank"}
       rel="noopener noreferrer"
     >
-      {$row}
+      ${row}
     </a>
   </p>
 );
