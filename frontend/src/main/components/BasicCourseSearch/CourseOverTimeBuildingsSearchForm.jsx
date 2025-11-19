@@ -8,6 +8,7 @@ import { quarterRange } from "main/utils/quarterUtilities";
 import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import SingleBuildingDropdown from "../Buildings/SingleBuildingDropdown";
+import GenericDropdown from "../Utils/GenericDropdown";
 
 const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
@@ -24,16 +25,21 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   const localBuildingCode = localStorage.getItem(
     "CourseOverTimeBuildingsSearch.BuildingCode",
   );
+  const localClassroom = localStorage.getItem(
+    "CourseOverTimeBuildingsSearch.Classroom",
+  );
 
   const [Quarter, setQuarter] = useState(
     localQuarter || availableQuarters[0].yyyyq,
   );
   const [buildingCode, setBuildingCode] = useState(localBuildingCode || "");
   const [availableClassrooms, setAvailableClassrooms] = useState([]);
+  const [classroom, setClassroom] = useState(localClassroom || "ALL");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { Quarter, buildingCode, classroom: "" });
+    const classroomParam = classroom === "ALL" ? "" : classroom;
+    fetchJSON(event, { Quarter, buildingCode, classroom: classroomParam });
   };
 
   useEffect(() => {
@@ -82,6 +88,16 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
               label={"Building Name"}
             />
           </Col>
+          <Col md="auto">
+            {availableClassrooms.length > 0 && (
+              <GenericDropdown
+                values={["ALL", ...availableClassrooms]}
+                setValue={setClassroom}
+                controlId={"CourseOverTimeBuildingsSearch.Classroom"}
+                label={"Classroom"}
+              />
+            )}
+          </Col>
         </Row>
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
@@ -90,11 +106,6 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             </Button>
           </Col>
         </Row>
-        {availableClassrooms.length > 0 && (
-          <div data-testid="available-classrooms">
-            {availableClassrooms.join(", ")}
-          </div>
-        )}
       </Container>
     </Form>
   );

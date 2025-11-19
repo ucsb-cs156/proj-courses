@@ -238,18 +238,15 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    await screen.findByTestId("available-classrooms");
+    await screen.findByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0");
 
-    expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-      "1004, 1106, 1108, 1112, 1115, 1116, 1119, 2108, 2110, 2112, 2115, 2116, 2119, 2120, 2123, 2124, 2127, 2128, 2129, 2135",
-    );
+    const selectClassroom = screen.getByLabelText("Classroom");
+    expect(selectClassroom).toBeInTheDocument();
   });
 
   test("renders nothing when classrooms is empty", () => {
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={mockFn} />);
-    expect(
-      screen.queryByTestId("available-classrooms"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Classroom")).not.toBeInTheDocument();
   });
 
   test("fetches classrooms and displays them in sorted order", async () => {
@@ -274,11 +271,20 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
-    await screen.findByTestId("available-classrooms");
+    await screen.findByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0");
 
-    expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-      "1004, 1106, 1108",
-    );
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
+    ).toHaveValue("ALL");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-1"),
+    ).toHaveValue("1004");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-2"),
+    ).toHaveValue("1106");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-3"),
+    ).toHaveValue("1108");
   });
 
   test("displays no classrooms and logs error when fetch fails", async () => {
@@ -304,9 +310,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
     await waitFor(() => expect(console.error).toHaveBeenCalled());
-    expect(
-      screen.queryByTestId("available-classrooms"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Classroom")).not.toBeInTheDocument();
   });
 
   test("uses fallback quarter/building when localStorage for quarter/building is null", () => {
@@ -390,10 +394,19 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     axios.get.mockResolvedValue({ data: ["Z101", "A202", "M303"] });
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
     await waitFor(() =>
-      expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-        "A202, M303, Z101",
-      ),
+      expect(
+        screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
+      ).toHaveValue("ALL"),
     );
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-1"),
+    ).toHaveValue("A202");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-2"),
+    ).toHaveValue("M303");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-3"),
+    ).toHaveValue("Z101");
   });
 
   test("uses first available quarter if localQuarter is falsy", () => {
