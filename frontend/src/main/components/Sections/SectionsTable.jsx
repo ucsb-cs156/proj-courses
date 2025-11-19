@@ -124,10 +124,11 @@ export default function SectionsTable({ sections, schedules = [] }) {
     {
       accessorKey: "courseId",
       header: "Course ID",
-      cell: ({ row }) => renderDetailPageLink(row, testid),
-      // cell: ({ row, getValue }) => (
-      //   <div style={{ paddingLeft: `${row.depth * 2}rem` }}>{getValue()}</div>
-      // ),
+      cell: ({ row }) => {
+        debugger;
+        return renderDetailPageLink(row, testid);
+        
+      },
     },
     {
       accessorKey: "title",
