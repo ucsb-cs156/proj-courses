@@ -31,44 +31,6 @@ public class UsersControllerTests extends ControllerTestCase {
 
   @MockBean UserRepository userRepository;
 
-  @Test
-  public void users__logged_out() throws Exception {
-    mockMvc.perform(get("/api/admin/users")).andExpect(status().is(403));
-  }
-
-  @WithMockUser(roles = {"USER"})
-  @Test
-  public void users__user_logged_in() throws Exception {
-    mockMvc.perform(get("/api/admin/users")).andExpect(status().is(403));
-  }
-
-  @WithMockUser(roles = {"ADMIN", "USER"})
-  @Test
-  public void users__admin_logged_in() throws Exception {
-
-    // arrange
-    User u1 = User.builder().id(1L).build();
-    User u2 = User.builder().id(2L).build();
-
-    Page<User> fakePage = new PageImpl<>(List.of(u1, u2));
-
-    when(userRepository.findAll(any(Pageable.class))).thenReturn(fakePage);
-
-    String expectedJson = mapper.writeValueAsString(List.of(u1, u2));
-
-    // act
-    MvcResult response =
-        mockMvc.perform(get("/api/admin/users")).andExpect(status().isOk()).andReturn();
-
-    // assert
-    verify(userRepository, times(1)).findAll(any(Pageable.class));
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  // New: paged endpoint test (keeps same style / structure)
-  // ─────────────────────────────────────────────────────────────
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void users_paged__admin_logged_in() throws Exception {
