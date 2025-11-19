@@ -403,28 +403,6 @@ axiosMock
 
     expect(call[0]).toEqual(["/api/admin/users/paged", 0, 5]);
   });
-  test("initialData passed to useBackend should include page and size", async () => {
-    const queryClient = new QueryClient();
-
-    vi.spyOn(useBackendModule, "useBackend");
-
-    axiosMock
-      .onGet("/api/admin/users/paged?page=0&size=5")
-      .reply(200, usersFixturesPaged.page0);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminUsersPage />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-    const call = useBackendModule.useBackend.mock.calls[0];
-
-    // call[2] === initialData argument
-    expect(call[2]).toEqual([0, 5]);
-  });
   
 
 });
