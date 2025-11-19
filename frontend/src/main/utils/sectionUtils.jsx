@@ -116,6 +116,18 @@ export const renderInfoLink = (row, testid) => (
   </p>
 );
 
+export const renderDetailPageLink = (row, testid) => (
+  <p align="center">
+    <a
+      href={formatInfoLink(row)}
+      data-testid={`${testid}-row-${row.id}-col-detail-link`}
+      target={"_blank"}
+      rel="noopener noreferrer"
+    >
+    </a>
+  </p>
+);
+
 export function enrollmentFraction(row) {
   const num = getSectionField(row, "enrolledTotal");
   const denom = getSectionField(row, "maxEnroll");

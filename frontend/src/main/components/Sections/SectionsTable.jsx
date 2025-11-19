@@ -14,8 +14,10 @@ import {
   getSection,
   getSectionField,
   renderInfoLink,
+  renderDetailPageLink,
   shouldShowAddToScheduleLink,
   getQuarter,
+  renderDetailPageLink,
 } from "main/utils/sectionUtils.jsx";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
@@ -129,6 +131,7 @@ export default function SectionsTable({ sections, schedules = [] }) {
     {
       accessorKey: "title",
       header: "Title",
+      cell: ({ row }) => renderDetailPageLink(row, testid),
     },
     {
       header: "Status",
