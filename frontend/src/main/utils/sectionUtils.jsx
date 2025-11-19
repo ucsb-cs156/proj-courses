@@ -117,6 +117,7 @@ export const renderInfoLink = (row, testid) => (
 );
 
 export const renderDetailPageLink = (row, testid) => (
+  
   <p align="center">
     <a
       href={formatInfoLink(row)}
@@ -125,6 +126,7 @@ export const renderDetailPageLink = (row, testid) => (
       rel="noopener noreferrer"
     >
     </a>
+
   </p>
 );
 
