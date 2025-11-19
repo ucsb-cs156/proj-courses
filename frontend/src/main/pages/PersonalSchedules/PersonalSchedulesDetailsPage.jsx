@@ -6,6 +6,8 @@ import PersonalSectionsTable from "main/components/PersonalSections/PersonalSect
 import { useBackend } from "main/utils/useBackend";
 import { Button, Row, Col } from "react-bootstrap";
 import { useCurrentUser } from "main/utils/currentUser";
+import PersonalSchedulePanel from "main/components/PersonalSchedules/PersonalSchedulePanel";
+import { transformToEvents } from "main/utils/dateUtils";
 
 export default function PersonalSchedulesDetailsPage() {
   let { id } = useParams();
@@ -53,17 +55,6 @@ export default function PersonalSchedulesDetailsPage() {
     );
   };
 
-  const weeklyViewButton = () => {
-    return (
-      <Button
-        variant="primary"
-        onClick={() => navigate(`/personalschedules/weekly/${id}`)}
-      >
-        View Weekly Schedule
-      </Button>
-    );
-  };
-
   return (
     <BasicLayout>
       <div className="pt-2">
@@ -79,7 +70,6 @@ export default function PersonalSchedulesDetailsPage() {
             <Col>
               <h2>Sections in Personal Schedule</h2>
             </Col>
-            <Col xs="auto">{weeklyViewButton()}</Col>
           </Row>
           {personalSection && (
             <PersonalSectionsTable
@@ -87,6 +77,12 @@ export default function PersonalSchedulesDetailsPage() {
               psId={id}
               currentUser={currentUser}
             />
+          )}
+          {personalSection && (
+            <>
+              <h2 className="mt-4">Weekly Schedule</h2>
+              <PersonalSchedulePanel Events={transformToEvents(personalSection)} />
+            </>
           )}
         </div>
         {backButton()}
