@@ -106,9 +106,7 @@ describe("CourseDescriptionIndexPage tests", () => {
 
   test("displays 'No courses found' correctly with no course results", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock
-      .onGet("/api/public/basicsearch")
-      .reply(200, { classes: [] });
+    axiosMock.onGet("/api/public/basicsearch").reply(200, { classes: [] });
 
     render(
       <QueryClientProvider client={queryClient}>
