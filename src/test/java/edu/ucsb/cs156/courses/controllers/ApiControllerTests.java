@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -52,7 +55,7 @@ public class ApiControllerTests extends ControllerTestCase {
     ArrayList<User> expectedUsers = new ArrayList<>();
     expectedUsers.addAll(Arrays.asList(u1, u2, u));
 
-    when(userRepository.findAll()).thenReturn(expectedUsers);
+    when(userRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(expectedUsers));
     String expectedJson = mapper.writeValueAsString(expectedUsers);
 
     // act
@@ -62,7 +65,7 @@ public class ApiControllerTests extends ControllerTestCase {
 
     // assert
 
-    verify(userRepository, times(1)).findAll();
+    verify(userRepository, times(1)).findAll(any(Pageable.class));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
   }
