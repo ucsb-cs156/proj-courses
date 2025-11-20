@@ -313,4 +313,28 @@ describe("AdminJobsPage tests", () => {
     getItemSpy.mockRestore();
     setItemSpy.mockRestore();
   });
+
+  test("passes correct sort parameters to API", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    // Check that the API was called with correct sort parameters
+    const jobsApiCall = axiosMock.history.get.find((call) =>
+      call.url.includes("/api/jobs/paginated"),
+    );
+    expect(jobsApiCall).toBeDefined();
+    expect(jobsApiCall.params.sortField).toBe("status");
+    expect(jobsApiCall.params.sortDirection).toBe("DESC");
+    expect(jobsApiCall.params.page).toBe(0);
+    expect(jobsApiCall.params.pageSize).toBe(10);
+  });
 });
