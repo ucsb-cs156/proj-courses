@@ -589,13 +589,13 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    await screen.findByTestId(
+    const classroomOption = await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.Classroom-option-0",
     );
+    expect(classroomOption).toBeInTheDocument();
 
     const classroomDropdown = screen.getByLabelText("Classroom");
-    expect(classroomDropdown).toHaveAttribute(
-      "id",
+    expect(classroomDropdown.id).toBe(
       "CourseOverTimeBuildingsSearch.Classroom",
     );
   });
