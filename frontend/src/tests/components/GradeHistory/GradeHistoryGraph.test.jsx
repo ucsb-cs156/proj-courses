@@ -14,14 +14,22 @@ class ResizeObserver {
   constructor(callback) {
     this.callback = callback;
   }
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() {
+    // Mock implementation of the observe method
+  }
+  unobserve() {
+    // Mock implementation of the unobserve method
+  }
+  disconnect() {
+    // Mock implementation of the disconnect method
+  }
 }
 
 global.ResizeObserver = ResizeObserver;
 
-// Fix ResponsiveContainer rendering issues for tests
+// Credit to joshua-phillips's commment at the below link
+// I was debugging this for so long and this finally rendered the ResponsiveContainer
+// https://github.com/recharts/recharts/issues/2268#issuecomment-832287798
 vi.mock("recharts", async () => {
   const OriginalModule = await vi.importActual("recharts");
 
@@ -40,54 +48,72 @@ vi.mock("react-router-dom", async () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-describe("GradeHistoryGraph UI tests", () => {
+describe("Grade history tests", () => {
   const queryClient = new QueryClient();
 
-  const renderGraph = (gradeHistory) =>
+  test("renders without crashing for empty graph", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <GradeHistoryGraph gradeHistory={gradeHistory} />
+          <GradeHistoryGraph gradeHistory={[]} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  });
+
+  test("Has the expected values for one graph", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GradeHistoryGraph gradeHistory={oneQuarterCourse} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
-  test("renders without crashing for empty graph", () => {
-    renderGraph([]);
-  });
-
-  test("renders a single graph for one quarter of data", () => {
-    renderGraph(oneQuarterCourse);
-
     expect(screen.getByText("Fall 2009 - GONZALEZ T F")).toBeInTheDocument();
   });
 
-  test("renders two graphs for two quarters", () => {
-    renderGraph(twoQuarterCourse);
+  test("Renders two graphs correctly", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GradeHistoryGraph gradeHistory={twoQuarterCourse} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
     expect(screen.getByText("Fall 2009 - GONZALEZ T F")).toBeInTheDocument();
     expect(screen.getByText("Fall 2010 - GONZALEZ T F")).toBeInTheDocument();
   });
 
-  test("renders correct number of bars for one quarter and responds to hover", async () => {
-    renderGraph(oneQuarterCourse);
+  test("Correctly outputs data for one quarter", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GradeHistoryGraph gradeHistory={oneQuarterCourse} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-    const container = screen.getByTestId("grade-history-graphs");
+    const gradeHistoryGraphsContainer = screen.getByTestId(
+      "grade-history-graphs",
+    );
 
     await waitFor(() => {
-      const bars = container.querySelectorAll(".recharts-rectangle");
-      // 7 bars expected for the oneQuarterCourse fixture
+      const bars = gradeHistoryGraphsContainer.querySelectorAll(
+        ".recharts-rectangle",
+      );
       expect(bars.length).toBe(7);
     });
 
-    const wrappers = container.querySelectorAll(".recharts-wrapper");
-    expect(wrappers).toHaveLength(1);
+    const allWrappers =
+      gradeHistoryGraphsContainer.querySelectorAll(".recharts-wrapper");
+    expect(allWrappers).toHaveLength(1);
+    const element = allWrappers[0];
+    expect(element).toBeInTheDocument();
 
-    const chartElement = wrappers[0];
-    expect(chartElement).toBeInTheDocument();
+    fireEvent.mouseOver(element, { clientX: 200, clientY: 200 });
 
-    fireEvent.mouseOver(chartElement, { clientX: 200, clientY: 200 });
-
-    expect(chartElement).toBeVisible();
+    expect(element).toBeVisible();
   });
 });
