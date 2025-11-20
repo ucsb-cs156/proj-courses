@@ -281,4 +281,36 @@ describe("AdminJobsPage tests", () => {
 
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
   });
+
+  test("handles invalid pageSize gracefully", async () => {
+    // Set up localStorage with invalid pageSize
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation((key) => {
+      if (key === "JobsSearch.PageSize") return ""; // Empty string should trigger fallback
+      if (key === "JobsSearch.SortField") return "status";
+      if (key === "JobsSearch.SortDirection") return "DESC";
+      return null;
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => expect(axiosMock.history.get.length).toBeGreaterThan(0));
+
+    // Check that the API was called with pageSize=10 (the fallback value)
+    const jobsApiCall = axiosMock.history.get.find((call) =>
+      call.url.includes("/api/jobs/paginated"),
+    );
+    expect(jobsApiCall).toBeDefined();
+    expect(jobsApiCall.params.pageSize).toBe(10);
+
+    getItemSpy.mockRestore();
+    setItemSpy.mockRestore();
+  });
 });
