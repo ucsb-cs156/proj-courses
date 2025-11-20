@@ -83,7 +83,6 @@ export default function SectionsTable({ sections, schedules = [] }) {
 
   const testid = "SectionsTable";
 
-
   const columns = [
     {
       id: "expander", // Unique ID for the expander column
@@ -126,7 +125,6 @@ export default function SectionsTable({ sections, schedules = [] }) {
       header: "Course ID",
       cell: ({ row }) => {
         return renderDetailPageLink(row, testid);
-        
       },
     },
     {
@@ -198,7 +196,6 @@ export default function SectionsTable({ sections, schedules = [] }) {
       },
     },
   ];
-
   return (
     <>
       <SectionsTableBase columns={columns} data={sections} testid={testid} />

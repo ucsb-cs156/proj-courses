@@ -404,10 +404,15 @@ describe("SectionsTable tests", () => {
         expect(screen.getByText("➖")).toBeInTheDocument();
       });
 
-      const courseIDLink = screen.getByTestId(`${testId}-row-1-col-detail-link`);
+      const courseIDLink = screen.getByTestId(
+        `${testId}-row-1-col-detail-link`,
+      );
       expect(courseIDLink).toBeInTheDocument();
       expect(courseIDLink.tagName).toBe("A");
-      expect(courseIDLink).toHaveAttribute("href", "/coursedetails/20244/30312");
+      expect(courseIDLink).toHaveAttribute(
+        "href",
+        "/coursedetails/20244/30312",
+      );
 
       const noQuarterSubRow = screen.getByTestId(
         `${testId}-cell-row-0.0-col-quarter`,
