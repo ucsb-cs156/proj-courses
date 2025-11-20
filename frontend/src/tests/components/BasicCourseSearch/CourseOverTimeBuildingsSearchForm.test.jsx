@@ -589,15 +589,16 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    const classroomOption = await screen.findByTestId(
+    await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.Classroom-option-0",
     );
-    expect(classroomOption).toBeInTheDocument();
 
-    const classroomDropdown = screen.getByLabelText("Classroom");
-    expect(classroomDropdown.id).toBe(
-      "CourseOverTimeBuildingsSearch.Classroom",
-    );
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
+    ).toHaveValue("ALL");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-1"),
+    ).toBeInTheDocument();
   });
 
   test("classroom state defaults to ALL when no localStorage value", async () => {
