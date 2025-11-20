@@ -41,13 +41,15 @@ vi.mock("recharts", async () => {
         {children}
       </OriginalModule.ResponsiveContainer>
     ),
-    // Mock Tooltip to force the formatter to run
     Tooltip: (props) => {
+      // If a formatter is provided, call it with sample data and render the result.
+      // This ensures that Stryker mutants that empty the function body or return string will cause the test to fail.
       if (props.formatter) {
-        // Manually call the formatter to ensure line 49 is covered
-        props.formatter(100.0, null, { payload: { count: 10 } });
+        const result = props.formatter(100.0, null, { payload: { count: 10 } });
+        if (Array.isArray(result) && result.length > 0) {
+          return <div>{result[0]}</div>;
+        }
       }
-      // Return the original tooltip so structure remains valid (though it may not fully render in jsdom)
       return <OriginalModule.Tooltip {...props} />;
     },
   };
@@ -81,6 +83,10 @@ describe("Grade history tests", () => {
     );
 
     expect(screen.getByText("Fall 2009 - GONZALEZ T F")).toBeInTheDocument();
+    // Verify the tooltip formatter output. This assertion kills the mutants.
+    expect(
+      screen.getByText("Percentage: 100.0%, Count: 10"),
+    ).toBeInTheDocument();
   });
 
   test("Renders two graphs correctly", () => {
