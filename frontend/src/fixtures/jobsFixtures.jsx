@@ -72,6 +72,56 @@ const jobsFixtures = {
     fail: false,
     sleepMs: 1000,
   },
+  threeJobsPage: {
+    content: [
+      {
+        id: 1,
+        createdAt: "2025-11-15T10:00:00.000000-08:00",
+        updatedAt: "2025-11-15T10:15:00.000000-08:00",
+        status: "complete",
+        log: "Started test job #1!\nFinished test job #1!\n",
+      },
+      {
+        id: 2,
+        createdAt: "2025-11-15T10:30:00.000000-08:00",
+        updatedAt: "2025-11-15T10:45:00.000000-08:00",
+        status: "complete",
+        log: "Started test job #2!\nFinished test job #2!\n",
+      },
+      {
+        id: 3,
+        createdAt: "2025-11-15T11:00:00.000000-08:00",
+        updatedAt: "2025-11-15T11:00:01.000000-08:00",
+        status: "running",
+        log: "Started test job #3!\n",
+      },
+    ],
+    pageable: {
+      pageNumber: 0,
+      pageSize: 10,
+      sort: {
+        sorted: true,
+        unsorted: false,
+        empty: false,
+      },
+      offset: 0,
+      paged: true,
+      unpaged: false,
+    },
+    totalElements: 3,
+    totalPages: 1,
+    last: true,
+    first: true,
+    size: 10,
+    number: 0,
+    sort: {
+      sorted: true,
+      unsorted: false,
+      empty: false,
+    },
+    numberOfElements: 3,
+    empty: false,
+  },
 };
 
 export default jobsFixtures;
