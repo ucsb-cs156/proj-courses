@@ -51,11 +51,5 @@ export default function JobsTable({ jobs }) {
     },
   ];
 
-  return (
-    <OurTable
-      data={jobs}
-      columns={columns}
-      testid={testid}
-    />
-  );
+  return <OurTable data={jobs} columns={columns} testid={testid} />;
 }

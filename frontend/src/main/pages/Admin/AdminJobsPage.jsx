@@ -130,13 +130,7 @@ const AdminJobsPage = () => {
 
   // Stryker disable all
   const { data: page } = useBackend(
-    [
-      "/api/jobs/paginated",
-      selectedPage,
-      pageSize,
-      sortField,
-      sortDirection,
-    ],
+    ["/api/jobs/paginated", selectedPage, pageSize, sortField, sortDirection],
     {
       method: "GET",
       url: "/api/jobs/paginated",
