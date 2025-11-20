@@ -565,4 +565,71 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       classroom: "",
     });
   });
+
+  test("classroom dropdown has correct controlId", async () => {
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106"]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
+
+    const classroomDropdown = screen.getByLabelText("Classroom");
+    expect(classroomDropdown).toHaveAttribute(
+      "id",
+      "CourseOverTimeBuildingsSearch.Classroom",
+    );
+  });
+
+  test("classroom state defaults to ALL when no localStorage value", async () => {
+    localStorage.removeItem("CourseOverTimeBuildingsSearch.Classroom");
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106"]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
+
+    const classroomDropdown = screen.getByLabelText("Classroom");
+    expect(classroomDropdown.value).toBe("ALL");
+  });
 });
