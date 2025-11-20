@@ -102,7 +102,7 @@ export const getQuarter = (row) =>
 export const formatInfoLink = (row) =>
   `/coursedetails/${getQuarter(row)}/${getSectionField(row, "enrollCode")}`;
 
-export const renderInfoLink = (row, testid) => (
+export const renderInfoLink = (row, testid, title = null) => (
   <p className="text-center">
     <a
       href={formatInfoLink(row)}
@@ -111,7 +111,7 @@ export const renderInfoLink = (row, testid) => (
       rel="noopener noreferrer"
       style={{ color: "black", backgroundColor: "inherit" }}
     >
-      <FontAwesomeIcon icon={faInfoCircle} />
+      {title ? title : <FontAwesomeIcon icon={faInfoCircle} />}
     </a>
   </p>
 );
