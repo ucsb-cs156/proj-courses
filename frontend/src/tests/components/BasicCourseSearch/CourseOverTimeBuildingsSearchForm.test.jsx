@@ -446,6 +446,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const fetchJSONSpy = vi.fn();
     fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
 
+    localStorage.clear();
+    const freshQueryClient = new QueryClient();
+
     axiosMock.reset();
     axiosMock
       .onGet("/api/currentUser")
@@ -466,7 +469,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       .reply(200, ["1004", "1106", "1108"]);
 
     render(
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={freshQueryClient}>
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
@@ -486,7 +489,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
 
     const selectClassroom = screen.getByLabelText("Classroom");
-    userEvent.selectOptions(selectClassroom, "1106");
+    const options = Array.from(selectClassroom.options).map((opt) => opt.value);
+    const specificClassroom = options.find((opt) => opt !== "ALL");
+    userEvent.selectOptions(selectClassroom, specificClassroom);
 
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
@@ -496,13 +501,16 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
       Quarter: "20232",
       buildingCode: "GIRV",
-      classroom: "1106",
+      classroom: specificClassroom,
     });
   });
 
   test("when I select ALL classroom and submit, it passes empty string", async () => {
     const fetchJSONSpy = vi.fn();
     fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
+
+    localStorage.clear();
+    const freshQueryClient = new QueryClient();
 
     axiosMock.reset();
     axiosMock
@@ -524,7 +532,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       .reply(200, ["1004", "1106", "1108"]);
 
     render(
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={freshQueryClient}>
         <MemoryRouter>
           <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
