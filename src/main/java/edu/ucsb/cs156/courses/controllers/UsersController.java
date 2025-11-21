@@ -29,4 +29,14 @@ public class UsersController extends ApiController {
     String body = mapper.writeValueAsString(usersPage);
     return ResponseEntity.ok().body(body);
   }
+
+  @Operation(summary = "Get a paged list of users")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("/paged")
+  public ResponseEntity<String> usersPaged(Pageable pageable) throws JsonProcessingException {
+
+    var usersPage = userRepository.findAll(pageable);
+    String body = mapper.writeValueAsString(usersPage);
+    return ResponseEntity.ok().body(body);
+  }
 }
