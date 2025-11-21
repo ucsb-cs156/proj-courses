@@ -12,7 +12,8 @@ import {
   formatTooltip,
   createCompleteGradeData,
   groupDataByQuarterAndInstructor,
-} from "main/components/GradeHistory/GradeHistoryGraph";
+} from "main/components/GradeHistory/GradeHistoryHelper";
+
 
 const mockedNavigate = vi.fn();
 
