@@ -33,6 +33,7 @@ const coursesFixtures = {
       unitsFixed: 4,
     },
   ],
+  emptyCourses: [],
 };
 
 export { coursesFixtures };
