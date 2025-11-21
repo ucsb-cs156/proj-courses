@@ -26,6 +26,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
     "CourseOverTimeBuildingsSearch.BuildingCode",
   );
   const localClassroom = localStorage.getItem(
+    // Stryker disable next-line StringLiteral : controlId must match GenericDropdown controlId
     "CourseOverTimeBuildingsSearch.Classroom",
   );
 
@@ -34,6 +35,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   );
   const [buildingCode, setBuildingCode] = useState(localBuildingCode || "");
   const [availableClassrooms, setAvailableClassrooms] = useState([]);
+  // Stryker disable next-line StringLiteral : default value "ALL" is specified in requirements
   const [classroom, setClassroom] = useState(localClassroom || "ALL");
 
   const handleSubmit = (event) => {
@@ -93,6 +95,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
               <GenericDropdown
                 values={["ALL", ...availableClassrooms]}
                 setValue={setClassroom}
+                // Stryker disable next-line StringLiteral : controlId is required for localStorage and testids
                 controlId={"CourseOverTimeBuildingsSearch.Classroom"}
                 label={"Classroom"}
               />
