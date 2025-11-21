@@ -14,7 +14,6 @@ import {
   groupDataByQuarterAndInstructor,
 } from "main/components/GradeHistory/GradeHistoryHelper";
 
-
 const mockedNavigate = vi.fn();
 
 class ResizeObserver {

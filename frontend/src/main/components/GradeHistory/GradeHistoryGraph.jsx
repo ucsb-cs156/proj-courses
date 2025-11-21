@@ -16,8 +16,6 @@ import {
   groupDataByQuarterAndInstructor,
 } from "./GradeHistoryHelper";
 
- 
-
 // Component to render a single bar chart for a specific group of data
 const GradeBarChart = ({ data, title }) => {
   const completeData = createCompleteGradeData(data);
