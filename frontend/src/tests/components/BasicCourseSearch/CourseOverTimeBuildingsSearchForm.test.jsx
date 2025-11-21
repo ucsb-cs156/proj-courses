@@ -593,16 +593,17 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       "CourseOverTimeBuildingsSearch.Classroom-option-0",
     );
 
+    expect(screen.queryByTestId("-option-0")).not.toBeInTheDocument();
     expect(
       screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
-    ).toHaveValue("ALL");
-    expect(
-      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-1"),
     ).toBeInTheDocument();
   });
 
   test("classroom state defaults to ALL when no localStorage value", async () => {
     localStorage.removeItem("CourseOverTimeBuildingsSearch.Classroom");
+
+    const fetchJSONSpy = vi.fn();
+    fetchJSONSpy.mockResolvedValue({});
 
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
@@ -613,7 +614,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CourseOverTimeBuildingsSearchForm />
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -630,7 +631,14 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       "CourseOverTimeBuildingsSearch.Classroom-option-0",
     );
 
-    const classroomDropdown = screen.getByLabelText("Classroom");
-    expect(classroomDropdown.value).toBe("ALL");
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      Quarter: "20232",
+      buildingCode: "GIRV",
+      classroom: "",
+    });
   });
 });
