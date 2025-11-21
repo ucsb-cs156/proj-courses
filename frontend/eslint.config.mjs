@@ -26,12 +26,13 @@ export default defineConfig([
             js.configs.recommended,
             reactHooks.configs["recommended-latest"],
             reactRefresh.configs.vite,
+            reactPlugin.configs.flat.recommended,
         ],
         languageOptions: {
             ecmaVersion: 2020,
             globals: {
-              ...globals.browser,
-              React: "writable",
+                ...globals.browser,
+                React: "writable",
             },
             parserOptions: {
                 ecmaVersion: "latest",
@@ -44,13 +45,14 @@ export default defineConfig([
                 "error",
                 { varsIgnorePattern: "^[A-Z_].*", argsIgnorePattern: "^_" },
             ],
+            "react/prop-types" : "off",
         },
-      settings: {
-        react: {
-          version: "detect", // or explicit like "18.3"
-          jsxRuntime: "automatic", // 👈 tells ESLint we're using the new JSX transform
+        settings: {
+            react: {
+                version: "detect", // or explicit like "18.3"
+                jsxRuntime: "automatic", // 👈 tells ESLint we're using the new JSX transform
+            },
         },
-      },
     },
     {
         ...plugin.configs["flat/react"],
@@ -61,9 +63,9 @@ export default defineConfig([
         },
         languageOptions: {
             globals: {
-              ...vitest.environments.env.globals,
-              ...globals.node,
-              React: "writable",
+                ...vitest.environments.env.globals,
+                ...globals.node,
+                React: "writable",
             }, // Use vitest's globals
         },
         rules: {
