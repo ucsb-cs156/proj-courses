@@ -641,4 +641,66 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       classroom: "",
     });
   });
+
+  test("reads classroom from localStorage with correct key", async () => {
+    localStorage.setItem("CourseOverTimeBuildingsSearch.Classroom", "1004");
+
+    const fetchJSONSpy = vi.fn();
+    fetchJSONSpy.mockResolvedValue({});
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    const selectBuilding = screen.getByLabelText("Building Name");
+
+    expect(selectQuarter).toBeInTheDocument();
+    expect(selectBuilding).toBeInTheDocument();
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      Quarter: "20232",
+      buildingCode: "",
+      classroom: "1004",
+    });
+  });
+
+  test("initializes classroom with ALL when localStorage is empty", async () => {
+    localStorage.removeItem("CourseOverTimeBuildingsSearch.Classroom");
+    localStorage.removeItem("CourseOverTimeBuildingsSearch.Quarter");
+    localStorage.removeItem("CourseOverTimeBuildingsSearch.BuildingCode");
+
+    const setStateSpy = vi.fn();
+    vi.spyOn(react, "useState").mockImplementation((initialValue) => {
+      return [initialValue, setStateSpy];
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      const calls = react.useState.mock.calls;
+      const classroomInitCall = calls.find(
+        (call) => call[0] === "ALL" || call[0] === "",
+      );
+      expect(classroomInitCall).toBeDefined();
+      expect(classroomInitCall[0]).toBe("ALL");
+    });
+  });
 });
