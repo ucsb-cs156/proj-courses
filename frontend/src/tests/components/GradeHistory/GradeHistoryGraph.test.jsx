@@ -12,6 +12,7 @@ import {
   formatTooltip,
   createCompleteGradeData,
   groupDataByQuarterAndInstructor,
+  yyyyqToPrettyStr
 } from "main/components/GradeHistory/GradeHistoryHelper";
 
 const mockedNavigate = vi.fn();
@@ -161,6 +162,15 @@ describe("createCompleteGradeData", () => {
       { grade: "W", count: 0, percentage: 0 },
       { grade: "NP", count: 0, percentage: 0 },
     ]);
+  });
+
+describe("yyyyqToPrettyStr", () => {
+  it("formats yyyyq into a pretty quarter string", () => {
+    expect(yyyyqToPrettyStr("20221")).toBe("Winter 2022");
+    expect(yyyyqToPrettyStr("20222")).toBe("Spring 2022");
+    expect(yyyyqToPrettyStr("20223")).toBe("Summer 2022");
+    expect(yyyyqToPrettyStr("20224")).toBe("Fall 2022");
+    });
   });
 
   it("returns zero percentage when total count is zero", () => {
