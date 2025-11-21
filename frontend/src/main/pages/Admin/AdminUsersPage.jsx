@@ -28,7 +28,7 @@ const AdminUsersPage = () => {
     <BasicLayout>
       <h2>Users</h2>
 
-      {/* Page Size Selecting Thing */}
+      {/* Page Size Selector */}
       <div className="d-flex align-items-center gap-2 mb-3">
         <label htmlFor="pageSizeSelect">Page Size:</label>
         <select
