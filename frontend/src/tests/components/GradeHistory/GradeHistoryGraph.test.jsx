@@ -12,7 +12,7 @@ import {
   formatTooltip,
   createCompleteGradeData,
   groupDataByQuarterAndInstructor,
-  yyyyqToPrettyStr
+  yyyyqToPrettyStr,
 } from "main/components/GradeHistory/GradeHistoryHelper";
 
 const mockedNavigate = vi.fn();
@@ -164,12 +164,12 @@ describe("createCompleteGradeData", () => {
     ]);
   });
 
-describe("yyyyqToPrettyStr", () => {
-  it("formats yyyyq into a pretty quarter string", () => {
-    expect(yyyyqToPrettyStr("20221")).toBe("Winter 2022");
-    expect(yyyyqToPrettyStr("20222")).toBe("Spring 2022");
-    expect(yyyyqToPrettyStr("20223")).toBe("Summer 2022");
-    expect(yyyyqToPrettyStr("20224")).toBe("Fall 2022");
+  describe("yyyyqToPrettyStr", () => {
+    it("formats yyyyq into a pretty quarter string", () => {
+      expect(yyyyqToPrettyStr("20221")).toBe("Winter 2022");
+      expect(yyyyqToPrettyStr("20222")).toBe("Spring 2022");
+      expect(yyyyqToPrettyStr("20223")).toBe("Summer 2022");
+      expect(yyyyqToPrettyStr("20224")).toBe("Fall 2022");
     });
   });
 
