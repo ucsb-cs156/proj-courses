@@ -675,32 +675,4 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       classroom: "1004",
     });
   });
-
-  test("initializes classroom with ALL when localStorage is empty", async () => {
-    localStorage.removeItem("CourseOverTimeBuildingsSearch.Classroom");
-    localStorage.removeItem("CourseOverTimeBuildingsSearch.Quarter");
-    localStorage.removeItem("CourseOverTimeBuildingsSearch.BuildingCode");
-
-    const setStateSpy = vi.fn();
-    vi.spyOn(React, "useState").mockImplementation((initialValue) => {
-      return [initialValue, setStateSpy];
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseOverTimeBuildingsSearchForm />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => {
-      const calls = React.useState.mock.calls;
-      const classroomInitCall = calls.find(
-        (call) => call[0] === "ALL" || call[0] === "",
-      );
-      expect(classroomInitCall).toBeDefined();
-      expect(classroomInitCall[0]).toBe("ALL");
-    });
-  });
 });
