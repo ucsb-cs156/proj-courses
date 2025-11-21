@@ -40,7 +40,11 @@ export default function CourseDescriptionIndexPage() {
         <h5>UCSB Courses Description Search</h5>
         <BasicCourseSearchForm fetchJSON={fetchBasicCourseJSON} />
         <BasicCourseTable courses={courseJSON} />
-        {searchPerformed && courseJSON.length === 0 && <p style={{ textAlign: "center", color: "navy" }}>No courses found matching the selected search fields.</p>}
+        {searchPerformed && courseJSON.length === 0 && (
+          <p style={{ textAlign: "center", color: "navy" }}>
+            No courses found matching the selected search fields.
+          </p>
+        )}
       </div>
     </BasicLayout>
   );
