@@ -682,7 +682,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     localStorage.removeItem("CourseOverTimeBuildingsSearch.BuildingCode");
 
     const setStateSpy = vi.fn();
-    vi.spyOn(react, "useState").mockImplementation((initialValue) => {
+    vi.spyOn(React, "useState").mockImplementation((initialValue) => {
       return [initialValue, setStateSpy];
     });
 
@@ -695,7 +695,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
 
     await waitFor(() => {
-      const calls = react.useState.mock.calls;
+      const calls = React.useState.mock.calls;
       const classroomInitCall = calls.find(
         (call) => call[0] === "ALL" || call[0] === "",
       );
