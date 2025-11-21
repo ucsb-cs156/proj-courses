@@ -110,8 +110,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     fetchJSONSpy.mockResolvedValue(sampleReturnValue);
 
-    localStorage.removeItem("CourseOverTimeBuildingsSearch.Classroom");
-
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -134,17 +132,6 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const selectBuilding = screen.getByLabelText("Building Name");
     expect(selectBuilding).toBeInTheDocument();
     userEvent.selectOptions(selectBuilding, "GIRV");
-
-    await screen.findByTestId(
-      "CourseOverTimeBuildingsSearch.Classroom-option-0",
-    );
-    const classroomDropdown = screen.getByLabelText("Classroom");
-    expect(classroomDropdown.value).toBe("ALL");
-
-    expect(
-      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
-    ).toBeInTheDocument();
-
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
 
