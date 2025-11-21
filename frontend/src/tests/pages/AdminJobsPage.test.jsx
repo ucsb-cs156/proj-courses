@@ -6,10 +6,13 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
+import * as useLocalStorage from "main/utils/useLocalStorage";
+import * as useBackend from "main/utils/useBackend";
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import jobsFixtures from "fixtures/jobsFixtures";
+import { vi } from "vitest";
 
 describe("AdminJobsPage tests", () => {
   const queryClient = new QueryClient();
@@ -25,6 +28,9 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock
+      .onGet("/api/jobs/paginated")
+      .reply(200, jobsFixtures.threeJobsPage);
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -50,16 +56,95 @@ describe("AdminJobsPage tests", () => {
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Created`),
-    ).toHaveTextContent("1");
+    ).toHaveTextContent("11/15/2025, 10:00:00");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Updated`),
-    ).toHaveTextContent("11/13/2022, 19:49:59");
+    ).toHaveTextContent("11/15/2025, 10:15:00");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-status`),
     ).toHaveTextContent("complete");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
-    ).toHaveTextContent("Hello World! from test job! Goodbye from test job!");
+    ).toHaveTextContent("Started test job #1! Finished test job #1!");
+  });
+
+  test("When localstorage is empty, fallback values are used", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+
+    const useLocalStorageSpy = vi.spyOn(useLocalStorage, "default");
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Job Status");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "10");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "status");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
+
+    const calls = useLocalStorageSpy.mock.calls;
+    let counts = {};
+    for (const call of calls) {
+      counts[call] = counts[call] ? counts[call] + 1 : 1;
+    }
+
+    expect(counts).toEqual({
+      "JobsSearch.PageSize,10": 4,
+      "JobsSearch.SortDirection,DESC": 4,
+      "JobsSearch.SortField,status": 4,
+    });
+
+    const jobsPaginatedRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/jobs/paginated",
+    );
+    expect(jobsPaginatedRequest.params).toEqual({
+      page: 0,
+      pageSize: "10",
+      sortField: "status",
+      sortDirection: "DESC",
+    });
+  });
+
+  test("useBackend is called with correct arguments", async () => {
+    const useBackendSpy = vi.spyOn(useBackend, "useBackend");
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Job Status");
+    const validPageSizeRegex = /^[1-9]\d*$/;
+    const validSortFieldRegex = /^(?:status|createdBy|createdAt|updatedAt)$/;
+    const validSortDirectionRegex = /^(?:ASC|DESC)$/;
+    expect(useBackendSpy).toHaveBeenCalledWith(
+      ["/api/jobs"],
+      {
+        method: "GET",
+        url: "/api/jobs/paginated",
+        params: {
+          page: expect.any(Number),
+          pageSize: expect.stringMatching(validPageSizeRegex),
+          sortField: expect.stringMatching(validSortFieldRegex),
+          sortDirection: expect.stringMatching(validSortDirectionRegex),
+        },
+      },
+      { content: [], totalPages: 0 },
+      { refetchInterval: 500 },
+    );
+
+    useBackendSpy.mockRestore();
   });
 
   test("user can submit a test job", async () => {
