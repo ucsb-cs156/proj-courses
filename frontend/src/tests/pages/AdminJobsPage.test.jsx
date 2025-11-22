@@ -5,6 +5,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
+import * as useLocalStorage from "main/utils/useLocalStorage";
 
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -24,7 +25,10 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock.onGet("/api/jobs/paginated").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 1,
+    });
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -253,6 +257,53 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(axiosMock.history.post[0].url).toBe(url);
+  });
+
+  test("fall back values are used when local storage is empty", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+
+    const useLocalStorageSpy = vi.spyOn(useLocalStorage, "default");
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Job Status");
+    expect(useLocalStorageSpy.mock.calls[0]).toEqual(["JobsSearch.PageSize", "10"]);
+    expect(useLocalStorageSpy.mock.calls[1]).toEqual(["JobsSearch.SortField", "id"]);
+    expect(useLocalStorageSpy.mock.calls[2]).toEqual(["Jobs.Search.SortDirection", "ASC"]);
+
+    const calls = useLocalStorageSpy.mock.calls.map((call) =>
+      call.join(","),
+    );
+
+    const count = (s) => calls.filter((k) => k === s).length;
+
+    expect(count("JobsSearch.SortDirection,ASC")).toBeGreaterThan(0);
+    expect(count("JobsSearch.SortField,id")).toBeGreaterThan(0);
+    expect(count("JobsSearch.PageSize,10")).toBeGreaterThan(0);
+
+    expect(axiosMock.history.get.length).toBe(4);
+    const urls = axiosMock.history.get.map((req) => req.url);
+    expect(urls).toContain("/api/systemInfo");
+    expect(urls).toContain("/api/UCSBSubjects/all");
+    expect(urls).toContain("/api/currentUser");
+    expect(urls).toContain("/api/jobs/paginated");
+    const jobsRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/jobs/paginated",
+    );
+    expect(jobsRequest.params).toEqual({
+      page: 0,
+      pageSize: "10",
+      sortField: "id",
+      sortDirection: "ASC",
+    });
   });
 
   test("user can purge all jobs in the JobsTable", async () => {
