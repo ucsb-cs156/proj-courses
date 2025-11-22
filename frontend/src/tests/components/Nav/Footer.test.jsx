@@ -46,4 +46,30 @@ describe("Footer tests", () => {
       "mocklink",
     );
   });
+
+  test("Backup sourceRepo renders correctly when systemInfo is undefined", async () => {
+    render(<Footer />);
+    expect(screen.getByTestId("footer-source-code-link")).toHaveAttribute(
+      "href",
+      "https://github.com/ucsb-cs156/proj-courses",
+    );
+  });
+
+  test("Backup sourceRepo renders correctly when systemInfo.systemInfo is undefined", async () => {
+    let systemInfo = { systemInfo: undefined };
+    render(<Footer systemInfo={systemInfo} />);
+    expect(screen.getByTestId("footer-source-code-link")).toHaveAttribute(
+      "href",
+      "https://github.com/ucsb-cs156/proj-courses",
+    );
+  });
+
+  test("Backup sourceRepo renders correctly when systemInfo.systemInfo.sourceRepo is undefined", async () => {
+    let systemInfo = { systemInfo: {} };
+    render(<Footer systemInfo={systemInfo} />);
+    expect(screen.getByTestId("footer-source-code-link")).toHaveAttribute(
+      "href",
+      "https://github.com/ucsb-cs156/proj-courses",
+    );
+  });
 });
