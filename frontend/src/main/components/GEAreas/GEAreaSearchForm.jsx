@@ -8,15 +8,11 @@ import { useBackend } from "main/utils/useBackend";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
-  const { data: systemInfo, _error: sysError, _status: sysStatus } = useSystemInfo();
+  const { data: systemInfo } = useSystemInfo();
 
-  if (!systemInfo){
-    return <p>Loading system info...</p>;
-  }
-  const quarters = quarterRange(
-    systemInfo.startQtrYYYYQ,
-    systemInfo.endQtrYYYYQ,
-  );
+  const startQtr = systemInfo?.startQtrYYYYQ || "20221";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20222";
+  const quarters = quarterRange(startQtr, endQtr);
 
   const quarterKey = "GEAreaSearch.Quarter";
   const areaKey = "GEAreaSearch.Area";
