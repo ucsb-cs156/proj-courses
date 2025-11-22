@@ -283,15 +283,22 @@ describe("GEAreaSearchForm tests", () => {
     test("handles empty areas array gracefully", async () => {
       axiosMock.onGet("/api/public/generalEducationInfo").reply(200, []);
 
+      getItemSpy.mockImplementation((key) => {
+        if (key === "GEAreaSearch.Quarter") return "20221";
+        if (key === "GEAreaSearch.Area") return null;
+        return null;
+      });
+
       render(<WrappedForm />);
 
-      const areaSelect = screen.getByLabelText("General Education Area");
-
-      expect(areaSelect.children.length).toBe(1);
-      expect(areaSelect.value).toBe("ALL");
+      await waitFor(() => {
+        const areaSelect = screen.getByLabelText("General Education Area");
+        expect(areaSelect.children.length).toBe(1); // Only ALL
+        expect(areaSelect.value).toBe("ALL");
+      });
 
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
-        "Searching for ALL in 20221",
+        "Searching for ALL in 20221"
       );
     });
 
