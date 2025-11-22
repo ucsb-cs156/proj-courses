@@ -192,7 +192,11 @@ describe("GEAreaSearchForm tests", () => {
         .reply(() => new Promise(() => {})); // never resolves
 
       getItemSpy.mockImplementation((key) => null);
-      useBackendSpy.mockReturnValue({ data: [], _status: "loading", _error: null });
+      useBackendSpy.mockReturnValue({
+        data: [],
+        _status: "loading",
+        _error: null,
+      });
 
       render(<WrappedForm />);
 
@@ -231,6 +235,24 @@ describe("GEAreaSearchForm tests", () => {
       useSystemInfoSpy.mockRestore();
     });
 
+    test("works when /api/systemInfo returns 500", async () => {
+      axiosMock.onGet("/api/systemInfo").reply(500);
+      render(<WrappedForm />);
+      const quarterSelect = await screen.findByLabelText("Quarter");
+      expect(quarterSelect.value).toBe("20221");
+    });
+
+    test("renders dynamically added area codes", async () => {
+      useBackendSpy.mockReturnValue({
+        data: [{ requirementCode: "X1" }],
+        _status: "success",
+        _error: null,
+      });
+      render(<WrappedForm />);
+      const option = await screen.findByTestId("GEAreaSearch.Area-option-X1");
+      expect(option).toBeInTheDocument();
+    });
+
     test("falls back to default quarter range when systemInfo missing quarter fields", async () => {
       axiosMock.onGet("/api/systemInfo").reply(200, {
         springH2ConsoleEnabled: false,
@@ -245,6 +267,17 @@ describe("GEAreaSearchForm tests", () => {
         // default values are used
         expect(screen.getByLabelText("Quarter").value).toBe("20221");
       });
+    });
+
+    test("handles empty areas gracefully", () => {
+      useBackendSpy.mockReturnValue({
+        data: undefined,
+        _status: "success",
+        _error: null,
+      });
+      render(<WrappedForm />);
+      const areaSelect = screen.getByLabelText("General Education Area");
+      expect(areaSelect.value).toBe("ALL"); // fallback option
     });
 
     test("submit button calls fetchJSON with correct args and sets local storage", async () => {
