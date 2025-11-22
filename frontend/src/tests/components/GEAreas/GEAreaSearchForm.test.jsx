@@ -280,6 +280,16 @@ describe("GEAreaSearchForm tests", () => {
       expect(areaSelect.value).toBe("ALL"); // fallback option
     });
 
+    test("handles undefined systemInfo gracefully", () => {
+      const useSystemInfoSpy = vi.spyOn(systemInfoModule, "useSystemInfo")
+        .mockReturnValue({ data: undefined });
+
+      render(<WrappedForm />);
+      const quarterSelect = screen.getByLabelText("Quarter");
+      expect(quarterSelect.value).toBe("20221"); // fallback
+      useSystemInfoSpy.mockRestore();
+    });
+
     test("submit button calls fetchJSON with correct args and sets local storage", async () => {
       const fetchJSONSpy = vi.fn();
       render(<WrappedForm fetchJSON={fetchJSONSpy} />);
