@@ -29,6 +29,11 @@ Default.parameters = {
         status: 200,
       });
     }),
+    http.get("/api/jobs/paginated", () => {
+      return HttpResponse.json(jobsFixtures.threeJobsPage, {
+        status: 200,
+      });
+    }),
     http.get("/api/systemInfo", () => {
       return HttpResponse.json(systemInfoFixtures.showingBoth, {
         status: 200,
