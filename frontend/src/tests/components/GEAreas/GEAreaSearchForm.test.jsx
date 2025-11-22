@@ -8,7 +8,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { toast } from "react-toastify";
 import * as useBackend from "main/utils/useBackend.jsx";
-import * as systemInfoModule from "main/utils/systemInfo"; 
+import * as systemInfoModule from "main/utils/systemInfo";
 
 import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
 
@@ -211,7 +211,7 @@ describe("GEAreaSearchForm tests", () => {
 
       const systemInfoMock = { data: "", isLoading: true, isError: false };
       const useSystemInfoSpy = vi
-        .spyOn(systemInfo, "useSystemInfo")
+        .spyOn(systemInfoModule, "useSystemInfo")
         .mockReturnValue(systemInfoMock);
 
       getItemSpy.mockImplementation(() => null);
