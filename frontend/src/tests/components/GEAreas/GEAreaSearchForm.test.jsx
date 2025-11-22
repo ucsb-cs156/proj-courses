@@ -282,6 +282,14 @@ describe("GEAreaSearchForm tests", () => {
     });
 
     test("handles empty areas array gracefully", async () => {
+      // Override systemInfo for this test
+      axiosMock.onGet("/api/systemInfo").reply(200, {
+        springH2ConsoleEnabled: false,
+        showSwaggerUILink: false,
+        startQtrYYYYQ: "20221", // Changed from 20211
+        endQtrYYYYQ: "20222", // Changed from 20214
+      });
+
       axiosMock.onGet("/api/public/generalEducationInfo").reply(200, []);
 
       getItemSpy.mockImplementation((key) => {
@@ -294,7 +302,7 @@ describe("GEAreaSearchForm tests", () => {
 
       await waitFor(() => {
         const areaSelect = screen.getByLabelText("General Education Area");
-        expect(areaSelect.children.length).toBe(1); // Only ALL
+        expect(areaSelect.children.length).toBe(1);
         expect(areaSelect.value).toBe("ALL");
       });
 
