@@ -191,6 +191,9 @@ describe("GEAreaSearchForm tests", () => {
         .onGet("/api/public/generalEducationInfo")
         .reply(() => new Promise(() => {})); // never resolves
 
+      getItemSpy.mockImplementation((key) => null);
+      useBackendSpy.mockReturnValue({ data: [], _status: "loading", _error: null });
+
       render(<WrappedForm />);
 
       const areaSelect = screen.getByLabelText("General Education Area");
