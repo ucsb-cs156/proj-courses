@@ -602,8 +602,10 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     const selectQuarter = screen.getByLabelText("Quarter");
     const selectBuilding = screen.getByLabelText("Building Name");
-    
-    await screen.findByTestId("CourseOverTimeBuildingsSearch.BuildingCode-option-0");
+
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
+    );
 
     await userEvent.selectOptions(selectQuarter, "20232");
     await userEvent.selectOptions(selectBuilding, "GIRV");
@@ -613,7 +615,9 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
 
     await waitFor(() => {
-      const options = Array.from(classroomSelect.options).map((opt) => opt.value);
+      const options = Array.from(classroomSelect.options).map(
+        (opt) => opt.value,
+      );
       expect(options).toContain("1106");
     });
 
@@ -628,10 +632,12 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     await userEvent.selectOptions(selectBuilding, "BRDA");
     await waitFor(() => {
-      const options = Array.from(classroomSelect.options).map((opt) => opt.value);
+      const options = Array.from(classroomSelect.options).map(
+        (opt) => opt.value,
+      );
       expect(options).toContain("2001");
     });
-    
+
     expect(classroomSelect.value).toBe("ALL");
   });
 });
