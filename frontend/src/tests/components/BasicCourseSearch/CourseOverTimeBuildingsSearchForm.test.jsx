@@ -584,4 +584,54 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const allOption = screen.getByRole("option", { name: "ALL" });
     expect(allOption.selected).toBe(true);
   });
+
+  test("resets classroom to ALL when building changes and new classrooms are fetched", async () => {
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106", "1108"]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    
+    await screen.findByTestId("CourseOverTimeBuildingsSearch.BuildingCode-option-0");
+
+    await userEvent.selectOptions(selectQuarter, "20232");
+    await userEvent.selectOptions(selectBuilding, "GIRV");
+
+    const classroomSelect = screen.getByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
+
+    await waitFor(() => {
+      const options = Array.from(classroomSelect.options).map((opt) => opt.value);
+      expect(options).toContain("1106");
+    });
+
+    await userEvent.selectOptions(classroomSelect, "1106");
+    expect(classroomSelect.value).toBe("1106");
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "BRDA" },
+      })
+      .reply(200, ["2001", "2002"]);
+
+    await userEvent.selectOptions(selectBuilding, "BRDA");
+    await waitFor(() => {
+      const options = Array.from(classroomSelect.options).map((opt) => opt.value);
+      expect(options).toContain("2001");
+    });
+    
+    expect(classroomSelect.value).toBe("ALL");
+  });
 });
