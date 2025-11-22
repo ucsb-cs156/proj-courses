@@ -292,9 +292,9 @@ describe("GEAreaSearchForm tests", () => {
 
       axiosMock.onGet("/api/public/generalEducationInfo").reply(200, []);
 
-      getItemSpy.mockImplementation((key) => {
-        if (key === "GEAreaSearch.Quarter") return null;
-        if (key === "GEAreaSearch.Area") return null;
+      getItemSpy.mockImplementation((_key) => {
+        if (_key === "GEAreaSearch.Quarter") return null;
+        if (_key === "GEAreaSearch.Area") return null;
         return null;
       });
 
