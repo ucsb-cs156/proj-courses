@@ -405,4 +405,58 @@ public class UCSBCurriculumServiceTests {
     List<Primary> result = ucs.getPrimaries(subjectArea, quarter, level);
     assertEquals(expectedConvertedPrimaries, result);
   }
+
+  @Test
+  public void test_getJSONByGE() throws Exception {
+    String expectedResult = "{expectedResult}";
+
+    String quarter = "2025";
+    String area = "A1";
+
+    String expectedParams =
+        String.format("?quarter=%s&areas=%s&pageNumber=%d&pageSize=%d", quarter, area, 1, 500);
+    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+    String result = ucs.getJSONByGE(quarter, area);
+
+    assertEquals(expectedResult, result);
+  }
+
+  @Test
+  public void test_getPrimariesGE() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    // fixture classes don't technically match input GE area/quarter,
+    // but that relies on underlying UCSB API, so no need to test in this controller
+    String expectedCoursePageJSON = CoursePageFixtures.COURSE_PAGE_JSON;
+    CoursePage expectedCoursePage =
+        objectMapper.readValue(expectedCoursePageJSON, CoursePage.class);
+    List<Primary> expectedConvertedPrimaries = expectedCoursePage.getPrimaries();
+
+    String quarter = "20251";
+    String area = "A1";
+
+    String expectedParams =
+        String.format("?quarter=%s&areas=%s&pageNumber=%d&pageSize=%d", quarter, area, 1, 500);
+    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedCoursePageJSON, MediaType.APPLICATION_JSON));
+
+    List<Primary> result = ucs.getPrimariesByGE(quarter, area);
+    assertEquals(expectedConvertedPrimaries, result);
+  }
 }

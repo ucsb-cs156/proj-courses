@@ -8,6 +8,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { toast } from "react-toastify";
 import * as useBackend from "main/utils/useBackend.jsx";
+import * as systemInfo from "main/utils/systemInfo";
 
 import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
 
@@ -143,6 +144,36 @@ describe("GEAreaSearchForm tests", () => {
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
         "Searching for ALL in S21",
       );
+    });
+
+    test("renders correctly when useSystemInfo doesn't resolve in time", () => {
+      const fallbackStartQtr = "20221";
+      // useSystemInfo's initialData in the react query should solve it
+      // but storybook has a race condition where GEAreaSearchForm can initially access data as empty string
+      const emptyReactQuery = {
+        data: "",
+        isLoading: true,
+        isError: false,
+      };
+      const useSystemInfoSpy = vi
+        .spyOn(systemInfo, "useSystemInfo")
+        .mockReturnValue(emptyReactQuery);
+
+      // Quarter Field falls back on systemInfo quarters if LocalStorage Quarter is empty
+      getItemSpy.mockImplementation((key) => {
+        if (key === "GEAreaSearch.Quarter") {
+          return null;
+        }
+        if (key === "GEAreaSearch.Area") {
+          return null;
+        }
+        return null;
+      });
+
+      render(<WrappedForm />);
+      expect(screen.getByLabelText("Quarter")).toBeInTheDocument();
+      expect(screen.getByLabelText("Quarter").value).toEqual(fallbackStartQtr);
+      useSystemInfoSpy.mockRestore();
     });
 
     test("when local state for quarter is empty, we get ALL", () => {
