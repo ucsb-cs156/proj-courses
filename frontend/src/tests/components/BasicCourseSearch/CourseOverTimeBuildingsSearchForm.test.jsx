@@ -98,7 +98,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     await screen.findByTestId(expectedKey);
 
     const selectBuilding = screen.getByLabelText("Building Name");
-    userEvent.selectOptions(selectBuilding, "BRDA");
+    await userEvent.selectOptions(selectBuilding, "BRDA");
 
     expect(selectBuilding.value).toBe("BRDA");
   });
@@ -130,12 +130,12 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     await screen.findByTestId(expectedKey);
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20232");
+    await userEvent.selectOptions(selectQuarter, "20232");
     const selectBuilding = screen.getByLabelText("Building Name");
     expect(selectBuilding).toBeInTheDocument();
-    userEvent.selectOptions(selectBuilding, "GIRV");
+    await userEvent.selectOptions(selectBuilding, "GIRV");
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
 
@@ -231,14 +231,14 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20232");
+    await userEvent.selectOptions(selectQuarter, "20232");
 
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await screen.findByTestId(expectedKey);
 
-    userEvent.selectOptions(selectBuilding, "GIRV");
+    await userEvent.selectOptions(selectBuilding, "GIRV");
 
     const classroomSelect = await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.ClassroomSelect",
@@ -286,6 +286,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
   });
 
   test("displays no classrooms and logs error when fetch fails", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     axiosMock
       .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
         params: { quarter: "20232", buildingCode: "GIRV" },
@@ -300,14 +301,23 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       </QueryClientProvider>,
     );
 
-    userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
+    await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await screen.findByTestId(expectedKey);
 
-    userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
+    await userEvent.selectOptions(
+      screen.getByLabelText("Building Name"),
+      "GIRV",
+    );
 
-    await waitFor(() => expect(console.error).toHaveBeenCalled());
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+      const [msg, err] = errorSpy.mock.calls[0];
+      expect(msg).toBe("Error fetching classrooms");
+      expect(err).toBeInstanceOf(Error);
+    });
+
     const classroomSelect = screen.getByTestId(
       "CourseOverTimeBuildingsSearch.ClassroomSelect",
     );
@@ -590,7 +600,13 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
         params: { quarter: "20232", buildingCode: "GIRV" },
       })
-      .reply(200, ["1004", "1106", "1108"]);
+      .replyOnce(200, ["1004", "1106", "1108"]);
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "BRDA" },
+      })
+      .replyOnce(200, ["2001", "2002"]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -624,20 +640,73 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     await userEvent.selectOptions(classroomSelect, "1106");
     expect(classroomSelect.value).toBe("1106");
 
-    axiosMock
-      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
-        params: { quarter: "20232", buildingCode: "BRDA" },
-      })
-      .reply(200, ["2001", "2002"]);
-
     await userEvent.selectOptions(selectBuilding, "BRDA");
+
     await waitFor(() => {
       const options = Array.from(classroomSelect.options).map(
         (opt) => opt.value,
       );
       expect(options).toContain("2001");
+      expect(options).not.toContain("1106");
     });
 
     expect(classroomSelect.value).toBe("ALL");
+
+    const allOption = screen.getByRole("option", { name: "ALL" });
+    expect(allOption.selected).toBe(true);
+  });
+
+  test("actually calls the classrooms API when quarter and building are set", async () => {
+    const mockClassrooms = ["1004", "1106", "1108"];
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms")
+      .reply(200, mockClassrooms);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
+    );
+
+    await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20232");
+    await userEvent.selectOptions(
+      screen.getByLabelText("Building Name"),
+      "GIRV",
+    );
+
+    await waitFor(() => {
+      const calls = axiosMock.history.get.filter(
+        (call) =>
+          call.url === "/api/public/courseovertime/buildingsearch/classrooms",
+      );
+      expect(calls).toHaveLength(1);
+      expect(calls.length).toBeGreaterThanOrEqual(1);
+      expect(calls[0].params).toEqual({
+        quarter: "20232",
+        buildingCode: "GIRV",
+      });
+    });
+
+    const classroomSelect = screen.getByTestId(
+      "CourseOverTimeBuildingsSearch.ClassroomSelect",
+    );
+
+    await waitFor(() => {
+      expect(classroomSelect).not.toBeDisabled();
+    });
+
+    await waitFor(() => {
+      const options = Array.from(classroomSelect.options).map(
+        (opt) => opt.value,
+      );
+      expect(options).toEqual(["ALL", "1004", "1106", "1108"]);
+    });
   });
 });
