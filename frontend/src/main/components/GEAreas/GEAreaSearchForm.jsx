@@ -30,7 +30,9 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
     [],
   );
 
-  const areaCodes = Array.isArray(areas) ? areas.map((r) => r.requirementCode) : [];
+  const areaCodes = Array.isArray(areas)
+    ? areas.map((r) => r.requirementCode)
+    : [];
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
   const [area, setArea] = useState(localArea || "ALL");
 
