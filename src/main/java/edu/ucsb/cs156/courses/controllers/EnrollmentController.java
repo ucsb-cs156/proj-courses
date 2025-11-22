@@ -1,11 +1,12 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
+import edu.ucsb.cs156.courses.models.EnrollmentCSV;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
+import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
@@ -28,10 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import edu.ucsb.cs156.courses.models.EnrollmentCSV;
-import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
-import java.util.stream.Collectors;
-
 
 @Slf4j
 @Tag(name = "API for enrollment data")
@@ -58,8 +56,10 @@ public class EnrollmentController extends ApiController {
   @GetMapping(value = "/csv/quarter", produces = "text/csv")
   public ResponseEntity<StreamingResponseBody> csvForQuarter(
       @Parameter(name = "yyyyq", description = "quarter in yyyyq format", example = "20252")
-          @RequestParam String yyyyq) throws IOException {
-      
+          @RequestParam
+          String yyyyq)
+      throws IOException {
+
     StreamingResponseBody stream =
         (outputStream) -> {
           Iterable<EnrollmentDataPoint> iterable = enrollmentDataPointRepository.findByYyyyq(yyyyq);

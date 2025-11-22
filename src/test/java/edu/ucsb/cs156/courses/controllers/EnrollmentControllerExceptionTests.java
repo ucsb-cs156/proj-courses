@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
+import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,8 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MvcResult;
-import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
-
 
 @WebMvcTest(controllers = {EnrollmentController.class})
 @Import(TestConfig.class)
@@ -26,8 +25,7 @@ import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
 public class EnrollmentControllerExceptionTests extends ControllerTestCase {
 
   @MockBean EnrollmentDataPointRepository enrollmentDataPointRepository;
-  @MockBean
-  private EnrollmentCSVService enrollmentCSVService;
+  @MockBean private EnrollmentCSVService enrollmentCSVService;
 
   @Test
   public void test_exception() throws Exception {
