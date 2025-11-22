@@ -40,18 +40,18 @@ export default function CourseDescriptionIndexPage() {
       <div className="pt-2">
         <h5>UCSB Courses Description Search</h5>
         <BasicCourseSearchForm fetchJSON={fetchBasicCourseJSON} />
-         {/* Loading state */}
+        {/* Loading state */}
         {mutation.isLoading && (
           <div className="text-center">Loading courses...</div>
         )}
-        
+
         {/* No results message */}
         {!mutation.isLoading && hasSearched && courseJSON.length === 0 && (
           <div className="text-center mt-3">
             <p>No courses were found with the specified criteria.</p>
           </div>
         )}
-        
+
         {/* Results table */}
         {!mutation.isLoading && courseJSON.length > 0 && (
           <BasicCourseTable courses={courseJSON} />
