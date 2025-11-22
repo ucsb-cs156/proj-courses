@@ -116,7 +116,7 @@ describe("GEAreaSearchForm tests", () => {
       ).toBeInTheDocument();
       expect(getItemSpy).toHaveBeenCalledWith("GEAreaSearch.Quarter");
       expect(getItemSpy).toHaveBeenCalledWith("GEAreaSearch.Area");
-      expect(screen.getByText("Searching for B in M21")).toBeInTheDocument();
+      await waitFor(() => expect(screen.getByText("Searching for B in M21")).toBeInTheDocument());
     });
 
     test("selecting quarter updates state", () => {

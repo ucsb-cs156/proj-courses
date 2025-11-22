@@ -8,7 +8,11 @@ import { useBackend } from "main/utils/useBackend";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
-  const { data: systemInfo } = useSystemInfo();
+  const { data: systemInfo, _error: sysError, _status: sysStatus } = useSystemInfo();
+
+  if (!systemInfo){
+    return <p>Loading system info...</p>;
+  }
   const quarters = quarterRange(
     systemInfo.startQtrYYYYQ,
     systemInfo.endQtrYYYYQ,
@@ -30,7 +34,7 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
     [],
   );
 
-  const areaCodes = areas.map((r) => r.requirementCode);
+  const areaCodes = Array.isArray(areas) ? areas.map((r) => r.requirementCode) : [];
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
   const [area, setArea] = useState(localArea || "ALL");
 
