@@ -284,7 +284,7 @@ describe("GEAreaSearchForm tests", () => {
       axiosMock.onGet("/api/public/generalEducationInfo").reply(200, []);
 
       getItemSpy.mockImplementation((key) => {
-        if (key === "GEAreaSearch.Quarter") return "20221";
+        if (key === "GEAreaSearch.Quarter") return null;
         if (key === "GEAreaSearch.Area") return null;
         return null;
       });
@@ -297,8 +297,11 @@ describe("GEAreaSearchForm tests", () => {
         expect(areaSelect.value).toBe("ALL");
       });
 
-      expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
-        "Searching for ALL in 20221"
+      const statusText = screen.getByTestId("GEAreaSearch.Status").textContent;
+      const firstQuarter = quarterRange("20221", "20222")[0].yyyyq;
+
+      expect(statusText).toBe(
+        `Searching for ALL in ${yyyyqToQyy(firstQuarter)}`,
       );
     });
 
