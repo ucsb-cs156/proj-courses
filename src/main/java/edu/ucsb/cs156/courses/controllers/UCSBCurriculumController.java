@@ -57,6 +57,14 @@ public class UCSBCurriculumController extends ApiController {
     return primaries;
   }
 
+  @Operation(summary = "Get primaries for a given quarter and GE area")
+  @GetMapping(value = "/primariesge", produces = "application/json")
+  public List<Primary> primariesGE(@RequestParam String qtr, @RequestParam String area)
+      throws Exception {
+    List<Primary> primaries = ucsbCurriculumService.getPrimariesByGE(qtr, area);
+    return primaries;
+  }
+
   // Backend for final exam info, similar to the above operation:
   @Operation(summary = "Get final exam information for a given quarter and course enrollment code")
   @GetMapping(value = "/finalsInfo", produces = "application/json")
