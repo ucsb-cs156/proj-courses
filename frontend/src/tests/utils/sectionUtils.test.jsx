@@ -7,6 +7,7 @@ import {
   formatInstructors,
   formatInfoLink,
   renderInfoLink,
+  renderCourseIdLink,
   formatStatus,
   isLectureWithNoSections,
   shouldShowAddToScheduleLink,
@@ -160,6 +161,35 @@ describe("section utils tests", () => {
       expect(view.props.children.props.style.color).toBe("black");
       expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");
       expect(view.props.children.props["target"]).toBe("_blank");
+    });
+  });
+
+  describe("renderCourseIdLink tests", () => {
+    const course = primaryFixtures.f24_math_lowerDiv[0];
+    test("renderCourseIdLink test for primary row", () => {
+      const row = {
+        id: 0,
+        depth: 0,
+        original: { ...course },
+      };
+      const view = renderCourseIdLink(row, "testid");
+      expect(view.props.href).toBe("/coursedetails/20244/30247");
+      expect(view.props["target"]).toBe("_blank");
+      expect(view.props["data-testid"]).toBe("testid-row-0-col-courseId-link");
+      expect(view.props.children).toBe("MATH 2A");
+    });
+    test("renderCourseIdLink test for subrow", () => {
+      const row = {
+        id: 1,
+        depth: 1,
+        original: { ...course.subRows[0] },
+        getParentRow: () => ({ depth: 0, original: { ...course } }),
+      };
+      const view = renderCourseIdLink(row, "testid");
+      expect(view.props.href).toBe("/coursedetails/20244/30254");
+      expect(view.props["target"]).toBe("_blank");
+      expect(view.props["data-testid"]).toBe("testid-row-1-col-courseId-link");
+      expect(view.props.children).toBe("MATH 2A");
     });
   });
 
