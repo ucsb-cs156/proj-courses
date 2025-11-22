@@ -185,6 +185,48 @@ describe("GEAreaSearchForm tests", () => {
       expect(areaSelect.value).toBe("B");
     });
 
+    test("area dropdown initially shows only ALL before backend loads", () => {
+      axiosMock
+        .onGet("/api/public/generalEducationInfo")
+        .reply(() => new Promise(() => {})); // never resolves
+
+      render(<WrappedForm />);
+
+      const areaSelect = screen.getByLabelText("General Education Area");
+      expect(areaSelect.children.length).toBe(1);
+    });
+
+    test("works when /api/systemInfo returns 500 (systemInfo undefined fallback)", async () => {
+      axiosMock.onGet("/api/systemInfo").reply(500);
+
+      render(<WrappedForm />);
+
+      const quarterSelect = await screen.findByLabelText("Quarter");
+      expect(quarterSelect.value).toBe("20221");
+    });
+
+    test("uses fallback quarter and area when systemInfo or localStorage are not ready", () => {
+      const defaultQuarter = "20221";
+
+      const systemInfoMock = { data: "", isLoading: true, isError: false };
+      const useSystemInfoSpy = vi
+        .spyOn(systemInfo, "useSystemInfo")
+        .mockReturnValue(systemInfoMock);
+
+      getItemSpy.mockImplementation(() => null);
+
+      render(<WrappedForm />);
+
+      const quarterDropdown = screen.getByLabelText("Quarter");
+      expect(quarterDropdown).toBeInTheDocument();
+      expect(quarterDropdown.value).toBe(defaultQuarter);
+
+      const areaDropdown = screen.getByLabelText("General Education Area");
+      expect(areaDropdown.value).toBe("ALL");
+
+      useSystemInfoSpy.mockRestore();
+    });
+
     test("falls back to default quarter range when systemInfo missing quarter fields", async () => {
       axiosMock.onGet("/api/systemInfo").reply(200, {
         springH2ConsoleEnabled: false,
