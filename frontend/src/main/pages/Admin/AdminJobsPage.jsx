@@ -19,8 +19,14 @@ const AdminJobsPage = () => {
   const refreshJobsIntervalMilliseconds = 5000;
   const [pageSelected, setPageSelected] = useState(1);
   const [pageSize, setPageSize] = useLocalStorage("JobsSearch.PageSize", "10");
-  const [sortField, setSortField] = useLocalStorage("JobsSearch.SortField", "id");
-  const [sortDirection, setSortDirection] = useLocalStorage("Jobs.Search.SortDirection", "ASC");
+  const [sortField, setSortField] = useLocalStorage(
+    "JobsSearch.SortField",
+    "id",
+  );
+  const [sortDirection, setSortDirection] = useLocalStorage(
+    "Jobs.Search.SortDirection",
+    "ASC",
+  );
   // test job
 
   const objectToAxiosParamsTestJob = (data) => ({
@@ -121,9 +127,7 @@ const AdminJobsPage = () => {
   };
 
   // Stryker disable all
-  const {
-    data: page
-  } = useBackend(
+  const { data: page } = useBackend(
     ["/api/jobs/paginated"],
     {
       method: "GET",
@@ -190,7 +194,7 @@ const AdminJobsPage = () => {
 
       <h2 className="p-3">Job Status</h2>
 
-      <JobsSearchForm 
+      <JobsSearchForm
         sortField={sortField}
         sortDirection={sortDirection}
         pageSize={pageSize}
@@ -198,7 +202,7 @@ const AdminJobsPage = () => {
         updateSortDirection={setSortDirection}
         updatePageSize={setPageSize}
       />
-      <OurPagination 
+      <OurPagination
         updateActivePage={setPageSelected}
         totalPages={page.totalPages}
       />

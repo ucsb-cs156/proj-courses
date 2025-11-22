@@ -275,13 +275,20 @@ describe("AdminJobsPage tests", () => {
     );
 
     await screen.findByText("Job Status");
-    expect(useLocalStorageSpy.mock.calls[0]).toEqual(["JobsSearch.PageSize", "10"]);
-    expect(useLocalStorageSpy.mock.calls[1]).toEqual(["JobsSearch.SortField", "id"]);
-    expect(useLocalStorageSpy.mock.calls[2]).toEqual(["Jobs.Search.SortDirection", "ASC"]);
+    expect(useLocalStorageSpy.mock.calls[0]).toEqual([
+      "JobsSearch.PageSize",
+      "10",
+    ]);
+    expect(useLocalStorageSpy.mock.calls[1]).toEqual([
+      "JobsSearch.SortField",
+      "id",
+    ]);
+    expect(useLocalStorageSpy.mock.calls[2]).toEqual([
+      "Jobs.Search.SortDirection",
+      "ASC",
+    ]);
 
-    const calls = useLocalStorageSpy.mock.calls.map((call) =>
-      call.join(","),
-    );
+    const calls = useLocalStorageSpy.mock.calls.map((call) => call.join(","));
 
     const count = (s) => calls.filter((k) => k === s).length;
 
