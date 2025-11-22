@@ -280,8 +280,24 @@ describe("GEAreaSearchForm tests", () => {
       expect(areaSelect.value).toBe("ALL"); // fallback option
     });
 
+    test("handles empty areas array gracefully", async () => {
+      axiosMock.onGet("/api/public/generalEducationInfo").reply(200, []);
+
+      render(<WrappedForm />);
+
+      const areaSelect = screen.getByLabelText("General Education Area");
+
+      expect(areaSelect.children.length).toBe(1);
+      expect(areaSelect.value).toBe("ALL");
+
+      expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
+        "Searching for ALL in 20221",
+      );
+    });
+
     test("handles undefined systemInfo gracefully", () => {
-      const useSystemInfoSpy = vi.spyOn(systemInfoModule, "useSystemInfo")
+      const useSystemInfoSpy = vi
+        .spyOn(systemInfoModule, "useSystemInfo")
         .mockReturnValue({ data: undefined });
 
       render(<WrappedForm />);
