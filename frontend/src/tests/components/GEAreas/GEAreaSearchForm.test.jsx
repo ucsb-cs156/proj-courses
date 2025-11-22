@@ -183,6 +183,24 @@ describe("GEAreaSearchForm tests", () => {
       expect(areaSelect.value).toBe("B");
     });
 
+    test("falls back to default quarter range when systemInfo missing quarter fields", async () => {
+  axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: null,
+      endQtrYYYYQ: null,
+    });
+
+      render(<WrappedForm />);
+
+      await waitFor(() => {
+    // default values are used
+        expect(screen.getByLabelText("Quarter").value).toBe("20221");
+      });
+    });
+
+
+
     test("submit button calls fetchJSON with correct args and sets local storage", async () => {
       const fetchJSONSpy = vi.fn();
       render(<WrappedForm fetchJSON={fetchJSONSpy} />);
