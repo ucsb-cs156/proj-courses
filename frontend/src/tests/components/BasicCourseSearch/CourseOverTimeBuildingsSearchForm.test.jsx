@@ -121,7 +121,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const expectedFields = {
       Quarter: "20232",
       buildingCode: "GIRV",
-      classroom: "",
+      classroom: "ALL",
     };
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
