@@ -73,6 +73,11 @@ describe("CourseOverTimeSearchForm tests", () => {
       expect(screen.getByLabelText("Subject Area")).toBeInTheDocument();
       expect(screen.getByLabelText("Course Number")).toBeInTheDocument();
       expect(screen.getByText("Submit")).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          /for example: '16' or '130a'; omit the subject area prefix./i,
+        ),
+      ).toBeInTheDocument();
       const buttonRow = screen.getByTestId(
         "CourseOverTimeSearchForm.ButtonRow",
       );
