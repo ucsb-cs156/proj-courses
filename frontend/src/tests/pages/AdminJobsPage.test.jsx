@@ -6,7 +6,6 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
-import * as useLocalStorage from "main/utils/useLocalStorage";
 import * as useBackend from "main/utils/useBackend";
 import AdminJobsPage from "main/pages/Admin/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
@@ -73,8 +72,6 @@ describe("AdminJobsPage tests", () => {
     getItemSpy.mockImplementation(() => null);
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
-    const useLocalStorageSpy = vi.spyOn(useLocalStorage, "default");
-
     // act
     render(
       <QueryClientProvider client={queryClient}>
@@ -89,18 +86,6 @@ describe("AdminJobsPage tests", () => {
     expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "status");
     expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
 
-    const calls = useLocalStorageSpy.mock.calls;
-    let counts = {};
-    for (const call of calls) {
-      counts[call] = counts[call] ? counts[call] + 1 : 1;
-    }
-
-    expect(counts).toEqual({
-      "JobsSearch.PageSize,10": 4,
-      "JobsSearch.SortDirection,DESC": 4,
-      "JobsSearch.SortField,status": 4,
-    });
-
     const jobsPaginatedRequest = axiosMock.history.get.find(
       (req) => req.url === "/api/jobs/paginated",
     );
@@ -109,6 +94,39 @@ describe("AdminJobsPage tests", () => {
       pageSize: "10",
       sortField: "status",
       sortDirection: "DESC",
+    });
+  });
+
+  test("When localstorage has values, they are used", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    // return non-default field values
+    getItemSpy.mockImplementation((key) => {
+      const responses = {
+        "JobsSearch.PageSize": "50",
+        "JobsSearch.SortField": "updatedAt",
+        "JobsSearch.SortDirection": "ASC",
+      };
+
+      return responses[key] || null;
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Job Status");
+    const jobsPaginatedRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/jobs/paginated",
+    );
+    expect(jobsPaginatedRequest.params).toEqual({
+      page: 0,
+      pageSize: "50",
+      sortField: "updatedAt",
+      sortDirection: "ASC",
     });
   });
 

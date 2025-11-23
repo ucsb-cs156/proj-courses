@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import AdminUpdatesPage from "main/pages/Admin/AdminUpdatesPage.jsx";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import * as useLocalStorage from "main/utils/useLocalStorage";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -51,8 +50,6 @@ describe("AdminUpdatesPage tests", () => {
     getItemSpy.mockImplementation(() => null);
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
-    const useLocalStorageSpy = vi.spyOn(useLocalStorage, "default");
-
     // act
     render(
       <QueryClientProvider client={queryClient}>
@@ -75,20 +72,6 @@ describe("AdminUpdatesPage tests", () => {
     );
     expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.PageSize", "10");
 
-    const calls = useLocalStorageSpy.mock.calls;
-    let counts = {};
-    for (const call of calls) {
-      counts[call] = counts[call] ? counts[call] + 1 : 1;
-    }
-
-    expect(counts).toEqual({
-      "UpdatesSearch.PageSize,10": 4,
-      "UpdatesSearch.Quarter,ALL": 4,
-      "UpdatesSearch.SortDirection,ASC": 4,
-      "UpdatesSearch.SortField,subjectArea": 4,
-      "UpdatesSearch.SubjectArea,ALL": 4,
-    });
-
     expect(axiosMock.history.get.length).toBe(4);
     const urls = axiosMock.history.get.map((req) => req.url);
     expect(urls).toContain("/api/systemInfo");
@@ -105,6 +88,43 @@ describe("AdminUpdatesPage tests", () => {
       pageSize: "10",
       sortField: "subjectArea",
       sortDirection: "ASC",
+    });
+  });
+
+  test("When localstorage has values, they are used", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    // return non-default field values
+    getItemSpy.mockImplementation((key) => {
+      const responses = {
+        "UpdatesSearch.PageSize": "50",
+        "UpdatesSearch.SortField": "lastUpdate",
+        "UpdatesSearch.SortDirection": "DESC",
+        "UpdatesSearch.Quarter": "20211",
+        "UpdatesSearch.SubjectArea": "ANTH",
+      };
+
+      return responses[key] || null;
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminUpdatesPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText("Updates");
+    const updatesRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/updates",
+    );
+    expect(updatesRequest.params).toEqual({
+      quarter: "20211",
+      subjectArea: "ANTH",
+      page: 0,
+      pageSize: "50",
+      sortField: "lastUpdate",
+      sortDirection: "DESC",
     });
   });
 });
