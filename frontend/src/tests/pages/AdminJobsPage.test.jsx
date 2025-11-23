@@ -24,7 +24,10 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
+    axiosMock.onGet("/api/jobs/paginated").reply(200, {
+      content: jobsFixtures.sixJobs,
+      totalPages: 1,
+    });
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
@@ -275,5 +278,241 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
 
     expect(axiosMock.history.delete[0].url).toBe("/api/jobs/all");
+  });
+
+  test("handles invalid pageSize gracefully", async () => {
+    // Set up localStorage with invalid pageSize
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation((key) => {
+      if (key === "JobsSearch.PageSize") return ""; // Empty string should trigger fallback
+      if (key === "JobsSearch.SortField") return "status";
+      if (key === "JobsSearch.SortDirection") return "DESC";
+      return null;
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    // Check that the API was called with pageSize=10 (the fallback value)
+    const jobsApiCall = axiosMock.history.get.find((call) =>
+      call.url.includes("/api/jobs/paginated"),
+    );
+    expect(jobsApiCall).toBeDefined();
+    expect(jobsApiCall.params.pageSize).toBe(10);
+
+    getItemSpy.mockRestore();
+    setItemSpy.mockRestore();
+  });
+
+  test("passes correct sort parameters to API", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    // Check that the API was called with correct sort parameters
+    const jobsApiCall = axiosMock.history.get.find((call) =>
+      call.url.includes("/api/jobs/paginated"),
+    );
+    expect(jobsApiCall).toBeDefined();
+    expect(jobsApiCall.params.sortField).toBe("status");
+    expect(jobsApiCall.params.sortDirection).toBe("DESC");
+    expect(jobsApiCall.params.page).toBe(0);
+    expect(jobsApiCall.params.pageSize).toBe(10);
+  });
+
+  test("converts pageSize from string to integer", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation((key) => {
+      if (key === "JobsSearch.PageSize") return "50";
+      if (key === "JobsSearch.SortField") return "status";
+      if (key === "JobsSearch.SortDirection") return "DESC";
+      return null;
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    const jobsApiCall = axiosMock.history.get.find((call) =>
+      call.url.includes("/api/jobs/paginated"),
+    );
+    expect(jobsApiCall).toBeDefined();
+    expect(jobsApiCall.params.pageSize).toBe(50);
+    expect(typeof jobsApiCall.params.pageSize).toBe("number");
+
+    getItemSpy.mockRestore();
+  });
+
+  test("converts page number correctly (selectedPage - 1)", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    // selectedPage starts at 1, so API should get page 0
+    const jobsApiCall = axiosMock.history.get.find((call) =>
+      call.url.includes("/api/jobs/paginated"),
+    );
+    expect(jobsApiCall).toBeDefined();
+    expect(jobsApiCall.params.page).toBe(0);
+    expect(jobsApiCall.params.page).not.toBe(1);
+  });
+
+  test("uses correct localStorage keys", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    // Verify that the correct localStorage keys were accessed
+    expect(getItemSpy).toHaveBeenCalledWith("JobsSearch.SortField");
+    expect(getItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection");
+    expect(getItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize");
+
+    getItemSpy.mockRestore();
+  });
+
+  test("uses default pageSize value of '10' when localStorage is empty", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+
+    // Mock localStorage to return null for all keys (simulating first time use)
+    getItemSpy.mockReturnValue(null);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    // Verify that the default value "10" was set in localStorage
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "10");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortField", "status");
+    expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
+
+    getItemSpy.mockRestore();
+    setItemSpy.mockRestore();
+  });
+
+  test("verifies correct localStorage key is used for SortField", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+
+    // Mock to return null so default value is used
+    getItemSpy.mockReturnValue(null);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    // Verify the exact localStorage key "JobsSearch.SortField" is used
+    const sortFieldCalls = setItemSpy.mock.calls.filter(
+      (call) => call[0] === "JobsSearch.SortField",
+    );
+    expect(sortFieldCalls.length).toBeGreaterThan(0);
+    expect(sortFieldCalls[0][1]).toBe("status");
+
+    // Also verify that we did NOT use an empty string as the key
+    const emptyKeyCalls = setItemSpy.mock.calls.filter(
+      (call) => call[0] === "" && call[1] === "status",
+    );
+    expect(emptyKeyCalls.length).toBe(0);
+
+    getItemSpy.mockRestore();
+    setItemSpy.mockRestore();
+  });
+
+  test("verifies pageSize default is '10' not empty string", async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+
+    // Return null for all keys to trigger default values
+    getItemSpy.mockReturnValue(null);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(axiosMock.history.get.length).toBeGreaterThan(0),
+    );
+
+    // Find the call where PageSize was set
+    const pageSizeCalls = setItemSpy.mock.calls.filter(
+      (call) => call[0] === "JobsSearch.PageSize",
+    );
+    expect(pageSizeCalls.length).toBeGreaterThan(0);
+    // Verify it was set to "10" and NOT to an empty string ""
+    expect(pageSizeCalls[0][1]).toBe("10");
+    expect(pageSizeCalls[0][1]).not.toBe("");
+
+    // Also verify the API received the correct numeric value
+    const jobsApiCall = axiosMock.history.get.find((call) =>
+      call.url.includes("/api/jobs/paginated"),
+    );
+    expect(jobsApiCall.params.pageSize).toBe(10);
+
+    getItemSpy.mockRestore();
+    setItemSpy.mockRestore();
   });
 });

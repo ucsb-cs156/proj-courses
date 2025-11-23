@@ -18,8 +18,8 @@ const Template = () => <AdminUsersPage />;
 export const Default = Template.bind({});
 Default.parameters = {
   msw: [
-    http.get("/api/admin/users", () => {
-      return HttpResponse.json(usersFixtures.threeUsers, {
+    http.get("/api/admin/users/paginated", () => {
+      return HttpResponse.json(usersFixtures.threeUsersPage, {
         status: 200,
       });
     }),
