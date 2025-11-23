@@ -65,7 +65,7 @@ public class CourseOverTimeBuildingController {
             convertedSectionCollection.findByQuarterRangeAndBuildingCode(
                 startQtr, endQtr, buildingCode));
 
-    if (!classroom.isEmpty()) {
+    if (!classroom.isEmpty() && !classroom.equals("ALL")) {
       courseResults =
           courseResults.stream()
               .filter(

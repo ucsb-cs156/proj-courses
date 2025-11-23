@@ -38,8 +38,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const classroomParam = classroom === "ALL" ? "" : classroom;
-    fetchJSON(event, { Quarter, buildingCode, classroom: classroomParam });
+    fetchJSON(event, { Quarter, buildingCode, classroom });
   };
 
   useEffect(() => {

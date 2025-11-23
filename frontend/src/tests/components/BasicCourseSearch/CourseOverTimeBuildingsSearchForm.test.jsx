@@ -505,7 +505,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     });
   });
 
-  test("when I select ALL classroom and submit, it passes empty string", async () => {
+  test("when I select ALL classroom and submit, it passes ALL", async () => {
     const fetchJSONSpy = vi.fn();
     fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
 
@@ -562,7 +562,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
       Quarter: "20232",
       buildingCode: "GIRV",
-      classroom: "",
+      classroom: "ALL",
     });
   });
 
@@ -638,7 +638,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
       Quarter: "20232",
       buildingCode: "GIRV",
-      classroom: "",
+      classroom: "ALL",
     });
   });
 
