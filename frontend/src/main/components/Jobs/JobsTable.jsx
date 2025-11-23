@@ -51,21 +51,5 @@ export default function JobsTable({ jobs }) {
     },
   ];
 
-  const sortByIdDescending = {
-    sorting: [
-      {
-        id: "id",
-        desc: true, // sort by name in descending order by default
-      },
-    ],
-  };
-
-  return (
-    <OurTable
-      data={jobs}
-      columns={columns}
-      testid={testid}
-      initialState={sortByIdDescending}
-    />
-  );
+  return <OurTable data={jobs} columns={columns} testid={testid} />;
 }
