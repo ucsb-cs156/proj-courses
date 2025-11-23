@@ -2,6 +2,7 @@ import React from "react";
 import OurTable from "main/components/OurTable";
 import {
   convertToFraction,
+  formatDays,
   formatInstructors,
   formatLocation,
   formatTime,
@@ -45,7 +46,7 @@ export default function CourseDetailsTable({ details }) {
     {
       header: "Days",
       cell: ({ cell }) =>
-        cell.row.original.classSections[0].timeLocations[0].days,
+        formatDays(cell.row.original.classSections[0].timeLocations),
       id: "days",
     },
     {
