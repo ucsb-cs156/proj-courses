@@ -9,7 +9,6 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { toast } from "react-toastify";
 import * as useBackend from "main/utils/useBackend.jsx";
 import * as systemInfoModule from "main/utils/systemInfo";
-//import { quarterRange, yyyyqToQyy } from "main/utils/quarterUtilities";
 
 import GEAreaSearchForm from "main/components/GEAreas/GEAreaSearchForm";
 
@@ -279,6 +278,8 @@ describe("GEAreaSearchForm tests", () => {
       render(<WrappedForm />);
       const areaSelect = screen.getByLabelText("General Education Area");
       expect(areaSelect.value).toBe("ALL"); // fallback option
+      expect(areaSelect.children.length).toBe(1);
+      expect(areaSelect.children[0].value).toBe("ALL");
     });
 
     test("handles undefined systemInfo gracefully", () => {
