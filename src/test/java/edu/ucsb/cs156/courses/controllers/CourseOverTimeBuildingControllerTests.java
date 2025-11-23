@@ -547,6 +547,44 @@ public class CourseOverTimeBuildingControllerTests {
   }
 
   @Test
+  public void test_buildingsearch_with_classroom_multiple_locations_no_match() throws Exception {
+    CourseInfo info =
+        CourseInfo.builder()
+            .quarter("20232")
+            .courseId("CMPSC 156 -1")
+            .title("Advanced Programming")
+            .description("Desc")
+            .build();
+
+    TimeLocation loc1 = TimeLocation.builder().building("GIRV").room("1004").build();
+    TimeLocation loc2 = TimeLocation.builder().building("GIRV").room("1106").build();
+    TimeLocation loc3 = TimeLocation.builder().building("GIRV").room("1431").build();
+    Section section1 = Section.builder().timeLocations(List.of(loc1, loc2)).build();
+    Section section2 = Section.builder().timeLocations(List.of(loc3)).build();
+    ConvertedSection cs1 = ConvertedSection.builder().courseInfo(info).section(section1).build();
+    ConvertedSection cs2 = ConvertedSection.builder().courseInfo(info).section(section2).build();
+
+    when(convertedSectionCollection.findByQuarterRangeAndBuildingCode("20232", "20232", "GIRV"))
+        .thenReturn(List.of(cs1, cs2));
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/public/courseovertime/buildingsearch")
+                    .param("startQtr", "20232")
+                    .param("endQtr", "20232")
+                    .param("buildingCode", "GIRV")
+                    .param("classroom", "1431"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String expected = mapper.writeValueAsString(List.of(cs2));
+    String actual = response.getResponse().getContentAsString();
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
   public void test_buildingsearch_with_classroom_and_null_timelocations() throws Exception {
     CourseInfo info =
         CourseInfo.builder()
