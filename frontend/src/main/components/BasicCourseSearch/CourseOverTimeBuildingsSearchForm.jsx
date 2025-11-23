@@ -30,10 +30,11 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
   );
   const [buildingCode, setBuildingCode] = useState(localBuildingCode || "");
   const [availableClassrooms, setAvailableClassrooms] = useState([]);
+  const [classroom, setClassroom] = useState("ALL");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchJSON(event, { Quarter, buildingCode, classroom: "" });
+    fetchJSON(event, { Quarter, buildingCode, classroom });
   };
 
   useEffect(() => {
@@ -48,9 +49,10 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             },
           );
           console.log("Classrooms returned:", response.data);
-          const classrooms = response.data.sort();
+          const classrooms = response.data;
 
           setAvailableClassrooms(classrooms);
+          //not setting classroom to ALL because redundent when default value is ALL
         } catch (error) {
           console.error("Error fetching classrooms", error);
           setAvailableClassrooms([]);
@@ -83,6 +85,29 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             />
           </Col>
         </Row>
+
+        <Row style={{ paddingTop: 10 }}>
+          <Col md="auto">
+            <Form.Group controlId="CourseOverTimeBuildingsSearch.Classroom">
+              <Form.Label>Classroom</Form.Label>
+              <Form.Select
+                value={classroom}
+                onChange={(e) => setClassroom(e.target.value)}
+                disabled={availableClassrooms.length === 0}
+                data-testid="CourseOverTimeBuildingsSearch.ClassroomSelect"
+              >
+                {/* ALL at the top */}
+                <option value="ALL">ALL</option>
+                {availableClassrooms.map((room) => (
+                  <option key={room} value={room}>
+                    {room}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
+
         <Row style={{ paddingTop: 10, paddingBottom: 10 }}>
           <Col md="auto">
             <Button variant="primary" type="submit">
@@ -90,11 +115,6 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
             </Button>
           </Col>
         </Row>
-        {availableClassrooms.length > 0 && (
-          <div data-testid="available-classrooms">
-            {availableClassrooms.join(", ")}
-          </div>
-        )}
       </Container>
     </Form>
   );
