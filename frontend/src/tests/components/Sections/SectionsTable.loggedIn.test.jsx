@@ -313,6 +313,28 @@ describe("SectionsTable tests", () => {
       expect(noQuarterSubRow).toBeEmptyDOMElement();
     });
 
+    test("Course ID link is correct", async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const testId = "SectionsTable";
+      const courseIdLink = screen.getByTestId(
+        `${testId}-row-0-col-courseId-link`,
+      );
+      expect(courseIdLink).toBeInTheDocument();
+      expect(courseIdLink.tagName).toBe("A");
+      expect(courseIdLink).toHaveAttribute(
+        "href",
+        "/coursedetails/20244/30247",
+      );
+      expect(courseIdLink).toHaveTextContent("MATH 2A");
+    });
+
     test("Expand all button works properly", async () => {
       render(
         <QueryClientProvider client={queryClient}>
