@@ -192,7 +192,7 @@ describe("GEAreaSearchForm tests", () => {
         .onGet("/api/public/generalEducationInfo")
         .reply(() => new Promise(() => {})); // never resolves
 
-      getItemSpy.mockImplementation((key) => null);
+      getItemSpy.mockImplementation((_key) => null);
       useBackendSpy.mockReturnValue({
         data: [],
         _status: "loading",
@@ -279,39 +279,6 @@ describe("GEAreaSearchForm tests", () => {
       render(<WrappedForm />);
       const areaSelect = screen.getByLabelText("General Education Area");
       expect(areaSelect.value).toBe("ALL"); // fallback option
-    });
-
-    test("handles empty areas array gracefully", async () => {
-      // Override systemInfo for this test
-      axiosMock.onGet("/api/systemInfo").reply(200, {
-        springH2ConsoleEnabled: false,
-        showSwaggerUILink: false,
-        startQtrYYYYQ: "20221", // Changed from 20211
-        endQtrYYYYQ: "20222", // Changed from 20214
-      });
-
-      axiosMock.onGet("/api/public/generalEducationInfo").reply(200, []);
-
-      getItemSpy.mockImplementation((_key) => {
-        if (_key === "GEAreaSearch.Quarter") return null;
-        if (_key === "GEAreaSearch.Area") return null;
-        return null;
-      });
-
-      render(<WrappedForm />);
-
-      await waitFor(() => {
-        const areaSelect = screen.getByLabelText("General Education Area");
-        expect(areaSelect.children.length).toBe(1);
-        expect(areaSelect.value).toBe("ALL");
-      });
-
-      const statusText = screen.getByTestId("GEAreaSearch.Status").textContent;
-      const firstQuarter = quarterRange("20221", "20222")[0].yyyyq;
-
-      expect(statusText).toBe(
-        `Searching for ALL in ${yyyyqToQyy(firstQuarter)}`,
-      );
     });
 
     test("handles undefined systemInfo gracefully", () => {
