@@ -52,8 +52,7 @@ const CourseOverTimeBuildingsSearchForm = ({ fetchJSON }) => {
           const classrooms = response.data;
 
           setAvailableClassrooms(classrooms);
-
-          setClassroom("ALL");
+          //not setting classroom to ALL because redundent when default value is ALL
         } catch (error) {
           console.error("Error fetching classrooms", error);
           setAvailableClassrooms([]);
