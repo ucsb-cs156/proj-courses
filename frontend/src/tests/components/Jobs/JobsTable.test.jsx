@@ -40,15 +40,15 @@ describe("JobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    // Check that rows are sorted by id in descending order
+    // Check that rows are in fixture order
     const rows = screen.getAllByRole("row");
     expect(rows).toHaveLength(7); // 6 jobs + 1 header row
-    expect(rows[1]).toHaveTextContent("6");
-    expect(rows[2]).toHaveTextContent("5");
-    expect(rows[3]).toHaveTextContent("4");
-    expect(rows[4]).toHaveTextContent("3");
-    expect(rows[5]).toHaveTextContent("2");
-    expect(rows[6]).toHaveTextContent("1");
+    expect(rows[1]).toHaveTextContent("1");
+    expect(rows[2]).toHaveTextContent("2");
+    expect(rows[3]).toHaveTextContent("3");
+    expect(rows[4]).toHaveTextContent("4");
+    expect(rows[5]).toHaveTextContent("6");
+    expect(rows[6]).toHaveTextContent("5");
   });
 
   test("renders short logs correctly", () => {
