@@ -51,12 +51,36 @@ public class CourseOverTimeBuildingController {
               example = "GIRV",
               required = true)
           @RequestParam
-          String buildingCode)
+          String buildingCode,
+      @Parameter(
+              name = "classroom",
+              description = "Classroom number",
+              example = "1431",
+              required = false)
+          @RequestParam(required = false, defaultValue = "")
+          String classroom)
       throws JsonProcessingException {
     List<ConvertedSection> courseResults =
         new java.util.ArrayList<>(
             convertedSectionCollection.findByQuarterRangeAndBuildingCode(
                 startQtr, endQtr, buildingCode));
+
+    if (!classroom.isEmpty() && !classroom.equals("ALL")) {
+      courseResults =
+          courseResults.stream()
+              .filter(
+                  result ->
+                      result.getSection() != null
+                          && result.getSection().getTimeLocations() != null
+                          && result.getSection().getTimeLocations().stream()
+                              .anyMatch(
+                                  loc ->
+                                      loc.getBuilding() != null
+                                          && loc.getBuilding().equalsIgnoreCase(buildingCode)
+                                          && loc.getRoom() != null
+                                          && loc.getRoom().equals(classroom)))
+              .collect(Collectors.toList());
+    }
 
     courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());
 

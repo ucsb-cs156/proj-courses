@@ -83,6 +83,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
       startQtr: "20222",
       endQtr: "20222",
       buildingCode: "GIRV",
+      classroom: "ALL",
     });
 
     expect(
