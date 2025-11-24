@@ -14,6 +14,7 @@ export default function CourseOverTimeBuildingsIndexPage() {
       startQtr: query.Quarter,
       endQtr: query.Quarter,
       buildingCode: query.buildingCode,
+      classroom: query.classroom,
     },
   });
 
