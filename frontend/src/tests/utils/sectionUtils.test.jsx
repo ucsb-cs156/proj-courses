@@ -7,6 +7,7 @@ import {
   formatInstructors,
   formatInfoLink,
   renderInfoLink,
+  renderDetailPageLink,
   formatStatus,
   isLectureWithNoSections,
   shouldShowAddToScheduleLink,
@@ -158,6 +159,18 @@ describe("section utils tests", () => {
       };
       const view = renderInfoLink(row, "testid");
       expect(view.props.children.props.style.color).toBe("black");
+      expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");
+      expect(view.props.children.props["target"]).toBe("_blank");
+    });
+  });
+  describe("renderDetailPageLink tests", () => {
+    const course = primaryFixtures.f24_math_lowerDiv[0];
+    test("renderDetailPageLink test", () => {
+      const row = {
+        depth: 0,
+        original: { ...course },
+      };
+      const view = renderDetailPageLink(row, "testid");
       expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");
       expect(view.props.children.props["target"]).toBe("_blank");
     });

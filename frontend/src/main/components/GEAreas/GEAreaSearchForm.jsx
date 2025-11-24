@@ -9,10 +9,13 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
-  const quarters = quarterRange(
-    systemInfo.startQtrYYYYQ,
-    systemInfo.endQtrYYYYQ,
-  );
+
+  // Stryker disable OptionalChaining
+  const startQtr = systemInfo?.startQtrYYYYQ || "20221";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20222";
+  // Stryker enable OptionalChaining
+
+  const quarters = quarterRange(startQtr, endQtr);
 
   const quarterKey = "GEAreaSearch.Quarter";
   const areaKey = "GEAreaSearch.Area";
