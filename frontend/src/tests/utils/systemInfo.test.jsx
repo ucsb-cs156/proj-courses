@@ -12,32 +12,33 @@ vi.mock("react-router-dom");
 const { _MemoryRouter } = await vi.importActual("react-router-dom");
 
 describe("utils/systemInfo tests", () => {
+  let queryClient;
+  let axiosMock;
+  beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    axiosMock = new AxiosMockAdapter(axios);
+  });
+
+  afterEach(() => {
+    queryClient.clear();
+    axiosMock.restore();
+    vi.clearAllMocks();
+  });
   describe("useSystemInfo tests", () => {
     test("useSystemInfo retrieves initial data", async () => {
-      const queryClient = new QueryClient({
-        defaultOptions: {
-          queries: {
-            retry: false,
-            staleTime: Infinity,
-          },
-        },
-      });
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
       );
 
-      const axiosMock = new AxiosMockAdapter(axios);
-      axiosMock.onGet("/api/systemInfo").timeoutOnce();
-      axiosMock
-        .onGet("/api/systemInfo")
-        .reply(200, systemInfoFixtures.showingNeither);
-
-      const { result } = renderHook(() => useSystemInfo(), {
-        wrapper,
-      });
-      await waitFor(() => result.current.isSuccess);
+      const { result } = renderHook(() => useSystemInfo(), { wrapper });
 
       expect(result.current.data).toEqual({
         initialData: true,
@@ -52,7 +53,6 @@ describe("utils/systemInfo tests", () => {
     });
 
     test("useSystemInfo retrieves data from API", async () => {
-      const queryClient = new QueryClient();
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
@@ -75,7 +75,6 @@ describe("utils/systemInfo tests", () => {
     });
 
     test("systemInfo when API unreachable", async () => {
-      const queryClient = new QueryClient();
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
@@ -97,7 +96,6 @@ describe("utils/systemInfo tests", () => {
       restoreConsole();
 
       expect(result.current.data).toEqual({});
-      queryClient.clear();
     });
   });
 });

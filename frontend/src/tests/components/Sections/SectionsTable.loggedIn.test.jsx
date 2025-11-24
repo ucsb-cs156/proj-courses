@@ -3,11 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import SectionsTable, {
-  onError,
-  onSuccess,
-} from "main/components/Sections/SectionsTable";
-import { objectToAxiosParams } from "main/components/Sections/SectionsTable";
+import SectionsTable from "main/components/Sections/SectionsTable";
 
 import primaryFixtures from "fixtures/primaryFixtures";
 
@@ -53,14 +49,29 @@ vi.mock("main/utils/currentUser", async () => ({
 }));
 
 describe("SectionsTable tests", () => {
-  describe("objectToAxiosParams", () => {
-    it("should return the correct axios parameters", () => {
-      const data = {
-        enrollCd: 12345,
-        psId: 15,
-      };
+  describe("objectToAxiosParams wired into useBackendMutation", () => {
+    it("passes a function that builds correct axios params", () => {
+      const queryClient = new QueryClient();
+      const mockMutate = vi.fn();
 
-      const result = objectToAxiosParams(data);
+      useBackendMutation.mockReturnValue({ mutate: mockMutate });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable
+              sections={primaryFixtures.f24_math_lowerDiv}
+              schedules={personalScheduleFixtures.oneF24PersonalSchedule}
+            />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(useBackendMutation).toHaveBeenCalledTimes(1);
+
+      const [axiosParamsFn] = useBackendMutation.mock.calls[0];
+
+      const result = axiosParamsFn({ enrollCd: 12345, psId: 15 });
 
       expect(result).toEqual({
         url: "/api/courses/post",
@@ -73,48 +84,65 @@ describe("SectionsTable tests", () => {
     });
   });
 
-  describe("onSuccess", () => {
-    it("should display a success message for new course creation", () => {
+  describe("onSuccess passed into useBackendMutation", () => {
+    const queryClient = new QueryClient();
+
+    const renderAndGetCallbacks = () => {
+      const mockMutate = vi.fn();
+      useBackendMutation.mockReturnValue({ mutate: mockMutate });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable
+              sections={primaryFixtures.f24_math_lowerDiv}
+              schedules={personalScheduleFixtures.oneF24PersonalSchedule}
+            />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(useBackendMutation).toHaveBeenCalled();
+      const [, callbacks] = useBackendMutation.mock.calls[0]; // { onSuccess, onError }
+      return callbacks;
+    };
+
+    it("shows toast for new course creation", () => {
+      const { onSuccess } = renderAndGetCallbacks();
+
       const response = [{ id: 1, enrollCd: "12345" }];
       onSuccess(response);
+
       expect(toast).toHaveBeenCalledWith(
         "New course Created - id: 1 enrollCd: 12345",
       );
     });
 
-    it("should display a success message for course replacement", () => {
+    it("shows toast for course replacement", () => {
+      const { onSuccess } = renderAndGetCallbacks();
+
       const response = [
         { enrollCd: "12345" },
         { enrollCd: "67890" },
         { enrollCd: "54321" },
       ];
       onSuccess(response);
+
       expect(toast).toHaveBeenCalledWith(
         "Course 12345 replaced old section 54321 with new section 67890",
       );
     });
   });
 
-  describe("onError", () => {
-    beforeEach(() => {
+  describe("onError passed into useBackendMutation", () => {
+    const queryClient = new QueryClient();
+
+    const renderAndGetOnError = () => {
       restoreConsole = mockConsole();
-      useBackendMutation.mockClear();
-    });
 
-    afterEach(() => {
-      restoreConsole();
-      vi.resetAllMocks();
-    });
+      const mockMutate = vi.fn();
+      useBackendMutation.mockReturnValue({ mutate: mockMutate });
 
-    it("should display an error message with the response data", () => {
-      // arrange
-
-      const queryClient = new QueryClient();
-      useBackendMutation.mockReturnValue({
-        mutate: vi.fn(),
-      });
-
-      // Render a component that will call useBackendMutation
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -123,32 +151,37 @@ describe("SectionsTable tests", () => {
         </QueryClientProvider>,
       );
 
+      const [, callbacks] = useBackendMutation.mock.calls[0];
+      return callbacks.onError;
+    };
+
+    afterEach(() => {
+      restoreConsole();
+      vi.resetAllMocks();
+    });
+
+    it("displays error message from response.data.message", () => {
+      const onError = renderAndGetOnError();
+
       const error = {
         response: {
           data: { message: "An error occurred" },
         },
       };
 
-      // act
       onError(error);
-
-      // assert
-      expect(useBackendMutation).toHaveBeenCalledTimes(1);
-      expect(useBackendMutation).toHaveBeenCalledWith(
-        objectToAxiosParams,
-        { onSuccess, onError },
-        [],
-      );
 
       expect(toast.error).toHaveBeenCalledWith("An error occurred");
       expect(console.error).toHaveBeenCalledWith("onError: error=", error);
     });
 
-    it("should display a generic error message when no response data is available", () => {
-      const error = {
-        response: {},
-      };
+    it("falls back to generic error message when no response data", () => {
+      const onError = renderAndGetOnError();
+
+      const error = { response: {} };
+
       onError(error);
+
       expect(toast.error).toHaveBeenCalledWith(
         "An unexpected error occurred adding the schedule: " +
           JSON.stringify(error),
@@ -371,6 +404,54 @@ describe("SectionsTable tests", () => {
       expect(
         screen.getByTestId(`${testId}-cell-row-0-col-action`),
       ).toBeDefined();
+    });
+
+    test("Course ID link is correct", async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const testId = "SectionsTable";
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-instructor`),
+      ).toHaveTextContent("PORTER M J");
+
+      expect(
+        screen.getByTestId(`${testId}-row-9-no-action`),
+      ).toBeInTheDocument();
+
+      expect(
+        screen.getByTestId(`${testId}-row-26-cannot-expand`),
+      ).toBeInTheDocument();
+
+      const expandButton = screen.getByTestId(`${testId}-row-0-expand-button`);
+      expect(expandButton).toBeInTheDocument();
+      expect(expandButton).toHaveTextContent("➕");
+      fireEvent.click(expandButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("➖")).toBeInTheDocument();
+      });
+
+      const courseIDLink = screen.getByTestId(
+        `${testId}-row-1-col-detail-link`,
+      );
+      expect(courseIDLink).toBeInTheDocument();
+      expect(courseIDLink.tagName).toBe("A");
+      expect(courseIDLink).toHaveAttribute(
+        "href",
+        "/coursedetails/20244/30312",
+      );
+
+      const noQuarterSubRow = screen.getByTestId(
+        `${testId}-cell-row-0.0-col-quarter`,
+      );
+      expect(noQuarterSubRow).toBeInTheDocument();
+      expect(noQuarterSubRow).toBeEmptyDOMElement();
     });
 
     test("Info link is correct", async () => {
