@@ -7,6 +7,8 @@ import { useBackendMutation } from "main/utils/useBackend";
 export default function CourseDescriptionIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
+  // Stryker disable next-line all : Can't test state because hook is internal
+  const [hasSearched, setHasSearched] = useState(false);
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/basicsearch",
@@ -19,6 +21,7 @@ export default function CourseDescriptionIndexPage() {
 
   const onSuccess = (courses) => {
     setCourseJSON(courses.classes);
+    setHasSearched(true);
   };
 
   const mutation = useBackendMutation(
@@ -37,7 +40,22 @@ export default function CourseDescriptionIndexPage() {
       <div className="pt-2">
         <h5>UCSB Courses Description Search</h5>
         <BasicCourseSearchForm fetchJSON={fetchBasicCourseJSON} />
-        <BasicCourseTable courses={courseJSON} />
+        {/* Loading state */}
+        {mutation.isLoading && (
+          <div className="text-center">Loading courses...</div>
+        )}
+
+        {/* No results message */}
+        {!mutation.isLoading && hasSearched && courseJSON.length === 0 && (
+          <div className="text-center mt-3">
+            <p>No courses were found with the specified criteria.</p>
+          </div>
+        )}
+
+        {/* Results table */}
+        {!mutation.isLoading && courseJSON.length > 0 && (
+          <BasicCourseTable courses={courseJSON} />
+        )}
       </div>
     </BasicLayout>
   );
