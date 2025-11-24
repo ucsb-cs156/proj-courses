@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
+import edu.ucsb.cs156.courses.services.EnrollmentDataPointCSVService;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ public class EnrollmentControllerTests {
   @Mock
   private EnrollmentDataPointRepository enrollmentDataPointRepository =
       mock(EnrollmentDataPointRepository.class);
+
+  @Spy private EnrollmentDataPointCSVService enrollmentDataPointCSVService;
 
   @InjectMocks private EnrollmentController enrollmentController;
 
@@ -51,7 +55,7 @@ public class EnrollmentControllerTests {
 
     when(enrollmentDataPointRepository.findByYyyyq(yyyyq)).thenReturn(dataPoints);
 
-    ResponseEntity<StreamingResponseBody> response = enrollmentController.csvForQuarter(yyyyq, "");
+    ResponseEntity<StreamingResponseBody> response = enrollmentController.csvForQuarter(yyyyq);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("text/csv;charset=UTF-8", response.getHeaders().getContentType().toString());
