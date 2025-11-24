@@ -103,7 +103,7 @@ export const formatInfoLink = (row) =>
   `/coursedetails/${getQuarter(row)}/${getSectionField(row, "enrollCode")}`;
 
 export const renderInfoLink = (row, testid) => (
-  <p align="center">
+  <p style={{ textAlign: "center" }}>
     <a
       href={formatInfoLink(row)}
       data-testid={`${testid}-row-${row.id}-col-info-link`}
@@ -115,6 +115,24 @@ export const renderInfoLink = (row, testid) => (
     </a>
   </p>
 );
+
+export const renderCourseIdLink = (row, testid) => {
+  const courseId =
+    row.depth === 0
+      ? row.original.courseId
+      : row.getParentRow().original.courseId;
+
+  return (
+    <a
+      href={formatInfoLink(row)}
+      data-testid={`${testid}-row-${row.id}-col-courseId-link`}
+      target={"_blank"}
+      rel="noopener noreferrer"
+    >
+      {courseId?.replace(/\s+/g, " ").trim()}
+    </a>
+  );
+};
 
 export function enrollmentFraction(row) {
   const num = getSectionField(row, "enrolledTotal");

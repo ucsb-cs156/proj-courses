@@ -14,47 +14,45 @@ import {
   getSection,
   getSectionField,
   renderInfoLink,
+  renderCourseIdLink,
   shouldShowAddToScheduleLink,
   getQuarter,
 } from "main/utils/sectionUtils.jsx";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
-/* eslint-disable react-refresh/only-export-components*/
-
-export const objectToAxiosParams = (data) => {
-  return {
-    url: "/api/courses/post",
-    method: "POST",
-    params: {
-      enrollCd: data.enrollCd.toString(),
-      psId: data.psId.toString(),
-    },
-  };
-};
-
-export const onSuccess = (response) => {
-  if (response.length < 3) {
-    toast(
-      `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
-    );
-  } else {
-    toast(
-      `Course ${response[0].enrollCd} replaced old section ${response[2].enrollCd} with new section ${response[1].enrollCd}`,
-    );
-  }
-};
-
-export const onError = (error) => {
-  console.error("onError: error=", error);
-  const message =
-    error.response.data?.message ||
-    `An unexpected error occurred adding the schedule: ${JSON.stringify(error)}`;
-  toast.error(message);
-};
-
-/* eslint-enable react-refresh/only-export-components*/
 export default function SectionsTable({ sections, schedules = [] }) {
+  const objectToAxiosParams = (data) => {
+    return {
+      url: "/api/courses/post",
+      method: "POST",
+      params: {
+        enrollCd: data.enrollCd.toString(),
+        psId: data.psId.toString(),
+      },
+    };
+  };
+
+  const onSuccess = (response) => {
+    if (response.length < 3) {
+      toast(
+        `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
+      );
+    } else {
+      toast(
+        `Course ${response[0].enrollCd} replaced old section ${response[2].enrollCd} with new section ${response[1].enrollCd}`,
+      );
+    }
+  };
+
+  const onError = (error) => {
+    console.error("onError: error=", error);
+    // Stryker disable next-line all : Optional chaining creates branch coverage issues that are difficult to fully test
+    const message =
+      error?.response?.data?.message ||
+      `An unexpected error occurred adding the schedule: ${JSON.stringify(error)}`;
+    toast.error(message);
+  };
   if (!(schedules instanceof Array)) {
     throw new Error("schedules prop must be an array");
   }
@@ -122,9 +120,7 @@ export default function SectionsTable({ sections, schedules = [] }) {
     {
       accessorKey: "courseId",
       header: "Course ID",
-      // cell: ({ row, getValue }) => (
-      //   <div style={{ paddingLeft: `${row.depth * 2}rem` }}>{getValue()}</div>
-      // ),
+      cell: ({ row }) => renderCourseIdLink(row, testid),
     },
     {
       accessorKey: "title",
@@ -174,24 +170,25 @@ export default function SectionsTable({ sections, schedules = [] }) {
       header: "Action",
       id: "action",
       cell: ({ row }) => {
-        if (!currentUser.loggedIn) {
-          return <span data-testid={`${testid}-row-${row.id}-not-logged-in`} />;
-        } else if (!shouldShowAddToScheduleLink(row)) {
-          return <span data-testid={`${testid}-row-${row.id}-no-action`} />;
+        if (currentUser.loggedIn) {
+          if (!shouldShowAddToScheduleLink(row)) {
+            return <span data-testid={`${testid}-row-${row.id}-no-action`} />;
+          }
+          return (
+            <div className="d-flex align-items-center gap-2">
+              <AddToScheduleModal
+                section={getSection(row)}
+                quarter={getQuarter(row)}
+                onAdd={(section, schedule) =>
+                  addToScheduleCallback(section, schedule, mutation)
+                }
+                schedules={schedules}
+                testid={`${testid}-cell-row-${row.id}-col-action`}
+              />
+            </div>
+          );
         }
-        return (
-          <div className="d-flex align-items-center gap-2">
-            <AddToScheduleModal
-              section={getSection(row)}
-              quarter={getQuarter(row)}
-              onAdd={(section, schedule) =>
-                addToScheduleCallback(section, schedule, mutation)
-              }
-              schedules={schedules}
-              testid={`${testid}-cell-row-${row.id}-col-action`}
-            />
-          </div>
-        );
+        return <span data-testid={`${testid}-row-${row.id}-not-logged-in`} />;
       },
     },
   ];
