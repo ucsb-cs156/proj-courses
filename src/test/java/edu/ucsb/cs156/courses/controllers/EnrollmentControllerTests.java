@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -126,7 +126,6 @@ public class EnrollmentControllerTests {
     verify(mockWriter, atLeastOnce()).write(any(List.class));
   }
 
-
   @Test
   public void testCsvForQuarter_csvExceptionsThrown() throws Exception {
     String yyyyq = "20252";
@@ -155,19 +154,21 @@ public class EnrollmentControllerTests {
         assertThrows(IOException.class, () -> body.writeTo(new ByteArrayOutputStream()));
     assertTrue(ex.getMessage().contains("Error writing CSV file"));
   }
-@Test
-public void testCsvForQuarter_mappingProducesNonNullValues() throws Exception {
+
+  @Test
+  public void testCsvForQuarter_mappingProducesNonNullValues() throws Exception {
     String yyyyq = "20252";
 
-    EnrollmentDataPoint dp = EnrollmentDataPoint.builder()
-        .id(1L)
-        .yyyyq(yyyyq)
-        .courseId("CMPSC 156")
-        .section("0100")
-        .enrollCd("12345")
-        .enrollment(42)
-        .dateCreated(LocalDateTime.now())
-        .build();
+    EnrollmentDataPoint dp =
+        EnrollmentDataPoint.builder()
+            .id(1L)
+            .yyyyq(yyyyq)
+            .courseId("CMPSC 156")
+            .section("0100")
+            .enrollCd("12345")
+            .enrollment(42)
+            .dateCreated(LocalDateTime.now())
+            .build();
 
     when(enrollmentDataPointRepository.findByYyyyq(yyyyq)).thenReturn(List.of(dp));
     when(enrollmentCSVService.getStatefulBeanToCSV(any())).thenReturn(mockWriter);
@@ -187,6 +188,5 @@ public void testCsvForQuarter_mappingProducesNonNullValues() throws Exception {
     assertEquals("CMPSC 156", rows.get(0).getCourseId());
     assertEquals("0100", rows.get(0).getSection());
     assertEquals("12345", rows.get(0).getEnrollCd());
-}
-
+  }
 }

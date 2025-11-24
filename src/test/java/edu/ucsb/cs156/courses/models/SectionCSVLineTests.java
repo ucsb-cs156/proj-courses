@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-import edu.ucsb.cs156.courses.models.SectionCSVLine;
 
 public class SectionCSVLineTests {
 
@@ -13,8 +12,9 @@ public class SectionCSVLineTests {
     assertEquals("42", SectionCSVLine.intToStringWithDefault(Integer.valueOf(42)));
     assertEquals("0", SectionCSVLine.intToStringWithDefault(null));
   }
+
   @Test
-void test_no_args_constructor_setters_and_equals() {
+  void test_no_args_constructor_setters_and_equals() {
     // Use no-args + setters
     SectionCSVLine line = new SectionCSVLine();
     line.setQuarter("20251");
@@ -32,15 +32,13 @@ void test_no_args_constructor_setters_and_equals() {
     assertEquals("0101", line.getSection());
 
     // Force coverage for equals/hashCode + all-args constructor
-    SectionCSVLine same = new SectionCSVLine(
-        "20251", "CMPSC 156", "0101", "Conrad", "50", "80", "Open", "None"
-    );
+    SectionCSVLine same =
+        new SectionCSVLine("20251", "CMPSC 156", "0101", "Conrad", "50", "80", "Open", "None");
 
     assertEquals(line, same);
     assertEquals(line.hashCode(), same.hashCode());
 
     // Cover toString
     assertTrue(line.toString().contains("CMPSC 156"));
-}
-
+  }
 }
