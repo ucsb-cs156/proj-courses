@@ -140,6 +140,42 @@ public class UCSBCurriculumService {
     return result;
   }
 
+  public String getJSONByGE(String quarter, String area) throws Exception {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set("ucsb-api-version", "1.0");
+    headers.set("ucsb-api-key", this.apiKey);
+
+    HttpEntity<String> entity = new HttpEntity<>("body", headers);
+
+    String params =
+        String.format("?quarter=%s&areas=%s&pageNumber=%d&pageSize=%d", quarter, area, 1, 500);
+    String url = CURRICULUM_ENDPOINT + params;
+
+    log.info("url=" + url);
+
+    String retVal = "";
+    MediaType contentType = null;
+    HttpStatus statusCode = null;
+
+    ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+    contentType = re.getHeaders().getContentType();
+    statusCode = (HttpStatus) re.getStatusCode();
+    retVal = re.getBody();
+
+    log.trace("json: {}", retVal);
+    log.info("contentType: {} statusCode: {}", contentType, statusCode);
+    return retVal;
+  }
+
+  public List<Primary> getPrimariesByGE(String quarter, String area) throws Exception {
+    String json = getJSONByGE(quarter, area);
+    CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);
+    List<Primary> result = coursePage.getPrimaries();
+    return result;
+  }
+
   public String getSectionJSON(String subjectArea, String quarter, String courseLevel)
       throws Exception {
     List<ConvertedSection> l = getConvertedSections(subjectArea, quarter, courseLevel);
