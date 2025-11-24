@@ -49,6 +49,7 @@ describe("CourseDescriptionIndexPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    expect(screen.queryByText("No courses found.")).not.toBeInTheDocument();
   });
 
   test("calls UCSB Curriculum api correctly with 1 course response", async () => {
@@ -100,5 +101,45 @@ describe("CourseDescriptionIndexPage tests", () => {
     });
 
     expect(screen.getByText("CMPSC")).toBeInTheDocument();
+    expect(screen.queryByText("No courses found.")).not.toBeInTheDocument();
+  });
+
+  test("displays 'No courses found' correctly with no course results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/basicsearch").reply(200, { classes: [] });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseDescriptionIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectSubject = screen.getByLabelText("Subject Area");
+
+    const expectedKey = "BasicSearch.Subject-option-PSTATW";
+
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    expect(await screen.findByLabelText("Subject Area")).toHaveTextContent(
+      "PSTATW",
+    );
+
+    userEvent.selectOptions(selectSubject, "PSTATW");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "L");
+
+    const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("No courses found.")).toBeInTheDocument();
+    });
   });
 });
