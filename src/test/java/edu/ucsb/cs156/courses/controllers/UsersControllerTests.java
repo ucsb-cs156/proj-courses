@@ -33,11 +33,9 @@ import org.springframework.test.web.servlet.MvcResult;
 @AutoConfigureDataJpa
 public class UsersControllerTests extends ControllerTestCase {
 
-  @MockBean
-  UserRepository userRepository;
+  @MockBean UserRepository userRepository;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
   PageRequest pageRequest_0_5_ASC = PageRequest.of(0, 5, Direction.ASC, "id");
   PageRequest pageRequest_0_5_DESC = PageRequest.of(0, 5, Direction.DESC, "id");
@@ -47,13 +45,13 @@ public class UsersControllerTests extends ControllerTestCase {
     mockMvc.perform(get("/api/admin/users")).andExpect(status().is(403));
   }
 
-  @WithMockUser(roles = { "USER" })
+  @WithMockUser(roles = {"USER"})
   @Test
   public void users__user_logged_in() throws Exception {
     mockMvc.perform(get("/api/admin/users")).andExpect(status().is(403));
   }
 
-  @WithMockUser(roles = { "ADMIN", "USER" })
+  @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void users__admin_logged_in() throws Exception {
 
@@ -71,7 +69,8 @@ public class UsersControllerTests extends ControllerTestCase {
 
     // act
 
-    MvcResult response = mockMvc.perform(get("/api/admin/users")).andExpect(status().isOk()).andReturn();
+    MvcResult response =
+        mockMvc.perform(get("/api/admin/users")).andExpect(status().isOk()).andReturn();
 
     // assert
 
@@ -80,7 +79,7 @@ public class UsersControllerTests extends ControllerTestCase {
     assertEquals(expectedJson, responseString);
   }
 
-  @WithMockUser(roles = { "ADMIN", "USER" })
+  @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void usersPaged__admin_logged_in_asc() throws Exception {
     // arrange
@@ -94,29 +93,32 @@ public class UsersControllerTests extends ControllerTestCase {
 
     Page<User> testPage_0_5_ASC = new PageImpl<User>(expectedUsers, pageRequest_0_5_ASC, 3);
 
-    when(userRepository.findAll(pageRequest_0_5_ASC))
-        .thenReturn(testPage_0_5_ASC);
+    when(userRepository.findAll(pageRequest_0_5_ASC)).thenReturn(testPage_0_5_ASC);
     String expectedJson = objectMapper.writeValueAsString(testPage_0_5_ASC);
 
     // act
 
-    MvcResult response = mockMvc
-        .perform(get("/api/admin/users")
-            .param("page", "0")
-            .param("pageSize", "5")
-            .param("sortDirection", "ASC"))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/admin/users")
+                    .param("page", "0")
+                    .param("pageSize", "5")
+                    .param("sortDirection", "ASC"))
+            .andExpect(status().isOk())
+            .andReturn();
 
     // assert
 
-    verify(userRepository, times(1)).findAll(org.springframework.data.domain.PageRequest.of(0, 5,
-        org.springframework.data.domain.Sort.Direction.ASC, "id"));
+    verify(userRepository, times(1))
+        .findAll(
+            org.springframework.data.domain.PageRequest.of(
+                0, 5, org.springframework.data.domain.Sort.Direction.ASC, "id"));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
   }
 
-  @WithMockUser(roles = { "ADMIN", "USER" })
+  @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void usersPaged__admin_logged_in_desc() throws Exception {
     // arrange
@@ -130,44 +132,50 @@ public class UsersControllerTests extends ControllerTestCase {
 
     Page<User> testPage_0_5_DESC = new PageImpl<User>(expectedUsers, pageRequest_0_5_DESC, 3);
 
-    when(userRepository.findAll(pageRequest_0_5_DESC))
-        .thenReturn(testPage_0_5_DESC);
+    when(userRepository.findAll(pageRequest_0_5_DESC)).thenReturn(testPage_0_5_DESC);
     String expectedJson = objectMapper.writeValueAsString(testPage_0_5_DESC);
     // act
 
-    MvcResult response = mockMvc
-        .perform(get("/api/admin/users")
-            .param("page", "0")
-            .param("pageSize", "5")
-            .param("sortDirection", "DESC"))
-        .andExpect(status().isOk())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/admin/users")
+                    .param("page", "0")
+                    .param("pageSize", "5")
+                    .param("sortDirection", "DESC"))
+            .andExpect(status().isOk())
+            .andReturn();
 
     // assert
 
-    verify(userRepository, times(1)).findAll(org.springframework.data.domain.PageRequest.of(0, 5,
-        org.springframework.data.domain.Sort.Direction.DESC, "id"));
+    verify(userRepository, times(1))
+        .findAll(
+            org.springframework.data.domain.PageRequest.of(
+                0, 5, org.springframework.data.domain.Sort.Direction.DESC, "id"));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
   }
 
-  @WithMockUser(roles = { "ADMIN", "USER" })
+  @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void usersPaged__fails_when_invalid_sortDirection() throws Exception {
 
-    MvcResult response = mockMvc
-        .perform(get("/api/admin/users")
-            .param("page", "0")
-            .param("pageSize", "5")
-            .param("sortDirection", "INVALID"))
-        .andExpect(status().isBadRequest())
-        .andReturn();
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/admin/users")
+                    .param("page", "0")
+                    .param("pageSize", "5")
+                    .param("sortDirection", "INVALID"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
 
-    Map<String, String> expectedResponse = Map.of(
-        "message",
-        "INVALID is not a valid sort direction.  Valid values are [ASC, DESC]",
-        "type",
-        "IllegalArgumentException");
+    Map<String, String> expectedResponse =
+        Map.of(
+            "message",
+            "INVALID is not a valid sort direction.  Valid values are [ASC, DESC]",
+            "type",
+            "IllegalArgumentException");
 
     // assert
 

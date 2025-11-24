@@ -10,10 +10,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,11 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/admin/users")
 @RestController
 public class UsersController extends ApiController {
-  @Autowired
-  UserRepository userRepository;
+  @Autowired UserRepository userRepository;
 
-  @Autowired
-  ObjectMapper mapper;
+  @Autowired ObjectMapper mapper;
 
   @Operation(summary = "Get a list of all users")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -40,11 +38,29 @@ public class UsersController extends ApiController {
 
   @Operation(summary = "Get a list of all users with pages")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @GetMapping(params = { "page", "pageSize", "sortDirection" })
+  @GetMapping(params = {"page", "pageSize", "sortDirection"})
   public Iterable<User> usersPaged(
-      @Parameter(name = "page", description = "what page of the data", example = "0", required = true) @RequestParam int page,
-      @Parameter(name = "pageSize", description = "size of each page", example = "5", required = true) @RequestParam int pageSize,
-      @Parameter(name = "sortDirection", description = "sort direction", example = "ASC", required = true) @RequestParam String sortDirection)
+      @Parameter(
+              name = "page",
+              description = "what page of the data",
+              example = "0",
+              required = true)
+          @RequestParam
+          int page,
+      @Parameter(
+              name = "pageSize",
+              description = "size of each page",
+              example = "5",
+              required = true)
+          @RequestParam
+          int pageSize,
+      @Parameter(
+              name = "sortDirection",
+              description = "sort direction",
+              example = "ASC",
+              required = true)
+          @RequestParam
+          String sortDirection)
       throws JsonProcessingException {
     Iterable<User> users = null;
     List<String> allowedSortDirections = Arrays.asList("ASC", "DESC");
