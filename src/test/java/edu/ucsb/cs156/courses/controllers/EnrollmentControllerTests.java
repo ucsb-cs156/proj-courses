@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -125,7 +126,7 @@ public class EnrollmentControllerTests {
     verify(mockWriter, atLeastOnce()).write(any(List.class));
   }
 
-  // Below test is failing
+
   @Test
   public void testCsvForQuarter_csvExceptionsThrown() throws Exception {
     String yyyyq = "20252";
@@ -154,4 +155,38 @@ public class EnrollmentControllerTests {
         assertThrows(IOException.class, () -> body.writeTo(new ByteArrayOutputStream()));
     assertTrue(ex.getMessage().contains("Error writing CSV file"));
   }
+@Test
+public void testCsvForQuarter_mappingProducesNonNullValues() throws Exception {
+    String yyyyq = "20252";
+
+    EnrollmentDataPoint dp = EnrollmentDataPoint.builder()
+        .id(1L)
+        .yyyyq(yyyyq)
+        .courseId("CMPSC 156")
+        .section("0100")
+        .enrollCd("12345")
+        .enrollment(42)
+        .dateCreated(LocalDateTime.now())
+        .build();
+
+    when(enrollmentDataPointRepository.findByYyyyq(yyyyq)).thenReturn(List.of(dp));
+    when(enrollmentCSVService.getStatefulBeanToCSV(any())).thenReturn(mockWriter);
+
+    // Run controller
+    StreamingResponseBody body = enrollmentController.csvForQuarter(yyyyq).getBody();
+    body.writeTo(new ByteArrayOutputStream());
+
+    // Capture list passed to writer
+    ArgumentCaptor<List<EnrollmentCSV>> captor = ArgumentCaptor.forClass(List.class);
+    verify(mockWriter).write(captor.capture());
+
+    List<EnrollmentCSV> rows = captor.getValue();
+
+    assertEquals(1, rows.size());
+    assertNotNull(rows.get(0), "CSV row must not be null"); // <-- kills null return mutation
+    assertEquals("CMPSC 156", rows.get(0).getCourseId());
+    assertEquals("0100", rows.get(0).getSection());
+    assertEquals("12345", rows.get(0).getEnrollCd());
+}
+
 }
