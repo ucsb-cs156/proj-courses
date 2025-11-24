@@ -73,7 +73,6 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    // Add assertions to verify basic rendering
     expect(screen.getByText("Personal Schedules Details")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
   });
@@ -177,7 +176,8 @@ describe("PersonalSchedulesDetailsPage tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
-  test("renders 'Back' button and 'View Weekly Schedule' button", async () => {
+  test("renders 'Back' button and 'Weekly Schedule' section", async () => {
+    setupAdminUser();
     const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
@@ -194,18 +194,16 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    // Check for Back button
-    const backButton = screen.getByRole("button", { name: /back/i });
+    const backButton = await screen.findByRole("button", { name: /back/i });
     expect(backButton).toBeInTheDocument();
 
-    // Check for View Weekly Schedule button
-    const weeklyViewButton = screen.getByRole("button", {
-      name: /view weekly schedule/i,
+    await waitFor(() => {
+      expect(screen.getByText("Weekly Schedule")).toBeInTheDocument();
     });
-    expect(weeklyViewButton).toBeInTheDocument();
   });
 
-  test("navigates to weekly view when 'View Weekly Schedule' button is clicked", async () => {
+  test("renders SchedulerPanel when personal sections are loaded", async () => {
+    setupAdminUser();
     const queryClient = new QueryClient();
     axiosMock
       .onGet(`/api/personalschedules?id=17`)
@@ -222,13 +220,10 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    const weeklyViewButton = screen.getByRole("button", {
-      name: /view weekly schedule/i,
-    });
-    weeklyViewButton.click();
-
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("/personalschedules/weekly/17");
+      expect(
+        screen.getByTestId("SchedulerPanel-timeslot-header"),
+      ).toBeInTheDocument();
     });
   });
 
@@ -249,7 +244,7 @@ describe("PersonalSchedulesDetailsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    const backButton = screen.getByRole("button", { name: /back/i });
+    const backButton = await screen.findByRole("button", { name: /back/i });
     backButton.click();
 
     await waitFor(() => {
