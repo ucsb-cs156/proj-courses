@@ -121,7 +121,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     const expectedFields = {
       Quarter: "20232",
       buildingCode: "GIRV",
-      classroom: "",
+      classroom: "ALL",
     };
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
@@ -238,18 +238,17 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(selectBuilding, "GIRV");
 
-    await screen.findByTestId("available-classrooms");
-
-    expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-      "1004, 1106, 1108, 1112, 1115, 1116, 1119, 2108, 2110, 2112, 2115, 2116, 2119, 2120, 2123, 2124, 2127, 2128, 2129, 2135",
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
     );
+
+    const selectClassroom = screen.getByLabelText("Classroom");
+    expect(selectClassroom).toBeInTheDocument();
   });
 
   test("renders nothing when classrooms is empty", () => {
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={mockFn} />);
-    expect(
-      screen.queryByTestId("available-classrooms"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Classroom")).not.toBeInTheDocument();
   });
 
   test("fetches classrooms and displays them in sorted order", async () => {
@@ -274,11 +273,22 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
 
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
-    await screen.findByTestId("available-classrooms");
-
-    expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-      "1004, 1106, 1108",
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
     );
+
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
+    ).toHaveValue("ALL");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-1"),
+    ).toHaveValue("1004");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-2"),
+    ).toHaveValue("1106");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-3"),
+    ).toHaveValue("1108");
   });
 
   test("displays no classrooms and logs error when fetch fails", async () => {
@@ -304,9 +314,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     userEvent.selectOptions(screen.getByLabelText("Building Name"), "GIRV");
 
     await waitFor(() => expect(console.error).toHaveBeenCalled());
-    expect(
-      screen.queryByTestId("available-classrooms"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Classroom")).not.toBeInTheDocument();
   });
 
   test("uses fallback quarter/building when localStorage for quarter/building is null", () => {
@@ -390,10 +398,19 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     axios.get.mockResolvedValue({ data: ["Z101", "A202", "M303"] });
     render(<CourseOverTimeBuildingsSearchForm fetchJSON={vi.fn()} />);
     await waitFor(() =>
-      expect(screen.getByTestId("available-classrooms")).toHaveTextContent(
-        "A202, M303, Z101",
-      ),
+      expect(
+        screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
+      ).toHaveValue("ALL"),
     );
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-1"),
+    ).toHaveValue("A202");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-2"),
+    ).toHaveValue("M303");
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-3"),
+    ).toHaveValue("Z101");
   });
 
   test("uses first available quarter if localQuarter is falsy", () => {
@@ -423,5 +440,239 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
 
     expect(screen.getByLabelText("Quarter")).toBeInTheDocument();
+  });
+
+  test("when I select a specific classroom and submit, it passes the classroom value", async () => {
+    const fetchJSONSpy = vi.fn();
+    fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
+
+    localStorage.clear();
+    const freshQueryClient = new QueryClient();
+
+    axiosMock.reset();
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: "20232",
+      endQtrYYYYQ: "20254",
+    });
+    axiosMock
+      .onGet("/api/public/basicQuarterDates")
+      .reply(200, [{ yyyyq: "20232" }, { yyyyq: "20242" }, { yyyyq: "20252" }]);
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106", "1108"]);
+
+    render(
+      <QueryClientProvider client={freshQueryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
+
+    const selectClassroom = screen.getByLabelText("Classroom");
+    const options = Array.from(selectClassroom.options).map((opt) => opt.value);
+    const specificClassroom = options.find((opt) => opt !== "ALL");
+    userEvent.selectOptions(selectClassroom, specificClassroom);
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      Quarter: "20232",
+      buildingCode: "GIRV",
+      classroom: specificClassroom,
+    });
+  });
+
+  test("when I select ALL classroom and submit, it passes ALL", async () => {
+    const fetchJSONSpy = vi.fn();
+    fetchJSONSpy.mockResolvedValue({ sampleKey: "sampleValue" });
+
+    localStorage.clear();
+    const freshQueryClient = new QueryClient();
+
+    axiosMock.reset();
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock.onGet("/api/systemInfo").reply(200, {
+      springH2ConsoleEnabled: false,
+      showSwaggerUILink: false,
+      startQtrYYYYQ: "20232",
+      endQtrYYYYQ: "20254",
+    });
+    axiosMock
+      .onGet("/api/public/basicQuarterDates")
+      .reply(200, [{ yyyyq: "20232" }, { yyyyq: "20242" }, { yyyyq: "20252" }]);
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106", "1108"]);
+
+    render(
+      <QueryClientProvider client={freshQueryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
+
+    const selectClassroom = screen.getByLabelText("Classroom");
+    userEvent.selectOptions(selectClassroom, "ALL");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      Quarter: "20232",
+      buildingCode: "GIRV",
+      classroom: "ALL",
+    });
+  });
+
+  test("classroom dropdown has correct controlId", async () => {
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106"]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
+
+    expect(screen.queryByTestId("-option-0")).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId("CourseOverTimeBuildingsSearch.Classroom-option-0"),
+    ).toBeInTheDocument();
+  });
+
+  test("classroom state defaults to ALL when no localStorage value", async () => {
+    localStorage.removeItem("CourseOverTimeBuildingsSearch.Classroom");
+
+    const fetchJSONSpy = vi.fn();
+    fetchJSONSpy.mockResolvedValue({});
+
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch/classrooms", {
+        params: { quarter: "20232", buildingCode: "GIRV" },
+      })
+      .reply(200, ["1004", "1106"]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20232");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.Classroom-option-0",
+    );
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      Quarter: "20232",
+      buildingCode: "GIRV",
+      classroom: "ALL",
+    });
+  });
+
+  test("reads classroom from localStorage with correct key", async () => {
+    localStorage.setItem("CourseOverTimeBuildingsSearch.Classroom", "1004");
+
+    const fetchJSONSpy = vi.fn();
+    fetchJSONSpy.mockResolvedValue({});
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsSearchForm fetchJSON={fetchJSONSpy} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    const selectBuilding = screen.getByLabelText("Building Name");
+
+    expect(selectQuarter).toBeInTheDocument();
+    expect(selectBuilding).toBeInTheDocument();
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
+    expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {
+      Quarter: "20232",
+      buildingCode: "",
+      classroom: "1004",
+    });
   });
 });
