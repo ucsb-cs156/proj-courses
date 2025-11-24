@@ -42,7 +42,7 @@ export default function Footer(systemInfo) {
           {!systemInfo.systemInfo && (
             <a
               data-testid="footer-source-code-link"
-              href={"https://github.com/ucsb-cs156-f22/f22-5pm-courses"}
+              href={"https://github.com/ucsb-cs156/proj-courses"}
               target="_blank"
               rel="noopener noreferrer"
             >
