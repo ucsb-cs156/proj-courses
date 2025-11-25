@@ -129,5 +129,38 @@ describe("OurTable tests", () => {
       expect(firstNameHeader).toHaveTextContent("First Name");
       expect(firstNameHeader).toHaveAttribute("style", "cursor: pointer;");
     });
+
+    test("pagination works correctly", async () => {
+      // Create data with 20 rows
+      const twentyRows = [];
+      for (let i = 0; i < 20; i++) {
+        twentyRows.push({ col1: `Hello ${i}`, col2: `World ${i}` });
+      }
+
+      render(
+        <OurTable
+          columns={columns}
+          data={twentyRows}
+          testid={"paginationTest"}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId("paginationTest-header-group-0")).toBeInTheDocument();
+      });
+
+      expect(screen.getByTestId("paginationTest-row-0")).toBeInTheDocument();
+      expect(screen.getByTestId("paginationTest-row-9")).toBeInTheDocument();
+      expect(screen.queryByTestId("paginationTest-row-10")).not.toBeInTheDocument();
+
+      const nextButton = screen.getByTestId("OurPagination-next");
+      fireEvent.click(nextButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("paginationTest-row-10")).toBeInTheDocument();
+      });
+      expect(screen.getByTestId("paginationTest-row-19")).toBeInTheDocument();
+      expect(screen.queryByTestId("paginationTest-row-0")).not.toBeInTheDocument();
+    });
   });
 });

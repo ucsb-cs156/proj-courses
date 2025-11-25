@@ -1,6 +1,18 @@
-import { vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import OurPagination, { emptyArray } from "main/components/Utils/OurPagination";
+import { useState } from "react";
+import OurPagination from "main/components/Utils/OurPagination";
+
+const PaginationWrapper = ({ defaultPage = 1, totalPages = 10 }) => {
+  const [page, setPage] = useState(defaultPage);
+  return (
+    <OurPagination
+      testId="OurPagination"
+      activePage={page}
+      totalPages={totalPages}
+      changePage={setPage}
+    />
+  );
+};
 
 const checkTestIdsInOrder = (testIds) => {
   const links = screen.getAllByTestId(/OurPagination-/);
@@ -12,13 +24,8 @@ const checkTestIdsInOrder = (testIds) => {
 };
 
 describe("OurPagination tests", () => {
-  test("emptyArray returns empty array", () => {
-    expect(emptyArray()).toStrictEqual([]);
-  });
-
   test("renders correctly for default values", async () => {
-    const updateActivePage = vi.fn();
-    render(<OurPagination updateActivePage={updateActivePage} />);
+    render(<PaginationWrapper />);
 
     // Expected: 1, 2, 3, 4, 5, ..., 10
     checkTestIdsInOrder([
@@ -35,9 +42,8 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 5 (less than or equal to 7)", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={5} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={5} />,
     );
 
     checkTestIdsInOrder([
@@ -52,9 +58,8 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 7 (less than or equal to 7)", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={7} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={7} />,
     );
 
     checkTestIdsInOrder([
@@ -71,9 +76,8 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12 (greater than 7), initial state (activePage=1)", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={12} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={12} />,
     );
     // Expected: 1, 2, 3, 4, 5, ..., 12
     checkTestIdsInOrder([
@@ -90,9 +94,8 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 4", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={12} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={12} />,
     );
 
     // Click to page 4
@@ -113,9 +116,8 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 5 (middle range)", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={12} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={12} />,
     );
     fireEvent.click(screen.getByTestId("OurPagination-5"));
     // Expected: 1, ..., 4, 5, 6, ..., 12
@@ -133,9 +135,8 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 8 (middle range, next clicks)", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={12} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={12} />,
     );
 
     const nextButton = screen.getByTestId("OurPagination-next");
@@ -197,9 +198,8 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 9 (near end)", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={12} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={12} />,
     );
     // Click to page 9 (totalPages - 3)
     // This requires multiple clicks on next or direct jump if available.
@@ -223,9 +223,8 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 12 (end)", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={12} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={12} />,
     );
     fireEvent.click(screen.getByTestId("OurPagination-12"));
     // Expected: 1, ..., 8, 9, 10, 11, 12
@@ -243,9 +242,8 @@ describe("OurPagination tests", () => {
   });
 
   test("navigation: prev button works correctly", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={12} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={12} />,
     );
     // Go to page 5
     fireEvent.click(screen.getByTestId("OurPagination-5"));
@@ -291,9 +289,8 @@ describe("OurPagination tests", () => {
   });
 
   test("navigation: clicking page 1 from a middle page", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={12} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={12} />,
     );
     // Go to page 5
     fireEvent.click(screen.getByTestId("OurPagination-5"));
@@ -326,9 +323,8 @@ describe("OurPagination tests", () => {
   });
 
   test("checks active class on buttons", async () => {
-    const updateActivePage = vi.fn();
     render(
-      <OurPagination totalPages={5} updateActivePage={updateActivePage} />,
+      <PaginationWrapper totalPages={5} />,
     );
 
     // Initial state: page 1 is active
