@@ -81,6 +81,12 @@ public class CustomErrorControllerTests extends ControllerTestCase {
                 model().attribute("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()))
             .andExpect(model().attribute("message", "We're sorry, something went wrong on our end"))
             .andExpect(model().attribute("exceptionMessage", "Test exception"))
+            // CHANGE THIS LINE:
+            .andExpect(
+                model()
+                    .attribute(
+                        "stackTrace",
+                        org.hamcrest.Matchers.containsString("CustomErrorControllerTests")))
             .andReturn();
   }
 
