@@ -351,4 +351,17 @@ describe("OurPagination tests", () => {
     fireEvent.click(screen.getByTestId("OurPagination-5"));
     expect(changePage).not.toHaveBeenCalled();
   });
+
+  test("Complex pagination does not render garbage data", () => {
+    const updateActivePage = vi.fn();
+    render(
+      <OurPagination
+        totalPages={20}
+        activePage={10}
+        updateActivePage={updateActivePage}
+        changePage={updateActivePage}
+      />,
+    );
+    expect(screen.queryByText("Stryker was here")).not.toBeInTheDocument();
+  });
 });
