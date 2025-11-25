@@ -36,16 +36,7 @@ Default.parameters = {
         const buildingCode = url.searchParams.get("buildingCode");
 
         if (quarter && buildingCode) {
-          return HttpResponse.json([
-            {
-              section: {
-                timeLocations: [
-                  { building: buildingCode, room: "101" },
-                  { building: buildingCode, room: "102" },
-                ],
-              },
-            },
-          ]);
+          return HttpResponse.json(["101", "102"]);
         }
 
         return HttpResponse.json([]);
