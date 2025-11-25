@@ -65,11 +65,7 @@ public class SecurityConfig {
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/error", "/error/**").permitAll()
-            .requestMatchers("/static/**", "/css/**", "/js/**").permitAll()
-            .anyRequest().permitAll()
-        )
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .logout(
             logout ->
                 logout
