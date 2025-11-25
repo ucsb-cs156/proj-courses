@@ -14,14 +14,15 @@ import {
   getSection,
   getSectionField,
   renderInfoLink,
-  formatInfoLink,
   shouldShowAddToScheduleLink,
   getQuarter,
 } from "main/utils/sectionUtils.jsx";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 
-const objectToAxiosParams = (data) => {
+/* eslint-disable react-refresh/only-export-components*/
+
+export const objectToAxiosParams = (data) => {
   return {
     url: "/api/courses/post",
     method: "POST",
@@ -32,7 +33,7 @@ const objectToAxiosParams = (data) => {
   };
 };
 
-const onSuccess = (response) => {
+export const onSuccess = (response) => {
   if (response.length < 3) {
     toast(
       `New course Created - id: ${response[0].id} enrollCd: ${response[0].enrollCd}`,
@@ -44,7 +45,7 @@ const onSuccess = (response) => {
   }
 };
 
-const onError = (error) => {
+export const onError = (error) => {
   console.error("onError: error=", error);
   const message =
     error.response.data?.message ||
@@ -52,6 +53,7 @@ const onError = (error) => {
   toast.error(message);
 };
 
+/* eslint-enable react-refresh/only-export-components*/
 export default function SectionsTable({ sections, schedules = [] }) {
   if (!(schedules instanceof Array)) {
     throw new Error("schedules prop must be an array");
@@ -120,14 +122,9 @@ export default function SectionsTable({ sections, schedules = [] }) {
     {
       accessorKey: "courseId",
       header: "Course ID",
-      cell: ({ row }) => (
-        <a
-          href={formatInfoLink(row)}
-          data-testid={`${testid}-row-${row.id}-col-courseId-link`}
-        >
-          {row.original.courseId}
-        </a>
-      ),
+      // cell: ({ row, getValue }) => (
+      //   <div style={{ paddingLeft: `${row.depth * 2}rem` }}>{getValue()}</div>
+      // ),
     },
     {
       accessorKey: "title",

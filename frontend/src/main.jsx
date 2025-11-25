@@ -1,5 +1,5 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
@@ -7,15 +7,15 @@ import { ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.css";
 import "react-toastify/dist/ReactToastify.css";
 import "../src/index.css";
-import { _create } from "domain";
 
 const queryClient = new QueryClient();
 
-createRoot(document.getElementById("root")).render(
+ReactDOM.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ToastContainer />
       <App />
     </QueryClientProvider>
   </React.StrictMode>,
+  document.getElementById("root"),
 );

@@ -511,7 +511,7 @@ public class JobsControllerTests extends ControllerTestCase {
     Map<String, String> expectedResponse =
         Map.of(
             "message",
-            "invalid is not a valid sort field. Valid values are [id, createdBy, status, createdAt, updatedAt]",
+            "invalid is not a valid sort field. Valid values are [createdBy, status, createdAt, completedAt]",
             "type",
             "IllegalArgumentException");
 

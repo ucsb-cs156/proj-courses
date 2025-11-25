@@ -126,7 +126,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
                 })}
               />
               <Form.Text muted>
-                {`For example: '16' or '130A'; omit the subject area prefix.`}
+                For example: '16' or '130A'; omit the subject area prefix.
               </Form.Text>
               <Form.Control.Feedback type="invalid">
                 {errors.CourseOverTimeSearchCourseNumber &&

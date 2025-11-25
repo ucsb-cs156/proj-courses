@@ -9,10 +9,10 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
-
-  const startQtr = systemInfo?.startQtrYYYYQ || "20221";
-  const endQtr = systemInfo?.endQtrYYYYQ || "20222";
-  const quarters = quarterRange(startQtr, endQtr);
+  const quarters = quarterRange(
+    systemInfo.startQtrYYYYQ,
+    systemInfo.endQtrYYYYQ,
+  );
 
   const quarterKey = "GEAreaSearch.Quarter";
   const areaKey = "GEAreaSearch.Area";
@@ -30,9 +30,7 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
     [],
   );
 
-  const areaCodes = Array.isArray(areas)
-    ? areas.map((r) => r.requirementCode)
-    : [];
+  const areaCodes = areas.map((r) => r.requirementCode);
   const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
   const [area, setArea] = useState(localArea || "ALL");
 
