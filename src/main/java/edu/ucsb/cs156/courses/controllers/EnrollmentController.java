@@ -1,10 +1,12 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
+import edu.ucsb.cs156.courses.models.EnrollmentCSV;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
+import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
@@ -35,6 +38,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public class EnrollmentController extends ApiController {
 
   @Autowired EnrollmentDataPointRepository enrollmentDataPointRepository;
+  @Autowired private EnrollmentCSVService enrollmentCSVService;
 
   @Operation(
       summary = "Download Enrollment Data as CSV File",
@@ -53,25 +57,22 @@ public class EnrollmentController extends ApiController {
   public ResponseEntity<StreamingResponseBody> csvForQuarter(
       @Parameter(name = "yyyyq", description = "quarter in yyyyq format", example = "20252")
           @RequestParam
-          String yyyyq,
-      @Parameter(
-              name = "testException",
-              description = "test exception (e.g. CsvDataTypeMismatchException)",
-              example = "")
-          @RequestParam(required = false, defaultValue = "")
-          String testException)
-      throws Exception, IOException {
+          String yyyyq)
+      throws IOException {
+
     StreamingResponseBody stream =
         (outputStream) -> {
           Iterable<EnrollmentDataPoint> iterable = enrollmentDataPointRepository.findByYyyyq(yyyyq);
-          List<EnrollmentDataPoint> list = Streamable.of(iterable).toList();
+          List<EnrollmentCSV> list =
+              Streamable.of(iterable).toList().stream()
+                  .map(enrollmentDataPoint -> EnrollmentCSV.fromEntity(enrollmentDataPoint))
+                  .collect(Collectors.toList());
 
           try (Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
             try {
-              if (testException.equals("CsvDataTypeMismatchException")) {
-                throw new CsvDataTypeMismatchException("test exception");
-              }
-              new StatefulBeanToCsvBuilder<EnrollmentDataPoint>(writer).build().write(list);
+              StatefulBeanToCsv<EnrollmentCSV> beanToCsvWriter =
+                  enrollmentCSVService.getStatefulBeanToCSV(writer);
+              beanToCsvWriter.write(list);
             } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
               log.error("Error writing CSV file", e);
               throw new IOException("Error writing CSV file: " + e.getMessage());
