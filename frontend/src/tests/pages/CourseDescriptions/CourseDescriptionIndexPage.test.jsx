@@ -49,6 +49,11 @@ describe("CourseDescriptionIndexPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    expect(
+      screen.queryByText(
+        "No courses found matching the selected search fields.",
+      ),
+    ).not.toBeInTheDocument();
   });
 
   test("calls UCSB Curriculum api correctly with 1 course response", async () => {
@@ -100,5 +105,60 @@ describe("CourseDescriptionIndexPage tests", () => {
     });
 
     expect(screen.getByText("CMPSC")).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "No courses found matching the selected search fields.",
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  test("feedback is correctly displayed when no courses are found", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/basicsearch").reply(200, { classes: [] });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseDescriptionIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectSubject = screen.getByLabelText("Subject Area");
+
+    const expectedKey = "BasicSearch.Subject-option-CMPSCCS";
+
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    expect(await screen.findByLabelText("Subject Area")).toHaveTextContent(
+      "CMPSCCS",
+    );
+
+    userEvent.selectOptions(selectSubject, "CMPSCCS");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "U");
+
+    const submitButton = screen.getByText("Submit");
+    expect(submitButton).toBeInTheDocument();
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(
+          "No courses found matching the selected search fields.",
+        ),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByText("No courses found matching the selected search fields."),
+    ).toHaveStyle("color: navy");
+    expect(
+      screen.getByText("No courses found matching the selected search fields."),
+    ).toHaveStyle("text-align: center");
   });
 });

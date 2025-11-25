@@ -26,6 +26,7 @@ export default defineConfig([
             js.configs.recommended,
             reactHooks.configs["recommended-latest"],
             reactRefresh.configs.vite,
+            reactPlugin.configs.flat.recommended,
         ],
         languageOptions: {
             ecmaVersion: 2020,
@@ -44,6 +45,7 @@ export default defineConfig([
                 "error",
                 { varsIgnorePattern: "^[A-Z_].*", argsIgnorePattern: "^_" },
             ],
+            "react/prop-types": "off",
         },
       settings: {
         react: {
