@@ -10,8 +10,8 @@ import OurPagination from "main/components/Utils/OurPagination";
 
 function SectionsTableBase({ data, columns, testid = "testid" }) {
   const [expanded, setExpanded] = useState({});
-  const [page, setPage] = useState(1); // Added state
-  const pageSize = 10; // Added limit
+  const [page, setPage] = useState(1); // State for current page
+  const pageSize = 10;                 // Limit to 10 items
 
   const altColor = "#e3ebfc";
   const whiteColor = "#ffffff";
@@ -23,12 +23,12 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
       expanded,
     },
     onExpandedChange: setExpanded,
-    getSubRows: (row) => row.subRows,
+    getSubRows: (row) => row.subRows, // This tells TanStack Table how to find sub-rows
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(), // Required for expansion
   });
 
-  // Pagination Logic
+  // Pagination Logic: Slice the rows based on the current page
   const rows = table.getRowModel().rows;
   const totalPages = Math.ceil(rows.length / pageSize);
   const rowsToDisplay = rows.slice((page - 1) * pageSize, page * pageSize);
@@ -53,18 +53,13 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
           ))}
         </thead>
         <tbody>
-          {/* CHANGED: Now using rowsToDisplay instead of all rows */}
           {rowsToDisplay.map((row) => {
             const rowStyle = {
               backgroundColor: row.index % 2 === 0 ? altColor : whiteColor,
             };
             const rowId = `row-${row.id}`;
             return (
-              <tr
-                key={rowId}
-                style={rowStyle}
-                data-testid={`${testid}-${rowId}`}
-              >
+              <tr key={rowId} style={rowStyle} data-testid={`${testid}-${rowId}`}>
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
@@ -81,9 +76,24 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
             );
           })}
         </tbody>
+        <tfoot>
+          {table.getFooterGroups().map((footerGroup) => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map((header) => (
+                <th key={header.id} colSpan={header.colSpan}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.footer,
+                        header.getContext(),
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </tfoot>
       </Table>
 
-      {/* ADDED: Pagination Control */}
       {totalPages > 0 && (
         <OurPagination
           activePage={page}

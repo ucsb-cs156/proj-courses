@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
+import { vi } from "vitest";
 import OurPagination from "main/components/Utils/OurPagination";
 
 const PaginationWrapper = ({ defaultPage = 1, totalPages = 10 }) => {
@@ -322,5 +323,32 @@ describe("OurPagination tests", () => {
     expect(screen.getByTestId("OurPagination-2").parentElement).toHaveClass(
       "active",
     );
+  });
+
+  test("clicking prev on first page does not call changePage", () => {
+    const changePage = vi.fn();
+    render(
+      <OurPagination activePage={1} totalPages={10} changePage={changePage} />,
+    );
+    fireEvent.click(screen.getByTestId("OurPagination-prev"));
+    expect(changePage).not.toHaveBeenCalled();
+  });
+
+  test("clicking next on last page does not call changePage", () => {
+    const changePage = vi.fn();
+    render(
+      <OurPagination activePage={10} totalPages={10} changePage={changePage} />,
+    );
+    fireEvent.click(screen.getByTestId("OurPagination-next"));
+    expect(changePage).not.toHaveBeenCalled();
+  });
+
+  test("clicking current page number does not call changePage", () => {
+    const changePage = vi.fn();
+    render(
+      <OurPagination activePage={5} totalPages={10} changePage={changePage} />,
+    );
+    fireEvent.click(screen.getByTestId("OurPagination-5"));
+    expect(changePage).not.toHaveBeenCalled();
   });
 });
