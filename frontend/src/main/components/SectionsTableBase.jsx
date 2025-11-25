@@ -11,7 +11,7 @@ import OurPagination from "main/components/Utils/OurPagination";
 function SectionsTableBase({ data, columns, testid = "testid" }) {
   const [expanded, setExpanded] = useState({});
   const [page, setPage] = useState(1); // State for current page
-  const pageSize = 10;                 // Limit to 10 items
+  const pageSize = 10; // Limit to 10 items
 
   const altColor = "#e3ebfc";
   const whiteColor = "#ffffff";
@@ -59,7 +59,11 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
             };
             const rowId = `row-${row.id}`;
             return (
-              <tr key={rowId} style={rowStyle} data-testid={`${testid}-${rowId}`}>
+              <tr
+                key={rowId}
+                style={rowStyle}
+                data-testid={`${testid}-${rowId}`}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
