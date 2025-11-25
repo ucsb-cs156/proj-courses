@@ -98,7 +98,7 @@ function SectionsTableBase({ data, columns, testid = "testid" }) {
         </tfoot>
       </Table>
 
-      {totalPages > 0 && (
+      {totalPages > 1 && (
         <OurPagination
           activePage={page}
           changePage={setPage}
