@@ -42,9 +42,7 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 5 (less than or equal to 7)", async () => {
-    render(
-      <PaginationWrapper totalPages={5} />,
-    );
+    render(<PaginationWrapper totalPages={5} />);
 
     checkTestIdsInOrder([
       "OurPagination-prev",
@@ -58,9 +56,7 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 7 (less than or equal to 7)", async () => {
-    render(
-      <PaginationWrapper totalPages={7} />,
-    );
+    render(<PaginationWrapper totalPages={7} />);
 
     checkTestIdsInOrder([
       "OurPagination-prev",
@@ -76,9 +72,7 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12 (greater than 7), initial state (activePage=1)", async () => {
-    render(
-      <PaginationWrapper totalPages={12} />,
-    );
+    render(<PaginationWrapper totalPages={12} />);
     // Expected: 1, 2, 3, 4, 5, ..., 12
     checkTestIdsInOrder([
       "OurPagination-prev",
@@ -94,9 +88,7 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 4", async () => {
-    render(
-      <PaginationWrapper totalPages={12} />,
-    );
+    render(<PaginationWrapper totalPages={12} />);
 
     // Click to page 4
     fireEvent.click(screen.getByTestId("OurPagination-4"));
@@ -116,9 +108,7 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 5 (middle range)", async () => {
-    render(
-      <PaginationWrapper totalPages={12} />,
-    );
+    render(<PaginationWrapper totalPages={12} />);
     fireEvent.click(screen.getByTestId("OurPagination-5"));
     // Expected: 1, ..., 4, 5, 6, ..., 12
     checkTestIdsInOrder([
@@ -135,9 +125,7 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 8 (middle range, next clicks)", async () => {
-    render(
-      <PaginationWrapper totalPages={12} />,
-    );
+    render(<PaginationWrapper totalPages={12} />);
 
     const nextButton = screen.getByTestId("OurPagination-next");
     fireEvent.click(nextButton); // page 2
@@ -198,9 +186,7 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 9 (near end)", async () => {
-    render(
-      <PaginationWrapper totalPages={12} />,
-    );
+    render(<PaginationWrapper totalPages={12} />);
     // Click to page 9 (totalPages - 3)
     // This requires multiple clicks on next or direct jump if available.
     // For simplicity, we'll simulate state by clicking next multiple times
@@ -223,9 +209,7 @@ describe("OurPagination tests", () => {
   });
 
   test("renders correctly for totalPages = 12, activePage = 12 (end)", async () => {
-    render(
-      <PaginationWrapper totalPages={12} />,
-    );
+    render(<PaginationWrapper totalPages={12} />);
     fireEvent.click(screen.getByTestId("OurPagination-12"));
     // Expected: 1, ..., 8, 9, 10, 11, 12
     checkTestIdsInOrder([
@@ -242,9 +226,7 @@ describe("OurPagination tests", () => {
   });
 
   test("navigation: prev button works correctly", async () => {
-    render(
-      <PaginationWrapper totalPages={12} />,
-    );
+    render(<PaginationWrapper totalPages={12} />);
     // Go to page 5
     fireEvent.click(screen.getByTestId("OurPagination-5"));
     expect(screen.getByTestId("OurPagination-5").parentElement).toHaveClass(
@@ -289,9 +271,7 @@ describe("OurPagination tests", () => {
   });
 
   test("navigation: clicking page 1 from a middle page", async () => {
-    render(
-      <PaginationWrapper totalPages={12} />,
-    );
+    render(<PaginationWrapper totalPages={12} />);
     // Go to page 5
     fireEvent.click(screen.getByTestId("OurPagination-5"));
     checkTestIdsInOrder([
@@ -323,9 +303,7 @@ describe("OurPagination tests", () => {
   });
 
   test("checks active class on buttons", async () => {
-    render(
-      <PaginationWrapper totalPages={5} />,
-    );
+    render(<PaginationWrapper totalPages={5} />);
 
     // Initial state: page 1 is active
     expect(screen.getByTestId("OurPagination-1").parentElement).toHaveClass(

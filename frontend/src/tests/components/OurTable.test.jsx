@@ -146,12 +146,16 @@ describe("OurTable tests", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId("paginationTest-header-group-0")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("paginationTest-header-group-0"),
+        ).toBeInTheDocument();
       });
 
       expect(screen.getByTestId("paginationTest-row-0")).toBeInTheDocument();
       expect(screen.getByTestId("paginationTest-row-9")).toBeInTheDocument();
-      expect(screen.queryByTestId("paginationTest-row-10")).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId("paginationTest-row-10"),
+      ).not.toBeInTheDocument();
 
       const nextButton = screen.getByTestId("OurPagination-next");
       fireEvent.click(nextButton);
@@ -160,7 +164,9 @@ describe("OurTable tests", () => {
         expect(screen.getByTestId("paginationTest-row-10")).toBeInTheDocument();
       });
       expect(screen.getByTestId("paginationTest-row-19")).toBeInTheDocument();
-      expect(screen.queryByTestId("paginationTest-row-0")).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId("paginationTest-row-0"),
+      ).not.toBeInTheDocument();
     });
   });
 });

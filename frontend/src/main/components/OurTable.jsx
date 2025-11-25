@@ -32,7 +32,10 @@ function OurTable({ data, columns, testid = "testid", initialState = {} }) {
 
   return (
     <>
-      <table className="table table-striped table-bordered" data-testid={testid}>
+      <table
+        className="table table-striped table-bordered"
+        data-testid={testid}
+      >
         <thead>
           {table.getHeaderGroups().map((headerGroup, i) => (
             <tr
@@ -84,7 +87,10 @@ function OurTable({ data, columns, testid = "testid", initialState = {} }) {
                       // Stryker disable next-line StringLiteral : React key property not exposed in dom
                       key={testId}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   );
                 })}
