@@ -7,6 +7,9 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,4 +32,15 @@ public class UsersController extends ApiController {
     String body = mapper.writeValueAsString(users);
     return ResponseEntity.ok().body(body);
   }
+
+  @Operation(summary = "Get a paginated list of users")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/paged")
+    public Page<User> getUsersPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return userRepository.findAll(pageRequest);
+    }
 }

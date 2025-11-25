@@ -20,6 +20,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest(controllers = UsersController.class)
 @Import(TestConfig.class)
@@ -63,6 +67,46 @@ public class UsersControllerTests extends ControllerTestCase {
     // assert
 
     verify(userRepository, times(1)).findAll();
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @Test
+  public void users_paged__logged_out() throws Exception {
+    mockMvc.perform(get("/api/admin/users/paged"))
+        .andExpect(status().is(403));
+  }
+
+  @WithMockUser(roles = { "USER" })
+  @Test
+  public void users_paged__user_logged_in() throws Exception {
+    mockMvc.perform(get("/api/admin/users/paged"))
+        .andExpect(status().is(403));
+  }
+
+  @WithMockUser(roles = { "ADMIN", "USER" })
+  @Test
+  public void users_paged__admin_logged_in() throws Exception {
+
+    // arrange
+    User u1 = User.builder().id(1L).email("a@ucsb.edu").build();
+    User u2 = User.builder().id(2L).email("b@ucsb.edu").build();
+
+    Page<User> page = new PageImpl<>(Arrays.asList(u1, u2));
+
+    when(userRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+    String expectedJson = mapper.writeValueAsString(page);
+
+    // act
+    MvcResult response =
+        mockMvc.perform(get("/api/admin/users/paged?page=0&size=10"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    verify(userRepository, times(1)).findAll(any(Pageable.class));
+
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
   }
