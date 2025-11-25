@@ -11,16 +11,21 @@ import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
 import edu.ucsb.cs156.courses.services.UCSBGradeHistoryServiceImpl;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import edu.ucsb.cs156.courses.testconfig.TestConfig;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-@RestClientTest(UploadGradeDataJob.class)
+@SpringBootTest(classes = edu.ucsb.cs156.courses.CoursesApplication.class)
 @AutoConfigureDataJpa
+@ActiveProfiles("test")
+@Import(TestConfig.class)
 public class UploadGradeDataJobTests {
 
   @MockBean GradeHistoryRepository gradeHistoryRepository;
