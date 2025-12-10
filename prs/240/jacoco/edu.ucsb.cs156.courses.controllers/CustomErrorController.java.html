@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomErrorController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">CustomErrorController.java</span></div><h1>CustomErrorController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * Custom error controller that replaces the default white label error page with a more
+ * user-friendly error page.
+ */
+@Controller
+<span class="fc" id="L16">public class CustomErrorController implements ErrorController {</span>
+
+  /**
+   * Handles error requests and returns a custom error page.
+   *
+   * @param request the HTTP request
+   * @param model the model to pass attributes to the view
+   * @return the name of the error view template
+   */
+  @RequestMapping(&quot;/error&quot;)
+  public String handleError(HttpServletRequest request, Model model) {
+    // Get error status
+<span class="fc" id="L28">    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);</span>
+    int statusCode =
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        (status != null)</span>
+<span class="fc" id="L31">            ? Integer.parseInt(status.toString())</span>
+<span class="fc" id="L32">            : 500; // Default to internal server error</span>
+
+    // Get error message
+<span class="fc bfc" id="L35" title="All 4 branches covered.">    String message =</span>
+        switch (statusCode) {
+<span class="fc" id="L37">          case 404 -&gt; &quot;The page you are looking for might have been removed or is temporarily unavailable&quot;;</span>
+<span class="fc" id="L38">          case 403 -&gt; &quot;You don't have permission to access this resource&quot;;</span>
+<span class="fc" id="L39">          case 500 -&gt; &quot;We're sorry, something went wrong on our end&quot;;</span>
+<span class="fc" id="L40">          default -&gt; &quot;An unexpected error occurred&quot;;</span>
+        };
+
+    // Get exception details for debugging
+<span class="fc" id="L44">    Throwable throwable = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);</span>
+
+    // Add attributes to the model
+<span class="fc" id="L47">    model.addAttribute(&quot;status&quot;, statusCode);</span>
+<span class="fc" id="L48">    model.addAttribute(&quot;error&quot;, HttpStatus.valueOf(statusCode).getReasonPhrase());</span>
+<span class="fc" id="L49">    model.addAttribute(&quot;message&quot;, message);</span>
+<span class="fc" id="L50">    model.addAttribute(</span>
+        &quot;exceptionMessage&quot;,
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        throwable != null ? throwable.getMessage() : &quot;No exception details available&quot;);</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    model.addAttribute(&quot;stackTrace&quot;, throwable != null ? stackToString(throwable) : &quot;&quot;);</span>
+<span class="fc" id="L54">    model.addAttribute(&quot;timestamp&quot;, java.time.LocalDateTime.now());</span>
+<span class="fc" id="L55">    model.addAttribute(&quot;path&quot;, request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));</span>
+
+<span class="fc" id="L57">    return &quot;error&quot;;</span>
+  }
+
+  /**
+   * Converts a Throwable's stack trace to a single string with line breaks.
+   *
+   * @param t the Throwable whose stack trace is to be converted
+   * @return a String representation of the stack trace
+   */
+  private String stackToString(Throwable t) {
+<span class="fc" id="L67">    StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    for (StackTraceElement e : t.getStackTrace()) {</span>
+<span class="fc" id="L69">      sb.append(e.toString()).append(&quot;\n&quot;);</span>
+    }
+<span class="fc" id="L71">    return sb.toString();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
