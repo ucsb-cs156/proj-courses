@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsersController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">UsersController.java</span></div><h1>UsersController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Arrays;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = &quot;User information (admin only)&quot;)
+@RequestMapping(&quot;/api/admin/users&quot;)
+@RestController
+<span class="fc" id="L23">public class UsersController extends ApiController {</span>
+  @Autowired UserRepository userRepository;
+
+  @Operation(summary = &quot;Get a paginated list of users&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @GetMapping(value = &quot;/paginated&quot;, produces = &quot;application/json&quot;)
+  public Page&lt;User&gt; getUsersPaginated(
+      @Parameter(
+              name = &quot;page&quot;,
+              description = &quot;what page of the data&quot;,
+              example = &quot;0&quot;,
+              required = true)
+          @RequestParam
+          int page,
+      @Parameter(
+              name = &quot;pageSize&quot;,
+              description = &quot;size of each page&quot;,
+              example = &quot;10&quot;,
+              required = true)
+          @RequestParam
+          int pageSize,
+      @Parameter(
+              name = &quot;sortField&quot;,
+              description = &quot;sort field&quot;,
+              example = &quot;email&quot;,
+              required = false)
+          @RequestParam(defaultValue = &quot;id&quot;)
+          String sortField,
+      @Parameter(
+              name = &quot;sortDirection&quot;,
+              description = &quot;sort direction&quot;,
+              example = &quot;ASC&quot;,
+              required = false)
+          @RequestParam(defaultValue = &quot;ASC&quot;)
+          String sortDirection) {
+
+<span class="fc" id="L59">    List&lt;String&gt; allowedSortFields = Arrays.asList(&quot;id&quot;, &quot;email&quot;, &quot;givenName&quot;, &quot;familyName&quot;);</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (!allowedSortFields.contains(sortField)) {</span>
+<span class="fc" id="L62">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L63">          String.format(</span>
+              &quot;%s is not a valid sort field. Valid values are %s&quot;, sortField, allowedSortFields));
+    }
+
+<span class="fc" id="L67">    List&lt;String&gt; allowedSortDirections = Arrays.asList(&quot;ASC&quot;, &quot;DESC&quot;);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    if (!allowedSortDirections.contains(sortDirection)) {</span>
+<span class="fc" id="L69">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L70">          String.format(</span>
+              &quot;%s is not a valid sort direction. Valid values are %s&quot;,
+              sortDirection, allowedSortDirections));
+    }
+
+<span class="fc" id="L75">    Direction sortDirectionObject = Direction.ASC;</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">    if (sortDirection.equals(&quot;DESC&quot;)) {</span>
+<span class="fc" id="L77">      sortDirectionObject = Direction.DESC;</span>
+    }
+
+<span class="fc" id="L80">    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);</span>
+<span class="fc" id="L81">    return userRepository.findAll(pageRequest);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
