@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UCSBCurriculumService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.services</a> &gt; <span class="el_source">UCSBCurriculumService.java</span></div><h1>UCSBCurriculumService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.services;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.CoursePage;
+import edu.ucsb.cs156.courses.documents.GERequirement;
+import edu.ucsb.cs156.courses.documents.Primary;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+/** Service object that wraps the UCSB Academic Curriculum API */
+@Service
+<span class="fc" id="L29">@Slf4j</span>
+public class UCSBCurriculumService {
+
+  @Autowired private ObjectMapper objectMapper;
+
+  @Value(&quot;${app.ucsb.api.consumer_key}&quot;)
+  private String apiKey;
+
+<span class="fc" id="L37">  private RestTemplate restTemplate = new RestTemplate();</span>
+
+<span class="fc" id="L39">  public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) throws Exception {</span>
+<span class="fc" id="L40">    restTemplate = restTemplateBuilder.build();</span>
+<span class="fc" id="L41">  }</span>
+
+  public static final String CURRICULUM_ENDPOINT =
+      &quot;https://api.ucsb.edu/academics/curriculums/v1/classes/search&quot;;
+
+  public static final String SUBJECTS_ENDPOINT =
+      &quot;https://api.ucsb.edu/students/lookups/v1/subjects&quot;;
+
+  public static final String SECTION_ENDPOINT =
+      &quot;https://api.ucsb.edu/academics/curriculums/v1/classsection/{quarter}/{enrollcode}&quot;;
+
+  public static final String ALL_SECTIONS_ENDPOINT =
+      &quot;https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}&quot;;
+
+  public static final String FINALS_ENDPOINT =
+      &quot;https://api.ucsb.edu/academics/curriculums/v3/finals&quot;;
+
+  public static final String GE_ENDPOINT = &quot;https://api.ucsb.edu/students/lookups/v1/requirements&quot;;
+
+  public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
+
+<span class="fc" id="L62">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L63">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L64">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L65">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L66">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L68">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L70">    String params =</span>
+<span class="fc" id="L71">        String.format(</span>
+            &quot;?quarter=%s&amp;subjectCode=%s&amp;objLevelCode=%s&amp;pageNumber=%d&amp;pageSize=%d&amp;includeClassSections=%s&quot;,
+<span class="fc" id="L73">            quarter, subjectArea, courseLevel, 1, 100, &quot;true&quot;);</span>
+<span class="fc" id="L74">    String url = CURRICULUM_ENDPOINT + params;</span>
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">    if (courseLevel.equals(&quot;A&quot;)) {</span>
+<span class="fc" id="L77">      params =</span>
+<span class="fc" id="L78">          String.format(</span>
+              &quot;?quarter=%s&amp;subjectCode=%s&amp;pageNumber=%d&amp;pageSize=%d&amp;includeClassSections=%s&quot;,
+<span class="fc" id="L80">              quarter, subjectArea, 1, 100, &quot;true&quot;);</span>
+<span class="fc" id="L81">      url = CURRICULUM_ENDPOINT + params;</span>
+    }
+
+<span class="fc" id="L84">    log.info(&quot;url=&quot; + url);</span>
+
+<span class="fc" id="L86">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L87">    MediaType contentType = null;</span>
+<span class="fc" id="L88">    HttpStatus statusCode = null;</span>
+
+<span class="fc" id="L90">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L91">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L92">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L93">    retVal = re.getBody();</span>
+
+<span class="fc" id="L95">    log.trace(&quot;json: {}&quot;, retVal);</span>
+<span class="fc" id="L96">    log.info(&quot;contentType: {} statusCode: {}&quot;, contentType, statusCode);</span>
+<span class="fc" id="L97">    return retVal;</span>
+  }
+
+  public List&lt;ConvertedSection&gt; getConvertedSections(
+      String subjectArea, String quarter, String courseLevel) throws Exception {
+<span class="fc" id="L102">    String json = getJSON(subjectArea, quarter, courseLevel);</span>
+<span class="fc" id="L103">    CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);</span>
+<span class="fc" id="L104">    List&lt;ConvertedSection&gt; result = coursePage.convertedSections();</span>
+<span class="fc" id="L105">    return result;</span>
+  }
+
+  /**
+   * This method retrieves course information and reformats it so that each primary is a single
+   * object, that has a list of all of it's secondaries.
+   *
+   * &lt;p&gt;As a reminder, the UCSB course registration systems (GOLD, Blue, Star, etc.) treat all
+   * courses as &quot;sections&quot;, even what we typically call &quot;lectures&quot;. In the database, some courses
+   * have both primary and secondary sections. Primary sections have section numbers ending in 00
+   * (e.g. 100, 200, 300, up to 9900), while secondaries have numbers ending with 01, 02, 03, etc.
+   * and &quot;belong&quot; with a primary.
+   *
+   * &lt;p&gt;What we typically refer to as &quot;lectures&quot; are primary sections ending in 00 (e.g. 100, 200,
+   * 300). What we typically refer to as discussion sections are secondaries and end with 01, 02,
+   * 03, etc.
+   *
+   * &lt;p&gt;
+   *
+   * &lt;p&gt;The UCSB API &lt;i&gt;almost&lt;/i&gt; does this, but not quite. It returns a list of all sections, but
+   * does not group them into primaries and secondaries. This method relies on the &lt;code&gt;
+   * getPrimaries&lt;/code&gt; method of the &lt;code&gt;Page&lt;/code&gt; class to reformat the data so that each
+   * primary section is a single object, with a list of all of its secondaries.
+   *
+   * @param subjectArea
+   * @param quarter
+   * @param courseLevel
+   * @return a list of Primaries
+   * @throws Exception
+   */
+  public List&lt;Primary&gt; getPrimaries(String subjectArea, String quarter, String courseLevel)
+      throws Exception {
+<span class="fc" id="L137">    String json = getJSON(subjectArea, quarter, courseLevel);</span>
+<span class="fc" id="L138">    CoursePage coursePage = objectMapper.readValue(json, CoursePage.class);</span>
+<span class="fc" id="L139">    List&lt;Primary&gt; result = coursePage.getPrimaries();</span>
+<span class="fc" id="L140">    return result;</span>
+  }
+
+  public String getSectionJSON(String subjectArea, String quarter, String courseLevel)
+      throws Exception {
+<span class="fc" id="L145">    List&lt;ConvertedSection&gt; l = getConvertedSections(subjectArea, quarter, courseLevel);</span>
+
+<span class="fc" id="L147">    String arrayToJson = objectMapper.writeValueAsString(l);</span>
+
+<span class="fc" id="L149">    return arrayToJson;</span>
+  }
+
+  public String getSubjectsJSON() throws Exception {
+
+<span class="fc" id="L154">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L155">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L156">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L157">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L158">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L160">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L162">    log.info(&quot;url=&quot; + SUBJECTS_ENDPOINT);</span>
+
+<span class="fc" id="L164">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L165">    MediaType contentType = null;</span>
+<span class="fc" id="L166">    HttpStatus statusCode = null;</span>
+
+<span class="fc" id="L168">    ResponseEntity&lt;String&gt; re =</span>
+<span class="fc" id="L169">        restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L170">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L171">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L172">    retVal = re.getBody();</span>
+
+<span class="fc" id="L174">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L175">    return retVal;</span>
+  }
+
+  /**
+   * This method retrieves exactly one section matching the enrollCode and quarter arguments, if
+   * such a section exists.
+   */
+  public String getSection(String enrollCode, String quarter) throws Exception {
+
+<span class="fc" id="L184">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L185">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L186">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L187">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L188">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L190">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L192">    String url = SECTION_ENDPOINT;</span>
+
+<span class="fc" id="L194">    log.info(&quot;url=&quot; + url);</span>
+
+<span class="fc" id="L196">    Map&lt;String, String&gt; params = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L197">    params.put(&quot;quarter&quot;, quarter);</span>
+<span class="fc" id="L198">    params.put(&quot;enrollcode&quot;, enrollCode);</span>
+
+<span class="fc" id="L200">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L201">    MediaType contentType = null;</span>
+<span class="fc" id="L202">    HttpStatus statusCode = null;</span>
+
+<span class="fc" id="L204">    ResponseEntity&lt;String&gt; re =</span>
+<span class="fc" id="L205">        restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);</span>
+<span class="fc" id="L206">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L207">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L208">    retVal = re.getBody();</span>
+
+<span class="fc bfc" id="L210" title="All 2 branches covered.">    if (retVal.equals(&quot;null&quot;)) {</span>
+<span class="fc" id="L211">      retVal = &quot;{\&quot;error\&quot;: \&quot;Enroll code doesn't exist in that quarter.\&quot;}&quot;;</span>
+    }
+
+<span class="fc" id="L214">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L215">    return retVal;</span>
+  }
+
+  /**
+   * This method retrieves all of the sections related to a certain enroll code. For example, if the
+   * enrollCode is for a discussion section, the lecture section and all related discussion sections
+   * will also be returned.
+   */
+  public String getAllSections(String enrollCode, String quarter) throws Exception {
+
+<span class="fc" id="L225">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L226">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L227">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L228">    headers.set(&quot;ucsb-api-version&quot;, &quot;3.0&quot;);</span>
+<span class="fc" id="L229">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L231">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L233">    String url = ALL_SECTIONS_ENDPOINT;</span>
+
+<span class="fc" id="L235">    log.info(&quot;url=&quot; + url);</span>
+
+<span class="fc" id="L237">    Map&lt;String, String&gt; params = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L238">    params.put(&quot;quarter&quot;, quarter);</span>
+<span class="fc" id="L239">    params.put(&quot;enrollcode&quot;, enrollCode);</span>
+
+<span class="fc" id="L241">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L242">    MediaType contentType = null;</span>
+<span class="fc" id="L243">    HttpStatus statusCode = null;</span>
+
+<span class="fc" id="L245">    ResponseEntity&lt;String&gt; re =</span>
+<span class="fc" id="L246">        restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);</span>
+<span class="fc" id="L247">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L248">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L249">    retVal = re.getBody();</span>
+
+<span class="fc bfc" id="L251" title="All 2 branches covered.">    if (retVal.equals(&quot;null&quot;)) {</span>
+<span class="fc" id="L252">      retVal = &quot;{\&quot;error\&quot;: \&quot;Enroll code doesn't exist in that quarter.\&quot;}&quot;;</span>
+    }
+
+<span class="fc" id="L255">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L256">    return retVal;</span>
+  }
+
+  public String getJSONbyQtrEnrollCd(String quarter, String enrollCd) throws Exception {
+
+<span class="fc" id="L261">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L262">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L263">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L264">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L265">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L267">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L269">    String url =</span>
+        &quot;https://api.ucsb.edu/academics/curriculums/v3/classsection/&quot; + quarter + &quot;/&quot; + enrollCd;
+
+<span class="fc" id="L272">    log.info(&quot;url=&quot; + url);</span>
+
+<span class="fc" id="L274">    String retVal = &quot;&quot;;</span>
+<span class="fc" id="L275">    MediaType contentType = null;</span>
+<span class="fc" id="L276">    HttpStatus statusCode = null;</span>
+
+<span class="fc" id="L278">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L279">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L280">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L281">    retVal = re.getBody();</span>
+
+<span class="fc" id="L283">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L284">    return retVal;</span>
+  }
+
+  public String getFinalsInfo(String quarter, String enrollCd) throws Exception {
+<span class="fc" id="L288">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L289">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L290">    headers.set(&quot;ucsb-api-version&quot;, &quot;3.0&quot;);</span>
+<span class="fc" id="L291">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L293">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L295">    String params = String.format(&quot;?quarter=%s&amp;enrollCode=%s&quot;, quarter, enrollCd);</span>
+<span class="fc" id="L296">    String url = FINALS_ENDPOINT + params;</span>
+
+<span class="fc" id="L298">    log.info(&quot;url=&quot; + url);</span>
+
+    String retVal;
+    MediaType contentType;
+    HttpStatus statusCode;
+
+<span class="fc" id="L304">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L305">    contentType = re.getHeaders().getContentType();</span>
+<span class="fc" id="L306">    statusCode = (HttpStatus) re.getStatusCode();</span>
+<span class="fc" id="L307">    retVal = re.getBody();</span>
+
+<span class="fc" id="L309">    log.info(&quot;json: {} contentType: {} statusCode: {}&quot;, retVal, contentType, statusCode);</span>
+<span class="fc" id="L310">    return retVal;</span>
+  }
+
+  public String getGeneralEducationInfo() throws Exception {
+<span class="fc" id="L314">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L315">    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L316">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L317">    headers.set(&quot;ucsb-api-version&quot;, &quot;1.0&quot;);</span>
+<span class="fc" id="L318">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+
+<span class="fc" id="L320">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(&quot;body&quot;, headers);</span>
+
+<span class="fc" id="L322">    log.info(&quot;Fetching GE areas from {}&quot;, GE_ENDPOINT);</span>
+<span class="fc" id="L323">    ResponseEntity&lt;String&gt; response =</span>
+<span class="fc" id="L324">        restTemplate.exchange(GE_ENDPOINT, HttpMethod.GET, entity, String.class);</span>
+
+<span class="fc" id="L326">    log.debug(&quot;GE areas JSON: {}&quot;, response.getBody());</span>
+<span class="fc" id="L327">    return response.getBody();</span>
+  }
+
+  public List&lt;String&gt; getRequirementCodesByCollege(String collegeCode) throws Exception {
+<span class="fc" id="L331">    String json = getGeneralEducationInfo();</span>
+
+<span class="fc" id="L333">    List&lt;GERequirement&gt; allAreas =</span>
+<span class="fc" id="L334">        objectMapper.readValue(json, new TypeReference&lt;List&lt;GERequirement&gt;&gt;() {});</span>
+
+<span class="fc" id="L336">    return allAreas.stream()</span>
+<span class="fc" id="L337">        .filter(area -&gt; area.getCollegeCode().equalsIgnoreCase(collegeCode))</span>
+<span class="fc" id="L338">        .map(GERequirement::getRequirementCode)</span>
+<span class="fc" id="L339">        .distinct()</span>
+<span class="fc" id="L340">        .collect(Collectors.toList());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

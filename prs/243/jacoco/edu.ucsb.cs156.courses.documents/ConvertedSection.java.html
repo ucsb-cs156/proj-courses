@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConvertedSection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.documents</a> &gt; <span class="el_source">ConvertedSection.java</span></div><h1>ConvertedSection.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.documents;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = &quot;courses&quot;)
+public class ConvertedSection {
+  private ObjectId _id;
+  private CourseInfo courseInfo;
+  private Section section;
+
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+
+<span class="fc" id="L25">    ConvertedSection newConvertedSection = new ConvertedSection();</span>
+
+<span class="fc" id="L27">    newConvertedSection.set_id(this._id);</span>
+
+<span class="fc" id="L29">    CourseInfo newCourseInfo = (CourseInfo) this.getCourseInfo().clone();</span>
+<span class="fc" id="L30">    newConvertedSection.setCourseInfo(newCourseInfo);</span>
+
+<span class="fc" id="L32">    Section newSection = (Section) this.getSection().clone();</span>
+<span class="fc" id="L33">    newConvertedSection.setSection(newSection);</span>
+
+<span class="fc" id="L35">    return newConvertedSection;</span>
+  }
+
+  @JsonIgnore
+  public EnrollmentDataPoint getEnrollmentDataPoint() {
+    EnrollmentDataPoint edp =
+<span class="fc" id="L41">        EnrollmentDataPoint.builder()</span>
+<span class="fc" id="L42">            .yyyyq(this.getCourseInfo().getQuarter())</span>
+<span class="fc" id="L43">            .enrollCd(this.getSection().getEnrollCode())</span>
+<span class="fc" id="L44">            .enrollment(this.getSection().getEnrolledTotal())</span>
+<span class="fc" id="L45">            .courseId(this.getCourseInfo().getCourseId())</span>
+<span class="fc" id="L46">            .section(this.getSection().getSection())</span>
+<span class="fc" id="L47">            .build();</span>
+<span class="fc" id="L48">    return edp;</span>
+  }
+
+<span class="fc" id="L51">  public static class ConvertedSectionSortDescendingByQuarterComparator</span>
+      implements java.util.Comparator&lt;ConvertedSection&gt; {
+    @Override
+    public int compare(ConvertedSection o1, ConvertedSection o2) {
+<span class="fc" id="L55">      return o2.getCourseInfo().getQuarter().compareTo(o1.getCourseInfo().getQuarter());</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
