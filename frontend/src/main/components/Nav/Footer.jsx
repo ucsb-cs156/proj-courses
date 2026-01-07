@@ -29,26 +29,17 @@ export default function Footer(systemInfo) {
           </a>
           . Check out the source code on
           {space}
-          {systemInfo.systemInfo && (
-            <a
-              data-testid="footer-source-code-link"
-              href={systemInfo.systemInfo.sourceRepo}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub
-            </a>
-          )}
-          {!systemInfo.systemInfo && (
-            <a
-              data-testid="footer-source-code-link"
-              href={"https://github.com/ucsb-cs156-f22/f22-5pm-courses"}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub
-            </a>
-          )}
+          <a
+            data-testid="footer-source-code-link"
+            href={
+              systemInfo?.systemInfo?.sourceRepo ||
+              "https://github.com/ucsb-cs156/proj-courses"
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
           ! This is not an official source of UCSB course information. An
           official source can be found
           {space}

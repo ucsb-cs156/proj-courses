@@ -16,7 +16,6 @@ import PersonalSchedulesIndexPage from "main/pages/PersonalSchedules/PersonalSch
 import PersonalSchedulesCreatePage from "main/pages/PersonalSchedules/PersonalSchedulesCreatePage";
 import PersonalSchedulesEditPage from "main/pages/PersonalSchedules/PersonalSchedulesEditPage";
 import PersonalSchedulesDetailsPage from "main/pages/PersonalSchedules/PersonalSchedulesDetailsPage";
-import PersonalSchedulesWeeklyViewPage from "main/pages/PersonalSchedules/PersonalSchedulesWeeklyViewPage";
 import SectionSearchesIndexPageLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageLoggedIn";
 import SectionSearchesIndexPageNotLoggedIn from "main/pages/SectionSearches/SectionSearchesIndexPageNotLoggedIn";
 
@@ -84,11 +83,6 @@ function App() {
               exact
               path="/personalschedules/details/:id"
               element={<PersonalSchedulesDetailsPage />}
-            />
-            <Route
-              exact
-              path="/personalschedules/weekly/:id"
-              element={<PersonalSchedulesWeeklyViewPage />}
             />
           </>
         )}

@@ -145,4 +145,33 @@ public class UCSBCurriculumControllerTests extends ControllerTestCase {
     String body = response.getResponse().getContentAsString();
     assertEquals(objectMapper.writeValueAsString(expectedConvertedPrimaries), body);
   }
+
+  @Test
+  public void test_getPrimariesGE() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper();
+    String quarter = "20251";
+    String area = "A1";
+    // fixture classes don't technically match input GE area/quarter,
+    // but that relies on underlying UCSB API, so no need to test in this controller
+    String expectedCoursePageJSON = CoursePageFixtures.COURSE_PAGE_JSON;
+    CoursePage expectedCoursePage =
+        objectMapper.readValue(expectedCoursePageJSON, CoursePage.class);
+    List<Primary> expectedConvertedPrimaries = expectedCoursePage.getPrimaries();
+
+    when(ucsbCurriculumService.getPrimariesByGE(quarter, area))
+        .thenReturn(expectedConvertedPrimaries);
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/public/primariesge")
+                    .param("qtr", quarter)
+                    .param("area", area)
+                    .contentType("application/json"))
+            .andExpect(status().isOk())
+            .andExpect(content().json(objectMapper.writeValueAsString(expectedConvertedPrimaries)))
+            .andReturn();
+
+    String body = response.getResponse().getContentAsString();
+    assertEquals(objectMapper.writeValueAsString(expectedConvertedPrimaries), body);
+  }
 }

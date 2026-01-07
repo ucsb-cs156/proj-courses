@@ -103,7 +103,7 @@ export const formatInfoLink = (row) =>
   `/coursedetails/${getQuarter(row)}/${getSectionField(row, "enrollCode")}`;
 
 export const renderInfoLink = (row, testid) => (
-  <p align="center">
+  <p className="text-center">
     <a
       href={formatInfoLink(row)}
       data-testid={`${testid}-row-${row.id}-col-info-link`}
@@ -112,6 +112,19 @@ export const renderInfoLink = (row, testid) => (
       style={{ color: "black", backgroundColor: "inherit" }}
     >
       <FontAwesomeIcon icon={faInfoCircle} />
+    </a>
+  </p>
+);
+
+export const renderDetailPageLink = (row, testid) => (
+  <p className="text-center">
+    <a
+      href={formatInfoLink(row)}
+      data-testid={`${testid}-row-${row.id}-col-detail-link`}
+      target={"_blank"}
+      rel="noopener noreferrer"
+    >
+      {row.original.courseId}
     </a>
   </p>
 );
