@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -157,9 +157,7 @@
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -169,22 +167,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -207,7 +194,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,6 +208,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -263,6 +259,8 @@ import PersonalSectionsTable from "main/components/PersonalSections/PersonalSect
 import { useBackend } from "main/utils/useBackend";
 import { Button, Row, Col } from "react-bootstrap";
 import { useCurrentUser } from "main/utils/currentUser";
+import PersonalSchedulePanel from "main/components/PersonalSchedules/PersonalSchedulePanel";
+import { transformToEvents } from "main/utils/dateUtils";
 &nbsp;
 export default function PersonalSchedulesDetailsPage() {
   let { id } = useParams();
@@ -310,17 +308,6 @@ export default function PersonalSchedulesDetailsPage() {
     );
   };
 &nbsp;
-  const weeklyViewButton = () =&gt; {
-    return (
-      &lt;Button
-        variant="primary"
-        onClick={() =&gt; navigate(`/personalschedules/weekly/${id}`)}
-      &gt;
-        View Weekly Schedule
-      &lt;/Button&gt;
-    );
-  };
-&nbsp;
   return (
     &lt;BasicLayout&gt;
       &lt;div className="pt-2"&gt;
@@ -336,7 +323,6 @@ export default function PersonalSchedulesDetailsPage() {
             &lt;Col&gt;
               &lt;h2&gt;Sections in Personal Schedule&lt;/h2&gt;
             &lt;/Col&gt;
-            &lt;Col xs="auto"&gt;{weeklyViewButton()}&lt;/Col&gt;
           &lt;/Row&gt;
           {personalSection &amp;&amp; (
             &lt;PersonalSectionsTable
@@ -344,6 +330,14 @@ export default function PersonalSchedulesDetailsPage() {
               psId={id}
               currentUser={currentUser}
             /&gt;
+          )}
+          {personalSection &amp;&amp; (
+            &lt;&gt;
+              &lt;h2 className="mt-4"&gt;Weekly Schedule&lt;/h2&gt;
+              &lt;PersonalSchedulePanel
+                Events={transformToEvents(personalSection)}
+              /&gt;
+            &lt;/&gt;
           )}
         &lt;/div&gt;
         {backButton()}
@@ -358,7 +352,7 @@ export default function PersonalSchedulesDetailsPage() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-10T17:17:27.092Z
+                at 2026-01-07T19:42:02.669Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
