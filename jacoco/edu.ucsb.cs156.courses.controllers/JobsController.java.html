@@ -239,30 +239,29 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam(defaultValue = &quot;DESC&quot;)
           String sortDirection) {
 
-<span class="fc" id="L242">    List&lt;String&gt; allowedSortFields =</span>
-<span class="fc" id="L243">        Arrays.asList(&quot;createdBy&quot;, &quot;status&quot;, &quot;createdAt&quot;, &quot;completedAt&quot;);</span>
+<span class="fc" id="L242">    List&lt;String&gt; allowedSortFields = Arrays.asList(&quot;createdBy&quot;, &quot;status&quot;, &quot;createdAt&quot;, &quot;updatedAt&quot;);</span>
 
-<span class="fc bfc" id="L245" title="All 2 branches covered.">    if (!allowedSortFields.contains(sortField)) {</span>
-<span class="fc" id="L246">      throw new IllegalArgumentException(</span>
-<span class="fc" id="L247">          String.format(</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">    if (!allowedSortFields.contains(sortField)) {</span>
+<span class="fc" id="L245">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L246">          String.format(</span>
               &quot;%s is not a valid sort field. Valid values are %s&quot;, sortField, allowedSortFields));
     }
 
-<span class="fc" id="L251">    List&lt;String&gt; allowedSortDirections = Arrays.asList(&quot;ASC&quot;, &quot;DESC&quot;);</span>
-<span class="fc bfc" id="L252" title="All 2 branches covered.">    if (!allowedSortDirections.contains(sortDirection)) {</span>
-<span class="fc" id="L253">      throw new IllegalArgumentException(</span>
-<span class="fc" id="L254">          String.format(</span>
+<span class="fc" id="L250">    List&lt;String&gt; allowedSortDirections = Arrays.asList(&quot;ASC&quot;, &quot;DESC&quot;);</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">    if (!allowedSortDirections.contains(sortDirection)) {</span>
+<span class="fc" id="L252">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L253">          String.format(</span>
               &quot;%s is not a valid sort direction. Valid values are %s&quot;,
               sortDirection, allowedSortDirections));
     }
 
-<span class="fc" id="L259">    Direction sortDirectionObject = Direction.DESC;</span>
-<span class="fc bfc" id="L260" title="All 2 branches covered.">    if (sortDirection.equals(&quot;ASC&quot;)) {</span>
-<span class="fc" id="L261">      sortDirectionObject = Direction.ASC;</span>
+<span class="fc" id="L258">    Direction sortDirectionObject = Direction.DESC;</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">    if (sortDirection.equals(&quot;ASC&quot;)) {</span>
+<span class="fc" id="L260">      sortDirectionObject = Direction.ASC;</span>
     }
 
-<span class="fc" id="L264">    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);</span>
-<span class="fc" id="L265">    return jobsRepository.findAll(pageRequest);</span>
+<span class="fc" id="L263">    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);</span>
+<span class="fc" id="L264">    return jobsRepository.findAll(pageRequest);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
