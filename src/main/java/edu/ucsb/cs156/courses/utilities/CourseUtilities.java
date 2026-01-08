@@ -3,7 +3,8 @@ package edu.ucsb.cs156.courses.utilities;
 /** static utility methods for dealing with courses */
 public class CourseUtilities {
 
-  // Utility class; this allows jacoco to be satisified that constructors are covered.
+  // Utility class; this allows jacoco to be satisified that constructors are
+  // covered.
   private CourseUtilities() {}
 
   /**
@@ -46,5 +47,21 @@ public class CourseUtilities {
       ;
     }
     return result.trim();
+  }
+
+  /**
+   * Convert a quarter string (e.g., "Winter", "Spring") to its corresponding digit.
+   *
+   * @param quarter the quarter string (e.g., "Winter", "Spring")
+   * @return the digit representing the quarter (1-4), or 0 if invalid
+   */
+  public static String quarterToDigit(String quarter) {
+    return switch (quarter) {
+      case "Winter" -> "1";
+      case "Spring" -> "2";
+      case "Summer" -> "3";
+      case "Fall" -> "4";
+      default -> "0";
+    };
   }
 }
