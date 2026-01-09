@@ -44,6 +44,7 @@ jobs:
           # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           workingDir: frontend
+          forceRebuild: true
       - name: Echo output
         run: |
           echo "Chromatic URL: ${{ steps.run_chromatic.outputs.url }}"
@@ -56,12 +57,17 @@ jobs:
           echo "<meta http-equiv=refresh content=0;url=${{steps.run_chromatic.outputs.storybookUrl}}>" > chromatic_static/index.html
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+        if: always() # always upload artifacts, even if tests fail
+        uses: Wandalen/wretry.action@master
         with:
-            branch: gh-pages # The branch the action should deploy to.
-            folder: frontend/chromatic_static # source
-            clean: true # Automatically remove deleted files from the deploy branch
-            target-folder: chromatic # destination 
-       
-     
+          action: JamesIves/github-pages-deploy-action@v4
+          attempt_limit: 3
+          attempt_delay: 5000
+          with: |
+              branch: gh-pages # The branch the action should deploy to.
+              folder: frontend/chromatic_static # source
+              clean: true # Automatically remove deleted files from the deploy branch
+              target-folder: chromatic # destination 
+        
+      
    

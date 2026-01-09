@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: "40-check-production-build: Check Production Build (if this fails, deploying to Dokku will fail)"
+name: "41-integration: Integration tests"
 
 env:
   # See: https://github.com/actions/setup-java#supported-distributions
@@ -9,22 +9,20 @@ env:
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths: [src/**, pom.xml, lombok.config, frontend/**]
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths: [src/**, pom.xml, lombok.config, frontend/**]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+    
     steps:
-    - uses: szenius/set-timezone@v2.0
-      with:
-        timezoneLinux: "America/Los_Angeles"
     - uses: actions/checkout@v4
+
     - name: Set up Java (version from .java-version file)
       uses: actions/setup-java@v4
       with:
@@ -32,10 +30,9 @@ jobs:
          java-version-file: ./.java-version
          cache: 'maven'
          cache-dependency-path: 'pom.xml' 
-  
-    - name: Build with Maven
-      env:
-        PRODUCTION: true
-      run: mvn -ntp -DskipTests clean dependency:list install
 
-  
+    - name: Run IT tests with maven
+      run: |
+        INTEGRATION=true mvn -ntp -B test-compile failsafe:integration-test failsafe:verify
+
+      

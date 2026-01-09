@@ -7,13 +7,12 @@ on:
     branches: [ main ]
     paths:
       - 'src/**'
-      - 'pom.xml'   
-      - '.github/workflows/58-javadoc-pr.yml' 
+      - 'pom.xml'    
       
 env:
   GH_TOKEN: ${{ github.token }}
-  # See: https://github.com/actions/setup-java#supported-distributions
   JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }} 
+
 
 permissions:
   contents: write
@@ -72,23 +71,30 @@ jobs:
         token: ${{ github.token }}
 
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
          distribution: ${{ env.JAVA_DISTRIBUTION }} 
          java-version-file: ./.java-version
          cache: 'maven'
          cache-dependency-path: 'pom.xml' 
-  
+         
     - name: Build javadoc
-      run: mvn -DskipTests javadoc:javadoc
+      run: |
+         mkdir -p target/reports/apidocs
+         mvn -ntp -DskipTests javadoc:javadoc
  
-    - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@v4
+    - name: Deploy 🚀    
+      if: always() # always upload artifacts, even if tests fail
+      uses: Wandalen/wretry.action@master
       with:
-        branch: gh-pages # The branch the action should deploy to.
-        folder: target/reports/apidocs # The folder where mvn javadoc:javadoc outputs the javadoc files
-        clean: true # Automatically remove deleted files from the deploy branch
-        target-folder: prs/${{ needs.get-pr-num.outputs.pr_number }}/javadoc # The folder that we serve our javadoc files from 
+        action: JamesIves/github-pages-deploy-action@v4
+        attempt_limit: 3
+        attempt_delay: 5000
+        with: |        
+          branch: gh-pages # The branch the action should deploy to.
+          folder: target/reports/apidocs # The folder where mvn -ntp javadoc:javadoc outputs the javadoc files
+          clean: true # Automatically remove deleted files from the deploy branch
+          target-folder: prs/${{ needs.get-pr-num.outputs.pr_number }}/javadoc # The folder that we serve our javadoc files from 
   
   
  
