@@ -16,5 +16,6 @@ jobs:
     uses: ucsb-cs156/workflows/.github/workflows/13-backend-incremental-pitest.yml@main
     with:
       JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
+      TIMEOUT: 20
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
