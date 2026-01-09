@@ -8,36 +8,8 @@ on:
     branches: [ main ]
     paths: [ src/** , .github/workflows/15-backend-format.yml]
 
-env:
-    # See: https://github.com/actions/setup-java#supported-distributions
-    JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }} 
-
 jobs:
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Java (version from .java-version file)
-        uses: actions/setup-java@v4
-        with:
-          distribution: ${{ env.JAVA_DISTRIBUTION }} 
-          java-version-file: ./.java-version
-          cache: 'maven'
-          cache-dependency-path: 'pom.xml' 
-
-      - name: Check formatting with Maven
-        run: mvn git-code-format:validate-code-format
-
-      - name: "IF STEP ABOVE FAILS ^^^ you need: mvn git-code-format:format-code"
-        if: failure() # Only run if the previous step failed
-        run: |
-          echo  '# Note :warning:'                               >> $GITHUB_STEP_SUMMARY
-          echo  ''                                               >> $GITHUB_STEP_SUMMARY
-          echo  'Some of your code is improperly formatted. '    >> $GITHUB_STEP_SUMMARY
-          echo  ''                                               >> $GITHUB_STEP_SUMMARY
-          echo  ' To fix it, try running this:               '    >> $GITHUB_STEP_SUMMARY
-          echo  ''                                                >> $GITHUB_STEP_SUMMARY
-          echo  '   `mvn git-code-format:format-code`        '    >> $GITHUB_STEP_SUMMARY 
-          echo  '                                            '    >> $GITHUB_STEP_SUMMARY
-
+  call-backend-format:
+    uses: ucsb-cs156/workflows/.github/workflows/15-backend-format.yml@main
+    with:
+      JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
