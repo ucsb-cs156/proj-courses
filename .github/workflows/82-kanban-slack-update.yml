@@ -404,7 +404,7 @@ jobs:
           echo "ASCII Table Content:"
           printf "%s\n" "$table"  # Use printf for better handling of multiline text
           echo "$table" > ascii_table_content.txt
-          echo "ascii_table_content<<EOF" >> $GITHUB_ENV
+          echo "ascii_table_content<<'EOF'" >> $GITHUB_ENV  # Quote EOF to avoid backtick evaluation, see: https://tldp.org/LDP/abs/html/here-docs.html#EX71C
           cat ascii_table_content.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
       #This step is used to debug the environment variables and Slack text

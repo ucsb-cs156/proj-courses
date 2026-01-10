@@ -1,67 +1,16 @@
 # Running this script will run a full mutation coverage report
 # (not incremental) on the main branch.
 
-name: "34-frontend-main-testing: Stryker JS Mutation Testing (JavaScript/Jest)"
+name: "34-frontend-main-mutation-testing: Stryker JS Mutation Testing (JavaScript/Jest)"
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [frontend/**, .github/workflows/34-frontend-main-testing-stryker-js-mutation-testing.yml]
+    paths: [frontend/**, .github/workflows/34-frontend-main-mutation-testing.yml]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 80
-
-    steps:
-      - uses: szenius/set-timezone@v2.0
-        with:
-          timezoneLinux: "America/Los_Angeles"
-      - uses: actions/checkout@v4
-        with: 
-          fetch-depth: 2
-
-      - name: Create directory in case it doesn't exist
-        run: |
-          mkdir -p frontend/reports
-
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2.27.0
-        with:
-          github_token: ${{secrets.GITHUB_TOKEN}}
-          branch: main
-          name: stryker-incremental-main.json
-          path: frontend/reports
-          check_artifacts: true
-          if_no_artifact_found: warn
-
-      - run: npm ci
-        working-directory: ./frontend
-
-      - run: npx stryker run --incremental --incrementalFile reports/stryker-incremental-main.json
-        working-directory: ./frontend
-
-      - name: Upload stryker incremental file to Artifacts
-        if: always() # always upload artifacts, even if tests fail
-        uses: actions/upload-artifact@v4
-        with:
-          name: stryker-incremental-main.json
-          path: frontend/reports/stryker-incremental-main.json
-          overwrite: true
-
-      - name: Upload stryker report to Artifacts
-        if: always() # always upload artifacts, even if tests fail
-        uses: actions/upload-artifact@v4
-        with:
-          name: stryker-report
-          path: frontend/reports/mutation/*
-  
-      - name: Deploy 🚀
-        if: always() # always upload artifacts, even if tests fail
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: frontend/reports/mutation # The folder where the javadoc files are located
-          clean: true # Automatically remove deleted files from the deploy branch
-          target-folder: stryker # The folder that we serve our javadoc files from
+  call-frontend-main-mutation-testing:
+    uses: ucsb-cs156/workflows/.github/workflows/34-frontend-main-mutation-testing.yml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,65 +1,63 @@
 name: 99 - Copy issues from starter repo
 
 env:
-    GH_TOKEN: ${{ github.token }}
-    STARTER: https://github.com/ucsb-cs156/proj-courses
-    TAG: ${{vars.QXX}}
+  GH_TOKEN: ${{ github.token }}
+  STARTER: https://github.com/ucsb-cs156/proj-courses
+  TAG: ${{vars.QXX}}
 
 on:
   workflow_dispatch:
-     
+
 jobs:
   initialize:
     name: List Issues to JSON
     runs-on: ubuntu-latest
     outputs:
-        issues: ${{ steps.get-issues.outputs.issues }}  
+      issues: ${{ steps.get-issues.outputs.issues }}
 
     steps:
       - uses: actions/checkout@v3
-            
+
       - name: List Issues
         id: get-issues
         run: |
-          GH_REPO=${{env.STARTER}} gh issue list -s open -l ${{env.TAG}} --json number,title,body,labels | jq '[ ( .[] | { number: .number, title: .title , body: .body, labels: ( .labels | [ .[].name ] | join(",") )  } ) ]' > issues.json          
-          cat issues.json
-          {
-               echo 'issues<<THIS_IS_THIS_EOF_MARKER'
-               cat issues.json
-               echo THIS_IS_THIS_EOF_MARKER
-          } >> "$GITHUB_OUTPUT"
-          
+            # compute repo from STARTER URL, list issues, and write JSON
+            REPO="${STARTER#https://github.com/}"
+            gh issue list --repo "$REPO" -s open -l "$TAG" --json number,title,body,labels \
+            | jq '[ (.[] | { number: .number, title: .title, body: .body, labels: ( .labels | [ .[].name ] | join(",") ) } ) ]' > issues.json
+            cat issues.json
+
+            # set multiline output "issues" to the contents of issues.json
+            if [ -s issues.json ]; then
+            echo "issues<<EOF" >> "$GITHUB_OUTPUT"
+            cat issues.json >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            else
+            echo "issues=[]" >> "$GITHUB_OUTPUT"
+            fi
+
           # The following line can be uncommented for a simple test of later stages
-          # echo 'issues=[{"title":"test", "number": 1, "body": "test body", "labels" : "a,b"}]' >> "$GITHUB_OUTPUT"   
+          # echo 'issues=[{"title":"test", "number": 1, "body": "test body", "labels" : "a,b"}]' >> "$GITHUB_OUTPUT"
 
   addIssuesToRepo:
-    name: Add issue (${{ matrix.value.number }}) to repo 
+    name: Add issue (${{ matrix.value.number }}) to repo
     runs-on: ubuntu-latest
     needs: [initialize]
 
     env:
-      destination: target/site/apidocs  
+      destination: target/site/apidocs
     strategy:
       matrix:
-        value: ${{ fromJSON(needs.initialize.outputs.ISSUES)}}
+        value: ${{ fromJSON(needs.initialize.outputs.issues)}}
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-         
+
       - name: Create issue
         uses: dacbd/create-issue-action@main
         with:
-            token: ${{ github.token }}
-            title: ${{ matrix.value.title }}
-            body: ${{ matrix.value.body }}
-            labels: ${{ matrix.value.labels }}
-        
-
- 
-           
-
-
-    
-
-        
+          token: ${{ github.token }}
+          title: ${{ matrix.value.title }}
+          body: ${{ matrix.value.body }}
+          labels: ${{ matrix.value.labels }}
