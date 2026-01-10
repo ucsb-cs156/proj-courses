@@ -4,6 +4,28 @@ This file documents the source of data used for the
 `GradeHistoryImportService.java`, which is the part of the code that retrieves the grade history data
 displayed for each course.
 
+## How to update grade history data
+
+To update the grade history data take these steps (as illustrated in the screen shot below):
+* Login as an admin user
+* Select `Manage Jobs`
+* Select `Update Grade Info`
+* Click the button `Update Grades`
+
+<img width="1212" height="489" alt="image" src="https://github.com/user-attachments/assets/7d40e3f5-22c1-4c49-8263-1a9d4a2ee9e2" />
+
+The grade job will show output as the grade data is uploaded, as shown below.  It will initially say `running` for the status, and should eventually show `complete`.
+
+<img width="769" height="295" alt="image" src="https://github.com/user-attachments/assets/ea7eea3f-7316-4888-9237-00ce568edf05" />
+
+The full output should end with lines like these:
+
+```
+Processed 494633 grade history records so far.
+Processed 495097 grade history records. Done!
+Finished updating UCSB Grade History Data
+```
+
 ## Source of the Data
 
 As of the date when this file was written (01/07/2026), UCSB's student run newspaper, [The Daily Nexus](https://dailynexus.com/), maintained a Github Repo at <https://github.com/dailynexusdata/grades-data> containing grade data for UCSB courses from 2009 to 2025.
@@ -84,7 +106,23 @@ SQL operation.
 
 This can be seen in the output of the job; for example:
 
-PASTE SCREENSHOT HERE.
+```
+Updating UCSB Grade History Data
+Processed 1005 grade history records so far.
+Processed 2008 grade history records so far.
+Processed 3014 grade history records so far.
+Processed 4018 grade history records so far.
+Processed 5021 grade history records so far.
+```
+
+[Many lines omitted here]
+
+```
+Processed 493630 grade history records so far.
+Processed 494633 grade history records so far.
+Processed 495097 grade history records. Done!
+Finished updating UCSB Grade History Data
+```
 
 If the time required to load the data starts to become excessive, the batch size could be adjusted
 experimentally to determine an optimal value.
