@@ -40,7 +40,7 @@ courses,edu.ucsb.cs156.courses.entities,GradeHistory,0,23,0,4,0,4,0,4,0,2
 courses,edu.ucsb.cs156.courses.models,SectionCSVLine,0,44,0,2,0,11,0,3,0,2
 courses,edu.ucsb.cs156.courses.models,EnrollmentCSV,0,24,0,0,0,9,0,1,0,1
 courses,edu.ucsb.cs156.courses.models,Quarter,0,412,0,43,0,81,0,43,0,21
-courses,edu.ucsb.cs156.courses.services,GradeHistoryImportServiceImpl,0,426,0,22,0,82,0,20,0,9
+courses,edu.ucsb.cs156.courses.services,GradeHistoryImportServiceImpl,0,429,0,22,0,82,0,20,0,9
 courses,edu.ucsb.cs156.courses.services,UCSBSubjectsService,0,86,0,0,0,23,0,5,0,5
 courses,edu.ucsb.cs156.courses.services,SystemInfoServiceImpl,0,55,0,4,0,15,0,6,0,4
 courses,edu.ucsb.cs156.courses.services,GrantedAuthoritiesService,0,21,0,0,0,7,0,3,0,3

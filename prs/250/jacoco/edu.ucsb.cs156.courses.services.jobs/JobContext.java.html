@@ -3,19 +3,20 @@
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
-<span class="fc" id="L9">@Slf4j</span>
+<span class="fc" id="L10">@Slf4j</span>
 public class JobContext {
   private JobsRepository jobsRepository;
-  private Job job;
+  @Getter private Job job;
 
   public void log(String message) {
-<span class="fc" id="L15">    log.info(&quot;Job %s: %s&quot;.formatted(job.getId(), message));</span>
-<span class="fc bfc" id="L16" title="All 2 branches covered.">    String previousLog = job.getLog() == null ? &quot;&quot; : (job.getLog() + &quot;\n&quot;);</span>
-<span class="fc" id="L17">    job.setLog(previousLog + message);</span>
-<span class="fc bfc" id="L18" title="All 2 branches covered.">    if (jobsRepository != null) jobsRepository.save(job);</span>
-<span class="fc" id="L19">  }</span>
+<span class="fc" id="L16">    log.info(&quot;Job %s: %s&quot;.formatted(job.getId(), message));</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">    String previousLog = job.getLog() == null ? &quot;&quot; : (job.getLog() + &quot;\n&quot;);</span>
+<span class="fc" id="L18">    job.setLog(previousLog + message);</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">    if (jobsRepository != null) jobsRepository.save(job);</span>
+<span class="fc" id="L20">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

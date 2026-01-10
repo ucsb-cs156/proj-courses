@@ -7,6 +7,8 @@ import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.utilities.CourseUtilities;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,21 +20,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-<span class="fc" id="L21">@Slf4j</span>
+<span class="fc" id="L23">@Slf4j</span>
 @Service
-<span class="fc" id="L23">public class GradeHistoryImportServiceImpl implements GradeHistoryImportService {</span>
+<span class="fc" id="L25">public class GradeHistoryImportServiceImpl implements GradeHistoryImportService {</span>
 
   public static class NullHeaderException extends RuntimeException {
     public NullHeaderException(String message) {
-<span class="fc" id="L27">      super(message);</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L29">      super(message);</span>
+<span class="fc" id="L30">    }</span>
   }
 
   @Autowired private JdbcTemplate jdbcTemplate;
 
   @Autowired private RestTemplate restTemplate;
-
-  private static final int BATCH_SIZE = 1000;
 
   @Override
   public void importGradesFromUrl(String url, JobContext ctx, int batchSize) throws Exception {
@@ -59,7 +59,7 @@ import org.springframework.web.client.RestTemplate;
 <span class="fc" id="L59">              buffer.addAll(gradesFromLine);</span>
 
 <span class="fc bfc" id="L61" title="All 2 branches covered.">              if (buffer.size() &gt;= batchSize) {</span>
-<span class="fc" id="L62">                flushBuffer(buffer);</span>
+<span class="fc" id="L62">                flushBuffer(buffer, batchSize);</span>
 <span class="fc" id="L63">                recordsProcessed[0] += buffer.size();</span>
 <span class="fc" id="L64">                ctx.log(&quot;Processed &quot; + recordsProcessed[0] + &quot; grade history records so far.&quot;);</span>
 <span class="fc" id="L65">                buffer.clear();</span>
@@ -67,7 +67,7 @@ import org.springframework.web.client.RestTemplate;
 <span class="fc" id="L67">            }</span>
 <span class="fc" id="L68">            recordsProcessed[0] += buffer.size();</span>
 <span class="fc" id="L69">            ctx.log(&quot;Processed &quot; + recordsProcessed[0] + &quot; grade history records. Done!&quot;);</span>
-<span class="fc" id="L70">            flushBuffer(buffer);</span>
+<span class="fc" id="L70">            flushBuffer(buffer, batchSize);</span>
 
 <span class="fc" id="L72">          } catch (NullHeaderException nhe) {</span>
 <span class="fc" id="L73">            log.error(&quot;Error processing CSV from URL: {}&quot;, url, nhe);</span>
@@ -144,10 +144,17 @@ import org.springframework.web.client.RestTemplate;
 <span class="fc" id="L144">    return nPnpCount - pCount;</span>
   }
 
-  private void flushBuffer(List&lt;GradeHistory&gt; buffer) {
+  /**
+   * This method flushes the buffer to the database in batches. It is public so that it can be spied
+   * on using Mockito in the unit tests.
+   *
+   * @param buffer
+   * @param batchSize
+   */
+  public void flushBuffer(List&lt;GradeHistory&gt; buffer, int batchSize) {
     // Note: 'count' is excluded from the ON clause because it is the value we want
     // to update
-<span class="fc" id="L150">    String sql =</span>
+<span class="fc" id="L157">    String sql =</span>
         &quot;&quot;&quot;
             MERGE INTO &quot;historygrade&quot; AS t
             USING (VALUES (?, ?, ?, ?, ?)) AS s(yyyyq, course, instructor, grade, count)
@@ -159,17 +166,15 @@ import org.springframework.web.client.RestTemplate;
                 VALUES (s.yyyyq, s.course, s.instructor, s.grade, s.count);
         &quot;&quot;&quot;;
 
-<span class="fc" id="L162">    jdbcTemplate.batchUpdate(</span>
-        sql,
-        buffer,
-        BATCH_SIZE,
-        (ps, entity) -&gt; {
-<span class="fc" id="L167">          ps.setString(1, entity.getYyyyq());</span>
-<span class="fc" id="L168">          ps.setString(2, entity.getCourse());</span>
-<span class="fc" id="L169">          ps.setString(3, entity.getInstructor());</span>
-<span class="fc" id="L170">          ps.setString(4, entity.getGrade());</span>
-<span class="fc" id="L171">          ps.setInt(5, entity.getCount());</span>
-<span class="fc" id="L172">        });</span>
-<span class="fc" id="L173">  }</span>
+<span class="fc" id="L169">    jdbcTemplate.batchUpdate(sql, buffer, batchSize, this::updateEntity);</span>
+<span class="fc" id="L170">  }</span>
+
+  public void updateEntity(PreparedStatement ps, GradeHistory entity) throws SQLException {
+<span class="fc" id="L173">    ps.setString(1, entity.getYyyyq());</span>
+<span class="fc" id="L174">    ps.setString(2, entity.getCourse());</span>
+<span class="fc" id="L175">    ps.setString(3, entity.getInstructor());</span>
+<span class="fc" id="L176">    ps.setString(4, entity.getGrade());</span>
+<span class="fc" id="L177">    ps.setInt(5, entity.getCount());</span>
+<span class="fc" id="L178">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
