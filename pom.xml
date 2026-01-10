@@ -261,6 +261,7 @@
                         <param>edu.ucsb.cs156.courses.startup.CoursesApplicationRunnerDevelopment</param>
                         <param>edu.ucsb.cs156.courses.startup.CoursesApplicationRunnerProduction</param>
                         <param>edu.ucsb.cs156.courses.jobs.ScheduledJobs</param>
+                        <param>edu.ucsb.cs156.courses.config.RestTemplateConfig</param>
                     </excludedClasses>
                     <excludedTestClasses>
                         <param>edu.ucsb.cs156.example.integration.*</param>
