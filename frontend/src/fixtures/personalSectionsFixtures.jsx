@@ -201,6 +201,45 @@ const personalSectionsFixtures = {
       finalExam: null,
     },
   ],
+  emptyDays: [
+    {
+      quarter: "20221",
+      courseId: "ECE       1A ",
+      title: "COMP ENGR SEMINAR",
+      description:
+        "Introductory seminar to expose students to a broad range of topics in computer   engineering.",
+      classSections: [
+        {
+          enrollCode: "12583",
+          section: "0100",
+          session: null,
+          classClosed: null,
+          courseCancelled: null,
+          gradingOptionCode: null,
+          enrolledTotal: 84,
+          maxEnroll: 100,
+          secondaryStatus: null,
+          departmentApprovalRequired: false,
+          instructorApprovalRequired: false,
+          restrictionLevel: null,
+          restrictionMajor: "+PRCME+CMPEN",
+          restrictionMajorPass: null,
+          restrictionMinor: null,
+          restrictionMinorPass: null,
+          concurrentCourses: [],
+          timeLocations: [],
+          instructors: [
+            {
+              instructor: "WANG L C",
+              functionCode: "Teaching and in charge",
+            },
+          ],
+        },
+      ],
+      generalEducation: [],
+      finalExam: null,
+    },
+  ],
 };
 
 export { personalSectionsFixtures };
