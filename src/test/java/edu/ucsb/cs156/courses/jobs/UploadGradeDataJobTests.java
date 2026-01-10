@@ -32,7 +32,11 @@ public class UploadGradeDataJobTests {
 
     // Assert
     verify(jobContext).log("Updating UCSB Grade History Data");
-    verify(gradeHistoryImportServiceImpl).importGradesFromUrl("https://raw.githubusercontent.com/dailynexusdata/grades-data/refs/heads/main/courseGrades.csv",jobContext,1000);
+    verify(gradeHistoryImportServiceImpl)
+        .importGradesFromUrl(
+            "https://raw.githubusercontent.com/dailynexusdata/grades-data/refs/heads/main/courseGrades.csv",
+            jobContext,
+            1000);
     verify(jobContext).log("Finished updating UCSB Grade History Data");
   }
 }

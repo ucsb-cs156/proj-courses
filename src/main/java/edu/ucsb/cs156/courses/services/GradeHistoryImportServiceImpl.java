@@ -7,6 +7,8 @@ import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import edu.ucsb.cs156.courses.utilities.CourseUtilities;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +33,6 @@ public class GradeHistoryImportServiceImpl implements GradeHistoryImportService 
   @Autowired private JdbcTemplate jdbcTemplate;
 
   @Autowired private RestTemplate restTemplate;
-
-  private static final int BATCH_SIZE = 1000;
 
   @Override
   public void importGradesFromUrl(String url, JobContext ctx, int batchSize) throws Exception {
@@ -59,7 +59,7 @@ public class GradeHistoryImportServiceImpl implements GradeHistoryImportService 
               buffer.addAll(gradesFromLine);
 
               if (buffer.size() >= batchSize) {
-                flushBuffer(buffer);
+                flushBuffer(buffer, batchSize);
                 recordsProcessed[0] += buffer.size();
                 ctx.log("Processed " + recordsProcessed[0] + " grade history records so far.");
                 buffer.clear();
@@ -67,7 +67,7 @@ public class GradeHistoryImportServiceImpl implements GradeHistoryImportService 
             }
             recordsProcessed[0] += buffer.size();
             ctx.log("Processed " + recordsProcessed[0] + " grade history records. Done!");
-            flushBuffer(buffer);
+            flushBuffer(buffer, batchSize);
 
           } catch (NullHeaderException nhe) {
             log.error("Error processing CSV from URL: {}", url, nhe);
@@ -144,7 +144,14 @@ public class GradeHistoryImportServiceImpl implements GradeHistoryImportService 
     return nPnpCount - pCount;
   }
 
-  private void flushBuffer(List<GradeHistory> buffer) {
+  /**
+   * This method flushes the buffer to the database in batches. It is public so that it can be spied
+   * on using Mockito in the unit tests.
+   *
+   * @param buffer
+   * @param batchSize
+   */
+  public void flushBuffer(List<GradeHistory> buffer, int batchSize) {
     // Note: 'count' is excluded from the ON clause because it is the value we want
     // to update
     String sql =
@@ -159,16 +166,14 @@ public class GradeHistoryImportServiceImpl implements GradeHistoryImportService 
                 VALUES (s.yyyyq, s.course, s.instructor, s.grade, s.count);
         """;
 
-    jdbcTemplate.batchUpdate(
-        sql,
-        buffer,
-        BATCH_SIZE,
-        (ps, entity) -> {
-          ps.setString(1, entity.getYyyyq());
-          ps.setString(2, entity.getCourse());
-          ps.setString(3, entity.getInstructor());
-          ps.setString(4, entity.getGrade());
-          ps.setInt(5, entity.getCount());
-        });
+    jdbcTemplate.batchUpdate(sql, buffer, batchSize, this::updateEntity);
+  }
+
+  public void updateEntity(PreparedStatement ps, GradeHistory entity) throws SQLException {
+    ps.setString(1, entity.getYyyyq());
+    ps.setString(2, entity.getCourse());
+    ps.setString(3, entity.getInstructor());
+    ps.setString(4, entity.getGrade());
+    ps.setInt(5, entity.getCount());
   }
 }

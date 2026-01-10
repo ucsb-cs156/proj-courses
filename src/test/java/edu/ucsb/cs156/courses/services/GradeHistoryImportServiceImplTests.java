@@ -1,15 +1,23 @@
 package edu.ucsb.cs156.courses.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import edu.ucsb.cs156.courses.entities.GradeHistory;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import java.sql.PreparedStatement;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -17,6 +25,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -36,6 +45,8 @@ class GradeHistoryImportServiceImplTests {
   @MockitoBean UserRepository userRepository;
 
   @MockitoBean GradeHistoryRepository gradeHistoryRepository;
+
+  @MockitoBean JdbcTemplate jdbcTemplate;
 
   @Autowired private GradeHistoryImportServiceImpl gradeHistoryImportServiceImpl;
 
@@ -88,14 +99,112 @@ class GradeHistoryImportServiceImplTests {
         FAKE    123,CONRAD P T,Spring,2025,71,0,0,0,0,96,10,3.923958333333333,7,FAKE,0,0,2,1,0,0,22,0,0,0,0
         """;
 
+    String expectedLog =
+        """
+Processed 13 grade history records so far.
+Processed 26 grade history records so far.
+Processed 37 grade history records so far.
+Processed 48 grade history records so far.
+Processed 59 grade history records so far.
+Processed 70 grade history records so far.
+Processed 80 grade history records so far.
+Processed 90 grade history records so far.
+Processed 101 grade history records so far.
+Processed 112 grade history records so far.
+Processed 118 grade history records so far.
+Processed 128 grade history records so far.
+Processed 135 grade history records so far.
+Processed 139 grade history records so far.
+Processed 145 grade history records so far.
+Processed 145 grade history records. Done!""";
+
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+    GradeHistoryImportServiceImpl spy = Mockito.spy(gradeHistoryImportServiceImpl);
+    Mockito.doNothing().when(spy).flushBuffer(Mockito.anyList(), Mockito.anyInt());
 
     Job job = Job.builder().build();
     JobContext jobContext = new JobContext(null, job);
-    gradeHistoryImportServiceImpl.importGradesFromUrl(
-        "https://example.com/grades.csv", jobContext, 5);
+    spy.importGradesFromUrl("https://example.com/grades.csv", jobContext, 1);
+
+    assertEquals(expectedLog, jobContext.getJob().getLog());
+
+    verify(spy, Mockito.times(16)).flushBuffer(Mockito.anyList(), anyInt());
+  }
+
+  @Test
+  void test_importGradesFromUrl_testBoundaryConditions() throws Exception {
+
+    String expectedURL = "https://example.com/grades.csv";
+    String expectedResult =
+        """
+        course,instructor,quarter,year,A,B,C,D,F,nLetterStudents,nPNPStudents,avgGPA,P,dept,S,su,Ap,Bp,Cp,Dp,Am,Bm,Cm,Dm,IP
+        CMPSC     5A,CONRAD P T,Spring,2025,50,13,2,1,3,122,0,3.4188524590163936,0,CMPSC,0,0,10,7,2,1,22,6,3,2,0
+        FAKE    123,CONRAD P T,Spring,2025,71,0,0,0,0,96,10,3.923958333333333,7,FAKE,0,0,2,1,0,0,22,0,0,0,0
+        """;
+
+    String expectedLog =
+        """
+Processed 13 grade history records so far.
+Processed 19 grade history records. Done!""";
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+    GradeHistoryImportServiceImpl spy = Mockito.spy(gradeHistoryImportServiceImpl);
+    Mockito.doNothing().when(spy).flushBuffer(Mockito.anyList(), Mockito.anyInt());
+
+    Job job = Job.builder().build();
+    JobContext jobContext = new JobContext(null, job);
+    spy.importGradesFromUrl("https://example.com/grades.csv", jobContext, 13);
+
+    assertEquals(expectedLog, jobContext.getJob().getLog());
+
+    verify(spy, Mockito.times(2)).flushBuffer(Mockito.anyList(), anyInt());
+  }
+
+  @Test
+  void test_importGradesFromUrl_testNPCount() throws Exception {
+
+    String expectedURL = "https://example.com/grades.csv";
+    String expectedResult =
+        """
+        course,instructor,quarter,year,A,B,C,D,F,nLetterStudents,nPNPStudents,avgGPA,P,dept,S,su,Ap,Bp,Cp,Dp,Am,Bm,Cm,Dm,IP
+        FAKE    123,CONRAD P T,Spring,2025,0,0,0,0,0,0,10,3.923958333333333,7,FAKE,0,0,0,0,0,0,0,0,0,0,0
+        """;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+    GradeHistoryImportServiceImpl spy = Mockito.spy(gradeHistoryImportServiceImpl);
+    Mockito.doNothing().when(spy).flushBuffer(Mockito.anyList(), Mockito.anyInt());
+
+    Job job = Job.builder().build();
+    JobContext jobContext = new JobContext(null, job);
+    spy.importGradesFromUrl("https://example.com/grades.csv", jobContext, 13);
+
+    GradeHistory gh1 =
+        GradeHistory.builder()
+            .course("FAKE    123")
+            .instructor("CONRAD P T")
+            .yyyyq("20252")
+            .grade("P")
+            .count(7)
+            .build();
+
+    GradeHistory gh2 =
+        GradeHistory.builder()
+            .course("FAKE    123")
+            .instructor("CONRAD P T")
+            .yyyyq("20252")
+            .grade("NP")
+            .count(3)
+            .build();
+
+    List<GradeHistory> expectedGradeHistoryRecords = List.of(gh1, gh2);
+
+    verify(spy, Mockito.times(1)).flushBuffer(Mockito.eq(expectedGradeHistoryRecords), anyInt());
   }
 
   @Test
@@ -165,5 +274,27 @@ class GradeHistoryImportServiceImplTests {
 
     gradeHistoryImportServiceImpl.importGradesFromUrl(
         "https://example.com/grades.csv", jobContext, 5);
+  }
+
+  @Test
+  void test_updateEntity() throws Exception {
+
+    GradeHistory entity =
+        GradeHistory.builder()
+            .yyyyq("20252")
+            .course("FAKE    123")
+            .instructor("CONRAD P T")
+            .grade("P")
+            .count(7)
+            .build();
+
+    PreparedStatement ps = mock(PreparedStatement.class);
+    gradeHistoryImportServiceImpl.updateEntity(ps, entity);
+
+    verify(ps).setString(1, "20252");
+    verify(ps).setString(2, "FAKE    123");
+    verify(ps).setString(3, "CONRAD P T");
+    verify(ps).setString(4, "P");
+    verify(ps).setInt(5, 7);
   }
 }
