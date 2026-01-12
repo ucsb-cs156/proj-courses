@@ -1,0 +1,92 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: "02-gh-pages-rebuild: Rebuild gh-pages site"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: [src/**, pom.xml, lombok.config, .github/workflows/14-backend-pitest.yml]
+  push:
+    branches: [ main ]
+    paths: [src/**, pom.xml, lombok.config, .github/workflows/14-backend-pitest.yml]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  pull-requests: read
+
+jobs:
+  call-workflow-02:
+    uses: ucsb-cs156/workflows/.github/workflows/02-gh-pages-rebuild-part-1.yml@main
+    with:
+      JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  wait-for-completion:
+    needs: call-workflow-02
+    runs-on: ubuntu-latest
+    outputs:
+      call_status: ${{ steps.poll.outputs.call_status }}
+    steps:
+      - name: Poll reusable workflow run status via GitHub API
+        id: poll
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_REPO: ucsb-cs156/workflows
+          WORKFLOW_FILE: 02-gh-pages-rebuild-part-1.yml
+          SHA: ${{ github.sha }}
+          SLEEP_INTERVAL: 60
+        run: |
+          set -euo pipefail
+          echo "Looking for workflow runs of $WORKFLOW_FILE in $TARGET_REPO with head_sha=$SHA"
+
+          # Poll until we find a matching run and it completes
+          while true; do
+            runs_json=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${TARGET_REPO}/actions/workflows/${WORKFLOW_FILE}/runs?per_page=20")
+
+            # pick the most recent run that matches the head SHA
+            encoded=$(echo "$runs_json" | jq -r --arg sha "$SHA" '.workflow_runs[] | select(.head_sha==$sha) | @base64' | head -n1 || true)
+
+            if [ -z "$encoded" ]; then
+              echo "No matching run found yet. Sleeping 10s..."
+              sleep 10
+              continue
+            fi
+
+            run_json=$(echo "$encoded" | base64 --decode)
+            status=$(echo "$run_json" | jq -r '.status')
+            conclusion=$(echo "$run_json" | jq -r '.conclusion')
+            run_id=$(echo "$run_json" | jq -r '.id')
+            run_url=$(echo "$run_json" | jq -r '.html_url')
+
+            echo "Found run id=$run_id status=$status conclusion=$conclusion url=$run_url"
+
+            if [ "$status" = "completed" ]; then
+              if [ "$conclusion" = "success" ]; then
+                echo "call_status=success" >> $GITHUB_OUTPUT
+                exit 0
+              else
+                # return the actual conclusion (failure, cancelled, etc.)
+                echo "call_status=$conclusion" >> $GITHUB_OUTPUT
+                exit 0
+              fi
+            fi
+
+            echo "Run not completed yet (status=$status). Sleeping ${SLEEP_INTERVAL}..."
+            sleep ${SLEEP_INTERVAL}
+          done
+
+  call-another-reusable-workflow:
+    needs: wait-for-completion
+    if: ${{ needs.wait-for-completion.outputs.call_status == 'success' }}
+    uses: ucsb-cs156/workflows/.github/workflows/04-gh-pages-rebuild-part-2.yml@main
+    with:
+      JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
