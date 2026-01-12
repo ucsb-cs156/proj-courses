@@ -22,7 +22,8 @@ jobs:
     uses: ucsb-cs156/workflows/.github/workflows/02-gh-pages-rebuild-part-1.yml@main
     with:
       JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
-      PITEST_TIMEOUT: 20
+      TIMEOUT_PITEST: 30
+      TIMEOUT_STRYKER: 80
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
