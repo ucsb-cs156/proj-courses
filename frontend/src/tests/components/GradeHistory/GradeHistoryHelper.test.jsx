@@ -39,8 +39,9 @@ describe("createCompleteGradeData", () => {
       { grade: "D-", count: 0, percentage: 0 },
       { grade: "F", count: 0, percentage: 0 },
       { grade: "P", count: 0, percentage: 0 },
-      { grade: "W", count: 0, percentage: 0 },
       { grade: "NP", count: 0, percentage: 0 },
+      { grade: "S", count: 0, percentage: 0 },
+      { grade: "U", count: 0, percentage: 0 },
     ]);
   });
 
@@ -68,8 +69,9 @@ describe("createCompleteGradeData", () => {
       { grade: "D-", count: 0, percentage: 0 },
       { grade: "F", count: 0, percentage: 0 },
       { grade: "P", count: 0, percentage: 0 },
-      { grade: "W", count: 0, percentage: 0 },
       { grade: "NP", count: 0, percentage: 0 },
+      { grade: "S", count: 0, percentage: 0 },
+      { grade: "U", count: 0, percentage: 0 },
     ]);
   });
 });

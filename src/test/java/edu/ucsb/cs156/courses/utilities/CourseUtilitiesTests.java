@@ -49,4 +49,13 @@ class CourseUtilitiesTests {
     constructor.setAccessible(true);
     constructor.newInstance();
   }
+
+  @Test
+  void test_quarterToDigit() {
+    assertEquals("1", CourseUtilities.quarterToDigit("Winter"));
+    assertEquals("2", CourseUtilities.quarterToDigit("Spring"));
+    assertEquals("3", CourseUtilities.quarterToDigit("Summer"));
+    assertEquals("4", CourseUtilities.quarterToDigit("Fall"));
+    assertEquals("0", CourseUtilities.quarterToDigit("Invalid"));
+  }
 }

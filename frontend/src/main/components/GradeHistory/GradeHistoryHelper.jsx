@@ -13,8 +13,9 @@ const allGrades = [
   "D-",
   "F",
   "P",
-  "W",
   "NP",
+  "S",
+  "U",
 ];
 
 export const formatTooltip = (value, _, props) => {

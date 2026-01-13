@@ -22,6 +22,9 @@ vi.mock("main/utils/useBackend", async () => ({
 
 describe("CourseDetailsTable tests", () => {
   const queryClient = new QueryClient();
+
+  const testId = "CourseDetailsTable";
+
   test("renders without crashing for empty table", () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -63,7 +66,6 @@ describe("CourseDetailsTable tests", () => {
       "enrolled",
       "location",
     ];
-    const testId = "CourseDetailsTable";
 
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
@@ -102,5 +104,19 @@ describe("CourseDetailsTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-enrolled`),
     ).toHaveTextContent("84/100");
+  });
+
+  test("Has the expected content when days is empty", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseDetailsTable details={personalSectionsFixtures.emptyDays} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-days`),
+    ).toHaveTextContent("");
   });
 });

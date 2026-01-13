@@ -3,33 +3,33 @@ package edu.ucsb.cs156.courses.jobs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
-import edu.ucsb.cs156.courses.services.UCSBGradeHistoryServiceImpl;
+import edu.ucsb.cs156.courses.services.GradeHistoryImportServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @RestClientTest(UploadGradeDataJobFactory.class)
 @AutoConfigureDataJpa
 public class UploadGradeDataJobFactoryTests {
 
-  @MockBean GradeHistoryRepository gradeHistoryRepository;
+  @MockitoBean GradeHistoryRepository gradeHistoryRepository;
 
-  @MockBean UCSBGradeHistoryServiceImpl ucsbGradeHistoryServiceImpl;
+  @MockitoBean GradeHistoryImportServiceImpl gradeHistoryImportServiceImpl;
 
-  @Autowired UploadGradeDataJobFactory UploadGradeDataJobFactory;
+  @Autowired UploadGradeDataJobFactory uploadGradeDataJobFactory;
 
   @Test
   void test_create() throws Exception {
 
     // Act
 
-    UploadGradeDataJob UploadGradeDataJob = UploadGradeDataJobFactory.create();
+    UploadGradeDataJob uploadGradeDataJob = uploadGradeDataJobFactory.create();
 
     // Assert
 
-    assertEquals(ucsbGradeHistoryServiceImpl, UploadGradeDataJob.getUcsbGradeHistoryServiceImpl());
-    assertEquals(gradeHistoryRepository, UploadGradeDataJob.getGradeHistoryRepository());
+    assertEquals(gradeHistoryImportServiceImpl, uploadGradeDataJob.getGradeHistoryImportService());
+    assertEquals(gradeHistoryRepository, uploadGradeDataJob.getGradeHistoryRepository());
   }
 }

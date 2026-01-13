@@ -20,6 +20,7 @@
         <app.package>edu.ucsb.cs156.courses</app.package>
         <app.packagePath>edu/ucsb/cs156/courses</app.packagePath>
         <targetClasses>${targetClasses:edu.ucsb.cs156.*}</targetClasses>
+        <h2.version>2.2.224</h2.version>
     </properties>
     <dependencies>
         <dependency>
@@ -260,6 +261,7 @@
                         <param>edu.ucsb.cs156.courses.startup.CoursesApplicationRunnerDevelopment</param>
                         <param>edu.ucsb.cs156.courses.startup.CoursesApplicationRunnerProduction</param>
                         <param>edu.ucsb.cs156.courses.jobs.ScheduledJobs</param>
+                        <param>edu.ucsb.cs156.courses.config.RestTemplateConfig</param>
                     </excludedClasses>
                     <excludedTestClasses>
                         <param>edu.ucsb.cs156.example.integration.*</param>
