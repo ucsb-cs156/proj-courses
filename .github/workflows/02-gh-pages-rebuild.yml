@@ -36,13 +36,13 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
-  # call-another-reusable-workflow:
-  #   needs: call-workflow-02
-  #   # Conditional execution if the previous workflow completes successfully
-  #   if: ${{ needs.call-workflow-02.result == 'success' }}
-  #   uses: ucsb-cs156/workflows/.github/workflows/04-gh-pages-rebuild-part-2.yml@main
-  #   with:
-  #     JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
-  #   secrets:
-  #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  call-another-reusable-workflow:
+    needs: call-workflow-02
+    # Conditional execution if the previous workflow completes successfully
+    if: ${{ needs.call-workflow-02.result == 'success' }}
+    uses: ucsb-cs156/workflows/.github/workflows/04-gh-pages-rebuild-part-2.yml@main
+    with:
+      JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
