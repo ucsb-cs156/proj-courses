@@ -107,7 +107,6 @@ describe("CourseDetailsTable tests", () => {
   });
 
   test("Has the expected content when days is empty", () => {
-    // console.log(oneSection)
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
