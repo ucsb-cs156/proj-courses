@@ -28,9 +28,9 @@ jobs:
     #   TIMEOUT_PITEST: 30
     #   TIMEOUT_STRYKER: 80
     #   RESET_GH_PAGES: ${{ inputs.reset }}
-    # secrets:
-    #   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
   # call-another-reusable-workflow:
   #   needs: call-workflow-02
