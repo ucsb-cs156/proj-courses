@@ -21,7 +21,7 @@ permissions:
 jobs:
   call-workflow-02:
     # Directly invoke the reusable workflow
-    uses: ucsb-cs156/workflows/.github/workflows/02-gh-pages-rebuild-part-1.yml@main
+    uses: ucsb-cs156/workflows/.github/workflows/02-gh-pages-rebuild.yml@main
     with:
       JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
       TIMEOUT_PITEST: 30
