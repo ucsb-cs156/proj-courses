@@ -12,12 +12,7 @@ on:
         options:
           - no
           - yes
-  pull_request:
-    paths: [.github/workflows/02-gh-pages-rebuild.yml]
-  push:
-    branches: [ main ]
-    paths: [.github/workflows/02-gh-pages-rebuild.yml]
-
+ 
 permissions:
   contents: write
   pages: write
