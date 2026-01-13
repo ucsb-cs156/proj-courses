@@ -20,17 +20,17 @@ jobs:
        - name: test
          run: echo "test"
          
-  # call-workflow-02:
-  #   # Directly invoke the reusable workflow
-  #   uses: ucsb-cs156/workflows/.github/workflows/02-gh-pages-rebuild.yml@main
-  #   with:
-  #     JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
-  #     TIMEOUT_PITEST: 30
-  #     TIMEOUT_STRYKER: 80
-  #     RESET_GH_PAGES: ${{ inputs.reset }}
-  #   secrets:
-  #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+  call-workflow-02:
+    # Directly invoke the reusable workflow
+    uses: ucsb-cs156/workflows/.github/workflows/02-gh-pages-rebuild.yml@main
+    with:
+      JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
+      TIMEOUT_PITEST: 30
+      TIMEOUT_STRYKER: 80
+      RESET_GH_PAGES: ${{ inputs.reset }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
   # call-another-reusable-workflow:
   #   needs: call-workflow-02
