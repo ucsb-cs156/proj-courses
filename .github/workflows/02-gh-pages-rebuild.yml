@@ -18,12 +18,6 @@ permissions:
 
 
 jobs:
-  test:
-     runs-on: ubuntu-latest
-     steps:
-       - name: test
-         run: echo "test"
-         
   call-workflow-02:
     # Directly invoke the reusable workflow
     uses: ucsb-cs156/workflows/.github/workflows/02-gh-pages-rebuild.yml@main
