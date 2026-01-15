@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjI2MzQ3ODk3","is_bot":false,"login":"Division7","name":"Daniel Jensen"},"headRefName":"dj-independentRefactor","number":257,"title":"Speeding Up Pitest/Java Unit Testing","url":"https://github.com/ucsb-cs156/proj-courses/pull/257"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-dummy-branch","number":255,"title":"dummy commit to test CI/CD","url":"https://github.com/ucsb-cs156/proj-courses/pull/255"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-dummy-branch","number":255,"title":"dummy commit to test CI/CD","url":"https://github.com/ucsb-cs156/proj-courses/pull/255"}]
