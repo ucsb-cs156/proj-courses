@@ -6,12 +6,10 @@ import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
 import edu.ucsb.cs156.courses.services.GradeHistoryImportServiceImpl;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @RestClientTest(UploadGradeDataJob.class)
-@AutoConfigureDataJpa
 public class UploadGradeDataJobTests {
 
   @MockitoBean GradeHistoryRepository gradeHistoryRepository;
