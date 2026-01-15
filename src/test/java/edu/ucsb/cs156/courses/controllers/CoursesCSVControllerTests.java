@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -45,8 +44,7 @@ public class CoursesCSVControllerTests extends ControllerTestCase {
   @Mock(answer = Answers.CALLS_REAL_METHODS)
   StatefulBeanToCsv<SectionCSVLine> csvWriter;
 
-  @MockitoBean
-  UserRepository userRepository;
+  @MockitoBean UserRepository userRepository;
 
   @Test
   public void test_csv_exception() throws Exception {

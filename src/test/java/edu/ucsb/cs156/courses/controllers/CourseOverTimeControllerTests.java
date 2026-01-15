@@ -13,14 +13,12 @@ import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.Section;
+import edu.ucsb.cs156.courses.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import edu.ucsb.cs156.courses.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -36,8 +34,7 @@ public class CourseOverTimeControllerTests {
   @Autowired private MockMvc mockMvc;
 
   @MockBean ConvertedSectionCollection convertedSectionCollection;
-  @MockitoBean
-  UserRepository userRepository;
+  @MockitoBean UserRepository userRepository;
 
   @Test
   public void test_search_emptyRequest() throws Exception {
