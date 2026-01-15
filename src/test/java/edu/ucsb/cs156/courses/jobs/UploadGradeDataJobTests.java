@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @RestClientTest(UploadGradeDataJob.class)
-@AutoConfigureDataJpa
 public class UploadGradeDataJobTests {
 
   @MockitoBean GradeHistoryRepository gradeHistoryRepository;

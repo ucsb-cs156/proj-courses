@@ -17,6 +17,7 @@ import edu.ucsb.cs156.courses.documents.GeneralEducation;
 import edu.ucsb.cs156.courses.documents.Instructor;
 import edu.ucsb.cs156.courses.documents.Section;
 import edu.ucsb.cs156.courses.models.SectionCSVLine;
+import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.SectionCSVLineService;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import java.util.List;
@@ -29,11 +30,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = {CoursesCSVController.class})
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class CoursesCSVControllerTests extends ControllerTestCase {
 
   @MockBean private ConvertedSectionCollection convertedSectionCollection;
@@ -43,6 +44,9 @@ public class CoursesCSVControllerTests extends ControllerTestCase {
 
   @Mock(answer = Answers.CALLS_REAL_METHODS)
   StatefulBeanToCsv<SectionCSVLine> csvWriter;
+
+  @MockitoBean
+  UserRepository userRepository;
 
   @Test
   public void test_csv_exception() throws Exception {

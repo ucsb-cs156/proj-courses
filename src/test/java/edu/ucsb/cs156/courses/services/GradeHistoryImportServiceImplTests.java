@@ -31,7 +31,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(GradeHistoryImportServiceImpl.class)
-@AutoConfigureDataJpa
 class GradeHistoryImportServiceImplTests {
 
   @TestConfiguration

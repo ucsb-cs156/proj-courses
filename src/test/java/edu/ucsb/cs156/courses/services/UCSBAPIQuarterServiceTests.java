@@ -31,7 +31,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBAPIQuarterService.class)
-@AutoConfigureDataJpa
 @TestPropertySource(
     properties = {
       "app.startQtrYYYYQ=20211",

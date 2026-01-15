@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.collections.UpdateCollection;
 import edu.ucsb.cs156.courses.documents.Update;
+import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import java.util.ArrayList;
 import java.util.Map;
@@ -23,12 +24,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = {UpdateController.class})
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class UpdateControllerTests extends ControllerTestCase {
 
   @MockBean UpdateCollection updateCollection;
@@ -36,6 +37,9 @@ public class UpdateControllerTests extends ControllerTestCase {
   @Autowired private MockMvc mockMvc;
 
   @Autowired private ObjectMapper objectMapper;
+
+  @MockitoBean
+  UserRepository userRepository;
 
   ArrayList<Update> emptyArray = new ArrayList<Update>();
   PageRequest pageRequest_0_10_DESC_lastUpdate =

@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(value = UCSBCurriculumController.class)
 @Import(SecurityConfig.class)
-@AutoConfigureDataJpa
 public class UCSBCurriculumControllerTests extends ControllerTestCase {
 
   @MockBean UserRepository userRepository;

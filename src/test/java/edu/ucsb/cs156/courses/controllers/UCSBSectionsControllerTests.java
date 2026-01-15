@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(value = UCSBSectionsController.class)
 @Import(SecurityConfig.class)
-@AutoConfigureDataJpa
 public class UCSBSectionsControllerTests {
   private ObjectMapper mapper = new ObjectMapper();
 

@@ -17,7 +17,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = SystemInfoController.class)
-@AutoConfigureDataJpa
 public class SystemInfoControllerTests extends ControllerTestCase {
 
   @MockBean UserRepository userRepository;

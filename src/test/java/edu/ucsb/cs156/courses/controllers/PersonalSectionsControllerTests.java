@@ -35,7 +35,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = {PersonalSectionsController.class})
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class PersonalSectionsControllerTests extends ControllerTestCase {
 
   @MockBean PersonalScheduleRepository personalscheduleRepository;

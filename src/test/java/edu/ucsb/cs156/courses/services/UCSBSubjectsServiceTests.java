@@ -9,6 +9,9 @@ import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import edu.ucsb.cs156.courses.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,11 +19,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 @RestClientTest(UCSBSubjectsService.class)
-@AutoConfigureDataJpa
-@ContextConfiguration(classes = {})
 class UCSBSubjectsServiceTests {
 
   @Autowired private MockRestServiceServer mockRestServiceServer;
@@ -29,6 +31,12 @@ class UCSBSubjectsServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
+
+  @MockitoBean
+  UserRepository userRepository;
+
+  @MockitoBean
+  UCSBSubjectRepository ucsbSubjectRepository;
 
   private static final String SUBJECTCODE = "SUBJECTCODE";
   private static final String SUBJECTTRANSLATION = "SUBJECTTRANSLATION";

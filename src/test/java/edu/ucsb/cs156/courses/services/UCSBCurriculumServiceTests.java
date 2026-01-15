@@ -25,7 +25,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBCurriculumService.class)
-@AutoConfigureDataJpa
 public class UCSBCurriculumServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")

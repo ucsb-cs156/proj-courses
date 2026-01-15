@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = UserInfoController.class)
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class UserInfoControllerTests extends ControllerTestCase {
 
   @MockBean UserRepository userRepository;

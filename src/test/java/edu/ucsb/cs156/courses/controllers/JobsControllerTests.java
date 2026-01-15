@@ -47,7 +47,6 @@ import org.springframework.test.web.servlet.MvcResult;
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
 @Import(JobService.class)
-@AutoConfigureDataJpa
 public class JobsControllerTests extends ControllerTestCase {
 
   @MockBean JobsRepository jobsRepository;

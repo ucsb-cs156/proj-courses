@@ -34,7 +34,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = PSCourseController.class)
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class PSCourseControllerTests extends ControllerTestCase {
 
   @MockBean PSCourseRepository coursesRepository;

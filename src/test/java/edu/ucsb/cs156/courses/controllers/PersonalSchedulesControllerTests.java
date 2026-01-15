@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = PersonalSchedulesController.class)
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class PersonalSchedulesControllerTests extends ControllerTestCase {
 
   @MockBean PersonalScheduleRepository personalscheduleRepository;

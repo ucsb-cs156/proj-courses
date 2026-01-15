@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.entities.GradeHistory;
 import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
+import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.testconfig.TestConfig;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = {GradeHistoryController.class})
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class GradeHistoryControllerTests extends ControllerTestCase {
 
   @MockBean GradeHistoryRepository gradeHistoryRepository;
@@ -32,6 +33,9 @@ public class GradeHistoryControllerTests extends ControllerTestCase {
   @Autowired private MockMvc mockMvc;
 
   @Autowired private ObjectMapper objectMapper;
+
+  @MockitoBean
+  UserRepository userRepository;
 
   @Test
   public void test_getGradeHistory() throws Exception {

@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = UCSBSubjectsController.class)
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class UCSBSubjectsControllerTests extends ControllerTestCase {
 
   @MockBean UCSBSubjectRepository ucsbSubjectRepository;
