@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
-import edu.ucsb.cs156.courses.jobs.TestJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJob;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
@@ -34,8 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;Jobs&quot;)
 @RequestMapping(&quot;/api/jobs&quot;)
 @RestController
-<span class="fc" id="L37">@Slf4j</span>
-<span class="fc" id="L38">public class JobsController extends ApiController {</span>
+<span class="fc" id="L36">@Slf4j</span>
+<span class="fc" id="L37">public class JobsController extends ApiController {</span>
   @Autowired private JobsRepository jobsRepository;
 
   @Autowired private ConvertedSectionCollection convertedSectionCollection;
@@ -52,16 +51,16 @@ import org.springframework.web.bind.annotation.RestController;
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @GetMapping(&quot;/all&quot;)
   public Iterable&lt;Job&gt; allJobs() {
-<span class="fc" id="L55">    Iterable&lt;Job&gt; jobs = jobsRepository.findAllByOrderByIdDesc();</span>
-<span class="fc" id="L56">    return jobs;</span>
+<span class="fc" id="L54">    Iterable&lt;Job&gt; jobs = jobsRepository.findAllByOrderByIdDesc();</span>
+<span class="fc" id="L55">    return jobs;</span>
   }
 
   @Operation(summary = &quot;Delete all job records&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @DeleteMapping(&quot;/all&quot;)
   public Map&lt;String, String&gt; deleteAllJobs() {
-<span class="fc" id="L63">    jobsRepository.deleteAll();</span>
-<span class="fc" id="L64">    return Map.of(&quot;message&quot;, &quot;All jobs deleted&quot;);</span>
+<span class="fc" id="L62">    jobsRepository.deleteAll();</span>
+<span class="fc" id="L63">    return Map.of(&quot;message&quot;, &quot;All jobs deleted&quot;);</span>
   }
 
   @Operation(summary = &quot;Get a specific Job Log by ID if it is in the database&quot;)
@@ -71,32 +70,21 @@ import org.springframework.web.bind.annotation.RestController;
       @Parameter(name = &quot;id&quot;, description = &quot;ID of the job&quot;) @RequestParam Long id)
       throws JsonProcessingException {
 
-<span class="fc" id="L74">    Job job =</span>
-<span class="fc" id="L75">        jobsRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Job.class, id));</span>
+<span class="fc" id="L73">    Job job =</span>
+<span class="fc" id="L74">        jobsRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Job.class, id));</span>
 
-<span class="fc" id="L77">    return job;</span>
+<span class="fc" id="L76">    return job;</span>
   }
 
   @Operation(summary = &quot;Delete specific job record&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @DeleteMapping(&quot;&quot;)
   public Map&lt;String, String&gt; deleteAllJobs(@Parameter(name = &quot;id&quot;) @RequestParam Long id) {
-<span class="fc bfc" id="L84" title="All 2 branches covered.">    if (!jobsRepository.existsById(id)) {</span>
-<span class="fc" id="L85">      return Map.of(&quot;message&quot;, String.format(&quot;Job with id %d not found&quot;, id));</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (!jobsRepository.existsById(id)) {</span>
+<span class="fc" id="L84">      return Map.of(&quot;message&quot;, String.format(&quot;Job with id %d not found&quot;, id));</span>
     }
-<span class="fc" id="L87">    jobsRepository.deleteById(id);</span>
-<span class="fc" id="L88">    return Map.of(&quot;message&quot;, String.format(&quot;Job with id %d deleted&quot;, id));</span>
-  }
-
-  @Operation(summary = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
-  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-  @PostMapping(&quot;/launch/testjob&quot;)
-  public Job launchTestJob(
-      @Parameter(name = &quot;fail&quot;) @RequestParam Boolean fail,
-      @Parameter(name = &quot;sleepMs&quot;) @RequestParam Integer sleepMs) {
-
-<span class="fc" id="L98">    TestJob testJob = TestJob.builder().fail(fail).sleepMs(sleepMs).build();</span>
-<span class="fc" id="L99">    return jobService.runAsJob(testJob);</span>
+<span class="fc" id="L86">    jobsRepository.deleteById(id);</span>
+<span class="fc" id="L87">    return Map.of(&quot;message&quot;, String.format(&quot;Job with id %d deleted&quot;, id));</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data&quot;)
@@ -112,16 +100,16 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam(defaultValue = &quot;true&quot;)
           Boolean ifStale) {
 
-<span class="fc" id="L115">    log.info(</span>
+<span class="fc" id="L103">    log.info(</span>
         &quot;launchUpdateCourseDataJob: quarterYYYYQ={}, subjectArea={}, ifStale={}&quot;,
         quarterYYYYQ,
         subjectArea,
         ifStale);
-<span class="fc" id="L120">    var job =</span>
-<span class="fc" id="L121">        updateCourseDataJobFactory.createForSubjectAndQuarterAndIfStale(</span>
-<span class="fc" id="L122">            subjectArea, quarterYYYYQ, ifStale);</span>
+<span class="fc" id="L108">    var job =</span>
+<span class="fc" id="L109">        updateCourseDataJobFactory.createForSubjectAndQuarterAndIfStale(</span>
+<span class="fc" id="L110">            subjectArea, quarterYYYYQ, ifStale);</span>
 
-<span class="fc" id="L124">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L112">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data using Quarter&quot;)
@@ -136,9 +124,9 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam(defaultValue = &quot;true&quot;)
           Boolean ifStale) {
 
-<span class="fc" id="L139">    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ, ifStale);</span>
+<span class="fc" id="L127">    var job = updateCourseDataJobFactory.createForQuarter(quarterYYYYQ, ifStale);</span>
 
-<span class="fc" id="L141">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L129">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Get long job logs&quot;)
@@ -146,7 +134,7 @@ import org.springframework.web.bind.annotation.RestController;
   @GetMapping(&quot;/logs/{id}&quot;)
   public String getJobLogs(@Parameter(name = &quot;id&quot;, description = &quot;Job ID&quot;) @PathVariable Long id) {
 
-<span class="fc" id="L149">    return jobService.getLongJob(id);</span>
+<span class="fc" id="L137">    return jobService.getLongJob(id);</span>
   }
 
   @Operation(summary = &quot;Launch Job to Update Course Data for range of quarters&quot;)
@@ -165,11 +153,11 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam(defaultValue = &quot;true&quot;)
           Boolean ifStale) {
 
-<span class="fc" id="L168">    var job =</span>
-<span class="fc" id="L169">        updateCourseDataJobFactory.createForQuarterRange(</span>
-<span class="fc" id="L170">            start_quarterYYYYQ, end_quarterYYYYQ, ifStale);</span>
+<span class="fc" id="L156">    var job =</span>
+<span class="fc" id="L157">        updateCourseDataJobFactory.createForQuarterRange(</span>
+<span class="fc" id="L158">            start_quarterYYYYQ, end_quarterYYYYQ, ifStale);</span>
 
-<span class="fc" id="L172">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L160">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(
@@ -191,19 +179,19 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam(defaultValue = &quot;true&quot;)
           Boolean ifStale) {
 
-<span class="fc" id="L194">    var job =</span>
-<span class="fc" id="L195">        updateCourseDataJobFactory.createForSubjectAndQuarterRange(</span>
-<span class="fc" id="L196">            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ, ifStale);</span>
+<span class="fc" id="L182">    var job =</span>
+<span class="fc" id="L183">        updateCourseDataJobFactory.createForSubjectAndQuarterRange(</span>
+<span class="fc" id="L184">            subjectArea, start_quarterYYYYQ, end_quarterYYYYQ, ifStale);</span>
 
-<span class="fc" id="L198">    return jobService.runAsJob(job);</span>
+<span class="fc" id="L186">    return jobService.runAsJob(job);</span>
   }
 
   @Operation(summary = &quot;Launch Job to update grade history&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @PostMapping(&quot;/launch/uploadGradeData&quot;)
   public Job launchUploadGradeData() {
-<span class="fc" id="L205">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
-<span class="fc" id="L206">    return jobService.runAsJob(updateGradeDataJob);</span>
+<span class="fc" id="L193">    UploadGradeDataJob updateGradeDataJob = updateGradeDataJobFactory.create();</span>
+<span class="fc" id="L194">    return jobService.runAsJob(updateGradeDataJob);</span>
   }
 
   @Operation(summary = &quot;Get a paginated jobs&quot;)
@@ -239,29 +227,29 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam(defaultValue = &quot;DESC&quot;)
           String sortDirection) {
 
-<span class="fc" id="L242">    List&lt;String&gt; allowedSortFields = Arrays.asList(&quot;createdBy&quot;, &quot;status&quot;, &quot;createdAt&quot;, &quot;updatedAt&quot;);</span>
+<span class="fc" id="L230">    List&lt;String&gt; allowedSortFields = Arrays.asList(&quot;createdBy&quot;, &quot;status&quot;, &quot;createdAt&quot;, &quot;updatedAt&quot;);</span>
 
-<span class="fc bfc" id="L244" title="All 2 branches covered.">    if (!allowedSortFields.contains(sortField)) {</span>
-<span class="fc" id="L245">      throw new IllegalArgumentException(</span>
-<span class="fc" id="L246">          String.format(</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">    if (!allowedSortFields.contains(sortField)) {</span>
+<span class="fc" id="L233">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L234">          String.format(</span>
               &quot;%s is not a valid sort field. Valid values are %s&quot;, sortField, allowedSortFields));
     }
 
-<span class="fc" id="L250">    List&lt;String&gt; allowedSortDirections = Arrays.asList(&quot;ASC&quot;, &quot;DESC&quot;);</span>
-<span class="fc bfc" id="L251" title="All 2 branches covered.">    if (!allowedSortDirections.contains(sortDirection)) {</span>
-<span class="fc" id="L252">      throw new IllegalArgumentException(</span>
-<span class="fc" id="L253">          String.format(</span>
+<span class="fc" id="L238">    List&lt;String&gt; allowedSortDirections = Arrays.asList(&quot;ASC&quot;, &quot;DESC&quot;);</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">    if (!allowedSortDirections.contains(sortDirection)) {</span>
+<span class="fc" id="L240">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L241">          String.format(</span>
               &quot;%s is not a valid sort direction. Valid values are %s&quot;,
               sortDirection, allowedSortDirections));
     }
 
-<span class="fc" id="L258">    Direction sortDirectionObject = Direction.DESC;</span>
-<span class="fc bfc" id="L259" title="All 2 branches covered.">    if (sortDirection.equals(&quot;ASC&quot;)) {</span>
-<span class="fc" id="L260">      sortDirectionObject = Direction.ASC;</span>
+<span class="fc" id="L246">    Direction sortDirectionObject = Direction.DESC;</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">    if (sortDirection.equals(&quot;ASC&quot;)) {</span>
+<span class="fc" id="L248">      sortDirectionObject = Direction.ASC;</span>
     }
 
-<span class="fc" id="L263">    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);</span>
-<span class="fc" id="L264">    return jobsRepository.findAll(pageRequest);</span>
+<span class="fc" id="L251">    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);</span>
+<span class="fc" id="L252">    return jobsRepository.findAll(pageRequest);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
