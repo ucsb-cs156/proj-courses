@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service("currentUser")
+@Service("mockCurrentUser")
 public class MockCurrentUserServiceImpl extends CurrentUserServiceImpl {
 
   public User getMockUser(SecurityContext securityContext, Authentication authentication) {
