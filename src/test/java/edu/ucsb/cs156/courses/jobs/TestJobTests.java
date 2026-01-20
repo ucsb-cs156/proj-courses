@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import edu.ucsb.cs156.courses.testconfig.TestJob;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.security.test.context.support.WithMockUser;

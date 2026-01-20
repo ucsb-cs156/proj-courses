@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.errors.EntityNotFoundException;
-import edu.ucsb.cs156.courses.jobs.TestJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJob;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
@@ -86,17 +85,6 @@ public class JobsController extends ApiController {
     }
     jobsRepository.deleteById(id);
     return Map.of("message", String.format("Job with id %d deleted", id));
-  }
-
-  @Operation(summary = "Launch Test Job (click fail if you want to test exception handling)")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PostMapping("/launch/testjob")
-  public Job launchTestJob(
-      @Parameter(name = "fail") @RequestParam Boolean fail,
-      @Parameter(name = "sleepMs") @RequestParam Integer sleepMs) {
-
-    TestJob testJob = TestJob.builder().fail(fail).sleepMs(sleepMs).build();
-    return jobService.runAsJob(testJob);
   }
 
   @Operation(summary = "Launch Job to Update Course Data")

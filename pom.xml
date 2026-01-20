@@ -265,7 +265,7 @@
                         <param>edu.ucsb.cs156.courses.config.JpaAuditingConfig</param>
                     </excludedClasses>
                     <excludedTestClasses>
-                        <param>edu.ucsb.cs156.example.integration.*</param>
+                        <param>edu.ucsb.cs156.courses.integration.*</param>
                     </excludedTestClasses>
                     <outputFormats>
                         <outputFormat>HTML</outputFormat>
