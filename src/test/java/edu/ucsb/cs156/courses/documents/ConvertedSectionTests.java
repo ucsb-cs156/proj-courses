@@ -74,4 +74,43 @@ public class ConvertedSectionTests {
     result = comparator.compare(cs1, cs2);
     assertTrue(result < 0); // cs1 is later than cs2 (sorting descending)
   }
+
+  @Test
+  public void test_getDays() throws JsonProcessingException {
+    List<ConvertedSection> cs =
+        mapper.readValue(
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
+            new TypeReference<List<ConvertedSection>>() {});
+    ConvertedSection cs1 = cs.get(0);
+    ConvertedSection cs2 = cs.get(1);
+
+    assertEquals("M W F  ", cs1.getDays());
+    assertEquals(" T     ", cs2.getDays());
+  }
+
+  @Test
+  public void test_getLocations() throws JsonProcessingException {
+    List<ConvertedSection> cs =
+        mapper.readValue(
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
+            new TypeReference<List<ConvertedSection>>() {});
+    ConvertedSection cs1 = cs.get(0);
+    ConvertedSection cs2 = cs.get(1);
+
+    assertEquals("LSB 1001", cs1.getLocations());
+    assertEquals("HSSB 1231", cs2.getLocations());
+  }
+
+  @Test
+  public void test_getBeginTimes() throws JsonProcessingException {
+    List<ConvertedSection> cs =
+        mapper.readValue(
+            CoursePageFixtures.CONVERTED_SECTIONS_JSON_MATH3B,
+            new TypeReference<List<ConvertedSection>>() {});
+    ConvertedSection cs1 = cs.get(0);
+    ConvertedSection cs2 = cs.get(1);
+
+    assertEquals("11:00", cs1.getBeginTimes());
+    assertEquals("17:00", cs2.getBeginTimes());
+  }
 }

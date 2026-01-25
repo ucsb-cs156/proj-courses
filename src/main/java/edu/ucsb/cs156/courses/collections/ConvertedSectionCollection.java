@@ -33,4 +33,24 @@ public interface ConvertedSectionCollection extends MongoRepository<ConvertedSec
 
   @Query("{'courseInfo.quarter': { $eq: ?0 } }")
   List<ConvertedSection> findByQuarter(String quarter);
+
+  @Query(
+      "{'courseInfo.quarter': { $eq: ?0 }, 'courseInfo.courseId': { $regex: ?1 }, 'section.section': { $regex: '00$' } }")
+  List<ConvertedSection> findLecturesByQuarterAndSubjectArea(String quarter, String subjectArea);
+
+  /**
+   * Find sections by quarter and subject area.
+   *
+   * @param quarter Quarter in yyyyq format
+   * @param subjectArea regex (first eight should be subjectArea, then next character determines
+   *     level; e.g. ' ' for lower div ugrad, 1 for upper div ugrad, 2 or above for grad)
+   * @param sectionRegex use `00$` to omit sections or `.*` for all sections
+   * @param minTimeLocations use 0 for all courses (including independent studies), 1 for only
+   *     course that have a time and/or locations assigned
+   * @return
+   */
+  @Query(
+      "{'courseInfo.quarter': { $eq: ?0 }, 'courseInfo.courseId': { $regex: ?1 }, 'section.section': { $regex: ?2 }, $expr: { $gte: [ { $size: '$section.timeLocations' }, ?3 ] } }")
+  List<ConvertedSection> findByQuarterAndSubjectArea(
+      String quarter, String subjectArea, String sectionRegex, int minTimeLocations);
 }
