@@ -137,52 +137,51 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
           boolean withTimeLocations)
       throws Exception, IOException {
 
-    // String formattedSubjectArea = String.format(&quot;'%8s'&quot;, subjectArea);
-<span class="fc" id="L141">    StreamingResponseBody stream =</span>
+<span class="fc" id="L140">    StreamingResponseBody stream =</span>
         (outputStream) -&gt; {
-<span class="fc bfc" id="L143" title="All 2 branches covered.">          String sectionRegex = omitSections ? &quot;00$&quot; : &quot;.*&quot;;</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">          String sectionRegex = omitSections ? &quot;00$&quot; : &quot;.*&quot;;</span>
           String courseLevelRegex =
-<span class="fc bfc" id="L145" title="All 4 branches covered.">              level.equals(&quot;A&quot;) ? &quot;&quot; : level.equals(&quot;G&quot;) ? &quot;[23456789]&quot; : &quot;[ 1]&quot;;</span>
-<span class="fc" id="L146">          String courseIdRegex = String.format(&quot;^%-8s&quot;, subjectArea) + courseLevelRegex;</span>
-<span class="fc" id="L147">          Iterable&lt;ConvertedSection&gt; iterable =</span>
-<span class="fc" id="L148">              convertedSectionCollection.findByQuarterAndSubjectArea(</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">                  yyyyq, courseIdRegex, sectionRegex, withTimeLocations ? 1 : 0);</span>
+<span class="fc bfc" id="L144" title="All 4 branches covered.">              level.equals(&quot;A&quot;) ? &quot;&quot; : level.equals(&quot;G&quot;) ? &quot;[23456789]&quot; : &quot;[ 1]&quot;;</span>
+<span class="fc" id="L145">          String courseIdRegex = String.format(&quot;^%-8s&quot;, subjectArea) + courseLevelRegex;</span>
+<span class="fc" id="L146">          Iterable&lt;ConvertedSection&gt; iterable =</span>
+<span class="fc" id="L147">              convertedSectionCollection.findByQuarterAndSubjectArea(</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">                  yyyyq, courseIdRegex, sectionRegex, withTimeLocations ? 1 : 0);</span>
 
-<span class="fc" id="L151">          log.info(</span>
+<span class="fc" id="L150">          log.info(</span>
               &quot;Found {} sections for quarter {} and courseIdRegex &lt;{}&gt; and sectionRegex &lt;{}&gt;&quot;,
-<span class="fc" id="L153">              Streamable.of(iterable).toList().size(),</span>
+<span class="fc" id="L152">              Streamable.of(iterable).toList().size(),</span>
               yyyyq,
               courseIdRegex,
               sectionRegex);
 
-<span class="fc" id="L158">          List&lt;SectionCSVLine&gt; list =</span>
-<span class="fc" id="L159">              Streamable.of(iterable).toList().stream()</span>
-<span class="fc" id="L160">                  .map(</span>
+<span class="fc" id="L157">          List&lt;SectionCSVLine&gt; list =</span>
+<span class="fc" id="L158">              Streamable.of(iterable).toList().stream()</span>
+<span class="fc" id="L159">                  .map(</span>
                       section -&gt; {
-<span class="fc" id="L162">                        return SectionCSVLine.toSectionCSVLine(section);</span>
+<span class="fc" id="L161">                        return SectionCSVLine.toSectionCSVLine(section);</span>
                       })
-<span class="fc" id="L164">                  .collect(Collectors.toList());</span>
+<span class="fc" id="L163">                  .collect(Collectors.toList());</span>
 
-<span class="fc" id="L166">          try (Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {</span>
+<span class="fc" id="L165">          try (Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {</span>
             try {
-<span class="fc" id="L168">              StatefulBeanToCsv&lt;SectionCSVLine&gt; beanToCsvWriter =</span>
-<span class="fc" id="L169">                  sectionCsvLineService.getStatefulBeanToCSV(writer);</span>
-<span class="fc" id="L170">              beanToCsvWriter.write(list);</span>
-<span class="fc" id="L171">            } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {</span>
-<span class="fc" id="L172">              log.error(&quot;Error writing CSV file&quot;, e);</span>
-<span class="fc" id="L173">              throw new IOException(&quot;Error writing CSV file: &quot; + e.getMessage());</span>
-<span class="fc" id="L174">            }</span>
+<span class="fc" id="L167">              StatefulBeanToCsv&lt;SectionCSVLine&gt; beanToCsvWriter =</span>
+<span class="fc" id="L168">                  sectionCsvLineService.getStatefulBeanToCSV(writer);</span>
+<span class="fc" id="L169">              beanToCsvWriter.write(list);</span>
+<span class="fc" id="L170">            } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {</span>
+<span class="fc" id="L171">              log.error(&quot;Error writing CSV file&quot;, e);</span>
+<span class="fc" id="L172">              throw new IOException(&quot;Error writing CSV file: &quot; + e.getMessage());</span>
+<span class="fc" id="L173">            }</span>
           }
-<span class="fc" id="L176">        };</span>
+<span class="fc" id="L175">        };</span>
 
-<span class="fc" id="L178">    return ResponseEntity.ok()</span>
-<span class="fc" id="L179">        .contentType(MediaType.parseMediaType(&quot;text/csv; charset=UTF-8&quot;))</span>
-<span class="fc" id="L180">        .header(</span>
+<span class="fc" id="L177">    return ResponseEntity.ok()</span>
+<span class="fc" id="L178">        .contentType(MediaType.parseMediaType(&quot;text/csv; charset=UTF-8&quot;))</span>
+<span class="fc" id="L179">        .header(</span>
             HttpHeaders.CONTENT_DISPOSITION,
-<span class="fc" id="L182">            String.format(&quot;attachment;filename=courses_%s.csv&quot;, yyyyq))</span>
-<span class="fc" id="L183">        .header(HttpHeaders.CONTENT_TYPE, &quot;text/csv; charset=UTF-8&quot;)</span>
-<span class="fc" id="L184">        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)</span>
-<span class="fc" id="L185">        .body(stream);</span>
+<span class="fc" id="L181">            String.format(&quot;attachment;filename=courses_%s.csv&quot;, yyyyq))</span>
+<span class="fc" id="L182">        .header(HttpHeaders.CONTENT_TYPE, &quot;text/csv; charset=UTF-8&quot;)</span>
+<span class="fc" id="L183">        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)</span>
+<span class="fc" id="L184">        .body(stream);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
