@@ -137,7 +137,6 @@ public class CoursesCSVController extends ApiController {
           boolean withTimeLocations)
       throws Exception, IOException {
 
-    // String formattedSubjectArea = String.format("'%8s'", subjectArea);
     StreamingResponseBody stream =
         (outputStream) -> {
           String sectionRegex = omitSections ? "00$" : ".*";
