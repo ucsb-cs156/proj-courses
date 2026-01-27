@@ -2,6 +2,7 @@ package edu.ucsb.cs156.courses.documents;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,5 +55,35 @@ public class ConvertedSection {
     public int compare(ConvertedSection o1, ConvertedSection o2) {
       return o2.getCourseInfo().getQuarter().compareTo(o1.getCourseInfo().getQuarter());
     }
+  }
+
+  @JsonIgnore
+  public String getDays() {
+    if (this.getSection().getTimeLocations() == null) {
+      return "";
+    }
+    return this.getSection().getTimeLocations().stream()
+        .map(timeLocation -> timeLocation.getDays())
+        .collect(Collectors.joining(", "));
+  }
+
+  @JsonIgnore
+  public String getBeginTimes() {
+    if (this.getSection().getTimeLocations() == null) {
+      return "";
+    }
+    return this.getSection().getTimeLocations().stream()
+        .map(timeLocation -> timeLocation.getBeginTime())
+        .collect(Collectors.joining(", "));
+  }
+
+  @JsonIgnore
+  public String getLocations() {
+    if (this.getSection().getTimeLocations() == null) {
+      return "";
+    }
+    return this.getSection().getTimeLocations().stream()
+        .map(timeLocation -> timeLocation.getBuilding() + " " + timeLocation.getRoom())
+        .collect(Collectors.joining(", "));
   }
 }

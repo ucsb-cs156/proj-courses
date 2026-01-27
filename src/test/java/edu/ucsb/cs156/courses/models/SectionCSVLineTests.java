@@ -25,6 +25,9 @@ public class SectionCSVLineTests {
     line.setMaxEnroll("80");
     line.setStatus("Open");
     line.setGes("None");
+    line.setDays(" T R   ");
+    line.setBeginTime("17:00");
+    line.setLocation("ILP 2211");
 
     // Use getters to confirm
     assertEquals("20251", line.getQuarter());
@@ -33,7 +36,18 @@ public class SectionCSVLineTests {
 
     // Force coverage for equals/hashCode + all-args constructor
     SectionCSVLine same =
-        new SectionCSVLine("20251", "CMPSC 156", "0101", "Conrad", "50", "80", "Open", "None");
+        new SectionCSVLine(
+            "20251",
+            "CMPSC 156",
+            "0101",
+            "Conrad",
+            "50",
+            "80",
+            "Open",
+            "None",
+            " T R   ",
+            "17:00",
+            "ILP 2211");
 
     assertEquals(line, same);
     assertEquals(line.hashCode(), same.hashCode());

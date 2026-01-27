@@ -20,12 +20,16 @@ public class SectionCSVLine {
   private String maxEnroll;
   private String status;
   private String ges;
+  private String days;
+  private String beginTime;
+  private String location;
 
   public static String intToStringWithDefault(Integer i) {
     return i == null ? "0" : i.toString();
   }
 
   public static SectionCSVLine toSectionCSVLine(ConvertedSection cs) {
+
     return SectionCSVLine.builder()
         .quarter(cs.getCourseInfo().getQuarter())
         .courseId(cs.getCourseInfo().getCourseId())
@@ -35,6 +39,9 @@ public class SectionCSVLine {
         .instructor(cs.getSection().instructorList())
         .status(cs.getSection().status())
         .ges(cs.getCourseInfo().ges())
+        .days(cs.getDays())
+        .beginTime(cs.getBeginTimes())
+        .location(cs.getLocations())
         .build();
   }
 }
