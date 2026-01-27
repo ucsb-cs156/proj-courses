@@ -25,6 +25,15 @@ describe("AppNavbar tests", () => {
     expect(
       await screen.findByText("Welcome, pconrad.cis@gmail.com"),
     ).toBeInTheDocument();
+
+    expect(screen.getByTestId("appnavbar-downloads")).toBeInTheDocument();
+    expect(screen.getByTestId("appnavbar-downloads")).toHaveAttribute(
+      "href",
+      "/downloads",
+    );
+    expect(screen.getByTestId("appnavbar-downloads")).toHaveTextContent(
+      "Downloads",
+    );
   });
 
   test("renders correctly for admin user", async () => {

@@ -155,6 +155,9 @@ export default function AppNavbar({
             </Nav>
 
             <Nav className="ml-auto">
+              <Nav.Link href="/downloads" data-testid="appnavbar-downloads">
+                Downloads
+              </Nav.Link>
               {currentUser && currentUser.loggedIn ? (
                 <>
                   <Navbar.Text className="me-3" as={Link} to="/profile">
