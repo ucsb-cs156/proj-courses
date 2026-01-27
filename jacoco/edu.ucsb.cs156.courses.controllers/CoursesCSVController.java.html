@@ -42,7 +42,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
   @Autowired private SectionCSVLineService sectionCsvLineService;
 
   @Operation(
-      summary = &quot;Download Course List as CSV File&quot;,
+      summary = &quot;Download Complete Course List for a quarter as a CSV File&quot;,
       description = &quot;Returns a CSV file as a response&quot;,
       responses = {
         @ApiResponse(
@@ -92,6 +92,96 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 <span class="fc" id="L92">        .header(HttpHeaders.CONTENT_TYPE, &quot;text/csv; charset=UTF-8&quot;)</span>
 <span class="fc" id="L93">        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)</span>
 <span class="fc" id="L94">        .body(stream);</span>
+  }
+
+  @Operation(
+      summary = &quot;Download Course List for a subject area and quarter as a CSV File&quot;,
+      description = &quot;Returns a CSV file as a response&quot;,
+      responses = {
+        @ApiResponse(
+            responseCode = &quot;200&quot;,
+            description = &quot;CSV file&quot;,
+            content =
+                @Content(
+                    mediaType = &quot;text/csv&quot;,
+                    schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;))),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
+      })
+  @GetMapping(value = &quot;/byQuarterAndSubjectArea&quot;, produces = &quot;text/csv&quot;)
+  public ResponseEntity&lt;StreamingResponseBody&gt; csvForCoursesQuarterAndSubjectArea(
+      @Parameter(name = &quot;yyyyq&quot;, description = &quot;quarter in yyyyq format&quot;, example = &quot;20261&quot;)
+          @RequestParam
+          String yyyyq,
+      @Parameter(name = &quot;subjectArea&quot;, description = &quot;subject area&quot;, example = &quot;CMPSC&quot;)
+          @RequestParam
+          String subjectArea,
+      @Parameter(
+              name = &quot;level&quot;,
+              description = &quot;U for undergrad, G for graduate, A for all (default: U)&quot;,
+              example = &quot;&quot;,
+              schema =
+                  @Schema(
+                      type = &quot;string&quot;,
+                      allowableValues = {&quot;A&quot;, &quot;U&quot;, &quot;G&quot;}))
+          @RequestParam(defaultValue = &quot;U&quot;)
+          String level,
+      @Parameter(name = &quot;omitSections&quot;, description = &quot;omit sections&quot;, example = &quot;true&quot;)
+          @RequestParam(defaultValue = &quot;true&quot;)
+          boolean omitSections,
+      @Parameter(
+              name = &quot;withTimeLocations&quot;,
+              description =
+                  &quot;return only courses that have times and/or locations assigned (e.g. no independent study type courses)&quot;,
+              example = &quot;true&quot;)
+          @RequestParam(defaultValue = &quot;true&quot;)
+          boolean withTimeLocations)
+      throws Exception, IOException {
+
+<span class="fc" id="L140">    StreamingResponseBody stream =</span>
+        (outputStream) -&gt; {
+<span class="fc bfc" id="L142" title="All 2 branches covered.">          String sectionRegex = omitSections ? &quot;00$&quot; : &quot;.*&quot;;</span>
+          String courseLevelRegex =
+<span class="fc bfc" id="L144" title="All 4 branches covered.">              level.equals(&quot;A&quot;) ? &quot;&quot; : level.equals(&quot;G&quot;) ? &quot;[23456789]&quot; : &quot;[ 1]&quot;;</span>
+<span class="fc" id="L145">          String courseIdRegex = String.format(&quot;^%-8s&quot;, subjectArea) + courseLevelRegex;</span>
+<span class="fc" id="L146">          Iterable&lt;ConvertedSection&gt; iterable =</span>
+<span class="fc" id="L147">              convertedSectionCollection.findByQuarterAndSubjectArea(</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">                  yyyyq, courseIdRegex, sectionRegex, withTimeLocations ? 1 : 0);</span>
+
+<span class="fc" id="L150">          log.info(</span>
+              &quot;Found {} sections for quarter {} and courseIdRegex &lt;{}&gt; and sectionRegex &lt;{}&gt;&quot;,
+<span class="fc" id="L152">              Streamable.of(iterable).toList().size(),</span>
+              yyyyq,
+              courseIdRegex,
+              sectionRegex);
+
+<span class="fc" id="L157">          List&lt;SectionCSVLine&gt; list =</span>
+<span class="fc" id="L158">              Streamable.of(iterable).toList().stream()</span>
+<span class="fc" id="L159">                  .map(</span>
+                      section -&gt; {
+<span class="fc" id="L161">                        return SectionCSVLine.toSectionCSVLine(section);</span>
+                      })
+<span class="fc" id="L163">                  .collect(Collectors.toList());</span>
+
+<span class="fc" id="L165">          try (Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {</span>
+            try {
+<span class="fc" id="L167">              StatefulBeanToCsv&lt;SectionCSVLine&gt; beanToCsvWriter =</span>
+<span class="fc" id="L168">                  sectionCsvLineService.getStatefulBeanToCSV(writer);</span>
+<span class="fc" id="L169">              beanToCsvWriter.write(list);</span>
+<span class="fc" id="L170">            } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {</span>
+<span class="fc" id="L171">              log.error(&quot;Error writing CSV file&quot;, e);</span>
+<span class="fc" id="L172">              throw new IOException(&quot;Error writing CSV file: &quot; + e.getMessage());</span>
+<span class="fc" id="L173">            }</span>
+          }
+<span class="fc" id="L175">        };</span>
+
+<span class="fc" id="L177">    return ResponseEntity.ok()</span>
+<span class="fc" id="L178">        .contentType(MediaType.parseMediaType(&quot;text/csv; charset=UTF-8&quot;))</span>
+<span class="fc" id="L179">        .header(</span>
+            HttpHeaders.CONTENT_DISPOSITION,
+<span class="fc" id="L181">            String.format(&quot;attachment;filename=courses_%s.csv&quot;, yyyyq))</span>
+<span class="fc" id="L182">        .header(HttpHeaders.CONTENT_TYPE, &quot;text/csv; charset=UTF-8&quot;)</span>
+<span class="fc" id="L183">        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)</span>
+<span class="fc" id="L184">        .body(stream);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

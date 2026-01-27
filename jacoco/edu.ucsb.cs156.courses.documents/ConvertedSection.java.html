@@ -2,6 +2,7 @@
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,38 +23,68 @@ public class ConvertedSection {
   @Override
   public Object clone() throws CloneNotSupportedException {
 
-<span class="fc" id="L25">    ConvertedSection newConvertedSection = new ConvertedSection();</span>
+<span class="fc" id="L26">    ConvertedSection newConvertedSection = new ConvertedSection();</span>
 
-<span class="fc" id="L27">    newConvertedSection.set_id(this._id);</span>
+<span class="fc" id="L28">    newConvertedSection.set_id(this._id);</span>
 
-<span class="fc" id="L29">    CourseInfo newCourseInfo = (CourseInfo) this.getCourseInfo().clone();</span>
-<span class="fc" id="L30">    newConvertedSection.setCourseInfo(newCourseInfo);</span>
+<span class="fc" id="L30">    CourseInfo newCourseInfo = (CourseInfo) this.getCourseInfo().clone();</span>
+<span class="fc" id="L31">    newConvertedSection.setCourseInfo(newCourseInfo);</span>
 
-<span class="fc" id="L32">    Section newSection = (Section) this.getSection().clone();</span>
-<span class="fc" id="L33">    newConvertedSection.setSection(newSection);</span>
+<span class="fc" id="L33">    Section newSection = (Section) this.getSection().clone();</span>
+<span class="fc" id="L34">    newConvertedSection.setSection(newSection);</span>
 
-<span class="fc" id="L35">    return newConvertedSection;</span>
+<span class="fc" id="L36">    return newConvertedSection;</span>
   }
 
   @JsonIgnore
   public EnrollmentDataPoint getEnrollmentDataPoint() {
     EnrollmentDataPoint edp =
-<span class="fc" id="L41">        EnrollmentDataPoint.builder()</span>
-<span class="fc" id="L42">            .yyyyq(this.getCourseInfo().getQuarter())</span>
-<span class="fc" id="L43">            .enrollCd(this.getSection().getEnrollCode())</span>
-<span class="fc" id="L44">            .enrollment(this.getSection().getEnrolledTotal())</span>
-<span class="fc" id="L45">            .courseId(this.getCourseInfo().getCourseId())</span>
-<span class="fc" id="L46">            .section(this.getSection().getSection())</span>
-<span class="fc" id="L47">            .build();</span>
-<span class="fc" id="L48">    return edp;</span>
+<span class="fc" id="L42">        EnrollmentDataPoint.builder()</span>
+<span class="fc" id="L43">            .yyyyq(this.getCourseInfo().getQuarter())</span>
+<span class="fc" id="L44">            .enrollCd(this.getSection().getEnrollCode())</span>
+<span class="fc" id="L45">            .enrollment(this.getSection().getEnrolledTotal())</span>
+<span class="fc" id="L46">            .courseId(this.getCourseInfo().getCourseId())</span>
+<span class="fc" id="L47">            .section(this.getSection().getSection())</span>
+<span class="fc" id="L48">            .build();</span>
+<span class="fc" id="L49">    return edp;</span>
   }
 
-<span class="fc" id="L51">  public static class ConvertedSectionSortDescendingByQuarterComparator</span>
+<span class="fc" id="L52">  public static class ConvertedSectionSortDescendingByQuarterComparator</span>
       implements java.util.Comparator&lt;ConvertedSection&gt; {
     @Override
     public int compare(ConvertedSection o1, ConvertedSection o2) {
-<span class="fc" id="L55">      return o2.getCourseInfo().getQuarter().compareTo(o1.getCourseInfo().getQuarter());</span>
+<span class="fc" id="L56">      return o2.getCourseInfo().getQuarter().compareTo(o1.getCourseInfo().getQuarter());</span>
     }
+  }
+
+  @JsonIgnore
+  public String getDays() {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    if (this.getSection().getTimeLocations() == null) {</span>
+<span class="fc" id="L63">      return &quot;&quot;;</span>
+    }
+<span class="fc" id="L65">    return this.getSection().getTimeLocations().stream()</span>
+<span class="fc" id="L66">        .map(timeLocation -&gt; timeLocation.getDays())</span>
+<span class="fc" id="L67">        .collect(Collectors.joining(&quot;, &quot;));</span>
+  }
+
+  @JsonIgnore
+  public String getBeginTimes() {
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (this.getSection().getTimeLocations() == null) {</span>
+<span class="fc" id="L73">      return &quot;&quot;;</span>
+    }
+<span class="fc" id="L75">    return this.getSection().getTimeLocations().stream()</span>
+<span class="fc" id="L76">        .map(timeLocation -&gt; timeLocation.getBeginTime())</span>
+<span class="fc" id="L77">        .collect(Collectors.joining(&quot;, &quot;));</span>
+  }
+
+  @JsonIgnore
+  public String getLocations() {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">    if (this.getSection().getTimeLocations() == null) {</span>
+<span class="fc" id="L83">      return &quot;&quot;;</span>
+    }
+<span class="fc" id="L85">    return this.getSection().getTimeLocations().stream()</span>
+<span class="fc" id="L86">        .map(timeLocation -&gt; timeLocation.getBuilding() + &quot; &quot; + timeLocation.getRoom())</span>
+<span class="fc" id="L87">        .collect(Collectors.joining(&quot;, &quot;));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

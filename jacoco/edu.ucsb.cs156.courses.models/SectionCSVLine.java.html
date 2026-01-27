@@ -20,22 +20,29 @@ public class SectionCSVLine {
   private String maxEnroll;
   private String status;
   private String ges;
+  private String days;
+  private String beginTime;
+  private String location;
 
   public static String intToStringWithDefault(Integer i) {
-<span class="fc bfc" id="L25" title="All 2 branches covered.">    return i == null ? &quot;0&quot; : i.toString();</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">    return i == null ? &quot;0&quot; : i.toString();</span>
   }
 
   public static SectionCSVLine toSectionCSVLine(ConvertedSection cs) {
-<span class="fc" id="L29">    return SectionCSVLine.builder()</span>
-<span class="fc" id="L30">        .quarter(cs.getCourseInfo().getQuarter())</span>
-<span class="fc" id="L31">        .courseId(cs.getCourseInfo().getCourseId())</span>
-<span class="fc" id="L32">        .section(cs.getSection().getSection())</span>
-<span class="fc" id="L33">        .enrolled(intToStringWithDefault(cs.getSection().getEnrolledTotal()))</span>
-<span class="fc" id="L34">        .maxEnroll(intToStringWithDefault(cs.getSection().getMaxEnroll()))</span>
-<span class="fc" id="L35">        .instructor(cs.getSection().instructorList())</span>
-<span class="fc" id="L36">        .status(cs.getSection().status())</span>
-<span class="fc" id="L37">        .ges(cs.getCourseInfo().ges())</span>
-<span class="fc" id="L38">        .build();</span>
+
+<span class="fc" id="L33">    return SectionCSVLine.builder()</span>
+<span class="fc" id="L34">        .quarter(cs.getCourseInfo().getQuarter())</span>
+<span class="fc" id="L35">        .courseId(cs.getCourseInfo().getCourseId())</span>
+<span class="fc" id="L36">        .section(cs.getSection().getSection())</span>
+<span class="fc" id="L37">        .enrolled(intToStringWithDefault(cs.getSection().getEnrolledTotal()))</span>
+<span class="fc" id="L38">        .maxEnroll(intToStringWithDefault(cs.getSection().getMaxEnroll()))</span>
+<span class="fc" id="L39">        .instructor(cs.getSection().instructorList())</span>
+<span class="fc" id="L40">        .status(cs.getSection().status())</span>
+<span class="fc" id="L41">        .ges(cs.getCourseInfo().ges())</span>
+<span class="fc" id="L42">        .days(cs.getDays())</span>
+<span class="fc" id="L43">        .beginTime(cs.getBeginTimes())</span>
+<span class="fc" id="L44">        .location(cs.getLocations())</span>
+<span class="fc" id="L45">        .build();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

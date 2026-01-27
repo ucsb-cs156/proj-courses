@@ -15,13 +15,13 @@ courses,edu.ucsb.cs156.courses.controllers,JobsController,0,247,0,8,0,44,0,18,0,
 courses,edu.ucsb.cs156.courses.controllers,GradeHistoryController,0,18,0,0,0,5,0,3,0,3
 courses,edu.ucsb.cs156.courses.controllers,ApiController,0,33,0,0,0,10,0,6,0,6
 courses,edu.ucsb.cs156.courses.controllers,UserInfoController,0,6,0,0,0,2,0,2,0,2
-courses,edu.ucsb.cs156.courses.controllers,CoursesCSVController,0,98,0,0,0,25,0,5,0,5
+courses,edu.ucsb.cs156.courses.controllers,CoursesCSVController,0,256,0,8,0,55,0,12,0,8
 courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeBuildingController,0,101,0,12,0,23,0,13,0,7
 courses,edu.ucsb.cs156.courses.controllers,CourseOverTimeController,0,97,0,2,0,16,0,4,0,3
 courses,edu.ucsb.cs156.courses.controllers,UCSBSubjectsController,0,73,0,0,0,17,0,9,0,9
 courses,edu.ucsb.cs156.courses.documents,CoursePage,0,229,0,18,0,64,0,15,0,6
 courses,edu.ucsb.cs156.courses.documents,ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator,0,11,0,0,0,2,0,2,0,2
-courses,edu.ucsb.cs156.courses.documents,ConvertedSection,0,52,0,0,0,15,0,2,0,2
+courses,edu.ucsb.cs156.courses.documents,ConvertedSection,0,115,0,6,0,30,0,11,0,8
 courses,edu.ucsb.cs156.courses.documents,Course,0,4,0,0,0,1,0,1,0,1
 courses,edu.ucsb.cs156.courses.documents,GeneralEducation,0,20,0,4,0,5,0,3,0,1
 courses,edu.ucsb.cs156.courses.documents,TimeLocation,0,3,0,0,0,1,0,1,0,1
@@ -36,7 +36,7 @@ courses,edu.ucsb.cs156.courses.jobs,UpdateCourseDataJob,0,228,0,14,0,55,0,11,0,4
 courses,edu.ucsb.cs156.courses.errors,EntityNotFoundException,0,47,0,0,0,8,0,2,0,2
 courses,edu.ucsb.cs156.courses.errors,BadEnrollCdException,0,12,0,0,0,3,0,1,0,1
 courses,edu.ucsb.cs156.courses.entities,GradeHistory,0,23,0,4,0,4,0,4,0,2
-courses,edu.ucsb.cs156.courses.models,SectionCSVLine,0,44,0,2,0,11,0,3,0,2
+courses,edu.ucsb.cs156.courses.models,SectionCSVLine,0,53,0,2,0,14,0,3,0,2
 courses,edu.ucsb.cs156.courses.models,EnrollmentCSV,0,24,0,0,0,9,0,1,0,1
 courses,edu.ucsb.cs156.courses.models,Quarter,0,412,0,43,0,81,0,43,0,21
 courses,edu.ucsb.cs156.courses.services,GradeHistoryImportServiceImpl,0,429,0,22,0,82,0,20,0,9
