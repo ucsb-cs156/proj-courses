@@ -22,3 +22,46 @@ For example, for a `courses-dev-cgaucho` app, you'd use:
 dokku mongo:create courses-dev-cgaucho-m-db
 dokku mongo:link courses-dev-cgaucho-m-db courses-dev-cgaucho --no-restart
 ```
+
+## Accessing Mongo Command on dokku
+
+If you want to list records in the mongo collections, you can access a mongo command 
+line on dokku with the following command (substitute the name of your mongo db database in place of `courses-m`:
+
+```
+dokku mongo:connect courses-m
+```
+
+That gives you something like the following:
+
+```
+pconrad@dokku-00:~$ dokku mongo:connect courses-m
+Current Mongosh Log ID:	69768804b279b310cf0bbacc
+Connecting to:		mongodb://<credentials>@127.0.0.1:27017/courses_m?directConnection=true&serverSelectionTimeoutMS=2000&authSource=courses_m&appName=mongosh+1.10.1
+Using MongoDB:		6.0.7
+Using Mongosh:		1.10.1
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+courses_m>
+```
+
+Some useful commands:
+
+| Command | Explanation |
+|-|-|
+| `show collections` | Show the names of all of the collections in the database |
+| `db.courses.find().limit(5)` | Show the first 5 documents in the `courses` collection |
+
+## Some additional queries
+
+This finds all records for `CMPSC   184` for W26. Note that the subject area must be in a field of exactly 8 characters (i.e. exactly three spaces between `CMPSC` and `184`: 
+
+```
+db.courses.find({
+  "courseInfo.quarter": "20261", 
+  "courseInfo.courseId": /^CMPSC   184/}
+)
+```
+
+
