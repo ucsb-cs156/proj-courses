@@ -13,7 +13,7 @@ const AdminUsersPage = () => {
       method: "GET",
       url: "/api/admin/users",
       params: { page, pageSize, sortDirection: "ASC" },
-    }
+    },
   );
 
   const totalPages = usersPage.totalPages || 1;
@@ -21,7 +21,11 @@ const AdminUsersPage = () => {
 
   const getPageNumbers = () => {
     const pages = new Set([0, totalPages - 1]);
-    for (let i = Math.max(0, page - 2); i <= Math.min(totalPages - 1, page + 2); i++) {
+    for (
+      let i = Math.max(0, page - 2);
+      i <= Math.min(totalPages - 1, page + 2);
+      i++
+    ) {
       pages.add(i);
     }
     return [...pages].sort((a, b) => a - b);
@@ -52,7 +56,15 @@ const AdminUsersPage = () => {
 
       <UsersTable users={users} />
 
-      <div style={{ marginTop: "1rem", display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
+      <div
+        style={{
+          marginTop: "1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "4px",
+          flexWrap: "wrap",
+        }}
+      >
         {/* Previous */}
         <button
           style={btnStyle(false)}
@@ -68,12 +80,18 @@ const AdminUsersPage = () => {
           return (
             <React.Fragment key={p}>
               {prev !== undefined && p - prev > 1 && (
-                <span style={{ width: "36px", textAlign: "center", color: "#6c757d", fontSize: "13px" }}>…</span>
+                <span
+                  style={{
+                    width: "36px",
+                    textAlign: "center",
+                    color: "#6c757d",
+                    fontSize: "13px",
+                  }}
+                >
+                  …
+                </span>
               )}
-              <button
-                style={btnStyle(p === page)}
-                onClick={() => setPage(p)}
-              >
+              <button style={btnStyle(p === page)} onClick={() => setPage(p)}>
                 {p + 1}
               </button>
             </React.Fragment>
