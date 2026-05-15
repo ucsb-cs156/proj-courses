@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import UsersTable from "main/components/Users/UsersTable";
 import { useBackend } from "main/utils/useBackend";
+import { usersFixtures } from "fixtures/usersFixtures";
 
 const AdminUsersPage = () => {
   const [page, setPage] = useState(0);
@@ -29,7 +30,7 @@ const AdminUsersPage = () => {
     <BasicLayout>
       <h2>Users</h2>
       <UsersTable
-        users={usersPage?.content ?? []}
+        users={usersFixtures.thirtyUsersPage ?? []}
         page={page}
         totalPages={usersPage?.totalPages ?? 0}
         onPageChange={setPage}

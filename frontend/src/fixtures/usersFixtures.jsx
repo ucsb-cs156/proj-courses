@@ -43,6 +43,41 @@ const usersFixtures = {
       admin: false,
     },
   ],
+  thirtyUsers: Array.from({ length: 30 }, (_, index) => {
+    const id = index + 1;
+    return {
+      id,
+      email: `user${id}@ucsb.edu`,
+      googleSub: `${100000000000000000000 + id}`,
+      pictureUrl: `https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c`,
+      fullName: `User ${id} Test`,
+      givenName: `User${id}`,
+      familyName: "Test",
+      emailVerified: true,
+      locale: "en",
+      hostedDomain: "ucsb.edu",
+      admin: id <= 3,
+    };
+  }),
+  thirtyUsersPage: {
+    content: Array.from({ length: 30 }, (_, index) => {
+      const id = index + 1;
+      return {
+        id,
+        email: `user${id}@ucsb.edu`,
+        googleSub: `${100000000000000000000 + id}`,
+        pictureUrl: `https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c`,
+        fullName: `User ${id} Test`,
+        givenName: `User${id}`,
+        familyName: "Test",
+        emailVerified: true,
+        locale: "en",
+        hostedDomain: "ucsb.edu",
+        admin: id <= 3,
+      };
+    }),
+    totalPages: 3,
+  },
 };
 
 export default usersFixtures;

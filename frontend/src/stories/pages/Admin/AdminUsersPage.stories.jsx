@@ -19,7 +19,7 @@ export const Default = Template.bind({});
 Default.parameters = {
   msw: [
     http.get("/api/admin/users", () => {
-      return HttpResponse.json(usersFixtures.threeUsers, {
+      return HttpResponse.json(usersFixtures.thirtyUsersPage, {
         status: 200,
       });
     }),
