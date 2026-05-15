@@ -22,10 +22,10 @@ public class CoursesStartup {
 
   @Autowired private JobService jobService;
 
+  //@Value is taking from the .env value for START_QTR
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
 
-  @Value("${app.endQtrYYYYQ:20222}")
   private String endQtrYYYYQ;
 
   /**
@@ -34,6 +34,11 @@ public class CoursesStartup {
    */
   public void alwaysRunOnStartup() {
     log.info("alwaysRunOnStartup called");
+    try {
+      endQtrYYYYQ = ucsbAPIQuarterService.getCurrentEndQuarterYYYYQ();
+    } catch (Exception e) {
+      log.error("Couldn't set end quarter from ucsbAPIQuarterService. Error in ucsbAPIQuarterService.getCurrentEndQuarterYYYYQ():", e);
+    }
     try {
       ucsbSubjectsService.loadAllSubjects();
     } catch (Exception e) {

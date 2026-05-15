@@ -68,6 +68,15 @@ public class UCSBAPIQuarterService {
     return quarter.getQuarter();
   }
 
+  public String getCurrentEndQuarterYYYYQ() throws Exception {
+    String quarter = getCurrentQuarter().getQuarter();
+    if (Quarter.getQ(Quarter.yyyyqToInt(quarter)) == "S"){
+      quarter = Quarter.increment(quarter);
+    }
+    quarter = Quarter.increment(quarter);
+    return quarter;
+  }
+
   public List<String> getActiveQuarterList() throws Exception {
     String start = getCurrentQuarterYYYYQ();
     String end = getEndQtrYYYYQ();
@@ -82,6 +91,7 @@ public class UCSBAPIQuarterService {
     return result;
   }
 
+  // AB - Maybe should cache this?
   public UCSBAPIQuarter getCurrentQuarter() throws Exception {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
