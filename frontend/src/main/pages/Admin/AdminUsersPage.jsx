@@ -31,8 +31,8 @@ const AdminUsersPage = () => {
       <h2>Users</h2>
       <UsersTable
         users={usersFixtures.thirtyUsersPage ?? []}
-        page={page}
-        totalPages={usersPage?.totalPages ?? 0}
+        page={1}
+        totalPages={5}
         onPageChange={setPage}
       />
     </BasicLayout>
