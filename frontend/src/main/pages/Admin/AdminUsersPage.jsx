@@ -1,28 +1,35 @@
 import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import UsersTable from "main/components/Users/UsersTable";
-import usersFixtures from "fixtures/usersFixtures";
+import { useBackend } from "main/utils/useBackend";
 
 const AdminUsersPage = () => {
   const [page, setPage] = useState(0);
   const pageSize = 10;
 
-  // simulate backend pagination using fixtures
-  const allUsers = usersFixtures.thirtyUsersPage.content;
+  const {
+    data: usersPage = {},
+  } = useBackend(
+    ["/api/admin/users", page, pageSize], 
+    {
+      method: "GET",
+      url: "/api/admin/users",
+      params: {
+        page,
+        pageSize,
+        sortDirection: "ASC",
+      },
+    }
+  );
 
-  const start = page * pageSize;
-  const end = start + pageSize;
-
-  const usersPage = {
-    content: allUsers.slice(start, end),
-    totalPages: Math.ceil(allUsers.length / pageSize),
-  };
+  const totalPages = usersPage.totalPages || 1;
+  const users = usersPage.content || [];
 
   return (
     <BasicLayout>
       <h2>Users</h2>
 
-      <UsersTable users={usersPage.content} />
+      <UsersTable users={users} />
 
       <div
         style={{
@@ -32,7 +39,6 @@ const AdminUsersPage = () => {
           gap: "0.5rem",
         }}
       >
-        {/* First page */}
         <button
           className="btn btn-outline-primary btn-sm"
           onClick={() => setPage(0)}
@@ -42,7 +48,6 @@ const AdminUsersPage = () => {
           «
         </button>
 
-        {/* Previous */}
         <button
           className="btn btn-outline-primary btn-sm"
           onClick={() => setPage((p) => Math.max(p - 1, 0))}
@@ -52,28 +57,23 @@ const AdminUsersPage = () => {
           ‹
         </button>
 
-        {/* Page indicator */}
         <span style={{ padding: "0 0.75rem", fontWeight: 500 }}>
-          Page {page + 1} / {usersPage.totalPages}
+          Page {page + 1} / {totalPages}
         </span>
 
-        {/* Next */}
         <button
           className="btn btn-outline-primary btn-sm"
-          onClick={() =>
-            setPage((p) => Math.min(p + 1, usersPage.totalPages - 1))
-          }
-          disabled={page >= usersPage.totalPages - 1}
+          onClick={() => setPage((p) => Math.min(p + 1, totalPages - 1))}
+          disabled={page >= totalPages - 1}
           title="Next page"
         >
           ›
         </button>
 
-        {/* Last page */}
         <button
           className="btn btn-outline-primary btn-sm"
-          onClick={() => setPage(usersPage.totalPages - 1)}
-          disabled={page >= usersPage.totalPages - 1}
+          onClick={() => setPage(totalPages - 1)}
+          disabled={page >= totalPages - 1}
           title="Last page"
         >
           »
