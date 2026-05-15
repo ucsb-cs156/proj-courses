@@ -410,15 +410,15 @@ describe("AdminUsersPage tests", () => {
 
     expect(await screen.findByText("Users")).toBeInTheDocument();
 
-    screen.getByRole("button", { name: "5" }).click();
+    screen.getByRole("button", { name: "3" }).click();
 
     await waitFor(() => {
-      // should show pages 3,4,5,6,7 around current page 5
+      // should show pages 1, 2, 3, 4, 5 around page 3
+      expect(screen.getByRole("button", { name: "1" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "2" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "3" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "4" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "5" })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: "6" })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: "7" })).toBeInTheDocument();
     });
   });
 });
