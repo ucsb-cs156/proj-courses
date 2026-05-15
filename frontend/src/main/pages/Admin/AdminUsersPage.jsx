@@ -9,7 +9,7 @@ const AdminUsersPage = () => {
   const pageSize = 10;
   const sortDirection = "ASC";
 
-  /*const {
+  const {
     data: usersPage,
     error: _error,
     status: _status,
@@ -23,21 +23,16 @@ const AdminUsersPage = () => {
       params: { page, pageSize, sortDirection }, 
     },
     [],
-  );*/
-
-  const usersPage = {
-    content: usersFixtures.thirtyUsers,
-    totalPages: 3
-  }
+  );
 
   // Returns a table of users with pagination controls, empty array as a fallback for null data
   return (
     <BasicLayout>
       <h2>Users</h2>
       <UsersTable
-        users={usersPage?.content ?? []}
-        page={page}
-        totalPages={usersPage?.totalPages ?? 0}
+        users={usersFixtures.thirtyUsersPage.content || []}
+        page={1}
+        totalPages={3}
         onPageChange={setPage}
       />
     </BasicLayout>
