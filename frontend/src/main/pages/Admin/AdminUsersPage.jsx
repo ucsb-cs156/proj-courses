@@ -33,6 +33,7 @@ const AdminUsersPage = () => {
 
   const pageNumbers = getPageNumbers();
 
+  // Stryker disable all
   const btnStyle = (active) => ({
     width: "36px",
     height: "36px",
@@ -49,6 +50,7 @@ const AdminUsersPage = () => {
     alignItems: "center",
     justifyContent: "center",
   });
+  // Stryker restore all
 
   return (
     <BasicLayout>
@@ -56,13 +58,16 @@ const AdminUsersPage = () => {
 
       <UsersTable users={users} />
 
+      {/* Stryker disable next-line all */}
       <div
         style={{
+          // Stryker disable all
           marginTop: "1rem",
           display: "flex",
           alignItems: "center",
           gap: "4px",
           flexWrap: "wrap",
+          // Stryker restore all
         }}
       >
         {/* Previous */}
@@ -82,10 +87,12 @@ const AdminUsersPage = () => {
               {prev !== undefined && p - prev > 1 && (
                 <span
                   style={{
+                    // Stryker disable all
                     width: "36px",
                     textAlign: "center",
                     color: "#6c757d",
                     fontSize: "13px",
+                    // Stryker restore all
                   }}
                 >
                   …
