@@ -423,33 +423,37 @@ describe("AdminUsersPage tests", () => {
   });
 
   test("does not show pages outside the nearby window", async () => {
-  const queryClient = new QueryClient();
+    const queryClient = new QueryClient();
 
-  axiosMock.onGet("/api/admin/users").reply(200, {
-    content: usersFixtures.threeUsers,
-    totalPages: 10,
+    axiosMock.onGet("/api/admin/users").reply(200, {
+      content: usersFixtures.threeUsers,
+      totalPages: 10,
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminUsersPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Users")).toBeInTheDocument();
+
+    // on page 1, pages 4-9 should not be visible
+    expect(screen.queryByRole("button", { name: "4" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "9" })).not.toBeInTheDocument();
+
+    // navigate to page 10, pages 1-7 should not be visible except for page 1
+    screen.getByRole("button", { name: "10" }).click();
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: "7" }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "2" }),
+      ).not.toBeInTheDocument();
+    });
   });
-
-  render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        <AdminUsersPage />
-      </MemoryRouter>
-    </QueryClientProvider>,
-  );
-
-  expect(await screen.findByText("Users")).toBeInTheDocument();
-
-  // on page 1, pages 4-9 should not be visible
-  expect(screen.queryByRole("button", { name: "4" })).not.toBeInTheDocument();
-  expect(screen.queryByRole("button", { name: "9" })).not.toBeInTheDocument();
-
-  // navigate to page 10, pages 1-7 should not be visible except for page 1
-  screen.getByRole("button", { name: "10" }).click();
-
-  await waitFor(() => {
-    expect(screen.queryByRole("button", { name: "7" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "2" })).not.toBeInTheDocument();
-  });
-});
 });
