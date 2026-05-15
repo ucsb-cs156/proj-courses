@@ -73,7 +73,7 @@ function ConvertedSectionTable({ sections, testid = "ConvertedSectionTable" }) {
     {
       header: "Summer Session",
       accessorKey: "summer_session",
-      cell: ({ row }) => row.original.section.session?.replace(/^0+/, ''),
+      cell: ({ row }) => row.original.section.session?.replace(/^0+/, ""),
     },
   ];
 
