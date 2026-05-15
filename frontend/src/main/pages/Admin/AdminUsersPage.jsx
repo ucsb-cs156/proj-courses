@@ -34,6 +34,14 @@ const AdminUsersPage = () => {
   const pageNumbers = getPageNumbers();
 
   // Stryker disable all
+  const containerStyle = {
+    marginTop: "1rem",
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    flexWrap: "wrap",
+  };
+
   const btnStyle = (active) => ({
     width: "36px",
     height: "36px",
@@ -50,6 +58,13 @@ const AdminUsersPage = () => {
     alignItems: "center",
     justifyContent: "center",
   });
+
+  const ellipsisStyle = {
+    width: "36px",
+    textAlign: "center",
+    color: "#6c757d",
+    fontSize: "13px",
+  };
   // Stryker restore all
 
   return (
@@ -58,18 +73,7 @@ const AdminUsersPage = () => {
 
       <UsersTable users={users} />
 
-      {/* Stryker disable next-line all */}
-      <div
-        style={{
-          // Stryker disable all
-          marginTop: "1rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "4px",
-          flexWrap: "wrap",
-          // Stryker restore all
-        }}
-      >
+      <div style={containerStyle}>
         {/* Previous */}
         <button
           style={btnStyle(false)}
@@ -85,18 +89,7 @@ const AdminUsersPage = () => {
           return (
             <React.Fragment key={p}>
               {prev !== undefined && p - prev > 1 && (
-                <span
-                  style={{
-                    // Stryker disable all
-                    width: "36px",
-                    textAlign: "center",
-                    color: "#6c757d",
-                    fontSize: "13px",
-                    // Stryker restore all
-                  }}
-                >
-                  …
-                </span>
+                <span style={ellipsisStyle}>…</span>
               )}
               <button style={btnStyle(p === page)} onClick={() => setPage(p)}>
                 {p + 1}

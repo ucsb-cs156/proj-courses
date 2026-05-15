@@ -25,7 +25,7 @@ describe("AdminUsersPage tests", () => {
       .reply(200, systemInfoFixtures.showingNeither);
   });
 
-  test("renders without crashing on three users", async () => {
+  test("renders without crashing and fetches from correct endpoint", async () => {
     const queryClient = new QueryClient();
     axiosMock.onGet("/api/admin/users").reply(200, {
       content: usersFixtures.threeUsers,
@@ -60,6 +60,11 @@ describe("AdminUsersPage tests", () => {
     expect(
       screen.getByTestId(`UsersTable-cell-row-0-col-admin`),
     ).toHaveTextContent("true");
+
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
+      expect(axiosMock.history.get[0].url).toBe("/api/admin/users");
+    });
   });
 
   test("renders empty table when backend unavailable", async () => {
@@ -91,7 +96,7 @@ describe("AdminUsersPage tests", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("pagination buttons change pages correctly", async () => {
+  test("pagination navigates pages correctly and shows different rows per page", async () => {
     const queryClient = new QueryClient();
 
     axiosMock
@@ -116,98 +121,6 @@ describe("AdminUsersPage tests", () => {
       })
       .reply(200, {
         content: usersFixtures.thirtyUsers.slice(20, 30),
-        totalPages: 3,
-      });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminUsersPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(await screen.findByText("Users")).toBeInTheDocument();
-
-    // page 1 button should be active
-    expect(
-      await screen.findByRole("button", { name: "1" }),
-    ).toBeInTheDocument();
-
-    // click page 2 button
-    screen.getByRole("button", { name: "2" }).click();
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "2" })).toHaveStyle(
-        "font-weight: 500",
-      ),
-    );
-
-    // click page 3 button
-    screen.getByRole("button", { name: "3" }).click();
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "3" })).toHaveStyle(
-        "font-weight: 500",
-      ),
-    );
-
-    // click ‹ to go back to page 2
-    screen.getByText("‹").click();
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "2" })).toHaveStyle(
-        "font-weight: 500",
-      ),
-    );
-  });
-
-  test("pagination buttons respect boundaries", async () => {
-    const queryClient = new QueryClient();
-
-    axiosMock.onGet("/api/admin/users").reply(200, {
-      content: usersFixtures.thirtyUsers.slice(0, 10),
-      totalPages: 3,
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminUsersPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(await screen.findByText("Users")).toBeInTheDocument();
-
-    expect(screen.getByText("‹")).toBeDisabled();
-    expect(screen.getByText("›")).not.toBeDisabled();
-
-    screen.getByRole("button", { name: "3" }).click();
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "3" })).toHaveStyle(
-        "font-weight: 500",
-      ),
-    );
-
-    expect(screen.getByText("›")).toBeDisabled();
-    expect(screen.getByText("‹")).not.toBeDisabled();
-  });
-
-  test("pagination shows different rows per page", async () => {
-    const queryClient = new QueryClient();
-
-    axiosMock
-      .onGet("/api/admin/users", {
-        params: { page: 0, pageSize: 10, sortDirection: "ASC" },
-      })
-      .reply(200, {
-        content: usersFixtures.thirtyUsers.slice(0, 10),
-        totalPages: 3,
-      });
-    axiosMock
-      .onGet("/api/admin/users", {
-        params: { page: 1, pageSize: 10, sortDirection: "ASC" },
-      })
-      .reply(200, {
-        content: usersFixtures.thirtyUsers.slice(10, 20),
         totalPages: 3,
       });
 
@@ -222,46 +135,53 @@ describe("AdminUsersPage tests", () => {
     expect(await screen.findByText("Users")).toBeInTheDocument();
     expect(screen.getByText("user1@ucsb.edu")).toBeInTheDocument();
 
-    screen.getByRole("button", { name: "2" }).click();
-
-    await waitFor(() => {
-      expect(screen.getByText("user11@ucsb.edu")).toBeInTheDocument();
-    });
-  });
-
-  test("numbered page button navigates directly to that page", async () => {
-    const queryClient = new QueryClient();
-
-    axiosMock
-      .onGet("/api/admin/users", {
-        params: { page: 0, pageSize: 10, sortDirection: "ASC" },
-      })
-      .reply(200, {
-        content: usersFixtures.thirtyUsers.slice(0, 10),
-        totalPages: 3,
-      });
-    axiosMock
-      .onGet("/api/admin/users", {
-        params: { page: 2, pageSize: 10, sortDirection: "ASC" },
-      })
-      .reply(200, {
-        content: usersFixtures.thirtyUsers.slice(20, 30),
-        totalPages: 3,
-      });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminUsersPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    // page 1 active, prev disabled, next enabled
+    expect(
+      await screen.findByRole("button", { name: "1" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("‹")).toBeDisabled();
+    expect(screen.getByText("›")).not.toBeDisabled();
+    expect(screen.getByRole("button", { name: "1" })).toHaveStyle(
+      "font-weight: 500",
+    );
+    expect(screen.getByRole("button", { name: "2" })).toHaveStyle(
+      "font-weight: 400",
     );
 
-    expect(await screen.findByText("Users")).toBeInTheDocument();
+    // click page 2 via numbered button
+    screen.getByRole("button", { name: "2" }).click();
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "2" })).toHaveStyle(
+        "font-weight: 500",
+      );
+      expect(screen.getByRole("button", { name: "1" })).toHaveStyle(
+        "font-weight: 400",
+      );
+      expect(screen.getByText("user11@ucsb.edu")).toBeInTheDocument();
+    });
 
-    // jump directly to page 3
+    // click page 3 via numbered button
     screen.getByRole("button", { name: "3" }).click();
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "3" })).toHaveStyle(
+        "font-weight: 500",
+      ),
+    );
 
+    // last page: next disabled, prev enabled
+    expect(screen.getByText("›")).toBeDisabled();
+    expect(screen.getByText("‹")).not.toBeDisabled();
+
+    // click prev to go back to page 2
+    screen.getByText("‹").click();
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "2" })).toHaveStyle(
+        "font-weight: 500",
+      ),
+    );
+
+    // click next back to page 3
+    screen.getByText("›").click();
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "3" })).toHaveStyle(
         "font-weight: 500",
@@ -269,50 +189,11 @@ describe("AdminUsersPage tests", () => {
     );
   });
 
-  test("next button increments page", async () => {
-    const queryClient = new QueryClient();
-
-    axiosMock
-      .onGet("/api/admin/users", {
-        params: { page: 0, pageSize: 10, sortDirection: "ASC" },
-      })
-      .reply(200, {
-        content: usersFixtures.thirtyUsers.slice(0, 10),
-        totalPages: 3,
-      });
-    axiosMock
-      .onGet("/api/admin/users", {
-        params: { page: 1, pageSize: 10, sortDirection: "ASC" },
-      })
-      .reply(200, {
-        content: usersFixtures.thirtyUsers.slice(10, 20),
-        totalPages: 3,
-      });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminUsersPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(await screen.findByText("Users")).toBeInTheDocument();
-
-    screen.getByText("›").click();
-
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "2" })).toHaveStyle(
-        "font-weight: 500",
-      ),
-    );
-  });
-
-  test("shows ellipsis when there are gaps between page numbers", async () => {
+  test("page buttons are sorted and ellipsis appears for gaps", async () => {
     const queryClient = new QueryClient();
 
     axiosMock.onGet("/api/admin/users").reply(200, {
-      content: usersFixtures.thirtyUsers.slice(0, 10),
+      content: usersFixtures.threeUsers,
       totalPages: 10,
     });
 
@@ -326,70 +207,30 @@ describe("AdminUsersPage tests", () => {
 
     expect(await screen.findByText("Users")).toBeInTheDocument();
 
-    // jump to middle page where ellipsis appears on both sides
+    // buttons should be in ascending order
+    const buttons = screen.getAllByRole("button", { name: /^[0-9]+$/ });
+    const pageNums = buttons.map((b) => parseInt(b.textContent));
+    expect(pageNums).toEqual([...pageNums].sort((a, b) => a - b));
+
+    // pages 4-9 not visible on page 1
+    expect(screen.queryByRole("button", { name: "4" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "9" })).not.toBeInTheDocument();
+
+    // jump to page 10 — ellipsis appears, pages 2-7 hidden, 8-10 visible
     screen.getByRole("button", { name: "10" }).click();
 
     await waitFor(() => {
       expect(screen.getByText("…")).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "2" }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "7" }),
+      ).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "8" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "9" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "10" })).toBeInTheDocument();
     });
-  });
-  test("page buttons are highlighted correctly for active page", async () => {
-    const queryClient = new QueryClient();
-
-    axiosMock.onGet("/api/admin/users").reply(200, {
-      content: usersFixtures.threeUsers,
-      totalPages: 3,
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminUsersPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(await screen.findByText("Users")).toBeInTheDocument();
-
-    const page1Btn = screen.getByRole("button", { name: "1" });
-    const page2Btn = screen.getByRole("button", { name: "2" });
-
-    expect(page1Btn).toHaveStyle("font-weight: 500");
-    expect(page2Btn).toHaveStyle("font-weight: 400");
-
-    // click page 2, now page 2 should be active
-    page2Btn.click();
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "2" })).toHaveStyle(
-        "font-weight: 500",
-      );
-      expect(screen.getByRole("button", { name: "1" })).toHaveStyle(
-        "font-weight: 400",
-      );
-    });
-  });
-
-  test("page buttons are sorted in ascending order", async () => {
-    const queryClient = new QueryClient();
-
-    axiosMock.onGet("/api/admin/users").reply(200, {
-      content: usersFixtures.threeUsers,
-      totalPages: 5,
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminUsersPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(await screen.findByText("Users")).toBeInTheDocument();
-
-    const buttons = screen.getAllByRole("button", { name: /^[0-9]+$/ });
-    const pageNumbers = buttons.map((b) => parseInt(b.textContent));
-    expect(pageNumbers).toEqual([...pageNumbers].sort((a, b) => a - b));
   });
 
   test("shows correct nearby pages around current page", async () => {
@@ -413,47 +254,11 @@ describe("AdminUsersPage tests", () => {
     screen.getByRole("button", { name: "3" }).click();
 
     await waitFor(() => {
-      // should show pages 1, 2, 3, 4, 5 around page 3
       expect(screen.getByRole("button", { name: "1" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "2" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "3" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "4" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "5" })).toBeInTheDocument();
-    });
-  });
-
-  test("does not show pages outside the nearby window", async () => {
-    const queryClient = new QueryClient();
-
-    axiosMock.onGet("/api/admin/users").reply(200, {
-      content: usersFixtures.threeUsers,
-      totalPages: 10,
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminUsersPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(await screen.findByText("Users")).toBeInTheDocument();
-
-    // on page 1, pages 4-9 should not be visible
-    expect(screen.queryByRole("button", { name: "4" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "9" })).not.toBeInTheDocument();
-
-    // navigate to page 10, pages 1-7 should not be visible except for page 1
-    screen.getByRole("button", { name: "10" }).click();
-
-    await waitFor(() => {
-      expect(
-        screen.queryByRole("button", { name: "7" }),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole("button", { name: "2" }),
-      ).not.toBeInTheDocument();
     });
   });
 });
