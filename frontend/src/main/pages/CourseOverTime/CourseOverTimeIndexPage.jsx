@@ -7,6 +7,8 @@ import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable"
 export default function CourseOverTimeIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
+  // Stryker disable next-line all : Can't test state because hook is internal
+  const [hasSearched, setHasSearched] = useState(false);
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/courseovertime/search",
@@ -20,6 +22,7 @@ export default function CourseOverTimeIndexPage() {
 
   const onSuccess = (courses) => {
     setCourseJSON(courses);
+    setHasSearched(true);
   };
 
   const mutation = useBackendMutation(
