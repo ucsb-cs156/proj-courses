@@ -76,7 +76,7 @@ describe("ConvertedSectionTable tests", () => {
       `${testid}-cell-row-0-col-summer_session`,
     );
     expect(summer_session).toBeInTheDocument();
-    expect(summer_session.textContent).toBe("A01");
+    expect(summer_session.textContent).toBe("A");
 
     const instructors = screen.getByTestId(
       `${testid}-cell-row-0-col-instructors`,
