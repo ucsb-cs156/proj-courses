@@ -24,23 +24,59 @@ const AdminUsersPage = () => {
 
       <UsersTable users={usersPage.content} />
 
-      <div style={{ marginTop: "1rem" }}>
+      <div
+        style={{
+          marginTop: "1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+        }}
+      >
+        {/* First page */}
         <button
-          disabled={page <= 0}
-          onClick={() => setPage((p) => p - 1)}
+          className="btn btn-outline-primary btn-sm"
+          onClick={() => setPage(0)}
+          disabled={page === 0}
+          title="First page"
         >
-          Previous
+          «
         </button>
 
-        <span style={{ margin: "0 1rem" }}>
+        {/* Previous */}
+        <button
+          className="btn btn-outline-primary btn-sm"
+          onClick={() => setPage((p) => Math.max(p - 1, 0))}
+          disabled={page === 0}
+          title="Previous page"
+        >
+          ‹
+        </button>
+
+        {/* Page indicator */}
+        <span style={{ padding: "0 0.75rem", fontWeight: 500 }}>
           Page {page + 1} / {usersPage.totalPages}
         </span>
 
+        {/* Next */}
         <button
-          disabled={page + 1 >= usersPage.totalPages}
-          onClick={() => setPage((p) => p + 1)}
+          className="btn btn-outline-primary btn-sm"
+          onClick={() =>
+            setPage((p) => Math.min(p + 1, usersPage.totalPages - 1))
+          }
+          disabled={page >= usersPage.totalPages - 1}
+          title="Next page"
         >
-          Next
+          ›
+        </button>
+
+        {/* Last page */}
+        <button
+          className="btn btn-outline-primary btn-sm"
+          onClick={() => setPage(usersPage.totalPages - 1)}
+          disabled={page >= usersPage.totalPages - 1}
+          title="Last page"
+        >
+          »
         </button>
       </div>
     </BasicLayout>
