@@ -1,40 +1,48 @@
 import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import UsersTable from "main/components/Users/UsersTable";
-import { useBackend } from "main/utils/useBackend";
 import usersFixtures from "fixtures/usersFixtures";
 
 const AdminUsersPage = () => {
   const [page, setPage] = useState(0);
   const pageSize = 10;
-  const sortDirection = "ASC";
 
-  const {
-    data: usersPage,
-    error: _error,
-    status: _status,
-  } = useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
-    ["/api/admin/users", page, pageSize, sortDirection],
-    {
-      // Stryker disable next-line StringLiteral : GET is default, so replacing with "" is an equivalent mutation
-      method: "GET",
-      url: "/api/admin/users",
-      params: { page, pageSize, sortDirection }, 
-    },
-    [],
-  );
+  // simulate backend pagination using fixtures
+  const allUsers = usersFixtures.thirtyUsersPage.content;
 
-  // Returns a table of users with pagination controls, empty array as a fallback for null data
+  const start = page * pageSize;
+  const end = start + pageSize;
+
+  const usersPage = {
+    content: allUsers.slice(start, end),
+    totalPages: Math.ceil(allUsers.length / pageSize),
+  };
+
   return (
     <BasicLayout>
       <h2>Users</h2>
-      <UsersTable
-        users={usersFixtures.thirtyUsersPage.content || []}
-        page={1}
-        totalPages={3}
-        onPageChange={setPage}
-      />
+
+      <UsersTable users={usersPage.content} />
+
+      <div style={{ marginTop: "1rem" }}>
+        <button
+          disabled={page <= 0}
+          onClick={() => setPage((p) => p - 1)}
+        >
+          Previous
+        </button>
+
+        <span style={{ margin: "0 1rem" }}>
+          Page {page + 1} / {usersPage.totalPages}
+        </span>
+
+        <button
+          disabled={page + 1 >= usersPage.totalPages}
+          onClick={() => setPage((p) => p + 1)}
+        >
+          Next
+        </button>
+      </div>
     </BasicLayout>
   );
 };
