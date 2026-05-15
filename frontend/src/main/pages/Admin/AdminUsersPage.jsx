@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import UsersTable from "main/components/Users/UsersTable";
 import { useBackend } from "main/utils/useBackend";
-import { usersFixtures } from "fixtures/usersFixtures";
+import usersFixtures from "fixtures/usersFixtures";
 
 const AdminUsersPage = () => {
   const [page, setPage] = useState(0);
   const pageSize = 10;
   const sortDirection = "ASC";
 
-  const {
+  /*const {
     data: usersPage,
     error: _error,
     status: _status,
@@ -23,16 +23,21 @@ const AdminUsersPage = () => {
       params: { page, pageSize, sortDirection }, 
     },
     [],
-  );
+  );*/
+
+  const usersPage = {
+    content: usersFixtures.thirtyUsers,
+    totalPages: 3
+  }
 
   // Returns a table of users with pagination controls, empty array as a fallback for null data
   return (
     <BasicLayout>
       <h2>Users</h2>
       <UsersTable
-        users={usersFixtures.thirtyUsersPage ?? []}
-        page={1}
-        totalPages={5}
+        users={usersPage?.content ?? []}
+        page={page}
+        totalPages={usersPage?.totalPages ?? 0}
         onPageChange={setPage}
       />
     </BasicLayout>
