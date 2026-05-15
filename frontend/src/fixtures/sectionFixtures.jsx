@@ -10,7 +10,7 @@ export const oneSection = [
     section: {
       enrollCode: "12583",
       section: "0100",
-      session: "00000A",
+      session: "00000A01",
       classClosed: null,
       courseCancelled: null,
       gradingOptionCode: null,
