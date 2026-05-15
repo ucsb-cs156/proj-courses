@@ -70,6 +70,11 @@ function ConvertedSectionTable({ sections, testid = "ConvertedSectionTable" }) {
       accessorKey: "section",
       cell: ({ row }) => row.original.section.section,
     },
+    {
+      header: "Summer Session",
+      accessorKey: "summer_session",
+      cell: ({ row }) => row.original.section.session?.replace(/^0+/, ''),
+    },
   ];
 
   return <OurTable data={sections} columns={columns} testid={testid} />;

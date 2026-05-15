@@ -20,6 +20,7 @@ describe("ConvertedSectionTable tests", () => {
       "Location",
       "Instructors",
       "Section",
+      "Summer Session"
     ];
 
     expectedHeaders.forEach((header) => {
@@ -70,6 +71,10 @@ describe("ConvertedSectionTable tests", () => {
     const section = screen.getByTestId(`${testid}-cell-row-0-col-section`);
     expect(section).toBeInTheDocument();
     expect(section).toHaveTextContent("0100");
+
+    const summer_session = screen.getByTestId(`${testid}-cell-row-0-col-summer_session`);
+    expect(summer_session).toBeInTheDocument();
+    expect(summer_session).toHaveTextContent("A");
 
     const instructors = screen.getByTestId(
       `${testid}-cell-row-0-col-instructors`,
