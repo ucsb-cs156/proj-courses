@@ -30,6 +30,12 @@ describe("RateLimitedIPsTable tests", () => {
 
     const testid = "RateLimitedIPsTable";
 
+    // Check column headers by text content
+    const expectedHeaders = ["IP Address", "Request Count", "Last Request At"];
+    expectedHeaders.forEach((headerText) => {
+      expect(screen.getByText(headerText)).toBeInTheDocument();
+    });
+
     expect(
       await screen.findByTestId(`${testid}-header-ipAddress`),
     ).toBeInTheDocument();
