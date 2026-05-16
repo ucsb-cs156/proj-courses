@@ -15,20 +15,27 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-<span class="fc" id="L18">public class RateLimitFilter extends OncePerRequestFilter {</span>
+public class RateLimitFilter extends OncePerRequestFilter {
+
+  private final int requestsPerMinute;
+
+<span class="fc" id="L22">  public RateLimitFilter(int requestsPerMinute) {</span>
+<span class="fc" id="L23">    this.requestsPerMinute = requestsPerMinute;</span>
+<span class="fc" id="L24">  }</span>
 
   // Caffeine cache: Keys are IP addresses, Values are Bucket objects.
   // Entries expire 1 hour after the last access.
-<span class="fc" id="L22">  private final Cache&lt;String, Bucket&gt; cache =</span>
-<span class="fc" id="L23">      Caffeine.newBuilder()</span>
-<span class="fc" id="L24">          .expireAfterAccess(1, TimeUnit.HOURS)</span>
-<span class="fc" id="L25">          .maximumSize(10000) // Protects against memory exhaustion from botnets</span>
-<span class="fc" id="L26">          .build();</span>
+<span class="fc" id="L28">  private final Cache&lt;String, Bucket&gt; cache =</span>
+<span class="fc" id="L29">      Caffeine.newBuilder()</span>
+<span class="fc" id="L30">          .expireAfterAccess(1, TimeUnit.HOURS)</span>
+<span class="fc" id="L31">          .maximumSize(10000) // Protects against memory exhaustion from botnets</span>
+<span class="fc" id="L32">          .build();</span>
 
-  // Configuration: 10 requests allowed per minute
   Bucket createNewBucket() {
-<span class="fc" id="L30">    Bandwidth limit = Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(1)));</span>
-<span class="fc" id="L31">    return Bucket.builder().addLimit(limit).build();</span>
+<span class="fc" id="L35">    Bandwidth limit =</span>
+<span class="fc" id="L36">        Bandwidth.classic(</span>
+<span class="fc" id="L37">            requestsPerMinute, Refill.intervally(requestsPerMinute, Duration.ofMinutes(1)));</span>
+<span class="fc" id="L38">    return Bucket.builder().addLimit(limit).build();</span>
   }
 
   @Override
@@ -37,24 +44,24 @@ import org.springframework.web.filter.OncePerRequestFilter;
       throws ServletException, IOException {
 
     // Prefer X-Forwarded-For when behind a proxy like Nginx or AWS load balancers
-<span class="fc" id="L40">    String xForwardedFor = request.getHeader(&quot;X-Forwarded-For&quot;);</span>
+<span class="fc" id="L47">    String xForwardedFor = request.getHeader(&quot;X-Forwarded-For&quot;);</span>
     String ip =
-<span class="fc bfc" id="L42" title="All 4 branches covered.">        (xForwardedFor != null &amp;&amp; !xForwardedFor.isBlank())</span>
-<span class="fc" id="L43">            ? xForwardedFor.split(&quot;,&quot;)[0].trim()</span>
-<span class="fc" id="L44">            : request.getRemoteAddr();</span>
+<span class="fc bfc" id="L49" title="All 4 branches covered.">        (xForwardedFor != null &amp;&amp; !xForwardedFor.isBlank())</span>
+<span class="fc" id="L50">            ? xForwardedFor.split(&quot;,&quot;)[0].trim()</span>
+<span class="fc" id="L51">            : request.getRemoteAddr();</span>
 
     // Get or create the bucket for this IP
-<span class="fc" id="L47">    Bucket bucket = cache.get(ip, key -&gt; createNewBucket());</span>
+<span class="fc" id="L54">    Bucket bucket = cache.get(ip, key -&gt; createNewBucket());</span>
 
-<span class="fc bfc" id="L49" title="All 2 branches covered.">    if (bucket.tryConsume(1)) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    if (bucket.tryConsume(1)) {</span>
       // Success: Continue to the next filter/controller
-<span class="fc" id="L51">      filterChain.doFilter(request, response);</span>
+<span class="fc" id="L58">      filterChain.doFilter(request, response);</span>
     } else {
       // Failure: Too many requests
-<span class="fc" id="L54">      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());</span>
-<span class="fc" id="L55">      response.setContentType(&quot;text/plain&quot;);</span>
-<span class="fc" id="L56">      response.getWriter().write(&quot;Too many requests. Your IP has been throttled.&quot;);</span>
+<span class="fc" id="L61">      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());</span>
+<span class="fc" id="L62">      response.setContentType(&quot;text/plain&quot;);</span>
+<span class="fc" id="L63">      response.getWriter().write(&quot;Too many requests. Your IP has been throttled.&quot;);</span>
     }
-<span class="fc" id="L58">  }</span>
+<span class="fc" id="L65">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
