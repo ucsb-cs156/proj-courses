@@ -8,6 +8,7 @@ import mockConsole from "tests/testutils/mockConsole";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import usersFixtures from "fixtures/usersFixtures";
+import * as useBackend from "main/utils/useBackend";
 import AdminUsersPage from "main/pages/Admin/AdminUsersPage";
 
 describe("AdminUsersPage tests", () => {
@@ -27,6 +28,7 @@ describe("AdminUsersPage tests", () => {
 
   test("renders without crashing and fetches from correct endpoint", async () => {
     const queryClient = new QueryClient();
+    const useBackendSpy = vi.spyOn(useBackend, "useBackend");
     axiosMock.onGet("/api/admin/users").reply(200, {
       content: usersFixtures.threeUsers,
       totalPages: 1,
@@ -61,13 +63,19 @@ describe("AdminUsersPage tests", () => {
       screen.getByTestId(`UsersTable-cell-row-0-col-admin`),
     ).toHaveTextContent("true");
 
-    await waitFor(() => {
-      const adminUsersCall = axiosMock.history.get.find(
-        (req) => req.url === "/api/admin/users",
-      );
-      expect(adminUsersCall).toBeDefined();
-      expect(adminUsersCall.params.page).toBe(0);
+    expect(useBackendSpy).toHaveBeenCalledWith(["/api/admin/users", 0, 10], {
+      method: "GET",
+      url: "/api/admin/users",
+      params: { page: 0, pageSize: 10, sortDirection: "ASC" },
     });
+
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThan(0);
+
+      expect(axiosMock.history.get.some((req) => req.url === "")).toBe(false);
+    });
+
+    useBackendSpy.mockRestore();
   });
 
   test("renders empty table when backend unavailable", async () => {
@@ -216,6 +224,16 @@ describe("AdminUsersPage tests", () => {
     const pageNums = buttons.map((b) => parseInt(b.textContent));
     expect(pageNums).toEqual([...pageNums].sort((a, b) => a - b));
 
+    buttons.forEach((btn) => {
+      const num = Number(btn.textContent);
+      expect(num).toBeGreaterThanOrEqual(1);
+      expect(num).toBeLessThanOrEqual(10);
+    });
+
+    expect(
+      screen.queryByRole("button", { name: "11" }),
+    ).not.toBeInTheDocument();
+
     // pages 4-9 not visible on page 1
     expect(screen.queryByRole("button", { name: "4" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "9" })).not.toBeInTheDocument();
@@ -234,6 +252,9 @@ describe("AdminUsersPage tests", () => {
       expect(screen.getByRole("button", { name: "8" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "9" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "10" })).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "11" }),
+      ).not.toBeInTheDocument();
 
       expect(screen.getByText("‹")).toHaveStyle("font-weight: 400");
       expect(screen.getByText("›")).toHaveStyle("font-weight: 400");

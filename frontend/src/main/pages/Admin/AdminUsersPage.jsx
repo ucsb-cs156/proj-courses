@@ -33,6 +33,12 @@ const AdminUsersPage = () => {
 
   const pageNumbers = getPageNumbers();
 
+  const renderPageButton = (p) => (
+    <button style={btnStyle(p === page)} onClick={() => setPage(p)}>
+      {p + 1}
+    </button>
+  );
+
   // Stryker disable all
   const containerStyle = {
     marginTop: "1rem",
@@ -84,16 +90,13 @@ const AdminUsersPage = () => {
           ‹
         </button>
 
-        {pageNumbers.map((p, i) => {
-          const prev = pageNumbers[i - 1];
+        {renderPageButton(pageNumbers[0])}
+        {pageNumbers.slice(1).map((p, i) => {
+          const prev = pageNumbers[i];
           return (
             <React.Fragment key={p}>
-              {prev !== undefined && p - prev > 1 && (
-                <span style={ellipsisStyle}>…</span>
-              )}
-              <button style={btnStyle(p === page)} onClick={() => setPage(p)}>
-                {p + 1}
-              </button>
+              {p - prev > 1 && <span style={ellipsisStyle}>…</span>}
+              {renderPageButton(p)}
             </React.Fragment>
           );
         })}
