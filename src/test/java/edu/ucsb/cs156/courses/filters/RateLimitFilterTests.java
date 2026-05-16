@@ -3,14 +3,19 @@ package edu.ucsb.cs156.courses.filters;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import edu.ucsb.cs156.courses.entities.RateLimitedIP;
+import edu.ucsb.cs156.courses.repositories.RateLimitedIPRepository;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.ZonedDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,10 +23,12 @@ import org.springframework.http.HttpStatus;
 public class RateLimitFilterTests {
 
   private RateLimitFilter rateLimitFilter;
+  private RateLimitedIPRepository rateLimitedIPRepository;
 
   @BeforeEach
   public void setUp() {
-    rateLimitFilter = new RateLimitFilter(10, 10);
+    rateLimitedIPRepository = mock(RateLimitedIPRepository.class);
+    rateLimitFilter = new RateLimitFilter(10, 10, rateLimitedIPRepository);
   }
 
   @Test
@@ -36,6 +43,7 @@ public class RateLimitFilterTests {
 
     verify(filterChain, times(1)).doFilter(request, response);
     verify(response, never()).setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+    verify(rateLimitedIPRepository, never()).save(any());
   }
 
   @Test
@@ -48,6 +56,8 @@ public class RateLimitFilterTests {
 
     when(request.getRemoteAddr()).thenReturn("10.0.0.1");
     when(response.getWriter()).thenReturn(printWriter);
+    when(rateLimitedIPRepository.findById("10.0.0.1")).thenReturn(Optional.empty());
+    when(rateLimitedIPRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
     // Exhaust the 10-request bucket
     for (int i = 0; i < 10; i++) {
@@ -62,6 +72,7 @@ public class RateLimitFilterTests {
     verify(response, times(1)).setContentType("text/plain");
     printWriter.flush();
     assertEquals("Too many requests. Your IP has been throttled.", stringWriter.toString());
+    verify(rateLimitedIPRepository, times(1)).save(any());
   }
 
   @Test
@@ -86,6 +97,8 @@ public class RateLimitFilterTests {
     when(request2.getRemoteAddr()).thenReturn("172.16.0.2");
     when(response1.getWriter()).thenReturn(printWriter);
     when(response2.getWriter()).thenReturn(printWriter);
+    when(rateLimitedIPRepository.findById("172.16.0.1")).thenReturn(Optional.empty());
+    when(rateLimitedIPRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
     // Exhaust ip1's bucket
     for (int i = 0; i < 10; i++) {
@@ -111,6 +124,8 @@ public class RateLimitFilterTests {
     // Simulate a proxied request where X-Forwarded-For contains the real client IP
     when(request.getHeader("X-Forwarded-For")).thenReturn("203.0.113.1, 10.0.0.1");
     when(response.getWriter()).thenReturn(printWriter);
+    when(rateLimitedIPRepository.findById("203.0.113.1")).thenReturn(Optional.empty());
+    when(rateLimitedIPRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
     // Exhaust the bucket for the real client IP (203.0.113.1)
     for (int i = 0; i < 10; i++) {
@@ -150,5 +165,46 @@ public class RateLimitFilterTests {
 
     verify(filterChain, times(1)).doFilter(request, response);
     verify(response, never()).setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+  }
+
+  @Test
+  public void testRecordRateLimitedIP_newRecord() {
+    String ip = "1.2.3.4";
+    when(rateLimitedIPRepository.findById(ip)).thenReturn(Optional.empty());
+    when(rateLimitedIPRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+    rateLimitFilter.recordRateLimitedIP(ip);
+
+    verify(rateLimitedIPRepository, times(1)).findById(ip);
+    verify(rateLimitedIPRepository, times(1))
+        .save(
+            argThat(
+                record ->
+                    record.getIpAddress().equals(ip)
+                        && record.getRequestCount() == 1
+                        && record.getLastRequestAt() != null));
+  }
+
+  @Test
+  public void testRecordRateLimitedIP_existingRecord() {
+    String ip = "5.6.7.8";
+    ZonedDateTime oldTime = ZonedDateTime.now().minusHours(1);
+    RateLimitedIP existing =
+        RateLimitedIP.builder().ipAddress(ip).requestCount(7).lastRequestAt(oldTime).build();
+
+    when(rateLimitedIPRepository.findById(ip)).thenReturn(Optional.of(existing));
+    when(rateLimitedIPRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+    rateLimitFilter.recordRateLimitedIP(ip);
+
+    verify(rateLimitedIPRepository, times(1)).findById(ip);
+    verify(rateLimitedIPRepository, times(1))
+        .save(
+            argThat(
+                record ->
+                    record.getIpAddress().equals(ip)
+                        && record.getRequestCount() == 8
+                        && record.getLastRequestAt() != null
+                        && record.getLastRequestAt().isAfter(oldTime)));
   }
 }
