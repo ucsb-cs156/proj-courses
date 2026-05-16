@@ -62,8 +62,10 @@ describe("AdminUsersPage tests", () => {
     ).toHaveTextContent("true");
 
     await waitFor(() => {
-      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
-      expect(axiosMock.history.get[0].url).toBe("/api/admin/users");
+      const adminUsersCall = axiosMock.history.get.find(
+        (req) => req.url === "/api/admin/users",
+      );
+      expect(adminUsersCall).toBeDefined();
     });
   });
 
