@@ -63,14 +63,9 @@ const formatGeneralEducation = (row) => {
 
   return geList
     .map((ge) => {
-      const code = ge?.geCode?.trim?.() || "";
-      const college = ge?.geCollege?.trim?.() || "";
+      const college = ge?.geCollege?.trim?.();
 
-      if (!code) {
-        return "";
-      }
-
-      return college ? `${code} (${college})` : code;
+      return college;
     })
     .filter(Boolean)
     .join(", ");

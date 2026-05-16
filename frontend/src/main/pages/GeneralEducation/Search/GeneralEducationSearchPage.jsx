@@ -9,7 +9,7 @@ const objectToAxiosParams = (query) => ({
   url: "/api/public/primariesge",
   params: {
     qtr: query.quarter,
-    area: query.area === "ALL" ? "" : query.area,
+    area: query.area,
   },
 });
 
