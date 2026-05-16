@@ -66,6 +66,7 @@ describe("AdminUsersPage tests", () => {
         (req) => req.url === "/api/admin/users",
       );
       expect(adminUsersCall).toBeDefined();
+      expect(adminUsersCall.params.page).toBe(0);
     });
   });
 
@@ -134,6 +135,7 @@ describe("AdminUsersPage tests", () => {
       </QueryClientProvider>,
     );
 
+    expect(screen.queryByText("…")).not.toBeInTheDocument();
     expect(await screen.findByText("Users")).toBeInTheDocument();
     expect(screen.getByText("user1@ucsb.edu")).toBeInTheDocument();
 
@@ -232,6 +234,9 @@ describe("AdminUsersPage tests", () => {
       expect(screen.getByRole("button", { name: "8" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "9" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "10" })).toBeInTheDocument();
+
+      expect(screen.getByText("‹")).toHaveStyle("font-weight: 400");
+      expect(screen.getByText("›")).toHaveStyle("font-weight: 400");
     });
   });
 
@@ -261,6 +266,12 @@ describe("AdminUsersPage tests", () => {
       expect(screen.getByRole("button", { name: "3" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "4" })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "5" })).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "6" }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "7" }),
+      ).not.toBeInTheDocument();
     });
   });
 });
