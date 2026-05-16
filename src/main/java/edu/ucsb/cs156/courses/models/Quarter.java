@@ -101,15 +101,15 @@ public class Quarter {
   }
 
   /**
-  * Advance the given quarter string, return the string of the quarter with the next value.
-  * 
-  * @return the new getYYYYQ() for the quarter, i.e. String in "yyyyq" format
-  **/
-  public static String increment(String yyyyq){
+   * Advance the given quarter string, return the string of the quarter with the next value.
+   *
+   * @return the new getYYYYQ() for the quarter, i.e. String in "yyyyq" format
+   */
+  public static String increment(String yyyyq) {
     Quarter qtr = new Quarter(yyyyq);
     qtr.increment();
     String qtrStr = qtr.getYYYYQ();
-    qtr = null; //AB - Java has garbage collection
+    qtr = null; // AB - Java has garbage collection
     return qtrStr;
   }
 

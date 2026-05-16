@@ -76,6 +76,7 @@ public class UCSBAPIQuarterServiceTests {
 
     assertEquals("20243", service.getCurrentQuarterYYYYQ());
   }
+
   @Test
   public void test_getCurrentEndQuarterYYYYQ_spring() throws Exception {
     String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
