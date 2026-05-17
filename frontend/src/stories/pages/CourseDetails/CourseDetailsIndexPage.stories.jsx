@@ -10,6 +10,7 @@ import { oneQuarterCourse } from "fixtures/gradeHistoryFixtures";
 import { http, HttpResponse } from "msw";
 
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { finalsFixtures } from "fixtures/finalsFixtures";
 
 export default {
   title: "pages/CourseDetails/CourseDetailsIndexPage",
@@ -55,6 +56,11 @@ Default.parameters = {
     }),
     http.get("/api/gradehistory/search", () => {
       return HttpResponse.json(oneQuarterCourse, {
+        status: 200,
+      });
+    }),
+    http.get("/api/public/finalsInfo", () => {
+      return HttpResponse.json(finalsFixtures.cmpsc24_s26, {
         status: 200,
       });
     }),

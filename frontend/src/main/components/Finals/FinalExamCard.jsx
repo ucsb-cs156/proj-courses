@@ -42,14 +42,15 @@ const formatDate = (date) => {
   return `${monthToString(date.substring(4, 6))} ${parseInt(date.substring(6, 8))}, ${date.substring(0, 4)}`;
 };
 
-function FinalExamCard({ finalsInfo }) {
+// cardProps can be used to pass additional props to the Card component, such as styling or className
+function FinalExamCard({ finalsInfo, cardProps = {} }) {
   if (!finalsInfo) {
     return null;
   }
 
   if (finalsInfo.hasFinals === false) {
     return (
-      <Card>
+      <Card {...cardProps}>
         <Card.Body>
           <Card.Title>Final Exam:</Card.Title>
           <Card.Text>
@@ -76,7 +77,7 @@ function FinalExamCard({ finalsInfo }) {
     : "Exam information not available.";
 
   return (
-    <Card>
+    <Card {...cardProps}>
       <Card.Body>
         <Card.Title>Final Exam:</Card.Title>
         <Card.Text>{examInfoString}</Card.Text>
