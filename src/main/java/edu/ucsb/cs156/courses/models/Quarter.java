@@ -109,7 +109,6 @@ public class Quarter {
     Quarter qtr = new Quarter(yyyyq);
     qtr.increment();
     String qtrStr = qtr.getYYYYQ();
-    qtr = null; // AB - Java has garbage collection
     return qtrStr;
   }
 
