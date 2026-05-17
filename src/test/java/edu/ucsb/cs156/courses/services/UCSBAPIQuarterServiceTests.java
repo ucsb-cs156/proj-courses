@@ -78,6 +78,38 @@ public class UCSBAPIQuarterServiceTests {
   }
 
   @Test
+  public void test_getCurrentEndQuarterYYYYQ_spring() throws Exception {
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_S22, MediaType.APPLICATION_JSON));
+
+    assertEquals("20224", service.getCurrentEndQuarterYYYYQ());
+  }
+
+  @Test
+  public void test_getCurrentEndQuarterYYYYQ_not_spring() throws Exception {
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, MediaType.APPLICATION_JSON));
+
+    assertEquals("20212", service.getCurrentEndQuarterYYYYQ());
+  }
+
+  @Test
   public void test_getCurrentQuarter() throws Exception {
     UCSBAPIQuarter expectedResult =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
