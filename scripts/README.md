@@ -46,3 +46,4 @@ Requests Per Second:     0.00
 
 This should result in a record being shown on the /admin/ratelimiting page, like this:
 
+<img width="1004" height="483" alt="image" src="https://github.com/user-attachments/assets/0c5b7e57-7148-4d4a-a6e4-d657695f8725" />
