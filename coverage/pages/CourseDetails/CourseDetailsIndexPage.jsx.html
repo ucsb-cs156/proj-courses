@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -135,7 +135,29 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -153,6 +175,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -192,6 +230,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -215,6 +257,7 @@ import CourseDetailsTable from "main/components/CourseDetails/CourseDetailsTable
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import CourseDescriptionTable from "main/components/Courses/CourseDescriptionTable";
 import GradeHistoryGraphs from "main/components/GradeHistory/GradeHistoryGraph";
+import FinalExamCard from "main/components/Finals/FinalExamCard";
 &nbsp;
 export default function CourseDetailsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
@@ -236,6 +279,22 @@ export default function CourseDetailsIndexPage() {
     },
   );
 &nbsp;
+  const {
+    data: finalsInfo,
+    _errorFinalsInfo,
+    _statusFinalsInfo,
+  } = useBackend(
+    // Stryker disable all : hard to test for query caching
+    [`/api/public/finalsInfo?quarterYYYYQ=${qtr}&amp;enrollCd=${enrollCode}`],
+    {
+      method: "GET",
+      url: `/api/public/finalsInfo`,
+      params: {
+        quarterYYYYQ: qtr,
+        enrollCd: enrollCode,
+      },
+    },
+  );
   const courseId = moreDetails?.courseId.trim() || "";
 &nbsp;
   let subjectArea = "";
@@ -271,6 +330,10 @@ export default function CourseDetailsIndexPage() {
             Course Details for {moreDetails.courseId} {yyyyqToQyy(qtr)}
           &lt;/h5&gt;
         )}
+        &lt;FinalExamCard
+          finalsInfo={finalsInfo}
+          cardProps={{ className: "py-1 my-4" }}
+        /&gt;
 &nbsp;
         {moreDetails &amp;&amp; &lt;CourseDetailsTable details={[moreDetails]} /&gt;}
         {moreDetails &amp;&amp; &lt;CourseDescriptionTable course={moreDetails} /&gt;}
@@ -286,7 +349,7 @@ export default function CourseDetailsIndexPage() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-16T19:41:08.441Z
+                at 2026-05-17T22:42:41.639Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
