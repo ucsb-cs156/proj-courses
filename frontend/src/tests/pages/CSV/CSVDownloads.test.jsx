@@ -1,15 +1,31 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-
+import { useSystemInfo } from "main/utils/systemInfo";
+import { vi } from "vitest";
 import CSVDownloadsPage from "main/pages/CSV/CSVDownloadsPage";
+
+vi.mock("main/utils/systemInfo", () => ({
+  useSystemInfo: vi.fn(),
+}));
 
 describe("CSVDownloadsPage tests", () => {
   const originalLocation = window.location;
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useSystemInfo.mockReturnValue({
+      data: {
+        startQtrYYYYQ: "20084",
+        endQtrYYYYQ: "20222",
+      },
+    });
+  });
+
   afterEach(() => {
     delete window.location;
     window.location = originalLocation;
+    localStorage.clear();
   });
 
   const renderPage = () => {
@@ -35,59 +51,55 @@ describe("CSVDownloadsPage tests", () => {
 
   test("renders correctly", async () => {
     renderPage();
-
     expect(await screen.findByText("CSV Downloads")).toBeInTheDocument();
   });
 
-  test("quarter input must be exactly five digits to enable by-quarter download", async () => {
-    renderPage();
-
-    const quarterInput = screen.getAllByLabelText("Quarter (yyyyq)")[0];
-    const byQuarterButton = screen.getAllByRole("button", {
-      name: "Download CSV",
-    })[0];
-
-    expect(quarterInput).toHaveValue("");
-    expect(byQuarterButton).toBeDisabled();
-
-    fireEvent.change(quarterInput, { target: { value: "20241x" } });
-    expect(quarterInput).toHaveValue("20241x");
-    expect(byQuarterButton).toBeDisabled();
-
-    fireEvent.change(quarterInput, { target: { value: "x20241" } });
-    expect(quarterInput).toHaveValue("x20241");
-    expect(byQuarterButton).toBeDisabled();
-
-    fireEvent.change(quarterInput, { target: { value: "20241" } });
-    expect(quarterInput).toHaveValue("20241");
-    expect(byQuarterButton).not.toBeDisabled();
-  });
-
-  test("submitting by-quarter form only downloads when quarter is valid", () => {
+  test("submitting by-quarter form downloads with the default selected quarter", () => {
     const assignMock = mockLocationAssign();
     renderPage();
 
-    const quarterInput = screen.getAllByLabelText("Quarter (yyyyq)")[0];
     const byQuarterButton = screen.getAllByRole("button", {
       name: "Download CSV",
     })[0];
     const byQuarterForm = byQuarterButton.closest("form");
 
-    fireEvent.change(quarterInput, { target: { value: "20241x" } });
-    fireEvent.submit(byQuarterForm);
-    expect(assignMock).not.toHaveBeenCalled();
-
-    fireEvent.change(quarterInput, { target: { value: " 20241 " } });
     fireEvent.submit(byQuarterForm);
 
     expect(assignMock).toHaveBeenCalledTimes(1);
     expect(assignMock).toHaveBeenCalledWith(
-      "/api/courses/csv/quarter?yyyyq=20241",
+      "/api/courses/csv/quarter?yyyyq=20222",
     );
   });
 
-  test("submitting by-quarter-and-subject form requires valid quarter and subject", () => {
+  test("submitting by-quarter-and-subject form includes all new dropdown and checkbox parameters", () => {
     const assignMock = mockLocationAssign();
+    renderPage();
+
+    const byQuarterAndSubjectButton = screen.getAllByRole("button", {
+      name: "Download CSV",
+    })[1];
+    const byQuarterAndSubjectForm = byQuarterAndSubjectButton.closest("form");
+
+    fireEvent.submit(byQuarterAndSubjectForm);
+
+    expect(assignMock).toHaveBeenCalledTimes(1);
+    expect(assignMock).toHaveBeenCalledWith(
+      "/api/courses/csv/byQuarterAndSubjectArea?yyyyq=20222&subjectArea=ANTH&level=U&omitSections=true&withTimeLocations=true",
+    );
+  });
+
+  test("uses fallback quarters when systemInfo is unavailable", () => {
+    useSystemInfo.mockReturnValue({ data: null });
+    
+    renderPage();
+    
+    const fallbackDropdowns = screen.getAllByDisplayValue("S26");
+
+    expect(fallbackDropdowns.length).toBe(2);
+    expect(fallbackDropdowns[0]).toBeInTheDocument();
+  });
+
+  test("checkboxes correctly trigger handlers and save to localStorage", () => {
     renderPage();
 
     fireEvent.click(
@@ -96,41 +108,18 @@ describe("CSVDownloadsPage tests", () => {
       }),
     );
 
-    const allDownloadButtons = screen.getAllByRole("button", {
-      name: "Download CSV",
-    });
-    const byQuarterAndSubjectButton = allDownloadButtons[1];
-    const byQuarterAndSubjectForm = byQuarterAndSubjectButton.closest("form");
+    const omitSectionsCheckbox = screen.getByTestId("CSVDownloads.OmitSections-checkbox");
+    const withTimeLocationsCheckbox = screen.getByTestId("CSVDownloads.WithTimeLocations-checkbox");
 
-    const quarterInput = screen.getAllByLabelText("Quarter (yyyyq)")[1];
-    const subjectAreaInput = screen.getByLabelText("Subject Area");
+    expect(omitSectionsCheckbox).toBeChecked();
+    expect(withTimeLocationsCheckbox).toBeChecked();
 
-    expect(subjectAreaInput).toHaveValue("");
-    expect(byQuarterAndSubjectButton).toBeDisabled();
+    fireEvent.click(omitSectionsCheckbox);
+    expect(omitSectionsCheckbox).not.toBeChecked();
+    expect(localStorage.getItem("CSVDownloads.OmitSections")).toBe("false");
 
-    fireEvent.change(quarterInput, { target: { value: "20241" } });
-    expect(byQuarterAndSubjectButton).toBeDisabled();
-    fireEvent.submit(byQuarterAndSubjectForm);
-    expect(assignMock).not.toHaveBeenCalled();
-
-    fireEvent.change(quarterInput, { target: { value: "20241x" } });
-    fireEvent.change(subjectAreaInput, { target: { value: "cmpsc" } });
-    expect(byQuarterAndSubjectButton).toBeDisabled();
-    fireEvent.submit(byQuarterAndSubjectForm);
-    expect(assignMock).not.toHaveBeenCalled();
-
-    fireEvent.change(quarterInput, { target: { value: " 20241 " } });
-
-    fireEvent.change(subjectAreaInput, {
-      target: { value: " cmpsc " },
-    });
-
-    expect(byQuarterAndSubjectButton).not.toBeDisabled();
-    fireEvent.submit(byQuarterAndSubjectForm);
-
-    expect(assignMock).toHaveBeenCalledTimes(1);
-    expect(assignMock).toHaveBeenCalledWith(
-      "/api/courses/csv/byQuarterAndSubjectArea?yyyyq=20241&subjectArea=CMPSC",
-    );
+    fireEvent.click(withTimeLocationsCheckbox);
+    expect(withTimeLocationsCheckbox).not.toBeChecked();
+    expect(localStorage.getItem("CSVDownloads.WithTimeLocations")).toBe("false");
   });
 });

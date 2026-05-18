@@ -1,37 +1,82 @@
 import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { Accordion, Form, Button } from "react-bootstrap";
+import { Accordion, Form, Button, FormCheck } from "react-bootstrap";
+import SingleQuarterDropdown from "../../components/Quarters/SingleQuarterDropdown";
+import SingleSubjectDropdown from "../../components/Subjects/SingleSubjectDropdown";
+import SingleLevelDropdown from "../../components/Levels/SingleLevelDropdown";
+import { useSystemInfo } from "main/utils/systemInfo";
+import { quarterRange } from "main/utils/quarterUtilities";
+import { useBackend } from "main/utils/useBackend";
+import { allTheLevels } from "fixtures/levelsFixtures";
 
 export default function CSVDownloadsPage() {
-  const [quarter, setQuarter] = useState("");
-  const [subjectArea, setSubjectArea] = useState("");
-  const normalizedQuarter = quarter.trim();
-  const normalizedSubjectArea = subjectArea.trim().toUpperCase();
+  const { data: systemInfo } = useSystemInfo();
+  const startQtr = systemInfo?.startQtrYYYYQ || "20084";
+  const endQtr = systemInfo?.endQtrYYYYQ || "20262";
+  const quarters = quarterRange(startQtr, endQtr);
 
-  const isValidQuarter = /^\d{5}$/.test(normalizedQuarter);
-  const isValidSubjectArea = normalizedSubjectArea.length > 0;
+  const {
+    data: subjects,
+    error: _error,
+    status: _status,
+  } = useBackend(
+    // Stryker disable next-line all : don't test internal caching of React Query
+    ["/api/UCSBSubjects/all"],
+    { method: "GET", url: "/api/UCSBSubjects/all" },
+    [],
+  );
 
-  const byQuarterUrl = `/api/courses/csv/quarter?yyyyq=${encodeURIComponent(normalizedQuarter)}`;
+  const localSearchQuarter = localStorage.getItem("CSVDownloads.Quarter");
+  const localSearchSubject = localStorage.getItem("CSVDownloads.Subject");
+  const localLevel = localStorage.getItem("CSVDownloads.Level");
+  const localOmitSections = localStorage.getItem("CSVDownloads.OmitSections") === "true";
+  const localWithTimeLocations = localStorage.getItem("CSVDownloads.WithTimeLocations") === "true";
+
+  const [quarter, setQuarter] = useState(localSearchQuarter || quarters[quarters.length - 1].yyyyq);
+  const defaultSubject = "ANTH";
+  const [subject, setSubject] = useState(
+    localSearchSubject || subjects?.[0]?.subjectCode || defaultSubject
+  );
+  const [level, setLevel] = useState(localLevel || "U");
+  const [omitSections, setOmitSections] = useState(localOmitSections || true);
+  const [withTimeLocations, setWithTimeLocations] = useState(localWithTimeLocations || true);
+
+  const byQuarterUrl = `/api/courses/csv/quarter?yyyyq=${encodeURIComponent(quarter)}`;
   const byQuarterAndSubjectUrl =
-    `/api/courses/csv/byQuarterAndSubjectArea?yyyyq=${encodeURIComponent(normalizedQuarter)}` +
-    `&subjectArea=${encodeURIComponent(normalizedSubjectArea)}`;
-
+    `/api/courses/csv/byQuarterAndSubjectArea?yyyyq=${encodeURIComponent(quarter)}` +
+    `&subjectArea=${encodeURIComponent(subject)}` +
+    `&level=${encodeURIComponent(level)}` +
+    `&omitSections=${encodeURIComponent(omitSections)}` +
+    `&withTimeLocations=${encodeURIComponent(withTimeLocations)}`;
+  
   const downloadCsv = (url) => {
     window.location.assign(url);
   };
 
   const handleQuarterSubmit = (e) => {
     e.preventDefault();
-    if (isValidQuarter) {
-      downloadCsv(byQuarterUrl);
-    }
+    downloadCsv(byQuarterUrl);
   };
 
   const handleQuarterSubjectSubmit = (e) => {
     e.preventDefault();
-    if (isValidQuarter && isValidSubjectArea) {
-      downloadCsv(byQuarterAndSubjectUrl);
-    }
+    downloadCsv(byQuarterAndSubjectUrl);
+  };
+
+  const handleOmitSectionsChange = (event) => {
+    setOmitSections(event.target.checked);
+    localStorage.setItem(
+      "CSVDownloads.OmitSections",
+      event.target.checked.toString(),
+    );
+  };
+
+  const handleWithTimeLocationsChange = (event) => {
+    setWithTimeLocations(event.target.checked);
+    localStorage.setItem(
+      "CSVDownloads.WithTimeLocations",
+      event.target.checked.toString(),
+    );
   };
 
   return (
@@ -47,24 +92,17 @@ export default function CSVDownloadsPage() {
             </Accordion.Header>
             <Accordion.Body>
               <Form onSubmit={handleQuarterSubmit}>
-                <Form.Group className="mb-3" controlId="quarterOnly">
-                  <Form.Label>Quarter (yyyyq)</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="e.g. 20261"
-                    value={quarter}
-                    onChange={(e) => setQuarter(e.target.value)}
-                    pattern="\d{5}"
-                  />
-                  <Form.Text muted>
-                    Example: 20254 (F25), 20261 (W26), 20262 (S26)
-                  </Form.Text>
-                </Form.Group>
-
+                <SingleQuarterDropdown
+                  quarters={quarters}
+                  quarter={quarter}
+                  setQuarter={setQuarter}
+                  controlId="CSVDownloads.Quarter"
+                  label="Start Quarter"
+                />
                 <Button
                   type="submit"
                   variant="primary"
-                  disabled={!isValidQuarter}
+                  className="mt-3"
                 >
                   Download CSV
                 </Button>
@@ -79,31 +117,43 @@ export default function CSVDownloadsPage() {
             </Accordion.Header>
             <Accordion.Body>
               <Form onSubmit={handleQuarterSubjectSubmit}>
-                <Form.Group className="mb-3" controlId="quarterWithSubject">
-                  <Form.Label>Quarter (yyyyq)</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="e.g. 20261"
-                    value={quarter}
-                    onChange={(e) => setQuarter(e.target.value)}
-                    pattern="\d{5}"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="subjectArea">
-                  <Form.Label>Subject Area</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="e.g. CMPSC"
-                    value={subjectArea}
-                    onChange={(e) => setSubjectArea(e.target.value)}
-                  />
-                </Form.Group>
-
+                <SingleQuarterDropdown
+                  quarters={quarters}
+                  quarter={quarter}
+                  setQuarter={setQuarter}
+                  controlId="CSVDownloads.Quarter"
+                  label="Start Quarter"
+                />
+                <SingleSubjectDropdown
+                  subjects={subjects}
+                  subject={subject}
+                  setSubject={setSubject}
+                  controlId="CSVDownloads.Subject"
+                  label="Subject Area"
+                />
+                <SingleLevelDropdown
+                  levels={allTheLevels}
+                  level={level}
+                  setLevel={setLevel}
+                  controlId={"CSVDownloads.Level"}
+                  label="Course Level"
+                />
+                <FormCheck
+                  data-testid={`CSVDownloads.OmitSections-checkbox`}
+                  label="Omit Sections"
+                  onChange={handleOmitSectionsChange}
+                  checked={omitSections}
+                ></FormCheck>
+                <FormCheck
+                  data-testid={`CSVDownloads.WithTimeLocations-checkbox`}
+                  label="With Time Locations"
+                  onChange={handleWithTimeLocationsChange}
+                  checked={withTimeLocations}
+                ></FormCheck>
                 <Button
                   type="submit"
                   variant="primary"
-                  disabled={!isValidQuarter || !isValidSubjectArea}
+                  className="mt-3"
                 >
                   Download CSV
                 </Button>
