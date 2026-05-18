@@ -20,7 +20,6 @@ export default function CSVDownloadsPage() {
     error: _error,
     status: _status,
   } = useBackend(
-    // Stryker disable next-line all : don't test internal caching of React Query
     ["/api/UCSBSubjects/all"],
     { method: "GET", url: "/api/UCSBSubjects/all" },
     [],
@@ -38,9 +37,7 @@ export default function CSVDownloadsPage() {
     localSearchQuarter || quarters[quarters.length - 1].yyyyq,
   );
   const defaultSubject = "ANTH";
-  const [subject, setSubject] = useState(
-    localSearchSubject || subjects?.[0]?.subjectCode || defaultSubject,
-  );
+  const [subject, setSubject] = useState(localSearchSubject || defaultSubject);
   const [level, setLevel] = useState(localLevel || "U");
   const [omitSections, setOmitSections] = useState(
     localOmitSections === null ? true : localOmitSections === "true",
