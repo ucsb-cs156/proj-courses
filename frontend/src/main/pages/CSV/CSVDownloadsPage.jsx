@@ -29,10 +29,10 @@ export default function CSVDownloadsPage() {
   const localSearchQuarter = localStorage.getItem("CSVDownloads.Quarter");
   const localSearchSubject = localStorage.getItem("CSVDownloads.Subject");
   const localLevel = localStorage.getItem("CSVDownloads.Level");
-  const localOmitSections =
-    localStorage.getItem("CSVDownloads.OmitSections") === "true";
-  const localWithTimeLocations =
-    localStorage.getItem("CSVDownloads.WithTimeLocations") === "true";
+  const localOmitSections = localStorage.getItem("CSVDownloads.OmitSections");
+  const localWithTimeLocations = localStorage.getItem(
+    "CSVDownloads.WithTimeLocations",
+  );
 
   const [quarter, setQuarter] = useState(
     localSearchQuarter || quarters[quarters.length - 1].yyyyq,
@@ -42,9 +42,11 @@ export default function CSVDownloadsPage() {
     localSearchSubject || subjects?.[0]?.subjectCode || defaultSubject,
   );
   const [level, setLevel] = useState(localLevel || "U");
-  const [omitSections, setOmitSections] = useState(localOmitSections || true);
+  const [omitSections, setOmitSections] = useState(
+    localOmitSections === null ? true : localOmitSections === "true",
+  );
   const [withTimeLocations, setWithTimeLocations] = useState(
-    localWithTimeLocations || true,
+    localWithTimeLocations === null ? true : localWithTimeLocations === "true",
   );
 
   const byQuarterUrl = `/api/courses/csv/quarter?yyyyq=${encodeURIComponent(quarter)}`;

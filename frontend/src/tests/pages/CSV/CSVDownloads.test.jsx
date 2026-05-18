@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { useSystemInfo } from "main/utils/systemInfo";
 import { vi } from "vitest";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
 import CSVDownloadsPage from "main/pages/CSV/CSVDownloadsPage";
 
 vi.mock("main/utils/systemInfo", () => ({
@@ -11,7 +13,7 @@ vi.mock("main/utils/systemInfo", () => ({
 
 describe("CSVDownloadsPage tests", () => {
   const originalLocation = window.location;
-
+  const axiosMock = new AxiosMockAdapter(axios);
   beforeEach(() => {
     vi.clearAllMocks();
     useSystemInfo.mockReturnValue({
@@ -20,6 +22,10 @@ describe("CSVDownloadsPage tests", () => {
         endQtrYYYYQ: "20222",
       },
     });
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, [
+      { subjectCode: "ANTH", subjectTranslation: "Anthropology" },
+      { subjectCode: "CMPSC", subjectTranslation: "Computer Science" },
+    ]);
   });
 
   afterEach(() => {
@@ -127,5 +133,58 @@ describe("CSVDownloadsPage tests", () => {
     expect(localStorage.getItem("CSVDownloads.WithTimeLocations")).toBe(
       "false",
     );
+  });
+
+  test("loads state from localStorage when available", async () => {
+    localStorage.setItem("CSVDownloads.Quarter", "20182");
+    localStorage.setItem("CSVDownloads.Subject", "CMPSC");
+    localStorage.setItem("CSVDownloads.Level", "G");
+    localStorage.setItem("CSVDownloads.OmitSections", "false");
+    localStorage.setItem("CSVDownloads.WithTimeLocations", "false");
+
+    renderPage();
+
+    const quarterDropdowns = screen.getAllByDisplayValue("S18");
+    expect(quarterDropdowns.length).toBe(2);
+    expect(quarterDropdowns[0]).toHaveValue("20182");
+    expect(quarterDropdowns[1]).toHaveValue("20182");
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Download all UCSB classes by Quarter and Subject Area",
+      }),
+    );
+
+    const subjectDropdown = await screen.findByLabelText("Subject Area");
+    expect(subjectDropdown).toHaveValue("CMPSC");
+
+    const levelDropdown = await screen.getByLabelText("Course Level");
+    expect(levelDropdown).toHaveValue("G");
+
+    const omitSectionsCheckbox = screen.getByTestId(
+      "CSVDownloads.OmitSections-checkbox",
+    );
+    const withTimeLocationsCheckbox = screen.getByTestId(
+      "CSVDownloads.WithTimeLocations-checkbox",
+    );
+
+    expect(omitSectionsCheckbox).not.toBeChecked();
+    expect(withTimeLocationsCheckbox).not.toBeChecked();
+  });
+
+  test("Level dropdown correctly updates state and saves to localStorage", () => {
+    renderPage();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Download all UCSB classes by Quarter and Subject Area",
+      }),
+    );
+
+    const levelDropdown = screen.getByLabelText("Course Level");
+
+    fireEvent.change(levelDropdown, { target: { value: "G" } });
+
+    expect(localStorage.getItem("CSVDownloads.Level")).toBe("G");
   });
 });
