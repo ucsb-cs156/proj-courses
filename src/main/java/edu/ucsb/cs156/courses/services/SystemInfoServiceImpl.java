@@ -16,7 +16,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
 
   private final UCSBAPIQuarterService ucsbapiQuarterService;
 
-  public SystemInfoServiceImpl(UCSBAPIQuarterService ucsbapiQuarterService){
+  public SystemInfoServiceImpl(UCSBAPIQuarterService ucsbapiQuarterService) {
     this.ucsbapiQuarterService = ucsbapiQuarterService;
   }
 
@@ -46,12 +46,12 @@ public class SystemInfoServiceImpl extends SystemInfoService {
 
     String endQtrYYYYQ;
 
-   try {
-    endQtrYYYYQ = this.ucsbapiQuarterService.getCurrentEndQuarterYYYYQ(); // LINE 50
-   } catch (Exception e) {
-    log.error("Can't get current quarter from UCSBAPIQuarterService: ", e);
-    endQtrYYYYQ = this.startQtrYYYYQ;
-   } 
+    try {
+      endQtrYYYYQ = this.ucsbapiQuarterService.getCurrentEndQuarterYYYYQ();
+    } catch (Exception e) {
+      log.error("Can't get current quarter from UCSBAPIQuarterService: ", e);
+      endQtrYYYYQ = this.startQtrYYYYQ;
+    }
 
     SystemInfo si =
         SystemInfo.builder()

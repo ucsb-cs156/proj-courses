@@ -13,7 +13,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 // The unit under test relies on property values
-// AB - The unit under test should still rely on property values, but I've moved to @SpringBootTest as we need injection for ucsbapiQuarterService.
+// AB - The unit under test should still rely on property values, but I've moved to @SpringBootTest
+// as we need injection for ucsbapiQuarterService.
 // For hints on testing, see: https://www.baeldung.com/spring-boot-testing-configurationproperties
 
 @SpringBootTest
@@ -22,8 +23,7 @@ class SystemInfoServiceImplTests {
 
   @Autowired private SystemInfoService systemInfoService;
 
-  @MockitoBean
-  private UCSBAPIQuarterService ucsbapiQuarterService;
+  @MockitoBean private UCSBAPIQuarterService ucsbapiQuarterService;
 
   @Test
   void test_getSystemInfo() {
@@ -47,7 +47,8 @@ class SystemInfoServiceImplTests {
   void test_getSystemInfo_getCurrentEndQuarter_Exception() {
 
     try {
-      when(ucsbapiQuarterService.getCurrentEndQuarterYYYYQ()).thenThrow(new Exception("A test error, pretending getCurrentEndQuarterYYYYQ failed."));
+      when(ucsbapiQuarterService.getCurrentEndQuarterYYYYQ())
+          .thenThrow(new Exception("A test error, pretending getCurrentEndQuarterYYYYQ failed."));
     } catch (Exception e) {
       // There's no exception, since getCurrentEndQuarter is being called from a mock.
     }
