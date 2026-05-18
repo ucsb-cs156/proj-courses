@@ -90,9 +90,9 @@ describe("CSVDownloadsPage tests", () => {
 
   test("uses fallback quarters when systemInfo is unavailable", () => {
     useSystemInfo.mockReturnValue({ data: null });
-    
+
     renderPage();
-    
+
     const fallbackDropdowns = screen.getAllByDisplayValue("S26");
 
     expect(fallbackDropdowns.length).toBe(2);
@@ -108,8 +108,12 @@ describe("CSVDownloadsPage tests", () => {
       }),
     );
 
-    const omitSectionsCheckbox = screen.getByTestId("CSVDownloads.OmitSections-checkbox");
-    const withTimeLocationsCheckbox = screen.getByTestId("CSVDownloads.WithTimeLocations-checkbox");
+    const omitSectionsCheckbox = screen.getByTestId(
+      "CSVDownloads.OmitSections-checkbox",
+    );
+    const withTimeLocationsCheckbox = screen.getByTestId(
+      "CSVDownloads.WithTimeLocations-checkbox",
+    );
 
     expect(omitSectionsCheckbox).toBeChecked();
     expect(withTimeLocationsCheckbox).toBeChecked();
@@ -120,6 +124,8 @@ describe("CSVDownloadsPage tests", () => {
 
     fireEvent.click(withTimeLocationsCheckbox);
     expect(withTimeLocationsCheckbox).not.toBeChecked();
-    expect(localStorage.getItem("CSVDownloads.WithTimeLocations")).toBe("false");
+    expect(localStorage.getItem("CSVDownloads.WithTimeLocations")).toBe(
+      "false",
+    );
   });
 });

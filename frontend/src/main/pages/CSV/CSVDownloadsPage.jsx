@@ -29,17 +29,23 @@ export default function CSVDownloadsPage() {
   const localSearchQuarter = localStorage.getItem("CSVDownloads.Quarter");
   const localSearchSubject = localStorage.getItem("CSVDownloads.Subject");
   const localLevel = localStorage.getItem("CSVDownloads.Level");
-  const localOmitSections = localStorage.getItem("CSVDownloads.OmitSections") === "true";
-  const localWithTimeLocations = localStorage.getItem("CSVDownloads.WithTimeLocations") === "true";
+  const localOmitSections =
+    localStorage.getItem("CSVDownloads.OmitSections") === "true";
+  const localWithTimeLocations =
+    localStorage.getItem("CSVDownloads.WithTimeLocations") === "true";
 
-  const [quarter, setQuarter] = useState(localSearchQuarter || quarters[quarters.length - 1].yyyyq);
+  const [quarter, setQuarter] = useState(
+    localSearchQuarter || quarters[quarters.length - 1].yyyyq,
+  );
   const defaultSubject = "ANTH";
   const [subject, setSubject] = useState(
-    localSearchSubject || subjects?.[0]?.subjectCode || defaultSubject
+    localSearchSubject || subjects?.[0]?.subjectCode || defaultSubject,
   );
   const [level, setLevel] = useState(localLevel || "U");
   const [omitSections, setOmitSections] = useState(localOmitSections || true);
-  const [withTimeLocations, setWithTimeLocations] = useState(localWithTimeLocations || true);
+  const [withTimeLocations, setWithTimeLocations] = useState(
+    localWithTimeLocations || true,
+  );
 
   const byQuarterUrl = `/api/courses/csv/quarter?yyyyq=${encodeURIComponent(quarter)}`;
   const byQuarterAndSubjectUrl =
@@ -48,7 +54,7 @@ export default function CSVDownloadsPage() {
     `&level=${encodeURIComponent(level)}` +
     `&omitSections=${encodeURIComponent(omitSections)}` +
     `&withTimeLocations=${encodeURIComponent(withTimeLocations)}`;
-  
+
   const downloadCsv = (url) => {
     window.location.assign(url);
   };
@@ -99,11 +105,7 @@ export default function CSVDownloadsPage() {
                   controlId="CSVDownloads.Quarter"
                   label="Start Quarter"
                 />
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="mt-3"
-                >
+                <Button type="submit" variant="primary" className="mt-3">
                   Download CSV
                 </Button>
               </Form>
@@ -150,11 +152,7 @@ export default function CSVDownloadsPage() {
                   onChange={handleWithTimeLocationsChange}
                   checked={withTimeLocations}
                 ></FormCheck>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="mt-3"
-                >
+                <Button type="submit" variant="primary" className="mt-3">
                   Download CSV
                 </Button>
               </Form>
