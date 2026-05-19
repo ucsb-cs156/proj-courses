@@ -147,7 +147,7 @@ export default function CSVDownloadsPage() {
                 ></FormCheck>
                 <FormCheck
                   data-testid={`CSVDownloads.WithTimeLocations-checkbox`}
-                  label="With Time Locations"
+                  label="Only include courses with assigned Times and Locations"
                   onChange={handleWithTimeLocationsChange}
                   checked={withTimeLocations}
                 ></FormCheck>
