@@ -44,6 +44,9 @@ describe("AdminRateLimitingPage tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-ipAddress`),
     ).toHaveTextContent("192.168.1.1");
     expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-hostname`),
+    ).toHaveTextContent("dns1.example.com");
+    expect(
       screen.getByTestId(`${testId}-cell-row-0-col-requestCount`),
     ).toHaveTextContent("5");
     expect(

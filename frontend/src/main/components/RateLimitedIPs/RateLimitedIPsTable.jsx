@@ -9,6 +9,10 @@ export default function RateLimitedIPsTable({ rateLimitedIPs }) {
       accessorKey: "ipAddress",
     },
     {
+      header: "Host Name",
+      accessorKey: "hostname",
+    },
+    {
       header: "Request Count",
       accessorKey: "requestCount",
     },

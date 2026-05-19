@@ -55,6 +55,7 @@ public class RateLimitFilterTests {
             10,
             rateLimitedIPRepository,
             (record, ip) -> {
+              record.setHostname("dns.example.com");
               record.setCountry("United States");
               record.setCity("Santa Barbara");
               record.setState("California");
@@ -89,6 +90,7 @@ public class RateLimitFilterTests {
     ArgumentCaptor<RateLimitedIP> captor = ArgumentCaptor.forClass(RateLimitedIP.class);
     verify(rateLimitedIPRepository, times(1)).save(captor.capture());
     RateLimitedIP savedRecord = captor.getValue();
+    assertEquals("dns.example.com", savedRecord.getHostname());
     assertEquals("United States", savedRecord.getCountry());
     assertEquals("Santa Barbara", savedRecord.getCity());
     assertEquals("California", savedRecord.getState());

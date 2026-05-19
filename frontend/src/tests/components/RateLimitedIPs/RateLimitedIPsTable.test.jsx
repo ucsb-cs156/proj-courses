@@ -33,6 +33,7 @@ describe("RateLimitedIPsTable tests", () => {
     // Check column headers by text content
     const expectedHeaders = [
       "IP Address",
+      "Host Name",
       "Request Count",
       "Country",
       "City",
@@ -49,6 +50,7 @@ describe("RateLimitedIPsTable tests", () => {
     expect(
       await screen.findByTestId(`${testid}-header-ipAddress`),
     ).toBeInTheDocument();
+    expect(screen.getByTestId(`${testid}-header-hostname`)).toBeInTheDocument();
     expect(
       screen.getByTestId(`${testid}-header-requestCount`),
     ).toBeInTheDocument();
@@ -69,6 +71,9 @@ describe("RateLimitedIPsTable tests", () => {
     expect(
       screen.getByTestId(`${testid}-cell-row-0-col-ipAddress`),
     ).toHaveTextContent("192.168.1.1");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-0-col-hostname`),
+    ).toHaveTextContent("dns1.example.com");
     expect(
       screen.getByTestId(`${testid}-cell-row-0-col-requestCount`),
     ).toHaveTextContent("5");
@@ -95,6 +100,9 @@ describe("RateLimitedIPsTable tests", () => {
       screen.getByTestId(`${testid}-cell-row-1-col-ipAddress`),
     ).toHaveTextContent("10.0.0.1");
     expect(
+      screen.getByTestId(`${testid}-cell-row-1-col-hostname`),
+    ).toHaveTextContent("dns2.example.com");
+    expect(
       screen.getByTestId(`${testid}-cell-row-1-col-requestCount`),
     ).toHaveTextContent("12");
     expect(
@@ -104,6 +112,9 @@ describe("RateLimitedIPsTable tests", () => {
     expect(
       screen.getByTestId(`${testid}-cell-row-2-col-ipAddress`),
     ).toHaveTextContent("172.16.0.5");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-2-col-hostname`),
+    ).toHaveTextContent("dns3.example.com");
     expect(
       screen.getByTestId(`${testid}-cell-row-2-col-requestCount`),
     ).toHaveTextContent("1");

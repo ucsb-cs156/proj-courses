@@ -2,6 +2,7 @@ const rateLimitedIPFixtures = {
   oneIP: {
     ipAddress: "192.168.1.1",
     requestCount: 5,
+    hostname: "dns1.example.com",
     country: "United States",
     city: "Santa Barbara",
     state: "California",
@@ -14,6 +15,7 @@ const rateLimitedIPFixtures = {
     {
       ipAddress: "192.168.1.1",
       requestCount: 5,
+      hostname: "dns1.example.com",
       country: "United States",
       city: "Santa Barbara",
       state: "California",
@@ -25,6 +27,7 @@ const rateLimitedIPFixtures = {
     {
       ipAddress: "10.0.0.1",
       requestCount: 12,
+      hostname: "dns2.example.com",
       country: "Canada",
       city: "Vancouver",
       state: "British Columbia",
@@ -36,6 +39,7 @@ const rateLimitedIPFixtures = {
     {
       ipAddress: "172.16.0.5",
       requestCount: 1,
+      hostname: "dns3.example.com",
       country: "Mexico",
       city: "Mexico City",
       state: "Mexico City",
@@ -50,6 +54,7 @@ const rateLimitedIPFixtures = {
       {
         ipAddress: "192.168.1.1",
         requestCount: 5,
+        hostname: "dns1.example.com",
         country: "United States",
         city: "Santa Barbara",
         state: "California",
@@ -61,6 +66,7 @@ const rateLimitedIPFixtures = {
       {
         ipAddress: "10.0.0.1",
         requestCount: 12,
+        hostname: "dns2.example.com",
         country: "Canada",
         city: "Vancouver",
         state: "British Columbia",
@@ -72,6 +78,7 @@ const rateLimitedIPFixtures = {
       {
         ipAddress: "172.16.0.5",
         requestCount: 1,
+        hostname: "dns3.example.com",
         country: "Mexico",
         city: "Mexico City",
         state: "Mexico City",

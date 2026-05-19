@@ -18,6 +18,8 @@ public class RateLimitedIP {
 
   private long requestCount;
 
+  private String hostname;
+
   private String country;
 
   private String city;

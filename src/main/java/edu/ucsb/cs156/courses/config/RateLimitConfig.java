@@ -39,33 +39,17 @@ public class RateLimitConfig {
   }
 
   private RateLimitFilter.GeolocationProvider createGeolocationProvider() {
-    if (geoIpDatabasePath == null || geoIpDatabasePath.isBlank()) {
-      log.info("No GeoIP database path configured; rate-limited IP geolocation will be skipped.");
-      return (record, ipAddress) -> {};
-    }
-
-    File databaseFile = new File(geoIpDatabasePath);
-    if (!databaseFile.exists()) {
-      log.warn(
-          "GeoIP database file {} was not found; rate-limited IP geolocation will be skipped.",
-          geoIpDatabasePath);
-      return (record, ipAddress) -> {};
-    }
-
-    final DatabaseReader databaseReader;
-    try {
-      databaseReader = new DatabaseReader.Builder(databaseFile).build();
-    } catch (IOException e) {
-      log.warn(
-          "Unable to read GeoIP database file {}; rate-limited IP geolocation will be skipped.",
-          geoIpDatabasePath,
-          e);
-      return (record, ipAddress) -> {};
-    }
+    final DatabaseReader databaseReader = getDatabaseReader();
 
     return (record, ipAddress) -> {
       try {
-        CityResponse response = databaseReader.city(InetAddress.getByName(ipAddress));
+        InetAddress inetAddress = InetAddress.getByName(ipAddress);
+        record.setHostname(getResolvedHostName(inetAddress));
+        if (databaseReader == null) {
+          return;
+        }
+
+        CityResponse response = databaseReader.city(inetAddress);
         record.setCountry(getEnglishName(response.country().names()));
         record.setCity(getEnglishName(response.city().names()));
         record.setState(getEnglishName(response.mostSpecificSubdivision().names()));
@@ -73,12 +57,42 @@ public class RateLimitConfig {
         record.setLatitude(response.location().latitude());
         record.setLongitude(response.location().longitude());
       } catch (Exception e) {
-        log.debug("Unable to geolocate IP address {}", ipAddress, e);
+        log.debug("Unable to populate metadata for IP address {}", ipAddress, e);
       }
     };
   }
 
+  private DatabaseReader getDatabaseReader() {
+    if (geoIpDatabasePath == null || geoIpDatabasePath.isBlank()) {
+      log.info("No GeoIP database path configured; rate-limited IP geolocation will be skipped.");
+      return null;
+    }
+
+    File databaseFile = new File(geoIpDatabasePath);
+    if (!databaseFile.exists()) {
+      log.warn(
+          "GeoIP database file {} was not found; rate-limited IP geolocation will be skipped.",
+          geoIpDatabasePath);
+      return null;
+    }
+
+    try {
+      return new DatabaseReader.Builder(databaseFile).build();
+    } catch (IOException e) {
+      log.warn(
+          "Unable to read GeoIP database file {}; rate-limited IP geolocation will be skipped.",
+          geoIpDatabasePath,
+          e);
+      return null;
+    }
+  }
+
   private String getEnglishName(Map<String, String> names) {
     return names == null ? null : names.get("en");
+  }
+
+  private String getResolvedHostName(InetAddress inetAddress) {
+    String hostName = inetAddress.getCanonicalHostName();
+    return hostName.equals(inetAddress.getHostAddress()) ? null : hostName;
   }
 }
