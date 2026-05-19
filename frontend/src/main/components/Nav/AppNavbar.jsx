@@ -145,6 +145,12 @@ export default function AppNavbar({
                     Manage Jobs
                   </NavDropdown.Item>
                   <NavDropdown.Item
+                    href="/admin/rate-limiting"
+                    data-testid="appnavbar-admin-rate-limiting"
+                  >
+                    Rate Limiting
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
                     href="/developer"
                     data-testid="appnavbar-developer"
                   >
