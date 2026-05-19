@@ -40,6 +40,12 @@ public class RateLimitedIPsControllerTests extends ControllerTestCase {
       RateLimitedIP.builder()
           .ipAddress("192.168.1.1")
           .requestCount(5)
+          .country("United States")
+          .city("Santa Barbara")
+          .state("California")
+          .postalCode("93106")
+          .latitude(34.414d)
+          .longitude(-119.8489d)
           .lastRequestAt(sampleTime)
           .build();
 
@@ -47,6 +53,12 @@ public class RateLimitedIPsControllerTests extends ControllerTestCase {
       RateLimitedIP.builder()
           .ipAddress("10.0.0.1")
           .requestCount(3)
+          .country("Canada")
+          .city("Vancouver")
+          .state("British Columbia")
+          .postalCode("V6B 1A1")
+          .latitude(49.2827d)
+          .longitude(-123.1207d)
           .lastRequestAt(sampleTime.plusHours(1))
           .build();
 

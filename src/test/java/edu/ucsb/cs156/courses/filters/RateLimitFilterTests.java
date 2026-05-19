@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class RateLimitFilterTests {
   @BeforeEach
   public void setUp() {
     rateLimitedIPRepository = mock(RateLimitedIPRepository.class);
-    rateLimitFilter = new RateLimitFilter(10, 10, rateLimitedIPRepository);
+    rateLimitFilter = new RateLimitFilter(10, 10, rateLimitedIPRepository, (record, ip) -> {});
   }
 
   @Test
@@ -48,6 +49,19 @@ public class RateLimitFilterTests {
 
   @Test
   public void testRequestBlockedWhenOverRateLimit() throws Exception {
+    rateLimitFilter =
+        new RateLimitFilter(
+            10,
+            10,
+            rateLimitedIPRepository,
+            (record, ip) -> {
+              record.setCountry("United States");
+              record.setCity("Santa Barbara");
+              record.setState("California");
+              record.setPostalCode("93106");
+              record.setLatitude(34.414d);
+              record.setLongitude(-119.8489d);
+            });
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
     FilterChain filterChain = mock(FilterChain.class);
@@ -72,7 +86,15 @@ public class RateLimitFilterTests {
     verify(response, times(1)).setContentType("text/plain");
     printWriter.flush();
     assertEquals("Too many requests. Your IP has been throttled.", stringWriter.toString());
-    verify(rateLimitedIPRepository, times(1)).save(any());
+    ArgumentCaptor<RateLimitedIP> captor = ArgumentCaptor.forClass(RateLimitedIP.class);
+    verify(rateLimitedIPRepository, times(1)).save(captor.capture());
+    RateLimitedIP savedRecord = captor.getValue();
+    assertEquals("United States", savedRecord.getCountry());
+    assertEquals("Santa Barbara", savedRecord.getCity());
+    assertEquals("California", savedRecord.getState());
+    assertEquals("93106", savedRecord.getPostalCode());
+    assertEquals(34.414d, savedRecord.getLatitude());
+    assertEquals(-119.8489d, savedRecord.getLongitude());
   }
 
   @Test

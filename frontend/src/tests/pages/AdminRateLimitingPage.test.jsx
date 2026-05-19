@@ -47,6 +47,12 @@ describe("AdminRateLimitingPage tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-requestCount`),
     ).toHaveTextContent("5");
     expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-country`),
+    ).toHaveTextContent("United States");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-city`),
+    ).toHaveTextContent("Santa Barbara");
+    expect(
       screen.getByTestId(`${testId}-cell-row-1-col-ipAddress`),
     ).toHaveTextContent("10.0.0.1");
   });

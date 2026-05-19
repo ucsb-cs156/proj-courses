@@ -31,7 +31,17 @@ describe("RateLimitedIPsTable tests", () => {
     const testid = "RateLimitedIPsTable";
 
     // Check column headers by text content
-    const expectedHeaders = ["IP Address", "Request Count", "Last Request At"];
+    const expectedHeaders = [
+      "IP Address",
+      "Request Count",
+      "Country",
+      "City",
+      "State",
+      "Postal Code",
+      "Latitude",
+      "Longitude",
+      "Last Request At",
+    ];
     expectedHeaders.forEach((headerText) => {
       expect(screen.getByText(headerText)).toBeInTheDocument();
     });
@@ -41,6 +51,16 @@ describe("RateLimitedIPsTable tests", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByTestId(`${testid}-header-requestCount`),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId(`${testid}-header-country`)).toBeInTheDocument();
+    expect(screen.getByTestId(`${testid}-header-city`)).toBeInTheDocument();
+    expect(screen.getByTestId(`${testid}-header-state`)).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testid}-header-postalCode`),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId(`${testid}-header-latitude`)).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testid}-header-longitude`),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId(`${testid}-header-Last Request At`),
@@ -52,6 +72,24 @@ describe("RateLimitedIPsTable tests", () => {
     expect(
       screen.getByTestId(`${testid}-cell-row-0-col-requestCount`),
     ).toHaveTextContent("5");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-0-col-country`),
+    ).toHaveTextContent("United States");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-0-col-city`),
+    ).toHaveTextContent("Santa Barbara");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-0-col-state`),
+    ).toHaveTextContent("California");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-0-col-postalCode`),
+    ).toHaveTextContent("93106");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-0-col-latitude`),
+    ).toHaveTextContent("34.414");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-0-col-longitude`),
+    ).toHaveTextContent("-119.8489");
 
     expect(
       screen.getByTestId(`${testid}-cell-row-1-col-ipAddress`),
@@ -59,6 +97,9 @@ describe("RateLimitedIPsTable tests", () => {
     expect(
       screen.getByTestId(`${testid}-cell-row-1-col-requestCount`),
     ).toHaveTextContent("12");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-1-col-country`),
+    ).toHaveTextContent("Canada");
 
     expect(
       screen.getByTestId(`${testid}-cell-row-2-col-ipAddress`),
@@ -66,5 +107,8 @@ describe("RateLimitedIPsTable tests", () => {
     expect(
       screen.getByTestId(`${testid}-cell-row-2-col-requestCount`),
     ).toHaveTextContent("1");
+    expect(
+      screen.getByTestId(`${testid}-cell-row-2-col-country`),
+    ).toHaveTextContent("Mexico");
   });
 });

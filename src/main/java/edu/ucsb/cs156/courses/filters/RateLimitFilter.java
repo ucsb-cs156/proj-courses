@@ -21,15 +21,25 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 public class RateLimitFilter extends OncePerRequestFilter {
 
+  @FunctionalInterface
+  public interface GeolocationProvider {
+    void populateGeolocation(RateLimitedIP record, String ipAddress);
+  }
+
   private final int initialBucketSize;
   private final int refillPerMinute;
   private final RateLimitedIPRepository rateLimitedIPRepository;
+  private final GeolocationProvider geolocationProvider;
 
   public RateLimitFilter(
-      int initialBucketSize, int refillPerMinute, RateLimitedIPRepository rateLimitedIPRepository) {
+      int initialBucketSize,
+      int refillPerMinute,
+      RateLimitedIPRepository rateLimitedIPRepository,
+      GeolocationProvider geolocationProvider) {
     this.initialBucketSize = initialBucketSize;
     this.refillPerMinute = refillPerMinute;
     this.rateLimitedIPRepository = rateLimitedIPRepository;
+    this.geolocationProvider = geolocationProvider;
   }
 
   // Caffeine cache: Keys are IP addresses, Values are Bucket objects.
@@ -89,6 +99,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
               .lastRequestAt(ZonedDateTime.now())
               .build();
     }
+    geolocationProvider.populateGeolocation(record, ip);
     rateLimitedIPRepository.save(record);
   }
 }
