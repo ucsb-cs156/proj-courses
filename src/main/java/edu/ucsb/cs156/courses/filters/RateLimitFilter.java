@@ -2,6 +2,8 @@ package edu.ucsb.cs156.courses.filters;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import edu.ucsb.cs156.courses.entities.RateLimitedIP;
+import edu.ucsb.cs156.courses.repositories.RateLimitedIPRepository;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
@@ -11,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,10 +23,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
   private final int initialBucketSize;
   private final int refillPerMinute;
+  private final RateLimitedIPRepository rateLimitedIPRepository;
 
-  public RateLimitFilter(int initialBucketSize, int refillPerMinute) {
+  public RateLimitFilter(
+      int initialBucketSize, int refillPerMinute, RateLimitedIPRepository rateLimitedIPRepository) {
     this.initialBucketSize = initialBucketSize;
     this.refillPerMinute = refillPerMinute;
+    this.rateLimitedIPRepository = rateLimitedIPRepository;
   }
 
   // Caffeine cache: Keys are IP addresses, Values are Bucket objects.
@@ -59,10 +66,29 @@ public class RateLimitFilter extends OncePerRequestFilter {
       // Success: Continue to the next filter/controller
       filterChain.doFilter(request, response);
     } else {
-      // Failure: Too many requests
+      // Failure: Too many requests — record this in the database
+      recordRateLimitedIP(ip);
       response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
       response.setContentType("text/plain");
       response.getWriter().write("Too many requests. Your IP has been throttled.");
     }
+  }
+
+  void recordRateLimitedIP(String ip) {
+    Optional<RateLimitedIP> existing = rateLimitedIPRepository.findById(ip);
+    RateLimitedIP record;
+    if (existing.isPresent()) {
+      record = existing.get();
+      record.setRequestCount(record.getRequestCount() + 1);
+      record.setLastRequestAt(ZonedDateTime.now());
+    } else {
+      record =
+          RateLimitedIP.builder()
+              .ipAddress(ip)
+              .requestCount(1)
+              .lastRequestAt(ZonedDateTime.now())
+              .build();
+    }
+    rateLimitedIPRepository.save(record);
   }
 }
