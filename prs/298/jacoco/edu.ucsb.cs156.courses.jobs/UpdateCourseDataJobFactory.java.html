@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateCourseDataJobFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.jobs</a> &gt; <span class="el_source">UpdateCourseDataJobFactory.java</span></div><h1>UpdateCourseDataJobFactory.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.jobs;
+
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.collections.UpdateCollection;
+import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
+import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import edu.ucsb.cs156.courses.services.IsStaleService;
+import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.jobs.JobRateLimit;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L18">@Slf4j</span>
+<span class="fc" id="L19">public class UpdateCourseDataJobFactory {</span>
+
+  @Autowired private UCSBCurriculumService curriculumService;
+
+  @Autowired private ConvertedSectionCollection convertedSectionCollection;
+
+  @Autowired private UCSBSubjectRepository subjectRepository;
+
+  @Autowired private UpdateCollection updateCollection;
+
+  @Autowired private IsStaleService isStaleService;
+
+  @Autowired private EnrollmentDataPointRepository enrollmentDataPointRepository;
+
+  @Autowired private UCSBAPIQuarterService ucsbapiQuarterService;
+
+  @Autowired private JobRateLimit jobRateLimit;
+
+  public UpdateCourseDataJob createForSubjectAndQuarterAndIfStale(
+      String subjectArea, String quarterYYYYQ, boolean ifStale) {
+<span class="fc" id="L39">    return new UpdateCourseDataJob(</span>
+        quarterYYYYQ,
+        quarterYYYYQ,
+<span class="fc" id="L42">        List.of(subjectArea),</span>
+        curriculumService,
+        convertedSectionCollection,
+        updateCollection,
+        isStaleService,
+        ifStale,
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService,
+        jobRateLimit);
+  }
+
+  public UpdateCourseDataJob createForSubjectAndQuarterRange(
+      String subjectArea, String start_quarterYYYYQ, String end_quarterYYYYQ, boolean ifStale) {
+<span class="fc" id="L55">    return new UpdateCourseDataJob(</span>
+        start_quarterYYYYQ,
+        end_quarterYYYYQ,
+<span class="fc" id="L58">        List.of(subjectArea),</span>
+        curriculumService,
+        convertedSectionCollection,
+        updateCollection,
+        isStaleService,
+        ifStale,
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService,
+        jobRateLimit);
+  }
+
+  private List&lt;String&gt; getAllSubjectCodes() {
+<span class="fc" id="L70">    var subjects = subjectRepository.findAll();</span>
+<span class="fc" id="L71">    var subjectCodes = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    for (var subject : subjects) {</span>
+<span class="fc" id="L73">      subjectCodes.add(subject.getSubjectCode());</span>
+<span class="fc" id="L74">    }</span>
+<span class="fc" id="L75">    return subjectCodes;</span>
+  }
+
+  public UpdateCourseDataJob createForQuarter(String quarterYYYYQ, boolean ifStale) {
+<span class="fc" id="L79">    return new UpdateCourseDataJob(</span>
+        quarterYYYYQ,
+        quarterYYYYQ,
+<span class="fc" id="L82">        getAllSubjectCodes(),</span>
+        curriculumService,
+        convertedSectionCollection,
+        updateCollection,
+        isStaleService,
+        ifStale,
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService,
+        jobRateLimit);
+  }
+
+  public UpdateCourseDataJob createForQuarterRange(
+      String start_quarterYYYYQ, String end_quarterYYYYQ, boolean ifStale) {
+<span class="fc" id="L95">    return new UpdateCourseDataJob(</span>
+        start_quarterYYYYQ,
+        end_quarterYYYYQ,
+<span class="fc" id="L98">        getAllSubjectCodes(),</span>
+        curriculumService,
+        convertedSectionCollection,
+        updateCollection,
+        isStaleService,
+        ifStale,
+        enrollmentDataPointRepository,
+        ucsbapiQuarterService,
+        jobRateLimit);
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

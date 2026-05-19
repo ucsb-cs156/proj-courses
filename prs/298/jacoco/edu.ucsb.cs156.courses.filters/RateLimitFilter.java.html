@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RateLimitFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.filters</a> &gt; <span class="el_source">RateLimitFilter.java</span></div><h1>RateLimitFilter.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.filters;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+public class RateLimitFilter extends OncePerRequestFilter {
+
+  private final int initialBucketSize;
+  private final int refillPerMinute;
+
+<span class="fc" id="L23">  public RateLimitFilter(int initialBucketSize, int refillPerMinute) {</span>
+<span class="fc" id="L24">    this.initialBucketSize = initialBucketSize;</span>
+<span class="fc" id="L25">    this.refillPerMinute = refillPerMinute;</span>
+<span class="fc" id="L26">  }</span>
+
+  // Caffeine cache: Keys are IP addresses, Values are Bucket objects.
+  // Entries expire 1 hour after the last access.
+<span class="fc" id="L30">  private final Cache&lt;String, Bucket&gt; cache =</span>
+<span class="fc" id="L31">      Caffeine.newBuilder()</span>
+<span class="fc" id="L32">          .expireAfterAccess(1, TimeUnit.HOURS)</span>
+<span class="fc" id="L33">          .maximumSize(10000) // Protects against memory exhaustion from botnets</span>
+<span class="fc" id="L34">          .build();</span>
+
+  Bucket createNewBucket() {
+<span class="fc" id="L37">    Bandwidth limit =</span>
+<span class="fc" id="L38">        Bandwidth.classic(</span>
+<span class="fc" id="L39">            initialBucketSize, Refill.intervally(refillPerMinute, Duration.ofMinutes(1)));</span>
+<span class="fc" id="L40">    return Bucket.builder().addLimit(limit).build();</span>
+  }
+
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+
+    // Prefer X-Forwarded-For when behind a proxy like Nginx or AWS load balancers
+<span class="fc" id="L49">    String xForwardedFor = request.getHeader(&quot;X-Forwarded-For&quot;);</span>
+    String ip =
+<span class="fc bfc" id="L51" title="All 4 branches covered.">        (xForwardedFor != null &amp;&amp; !xForwardedFor.isBlank())</span>
+<span class="fc" id="L52">            ? xForwardedFor.split(&quot;,&quot;)[0].trim()</span>
+<span class="fc" id="L53">            : request.getRemoteAddr();</span>
+
+    // Get or create the bucket for this IP
+<span class="fc" id="L56">    Bucket bucket = cache.get(ip, key -&gt; createNewBucket());</span>
+
+<span class="fc bfc" id="L58" title="All 2 branches covered.">    if (bucket.tryConsume(1)) {</span>
+      // Success: Continue to the next filter/controller
+<span class="fc" id="L60">      filterChain.doFilter(request, response);</span>
+    } else {
+      // Failure: Too many requests
+<span class="fc" id="L63">      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());</span>
+<span class="fc" id="L64">      response.setContentType(&quot;text/plain&quot;);</span>
+<span class="fc" id="L65">      response.getWriter().write(&quot;Too many requests. Your IP has been throttled.&quot;);</span>
+    }
+<span class="fc" id="L67">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
