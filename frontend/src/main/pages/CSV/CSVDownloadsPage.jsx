@@ -102,7 +102,7 @@ export default function CSVDownloadsPage() {
                   quarter={quarter}
                   setQuarter={setQuarter}
                   controlId="CSVDownloads.Quarter"
-                  label="Start Quarter"
+                  label="Quarter"
                 />
                 <Button type="submit" variant="primary" className="mt-3">
                   Download CSV
@@ -123,7 +123,7 @@ export default function CSVDownloadsPage() {
                   quarter={quarter}
                   setQuarter={setQuarter}
                   controlId="CSVDownloads.Quarter"
-                  label="Start Quarter"
+                  label="Quarter"
                 />
                 <SingleSubjectDropdown
                   subjects={subjects}
