@@ -20,6 +20,7 @@ describe("ConvertedSectionTable tests", () => {
       "Location",
       "Instructors",
       "Section",
+      "Summer Session",
     ];
 
     expectedHeaders.forEach((header) => {
@@ -71,10 +72,42 @@ describe("ConvertedSectionTable tests", () => {
     expect(section).toBeInTheDocument();
     expect(section).toHaveTextContent("0100");
 
+    const summer_session = screen.getByTestId(
+      `${testid}-cell-row-0-col-summer_session`,
+    );
+    expect(summer_session).toBeInTheDocument();
+    expect(summer_session.textContent).toBe("A");
+
     const instructors = screen.getByTestId(
       `${testid}-cell-row-0-col-instructors`,
     );
     expect(instructors).toBeInTheDocument();
     expect(instructors).toHaveTextContent("WANG L C");
+  });
+
+  test("regex works as expected", () => {
+    const testid = "AnotherTestId";
+    const regexSection = [
+      {
+        courseInfo: {
+          quarter: "20221",
+          courseId: "ECE       1A -1",
+          title: "COMP ENGR SEMINAR",
+          description:
+            "Introductory seminar to expose students to a broad range of topics in computer   engineering.",
+        },
+        section: {
+          enrollCode: "12583",
+          section: "0100",
+          session: "A01",
+        },
+      },
+    ];
+    render(<ConvertedSectionTable sections={regexSection} testid={testid} />);
+    const summer_session = screen.getByTestId(
+      `${testid}-cell-row-0-col-summer_session`,
+    );
+    expect(summer_session).toBeInTheDocument();
+    expect(summer_session.textContent).toBe("A01");
   });
 });

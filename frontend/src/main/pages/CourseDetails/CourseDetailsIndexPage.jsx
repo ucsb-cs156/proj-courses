@@ -6,6 +6,7 @@ import CourseDetailsTable from "main/components/CourseDetails/CourseDetailsTable
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
 import CourseDescriptionTable from "main/components/Courses/CourseDescriptionTable";
 import GradeHistoryGraphs from "main/components/GradeHistory/GradeHistoryGraph";
+import FinalExamCard from "main/components/Finals/FinalExamCard";
 
 export default function CourseDetailsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
@@ -27,6 +28,22 @@ export default function CourseDetailsIndexPage() {
     },
   );
 
+  const {
+    data: finalsInfo,
+    _errorFinalsInfo,
+    _statusFinalsInfo,
+  } = useBackend(
+    // Stryker disable all : hard to test for query caching
+    [`/api/public/finalsInfo?quarterYYYYQ=${qtr}&enrollCd=${enrollCode}`],
+    {
+      method: "GET",
+      url: `/api/public/finalsInfo`,
+      params: {
+        quarterYYYYQ: qtr,
+        enrollCd: enrollCode,
+      },
+    },
+  );
   const courseId = moreDetails?.courseId.trim() || "";
 
   let subjectArea = "";
@@ -62,6 +79,10 @@ export default function CourseDetailsIndexPage() {
             Course Details for {moreDetails.courseId} {yyyyqToQyy(qtr)}
           </h5>
         )}
+        <FinalExamCard
+          finalsInfo={finalsInfo}
+          cardProps={{ className: "py-1 my-4" }}
+        />
 
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
         {moreDetails && <CourseDescriptionTable course={moreDetails} />}

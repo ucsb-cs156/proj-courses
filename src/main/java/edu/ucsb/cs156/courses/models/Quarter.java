@@ -101,6 +101,18 @@ public class Quarter {
   }
 
   /**
+   * Advance the given quarter string, return the string of the quarter with the next value.
+   *
+   * @return the new getYYYYQ() for the quarter, i.e. String in "yyyyq" format
+   */
+  public static String increment(String yyyyq) {
+    Quarter qtr = new Quarter(yyyyq);
+    qtr.increment();
+    String qtrStr = qtr.getYYYYQ();
+    return qtrStr;
+  }
+
+  /**
    * Convert yyyyq as string to int, throwing exception if format is incorrect
    *
    * @param yyyyq String in yyyyq format (e.g. 20194 for F19 (Fall 2019))
