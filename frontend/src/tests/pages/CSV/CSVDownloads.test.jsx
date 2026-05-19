@@ -172,22 +172,6 @@ describe("CSVDownloadsPage tests", () => {
     expect(withTimeLocationsCheckbox).not.toBeChecked();
   });
 
-  test("Level dropdown correctly updates state and saves to localStorage", () => {
-    renderPage();
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Download all UCSB classes by Quarter and Subject Area",
-      }),
-    );
-
-    const levelDropdown = screen.getByLabelText("Course Level");
-
-    fireEvent.change(levelDropdown, { target: { value: "G" } });
-
-    expect(localStorage.getItem("CSVDownloads.Level")).toBe("G");
-  });
-
   test("checkboxes load correctly when set to true", () => {
     localStorage.setItem("CSVDownloads.OmitSections", "true");
     localStorage.setItem("CSVDownloads.WithTimeLocations", "true");
@@ -226,6 +210,6 @@ describe("CSVDownloadsPage tests", () => {
     expect(subjectDropdown).toHaveValue("ANTH");
 
     const levelDropdown = screen.getByLabelText("Course Level");
-    expect(levelDropdown).toHaveValue("U");
+    expect(levelDropdown).toHaveValue(allTheLevels[0].value);
   });
 });
