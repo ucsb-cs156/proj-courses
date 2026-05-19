@@ -52,7 +52,30 @@ const onError = (error) => {
   toast.error(message);
 };
 
-export default function SectionsTable({ sections, schedules = [] }) {
+const formatGeneralEducation = (row) => {
+  const primaryRow =
+    row.depth === 0 ? row.original : row.getParentRow()?.original;
+  const geList = primaryRow?.generalEducation;
+
+  if (!Array.isArray(geList) || geList.length === 0) {
+    return "";
+  }
+
+  return geList
+    .map((ge) => {
+      const college = ge?.geCollege?.trim?.();
+
+      return college;
+    })
+    .filter(Boolean)
+    .join(", ");
+};
+
+export default function SectionsTable({
+  sections,
+  schedules = [],
+  includeGeneralEducation = false,
+}) {
   if (!(schedules instanceof Array)) {
     throw new Error("schedules prop must be an array");
   }
@@ -128,6 +151,15 @@ export default function SectionsTable({ sections, schedules = [] }) {
       accessorKey: "title",
       header: "Title",
     },
+    ...(includeGeneralEducation
+      ? [
+          {
+            id: "generalEducation",
+            header: "GE Areas",
+            cell: ({ row }) => formatGeneralEducation(row),
+          },
+        ]
+      : []),
     {
       header: "Status",
       accessorKey: "status",
