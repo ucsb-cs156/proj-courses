@@ -3,9 +3,11 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { useSystemInfo } from "main/utils/systemInfo";
 import { vi } from "vitest";
+import { allTheLevels } from "fixtures/levelsFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import CSVDownloadsPage from "main/pages/CSV/CSVDownloadsPage";
+
 
 vi.mock("main/utils/systemInfo", () => ({
   useSystemInfo: vi.fn(),
