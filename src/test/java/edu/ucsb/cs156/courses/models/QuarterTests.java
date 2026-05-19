@@ -159,6 +159,15 @@ public class QuarterTests {
   // TEST STATIC METHODS
 
   @Test
+  public void test_staticincrement() throws Exception {
+    assertEquals("20242", Quarter.increment("20241"));
+    assertEquals("20243", Quarter.increment("20242"));
+    assertEquals("20244", Quarter.increment("20243"));
+    assertEquals("20251", Quarter.increment("20244"));
+    assertEquals("20252", Quarter.increment("20251"));
+  }
+
+  @Test
   public void test_yyyyqToInt() throws Exception {
     assertEquals(20194, Quarter.yyyyqToInt("20194"));
   }
