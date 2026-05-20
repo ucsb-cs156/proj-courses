@@ -137,9 +137,7 @@ describe("CourseOverTimeIndexPage tests", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          /No courses were found with the specified criteria./i,
-        ),
+        screen.getByText(/No courses were found with the specified criteria./i),
       ).toBeInTheDocument();
     });
 
@@ -162,9 +160,7 @@ describe("CourseOverTimeIndexPage tests", () => {
     });
 
     expect(
-      screen.queryByText(
-        /No courses were found with the specified criteria./i,
-      ),
+      screen.queryByText(/No courses were found with the specified criteria./i),
     ).not.toBeInTheDocument();
 
     expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
@@ -208,16 +204,12 @@ describe("CourseOverTimeIndexPage tests", () => {
     });
 
     expect(
-      screen.queryByText(
-        /No courses were found with the specified criteria./i,
-      ),
+      screen.queryByText(/No courses were found with the specified criteria./i),
     ).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          /No courses were found with the specified criteria./i,
-        ),
+        screen.getByText(/No courses were found with the specified criteria./i),
       ).toBeInTheDocument();
     });
 
@@ -228,10 +220,7 @@ describe("CourseOverTimeIndexPage tests", () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock.onGet("/api/public/courseovertime/search").reply(() => {
       return new Promise((resolve) => {
-        setTimeout(
-          () => resolve([200, threeSections]),
-          100,
-        );
+        setTimeout(() => resolve([200, threeSections]), 100);
       });
     });
 
@@ -311,9 +300,7 @@ describe("CourseOverTimeIndexPage tests", () => {
     });
 
     expect(
-      screen.queryByText(
-        /No courses were found with the specified criteria./i,
-      ),
+      screen.queryByText(/No courses were found with the specified criteria./i),
     ).not.toBeInTheDocument();
 
     expect(screen.getByText("CourseId")).toBeInTheDocument();
@@ -350,9 +337,7 @@ describe("CourseOverTimeIndexPage tests", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          /No courses were found with the specified criteria./i,
-        ),
+        screen.getByText(/No courses were found with the specified criteria./i),
       ).toBeInTheDocument();
     });
 
