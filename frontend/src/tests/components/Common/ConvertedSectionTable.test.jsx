@@ -1,12 +1,14 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable";
-import { oneSection } from "fixtures/sectionFixtures";
+import { oneSection, fourSections } from "fixtures/sectionFixtures";
+
+const testid = "ConvertedSectionTable";
 
 describe("ConvertedSectionTable tests", () => {
   test("renders with expected headers", () => {
     render(<ConvertedSectionTable sections={[]} />);
 
-    expect(screen.getByTestId("ConvertedSectionTable")).toBeInTheDocument();
+    expect(screen.getByTestId(testid)).toBeInTheDocument();
 
     const expectedHeaders = [
       "Quarter",
@@ -29,8 +31,7 @@ describe("ConvertedSectionTable tests", () => {
   });
 
   test("renders with expected fields", () => {
-    const testid = "AnotherTestId";
-    render(<ConvertedSectionTable sections={oneSection} testid={testid} />);
+    render(<ConvertedSectionTable sections={oneSection} />);
 
     const quarter = screen.getByTestId(`${testid}-cell-row-0-col-quarter`);
     expect(quarter).toBeInTheDocument();
@@ -86,7 +87,6 @@ describe("ConvertedSectionTable tests", () => {
   });
 
   test("regex works as expected", () => {
-    const testid = "AnotherTestId";
     const regexSection = [
       {
         courseInfo: {
@@ -103,11 +103,146 @@ describe("ConvertedSectionTable tests", () => {
         },
       },
     ];
-    render(<ConvertedSectionTable sections={regexSection} testid={testid} />);
+    render(<ConvertedSectionTable sections={regexSection} />);
     const summer_session = screen.getByTestId(
       `${testid}-cell-row-0-col-summer_session`,
     );
     expect(summer_session).toBeInTheDocument();
     expect(summer_session.textContent).toBe("A01");
+  });
+
+  test("renders flat OurTable when groupSectionsUnderLectures is disabled", () => {
+    render(<ConvertedSectionTable sections={fourSections} />);
+
+    expect(
+      screen.queryByTestId(`${testid}-expand-all-rows`),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(`${testid}-row-0-expand-button`),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testid}-header-quarter-sort-header`),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("0100")).toHaveLength(2);
+    expect(screen.getByText("0101")).toBeInTheDocument();
+    expect(screen.getByText("0102")).toBeInTheDocument();
+    expect(screen.getByTestId(`${testid}-row-0`)).toBeInTheDocument();
+    expect(screen.getByTestId(`${testid}-row-3`)).toBeInTheDocument();
+  });
+
+  test("groupSectionsUnderLectures shows lectures and hides sections until expanded", () => {
+    render(
+      <ConvertedSectionTable
+        sections={fourSections}
+        groupSectionsUnderLectures
+      />,
+    );
+
+    expect(screen.getAllByText("0100")).toHaveLength(2);
+    expect(screen.queryByText("0101")).not.toBeInTheDocument();
+    expect(screen.queryByText("0102")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId(`${testid}-row-1-expand-button`));
+    expect(screen.getByText("0101")).toBeInTheDocument();
+    expect(screen.getByText("0102")).toBeInTheDocument();
+  });
+
+  test("groupSectionsUnderLectures nests sections ending in 0 under matching lecture", () => {
+    const sectionsWith0110 = [
+      {
+        courseInfo: {
+          quarter: "20221",
+          courseId: "ECE       5  -1",
+          title: "INTRO TO ECE",
+        },
+        section: { section: "0100" },
+      },
+      {
+        courseInfo: {
+          quarter: "20221",
+          courseId: "ECE       5  -1",
+          title: "INTRO TO ECE",
+        },
+        section: { section: "0110" },
+      },
+    ];
+
+    render(
+      <ConvertedSectionTable
+        sections={sectionsWith0110}
+        groupSectionsUnderLectures
+      />,
+    );
+
+    expect(screen.queryByText("0110")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId(`${testid}-row-0-expand-button`));
+    expect(screen.getByText("0110")).toBeInTheDocument();
+  });
+
+  test("expander header toggles all expandable rows", () => {
+    render(
+      <ConvertedSectionTable
+        sections={fourSections}
+        groupSectionsUnderLectures
+      />,
+    );
+
+    const expandAllButton = screen.getByTestId(`${testid}-expand-all-rows`);
+    expect(expandAllButton).toBeInTheDocument();
+    expect(expandAllButton).toHaveTextContent("➕");
+    expect(screen.queryByText("0101")).not.toBeInTheDocument();
+    expect(screen.queryByText("0102")).not.toBeInTheDocument();
+
+    fireEvent.click(expandAllButton);
+    expect(expandAllButton).toHaveTextContent("➖");
+    expect(screen.getByText("0101")).toBeInTheDocument();
+    expect(screen.getByText("0102")).toBeInTheDocument();
+
+    fireEvent.click(expandAllButton);
+    expect(expandAllButton).toHaveTextContent("➕");
+    expect(screen.queryByText("0101")).not.toBeInTheDocument();
+    expect(screen.queryByText("0102")).not.toBeInTheDocument();
+  });
+
+  test("expander row buttons toggle individual lectures", () => {
+    render(
+      <ConvertedSectionTable
+        sections={fourSections}
+        groupSectionsUnderLectures
+      />,
+    );
+
+    expect(
+      screen.getByTestId(`${testid}-row-0-cannot-expand`),
+    ).toBeInTheDocument();
+
+    const expandRowButton = screen.getByTestId(`${testid}-row-1-expand-button`);
+    expect(expandRowButton).toBeInTheDocument();
+    expect(expandRowButton).toHaveTextContent("➕");
+    expect(screen.queryByText("0101")).not.toBeInTheDocument();
+    expect(screen.queryByText("0102")).not.toBeInTheDocument();
+
+    fireEvent.click(expandRowButton);
+    expect(expandRowButton).toHaveTextContent("➖");
+    expect(screen.getByText("0101")).toBeInTheDocument();
+    expect(screen.getByText("0102")).toBeInTheDocument();
+
+    fireEvent.click(expandRowButton);
+    expect(expandRowButton).toHaveTextContent("➕");
+    expect(screen.queryByText("0101")).not.toBeInTheDocument();
+    expect(screen.queryByText("0102")).not.toBeInTheDocument();
+  });
+
+  test("expander row shows cannot-expand for lectures with no sections", () => {
+    render(
+      <ConvertedSectionTable
+        sections={oneSection}
+        groupSectionsUnderLectures
+      />,
+    );
+
+    expect(
+      screen.getByTestId(`${testid}-row-0-cannot-expand`),
+    ).toBeInTheDocument();
   });
 });

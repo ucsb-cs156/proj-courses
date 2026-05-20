@@ -227,6 +227,54 @@ export const threeSections = [
   },
 ];
 
+export const fourSections = [
+  ...threeSections,
+  {
+    courseInfo: {
+      quarter: "20221",
+      courseId: "ECE       5  -1",
+      title: "INTRO TO ECE",
+      description:
+        "Aims at exposing freshmen students to the different sub-fields within Electrical   and Computer   Engineering. Composed of lectures by different faculty members and a weekly   laboratory based   on projects that are executed using the Arduino environment.",
+    },
+    section: {
+      enrollCode: "12617",
+      section: "0102",
+      session: null,
+      classClosed: null,
+      courseCancelled: null,
+      gradingOptionCode: null,
+      enrolledTotal: 21,
+      maxEnroll: 21,
+      secondaryStatus: null,
+      departmentApprovalRequired: false,
+      instructorApprovalRequired: false,
+      restrictionLevel: "L",
+      restrictionMajor: "+EE   +CMPEN",
+      restrictionMajorPass: null,
+      restrictionMinor: null,
+      restrictionMinorPass: null,
+      concurrentCourses: [],
+      timeLocations: [
+        {
+          room: "1124",
+          building: "HFH",
+          roomCapacity: null,
+          days: " T     ",
+          beginTime: "17:00",
+          endTime: "19:50",
+        },
+      ],
+      instructors: [
+        {
+          instructor: "SANCHEZ C D",
+          functionCode: "Teaching but not in charge",
+        },
+      ],
+    },
+  },
+];
+
 export const fiveSections = [
   {
     courseInfo: {
