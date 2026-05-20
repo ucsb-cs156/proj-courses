@@ -97,7 +97,7 @@ const EXPANDER_COLUMN = {
         data-testid={`${TESTID}-row-${row.index}-expand-button`}
         type="button"
         onClick={row.getToggleExpandedHandler()}
-        style="cursor:pointer"
+        style={{cursor: "pointer"}}
       >
         {row.getIsExpanded() ? "➖" : "➕"}
       </button>
@@ -120,6 +120,7 @@ function courseKey(quarter, courseId) {
   return `${quarter}|${courseId}`;
 }
 
+// Function that groups sections with the right lecture from the original sections object
 function buildGroupedSectionRows(flatSections) {
   const sectionsByCourse = new Map();
 

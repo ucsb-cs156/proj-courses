@@ -179,6 +179,59 @@ describe("ConvertedSectionTable tests", () => {
     expect(screen.getByText("0110")).toBeInTheDocument();
   });
 
+  test("Sections are properly nested when there are two lectures for the same course", () => {
+    const twoLectureSections = [
+      {
+        courseInfo: {
+          quarter: "20221",
+          courseId: "ECE       5  -1",
+          title: "INTRO TO ECE",
+        },
+        section: { section: "0100" },
+      },
+      {
+        courseInfo: {
+          quarter: "20221",
+          courseId: "ECE       5  -1",
+          title: "INTRO TO ECE",
+        },
+        section: { section: "0200" },
+      },
+      {
+        courseInfo: {
+          quarter: "20221",
+          courseId: "ECE       5  -1",
+          title: "INTRO TO ECE",
+        },
+        section: { section: "0101" },
+      },
+      {
+        courseInfo: {
+          quarter: "20221",
+          courseId: "ECE       5  -1",
+          title: "INTRO TO ECE",
+        },
+        section: { section: "0201" },
+      },
+    ];
+
+    render(
+      <ConvertedSectionTable
+        sections={twoLectureSections}
+        groupSectionsUnderLectures
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId(`${testid}-row-0-expand-button`));
+    expect(screen.getByText("0101")).toBeInTheDocument();
+    expect(screen.queryByText("0201")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId(`${testid}-row-0-expand-button`));
+    fireEvent.click(screen.getByTestId(`${testid}-row-1-expand-button`));
+    expect(screen.getByText("0201")).toBeInTheDocument();
+    expect(screen.queryByText("0101")).not.toBeInTheDocument();
+  });
+
   test("expander header toggles all expandable rows", () => {
     render(
       <ConvertedSectionTable
@@ -218,6 +271,7 @@ describe("ConvertedSectionTable tests", () => {
 
     const expandRowButton = screen.getByTestId(`${testid}-row-1-expand-button`);
     expect(expandRowButton).toBeInTheDocument();
+    expect(expandRowButton).toHaveAttribute("style", "cursor: pointer;");
     expect(expandRowButton).toHaveTextContent("➕");
     expect(screen.queryByText("0101")).not.toBeInTheDocument();
     expect(screen.queryByText("0102")).not.toBeInTheDocument();
