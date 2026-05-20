@@ -184,9 +184,7 @@ function ConvertedSectionTable({
     return <GroupedConvertedSectionTable sections={sections} />;
   }
 
-  return (
-    <OurTable data={sections} columns={BASE_COLUMNS} testid={TESTID} />
-  );
+  return <OurTable data={sections} columns={BASE_COLUMNS} testid={TESTID} />;
 }
 
 export default ConvertedSectionTable;
