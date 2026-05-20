@@ -97,7 +97,7 @@ const EXPANDER_COLUMN = {
         data-testid={`${TESTID}-row-${row.index}-expand-button`}
         type="button"
         onClick={row.getToggleExpandedHandler()}
-        style={{ cursor: "pointer" }}
+        style="cursor:pointer"
       >
         {row.getIsExpanded() ? "➖" : "➕"}
       </button>
