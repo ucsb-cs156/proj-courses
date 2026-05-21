@@ -31,11 +31,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBAPIQuarterService.class)
 @TestPropertySource(
-    properties = {
-      "app.startQtrYYYYQ=20211",
-      "app.endQtrYYYYQ=20223",
-      "app.ucsb.api.consumer_key=fakeApiKey"
-    })
+    properties = {"app.startQtrYYYYQ=20211", "app.ucsb.api.consumer_key=fakeApiKey"})
 public class UCSBAPIQuarterServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")

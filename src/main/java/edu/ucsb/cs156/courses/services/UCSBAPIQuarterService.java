@@ -32,8 +32,7 @@ public class UCSBAPIQuarterService {
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
 
-  @Value("${app.endQtrYYYYQ:20222}")
-  private String endQtrYYYYQ;
+  private String endQtrYYYYQ = "20223"; // AB - Important value for testing
 
   @Autowired private ObjectMapper objectMapper;
 
