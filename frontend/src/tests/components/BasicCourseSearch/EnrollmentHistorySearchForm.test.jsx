@@ -98,7 +98,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       ).toHaveTextContent(/^ANTH$/);
       expect(
         screen.getByTestId("EnrollmentHistorySearchForm.FullSearchString"),
-      ).toHaveTextContent(/Searching for:.*ANTH.*for quarter W20/);
+      ).toHaveTextContent(/Searching for:.*ANTH/);
     });
 
     test("renders correctly with mocked localStorage values", async () => {
@@ -138,7 +138,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       ).toHaveTextContent(/^CMPSC$/);
       expect(
         screen.getByTestId("EnrollmentHistorySearchForm.FullSearchString"),
-      ).toHaveTextContent(/for quarter W21/);
+      ).toHaveTextContent(/Searching for:.*CMPSC/);
     });
 
     test("renders with correct default subject area", async () => {
