@@ -91,6 +91,7 @@ public class EnrollmentHistoryControllerTests {
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedString, responseString);
   }
+
   @Test
   public void test_search_validRequest_withSuffix() throws Exception {
     EnrollmentDataPoint edp1 =
@@ -102,7 +103,8 @@ public class EnrollmentHistoryControllerTests {
             .enrollment(45)
             .build();
 
-    String urlTemplate = "/api/public/enrollmenthistory/search?yyyyq=%s&subjectArea=%s&courseNumber=%s";
+    String urlTemplate =
+        "/api/public/enrollmenthistory/search?yyyyq=%s&subjectArea=%s&courseNumber=%s";
     String url = String.format(urlTemplate, "20222", "CMPSC", "130A");
 
     List<EnrollmentDataPoint> expectedResult = new ArrayList<EnrollmentDataPoint>();
