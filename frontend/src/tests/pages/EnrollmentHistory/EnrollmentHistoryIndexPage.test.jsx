@@ -115,7 +115,7 @@ describe("EnrollmentHistoryIndexPage tests", () => {
     );
 
     expect(searchRequest).toBeDefined();
-    expect(searchRequest.method).toBe("GET"); 
+    expect(searchRequest.method).toBe("GET");
     expect(searchRequest.params).toEqual({
       yyyyq: "20211",
       subjectArea: "CMPSC",
