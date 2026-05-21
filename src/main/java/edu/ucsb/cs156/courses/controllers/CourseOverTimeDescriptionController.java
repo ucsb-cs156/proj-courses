@@ -45,7 +45,8 @@ public class CourseOverTimeDescriptionController {
           String endQtr,
       @Parameter(
               name = "searchTerms",
-              description = "Course description terms; e.g. 'computer science' or 'object oriented'",
+              description =
+                  "Course description terms; e.g. 'computer science' or 'object oriented'",
               example = "computer science",
               required = true)
           @RequestParam
