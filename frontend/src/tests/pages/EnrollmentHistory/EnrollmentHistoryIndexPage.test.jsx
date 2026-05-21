@@ -54,6 +54,19 @@ describe("EnrollmentHistoryIndexPage tests", () => {
     ).toBeInTheDocument();
   });
 
+  test("initial state is empty", () => {
+    setupUserOnly();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <EnrollmentHistoryIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const preTag = screen.getByText("[]");
+    expect(preTag).toBeInTheDocument();
+  });
+
   test("calls api correctly when form is submitted", async () => {
     setupUserOnly();
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
