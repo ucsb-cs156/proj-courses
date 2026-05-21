@@ -33,7 +33,8 @@ import org.springframework.web.client.RestTemplate;
 @TestPropertySource(
     properties = {"app.startQtrYYYYQ=20211", "app.ucsb.api.consumer_key=fakeApiKey"})
 // app.endQtrYYYYQ has been removed from tests, but the UCSBAPIQuarterService has been set to a
-// default "20223" for testing purposes.
+// default "20223" for testing purposes. As to not have to mock an api request in every test for a
+// completely dynamic endQtr.
 public class UCSBAPIQuarterServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")
@@ -57,7 +58,7 @@ public class UCSBAPIQuarterServiceTests {
   @Test
   public void test_getEndQtrYYYYQ() {
     assertEquals("20223", service.getEndQtrYYYYQ());
-  } // the value of app.endQtrYYYYQ is configured using @TestPropertySource
+  }
 
   @Test
   public void test_getCurrentQuarterYYYYQ() throws Exception {
