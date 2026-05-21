@@ -110,12 +110,14 @@ describe("EnrollmentHistoryIndexPage tests", () => {
     });
 
     expect(axiosMock.history.get.length).toBeGreaterThan(0);
+
     const searchRequest = axiosMock.history.get.find(
       (req) => req.url === "/api/public/enrollmenthistory/search",
     );
 
     expect(searchRequest).toBeDefined();
     expect(searchRequest.method).toBe("get");
+
     expect(searchRequest.params).toEqual({
       yyyyq: "20211",
       subjectArea: "CMPSC",
