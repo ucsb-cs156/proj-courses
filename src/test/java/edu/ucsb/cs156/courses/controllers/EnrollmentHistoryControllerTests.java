@@ -37,7 +37,8 @@ public class EnrollmentHistoryControllerTests {
   @Test
   public void test_search_emptyRequest() throws Exception {
     List<EnrollmentDataPoint> expectedResult = new ArrayList<EnrollmentDataPoint>();
-    String urlTemplate = "/api/public/enrollmenthistory/search?yyyyq=%s&subjectArea=%s&courseNumber=%s";
+    String urlTemplate =
+        "/api/public/enrollmenthistory/search?yyyyq=%s&subjectArea=%s&courseNumber=%s";
 
     String url = String.format(urlTemplate, "20222", "CMPSC", "8");
 
@@ -75,11 +76,37 @@ public class EnrollmentHistoryControllerTests {
             .enrollment(42)
             .build();
 
-    String urlTemplate = "/api/public/enrollmenthistory/search?yyyyq=%s&subjectArea=%s&courseNumber=%s";
+    String urlTemplate =
+        "/api/public/enrollmenthistory/search?yyyyq=%s&subjectArea=%s&courseNumber=%s";
     String url = String.format(urlTemplate, "20222", "CMPSC", "8");
 
     List<EnrollmentDataPoint> expectedResult = new ArrayList<EnrollmentDataPoint>();
     expectedResult.addAll(Arrays.asList(edp1, edp2));
+
+    when(enrollmentDataPointRepository.findByYyyyq(eq("20222"))).thenReturn(expectedResult);
+
+    MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
+
+    String expectedString = mapper.writeValueAsString(expectedResult);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedString, responseString);
+  }
+  @Test
+  public void test_search_validRequest_withSuffix() throws Exception {
+    EnrollmentDataPoint edp1 =
+        EnrollmentDataPoint.builder()
+            .yyyyq("20222")
+            .enrollCd("08268")
+            .courseId("CMPSC   130A ")
+            .section("0100")
+            .enrollment(45)
+            .build();
+
+    String urlTemplate = "/api/public/enrollmenthistory/search?yyyyq=%s&subjectArea=%s&courseNumber=%s";
+    String url = String.format(urlTemplate, "20222", "CMPSC", "130A");
+
+    List<EnrollmentDataPoint> expectedResult = new ArrayList<EnrollmentDataPoint>();
+    expectedResult.add(edp1);
 
     when(enrollmentDataPointRepository.findByYyyyq(eq("20222"))).thenReturn(expectedResult);
 

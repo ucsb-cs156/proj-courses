@@ -23,9 +23,7 @@ const EnrollmentHistorySearchForm = ({ fetchJSON }) => {
 
   const quarters = quarterRange(startQtr, endQtr);
 
-  const localQuarter = localStorage.getItem(
-    "EnrollmentHistorySearch.Quarter",
-  );
+  const localQuarter = localStorage.getItem("EnrollmentHistorySearch.Quarter");
   const localSubject = localStorage.getItem("EnrollmentHistorySearch.Subject");
 
   const {
@@ -44,9 +42,7 @@ const EnrollmentHistorySearchForm = ({ fetchJSON }) => {
 
   const defaultSubjectArea = "ANTH";
 
-  const [quarter, setQuarter] = useState(
-    localQuarter || quarters[0].yyyyq,
-  );
+  const [quarter, setQuarter] = useState(localQuarter || quarters[0].yyyyq);
   const [subject, setSubject] = useState(
     localSubject || subjects[0]?.subjectCode || defaultSubjectArea,
   );
@@ -115,13 +111,17 @@ const EnrollmentHistorySearchForm = ({ fetchJSON }) => {
               <Form.Control.Feedback type="invalid">
                 {errors.EnrollmentHistorySearchCourseNumber &&
                   "Course Number is required. "}
-                {errors.EnrollmentHistorySearchCourseNumber?.type === "pattern" &&
+                {errors.EnrollmentHistorySearchCourseNumber?.type ===
+                  "pattern" &&
                   "Course number should be a 1 to 3 digit number, optionally followed by up to two letters."}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
-        <Row className="my-2" data-testid="EnrollmentHistorySearchForm.ButtonRow">
+        <Row
+          className="my-2"
+          data-testid="EnrollmentHistorySearchForm.ButtonRow"
+        >
           <Col md="auto">
             <Button variant="primary" type="submit">
               Submit

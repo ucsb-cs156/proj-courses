@@ -24,8 +24,12 @@ describe("EnrollmentHistoryIndexPage tests", () => {
   const setupUserOnly = () => {
     axiosMock.reset();
     axiosMock.resetHistory();
-    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
   };
 
   const queryClient = new QueryClient({
@@ -43,9 +47,11 @@ describe("EnrollmentHistoryIndexPage tests", () => {
         <MemoryRouter>
           <EnrollmentHistoryIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-    expect(screen.getByText("UCSB Enrollment History Search")).toBeInTheDocument();
+    expect(
+      screen.getByText("UCSB Enrollment History Search"),
+    ).toBeInTheDocument();
   });
 
   test("calls api correctly when form is submitted", async () => {
@@ -57,8 +63,8 @@ describe("EnrollmentHistoryIndexPage tests", () => {
         id: 1,
         yyyyq: "20211",
         courseId: "CMPSC     8",
-        enrollment: 50
-      }
+        enrollment: 50,
+      },
     ];
 
     axiosMock
@@ -70,11 +76,13 @@ describe("EnrollmentHistoryIndexPage tests", () => {
         <MemoryRouter>
           <EnrollmentHistoryIndexPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("EnrollmentHistorySearchForm")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("EnrollmentHistorySearchForm"),
+      ).toBeInTheDocument();
     });
 
     const submitButton = screen.getByText("Submit");

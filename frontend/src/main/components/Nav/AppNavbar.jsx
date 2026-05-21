@@ -77,7 +77,7 @@ export default function AppNavbar({
                 <NavDropdown.Item
                   href="/coursedescriptions/search"
                   data-testid="appnavbar-course-descriptions-search"
-                > 
+                >
                   Course Descriptions
                 </NavDropdown.Item>
                 <NavDropdown.Item
