@@ -98,7 +98,7 @@ describe("EnrollmentHistoryIndexPage tests", () => {
 
     expect(axiosMock.history.get.length).toBeGreaterThan(0);
     const searchRequest = axiosMock.history.get.find(
-      (req) => req.url === "/api/public/enrollmenthistory/search"
+      (req) => req.url === "/api/public/enrollmenthistory/search",
     );
 
     expect(searchRequest).toBeDefined();
