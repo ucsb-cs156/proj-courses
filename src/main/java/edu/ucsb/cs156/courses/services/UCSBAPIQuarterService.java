@@ -32,7 +32,8 @@ public class UCSBAPIQuarterService {
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
 
-  private String endQtrYYYYQ = "20223"; // AB - Important value for testing
+  private String endQtrYYYYQ =
+      "20223"; // AB - Important value for testing, see comment in test file.
 
   @Autowired private ObjectMapper objectMapper;
 
@@ -53,6 +54,8 @@ public class UCSBAPIQuarterService {
   public static final String ALL_QUARTERS_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
 
+  // AB - for later refactoring, this endpoint may no longer be needed and cannot be confirmed to
+  // exist via swagger.
   public static final String END_QUARTER_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end";
 
