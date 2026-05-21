@@ -67,11 +67,11 @@ public class EnrollmentHistoryControllerTests {
             .enrollment(45)
             .build();
 
-    EnrollmentDataPoint edp2 =
+    EnrollmentDataPoint edp2_decoy =
         EnrollmentDataPoint.builder()
             .yyyyq("20222")
             .enrollCd("08276")
-            .courseId("CMPSC     8")
+            .courseId("CMPSC     9")
             .section("0101")
             .enrollment(42)
             .build();
@@ -80,10 +80,10 @@ public class EnrollmentHistoryControllerTests {
         "/api/public/enrollmenthistory/search?yyyyq=%s&subjectArea=%s&courseNumber=%s";
     String url = String.format(urlTemplate, "20222", "CMPSC", "8");
 
-    List<EnrollmentDataPoint> expectedResult = new ArrayList<EnrollmentDataPoint>();
-    expectedResult.addAll(Arrays.asList(edp1, edp2));
+    List<EnrollmentDataPoint> mockDbReturn = new ArrayList<>(Arrays.asList(edp1, edp2_decoy));
+    when(enrollmentDataPointRepository.findByYyyyq(eq("20222"))).thenReturn(mockDbReturn);
 
-    when(enrollmentDataPointRepository.findByYyyyq(eq("20222"))).thenReturn(expectedResult);
+    List<EnrollmentDataPoint> expectedResult = new ArrayList<>(Arrays.asList(edp1));
 
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
