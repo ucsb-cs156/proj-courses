@@ -92,9 +92,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
       expect(
         screen.getByTestId("EnrollmentHistorySearchForm.SearchString"),
       ).toHaveTextContent(/^ANTH$/);
@@ -124,9 +122,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
 
       await waitFor(() => {
         expect(screen.getByLabelText("Quarter")).toHaveValue("20211");
@@ -164,9 +160,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
 
       await waitFor(() => {
         expect(
@@ -210,9 +204,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
     });
 
     test("when I select a subject, the state for subject changes", async () => {
@@ -248,9 +240,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
       expect(
         screen.getByTestId("EnrollmentHistorySearchForm.SearchString"),
       ).toHaveTextContent(/^MATH$/);
@@ -281,9 +271,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
       expect(
         screen.getByTestId("EnrollmentHistorySearchForm.SearchString"),
       ).toHaveTextContent(/^ANTH 24$/);
@@ -315,9 +303,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
     });
 
     test("when I select a course number without number, the state for course number changes", async () => {
@@ -344,9 +330,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
     });
 
     test("when I click submit, the right stuff happens", async () => {
@@ -412,14 +396,16 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
       expect(
         screen.queryByText(
           /Course number should be a 1 to 3 digit number, optionally followed by up to two letters./,
         ),
       ).not.toBeInTheDocument();
+
+      expect(
+        screen.getByTestId("EnrollmentHistorySearchForm.FullSearchString"),
+      ).toHaveTextContent("for quarter W21");
     });
 
     test("when I click submit when JSON is EMPTY, setCourse is not called!", async () => {
@@ -465,9 +451,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
     });
 
     test("renders without crashing when fallback values are used", async () => {
@@ -506,9 +490,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
     });
   });
   describe("EnrollmentHistorySearchForm with null system info", () => {
@@ -571,9 +553,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
     });
   });
   describe("EnrollmentHistorySearchForm queryClient tests", () => {
@@ -618,8 +598,8 @@ describe("EnrollmentHistorySearchForm tests", () => {
       vi.clearAllMocks();
       axiosMock.resetHistory();
       cleanup();
-      invalidateQueriesSpy.mockRestore(); // Restore original implementation of the spy
-      queryClient.clear(); // Clear the React Query cache
+      invalidateQueriesSpy.mockRestore(); 
+      queryClient.clear(); 
       useBackendSpy.mockRestore();
     });
 
@@ -646,9 +626,7 @@ describe("EnrollmentHistorySearchForm tests", () => {
       expect(getItemSpy).toHaveBeenCalledWith(
         "EnrollmentHistorySearch.Quarter",
       );
-      expect(getItemSpy).toHaveBeenCalledWith(
-        "EnrollmentHistorySearch.Subject",
-      );
+      expect(getItemSpy).toHaveBeenCalledWith("EnrollmentHistorySearch.Subject");
     });
   });
   describe("EnrollmentHistorySearchForm test for form validations on CourseNumber", () => {
