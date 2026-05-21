@@ -1,15 +1,41 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-
+import { useSystemInfo } from "main/utils/systemInfo";
+import { vi } from "vitest";
+import * as useBackend from "main/utils/useBackend.jsx";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
 import CSVDownloadsPage from "main/pages/CSV/CSVDownloadsPage";
+
+vi.mock("main/utils/systemInfo", () => ({
+  useSystemInfo: vi.fn(),
+}));
 
 describe("CSVDownloadsPage tests", () => {
   const originalLocation = window.location;
+  const axiosMock = new AxiosMockAdapter(axios);
+
+  let useBackendSpy;
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useBackendSpy = vi.spyOn(useBackend, "useBackend");
+    useSystemInfo.mockReturnValue({
+      data: {
+        startQtrYYYYQ: "20084",
+        endQtrYYYYQ: "20222",
+      },
+    });
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, [
+      { subjectCode: "ANTH", subjectTranslation: "Anthropology" },
+      { subjectCode: "CMPSC", subjectTranslation: "Computer Science" },
+    ]);
+  });
 
   afterEach(() => {
     delete window.location;
     window.location = originalLocation;
+    localStorage.clear();
   });
 
   const renderPage = () => {
@@ -35,59 +61,60 @@ describe("CSVDownloadsPage tests", () => {
 
   test("renders correctly", async () => {
     renderPage();
-
     expect(await screen.findByText("CSV Downloads")).toBeInTheDocument();
+    expect(useBackendSpy).toHaveBeenCalledWith(
+      ["/api/UCSBSubjects/all"],
+      { method: "GET", url: "/api/UCSBSubjects/all" },
+      [],
+    );
   });
 
-  test("quarter input must be exactly five digits to enable by-quarter download", async () => {
-    renderPage();
-
-    const quarterInput = screen.getAllByLabelText("Quarter (yyyyq)")[0];
-    const byQuarterButton = screen.getAllByRole("button", {
-      name: "Download CSV",
-    })[0];
-
-    expect(quarterInput).toHaveValue("");
-    expect(byQuarterButton).toBeDisabled();
-
-    fireEvent.change(quarterInput, { target: { value: "20241x" } });
-    expect(quarterInput).toHaveValue("20241x");
-    expect(byQuarterButton).toBeDisabled();
-
-    fireEvent.change(quarterInput, { target: { value: "x20241" } });
-    expect(quarterInput).toHaveValue("x20241");
-    expect(byQuarterButton).toBeDisabled();
-
-    fireEvent.change(quarterInput, { target: { value: "20241" } });
-    expect(quarterInput).toHaveValue("20241");
-    expect(byQuarterButton).not.toBeDisabled();
-  });
-
-  test("submitting by-quarter form only downloads when quarter is valid", () => {
+  test("submitting by-quarter form downloads with the default selected quarter", () => {
     const assignMock = mockLocationAssign();
     renderPage();
 
-    const quarterInput = screen.getAllByLabelText("Quarter (yyyyq)")[0];
     const byQuarterButton = screen.getAllByRole("button", {
       name: "Download CSV",
     })[0];
     const byQuarterForm = byQuarterButton.closest("form");
 
-    fireEvent.change(quarterInput, { target: { value: "20241x" } });
-    fireEvent.submit(byQuarterForm);
-    expect(assignMock).not.toHaveBeenCalled();
-
-    fireEvent.change(quarterInput, { target: { value: " 20241 " } });
     fireEvent.submit(byQuarterForm);
 
     expect(assignMock).toHaveBeenCalledTimes(1);
     expect(assignMock).toHaveBeenCalledWith(
-      "/api/courses/csv/quarter?yyyyq=20241",
+      "/api/courses/csv/quarter?yyyyq=20222",
     );
   });
 
-  test("submitting by-quarter-and-subject form requires valid quarter and subject", () => {
+  test("submitting by-quarter-and-subject form includes all new dropdown and checkbox parameters", () => {
     const assignMock = mockLocationAssign();
+    renderPage();
+
+    const byQuarterAndSubjectButton = screen.getAllByRole("button", {
+      name: "Download CSV",
+    })[1];
+    const byQuarterAndSubjectForm = byQuarterAndSubjectButton.closest("form");
+
+    fireEvent.submit(byQuarterAndSubjectForm);
+
+    expect(assignMock).toHaveBeenCalledTimes(1);
+    expect(assignMock).toHaveBeenCalledWith(
+      "/api/courses/csv/byQuarterAndSubjectArea?yyyyq=20222&subjectArea=ANTH&level=U&omitSections=true&withTimeLocations=true",
+    );
+  });
+
+  test("uses fallback quarters when systemInfo is unavailable", () => {
+    useSystemInfo.mockReturnValue({ data: null });
+
+    renderPage();
+
+    const fallbackDropdowns = screen.getAllByDisplayValue("S26");
+
+    expect(fallbackDropdowns.length).toBe(2);
+    expect(fallbackDropdowns[0]).toBeInTheDocument();
+  });
+
+  test("checkboxes correctly trigger handlers and save to localStorage", () => {
     renderPage();
 
     fireEvent.click(
@@ -96,41 +123,97 @@ describe("CSVDownloadsPage tests", () => {
       }),
     );
 
-    const allDownloadButtons = screen.getAllByRole("button", {
+    const omitSectionsCheckbox = screen.getByTestId(
+      "CSVDownloads.OmitSections-checkbox",
+    );
+    const withTimeLocationsCheckbox = screen.getByTestId(
+      "CSVDownloads.WithTimeLocations-checkbox",
+    );
+
+    expect(omitSectionsCheckbox).toBeChecked();
+    expect(withTimeLocationsCheckbox).toBeChecked();
+
+    fireEvent.click(omitSectionsCheckbox);
+    expect(omitSectionsCheckbox).not.toBeChecked();
+    expect(localStorage.getItem("CSVDownloads.OmitSections")).toBe("false");
+
+    fireEvent.click(withTimeLocationsCheckbox);
+    expect(withTimeLocationsCheckbox).not.toBeChecked();
+    expect(localStorage.getItem("CSVDownloads.WithTimeLocations")).toBe(
+      "false",
+    );
+  });
+
+  test("loads state from localStorage when available", async () => {
+    const assignMock = mockLocationAssign();
+    localStorage.setItem("CSVDownloads.Quarter", "20182");
+    localStorage.setItem("CSVDownloads.Subject", "CMPSC");
+    localStorage.setItem("CSVDownloads.Level", "G");
+    localStorage.setItem("CSVDownloads.OmitSections", "false");
+    localStorage.setItem("CSVDownloads.WithTimeLocations", "false");
+
+    renderPage();
+
+    const quarterDropdowns = screen.getAllByDisplayValue("S18");
+    expect(quarterDropdowns.length).toBe(2);
+    expect(quarterDropdowns[0]).toHaveValue("20182");
+    expect(quarterDropdowns[1]).toHaveValue("20182");
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Download all UCSB classes by Quarter and Subject Area",
+      }),
+    );
+
+    const subjectDropdown = await screen.findByLabelText("Subject Area");
+    expect(subjectDropdown).toHaveValue("CMPSC");
+
+    const levelDropdown = await screen.getByLabelText("Course Level");
+    expect(levelDropdown).toHaveValue("G");
+
+    const omitSectionsCheckbox = screen.getByTestId(
+      "CSVDownloads.OmitSections-checkbox",
+    );
+    const withTimeLocationsCheckbox = screen.getByTestId(
+      "CSVDownloads.WithTimeLocations-checkbox",
+    );
+
+    expect(omitSectionsCheckbox).not.toBeChecked();
+    expect(withTimeLocationsCheckbox).not.toBeChecked();
+
+    const byQuarterAndSubjectButton = screen.getAllByRole("button", {
       name: "Download CSV",
-    });
-    const byQuarterAndSubjectButton = allDownloadButtons[1];
+    })[1];
     const byQuarterAndSubjectForm = byQuarterAndSubjectButton.closest("form");
 
-    const quarterInput = screen.getAllByLabelText("Quarter (yyyyq)")[1];
-    const subjectAreaInput = screen.getByLabelText("Subject Area");
-
-    expect(subjectAreaInput).toHaveValue("");
-    expect(byQuarterAndSubjectButton).toBeDisabled();
-
-    fireEvent.change(quarterInput, { target: { value: "20241" } });
-    expect(byQuarterAndSubjectButton).toBeDisabled();
-    fireEvent.submit(byQuarterAndSubjectForm);
-    expect(assignMock).not.toHaveBeenCalled();
-
-    fireEvent.change(quarterInput, { target: { value: "20241x" } });
-    fireEvent.change(subjectAreaInput, { target: { value: "cmpsc" } });
-    expect(byQuarterAndSubjectButton).toBeDisabled();
-    fireEvent.submit(byQuarterAndSubjectForm);
-    expect(assignMock).not.toHaveBeenCalled();
-
-    fireEvent.change(quarterInput, { target: { value: " 20241 " } });
-
-    fireEvent.change(subjectAreaInput, {
-      target: { value: " cmpsc " },
-    });
-
-    expect(byQuarterAndSubjectButton).not.toBeDisabled();
     fireEvent.submit(byQuarterAndSubjectForm);
 
     expect(assignMock).toHaveBeenCalledTimes(1);
     expect(assignMock).toHaveBeenCalledWith(
-      "/api/courses/csv/byQuarterAndSubjectArea?yyyyq=20241&subjectArea=CMPSC",
+      "/api/courses/csv/byQuarterAndSubjectArea?yyyyq=20182&subjectArea=CMPSC&level=G&omitSections=false&withTimeLocations=false",
     );
+  });
+
+  test("checkboxes load correctly when set to true", () => {
+    localStorage.setItem("CSVDownloads.OmitSections", "true");
+    localStorage.setItem("CSVDownloads.WithTimeLocations", "true");
+
+    renderPage();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Download all UCSB classes by Quarter and Subject Area",
+      }),
+    );
+
+    const omitSectionsCheckbox = screen.getByTestId(
+      "CSVDownloads.OmitSections-checkbox",
+    );
+    const withTimeLocationsCheckbox = screen.getByTestId(
+      "CSVDownloads.WithTimeLocations-checkbox",
+    );
+
+    expect(omitSectionsCheckbox).toBeChecked();
+    expect(withTimeLocationsCheckbox).toBeChecked();
   });
 });
