@@ -2,10 +2,8 @@ import { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import EnrollmentHistorySearchForm from "main/components/BasicCourseSearch/EnrollmentHistorySearchForm";
 import { useBackendMutation } from "main/utils/useBackend";
-import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable";
 
 export default function EnrollmentHistoryIndexPage() {
-  // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
 
   const objectToAxiosParams = (query) => ({
@@ -38,6 +36,7 @@ export default function EnrollmentHistoryIndexPage() {
       <div className="pt-2">
         <h5>UCSB Enrollment History Search</h5>
         <EnrollmentHistorySearchForm fetchJSON={fetchEnrollmentHistoryJSON} />
+        {/* Stryker disable next-line all : JSON formatting is not a functional requirement */}
         <pre>{JSON.stringify(courseJSON, null, 2)}</pre>
       </div>
     </BasicLayout>
