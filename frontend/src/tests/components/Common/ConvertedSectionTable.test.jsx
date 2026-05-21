@@ -3,6 +3,10 @@ import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable"
 import { oneSection } from "fixtures/sectionFixtures";
 
 describe("ConvertedSectionTable tests", () => {
+  afterEach(() => {
+    vi.doUnmock("main/components/OurTable");
+  });
+
   const sectionWith = ({ quarter = "20233", session = null } = {}) => ({
     ...oneSection[0],
     courseInfo: {
@@ -161,6 +165,118 @@ describe("ConvertedSectionTable tests", () => {
         showSession={true}
       />,
     );
+
+    sections.forEach((_section, index) => {
+      expect(
+        screen.getByTestId(`${testid}-cell-row-${index}-col-session`)
+          .textContent,
+      ).toBe("");
+    });
+  });
+
+  test("renders blank session when courseInfo is missing or null", async () => {
+    vi.resetModules();
+    vi.doMock("main/components/OurTable", () => ({
+      default: ({ data, columns, testid }) => {
+        const sessionColumn = columns.find(
+          (column) => column.accessorKey === "session",
+        );
+        return (
+          <table data-testid={testid}>
+            <tbody>
+              {data.map((row, index) => (
+                <tr key={index}>
+                  <td data-testid={`${testid}-cell-row-${index}-col-session`}>
+                    {sessionColumn.cell({ row: { original: row } })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      },
+    }));
+
+    const { default: ConvertedSectionTableWithMockedOurTable } =
+      await import("main/components/Common/ConvertedSectionTable");
+    const testid = "MissingCourseInfoSessionTable";
+    const sections = [
+      {
+        ...oneSection[0],
+        courseInfo: null,
+        section: { ...oneSection[0].section, session: "00000A  " },
+      },
+      {
+        ...oneSection[0],
+        section: { ...oneSection[0].section, session: "00000B  " },
+      },
+    ];
+
+    expect(() =>
+      render(
+        <ConvertedSectionTableWithMockedOurTable
+          sections={sections}
+          testid={testid}
+          showSession={true}
+        />,
+      ),
+    ).not.toThrow();
+
+    sections.forEach((_section, index) => {
+      expect(
+        screen.getByTestId(`${testid}-cell-row-${index}-col-session`)
+          .textContent,
+      ).toBe("");
+    });
+  });
+
+  test("renders blank session when section is missing or null", async () => {
+    vi.resetModules();
+    vi.doMock("main/components/OurTable", () => ({
+      default: ({ data, columns, testid }) => {
+        const sessionColumn = columns.find(
+          (column) => column.accessorKey === "session",
+        );
+        return (
+          <table data-testid={testid}>
+            <tbody>
+              {data.map((row, index) => (
+                <tr key={index}>
+                  <td data-testid={`${testid}-cell-row-${index}-col-session`}>
+                    {sessionColumn.cell({ row: { original: row } })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      },
+    }));
+
+    const { default: ConvertedSectionTableWithMockedOurTable } =
+      await import("main/components/Common/ConvertedSectionTable");
+    const testid = "MissingSectionSessionTable";
+    const sections = [
+      {
+        ...oneSection[0],
+        courseInfo: { ...oneSection[0].courseInfo, quarter: "20233" },
+        section: null,
+      },
+      {
+        ...oneSection[0],
+        courseInfo: { ...oneSection[0].courseInfo, quarter: "20233" },
+      },
+    ];
+
+    expect(() =>
+      render(
+        <ConvertedSectionTableWithMockedOurTable
+          sections={sections}
+          testid={testid}
+          showSession={true}
+        />,
+      ),
+    ).not.toThrow();
 
     sections.forEach((_section, index) => {
       expect(
