@@ -8,6 +8,7 @@ export default function EnrollmentHistoryIndexPage() {
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/enrollmenthistory/search",
+    // Stryker disable next-line StringLiteral : Axios defaults to GET, making this an equivalent mutant impossible to kill
     method: "GET",
     params: {
       yyyyq: query.quarter,
