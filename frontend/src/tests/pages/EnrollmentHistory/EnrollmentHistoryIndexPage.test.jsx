@@ -62,7 +62,7 @@ describe("EnrollmentHistoryIndexPage tests", () => {
       {
         id: 1,
         yyyyq: "20211",
-        courseId: "CMPSC     8",
+        courseId: "CMPSC     130A",
         enrollment: 50,
       },
     ];
@@ -85,11 +85,28 @@ describe("EnrollmentHistoryIndexPage tests", () => {
       ).toBeInTheDocument();
     });
 
+    userEvent.selectOptions(screen.getByLabelText("Quarter"), "20211");
+    userEvent.selectOptions(screen.getByLabelText("Subject Area"), "CMPSC");
+    userEvent.type(screen.getByLabelText("Course Number"), "130A");
+
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/"enrollment": 50/)).toBeInTheDocument();
+    });
+
+    expect(axiosMock.history.get.length).toBeGreaterThan(0);
+    const searchRequest = axiosMock.history.get.find(
+      (req) => req.url === "/api/public/enrollmenthistory/search"
+    );
+
+    expect(searchRequest).toBeDefined();
+    expect(searchRequest.method.toUpperCase()).toEqual("GET");
+    expect(searchRequest.params).toEqual({
+      yyyyq: "20211",
+      subjectArea: "CMPSC",
+      courseNumber: "130A",
     });
   });
 });
