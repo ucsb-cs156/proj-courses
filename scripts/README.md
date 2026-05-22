@@ -15,7 +15,7 @@ Can be used to test the rate limiting functions of the app.
 To use:
 1. Create a venv with `python3 -m venv env`
 2. Set up the venv with `source ./venv/bin/activate`
-3. Install aihttp with: `pip install aihttp`
+3. Install aiohttp with: `pip install aiohttp`
 4. Run the script, passing in a url and a count, e.g.
    ```
    python rate_tester.py https://courses-dev-cgaucho.dokku-04.cs.ucsb.edu 1000
