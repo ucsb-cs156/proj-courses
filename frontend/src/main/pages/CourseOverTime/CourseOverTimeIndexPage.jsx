@@ -38,7 +38,10 @@ export default function CourseOverTimeIndexPage() {
       <div className="pt-2">
         <h5>UCSB Course History Search</h5>
         <CourseOverTimeSearchForm fetchJSON={fetchCourseOverTimeJSON} />
-        <ConvertedSectionTable sections={courseJSON} />
+        <ConvertedSectionTable
+          sections={courseJSON}
+          groupSectionsUnderLectures
+        />
       </div>
     </BasicLayout>
   );
