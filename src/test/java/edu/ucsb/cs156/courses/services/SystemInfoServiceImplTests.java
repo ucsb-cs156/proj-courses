@@ -40,6 +40,15 @@ class SystemInfoServiceImplTests {
   }
 
   @Test
+  void test_getSystemInfo_whenEndQtrLookupThrows() throws Exception {
+    when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenThrow(new IllegalStateException("boom"));
+
+    SystemInfo si = systemInfoService.getSystemInfo();
+
+    assertNull(si.getEndQtrYYYYQ());
+  }
+
+  @Test
   void test_githubUrl() {
     assertEquals(
         SystemInfoServiceImpl.githubUrl(
