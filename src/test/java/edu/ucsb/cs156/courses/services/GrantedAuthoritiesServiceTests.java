@@ -27,6 +27,8 @@ class GrantedAuthoritiesServiceTests {
 
   @MockBean ClientRegistrationRepository clientRegistrationRepository;
 
+  @MockBean UCSBAPIQuarterService ucsbAPIQuarterService;
+
   @Autowired GrantedAuthoritiesService grantedAuthoritiesService;
 
   @WithMockUser(roles = {"USER"})
