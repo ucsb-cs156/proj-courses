@@ -327,7 +327,6 @@
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
                     <commitIdGenerationMode>full</commitIdGenerationMode>
-                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
                 </configuration>
             </plugin>
         </plugins>
