@@ -62,6 +62,39 @@ public class UCSBAPIQuarterServiceTests {
   }
 
   @Test
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterWinter_returnsSpring() throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20241").when(serviceSpy).getCurrentQuarterYYYYQ();
+
+    assertEquals("20242", serviceSpy.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterSpring_returnsFall() throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20242").when(serviceSpy).getCurrentQuarterYYYYQ();
+
+    assertEquals("20244", serviceSpy.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterSummer_returnsFall() throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20243").when(serviceSpy).getCurrentQuarterYYYYQ();
+
+    assertEquals("20244", serviceSpy.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterFall_rollsOverToWinterNextYear()
+      throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20244").when(serviceSpy).getCurrentQuarterYYYYQ();
+
+    assertEquals("20251", serviceSpy.getEndQtrYYYYQ());
+  }
+
+  @Test
   public void test_getEndQtrYYYYQ_whenCurrentQuarterEndpointReturnsNull_throwsException()
       throws Exception {
     expectCurrentQuarterJson("null");
