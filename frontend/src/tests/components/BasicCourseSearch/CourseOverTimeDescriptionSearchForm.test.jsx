@@ -77,7 +77,9 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       vi.unstubAllGlobals();
     });
 
-    test("when I select a start quarter, the state for start quarter changes", () => {
+    test("when I select a start quarter, the state for start quarter changes", async () => {
+      const user = userEvent.setup();
+
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -85,15 +87,24 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
+
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
-      userEvent.selectOptions(selectStartQuarter, "20201");
+
+      await user.selectOptions(selectStartQuarter, "20201");
+
+      expect(selectStartQuarter.value).toBe("20201");
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "CourseOverTimeDescriptionSearch.StartQuarter",
         "20201",
       );
+      expect(
+        localStorage.getItem("CourseOverTimeDescriptionSearch.StartQuarter"),
+      ).toBe("20201");
     });
 
     test("when I select an end quarter, the state for end quarter changes", async () => {
+      const user = userEvent.setup();
+
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -103,13 +114,17 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       );
 
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      await userEvent.selectOptions(selectEndQuarter, "20204");
+
+      await user.selectOptions(selectEndQuarter, "20204");
 
       expect(selectEndQuarter.value).toBe("20204");
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "CourseOverTimeDescriptionSearch.EndQuarter",
         "20204",
       );
+      expect(
+        localStorage.getItem("CourseOverTimeDescriptionSearch.EndQuarter"),
+      ).toBe("20204");
     });
 
     test("when I select the checkbox, the state for checkbox changes", () => {
