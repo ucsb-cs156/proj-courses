@@ -98,6 +98,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       expect(
         localStorage.getItem("CourseOverTimeDescriptionSearch.StartQuarter"),
       ).toBe("20201");
+      expect(localStorage.setItem).not.toHaveBeenCalledWith("", "20201");
     });
 
     test("when I select an end quarter, the state for end quarter changes", async () => {
@@ -121,6 +122,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       expect(
         localStorage.getItem("CourseOverTimeDescriptionSearch.EndQuarter"),
       ).toBe("20204");
+      expect(localStorage.setItem).not.toHaveBeenCalledWith("", "20204");
     });
 
     test("when I select the checkbox, the state for checkbox changes", () => {
