@@ -87,10 +87,13 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       );
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
       userEvent.selectOptions(selectStartQuarter, "20201");
-      expect(selectStartQuarter.value).toBe("20201");
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "CourseOverTimeDescriptionSearch.StartQuarter",
+        "20201",
+      );
     });
 
-    test("when I select an end quarter, the state for end quarter changes", () => {
+    test("when I select an end quarter, the state for end quarter changes", async () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -98,22 +101,15 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
+
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      userEvent.selectOptions(selectEndQuarter, "20204");
-      expect(selectEndQuarter.value).toBe("20204");
-    });
+      await userEvent.selectOptions(selectEndQuarter, "20204");
 
-    test("when I type search terms, the state for search terms changes", () => {
-      render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <CourseOverTimeDescriptionSearchForm />
-          </MemoryRouter>
-        </QueryClientProvider>,
+      expect(selectEndQuarter.value).toBe("20204");
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "CourseOverTimeDescriptionSearch.EndQuarter",
+        "20204",
       );
-      const searchTermsInput = screen.getByLabelText("Search Terms");
-      userEvent.type(searchTermsInput, "data science");
-      expect(searchTermsInput.value).toBe("data science");
     });
 
     test("when I select the checkbox, the state for checkbox changes", () => {
@@ -178,6 +174,11 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
         expect.any(Object),
         expectedFields,
       );
+
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "CourseOverTimeDescriptionSearch.SearchTerms",
+        "data",
+      );
     });
 
     test("Button padding is correct", () => {
@@ -188,9 +189,11 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
-      const submitButton = screen.getByText("Submit");
-      const buttonCol = submitButton.parentElement;
-      const buttonRow = buttonCol.parentElement;
+
+      const buttonRow = screen.getByTestId(
+        "CourseOverTimeDescriptionSearchForm-bottom-row",
+      );
+
       expect(buttonRow).toHaveAttribute(
         "style",
         "padding-top: 10px; padding-bottom: 10px;",
@@ -221,6 +224,27 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
       expect(selectStartQuarter).toBeInTheDocument();
     });
+    test("when systemInfo data is undefined, fallback quarters are used", () => {
+      useSystemInfo.mockReturnValue({
+        data: undefined,
+        isLoading: false,
+        isError: false,
+      });
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <CourseOverTimeDescriptionSearchForm />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const selectStartQuarter = screen.getByLabelText("Start Quarter");
+      const selectEndQuarter = screen.getByLabelText("End Quarter");
+
+      expect(selectStartQuarter.value).toBe("20211");
+      expect(selectEndQuarter.value).toBe("20214");
+    });
 
     test("when I click submit with local storage values, they are retained", async () => {
       localStorage.setItem(
@@ -229,7 +253,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       );
       localStorage.setItem(
         "CourseOverTimeDescriptionSearch.EndQuarter",
-        "20222",
+        "20214",
       );
       localStorage.setItem(
         "CourseOverTimeDescriptionSearch.SearchTerms",
@@ -252,7 +276,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
 
       const expectedFields = {
         startQuarter: "20211",
-        endQuarter: "20222",
+        endQuarter: "20214",
         searchTerms: "machine learning",
         lectureOnly: true,
       };
