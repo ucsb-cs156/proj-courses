@@ -78,8 +78,6 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
     });
 
     test("when I select a start quarter, the state for start quarter changes", async () => {
-      const user = userEvent.setup();
-
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -90,7 +88,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
 
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
 
-      await user.selectOptions(selectStartQuarter, "20201");
+      await userEvent.selectOptions(selectStartQuarter, "20201");
 
       expect(selectStartQuarter.value).toBe("20201");
       expect(localStorage.setItem).toHaveBeenCalledWith(
@@ -103,8 +101,6 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
     });
 
     test("when I select an end quarter, the state for end quarter changes", async () => {
-      const user = userEvent.setup();
-
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -115,7 +111,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
 
       const selectEndQuarter = screen.getByLabelText("End Quarter");
 
-      await user.selectOptions(selectEndQuarter, "20204");
+      await userEvent.selectOptions(selectEndQuarter, "20204");
 
       expect(selectEndQuarter.value).toBe("20204");
       expect(localStorage.setItem).toHaveBeenCalledWith(
