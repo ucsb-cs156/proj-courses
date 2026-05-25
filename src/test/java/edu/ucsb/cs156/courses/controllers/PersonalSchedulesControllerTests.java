@@ -779,7 +779,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     MvcResult response =
         mockMvc
             .perform(
-                post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
+                post("/api/personalschedules/post?name=name longer than 25 characters blah blah blah blah&description=Test Description&quarter=20221")
                     .with(csrf()))
             .andExpect(status().isBadRequest())
             .andReturn();
@@ -787,7 +787,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     // assert
     Map<String, Object> json = responseToJson(response);
     assertEquals("IllegalArgumentException", json.get("type"));
-    assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
+    assertEquals("name parameter restricted to 25 chars or less", json.get("message"));
   }
 
   @WithMockUser(roles = {"ADMIN", "USER"})
@@ -798,7 +798,7 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     MvcResult response =
         mockMvc
             .perform(
-                post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
+                post("/api/personalschedules/post?name=name longer than 25 characters blah blah blah blah&description=Test Description&quarter=20221")
                     .with(csrf()))
             .andExpect(status().isBadRequest())
             .andReturn();
@@ -806,12 +806,12 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     // assert
     Map<String, Object> json = responseToJson(response);
     assertEquals("IllegalArgumentException", json.get("type"));
-    assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
+    assertEquals("name parameter restricted to 25 chars or less", json.get("message"));
   }
 
   @WithMockUser(roles = {"USER"})
   @Test
-  public void api_schedules__user_logged_in__can_post_15_char_name() throws Exception {
+  public void api_schedules__user_logged_in__can_post_25_char_name() throws Exception {
     User thisUser = currentUserService.getCurrentUser().getUser();
 
     PersonalSchedule expectedSchedule =
