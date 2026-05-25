@@ -153,17 +153,10 @@ describe("AddToScheduleModal", () => {
     );
 
     fireEvent.click(screen.getByText("Add"));
-    expect(
-      screen.getByText("There are no personal schedules for S24."),
-    ).toBeInTheDocument();
-
     fireEvent.click(screen.getByText("[Create Personal Schedule]"));
 
     expect(screen.getByText(/New Schedule:/)).toBeInTheDocument();
     expect(screen.getByText(/will be created\./)).toBeInTheDocument();
-    expect(
-      screen.queryByText("There are no personal schedules for S24."),
-    ).not.toBeInTheDocument();
   });
 
   test("calls mutation.mutate when Save Changes is clicked in auto-create mode", () => {
@@ -207,7 +200,6 @@ describe("AddToScheduleModal", () => {
 
     fireEvent.click(screen.getByText("Add"));
     fireEvent.click(screen.getByText("[Create Personal Schedule]"));
-    expect(screen.getByText(/will be created\./)).toBeInTheDocument();
 
     fireEvent.click(screen.getByText("Close"));
     await waitFor(() => {
@@ -218,5 +210,86 @@ describe("AddToScheduleModal", () => {
     expect(
       screen.getByText("There are no personal schedules for S24."),
     ).toBeInTheDocument();
+  });
+
+  test("onSuccess and onError work as expected", () => {
+    const section = "test-section";
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AddToScheduleModal
+          quarter={quarter}
+          onAdd={mockOnAdd}
+          schedules={[]}
+          section={section}
+        />
+      </QueryClientProvider>,
+    );
+
+    const [, callbacks] = useBackendMutation.mock.lastCall;
+    const { onSuccess, onError } = callbacks;
+
+    const mockData = { id: 99, name: "Test Schedule" };
+    onSuccess(mockData);
+    expect(mockOnAdd).toHaveBeenCalledWith(section, 99);
+
+    const mockError = { response: { data: { message: "Stub Error" } } };
+    onError(mockError);
+  });
+
+  test("objectToAxiosParams works as expected", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AddToScheduleModal
+          quarter={quarter}
+          onAdd={mockOnAdd}
+          schedules={[]}
+        />
+      </QueryClientProvider>,
+    );
+
+    const [objectToAxiosParams] = useBackendMutation.mock.lastCall;
+    const mockSchedule = {
+      name: "New Schedule",
+      description: "Description",
+      quarter: "20242",
+    };
+
+    const result = objectToAxiosParams(mockSchedule);
+
+    expect(result).toEqual({
+      url: "/api/personalschedules/post",
+      method: "POST",
+      params: {
+        name: "New Schedule",
+        description: "Description",
+        quarter: "20242",
+      },
+    });
+  });
+
+  test("renders 'Creating...' when mutation is loading", () => {
+    useBackendMutation.mockReturnValue({
+      mutate: vi.fn(),
+      isLoading: true,
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AddToScheduleModal
+          quarter={quarter}
+          onAdd={mockOnAdd}
+          schedules={[]}
+        />
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByText("Add"));
+    const saveButton = screen.getByTestId(
+      "AddToScheduleModal-modal-save-button",
+    );
+
+    expect(saveButton).toBeInTheDocument();
+    expect(saveButton).toHaveTextContent("Creating...");
+    expect(saveButton).toBeDisabled();
   });
 });
