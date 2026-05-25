@@ -18,6 +18,7 @@ import edu.ucsb.cs156.courses.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -86,7 +87,7 @@ public class CourseOverTimeDescriptionControllerTests {
     expectedSecs.addAll(Arrays.asList(cs1, cs2));
 
     when(convertedSectionCollection.findByQuarterRangeAndSearchTerms(
-            any(String.class), any(String.class), eq("data"), eq(".*")))
+            any(String.class), any(String.class), eq(Pattern.quote("data")), eq(".*")))
         .thenReturn(expectedSecs);
 
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
@@ -97,7 +98,7 @@ public class CourseOverTimeDescriptionControllerTests {
     assertEquals(expectedString, responseString);
 
     verify(convertedSectionCollection)
-        .findByQuarterRangeAndSearchTerms("20222", "20222", "data", ".*");
+        .findByQuarterRangeAndSearchTerms("20222", "20222", Pattern.quote("data"), ".*");
   }
 
   @Test
@@ -131,7 +132,7 @@ public class CourseOverTimeDescriptionControllerTests {
     expectedSecsInOrder.addAll(Arrays.asList(cs2, cs1));
 
     when(convertedSectionCollection.findByQuarterRangeAndSearchTerms(
-            any(String.class), any(String.class), eq("data"), eq(".*00$")))
+            any(String.class), any(String.class), eq(Pattern.quote("data")), eq(".*00$")))
         .thenReturn(expectedSecsOutOfOrder);
 
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
@@ -142,6 +143,34 @@ public class CourseOverTimeDescriptionControllerTests {
     assertEquals(expectedString, responseString);
 
     verify(convertedSectionCollection)
-        .findByQuarterRangeAndSearchTerms("20222", "20244", "data", ".*00$");
+        .findByQuarterRangeAndSearchTerms(
+            any(String.class), any(String.class), any(String.class), any(String.class));
+  }
+
+  @Test
+  public void test_search_escapesRegexSpecialCharacters() throws Exception {
+    List<ConvertedSection> expectedResult = new ArrayList<>();
+
+    when(convertedSectionCollection.findByQuarterRangeAndSearchTerms(
+            eq("20222"), eq("20222"), eq(Pattern.quote("[")), eq(".*")))
+        .thenReturn(expectedResult);
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/public/description/search")
+                    .param("startQtr", "20222")
+                    .param("endQtr", "20222")
+                    .param("searchTerms", "[")
+                    .param("lectureOnly", "false"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String responseString = response.getResponse().getContentAsString();
+    String expectedString = mapper.writeValueAsString(expectedResult);
+
+    assertEquals(expectedString, responseString);
+    verify(convertedSectionCollection)
+        .findByQuarterRangeAndSearchTerms("20222", "20222", Pattern.quote("["), ".*");
   }
 }

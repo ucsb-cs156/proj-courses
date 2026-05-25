@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,11 +61,13 @@ public class CourseOverTimeDescriptionController {
       throws JsonProcessingException {
     List<ConvertedSection> courseResults;
     String sectionRegex = lectureOnly ? ".*00$" : ".*";
+    String escapedSearchTerms = Pattern.quote(searchTerms);
 
     courseResults =
         new ArrayList<>(
             convertedSectionCollection.findByQuarterRangeAndSearchTerms(
-                startQtr, endQtr, searchTerms, sectionRegex));
+                startQtr, endQtr, escapedSearchTerms, sectionRegex));
+
     courseResults.sort(new ConvertedSection.ConvertedSectionSortDescendingByQuarterComparator());
     String body = mapper.writeValueAsString(courseResults);
     return ResponseEntity.ok().body(body);
