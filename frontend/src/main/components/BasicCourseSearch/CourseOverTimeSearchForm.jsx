@@ -20,7 +20,7 @@ const CourseOverTimeSearchForm = ({ fetchJSON }) => {
 
   const startQtr = systemInfo?.startQtrYYYYQ || "20211";
   const endQtr = systemInfo?.endQtrYYYYQ || "20214";
-  
+
   const quarters = quarterRange(startQtr, endQtr);
 
   const localStartQuarter = localStorage.getItem(

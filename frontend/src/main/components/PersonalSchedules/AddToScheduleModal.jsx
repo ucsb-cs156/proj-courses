@@ -38,7 +38,7 @@ export default function AddToScheduleModal({
 
   const onSuccess = (data) => {
     toast(`Schedule "${data.name}" Created`);
-    onAdd(section, data.id); 
+    onAdd(section, data.id);
     handleModalClose();
   };
 
@@ -50,12 +50,12 @@ export default function AddToScheduleModal({
     objectToAxiosParams,
     { onSuccess, onError },
     // Stryker disable next-line all : hard to set up test for caching
-    ["/api/personalschedules/all"]
+    ["/api/personalschedules/all"],
   );
 
   const handleModalClose = () => {
     setShowModal(false);
-    setModalMode("normal"); 
+    setModalMode("normal");
   };
 
   const handleModalSave = () => {
@@ -125,19 +125,22 @@ export default function AddToScheduleModal({
               ) : (
                 <div data-testid={`${testid}-no-schedules`}>
                   {modalMode === "auto-create" ? (
-                    <p>New Schedule: <strong>{scheduleParams.name}</strong> will be created.</p>
+                    <p>
+                      New Schedule: <strong>{scheduleParams.name}</strong> will
+                      be created.
+                    </p>
                   ) : (
                     <p>
                       There are no personal schedules for {yyyyqToQyy(quarter)}.
-                      <Button 
-                        onClick={handleCreateClick} 
-                        style={{ 
-                          backgroundColor: 'transparent', 
-                          border: 'none', 
-                          color: '#007bff', 
+                      <Button
+                        onClick={handleCreateClick}
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
+                          color: "#007bff",
                           padding: 0,
-                          verticalAlign: 'baseline',
-                          textDecoration: 'underline'
+                          verticalAlign: "baseline",
+                          textDecoration: "underline",
                         }}
                       >
                         [Create Personal Schedule]
@@ -161,7 +164,7 @@ export default function AddToScheduleModal({
             variant="primary"
             onClick={onSaveButtonClick}
             data-testid={`${testid}-modal-save-button`}
-            disabled={mutation.isLoading} 
+            disabled={mutation.isLoading}
           >
             {mutation.isLoading ? "Creating..." : "Save Changes"}
           </Button>
