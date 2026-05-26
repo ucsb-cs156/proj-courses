@@ -34,6 +34,16 @@ public interface ConvertedSectionCollection extends MongoRepository<ConvertedSec
   @Query("{'courseInfo.quarter': { $eq: ?0 } }")
   List<ConvertedSection> findByQuarter(String quarter);
 
+  @Query(
+      "{ 'courseInfo.quarter': { $gte: ?0, $lte: ?1 }, "
+          + "$or: [ "
+          + "{ 'courseInfo.title': { $regex: ?2, $options: 'i' } }, "
+          + "{ 'courseInfo.description': { $regex: ?2, $options: 'i' } } "
+          + "], "
+          + "'section.section': { $regex: ?3 } }")
+  List<ConvertedSection> findByQuarterRangeAndSearchTerms(
+      String startQuarter, String endQuarter, String searchTerms, String sectionRegex);
+
   /**
    * Find sections by quarter and subject area.
    *

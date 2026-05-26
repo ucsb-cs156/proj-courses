@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
@@ -18,5 +19,12 @@ public class GradeHistoryTests {
     GradeHistory gh = GradeHistory.builder().course(null).build();
     assertNull(gh.getSubjectArea());
     assertNull(gh.getCourseNum());
+  }
+
+  @Test
+  public void test_noArgsConstructor() {
+    GradeHistory gh = new GradeHistory();
+
+    assertNotNull(gh);
   }
 }
