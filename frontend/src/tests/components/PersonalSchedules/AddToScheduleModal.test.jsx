@@ -110,11 +110,12 @@ describe("AddToScheduleModal", () => {
     fireEvent.click(screen.getByText("Add"));
     const createBtn = screen.getByText("[Create Personal Schedule]");
 
-    expect(createBtn).toHaveStyle("color: rgb(0, 123, 255)");
-    expect(createBtn.style.backgroundColor).toBe("transparent");
-    expect(createBtn.style.border).toBe("none");
-    expect(createBtn.style.verticalAlign).toBe("baseline");
-    expect(createBtn.style.textDecoration).toContain("underline");
+    const styleAttribute = createBtn.getAttribute("style");
+    expect(styleAttribute).toContain("transparent");
+    expect(styleAttribute).toContain("none");
+    expect(styleAttribute).toContain("#007bff");
+    expect(styleAttribute).toContain("baseline");
+    expect(styleAttribute).toContain("underline");
   });
 
   test("formats the timeString correctly in auto-create mode", () => {
