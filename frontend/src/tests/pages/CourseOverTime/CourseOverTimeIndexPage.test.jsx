@@ -44,6 +44,10 @@ describe("CourseOverTimeIndexPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
+    expect(
+      screen.getByTestId("ConvertedSectionTable-header-session"),
+    ).toHaveTextContent("Session");
   });
 
   test("calls UCSB Course over time search api correctly with 3 section response", async () => {
