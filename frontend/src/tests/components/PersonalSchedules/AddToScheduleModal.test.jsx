@@ -120,7 +120,7 @@ describe("AddToScheduleModal", () => {
     const createBtn = screen.getByText("[Create Personal Schedule]");
 
     expect(createBtn).toHaveStyle("color: rgb(0, 123, 255)");
-    expect(createBtn).toHaveStyle("background-color: transparent");
+    expect(createBtn).toHaveStyle("background-color: rgba(0, 0, 0, 0)");
     expect(createBtn.style.textDecoration).toContain("underline");
 
     fireEvent.click(createBtn);
