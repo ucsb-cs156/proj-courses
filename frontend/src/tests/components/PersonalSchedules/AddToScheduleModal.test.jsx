@@ -196,15 +196,14 @@ describe("AddToScheduleModal", () => {
     );
   });
 
-  test("resets to normal mode when modal is closed and reopened with schedules", async () => {
-    const schedules = [{ id: 1, name: "Plan A", quarter: "20242" }];
+  test("resets to normal mode when modal is closed and reopened", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
           <AddToScheduleModal
             quarter={quarter}
             onAdd={mockOnAdd}
-            schedules={schedules}
+            schedules={[]}
           />
         </Router>
       </QueryClientProvider>,
@@ -221,10 +220,10 @@ describe("AddToScheduleModal", () => {
 
     fireEvent.click(screen.getByText("Add"));
     expect(screen.queryByText(/New Schedule:/)).not.toBeInTheDocument();
-    expect(screen.getByLabelText("Select Schedule")).toBeInTheDocument();
+    expect(screen.getByText("[Create Personal Schedule]")).toBeInTheDocument();
   });
 
-  test("switches away from normal mode when Create Personal Schedule is clicked", () => {
+  test("shows schedule selector when schedules exist for the quarter", () => {
     const schedules = [{ id: 1, name: "Plan A", quarter: "20242" }];
     render(
       <QueryClientProvider client={queryClient}>
@@ -240,9 +239,31 @@ describe("AddToScheduleModal", () => {
 
     fireEvent.click(screen.getByText("Add"));
     expect(screen.getByLabelText("Select Schedule")).toBeInTheDocument();
+    expect(
+      screen.queryByText("[Create Personal Schedule]"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("switches to auto-create mode when Create Personal Schedule is clicked", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByText("Add"));
+    expect(screen.getByText("[Create Personal Schedule]")).toBeInTheDocument();
 
     fireEvent.click(screen.getByText("[Create Personal Schedule]"));
-    expect(screen.queryByLabelText("Select Schedule")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("[Create Personal Schedule]"),
+    ).not.toBeInTheDocument();
     expect(screen.getByText(/New Schedule:/)).toBeInTheDocument();
   });
 
