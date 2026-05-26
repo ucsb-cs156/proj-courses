@@ -14,6 +14,12 @@ import org.springframework.stereotype.Service;
 @ConfigurationProperties
 public class SystemInfoServiceImpl extends SystemInfoService {
 
+  private final UCSBAPIQuarterService ucsbapiQuarterService;
+
+  public SystemInfoServiceImpl(UCSBAPIQuarterService ucsbapiQuarterService) {
+    this.ucsbapiQuarterService = ucsbapiQuarterService;
+  }
+
   @Value("${spring.h2.console.enabled:false}")
   private boolean springH2ConsoleEnabled;
 
@@ -22,9 +28,6 @@ public class SystemInfoServiceImpl extends SystemInfoService {
 
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
-
-  @Value("${app.endQtrYYYYQ:20222}")
-  private String endQtrYYYYQ;
 
   @Value("${app.sourceRepo:https://github.com/ucsb-cs156/proj-courses}")
   private String sourceRepo;
@@ -40,12 +43,22 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   }
 
   public SystemInfo getSystemInfo() {
+
+    String endQtrYYYYQ;
+
+    try {
+      endQtrYYYYQ = this.ucsbapiQuarterService.getCurrentEndQuarterYYYYQ();
+    } catch (Exception e) {
+      log.error("Can't get current quarter from UCSBAPIQuarterService: ", e);
+      endQtrYYYYQ = this.startQtrYYYYQ;
+    }
+
     SystemInfo si =
         SystemInfo.builder()
             .springH2ConsoleEnabled(this.springH2ConsoleEnabled)
             .showSwaggerUILink(this.showSwaggerUILink)
             .startQtrYYYYQ(this.startQtrYYYYQ)
-            .endQtrYYYYQ(this.endQtrYYYYQ)
+            .endQtrYYYYQ(endQtrYYYYQ)
             .sourceRepo(this.sourceRepo)
             .commitMessage(this.commitMessage)
             .commitId(this.commitId)
