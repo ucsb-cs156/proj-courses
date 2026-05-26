@@ -34,7 +34,11 @@ describe("AddToScheduleModal", () => {
   test("renders button correctly", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+        <AddToScheduleModal
+          quarter={quarter}
+          onAdd={mockOnAdd}
+          schedules={[]}
+        />
       </QueryClientProvider>,
     );
     expect(
@@ -46,7 +50,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -64,10 +72,10 @@ describe("AddToScheduleModal", () => {
     const section = "test-section";
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal 
-          quarter={quarter} 
-          onAdd={mockOnAdd} 
-          schedules={[]} 
+        <AddToScheduleModal
+          quarter={quarter}
+          onAdd={mockOnAdd}
+          schedules={[]}
           section={section}
         />
       </QueryClientProvider>,
@@ -90,7 +98,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -109,7 +121,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -118,7 +134,9 @@ describe("AddToScheduleModal", () => {
     fireEvent.click(screen.getByText("[Create Personal Schedule]"));
 
     const text = screen.getByText(/New Schedule:/).textContent;
-    expect(text).toMatch(/[A-Z][a-z]{2} \d{1,2}, \d{1,2}:\d{2}[\s\u202F]?(AM|PM) Schedule/);
+    expect(text).toMatch(
+      /[A-Z][a-z]{2} \d{1,2}, \d{1,2}:\d{2}[\s\u202F]?(AM|PM) Schedule/,
+    );
   });
 
   test("resets to normal mode when modal is closed and reopened with schedules", async () => {
@@ -126,7 +144,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={schedules} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={schedules}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -150,14 +172,18 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={schedules} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={schedules}
+          />
         </Router>
       </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
     expect(screen.getByLabelText("Select Schedule")).toBeInTheDocument();
-    
+
     fireEvent.click(screen.getByText("[Create Personal Schedule]"));
     expect(screen.queryByLabelText("Select Schedule")).not.toBeInTheDocument();
     expect(screen.getByText(/New Schedule:/)).toBeInTheDocument();
@@ -169,14 +195,19 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={schedules} section={section} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={schedules}
+            section={section}
+          />
         </Router>
       </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
     fireEvent.click(screen.getByText("Save Changes"));
-    
+
     expect(mockOnAdd).toHaveBeenCalledWith(section, "");
   });
 
@@ -184,7 +215,11 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
         </Router>
       </QueryClientProvider>,
     );
@@ -195,7 +230,7 @@ describe("AddToScheduleModal", () => {
 
     expect(mockMutate).toHaveBeenCalledTimes(1);
     const mutateArgs = mockMutate.mock.calls[0][0];
-    
+
     expect(mutateArgs.description).toBe("");
     expect(mutateArgs.name).toMatch(/Schedule/);
     expect(mutateArgs.quarter).toBe(quarter);
@@ -204,7 +239,11 @@ describe("AddToScheduleModal", () => {
   test("objectToAxiosParams works as expected", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+        <AddToScheduleModal
+          quarter={quarter}
+          onAdd={mockOnAdd}
+          schedules={[]}
+        />
       </QueryClientProvider>,
     );
 
@@ -236,13 +275,19 @@ describe("AddToScheduleModal", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+        <AddToScheduleModal
+          quarter={quarter}
+          onAdd={mockOnAdd}
+          schedules={[]}
+        />
       </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
-    const saveButton = screen.getByTestId("AddToScheduleModal-modal-save-button");
-    
+    const saveButton = screen.getByTestId(
+      "AddToScheduleModal-modal-save-button",
+    );
+
     expect(saveButton).toBeDisabled();
     expect(saveButton).toHaveTextContent("Creating...");
   });
