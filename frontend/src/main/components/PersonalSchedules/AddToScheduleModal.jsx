@@ -19,7 +19,9 @@ export default function AddToScheduleModal({
   const [selectedSchedule, setSelectedSchedule] = useState("");
   const [modalMode, setModalMode] = useState("normal");
   const [scheduleParams, setScheduleParams] = useState({
+    // Stryker disable next-line StringLiteral : initial values are overwritten before use
     name: "",
+    // Stryker disable next-line StringLiteral : initial values are overwritten before use
     description: "",
     quarter: quarter,
   });
