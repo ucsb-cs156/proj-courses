@@ -34,13 +34,12 @@ the UCSB API into the database.
 
 ## Start and End Quarters
 
-You may also want to override the default values for `START_QTR` and `END_QTR`.   
+You may also want to override the default value for `START_QTR`.
 
 The default values are defined in `/src/main/resources/application.properties`, for example:
 
 ```
 app.startQtrYYYYQ=${START_QTR:${env.START_QTR:20221}}
-app.endQtrYYYYQ=${END_QTR:${env.END_QTR:20222}}
 ```
 
 * `20221` represents Winter 2022
