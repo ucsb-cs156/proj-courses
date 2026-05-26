@@ -44,10 +44,6 @@ describe("CourseOverTimeIndexPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-
-    expect(
-      screen.getByTestId("ConvertedSectionTable-header-session"),
-    ).toHaveTextContent("Session");
   });
 
   test("calls UCSB Course over time search api correctly with 3 section response", async () => {
@@ -304,6 +300,9 @@ describe("CourseOverTimeIndexPage tests", () => {
 
     expect(screen.getByText("CourseId")).toBeInTheDocument();
     expect(screen.getByText("Title")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("ConvertedSectionTable-header-session"),
+    ).toHaveTextContent("Session");
   });
 
   test("does not display ConvertedSectionTable when search returns empty results", async () => {
