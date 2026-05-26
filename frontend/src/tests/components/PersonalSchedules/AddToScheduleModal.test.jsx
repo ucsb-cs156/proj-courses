@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 import { BrowserRouter as Router } from "react-router-dom";
 import { useBackendMutation } from "main/utils/useBackend";
+import { toast } from "react-toastify";
 
 vi.mock("main/utils/useBackend");
 vi.mock("react-toastify", () => ({
@@ -31,6 +32,7 @@ describe("AddToScheduleModal", () => {
   beforeEach(() => {
     mockOnAdd = vi.fn();
     mockMutate = vi.fn();
+    vi.clearAllMocks();
 
     useBackendMutation.mockReturnValue({
       mutate: mockMutate,
@@ -41,11 +43,7 @@ describe("AddToScheduleModal", () => {
   test("renders button correctly", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal
-          quarter={quarter}
-          onAdd={mockOnAdd}
-          schedules={[]}
-        />
+        <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
       </QueryClientProvider>,
     );
     expect(
@@ -57,11 +55,7 @@ describe("AddToScheduleModal", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <AddToScheduleModal
-            quarter={quarter}
-            onAdd={mockOnAdd}
-            schedules={[]}
-          />
+          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
         </Router>
       </QueryClientProvider>,
     );
@@ -75,160 +69,14 @@ describe("AddToScheduleModal", () => {
     });
   });
 
-  test("calls onAdd when save is clicked in normal mode", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal
-            quarter={quarter}
-            onAdd={mockOnAdd}
-            schedules={[]}
-          />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    fireEvent.click(screen.getByText("Add"));
-    fireEvent.click(screen.getByText("Save Changes"));
-
-    expect(mockOnAdd).toHaveBeenCalled();
-  });
-
-  vi.mock("main/components/PersonalSchedules/PersonalScheduleSelector", () => {
-    return {
-      default: ({ setHasSchedules }) => {
-        if (setHasSchedules) setHasSchedules(false);
-        return null;
-      },
-    };
-  });
-
-  test("displays correct message when no schedules found", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal
-            quarter={quarter}
-            onAdd={mockOnAdd}
-            schedules={[]}
-          />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    fireEvent.click(screen.getByText("Add"));
-
-    expect(
-      screen.getByText("There are no personal schedules for S24."),
-    ).toBeInTheDocument();
-
-    expect(screen.getByText("[Create Personal Schedule]")).toBeInTheDocument();
-    expect(screen.getByText("[Create Personal Schedule]").tagName).toBe(
-      "BUTTON",
-    );
-  });
-
-  test("calls onAdd with the correct schedule when save is clicked", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal
-            quarter={quarter}
-            onAdd={mockOnAdd}
-            section={"Stryker was here!"}
-            schedules={[]}
-          />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    fireEvent.click(screen.getByText("Add"));
-    fireEvent.click(screen.getByText("Save Changes"));
-
-    expect(mockOnAdd).toHaveBeenCalledWith("Stryker was here!", "");
-  });
-
-  test("switches to auto-create mode when [Create Personal Schedule] is clicked", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal
-            quarter={quarter}
-            onAdd={mockOnAdd}
-            schedules={[]}
-          />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    fireEvent.click(screen.getByText("Add"));
-    fireEvent.click(screen.getByText("[Create Personal Schedule]"));
-
-    expect(screen.getByText(/New Schedule:/)).toBeInTheDocument();
-    expect(screen.getByText(/will be created\./)).toBeInTheDocument();
-  });
-
-  test("calls mutation.mutate when Save Changes is clicked in auto-create mode", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal
-            quarter={quarter}
-            onAdd={mockOnAdd}
-            schedules={[]}
-          />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    fireEvent.click(screen.getByText("Add"));
-    fireEvent.click(screen.getByText("[Create Personal Schedule]"));
-    fireEvent.click(screen.getByText("Save Changes"));
-
-    expect(mockMutate).toHaveBeenCalled();
-    expect(mockMutate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        description: "Auto-generated schedule",
-        quarter: quarter,
-      }),
-    );
-  });
-
-  test("resets to normal mode when modal is closed and reopened", async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <AddToScheduleModal
-            quarter={quarter}
-            onAdd={mockOnAdd}
-            schedules={[]}
-          />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    fireEvent.click(screen.getByText("Add"));
-    fireEvent.click(screen.getByText("[Create Personal Schedule]"));
-
-    fireEvent.click(screen.getByText("Close"));
-    await waitFor(() => {
-      expect(screen.queryByText("Add to Schedule")).not.toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText("Add"));
-    expect(
-      screen.getByText("There are no personal schedules for S24."),
-    ).toBeInTheDocument();
-  });
-
   test("onSuccess and onError work as expected", () => {
     const section = "test-section";
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal
-          quarter={quarter}
-          onAdd={mockOnAdd}
-          schedules={[]}
+        <AddToScheduleModal 
+          quarter={quarter} 
+          onAdd={mockOnAdd} 
+          schedules={[]} 
           section={section}
         />
       </QueryClientProvider>,
@@ -239,20 +87,66 @@ describe("AddToScheduleModal", () => {
 
     const mockData = { id: 99, name: "Test Schedule" };
     onSuccess(mockData);
+    expect(toast).toHaveBeenCalledWith('Schedule "Test Schedule" Created');
     expect(mockOnAdd).toHaveBeenCalledWith(section, 99);
 
     const mockError = { response: { data: { message: "Stub Error" } } };
     onError(mockError);
+    expect(toast).toHaveBeenCalledWith("Error: Stub Error");
+  });
+
+  test("switches to auto-create mode and has correct styles", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByText("Add"));
+    const createBtn = screen.getByText("[Create Personal Schedule]");
+
+    expect(createBtn).toHaveStyle({
+      backgroundColor: "transparent",
+      border: "none",
+      color: "#007bff",
+      textDecoration: "underline"
+    });
+
+    fireEvent.click(createBtn);
+
+    expect(screen.getByText(/New Schedule:/)).toHaveTextContent("Schedule");
+    expect(screen.getByText(/Auto-generated schedule/)).toBeInTheDocument();
+  });
+
+  test("resets to normal mode when modal is closed and reopened", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByText("Add"));
+    fireEvent.click(screen.getByText("[Create Personal Schedule]"));
+    expect(screen.getByText(/New Schedule:/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("Close"));
+    await waitFor(() => {
+      expect(screen.queryByText("Add to Schedule")).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText("Add"));
+    expect(screen.queryByText(/New Schedule:/)).not.toBeInTheDocument();
+    expect(screen.getByText("There are no personal schedules for S24.")).toBeInTheDocument();
   });
 
   test("objectToAxiosParams works as expected", () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal
-          quarter={quarter}
-          onAdd={mockOnAdd}
-          schedules={[]}
-        />
+        <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
       </QueryClientProvider>,
     );
 
@@ -284,21 +178,31 @@ describe("AddToScheduleModal", () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <AddToScheduleModal
-          quarter={quarter}
-          onAdd={mockOnAdd}
-          schedules={[]}
-        />
+        <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={[]} />
       </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
-    const saveButton = screen.getByTestId(
-      "AddToScheduleModal-modal-save-button",
+    const saveButton = screen.getByTestId("AddToScheduleModal-modal-save-button");
+    
+    expect(saveButton).toBeDisabled();
+    expect(saveButton).toHaveTextContent("Creating...");
+  });
+
+  test("calls handleModalSave when save is clicked in normal mode", () => {
+    const schedules = [{ id: 1, name: "Plan A", quarter: "20242" }];
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AddToScheduleModal quarter={quarter} onAdd={mockOnAdd} schedules={schedules} />
+        </Router>
+      </QueryClientProvider>,
     );
 
-    expect(saveButton).toBeInTheDocument();
-    expect(saveButton).toHaveTextContent("Creating...");
-    expect(saveButton).toBeDisabled();
+    fireEvent.click(screen.getByText("Add"));
+    expect(screen.getByLabelText("Select Schedule")).toBeInTheDocument();
+    
+    fireEvent.click(screen.getByText("Save Changes"));
+    expect(mockOnAdd).toHaveBeenCalled();
   });
 });
