@@ -41,7 +41,17 @@ export default function CourseOverTimeIndexPage() {
       <div className="pt-2">
         <h5>UCSB Course History Search</h5>
         <CourseOverTimeSearchForm fetchJSON={fetchCourseOverTimeJSON} />
-        <ConvertedSectionTable sections={courseJSON} showSession />
+        {mutation.isLoading && (
+          <div className="text-center">Loading courses...</div>
+        )}
+        {!mutation.isLoading && hasSearched && courseJSON.length === 0 && (
+          <div className="text-center mt-3">
+            <p>No courses were found with the specified criteria.</p>
+          </div>
+        )}
+        {!mutation.isLoading && courseJSON.length > 0 && (
+          <ConvertedSectionTable sections={courseJSON} showSession />
+        )}
       </div>
     </BasicLayout>
   );
