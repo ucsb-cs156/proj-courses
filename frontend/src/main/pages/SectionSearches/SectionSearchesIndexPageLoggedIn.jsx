@@ -17,6 +17,7 @@ export default function SectionSearchesIndexPageLoggedIn() {
   );
 
   const [sectionJSON, setSectionJSON] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/primaries",
@@ -29,6 +30,7 @@ export default function SectionSearchesIndexPageLoggedIn() {
 
   const onSuccess = (section) => {
     setSectionJSON(section);
+    setHasSearched(true);
   };
 
   const mutation = useBackendMutation(
@@ -46,7 +48,22 @@ export default function SectionSearchesIndexPageLoggedIn() {
       <div className="pt-2">
         <h5>UCSB Courses Search</h5>
         <BasicCourseSearchForm fetchJSON={fetchBasicSectionJSON} />
-        <SectionsTable sections={sectionJSON} schedules={schedules} />
+
+        {/* Loading state */}
+        {mutation.isLoading && (
+          <div className="text-center">Loading courses...</div>
+        )}
+
+        {/* No results message */}
+        {!mutation.isLoading && hasSearched && sectionJSON.length === 0 && (
+          <div className="text-center mt-3">
+            <p>No sections were found with the specified criteria.</p>
+          </div>
+        )}
+
+        {!mutation.isLoading && sectionJSON.length > 0 && (
+          <SectionsTable sections={sectionJSON} schedules={schedules} />
+        )}
       </div>
     </BasicLayout>
   );
