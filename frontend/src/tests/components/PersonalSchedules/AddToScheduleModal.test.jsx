@@ -126,7 +126,6 @@ describe("AddToScheduleModal", () => {
     fireEvent.click(createBtn);
 
     expect(screen.getByText(/New Schedule:/)).toHaveTextContent("Schedule");
-    expect(screen.getByText(/Auto-generated schedule/)).toBeInTheDocument();
   });
 
   test("resets to normal mode when modal is closed and reopened", async () => {
@@ -233,5 +232,31 @@ describe("AddToScheduleModal", () => {
 
     fireEvent.click(screen.getByText("Save Changes"));
     expect(mockOnAdd).toHaveBeenCalled();
+  });
+
+  test("calls mutation.mutate when Save Changes is clicked in auto-create mode", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+          />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByText("Add"));
+    fireEvent.click(screen.getByText("[Create Personal Schedule]"));
+    fireEvent.click(screen.getByText("Save Changes"));
+
+    expect(mockMutate).toHaveBeenCalled();
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description: "Auto-generated schedule",
+        quarter: quarter,
+      }),
+    );
   });
 });
