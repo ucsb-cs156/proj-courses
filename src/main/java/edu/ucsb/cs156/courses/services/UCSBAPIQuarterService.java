@@ -61,7 +61,7 @@ public class UCSBAPIQuarterService {
     return endQtrYYYYQ;
   }
 
-  public void setEndQtrYYYYQ(String YYYYQ){
+  public void setEndQtrYYYYQ(String YYYYQ) {
     this.endQtrYYYYQ = YYYYQ;
   }
 
