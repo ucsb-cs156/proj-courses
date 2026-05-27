@@ -39,7 +39,6 @@ The fallback values, in this case being:
 | `ADMIN_EMAILS` | `phtcon@ucsb.edu` |  Comma separated list emails with admin access |
 | `UCSB_API_KEY` | none | api key from https://developer.ucsb.edu |
 | `START_QTR` | `20221` | start quarter for dropdown menus in yyyyq format |
-| `END_QTR` | `20222`  | end quarter for dropdown menus in yyyyq format |
 
 While the values for `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` will not work in practice (i.e. with these values, OAuth login 
 will fail), having a default value:
@@ -49,6 +48,5 @@ will fail), having a default value:
 
 It is recommended that if/when any additional environment variables are added to `.env.SAMPLE` that 
 similar fallback values be included in the `.properties` files.
-
 
 

@@ -29,17 +29,14 @@ public class CoursesStartup {
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
 
-  @Value("${app.endQtrYYYYQ:20222}")
-  private String endQtrYYYYQ;
-
   /**
    * Called once at application startup time . Put code here if you want it to run once each time
    * the Spring Boot application starts up in all environments.
    */
-  public void alwaysRunOnStartup() {
+  public void alwaysRunOnStartup() throws Exception {
     log.info("alwaysRunOnStartup called");
     validateStartupQuarter("START_QTR", startQtrYYYYQ);
-    validateStartupQuarter("END_QTR", endQtrYYYYQ);
+    String endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
     try {
       ucsbSubjectsService.loadAllSubjects();
     } catch (Exception e) {
@@ -96,9 +93,10 @@ public class CoursesStartup {
     return year >= MIN_STARTUP_QUARTER_YEAR && year <= MAX_STARTUP_QUARTER_YEAR;
   }
 
-  public void runOnStartupInProductionOnly() {
+  public void runOnStartupInProductionOnly() throws Exception {
     log.info("runOnStartupInProductionOnly called");
     // Launch course update job
+    String endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
 
     JobContextConsumer updateCourseDataJob =
         updateCourseDataJobFactory.createForQuarterRange(startQtrYYYYQ, endQtrYYYYQ, true);

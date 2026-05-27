@@ -9,6 +9,8 @@ export default function CourseOverTimeBuildingsIndexPage() {
   const [courseJSON, setCourseJSON] = useState([]);
   // Stryker disable next-line all : Can't test state because hook is internal
   const [selectedClassroom, setSelectedClassroom] = useState("ALL");
+  // Stryker disable next-line all : Can't test state because hook is internal
+  const [hasSearched, setHasSearched] = useState(false);
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/courseovertime/buildingsearch",
@@ -21,6 +23,7 @@ export default function CourseOverTimeBuildingsIndexPage() {
 
   const onSuccess = (buildings) => {
     setCourseJSON(buildings);
+    setHasSearched(true);
   };
 
   const mutation = useBackendMutation(
@@ -57,7 +60,19 @@ export default function CourseOverTimeBuildingsIndexPage() {
         <CourseOverTimeBuildingsSearchForm
           fetchJSON={fetchCourseOverTimeJSON}
         />
-        <ConvertedSectionTable sections={filteredSections} />
+        {mutation.isLoading && (
+          <div className="text-center">Loading courses...</div>
+        )}
+        {!mutation.isLoading &&
+          hasSearched &&
+          filteredSections.length === 0 && (
+            <div className="text-center mt-3">
+              <p>No courses were found with the specified criteria.</p>
+            </div>
+          )}
+        {!mutation.isLoading && filteredSections.length > 0 && (
+          <ConvertedSectionTable sections={filteredSections} />
+        )}
       </div>
     </BasicLayout>
   );
