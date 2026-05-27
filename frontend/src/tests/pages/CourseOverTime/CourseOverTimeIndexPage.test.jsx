@@ -8,7 +8,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { threeSections } from "fixtures/sectionFixtures";
+import { oneSection, threeSections } from "fixtures/sectionFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
@@ -44,10 +44,6 @@ describe("CourseOverTimeIndexPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-
-    expect(
-      screen.getByTestId("ConvertedSectionTable-header-session"),
-    ).toHaveTextContent("Session");
   });
 
   test("calls UCSB Course over time search api correctly with 3 section response", async () => {
@@ -97,5 +93,253 @@ describe("CourseOverTimeIndexPage tests", () => {
     });
 
     expect(screen.getByText("ECE 1A -1")).toBeInTheDocument();
+  });
+
+  test("displays 'No courses found' message when search returns empty results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/courseovertime/search").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20221");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20221");
+    const selectSubject = screen.getByLabelText("Subject Area");
+
+    const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    userEvent.selectOptions(selectSubject, "CMPSC");
+    const enterCourseNumber = screen.getByLabelText("Course Number");
+    userEvent.type(enterCourseNumber, "1");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          /No courses were found with the specified criteria./i,
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("PROBLEM SOLVING I")).not.toBeInTheDocument();
+  });
+
+  test("does not display 'No courses found' message before search is performed", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Subject Area")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+  });
+
+  test("does not display 'No courses found' message while loading", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/courseovertime/search").reply(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve([200, []]), 100);
+      });
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeSearch.Subject-option-ANTH";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20221");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20221");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+    const enterCourseNumber = screen.getByLabelText("Course Number");
+    userEvent.type(enterCourseNumber, "1");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+  });
+
+  test("displays loading message while search is in progress", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/courseovertime/search").reply(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve([200, oneSection]), 100);
+      });
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20221");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20221");
+    const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+    const enterCourseNumber = screen.getByLabelText("Course Number");
+    userEvent.type(enterCourseNumber, "16");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("CourseId")).not.toBeInTheDocument();
+    expect(screen.queryByText("Title")).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText("Title")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+    expect(screen.getByText("CourseId")).toBeInTheDocument();
+  });
+
+  test("displays course table when search returns results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/courseovertime/search").reply(200, oneSection);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20221");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20221");
+    const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+    const enterCourseNumber = screen.getByLabelText("Course Number");
+    userEvent.type(enterCourseNumber, "16");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Title")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    expect(screen.getByText("CourseId")).toBeInTheDocument();
+    expect(screen.getByText("Title")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("ConvertedSectionTable-header-session"),
+    ).toHaveTextContent("Session");
+  });
+
+  test("does not display ConvertedSectionTable when search returns empty results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/courseovertime/search").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "CourseOverTimeSearch.Subject-option-ANTH";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20221");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20221");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "CMPSC");
+    const enterCourseNumber = screen.getByLabelText("Course Number");
+    userEvent.type(enterCourseNumber, "1");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("CourseId")).not.toBeInTheDocument();
+    expect(screen.queryByText("Title")).not.toBeInTheDocument();
   });
 });
