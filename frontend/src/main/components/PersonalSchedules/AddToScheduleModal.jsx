@@ -93,6 +93,9 @@ export default function AddToScheduleModal({
     }
   };
 
+  const showSaveButton =
+    modalMode === "auto-create" || filteringSchedules.length > 0;
+
   return (
     <>
       <Button
@@ -160,16 +163,18 @@ export default function AddToScheduleModal({
             onClick={handleModalClose}
             data-testid={`${testid}-modal-close-button`}
           >
-            Close
+            Cancel
           </Button>
-          <Button
-            variant="primary"
-            onClick={onSaveButtonClick}
-            data-testid={`${testid}-modal-save-button`}
-            disabled={mutation.isLoading}
-          >
-            {mutation.isLoading ? "Creating..." : "Save Changes"}
-          </Button>
+          {showSaveButton && (
+            <Button
+              variant="primary"
+              onClick={onSaveButtonClick}
+              data-testid={`${testid}-modal-save-button`}
+              disabled={mutation.isLoading}
+            >
+              {mutation.isLoading ? "Creating..." : "Save Changes"}
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </>

@@ -62,7 +62,7 @@ describe("AddToScheduleModal", () => {
     fireEvent.click(screen.getByText("Add"));
     expect(screen.getByText("Add to Schedule")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Close"));
+    fireEvent.click(screen.getByText("Cancel"));
     await waitFor(() => {
       expect(screen.queryByText("Add to Schedule")).not.toBeInTheDocument();
     });
@@ -187,8 +187,7 @@ describe("AddToScheduleModal", () => {
     );
   });
 
-  test("calls handleModalSave with empty schedule when there are no schedules", async () => {
-    const section = "test-section";
+  test("does not show Save Changes until Create Personal Schedule is clicked", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
@@ -196,19 +195,21 @@ describe("AddToScheduleModal", () => {
             quarter={quarter}
             onAdd={mockOnAdd}
             schedules={[]}
-            section={section}
           />
         </Router>
       </QueryClientProvider>,
     );
 
     fireEvent.click(screen.getByText("Add"));
-    fireEvent.click(screen.getByText("Save Changes"));
+    expect(
+      screen.queryByTestId("AddToScheduleModal-modal-save-button"),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("Cancel")).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(mockOnAdd).toHaveBeenCalledWith(section, "");
-    });
-    expect(mockMutate).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("[Create Personal Schedule]"));
+    expect(
+      screen.getByTestId("AddToScheduleModal-modal-save-button"),
+    ).toBeInTheDocument();
   });
 
   test("resets to normal mode when modal is closed and reopened", async () => {
@@ -228,7 +229,7 @@ describe("AddToScheduleModal", () => {
     fireEvent.click(screen.getByText("[Create Personal Schedule]"));
     expect(screen.getByText(/New Schedule:/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Close"));
+    fireEvent.click(screen.getByText("Cancel"));
     await waitFor(() => {
       expect(screen.queryByText("Add to Schedule")).not.toBeInTheDocument();
     });
@@ -255,7 +256,7 @@ describe("AddToScheduleModal", () => {
     fireEvent.click(screen.getByText("[Create Personal Schedule]"));
     expect(screen.getByText(/New Schedule:/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Close"));
+    fireEvent.click(screen.getByText("Cancel"));
     await waitFor(() => {
       expect(screen.queryByText("Add to Schedule")).not.toBeInTheDocument();
     });
@@ -458,6 +459,7 @@ describe("AddToScheduleModal", () => {
     );
 
     fireEvent.click(screen.getByText("Add"));
+    fireEvent.click(screen.getByText("[Create Personal Schedule]"));
     const saveButton = screen.getByTestId(
       "AddToScheduleModal-modal-save-button",
     );
@@ -466,7 +468,7 @@ describe("AddToScheduleModal", () => {
     expect(saveButton).toHaveTextContent("Creating...");
   });
 
-  test("renders 'Save Changes' when mutation is not loading", () => {
+  test("renders 'Save Changes' when mutation is not loading in auto-create mode", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <AddToScheduleModal
@@ -478,11 +480,32 @@ describe("AddToScheduleModal", () => {
     );
 
     fireEvent.click(screen.getByText("Add"));
+    fireEvent.click(screen.getByText("[Create Personal Schedule]"));
     const saveButton = screen.getByTestId(
       "AddToScheduleModal-modal-save-button",
     );
 
     expect(saveButton).not.toBeDisabled();
     expect(saveButton).toHaveTextContent("Save Changes");
+  });
+
+  test("shows Save Changes when schedules exist for the quarter", () => {
+    const schedules = [{ id: 1, name: "Plan A", quarter: "20242" }];
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={schedules}
+          />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByText("Add"));
+    expect(
+      screen.getByTestId("AddToScheduleModal-modal-save-button"),
+    ).toBeInTheDocument();
   });
 });
