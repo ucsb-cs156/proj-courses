@@ -568,6 +568,217 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     });
   });
 
+  test("displays 'No courses found' message when search returns empty results", async () => {
+    axiosMock.onGet("/api/public/courseovertime/buildingsearch").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
+    await screen.findByTestId(expectedKey);
+    userEvent.selectOptions(selectBuilding, "ARTS");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          /No courses were found with the specified criteria./i,
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("CHEM LITERATURE")).not.toBeInTheDocument();
+  });
+
+  test("does not display 'No courses found' message before search is performed", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Quarter")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+  });
+
+  test("does not display 'No courses found' message while loading", async () => {
+    axiosMock.onGet("/api/public/courseovertime/buildingsearch").reply(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve([200, []]), 100);
+      });
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
+    );
+    userEvent.selectOptions(selectBuilding, "ARTS");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+  });
+
+  test("displays loading message while search is in progress", async () => {
+    axiosMock.onGet("/api/public/courseovertime/buildingsearch").reply(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve([200, coursesInLib]), 100);
+      });
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
+    );
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("CourseId")).not.toBeInTheDocument();
+    expect(screen.queryByText("Title")).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText("Title")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+    expect(screen.getByText("CourseId")).toBeInTheDocument();
+  });
+
+  test("displays course table when search returns results", async () => {
+    axiosMock
+      .onGet("/api/public/courseovertime/buildingsearch")
+      .reply(200, coursesInLib);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
+    );
+    userEvent.selectOptions(selectBuilding, "GIRV");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Title")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    expect(screen.getByText("CourseId")).toBeInTheDocument();
+    expect(screen.getByText("Title")).toBeInTheDocument();
+  });
+
+  test("does not display ConvertedSectionTable when search returns empty results", async () => {
+    axiosMock.onGet("/api/public/courseovertime/buildingsearch").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeBuildingsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectBuilding = screen.getByLabelText("Building Name");
+    await screen.findByTestId(
+      "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
+    );
+    userEvent.selectOptions(selectBuilding, "ARTS");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("CourseId")).not.toBeInTheDocument();
+    expect(screen.queryByText("Title")).not.toBeInTheDocument();
+  });
+
   test("classroomOrAll returns 'ALL' when classroom is empty string", () => {
     expect(classroomOrAll({ classroom: "" })).toBe("ALL");
   });

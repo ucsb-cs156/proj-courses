@@ -25,7 +25,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource(
     properties = {
       "app.startQtrYYYYQ=20211",
-      "app.endQtrYYYYQ=20223",
       "app.ucsb.api.consumer_key=fakeApiKey",
       "app.courseDataStaleThresholdMinutes=1440"
     })
