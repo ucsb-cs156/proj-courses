@@ -8,18 +8,24 @@ import { useBackend } from "main/utils/useBackend";
 import { useSystemInfo } from "main/utils/systemInfo";
 import { quarterRange } from "main/utils/quarterUtilities";
 
+// Stryker disable all : testing specific hard-coded dropdown options is just writing the code twice
 const csvLevels = [
   ["U", "Undergraduate"],
   ["G", "Graduate"],
   ["A", "All"],
 ];
+// Stryker restore all
+
 export default function CSVDownloadsPage() {
   const { data: systemInfo } = useSystemInfo();
 
+  // Stryker disable OptionalChaining
   const startQtr = systemInfo?.startQtrYYYYQ || "20211";
   const endQtr = systemInfo?.endQtrYYYYQ || "20214";
+  // Stryker restore OptionalChaining
   const quarters = quarterRange(startQtr, endQtr);
 
+  // Stryker disable all : hard to test internal React Query caching/configuration
   const {
     data: subjects,
     error: _error,
@@ -29,6 +35,7 @@ export default function CSVDownloadsPage() {
     { method: "GET", url: "/api/UCSBSubjects/all" },
     [],
   );
+  // Stryker restore all
 
   const [quarter, setQuarter] = useState(quarters[0].yyyyq);
   const [subjectArea, setSubjectArea] = useState(

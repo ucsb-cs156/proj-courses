@@ -86,18 +86,41 @@ describe("CSVDownloadsPage tests", () => {
     renderPage();
 
     expect(await screen.findAllByLabelText("Quarter")).toHaveLength(2);
-    expect(screen.getByLabelText("Subject Area")).toBeInTheDocument();
-    expect(screen.getByLabelText("Course Level")).toBeInTheDocument();
+    const subjectAreaDropdown = screen.getByLabelText("Subject Area");
+    const levelDropdown = screen.getByLabelText("Course Level");
+    expect(subjectAreaDropdown).toBeInTheDocument();
+    expect(levelDropdown).toBeInTheDocument();
     expect(screen.getByLabelText("Omit sections")).toBeChecked();
     expect(
       screen.getByLabelText("Only include courses with times or locations"),
     ).toBeChecked();
+
+    expect(screen.getByTestId("CSVDownloads.Level-option-0")).toHaveValue("U");
+    expect(screen.getByTestId("CSVDownloads.Level-option-0")).toHaveTextContent(
+      "Undergraduate",
+    );
+    expect(screen.getByTestId("CSVDownloads.Level-option-1")).toHaveValue("G");
+    expect(screen.getByTestId("CSVDownloads.Level-option-1")).toHaveTextContent(
+      "Graduate",
+    );
+    expect(screen.getByTestId("CSVDownloads.Level-option-2")).toHaveValue("A");
+    expect(screen.getByTestId("CSVDownloads.Level-option-2")).toHaveTextContent(
+      "All",
+    );
+    expect(levelDropdown).toHaveValue("U");
 
     await waitFor(() =>
       expect(
         screen.getByTestId("CSVDownloads.Subject-option-CMPSC"),
       ).toBeInTheDocument(),
     );
+    expect(subjectAreaDropdown).toHaveValue("ANTH");
+    expect(screen.getByTestId("CSVDownloads.Subject-option-ANTH")).toHaveValue(
+      "ANTH",
+    );
+    expect(
+      screen.getByTestId("CSVDownloads.Subject-option-ANTH"),
+    ).toHaveTextContent("ANTH - Anthropology");
   });
 
   test("submitting by-quarter form downloads selected quarter", async () => {
@@ -161,6 +184,28 @@ describe("CSVDownloadsPage tests", () => {
       "/api/courses/csv/byQuarterAndSubjectArea?yyyyq=20242&subjectArea=CMPSC&level=G&omitSections=false&withTimeLocations=false",
     );
   });
+
+  test("submitting by-quarter-and-subject form includes default parameters", async () => {
+    const assignMock = mockLocationAssign();
+    renderPage();
+
+    await waitFor(() =>
+      expect(
+        screen.getByTestId("CSVDownloads.Subject-option-ANTH"),
+      ).toBeInTheDocument(),
+    );
+
+    const byQuarterAndSubjectButton = screen.getAllByRole("button", {
+      name: "Download CSV",
+    })[1];
+    fireEvent.submit(byQuarterAndSubjectButton.closest("form"));
+
+    expect(assignMock).toHaveBeenCalledTimes(1);
+    expect(assignMock).toHaveBeenCalledWith(
+      "/api/courses/csv/byQuarterAndSubjectArea?yyyyq=20221&subjectArea=ANTH&level=U&omitSections=true&withTimeLocations=true",
+    );
+  });
+
   test("uses default quarter range when systemInfo has no quarter data", async () => {
     axiosMock.onGet("/api/systemInfo").reply(200, {});
     renderPage();
