@@ -24,8 +24,6 @@ import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseO
 import CourseOverTimeDescriptionIndexPage from "main/pages/CourseOverTime/CourseOverTimeDescriptionIndexPage";
 import CourseOverTimeBuildingsIndexPage from "main/pages/CourseOverTime/CourseOverTimeBuildingsIndexPage";
 
-import EnrollmentHistoryIndexPage from "./main/pages/EnrollmentHistory/EnrollmentHistoryIndexPage";
-
 import GeneralEducationSearchPage from "main/pages/GeneralEducation/Search/GeneralEducationSearchPage";
 import CourseDetailsIndexPage from "main/pages/CourseDetails/CourseDetailsIndexPage";
 import CSVDownloadsPage from "main/pages/CSV/CSVDownloadsPage";
@@ -109,11 +107,6 @@ function App() {
           exact
           path="/courseovertime/instructorsearch"
           element={<CourseOverTimeInstructorIndexPage />}
-        />
-        <Route
-          exact
-          path="/enrollmenthistory/search"
-          element={<EnrollmentHistoryIndexPage />}
         />
         <Route
           exact
