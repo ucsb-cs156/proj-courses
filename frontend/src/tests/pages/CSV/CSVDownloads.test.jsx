@@ -1,24 +1,37 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
 
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import CSVDownloadsPage from "main/pages/CSV/CSVDownloadsPage";
 
 describe("CSVDownloadsPage tests", () => {
-  const originalLocation = window.location;
+  let axiosMock;
 
-  afterEach(() => {
-    delete window.location;
-    window.location = originalLocation;
+  beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
   });
 
-  const renderPage = () => {
+  afterEach(() => {
+    axiosMock.restore();
+  });
+
+  const renderPage = (browserLocation = window.location) => {
     const queryClient = new QueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CSVDownloadsPage />
+          <CSVDownloadsPage browserLocation={browserLocation} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -26,11 +39,10 @@ describe("CSVDownloadsPage tests", () => {
 
   const mockLocationAssign = () => {
     const assignMock = vi.fn();
-    delete window.location;
-    window.location = Object.assign(new URL("http://localhost:3000"), {
-      assign: assignMock,
-    });
-    return assignMock;
+    return {
+      assignMock,
+      browserLocation: { assign: assignMock },
+    };
   };
 
   test("renders correctly", async () => {
@@ -64,8 +76,8 @@ describe("CSVDownloadsPage tests", () => {
   });
 
   test("submitting by-quarter form only downloads when quarter is valid", () => {
-    const assignMock = mockLocationAssign();
-    renderPage();
+    const { assignMock, browserLocation } = mockLocationAssign();
+    renderPage(browserLocation);
 
     const quarterInput = screen.getAllByLabelText("Quarter (yyyyq)")[0];
     const byQuarterButton = screen.getAllByRole("button", {
@@ -87,8 +99,8 @@ describe("CSVDownloadsPage tests", () => {
   });
 
   test("submitting by-quarter-and-subject form requires valid quarter and subject", () => {
-    const assignMock = mockLocationAssign();
-    renderPage();
+    const { assignMock, browserLocation } = mockLocationAssign();
+    renderPage(browserLocation);
 
     fireEvent.click(
       screen.getByRole("button", {

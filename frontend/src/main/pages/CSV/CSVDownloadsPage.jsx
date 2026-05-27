@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Accordion, Form, Button } from "react-bootstrap";
 
-export default function CSVDownloadsPage() {
+export default function CSVDownloadsPage({
+  browserLocation = window.location,
+}) {
   const [quarter, setQuarter] = useState("");
   const [subjectArea, setSubjectArea] = useState("");
   const normalizedQuarter = quarter.trim();
@@ -17,7 +19,7 @@ export default function CSVDownloadsPage() {
     `&subjectArea=${encodeURIComponent(normalizedSubjectArea)}`;
 
   const downloadCsv = (url) => {
-    window.location.assign(url);
+    browserLocation.assign(url);
   };
 
   const handleQuarterSubmit = (e) => {
