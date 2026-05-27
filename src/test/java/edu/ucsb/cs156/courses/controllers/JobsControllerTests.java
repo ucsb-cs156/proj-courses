@@ -276,7 +276,7 @@ public class JobsControllerTests extends ControllerTestCase {
     // arrange
     Job job = Job.builder().id(1L).status("started").build();
     when(jobService.runAsJob(any())).thenReturn(job);
-    
+
     // act
     MvcResult response =
         mockMvc
@@ -298,7 +298,7 @@ public class JobsControllerTests extends ControllerTestCase {
     // arrange
     Job job = Job.builder().id(1L).status("started").build();
     when(jobService.runAsJob(any())).thenReturn(job);
-    
+
     // act
     MvcResult response =
         mockMvc
@@ -323,7 +323,7 @@ public class JobsControllerTests extends ControllerTestCase {
     // arrange
     Job job = Job.builder().id(1L).status("started").build();
     when(jobService.runAsJob(any())).thenReturn(job);
-    
+
     // act
     MvcResult response =
         mockMvc
@@ -347,7 +347,7 @@ public class JobsControllerTests extends ControllerTestCase {
     // arrange
     Job job = Job.builder().id(1L).status("started").build();
     when(jobService.runAsJob(any())).thenReturn(job);
-    
+
     // act
     MvcResult response =
         mockMvc
