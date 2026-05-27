@@ -56,6 +56,18 @@ describe("EnrollmentHistoryGraph tests", () => {
     ]);
   });
 
+  test("creates empty chart data when called with no argument", () => {
+    const expectedEmptyChartData = {
+      chartData: [],
+      series: [],
+    };
+
+    expect(createEnrollmentHistoryChartData()).toEqual(expectedEmptyChartData);
+    expect(createEnrollmentHistoryChartData()).toEqual(
+      createEnrollmentHistoryChartData([]),
+    );
+  });
+
   test("creates chart data for multiple sections over time", () => {
     const { chartData, series } = createEnrollmentHistoryChartData(
       enrollmentDataPointFixtures.cmpsc130aMultipleSectionsOverTime,
@@ -82,24 +94,71 @@ describe("EnrollmentHistoryGraph tests", () => {
     ]);
   });
 
-  test("creates separate series for multiple quarters", () => {
+  test("sorts chart data chronologically by date created", () => {
+    const unsortedEnrollmentData = [
+      {
+        id: 1,
+        yyyyq: "20262",
+        enrollCd: "07609",
+        courseId: "CMPSC   130A -1",
+        section: "0100",
+        enrollment: 30,
+        dateCreated: "2026-05-03T08:15:00.000000",
+      },
+      {
+        id: 2,
+        yyyyq: "20262",
+        enrollCd: "07609",
+        courseId: "CMPSC   130A -1",
+        section: "0100",
+        enrollment: 10,
+        dateCreated: "2026-05-01T08:15:00.000000",
+      },
+      {
+        id: 3,
+        yyyyq: "20262",
+        enrollCd: "07609",
+        courseId: "CMPSC   130A -1",
+        section: "0100",
+        enrollment: 20,
+        dateCreated: "2026-05-02T08:15:00.000000",
+      },
+    ];
+
+    const { chartData } = createEnrollmentHistoryChartData(
+      unsortedEnrollmentData,
+    );
+
+    expect(
+      chartData.map((dataPoint) => formatDateCreated(dataPoint.dateCreated)),
+    ).toEqual(["2026-05-01", "2026-05-02", "2026-05-03"]);
+    expect(chartData.map((dataPoint) => dataPoint.series0)).toEqual([
+      10, 20, 30,
+    ]);
+  });
+
+  test("creates one series across multiple quarters", () => {
     const { chartData, series } = createEnrollmentHistoryChartData(
       enrollmentDataPointFixtures.cmpsc130aMultipleQuarters,
     );
 
     expect(series).toEqual([
-      { dataKey: "series0", name: "08344 - Section 0100" },
-      { dataKey: "series1", name: "07452 - Section 0100" },
-      { dataKey: "series2", name: "07609 - Section 0100" },
+      { dataKey: "series0", name: "07609 - Section 0100" },
     ]);
-    expect(chartData).toHaveLength(3);
+    expect(chartData.map((dataPoint) => dataPoint.series0)).toEqual([
+      62, 54, 48,
+    ]);
   });
 
   test("renders with the default title and no data", () => {
-    render(<EnrollmentHistoryGraph />);
+    const { container } = render(<EnrollmentHistoryGraph />);
 
     expect(screen.getByTestId("enrollment-history-graph")).toBeInTheDocument();
     expect(screen.getByText("Enrollment History")).toBeInTheDocument();
+    expect(
+      screen.queryByText("undefined - Section undefined"),
+    ).not.toBeInTheDocument();
+    expect(container.querySelectorAll(".recharts-line")).toHaveLength(0);
   });
 
   test("renders multiple section lines and legend labels", async () => {
