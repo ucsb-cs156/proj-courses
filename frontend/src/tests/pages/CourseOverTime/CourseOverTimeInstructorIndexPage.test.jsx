@@ -9,7 +9,7 @@ import * as useBackend from "main/utils/useBackend.jsx";
 import CourseOverTimeInstructorIndexPage from "main/pages/CourseOverTime/CourseOverTimeInstructorIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { threeSections } from "fixtures/sectionFixtures";
+import { oneSection, threeSections } from "fixtures/sectionFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
@@ -100,5 +100,223 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
     );
 
     expect(screen.getByText("COMP ENGR SEMINAR")).toBeInTheDocument();
+  });
+
+  test("displays 'No courses found' message when search returns empty results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock
+      .onGet("/api/public/courseovertime/instructorsearch")
+      .reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeInstructorIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20222");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20222");
+    const enterInstructor = screen.getByLabelText("Instructor Name");
+    userEvent.type(enterInstructor, "CONRADDD");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          /No courses were found with the specified criteria./i,
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("ADV APP PROGRAM")).not.toBeInTheDocument();
+  });
+
+  test("does not display 'No courses found' message before search is performed", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeInstructorIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Instructor Name")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+  });
+
+  test("does not display 'No courses found' message while loading", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/courseovertime/instructorsearch").reply(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve([200, []]), 100);
+      });
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeInstructorIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20222");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20222");
+    const enterInstructor = screen.getByLabelText("Instructor Name");
+    userEvent.type(enterInstructor, "CONRADDD");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+  });
+
+  test("displays loading message while search is in progress", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/courseovertime/instructorsearch").reply(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve([200, oneSection]), 100);
+      });
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeInstructorIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20222");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20222");
+    const enterInstructor = screen.getByLabelText("Instructor Name");
+    userEvent.type(enterInstructor, "CONRAD P T");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("CourseId")).not.toBeInTheDocument();
+    expect(screen.queryByText("ADV APP PROGRAM")).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText("Title")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+    expect(screen.getByText("CourseId")).toBeInTheDocument();
+  });
+
+  test("displays course table when search returns results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock
+      .onGet("/api/public/courseovertime/instructorsearch")
+      .reply(200, oneSection);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeInstructorIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20222");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20222");
+    const enterInstructor = screen.getByLabelText("Instructor Name");
+    userEvent.type(enterInstructor, "CONRAD P T");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("CourseId")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    expect(screen.getByText("CourseId")).toBeInTheDocument();
+    expect(screen.getByText("Title")).toBeInTheDocument();
+  });
+
+  test("does not display ConvertedSectionTable when search returns empty results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock
+      .onGet("/api/public/courseovertime/instructorsearch")
+      .reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseOverTimeInstructorIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectStartQuarter = screen.getByLabelText("Start Quarter");
+    userEvent.selectOptions(selectStartQuarter, "20222");
+    const selectEndQuarter = screen.getByLabelText("End Quarter");
+    userEvent.selectOptions(selectEndQuarter, "20222");
+    const enterInstructor = screen.getByLabelText("Instructor Name");
+    userEvent.type(enterInstructor, "CONRADDD");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("CourseId")).not.toBeInTheDocument();
+    expect(screen.queryByText("Title")).not.toBeInTheDocument();
   });
 });
