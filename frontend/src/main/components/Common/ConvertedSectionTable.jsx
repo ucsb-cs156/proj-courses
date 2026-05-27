@@ -7,9 +7,14 @@ import {
   formatTime,
   formatStatus,
   convertToFraction,
+  formatSession,
 } from "main/utils/sectionUtils.jsx";
 
-function ConvertedSectionTable({ sections, testid = "ConvertedSectionTable" }) {
+function ConvertedSectionTable({
+  sections,
+  testid = "ConvertedSectionTable",
+  showSession = false,
+}) {
   const columns = [
     {
       header: "Quarter",
@@ -71,6 +76,18 @@ function ConvertedSectionTable({ sections, testid = "ConvertedSectionTable" }) {
       cell: ({ row }) => row.original.section.section,
     },
   ];
+
+  if (showSession) {
+    columns.push({
+      header: "Session",
+      accessorKey: "session",
+      cell: ({ row }) =>
+        formatSession(
+          row.original.courseInfo?.quarter,
+          row.original.section?.session,
+        ),
+    });
+  }
 
   return <OurTable data={sections} columns={columns} testid={testid} />;
 }
