@@ -90,7 +90,7 @@ const enrollmentDataPointFixtures = {
     {
       id: 10,
       yyyyq: "20254",
-      enrollCd: "08344",
+      enrollCd: "07609",
       courseId: "CMPSC   130A -1",
       section: "0100",
       enrollment: 62,
@@ -99,7 +99,7 @@ const enrollmentDataPointFixtures = {
     {
       id: 11,
       yyyyq: "20261",
-      enrollCd: "07452",
+      enrollCd: "07609",
       courseId: "CMPSC   130A -1",
       section: "0100",
       enrollment: 54,
