@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -51,6 +53,11 @@ public class UCSBAPIQuarterServiceTests {
 
   @Autowired private ObjectMapper objectMapper;
 
+  @BeforeEach
+  public void setup() {
+    service.setEndQtrYYYYQ("20223");
+  }
+
   @Test
   public void test_getStartQtrYYYYQ() {
     assertEquals("20211", service.getStartQtrYYYYQ());
@@ -59,6 +66,14 @@ public class UCSBAPIQuarterServiceTests {
   @Test
   public void test_getEndQtrYYYYQ() {
     assertEquals("20223", service.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_setEndQtrYYYYQ() {
+    service.setEndQtrYYYYQ("20224");
+    assertEquals("20224", service.getEndQtrYYYYQ());
+    service.setEndQtrYYYYQ("20232");
+    assertEquals("20232", service.getEndQtrYYYYQ());
   }
 
   @Test
