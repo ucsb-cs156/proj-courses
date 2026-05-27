@@ -33,9 +33,10 @@ public class CoursesStartupTests {
   @Mock UpdateCourseDataJob updateCourseDataJob;
 
   @Test
-  public void alwaysRunOnStartup_validStartAndEnd_runsStartup() throws Exception {
-    CoursesStartup coursesStartup = coursesStartupWithQuarters("20221", "20223");
+  public void alwaysRunOnStartup_validStart_usesComputedEndAndRunsStartup() throws Exception {
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20221");
 
+    when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenReturn("20223");
     when(updateCourseDataJobFactory.createForSubjectAndQuarterRange(
             "CMPSC", "20221", "20223", true))
         .thenReturn(updateCourseDataJob);
@@ -43,6 +44,7 @@ public class CoursesStartupTests {
     coursesStartup.alwaysRunOnStartup();
 
     verify(ucsbSubjectsService).loadAllSubjects();
+    verify(ucsbAPIQuarterService).getEndQtrYYYYQ();
     verify(ucsbAPIQuarterService).loadAllQuarters();
     verify(updateCourseDataJobFactory)
         .createForSubjectAndQuarterRange("CMPSC", "20221", "20223", true);
@@ -51,7 +53,7 @@ public class CoursesStartupTests {
 
   @Test
   public void alwaysRunOnStartup_invalidStartQtr_throwsAndLogs(CapturedOutput output) {
-    CoursesStartup coursesStartup = coursesStartupWithQuarters("2022", "20223");
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("2022");
 
     RuntimeException exception =
         assertThrows(RuntimeException.class, coursesStartup::alwaysRunOnStartup);
@@ -61,19 +63,24 @@ public class CoursesStartupTests {
   }
 
   @Test
-  public void alwaysRunOnStartup_invalidEndQtr_throwsAndLogs(CapturedOutput output) {
-    CoursesStartup coursesStartup = coursesStartupWithQuarters("20221", "20220");
+  public void alwaysRunOnStartup_doesNotRequireManuallyConfiguredEndQtr() throws Exception {
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20221");
 
-    RuntimeException exception =
-        assertThrows(RuntimeException.class, coursesStartup::alwaysRunOnStartup);
+    when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenReturn("20222");
+    when(updateCourseDataJobFactory.createForSubjectAndQuarterRange(
+            "CMPSC", "20221", "20222", true))
+        .thenReturn(updateCourseDataJob);
 
-    assertValidationFailure(exception, output, "END_QTR", "20220");
-    verifyNoStartupDependenciesCalled();
+    coursesStartup.alwaysRunOnStartup();
+
+    verify(updateCourseDataJobFactory)
+        .createForSubjectAndQuarterRange("CMPSC", "20221", "20222", true);
+    verify(jobService).runAsJob(updateCourseDataJob);
   }
 
   @Test
   public void alwaysRunOnStartup_invalidQuarterDigit_throwsAndLogs(CapturedOutput output) {
-    CoursesStartup coursesStartup = coursesStartupWithQuarters("20225", "20223");
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20225");
 
     RuntimeException exception =
         assertThrows(RuntimeException.class, coursesStartup::alwaysRunOnStartup);
@@ -84,7 +91,7 @@ public class CoursesStartupTests {
 
   @Test
   public void alwaysRunOnStartup_yearBelow1980_throwsAndLogs(CapturedOutput output) {
-    CoursesStartup coursesStartup = coursesStartupWithQuarters("19794", "20223");
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("19794");
 
     RuntimeException exception =
         assertThrows(RuntimeException.class, coursesStartup::alwaysRunOnStartup);
@@ -95,7 +102,7 @@ public class CoursesStartupTests {
 
   @Test
   public void alwaysRunOnStartup_yearAbove2050_throwsAndLogs(CapturedOutput output) {
-    CoursesStartup coursesStartup = coursesStartupWithQuarters("20514", "20223");
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20514");
 
     RuntimeException exception =
         assertThrows(RuntimeException.class, coursesStartup::alwaysRunOnStartup);
@@ -106,7 +113,7 @@ public class CoursesStartupTests {
 
   @Test
   public void alwaysRunOnStartup_malformedNonNumeric_throwsAndLogs(CapturedOutput output) {
-    CoursesStartup coursesStartup = coursesStartupWithQuarters("abcde", "20223");
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("abcde");
 
     RuntimeException exception =
         assertThrows(RuntimeException.class, coursesStartup::alwaysRunOnStartup);
@@ -115,7 +122,22 @@ public class CoursesStartupTests {
     verifyNoStartupDependenciesCalled();
   }
 
-  private CoursesStartup coursesStartupWithQuarters(String startQtrYYYYQ, String endQtrYYYYQ) {
+  @Test
+  public void runOnStartupInProductionOnly_usesComputedEndQtr() throws Exception {
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20221");
+
+    when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenReturn("20224");
+    when(updateCourseDataJobFactory.createForQuarterRange("20221", "20224", true))
+        .thenReturn(updateCourseDataJob);
+
+    coursesStartup.runOnStartupInProductionOnly();
+
+    verify(ucsbAPIQuarterService).getEndQtrYYYYQ();
+    verify(updateCourseDataJobFactory).createForQuarterRange("20221", "20224", true);
+    verify(jobService).runAsJob(updateCourseDataJob);
+  }
+
+  private CoursesStartup coursesStartupWithStartQuarter(String startQtrYYYYQ) {
     CoursesStartup coursesStartup = new CoursesStartup();
 
     coursesStartup.ucsbAPIQuarterService = ucsbAPIQuarterService;
@@ -124,7 +146,6 @@ public class CoursesStartupTests {
         coursesStartup, "updateCourseDataJobFactory", updateCourseDataJobFactory);
     ReflectionTestUtils.setField(coursesStartup, "jobService", jobService);
     ReflectionTestUtils.setField(coursesStartup, "startQtrYYYYQ", startQtrYYYYQ);
-    ReflectionTestUtils.setField(coursesStartup, "endQtrYYYYQ", endQtrYYYYQ);
 
     return coursesStartup;
   }

@@ -2,6 +2,7 @@ package edu.ucsb.cs156.courses.services;
 
 import edu.ucsb.cs156.courses.models.SystemInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,6 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
 
-  @Value("${app.endQtrYYYYQ:20222}")
-  private String endQtrYYYYQ;
-
   @Value("${app.sourceRepo:https://github.com/ucsb-cs156/proj-courses}")
   private String sourceRepo;
 
@@ -35,17 +33,26 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${git.commit.id.abbrev:unknown}")
   private String commitId;
 
+  @Autowired private UCSBAPIQuarterService ucsbAPIQuarterService;
+
   public static String githubUrl(String repo, String commit) {
     return commit != null && repo != null ? repo + "/commit/" + commit : null;
   }
 
   public SystemInfo getSystemInfo() {
+    String endQtrYYYYQ = null;
+    try {
+      endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
+    } catch (Exception e) {
+      log.error("Error in ucsbAPIQuarterService.getEndQtrYYYYQ():", e);
+    }
+
     SystemInfo si =
         SystemInfo.builder()
             .springH2ConsoleEnabled(this.springH2ConsoleEnabled)
             .showSwaggerUILink(this.showSwaggerUILink)
             .startQtrYYYYQ(this.startQtrYYYYQ)
-            .endQtrYYYYQ(this.endQtrYYYYQ)
+            .endQtrYYYYQ(endQtrYYYYQ)
             .sourceRepo(this.sourceRepo)
             .commitMessage(this.commitMessage)
             .commitId(this.commitId)
