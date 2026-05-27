@@ -30,9 +30,6 @@ public class UCSBAPIQuarterService {
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
 
-  @Value("${app.endQtrYYYYQ:20222}")
-  private String endQtrYYYYQ;
-
   @Autowired private ObjectMapper objectMapper;
 
   @Autowired UCSBAPIQuarterRepository ucsbApiQuarterRepository;
@@ -59,18 +56,57 @@ public class UCSBAPIQuarterService {
     return startQtrYYYYQ;
   }
 
-  public String getEndQtrYYYYQ() {
-    return endQtrYYYYQ;
+  public String getEndQtrYYYYQ() throws Exception {
+    // Compute this each call so long-running servers pick up quarter rollovers without restart.
+    return getEndQtrYYYYQ(getCurrentQuarterYYYYQ());
+  }
+
+  public String getEndQtrYYYYQ(String currentQuarterYYYYQ) {
+    validateCurrentQuarterYYYYQ(currentQuarterYYYYQ);
+    Quarter endQuarter = new Quarter(currentQuarterYYYYQ);
+    int quartersToAdd = "S".equals(endQuarter.getQ()) ? 2 : 1;
+
+    for (int i = 0; i < quartersToAdd; i++) {
+      endQuarter.increment();
+    }
+
+    return endQuarter.getYYYYQ();
   }
 
   public String getCurrentQuarterYYYYQ() throws Exception {
     UCSBAPIQuarter quarter = getCurrentQuarter();
+    if (quarter == null) {
+      throw unableToComputeEndQtrException(null);
+    }
     return quarter.getQuarter();
+  }
+
+  private void validateCurrentQuarterYYYYQ(String currentQuarterYYYYQ) {
+    if (currentQuarterYYYYQ == null
+        || currentQuarterYYYYQ.isBlank()
+        || !currentQuarterYYYYQ.matches("\\d{5}")) {
+      throw unableToComputeEndQtrException(currentQuarterYYYYQ);
+    }
+
+    try {
+      Quarter.yyyyqToInt(currentQuarterYYYYQ);
+    } catch (IllegalArgumentException e) {
+      throw unableToComputeEndQtrException(currentQuarterYYYYQ);
+    }
+  }
+
+  private IllegalStateException unableToComputeEndQtrException(String currentQuarterYYYYQ) {
+    String valueForMessage =
+        currentQuarterYYYYQ == null ? "null" : String.format("'%s'", currentQuarterYYYYQ);
+    return new IllegalStateException(
+        String.format(
+            "Unable to compute END_QTR: current quarter from UCSB API was null/invalid: %s",
+            valueForMessage));
   }
 
   public List<String> getActiveQuarterList() throws Exception {
     String start = getCurrentQuarterYYYYQ();
-    String end = getEndQtrYYYYQ();
+    String end = getEndQtrYYYYQ(start);
 
     List<Quarter> quartersInOrder = Quarter.quarterList(start, end);
     List<String> result = new ArrayList<String>();
@@ -152,18 +188,23 @@ public class UCSBAPIQuarterService {
     return quarters;
   }
 
-  public boolean quarterYYYYQInRange(String quarterYYYYQ) {
+  public boolean quarterYYYYQInRange(String quarterYYYYQ) throws Exception {
+    return quarterYYYYQInRange(quarterYYYYQ, getEndQtrYYYYQ());
+  }
+
+  boolean quarterYYYYQInRange(String quarterYYYYQ, String endQtrYYYYQ) {
     boolean dateGEStart = quarterYYYYQ.compareTo(startQtrYYYYQ) >= 0;
     boolean dateLEEnd = quarterYYYYQ.compareTo(endQtrYYYYQ) <= 0;
     return (dateGEStart && dateLEEnd);
   }
 
   public List<UCSBAPIQuarter> loadAllQuarters() throws Exception {
+    String endQtrYYYYQ = getEndQtrYYYYQ();
     List<UCSBAPIQuarter> quarters = this.getAllQuartersFromAPI();
     List<UCSBAPIQuarter> savedQuarters = new ArrayList<UCSBAPIQuarter>();
     quarters.forEach(
         (quarter) -> {
-          if (quarterYYYYQInRange(quarter.getQuarter())) {
+          if (quarterYYYYQInRange(quarter.getQuarter(), endQtrYYYYQ)) {
             ucsbApiQuarterRepository.save(quarter);
             savedQuarters.add(quarter);
           }
@@ -175,7 +216,7 @@ public class UCSBAPIQuarterService {
   public List<String> getActiveQuarters() throws Exception {
     List<String> activeQuarters = new ArrayList<>();
     String currQtr = getCurrentQuarterYYYYQ();
-    String endQtr = getEndQtrYYYYQ();
+    String endQtr = getEndQtrYYYYQ(currQtr);
 
     if (currQtr.compareTo(endQtr) <= 0) {
       Quarter.quarterList(currQtr, endQtr)
