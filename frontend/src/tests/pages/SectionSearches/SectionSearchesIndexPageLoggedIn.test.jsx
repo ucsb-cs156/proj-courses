@@ -36,7 +36,10 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
   });
 
   const queryClient = new QueryClient();
-  test("renders without crashing", () => {
+  test("renders without crashing", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -44,6 +47,15 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
+    expect(
+      screen.getByRole("heading", { level: 5, name: "UCSB Courses Search" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Submit")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Subject Area")).toBeInTheDocument();
+    });
   });
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
@@ -101,5 +113,241 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
       { method: "GET", url: "/api/personalschedules/all" },
       [],
     );
+  });
+
+  test("displays 'No courses found' message when search returns empty results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/primaries").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionSearchesIndexPageLoggedIn />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectSubject = screen.getByLabelText("Subject Area");
+
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    userEvent.selectOptions(selectSubject, "ANTH");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "G");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          /No courses were found with the specified criteria./i,
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByTestId("SectionsTable-cell-row-0-col-courseId"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("does not display 'No courses found' message before search is performed", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionSearchesIndexPageLoggedIn />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Subject Area")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+  });
+
+  test("does not display 'No courses found' message while loading", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/primaries").reply(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve([200, []]), 100);
+      });
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionSearchesIndexPageLoggedIn />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "ESS");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "G");
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          /No courses were found with the specified criteria./i,
+        ),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
+  });
+
+  test("displays loading message while search is in progress", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/primaries").reply(() => {
+      return new Promise((resolve) => {
+        setTimeout(
+          () => resolve([200, primaryFixtures.f24_math_lowerDiv]),
+          100,
+        );
+      });
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionSearchesIndexPageLoggedIn />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
+    expect(screen.queryByText("MATH 2A")).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("SectionsTable-cell-row-0-col-courseId"),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+    expect(screen.getByText("Course ID")).toBeInTheDocument();
+  });
+
+  test("displays SectionsTable when search returns results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock
+      .onGet("/api/public/primaries")
+      .reply(200, primaryFixtures.f24_math_lowerDiv);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionSearchesIndexPageLoggedIn />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("SectionsTable-cell-row-0-col-courseId"),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText(/No courses were found with the specified criteria./i),
+    ).not.toBeInTheDocument();
+  });
+
+  test("does not display SectionsTable when search returns empty results", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/public/primaries").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionSearchesIndexPageLoggedIn />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const expectedKey = "BasicSearch.Subject-option-ANTH";
+    await waitFor(() =>
+      expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
+    );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "ESS");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "G");
+
+    const submitButton = screen.getByText("Submit");
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No courses were found with the specified criteria./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByTestId("SectionsTable-cell-row-0-col-courseId"),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
+    expect(screen.queryByText("Title")).not.toBeInTheDocument();
   });
 });
