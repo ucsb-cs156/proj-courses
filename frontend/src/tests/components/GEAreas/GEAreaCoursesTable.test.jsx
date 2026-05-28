@@ -111,8 +111,8 @@ describe("GEAreaCoursesTable tests", () => {
     expect(
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",
-      ),
-    ).toHaveTextContent(/^A1, C1$/);
+      ).textContent,
+    ).toBe("A1, C1");
   });
 
   test("renders array-like non-array generalEducation objects as blank", () => {
