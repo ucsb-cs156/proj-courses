@@ -161,7 +161,7 @@ describe("GEAreaSearchForm tests", () => {
       );
     });
 
-    test("when no GE areas are available and local state for area is empty, we do not set undefined", async () => {
+    test("when no GE areas are available and local state for area is empty, we use fallback area", async () => {
       axiosMock.onGet("/api/public/generalEducationInfo").reply(200, []);
       getItemSpy.mockImplementation((key) => {
         if (key === "GEAreaSearch.Quarter") {
@@ -180,7 +180,7 @@ describe("GEAreaSearchForm tests", () => {
       });
 
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
-        "Searching for in S21",
+        "Searching for A1 in S21",
       );
       expect(
         screen.getByTestId("GEAreaSearch.Status").textContent,
@@ -274,7 +274,17 @@ describe("GEAreaSearchForm tests", () => {
       expect(useBackendSpy).toHaveBeenCalledWith(
         ["/api/public/generalEducationInfo"],
         { method: "GET", url: "/api/public/generalEducationInfo" },
-        [],
+        [
+          expect.objectContaining({
+            requirementCode: "A1",
+            requirementTranslation: "English Reading & Composition",
+            collegeCode: "ENGR",
+            objCode: "BS",
+            courseCount: 1,
+            units: 4,
+            inactive: false,
+          }),
+        ],
       );
       expect(getItemSpy).toHaveBeenCalledWith("GEAreaSearch.Quarter");
       expect(getItemSpy).toHaveBeenCalledWith("GEAreaSearch.Area");

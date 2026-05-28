@@ -6,12 +6,3 @@ export const deduplicateAreaCodes = (areas) => {
 
   return Array.from(new Set(normalizedAreaCodes));
 };
-
-export const getResolvedArea = (currentArea, areaCodes) => {
-  if (currentArea) {
-    return currentArea;
-  }
-
-  const firstAreaCode = areaCodes?.[0];
-  return firstAreaCode || "";
-};
