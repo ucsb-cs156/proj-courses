@@ -146,4 +146,33 @@ describe("CourseDetailsIndexPage tests", () => {
 
     expect(screen.getByText("Fall 2009 - GONZALEZ T F")).toBeInTheDocument();
   });
+
+  test("renders enrollment history graph between course description and grade history", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseDetailsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const courseDescription = await screen.findByText("Course Description");
+    const enrollmentHistoryGraph = screen.getByTestId(
+      "enrollment-history-graph",
+    );
+    const gradeHistoryGraphs = await screen.findByTestId(
+      "grade-history-graphs",
+    );
+
+    expect(enrollmentHistoryGraph).toBeInTheDocument();
+    expect(screen.getByText("Enrollment History")).toBeInTheDocument();
+    expect(
+      courseDescription.compareDocumentPosition(enrollmentHistoryGraph) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      enrollmentHistoryGraph.compareDocumentPosition(gradeHistoryGraphs) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
 });
