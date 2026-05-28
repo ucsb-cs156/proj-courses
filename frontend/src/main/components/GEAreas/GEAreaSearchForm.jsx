@@ -33,7 +33,9 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
     [],
   );
 
-  const areaCodes = areas.map((r) => r.requirementCode);
+  const areaCodes = Array.from(
+    new Set((areas || []).map((r) => r.requirementCode)),
+  ).filter(Boolean);
   const [quarter, setQuarter] = useState(
     localQuarter || quarters[0]?.yyyyq || startQtr,
   );

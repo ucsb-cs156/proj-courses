@@ -161,6 +161,32 @@ describe("GEAreaSearchForm tests", () => {
       );
     });
 
+    test("when no GE areas are available and local state for area is empty, we do not set undefined", async () => {
+      axiosMock.onGet("/api/public/generalEducationInfo").reply(200, []);
+      getItemSpy.mockImplementation((key) => {
+        if (key === "GEAreaSearch.Quarter") {
+          return "20212";
+        }
+        if (key === "GEAreaSearch.Area") {
+          return null;
+        }
+        return null;
+      });
+      render(<WrappedForm />);
+
+      await waitFor(() => {
+        const areaSelect = screen.getByLabelText("General Education Area");
+        expect(areaSelect.value).toBe("");
+      });
+
+      expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
+        "Searching for in S21",
+      );
+      expect(
+        screen.getByTestId("GEAreaSearch.Status").textContent,
+      ).not.toContain("undefined");
+    });
+
     test("renders correctly when useSystemInfo doesn't resolve in time", () => {
       const fallbackStartQtr = "20221";
       // useSystemInfo's initialData in the react query should solve it
