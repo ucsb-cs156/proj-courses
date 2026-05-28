@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Error</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #b00020;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 16px;
+      background-color: #0d6efd;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    details {
+      margin-top: 30px;
+      background-color: #f1f1f1;
+      padding: 15px;
+      border-radius: 4px;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background-color: #222;
+      color: #eee;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Oops! Something went wrong.</h1>
+
+    <p>
+      We are sorry, but the application encountered an unexpected error.
+    </p>
+
+    <p>
+      <strong>Status:</strong>
+      <span th:text="${status}">500</span>
+      -
+      <span th:text="${error}">Internal Server Error</span>
+    </p>
+
+    <p th:if="${message != null && !message.isEmpty()}">
+      <strong>Message:</strong>
+      <span th:text="${message}"></span>
+    </p>
+
+    <a class="button" href="/">Return to Home Page</a>
+
+    <details>
+      <summary>Technical Details for Developers</summary>
+
+      <p>
+        <strong>Timestamp:</strong>
+        <span th:text="${timestamp}"></span>
+      </p>
+
+      <p>
+        <strong>Path:</strong>
+        <span th:text="${path}"></span>
+      </p>
+
+      <p th:if="${exceptionMessage != null && !exceptionMessage.isEmpty()}">
+        <strong>Exception Message:</strong>
+        <span th:text="${exceptionMessage}"></span>
+      </p>
+
+      <div th:if="${stackTrace != null && !stackTrace.isEmpty()}">
+        <strong>Stack Trace:</strong>
+        <pre th:text="${stackTrace}"></pre>
+      </div>
+    </details>
+  </div>
+</body>
+</html>

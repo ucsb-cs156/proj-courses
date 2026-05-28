@@ -215,28 +215,19 @@ describe("SectionsTable tests", () => {
 
     test("Error checking that schedules is an array works", () => {
       expect(() => {
-        render(
-          <QueryClientProvider client={queryClient}>
-            <MemoryRouter>
-              <SectionsTable
-                sections={[]}
-                schedules={{ message: "Not An Array" }}
-              />
-            </MemoryRouter>
-          </QueryClientProvider>,
-        );
+        SectionsTable({
+          sections: [],
+          schedules: { message: "Not An Array" },
+        });
       }).toThrowError("schedules prop must be an array");
     });
 
     test("Error checking that schedules is an array of objects with id property works", () => {
       expect(() => {
-        render(
-          <QueryClientProvider client={queryClient}>
-            <MemoryRouter>
-              <SectionsTable sections={[]} schedules={["Stryker was here"]} />
-            </MemoryRouter>
-          </QueryClientProvider>,
-        );
+        SectionsTable({
+          sections: [],
+          schedules: ["Stryker was here"],
+        });
       }).toThrowError(
         "schedules prop must be an array of objects with an 'id' property",
       );
@@ -632,16 +623,6 @@ describe("SectionsTable tests", () => {
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
       vi.clearAllMocks();
-      vi.mock("main/utils/currentUser", async () => ({
-        useCurrentUser: () => ({
-          data: {
-            loggedIn: true,
-            root: { user: { email: "test@example.com" } },
-          },
-        }),
-        useLogout: () => ({ mutate: vi.fn() }),
-        hasRole: (_user, _role) => false, // or customize per role
-      }));
       axiosMock
         .onGet("/api/currentUser")
         .reply(200, apiCurrentUserFixtures.userOnly);
@@ -713,20 +694,6 @@ describe("SectionsTable tests", () => {
   });
 
   describe("AddToScheduleModal interactions when there are no schedules", () => {
-    vi.mock("main/utils/currentUser", async () => ({
-      useCurrentUser: () => {
-        console.log("useCurrentUser called in SectionsTable.test.jsx");
-        return {
-          data: {
-            loggedIn: true,
-            root: { user: { email: "test@example.com" } },
-          },
-        };
-      },
-      useLogout: () => ({ mutate: vi.fn() }),
-      hasRole: (_user, _role) => false, // or customize per role
-    }));
-
     const queryClient = new QueryClient();
     let axiosMock;
     beforeEach(() => {

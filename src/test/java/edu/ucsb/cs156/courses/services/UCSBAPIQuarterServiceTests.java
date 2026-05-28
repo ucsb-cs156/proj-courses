@@ -1,7 +1,9 @@
 package edu.ucsb.cs156.courses.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,11 +34,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBAPIQuarterService.class)
 @TestPropertySource(
-    properties = {
-      "app.startQtrYYYYQ=20211",
-      "app.endQtrYYYYQ=20223",
-      "app.ucsb.api.consumer_key=fakeApiKey"
-    })
+    properties = {"app.startQtrYYYYQ=20211", "app.ucsb.api.consumer_key=fakeApiKey"})
 public class UCSBAPIQuarterServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")
@@ -63,9 +61,113 @@ public class UCSBAPIQuarterServiceTests {
   } // the value of app.startQtrYYYYQ is configured using @TestPropertySource
 
   @Test
-  public void test_getEndQtrYYYYQ() {
-    assertEquals("20223", service.getEndQtrYYYYQ());
-  } // the value of app.endQtrYYYYQ is configured using @TestPropertySource
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterEndpoint() throws Exception {
+    expectCurrentQuarter("20243");
+
+    assertEquals("20244", service.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterWinter_returnsSpring() throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20241").when(serviceSpy).getCurrentQuarterYYYYQ();
+
+    assertEquals("20242", serviceSpy.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterSpring_returnsFall() throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20242").when(serviceSpy).getCurrentQuarterYYYYQ();
+
+    assertEquals("20244", serviceSpy.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterSummer_returnsFall() throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20243").when(serviceSpy).getCurrentQuarterYYYYQ();
+
+    assertEquals("20244", serviceSpy.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_fromCurrentQuarterFall_rollsOverToWinterNextYear()
+      throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20244").when(serviceSpy).getCurrentQuarterYYYYQ();
+
+    assertEquals("20251", serviceSpy.getEndQtrYYYYQ());
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterEndpointReturnsNull_throwsException()
+      throws Exception {
+    expectCurrentQuarterJson("null");
+
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> service.getEndQtrYYYYQ());
+
+    assertInvalidCurrentQuarterException(exception, "null");
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterInputIsNull_throwsException() {
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> service.getEndQtrYYYYQ((String) null));
+
+    assertInvalidCurrentQuarterException(exception, "null");
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterEndpointReturnsEmptyString_throwsException()
+      throws Exception {
+    expectCurrentQuarter("");
+
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> service.getEndQtrYYYYQ());
+
+    assertInvalidCurrentQuarterException(exception, "''");
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterEndpointReturnsMalformedValue_throwsException()
+      throws Exception {
+    expectCurrentQuarter("20225");
+
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> service.getEndQtrYYYYQ());
+
+    assertInvalidCurrentQuarterException(exception, "'20225'");
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterHasInvalidFormat_throwsException() {
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> service.getEndQtrYYYYQ("abcde"));
+
+    assertInvalidCurrentQuarterException(exception, "'abcde'");
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterIsWinter() {
+    assertEquals("20242", service.getEndQtrYYYYQ("20241"));
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterIsSpring() {
+    assertEquals("20244", service.getEndQtrYYYYQ("20242"));
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterIsSummer() {
+    assertEquals("20244", service.getEndQtrYYYYQ("20243"));
+  }
+
+  @Test
+  public void test_getEndQtrYYYYQ_whenCurrentQuarterIsFall_rollsOverToWinterNextYear() {
+    assertEquals("20251", service.getEndQtrYYYYQ("20244"));
+  }
 
   @Test
   public void test_getCurrentQuarterYYYYQ() throws Exception {
@@ -201,15 +303,14 @@ public class UCSBAPIQuarterServiceTests {
         .andExpect(header("ucsb-api-key", apiKey))
         .andRespond(withSuccess(expectedJSON, MediaType.APPLICATION_JSON));
 
-    List<String> expectedResult =
-        List.of("20211", "20212", "20213", "20214", "20221", "20222", "20223");
+    List<String> expectedResult = List.of("20211", "20212");
     List<String> actualResult = service.getActiveQuarters();
 
     assertEquals(expectedResult, actualResult);
   }
 
   @Test
-  public void test_getActiveQuarters_returns_no_past_quarters() throws Exception {
+  public void test_getActiveQuarters_summer_returns_summer_and_fall() throws Exception {
     UCSBAPIQuarter sampleCurrent =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
     String expectedJSON = objectMapper.writeValueAsString(sampleCurrent);
@@ -222,14 +323,14 @@ public class UCSBAPIQuarterServiceTests {
         .andExpect(header("ucsb-api-key", apiKey))
         .andRespond(withSuccess(expectedJSON, MediaType.APPLICATION_JSON));
 
-    List<String> expectedResult = List.of();
+    List<String> expectedResult = List.of("20243", "20244");
     List<String> actualResult = service.getActiveQuarters();
 
     assertEquals(expectedResult, actualResult);
   }
 
   @Test
-  public void test_getActiveQuarters_returns_one_value_when_current_equals_end() throws Exception {
+  public void test_getActiveQuarters_summer_2022_returns_summer_and_fall() throws Exception {
     UCSBAPIQuarter sampleCurrent =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
     sampleCurrent.setQuarter("20223");
@@ -243,8 +344,34 @@ public class UCSBAPIQuarterServiceTests {
         .andExpect(header("ucsb-api-key", apiKey))
         .andRespond(withSuccess(expectedJSON, MediaType.APPLICATION_JSON));
 
-    List<String> expectedResult = List.of("20223");
+    List<String> expectedResult = List.of("20223", "20224");
     List<String> actualResult = service.getActiveQuarters();
+
+    assertEquals(expectedResult, actualResult);
+  }
+
+  @Test
+  public void test_getActiveQuarters_whenCurrentQuarterEqualsEndQuarter_returnsCurrentQuarter()
+      throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20211").when(serviceSpy).getCurrentQuarterYYYYQ();
+    doReturn("20211").when(serviceSpy).getEndQtrYYYYQ("20211");
+
+    List<String> expectedResult = List.of("20211");
+    List<String> actualResult = serviceSpy.getActiveQuarters();
+
+    assertEquals(expectedResult, actualResult);
+  }
+
+  @Test
+  public void test_getActiveQuarters_whenCurrentQuarterIsAfterEndQuarter_returnsEmptyList()
+      throws Exception {
+    UCSBAPIQuarterService serviceSpy = Mockito.spy(service);
+    doReturn("20212").when(serviceSpy).getCurrentQuarterYYYYQ();
+    doReturn("20211").when(serviceSpy).getEndQtrYYYYQ("20212");
+
+    List<String> expectedResult = List.of();
+    List<String> actualResult = serviceSpy.getActiveQuarters();
 
     assertEquals(expectedResult, actualResult);
   }
@@ -284,8 +411,9 @@ public class UCSBAPIQuarterServiceTests {
     List<UCSBAPIQuarter> expectedAPIResult = new ArrayList<UCSBAPIQuarter>();
     expectedAPIResult.add(F20); // expected to be ignored
     expectedAPIResult.add(W21); // expected to be saved
-    expectedAPIResult.add(M23); // expected to be saved
+    expectedAPIResult.add(M23); // expected to be ignored
 
+    expectCurrentQuarter("20211");
     String expectedURL = UCSBAPIQuarterService.ALL_QUARTERS_ENDPOINT;
 
     String expectedJSON = objectMapper.writeValueAsString(expectedAPIResult);
@@ -319,8 +447,7 @@ public class UCSBAPIQuarterServiceTests {
         .andExpect(header("ucsb-api-key", apiKey))
         .andRespond(withSuccess(expectedJSON, MediaType.APPLICATION_JSON));
 
-    List<String> expectedResult =
-        List.of("20211", "20212", "20213", "20214", "20221", "20222", "20223");
+    List<String> expectedResult = List.of("20211", "20212");
     List<String> actualResult = service.getActiveQuarterList();
 
     assertEquals(expectedResult, actualResult);
@@ -328,37 +455,51 @@ public class UCSBAPIQuarterServiceTests {
 
   @Test
   public void test_quarterYYYYQInRange_20211_true() {
-    assertEquals(true, service.quarterYYYYQInRange("20211"));
+    assertEquals(true, service.quarterYYYYQInRange("20211", "20223"));
   }
 
   @Test
   public void test_quarterYYYYQInRange_20212_true() {
-    assertEquals(true, service.quarterYYYYQInRange("20212"));
+    assertEquals(true, service.quarterYYYYQInRange("20212", "20223"));
   }
 
   @Test
   public void test_quarterYYYYQInRange_20222_true() {
-    assertEquals(true, service.quarterYYYYQInRange("20222"));
+    assertEquals(true, service.quarterYYYYQInRange("20222", "20223"));
   }
 
   @Test
   public void test_quarterYYYYQInRange_20223_true() {
-    assertEquals(true, service.quarterYYYYQInRange("20223"));
+    assertEquals(true, service.quarterYYYYQInRange("20223", "20223"));
   }
 
   @Test
   public void test_quarterYYYYQInRange_20204_false() {
-    assertEquals(false, service.quarterYYYYQInRange("20204"));
+    assertEquals(false, service.quarterYYYYQInRange("20204", "20223"));
   }
 
   @Test
   public void test_quarterYYYYQInRange_20224_false() {
-    assertEquals(false, service.quarterYYYYQInRange("20224"));
+    assertEquals(false, service.quarterYYYYQInRange("20224", "20223"));
   }
 
   @Test
   public void test_quarterYYYYQInRange_20231_false() {
-    assertEquals(false, service.quarterYYYYQInRange("20231"));
+    assertEquals(false, service.quarterYYYYQInRange("20231", "20223"));
+  }
+
+  @Test
+  public void test_quarterYYYYQInRange_withCurrentEndQuarter_20212_true() throws Exception {
+    expectCurrentQuarter("20211");
+
+    assertEquals(true, service.quarterYYYYQInRange("20212"));
+  }
+
+  @Test
+  public void test_quarterYYYYQInRange_withCurrentEndQuarter_20213_false() throws Exception {
+    expectCurrentQuarter("20211");
+
+    assertEquals(false, service.quarterYYYYQInRange("20213"));
   }
 
   @Test
@@ -538,16 +679,6 @@ public class UCSBAPIQuarterServiceTests {
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, UCSBAPIQuarter.class);
     UCSBAPIQuarter S21 =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_S21, UCSBAPIQuarter.class);
-    UCSBAPIQuarter M21 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M21, UCSBAPIQuarter.class);
-    UCSBAPIQuarter F21 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_F21, UCSBAPIQuarter.class);
-    UCSBAPIQuarter W22 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W22, UCSBAPIQuarter.class);
-    UCSBAPIQuarter S22 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_S22, UCSBAPIQuarter.class);
-    UCSBAPIQuarter M22 =
-        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M22, UCSBAPIQuarter.class);
 
     String expectedJSON = objectMapper.writeValueAsString(W21);
     String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
@@ -561,11 +692,6 @@ public class UCSBAPIQuarterServiceTests {
 
     when(ucsbApiQuarterRepository.findById(eq("20211"))).thenReturn(Optional.of(W21));
     when(ucsbApiQuarterRepository.findById(eq("20212"))).thenReturn(Optional.of(S21));
-    when(ucsbApiQuarterRepository.findById(eq("20213"))).thenReturn(Optional.of(M21));
-    when(ucsbApiQuarterRepository.findById(eq("20214"))).thenReturn(Optional.of(F21));
-    when(ucsbApiQuarterRepository.findById(eq("20221"))).thenReturn(Optional.of(W22));
-    when(ucsbApiQuarterRepository.findById(eq("20222"))).thenReturn(Optional.of(S22));
-    when(ucsbApiQuarterRepository.findById(eq("20223"))).thenReturn(Optional.of(M22));
 
     LocalDateTime fixedDateTime = LocalDateTime.parse("2021-02-09T00:00:00");
 
@@ -573,10 +699,36 @@ public class UCSBAPIQuarterServiceTests {
         Mockito.mockStatic(LocalDateTime.class)) {
       mockedLocalDateTime.when(LocalDateTime::now).thenReturn(fixedDateTime);
 
-      List<String> expectedResult = List.of("20212", "20213");
+      List<String> expectedResult = List.of("20212");
       List<String> actualResult = service.getActiveRegistrationQuarters();
 
       assertEquals(expectedResult, actualResult);
     }
+  }
+
+  private void expectCurrentQuarter(String quarterYYYYQ) throws Exception {
+    UCSBAPIQuarter currentQuarter = UCSBAPIQuarter.builder().quarter(quarterYYYYQ).build();
+    String expectedJSON = objectMapper.writeValueAsString(currentQuarter);
+    expectCurrentQuarterJson(expectedJSON);
+  }
+
+  private void expectCurrentQuarterJson(String expectedJSON) {
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(withSuccess(expectedJSON, MediaType.APPLICATION_JSON));
+  }
+
+  private void assertInvalidCurrentQuarterException(
+      IllegalStateException exception, String expectedValue) {
+    assertEquals(
+        String.format(
+            "Unable to compute END_QTR: current quarter from UCSB API was null/invalid: %s",
+            expectedValue),
+        exception.getMessage());
   }
 }

@@ -6,6 +6,7 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import { useBackend } from "main/utils/useBackend";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
+import { deduplicateAreaCodes } from "./geAreaSearchFormUtils";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
@@ -30,20 +31,31 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
   } = useBackend(
     ["/api/public/generalEducationInfo"],
     { method: "GET", url: "/api/public/generalEducationInfo" },
-    [],
+    [
+      {
+        requirementCode: "A1",
+        requirementTranslation: "English Reading & Composition",
+        collegeCode: "ENGR",
+        objCode: "BS",
+        courseCount: 1,
+        units: 4,
+        inactive: false,
+      },
+    ],
   );
 
-  const areaCodes = areas.map((r) => r.requirementCode);
+  const areaCodes = deduplicateAreaCodes(areas);
   const [quarter, setQuarter] = useState(
     localQuarter || quarters[0]?.yyyyq || startQtr,
   );
-  const [area, setArea] = useState(localArea || "ALL");
+  const [area, setArea] = useState(localArea || "");
+  const effectiveArea = area || areaCodes[0] || "";
 
   const handleSubmit = (event) => {
     event.preventDefault();
     localStorage.setItem(quarterKey, quarter);
-    localStorage.setItem(areaKey, area);
-    fetchJSON(event, { quarter, area });
+    localStorage.setItem(areaKey, effectiveArea);
+    fetchJSON(event, { quarter, area: effectiveArea });
   };
 
   return (
@@ -61,12 +73,9 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
               <Form.Label>General Education Area</Form.Label>
               <Form.Control
                 as="select"
-                value={area}
+                value={effectiveArea}
                 onChange={(e) => setArea(e.target.value)}
               >
-                <option data-testid="GEAreaSearch.Area-option-all" value="ALL">
-                  ALL
-                </option>
                 {areaCodes.map((code) => {
                   const testid = `GEAreaSearch.Area-option-${code}`;
                   return (
@@ -87,7 +96,7 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
           </Col>
           <Col>
             <p data-testid="GEAreaSearch.Status">
-              Searching for {area} in {yyyyqToQyy(quarter)}
+              Searching for {effectiveArea} in {yyyyqToQyy(quarter)}
             </p>
           </Col>
         </Row>
