@@ -9,6 +9,8 @@ import GradeHistoryGraphs from "main/components/GradeHistory/GradeHistoryGraph";
 import FinalExamCard from "main/components/Finals/FinalExamCard";
 import EnrollmentHistoryGraph from "main/components/EnrollmentHistory/EnrollmentHistoryGraph";
 
+const selectedEnrollmentLineColors = ["#0d6efd"];
+
 export default function CourseDetailsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   let { qtr, enrollCode } = useParams();
@@ -73,7 +75,7 @@ export default function CourseDetailsIndexPage() {
   );
   const { data: enrollmentHistory } = useBackend(
     [
-      `/api/enrollment/search?startQtr=${qtr}&endQtr=${qtr}&subjectArea=${subjectArea}&courseNumber=${trimmedCourseNumber}`,
+      `/api/enrollment/search?startQtr=${qtr}&endQtr=${qtr}&subjectArea=${subjectArea}&courseNumber=${trimmedCourseNumber}&enrollCd=${enrollCode}`,
     ],
     {
       method: "GET",
@@ -83,10 +85,14 @@ export default function CourseDetailsIndexPage() {
         endQtr: qtr,
         subjectArea: subjectArea,
         courseNumber: trimmedCourseNumber,
+        enrollCd: enrollCode,
       },
     },
     [],
-    { enabled: Boolean(subjectArea && trimmedCourseNumber) },
+    { enabled: Boolean(subjectArea && trimmedCourseNumber && enrollCode) },
+  );
+  const selectedEnrollmentHistory = enrollmentHistory.filter(
+    (dataPoint) => dataPoint.enrollCd === enrollCode,
   );
 
   return (
@@ -104,7 +110,12 @@ export default function CourseDetailsIndexPage() {
 
         {moreDetails && <CourseDetailsTable details={[moreDetails]} />}
         {moreDetails && <CourseDescriptionTable course={moreDetails} />}
-        {moreDetails && <EnrollmentHistoryGraph data={enrollmentHistory} />}
+        {moreDetails && (
+          <EnrollmentHistoryGraph
+            data={selectedEnrollmentHistory}
+            lineColors={selectedEnrollmentLineColors}
+          />
+        )}
         {gradeHistory && <GradeHistoryGraphs gradeHistory={gradeHistory} />}
       </div>
     </BasicLayout>

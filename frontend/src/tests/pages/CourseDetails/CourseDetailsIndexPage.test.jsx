@@ -70,7 +70,15 @@ vi.mock("recharts", async () => {
 
 describe("CourseDetailsIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
+  const enrollmentHistoryWithOtherSections =
+    enrollmentDataPointFixtures.cmpsc130aMultipleSectionsOverTime.map(
+      (dataPoint) =>
+        dataPoint.enrollCd === "07609"
+          ? { ...dataPoint, enrollCd: "06619" }
+          : dataPoint,
+    );
   let queryClient;
+  let enrollmentHistoryResponse;
 
   const renderPage = () => {
     return render(
@@ -88,7 +96,15 @@ describe("CourseDetailsIndexPage tests", () => {
   });
 
   beforeEach(() => {
-    queryClient = new QueryClient();
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    enrollmentHistoryResponse = enrollmentHistoryWithOtherSections;
+    mockToast.mockClear();
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -103,6 +119,16 @@ describe("CourseDetailsIndexPage tests", () => {
       })
       .reply(200, personalSectionsFixtures.singleSection);
     axiosMock
+      .onGet("/api/public/finalsInfo", {
+        params: { quarterYYYYQ: "20221", enrollCd: "06619" },
+      })
+      .reply(200, null);
+    axiosMock
+      .onGet("/api/gradehistory/search", {
+        params: { subjectArea: "", courseNumber: "" },
+      })
+      .reply(200, []);
+    axiosMock
       .onGet("/api/gradehistory/search", {
         params: { subjectArea: "CHEM", courseNumber: "184" },
       })
@@ -114,12 +140,15 @@ describe("CourseDetailsIndexPage tests", () => {
           endQtr: "20221",
           subjectArea: "CHEM",
           courseNumber: "184",
+          enrollCd: "06619",
         },
       })
-      .reply(
-        200,
-        enrollmentDataPointFixtures.cmpsc130aMultipleSectionsOverTime,
-      );
+      .reply(() => [200, enrollmentHistoryResponse]);
+  });
+
+  afterEach(() => {
+    queryClient.clear();
+    vi.restoreAllMocks();
   });
 
   test("renders without crashing", () => {
@@ -177,15 +206,32 @@ describe("CourseDetailsIndexPage tests", () => {
       endQtr: "20221",
       subjectArea: "CHEM",
       courseNumber: "184",
+      enrollCd: "06619",
     });
   });
 
   test("passes returned enrollment history data to the graph", async () => {
     renderPage();
 
-    expect(await screen.findByText("07609 - Section 0100")).toBeInTheDocument();
-    expect(screen.getByText("07617 - Section 0101")).toBeInTheDocument();
-    expect(screen.getByText("07625 - Section 0102")).toBeInTheDocument();
+    expect(await screen.findByText("06619 - Section 0100")).toBeInTheDocument();
+  });
+
+  test("filters enrollment history graph to the selected enroll code", async () => {
+    renderPage();
+
+    expect(await screen.findByText("06619 - Section 0100")).toBeInTheDocument();
+    expect(screen.queryByText("07617 - Section 0101")).not.toBeInTheDocument();
+    expect(screen.queryByText("07625 - Section 0102")).not.toBeInTheDocument();
+  });
+
+  test("renders the selected enrollment history line in blue", async () => {
+    const { container } = renderPage();
+
+    expect(await screen.findByText("06619 - Section 0100")).toBeInTheDocument();
+    expect(container.querySelector(".recharts-line-curve")).toHaveAttribute(
+      "stroke",
+      "#0d6efd",
+    );
   });
 
   test("renders enrollment history graph between course description and grade history", async () => {
