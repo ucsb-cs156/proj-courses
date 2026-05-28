@@ -96,6 +96,14 @@ export const formatStatus = (section) => {
   }
 };
 
+export const formatSession = (quarter, session) => {
+  const isSummerCourse = quarter?.toString().endsWith("3");
+  if (!isSummerCourse || !session || session.trim() === "") {
+    return "";
+  }
+  return session.length > 5 ? session[5].trim() : "";
+};
+
 export const getQuarter = (row) =>
   row.depth === 0 ? row.original.quarter : row.getParentRow().original.quarter;
 
