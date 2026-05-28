@@ -7,6 +7,7 @@ import edu.ucsb.cs156.courses.entities.EnrollmentDataPoint;
 import edu.ucsb.cs156.courses.models.EnrollmentCSV;
 import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
 import edu.ucsb.cs156.courses.services.EnrollmentCSVService;
+import edu.ucsb.cs156.courses.utilities.CourseUtilities;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,6 +40,50 @@ public class EnrollmentController extends ApiController {
 
   @Autowired EnrollmentDataPointRepository enrollmentDataPointRepository;
   @Autowired private EnrollmentCSVService enrollmentCSVService;
+
+  @Operation(summary = "Get enrollment history for a course or section")
+  @GetMapping(value = "/search", produces = "application/json")
+  public Iterable<EnrollmentDataPoint> search(
+      @Parameter(
+              name = "startQtr",
+              description =
+                  "starting quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+              example = "20231",
+              required = true)
+          @RequestParam
+          String startQtr,
+      @Parameter(
+              name = "endQtr",
+              description =
+                  "ending quarter in yyyyq format, e.g. 20231 for W23, 20232 for S23, etc. (1=Winter, 2=Spring, 3=Summer, 4=Fall)",
+              example = "20231",
+              required = true)
+          @RequestParam
+          String endQtr,
+      @Parameter(
+              name = "subjectArea",
+              description = "simplified area name, e.g. CMPSC for computer science",
+              example = "CMPSC",
+              required = true)
+          @RequestParam
+          String subjectArea,
+      @Parameter(
+              name = "courseNumber",
+              description = "the specific course number, e.g. 130A for CS130A",
+              example = "130A",
+              required = true)
+          @RequestParam
+          String courseNumber,
+      @Parameter(name = "enrollCd", description = "enroll code", example = "08268")
+          @RequestParam(required = false)
+          String enrollCd,
+      @Parameter(name = "section", description = "section number", example = "0100")
+          @RequestParam(required = false)
+          String section) {
+    String courseId = CourseUtilities.makeFormattedCourseId(subjectArea, courseNumber);
+    return enrollmentDataPointRepository.findByQuarterRangeAndCourseIdAndOptionalFilters(
+        startQtr, endQtr, courseId, enrollCd, section);
+  }
 
   @Operation(
       summary = "Download Enrollment Data as CSV File",
