@@ -31,5 +31,4 @@ describe("geAreaSearchFormUtils tests", () => {
     expect(deduplicateAreaCodes(undefined)).toEqual([]);
     expect(deduplicateAreaCodes(null)).toEqual([]);
   });
-
 });
