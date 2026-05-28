@@ -6,6 +6,10 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import { useBackend } from "main/utils/useBackend";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
+import {
+  deduplicateAreaCodes,
+  getResolvedArea,
+} from "./geAreaSearchFormUtils";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
@@ -33,17 +37,16 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
     [],
   );
 
-  const areaCodes = Array.from(
-    new Set((areas || []).map((r) => r.requirementCode)),
-  ).filter(Boolean);
+  const areaCodes = deduplicateAreaCodes(areas);
   const [quarter, setQuarter] = useState(
     localQuarter || quarters[0]?.yyyyq || startQtr,
   );
   const [area, setArea] = useState(localArea || "");
 
   useEffect(() => {
-    if (!area && areaCodes.length > 0) {
-      setArea(areaCodes[0]);
+    const resolvedArea = getResolvedArea(area, areaCodes);
+    if (resolvedArea !== area) {
+      setArea(resolvedArea);
     }
   }, [area, areaCodes]);
 
