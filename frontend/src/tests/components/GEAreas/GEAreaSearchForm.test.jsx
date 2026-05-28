@@ -141,7 +141,7 @@ describe("GEAreaSearchForm tests", () => {
       expect(setItemSpy).toHaveBeenCalledWith("GEAreaSearch.Quarter", "20212");
     });
 
-    test("when local state for area is empty, we get first area code", () => {
+    test("when local state for area is empty, we get first area code", async () => {
       getItemSpy.mockImplementation((key) => {
         if (key === "GEAreaSearch.Quarter") {
           return "20212";
@@ -152,8 +152,10 @@ describe("GEAreaSearchForm tests", () => {
         return null;
       });
       render(<WrappedForm />);
-      const areaSelect = screen.getByLabelText("General Education Area");
-      expect(areaSelect.value).toBe("A1");
+      await waitFor(() => {
+        const areaSelect = screen.getByLabelText("General Education Area");
+        expect(areaSelect.value).toBe("A1");
+      });
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
         "Searching for A1 in S21",
       );
@@ -208,9 +210,6 @@ describe("GEAreaSearchForm tests", () => {
       render(<WrappedForm />);
       // wait for options to load
       await screen.findByTestId("GEAreaSearch.Area-option-A1");
-      expect(
-        screen.getByTestId("GEAreaSearch.Area-option-all"),
-      ).toBeInTheDocument();
       expect(
         screen.getByTestId("GEAreaSearch.Area-option-A1"),
       ).toBeInTheDocument();

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { quarterRange } from "main/utils/quarterUtilities";
 
@@ -37,9 +37,13 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
   const [quarter, setQuarter] = useState(
     localQuarter || quarters[0]?.yyyyq || startQtr,
   );
-  const [area, setArea] = useState(
-    localArea || (areaCodes.length > 0 ? areaCodes[0] : ""),
-  );
+  const [area, setArea] = useState(localArea || "");
+
+  useEffect(() => {
+    if (!area && areaCodes.length > 0) {
+      setArea(areaCodes[0]);
+    }
+  }, [area, areaCodes]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
