@@ -21,6 +21,7 @@
         <app.packagePath>edu/ucsb/cs156/courses</app.packagePath>
         <targetClasses>${targetClasses:edu.ucsb.cs156.*}</targetClasses>
         <h2.version>2.2.224</h2.version>
+        <app.frontend.nodeVersion>v22.18.0</app.frontend.nodeVersion>
     </properties>
     <dependencies>
         <dependency>
@@ -38,6 +39,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
         <!--
@@ -357,6 +362,142 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>integration</id>
+            <activation>
+                <property>
+                    <name>env.INTEGRATION</name>
+                </property>
+            </activation>
+            <properties>
+                <springProfiles>integration</springProfiles>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <!-- Check for frontend changes and set skip properties -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>check-frontend-changes</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <condition property="frontend.dependency.skip">
+                                            <uptodate>
+                                                <srcfiles file="${project.basedir}/frontend/package.json" />
+                                                <srcfiles file="${project.basedir}/frontend/package-lock.json" />
+                                                <mapper type="merge" to="${project.build.outputDirectory}/public/index.html" />
+                                            </uptodate>
+                                        </condition>
+
+                                        <condition property="frontend.build.skip">
+                                            <and>
+                                                <istrue value="${frontend.dependency.skip}" />
+                                                <uptodate>
+                                                    <srcfiles dir="${project.basedir}/frontend/node_modules" includes="**/*" />
+                                                    <srcfiles dir="${project.basedir}/frontend/src" includes="**/*" />
+                                                    <srcfiles dir="${project.basedir}/frontend/build" includes="**/*" />
+                                                    <srcfiles file="${project.basedir}/frontend/vite.config.js" />
+                                                    <mapper type="merge" to="${project.build.outputDirectory}/public/index.html" />
+                                                </uptodate>
+                                            </and>
+                                        </condition>
+
+                                        <condition property="build.message"
+                                            value="No frontend changes detected - skipping npm build"
+                                            else="Frontend changes detected - will rebuild">
+                                            <and>
+                                                <istrue value="${frontend.build.skip}" />
+                                                <istrue value="${frontend.dependency.skip}" />
+                                            </and>
+                                        </condition>
+
+                                        <echo message="${build.message}" level="info" />
+                                    </target>
+                                    <exportAntProperties>true</exportAntProperties>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>copy-frontend-build</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${frontend.build.skip}</skip>
+                                    <target>
+                                        <copy todir="${project.build.outputDirectory}/public" failonerror="false">
+                                            <fileset dir="${project.basedir}/frontend/build" />
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Frontend build plugin -->
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.12.1</version>
+                        <configuration>
+                            <workingDirectory>frontend</workingDirectory>
+                            <installDirectory>${project.build.directory}</installDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install node and npm</id>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <configuration>
+                                    <nodeVersion>${app.frontend.nodeVersion}</nodeVersion>
+                                    <skip>${frontend.dependency.skip}</skip>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>ci</arguments>
+                                    <skip>${frontend.dependency.skip}</skip>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>npm run build</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run build</arguments>
+                                    <skip>${frontend.build.skip}</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>production</id>
             <activation>
@@ -406,7 +547,7 @@
                                     <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
-                                    <nodeVersion>v22.18.0</nodeVersion>
+                                    <nodeVersion>${app.frontend.nodeVersion}</nodeVersion>
                                 </configuration>
                             </execution>
                             <execution>

@@ -7,6 +7,8 @@ import ConvertedSectionTable from "main/components/Common/ConvertedSectionTable"
 export default function CourseOverTimeIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
   const [courseJSON, setCourseJSON] = useState([]);
+  // Stryker disable next-line all : Can't test state because hook is internal
+  const [hasSearched, setHasSearched] = useState(false);
 
   const objectToAxiosParams = (query) => ({
     url: "/api/public/courseovertime/search",
@@ -20,6 +22,7 @@ export default function CourseOverTimeIndexPage() {
 
   const onSuccess = (courses) => {
     setCourseJSON(courses);
+    setHasSearched(true);
   };
 
   const mutation = useBackendMutation(
@@ -38,7 +41,17 @@ export default function CourseOverTimeIndexPage() {
       <div className="pt-2">
         <h5>UCSB Course History Search</h5>
         <CourseOverTimeSearchForm fetchJSON={fetchCourseOverTimeJSON} />
-        <ConvertedSectionTable sections={courseJSON} />
+        {mutation.isLoading && (
+          <div className="text-center">Loading courses...</div>
+        )}
+        {!mutation.isLoading && hasSearched && courseJSON.length === 0 && (
+          <div className="text-center mt-3">
+            <p>No courses were found with the specified criteria.</p>
+          </div>
+        )}
+        {!mutation.isLoading && courseJSON.length > 0 && (
+          <ConvertedSectionTable sections={courseJSON} showSession />
+        )}
       </div>
     </BasicLayout>
   );
