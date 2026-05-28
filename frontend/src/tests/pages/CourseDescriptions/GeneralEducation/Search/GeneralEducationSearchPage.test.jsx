@@ -137,6 +137,11 @@ describe("GeneralEducationSearchPage tests", () => {
 
     expect(await screen.findByTestId("GEAreaCoursesTable")).toBeInTheDocument();
     expect(
+      screen.queryByText(
+        /No GE courses were found with the specified criteria/i,
+      ),
+    ).not.toBeInTheDocument();
+    expect(
       screen.getByTestId("GEAreaCoursesTable-cell-row-0-col-courseId"),
     ).toHaveTextContent("MATH 1A");
     expect(

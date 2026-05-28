@@ -68,7 +68,7 @@ describe("GEAreaCoursesTable tests", () => {
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-0-col-generalEducationAreas",
       ),
-    ).toHaveTextContent("A1, B");
+    ).toHaveTextContent(/^A1, B$/);
 
     expect(
       screen.getByTestId("GEAreaCoursesTable-cell-row-1-col-quarter"),
@@ -80,7 +80,7 @@ describe("GEAreaCoursesTable tests", () => {
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",
       ),
-    ).toHaveTextContent("C1");
+    ).toHaveTextContent(/^C1$/);
   });
 
   test("renders empty and trimmed GE area values correctly", () => {
@@ -107,12 +107,35 @@ describe("GEAreaCoursesTable tests", () => {
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-0-col-generalEducationAreas",
       ),
-    ).toHaveTextContent("");
+    ).toHaveTextContent(/^$/);
     expect(
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",
       ),
-    ).toHaveTextContent("C1");
+    ).toHaveTextContent(/^C1$/);
+  });
+
+  test("renders array-like non-array generalEducation objects as blank", () => {
+    const courses = [
+      {
+        quarter: "20234",
+        courseId: "TEST 3",
+        title: "Test Three",
+        description: "Array-like generalEducation",
+        generalEducation: {
+          length: 0,
+          map: () => ["SHOULD NOT SHOW"],
+        },
+      },
+    ];
+
+    render(<WrappedTable courses={courses} />);
+
+    expect(
+      screen.getByTestId(
+        "GEAreaCoursesTable-cell-row-0-col-generalEducationAreas",
+      ),
+    ).toHaveTextContent(/^$/);
   });
 
   test("renders fallback values for non-array and object general education values", () => {
@@ -143,11 +166,11 @@ describe("GEAreaCoursesTable tests", () => {
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-0-col-generalEducationAreas",
       ),
-    ).toHaveTextContent("");
+    ).toHaveTextContent(/^$/);
     expect(
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",
       ),
-    ).toHaveTextContent("CUSTOM");
+    ).toHaveTextContent(/^CUSTOM$/);
   });
 });
