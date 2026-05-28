@@ -13,9 +13,7 @@ vi.mock("main/components/GEAreas/GEAreaSearchForm", () => ({
     <div data-testid="ge-area-search-form">
       <button
         type="button"
-        onClick={() =>
-          fetchJSON(null, { quarter: "20232", area: "A1" })
-        }
+        onClick={() => fetchJSON(null, { quarter: "20232", area: "A1" })}
       >
         Search GE
       </button>
@@ -83,10 +81,12 @@ describe("GeneralEducationSearchPage tests", () => {
   });
 
   test("displays no results message when search returns empty course list", async () => {
-    useBackendMutationSpy.mockImplementation((objectToAxiosParams, options) => ({
-      isLoading: false,
-      mutate: () => options.onSuccess([]),
-    }));
+    useBackendMutationSpy.mockImplementation(
+      (objectToAxiosParams, options) => ({
+        isLoading: false,
+        mutate: () => options.onSuccess([]),
+      }),
+    );
 
     render(<WrappedPage />);
 
@@ -100,31 +100,33 @@ describe("GeneralEducationSearchPage tests", () => {
   });
 
   test("displays course results when search returns courses", async () => {
-    useBackendMutationSpy.mockImplementation((objectToAxiosParams, options) => ({
-      isLoading: false,
-      mutate: () =>
-        options.onSuccess([
-          {
-            quarter: "20232",
-            courseId: "MATH 1A",
-            title: "Calculus I",
-            description: "Intro to calculus",
-            generalEducation: ["A1"],
-          },
-        ]),
-    }));
+    useBackendMutationSpy.mockImplementation(
+      (objectToAxiosParams, options) => ({
+        isLoading: false,
+        mutate: () =>
+          options.onSuccess([
+            {
+              quarter: "20232",
+              courseId: "MATH 1A",
+              title: "Calculus I",
+              description: "Intro to calculus",
+              generalEducation: ["A1"],
+            },
+          ]),
+      }),
+    );
 
     render(<WrappedPage />);
     userEvent.click(screen.getByText("Search GE"));
 
-    expect(
-      await screen.findByTestId("GEAreaCoursesTable"),
-    ).toBeInTheDocument();
+    expect(await screen.findByTestId("GEAreaCoursesTable")).toBeInTheDocument();
     expect(
       screen.getByTestId("GEAreaCoursesTable-cell-row-0-col-courseId"),
     ).toHaveTextContent("MATH 1A");
     expect(
-      screen.getByTestId("GEAreaCoursesTable-cell-row-0-col-generalEducationAreas"),
+      screen.getByTestId(
+        "GEAreaCoursesTable-cell-row-0-col-generalEducationAreas",
+      ),
     ).toHaveTextContent("A1");
   });
 

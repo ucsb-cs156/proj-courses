@@ -36,10 +36,18 @@ describe("GEAreaCoursesTable tests", () => {
 
     render(<WrappedTable courses={courses} />);
 
-    expect(screen.getByTestId("GEAreaCoursesTable-header-quarter")).toBeInTheDocument();
-    expect(screen.getByTestId("GEAreaCoursesTable-header-courseId")).toBeInTheDocument();
-    expect(screen.getByTestId("GEAreaCoursesTable-header-title")).toBeInTheDocument();
-    expect(screen.getByTestId("GEAreaCoursesTable-header-description")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("GEAreaCoursesTable-header-quarter"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("GEAreaCoursesTable-header-courseId"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("GEAreaCoursesTable-header-title"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("GEAreaCoursesTable-header-description"),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId("GEAreaCoursesTable-header-generalEducationAreas"),
     ).toBeInTheDocument();
@@ -57,7 +65,9 @@ describe("GEAreaCoursesTable tests", () => {
       screen.getByTestId("GEAreaCoursesTable-cell-row-0-col-description"),
     ).toHaveTextContent("Intro to calculus");
     expect(
-      screen.getByTestId("GEAreaCoursesTable-cell-row-0-col-generalEducationAreas"),
+      screen.getByTestId(
+        "GEAreaCoursesTable-cell-row-0-col-generalEducationAreas",
+      ),
     ).toHaveTextContent("A1, B");
 
     expect(
@@ -67,7 +77,9 @@ describe("GEAreaCoursesTable tests", () => {
       screen.getByTestId("GEAreaCoursesTable-cell-row-1-col-courseId"),
     ).toHaveTextContent("CHEM 2B");
     expect(
-      screen.getByTestId("GEAreaCoursesTable-cell-row-1-col-generalEducationAreas"),
+      screen.getByTestId(
+        "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",
+      ),
     ).toHaveTextContent("C1");
   });
 });
