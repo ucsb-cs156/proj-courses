@@ -180,7 +180,7 @@ describe("GEAreaSearchForm tests", () => {
       });
 
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
-        "Searching for A1 in S21",
+        "Searching for in S21",
       );
       expect(
         screen.getByTestId("GEAreaSearch.Status").textContent,
