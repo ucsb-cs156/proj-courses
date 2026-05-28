@@ -94,16 +94,15 @@ public class UCSBAPIQuarterService {
     return result;
   }
 
+  // This empties the cache called currentQuarter
+  // every night at midnight
+  @Scheduled(cron = "0 0 0 * * *")
+  @CacheEvict(value = "currentQuarter", allEntries = true)
+  void evictCurrentQuarterAtMidnight() {}
 
-// This empties the cache called currentQuarter
-// every night at midnight
-@Scheduled(cron = "0 0 0 * * *")
-@CacheEvict(value = "currentQuarter", allEntries = true)
-void evictCurrentQuarterAtMidnight() {}
-
-// This says to cache the value in a cache called
-// currentQuarter, and only allow one call at a time
-@Cacheable(value = "currentQuarter", sync = true)
+  // This says to cache the value in a cache called
+  // currentQuarter, and only allow one call at a time
+  @Cacheable(value = "currentQuarter", sync = true)
   public UCSBAPIQuarter getCurrentQuarter() throws Exception {
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
