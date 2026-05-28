@@ -38,19 +38,19 @@ describe("GEAreaCoursesTable tests", () => {
 
     expect(
       screen.getByTestId("GEAreaCoursesTable-header-quarter"),
-    ).toBeInTheDocument();
+    ).toHaveTextContent("Quarter");
     expect(
       screen.getByTestId("GEAreaCoursesTable-header-courseId"),
-    ).toBeInTheDocument();
+    ).toHaveTextContent("Course Id");
     expect(
       screen.getByTestId("GEAreaCoursesTable-header-title"),
-    ).toBeInTheDocument();
+    ).toHaveTextContent("Title");
     expect(
       screen.getByTestId("GEAreaCoursesTable-header-description"),
-    ).toBeInTheDocument();
+    ).toHaveTextContent("Description");
     expect(
       screen.getByTestId("GEAreaCoursesTable-header-generalEducationAreas"),
-    ).toBeInTheDocument();
+    ).toHaveTextContent("General Education Areas");
 
     expect(
       screen.getByTestId("GEAreaCoursesTable-cell-row-0-col-quarter"),
@@ -76,6 +76,38 @@ describe("GEAreaCoursesTable tests", () => {
     expect(
       screen.getByTestId("GEAreaCoursesTable-cell-row-1-col-courseId"),
     ).toHaveTextContent("CHEM 2B");
+    expect(
+      screen.getByTestId(
+        "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",
+      ),
+    ).toHaveTextContent("C1");
+  });
+
+  test("renders empty and trimmed GE area values correctly", () => {
+    const courses = [
+      {
+        quarter: "20234",
+        courseId: "TEST 1",
+        title: "Test One",
+        description: "Empty areas",
+        generalEducation: [],
+      },
+      {
+        quarter: "20235",
+        courseId: "TEST 2",
+        title: "Test Two",
+        description: "Trimmed area",
+        generalEducation: [{ geCode: " C1 " }],
+      },
+    ];
+
+    render(<WrappedTable courses={courses} />);
+
+    expect(
+      screen.getByTestId(
+        "GEAreaCoursesTable-cell-row-0-col-generalEducationAreas",
+      ),
+    ).toHaveTextContent("");
     expect(
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",

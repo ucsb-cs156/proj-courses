@@ -69,6 +69,22 @@ describe("GeneralEducationSearchPage tests", () => {
     expect(screen.getByTestId("ge-area-search-form")).toBeInTheDocument();
   });
 
+  test("does not show results or no-results before the first search", () => {
+    useBackendMutationSpy.mockReturnValue({
+      isLoading: false,
+      mutate: vi.fn(),
+    });
+
+    render(<WrappedPage />);
+
+    expect(
+      screen.queryByText(
+        /No GE courses were found with the specified criteria/i,
+      ),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId("GEAreaCoursesTable")).not.toBeInTheDocument();
+  });
+
   test("shows loading indicator when backend mutation is loading", () => {
     useBackendMutationSpy.mockReturnValue({
       isLoading: true,
