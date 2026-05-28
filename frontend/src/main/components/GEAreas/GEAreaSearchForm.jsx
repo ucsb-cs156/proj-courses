@@ -33,17 +33,18 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
     [],
   );
 
-  const areaCodes = areas.map((r) => r.requirementCode);
+  const areaCodes = [...new Set(areas.map((r) => r.requirementCode))];
   const [quarter, setQuarter] = useState(
     localQuarter || quarters[0]?.yyyyq || startQtr,
   );
-  const [area, setArea] = useState(localArea || "ALL");
+  const [area, setArea] = useState(localArea);
+  const currentArea = areaCodes.includes(area) ? area : areaCodes[0];
 
   const handleSubmit = (event) => {
     event.preventDefault();
     localStorage.setItem(quarterKey, quarter);
-    localStorage.setItem(areaKey, area);
-    fetchJSON(event, { quarter, area });
+    localStorage.setItem(areaKey, currentArea);
+    fetchJSON(event, { quarter, area: currentArea });
   };
 
   return (
@@ -61,12 +62,9 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
               <Form.Label>General Education Area</Form.Label>
               <Form.Control
                 as="select"
-                value={area}
+                value={currentArea}
                 onChange={(e) => setArea(e.target.value)}
               >
-                <option data-testid="GEAreaSearch.Area-option-all" value="ALL">
-                  ALL
-                </option>
                 {areaCodes.map((code) => {
                   const testid = `GEAreaSearch.Area-option-${code}`;
                   return (
@@ -87,7 +85,7 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
           </Col>
           <Col>
             <p data-testid="GEAreaSearch.Status">
-              Searching for {area} in {yyyyqToQyy(quarter)}
+              Searching for {currentArea} in {yyyyqToQyy(quarter)}
             </p>
           </Col>
         </Row>

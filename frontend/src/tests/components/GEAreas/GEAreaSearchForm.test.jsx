@@ -141,21 +141,41 @@ describe("GEAreaSearchForm tests", () => {
       expect(setItemSpy).toHaveBeenCalledWith("GEAreaSearch.Quarter", "20212");
     });
 
-    test("when local state for area is empty, we get ALL", () => {
+    test("when local state for area is empty, defaults to first GE area", async () => {
       getItemSpy.mockImplementation((key) => {
         if (key === "GEAreaSearch.Quarter") {
           return "20212";
         }
         if (key === "GEAreaSearch.Area") {
-          return null; // Simulate empty local state
+          return null;
         }
         return null;
       });
       render(<WrappedForm />);
-      const areaSelect = screen.getByLabelText("General Education Area");
-      expect(areaSelect.value).toBe("ALL");
+      await screen.findByTestId("GEAreaSearch.Area-option-A1");
+
+      expect(screen.getByLabelText("General Education Area").value).toBe("A1");
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
-        "Searching for ALL in S21",
+        "Searching for A1 in S21",
+      );
+    });
+
+    test("legacy ALL in local storage defaults to first GE area", async () => {
+      getItemSpy.mockImplementation((key) => {
+        if (key === "GEAreaSearch.Quarter") {
+          return "20212";
+        }
+        if (key === "GEAreaSearch.Area") {
+          return "ALL";
+        }
+        return null;
+      });
+      render(<WrappedForm />);
+      await screen.findByTestId("GEAreaSearch.Area-option-A1");
+
+      expect(screen.getByLabelText("General Education Area").value).toBe("A1");
+      expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
+        "Searching for A1 in S21",
       );
     });
 
@@ -186,31 +206,68 @@ describe("GEAreaSearchForm tests", () => {
       expect(screen.getByLabelText("Quarter").value).toEqual(fallbackStartQtr);
     });
 
-    test("when local state for quarter is empty, we get ALL", () => {
+    test("when local state for quarter is empty, uses first quarter from range", async () => {
       getItemSpy.mockImplementation((key) => {
         if (key === "GEAreaSearch.Quarter") {
           return null;
         }
         if (key === "GEAreaSearch.Area") {
-          return "MATH"; // Simulate empty local state
+          return "B";
         }
         return null;
       });
       render(<WrappedForm />);
       const quarterSelect = screen.getByLabelText("Quarter");
       expect(quarterSelect.value).toBe("20211");
+      await screen.findByTestId("GEAreaSearch.Area-option-B");
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
-        "Searching for MATH in W21",
+        "Searching for B in W21",
       );
+    });
+
+    test("deduplicates area codes in the dropdown", async () => {
+      axiosMock.onGet("/api/public/generalEducationInfo").reply(200, [
+        {
+          requirementCode: "A1",
+          requirementTranslation: "English Reading & Composition",
+          collegeCode: "ENGR",
+          objCode: "BS",
+          courseCount: 1,
+          units: 4,
+          inactive: false,
+        },
+        {
+          requirementCode: "A1",
+          requirementTranslation: "Duplicate A1",
+          collegeCode: "L&S",
+          objCode: "BA",
+          courseCount: 1,
+          units: 4,
+          inactive: false,
+        },
+        {
+          requirementCode: "B",
+          requirementTranslation: "Foreign Language - L&S",
+          collegeCode: "L&S",
+          objCode: "BA",
+          courseCount: 1,
+          units: 4,
+          inactive: false,
+        },
+      ]);
+
+      render(<WrappedForm />);
+      await screen.findByTestId("GEAreaSearch.Area-option-A1");
+
+      const areaSelect = screen.getByLabelText("General Education Area");
+      const optionValues = [...areaSelect.options].map((o) => o.value);
+      expect(optionValues.filter((v) => v === "A1")).toHaveLength(1);
+      expect(optionValues).toContain("B");
     });
 
     test("selecting GE area updates state", async () => {
       render(<WrappedForm />);
-      // wait for options to load
       await screen.findByTestId("GEAreaSearch.Area-option-A1");
-      expect(
-        screen.getByTestId("GEAreaSearch.Area-option-all"),
-      ).toBeInTheDocument();
       expect(
         screen.getByTestId("GEAreaSearch.Area-option-A1"),
       ).toBeInTheDocument();
@@ -218,7 +275,6 @@ describe("GEAreaSearchForm tests", () => {
         screen.getByTestId("GEAreaSearch.Area-option-B"),
       ).toBeInTheDocument();
 
-      await screen.findByTestId("GEAreaSearch.Area-option-B");
       const areaSelect = screen.getByLabelText("General Education Area");
       userEvent.selectOptions(areaSelect, "B");
       expect(areaSelect.value).toBe("B");
@@ -257,12 +313,14 @@ describe("GEAreaSearchForm tests", () => {
       expect(setItemSpy).toHaveBeenCalledWith("GEAreaSearch.Quarter", "20212");
       expect(setItemSpy).toHaveBeenCalledWith("GEAreaSearch.Area", "A1");
     });
-    test("falls back to startQtr when quarters is empty", () => {
+
+    test("falls back to startQtr when quarters is empty", async () => {
       quarterUtilities.quarterRange.mockReturnValue([{ yyyyq: null }]);
       getItemSpy.mockImplementation(() => null);
       render(<WrappedForm />);
+      await screen.findByTestId("GEAreaSearch.Area-option-A1");
       expect(screen.getByTestId("GEAreaSearch.Status")).toHaveTextContent(
-        "W21",
+        "Searching for A1 in W21",
       );
     });
   });
