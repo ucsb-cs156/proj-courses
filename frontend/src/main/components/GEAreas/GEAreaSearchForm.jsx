@@ -37,7 +37,9 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
   const [quarter, setQuarter] = useState(
     localQuarter || quarters[0]?.yyyyq || startQtr,
   );
-  const [area, setArea] = useState(localArea || "ALL");
+  const [area, setArea] = useState(
+    localArea || (areaCodes.length > 0 ? areaCodes[0] : ""),
+  );
 
   const handleSubmit = (event) => {
     event.preventDefault();
