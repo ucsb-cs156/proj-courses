@@ -64,9 +64,6 @@ const GEAreaSearchForm = ({ fetchJSON }) => {
                 value={area}
                 onChange={(e) => setArea(e.target.value)}
               >
-                <option data-testid="GEAreaSearch.Area-option-all" value="ALL">
-                  ALL
-                </option>
                 {areaCodes.map((code) => {
                   const testid = `GEAreaSearch.Area-option-${code}`;
                   return (
