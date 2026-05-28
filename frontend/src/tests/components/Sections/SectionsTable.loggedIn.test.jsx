@@ -37,7 +37,10 @@ vi.mock("react-toastify", async (importOriginal) => {
 
 vi.mock("main/utils/useBackend", async () => ({
   useBackend: vi.fn(),
-  useBackendMutation: vi.fn(),
+  useBackendMutation: vi.fn().mockReturnValue({
+    mutate: vi.fn(),
+    isLoading: false,
+  }),
 }));
 
 vi.mock("main/utils/currentUser", async () => ({
@@ -54,7 +57,10 @@ describe("SectionsTable tests", () => {
       const queryClient = new QueryClient();
       const mockMutate = vi.fn();
 
-      useBackendMutation.mockReturnValue({ mutate: mockMutate });
+      useBackendMutation.mockReturnValue({
+        mutate: mockMutate,
+        isLoading: false,
+      });
 
       render(
         <QueryClientProvider client={queryClient}>
@@ -67,7 +73,7 @@ describe("SectionsTable tests", () => {
         </QueryClientProvider>,
       );
 
-      expect(useBackendMutation).toHaveBeenCalledTimes(1);
+      expect(useBackendMutation).toHaveBeenCalledTimes(2);
 
       const [axiosParamsFn] = useBackendMutation.mock.calls[0];
 
@@ -89,7 +95,10 @@ describe("SectionsTable tests", () => {
 
     const renderAndGetCallbacks = () => {
       const mockMutate = vi.fn();
-      useBackendMutation.mockReturnValue({ mutate: mockMutate });
+      useBackendMutation.mockReturnValue({
+        mutate: mockMutate,
+        isLoading: false,
+      });
 
       render(
         <QueryClientProvider client={queryClient}>
@@ -141,7 +150,10 @@ describe("SectionsTable tests", () => {
       restoreConsole = mockConsole();
 
       const mockMutate = vi.fn();
-      useBackendMutation.mockReturnValue({ mutate: mockMutate });
+      useBackendMutation.mockReturnValue({
+        mutate: mockMutate,
+        isLoading: false,
+      });
 
       render(
         <QueryClientProvider client={queryClient}>
@@ -196,6 +208,10 @@ describe("SectionsTable tests", () => {
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
       vi.clearAllMocks();
+      useBackendMutation.mockReturnValue({
+        mutate: vi.fn(),
+        isLoading: false,
+      });
       axiosMock.reset();
       axiosMock.resetHistory();
       axiosMock
@@ -546,6 +562,7 @@ describe("SectionsTable tests", () => {
 
       useBackendMutation.mockReturnValue({
         mutate: mockMutate,
+        isLoading: false,
       });
 
       render(
