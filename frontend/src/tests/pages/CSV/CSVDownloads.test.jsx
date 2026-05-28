@@ -10,10 +10,10 @@ import { allTheSubjects } from "fixtures/subjectFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 describe("CSVDownloadsPage tests", () => {
-  const axiosMock = new AxiosMockAdapter(axios);
-  const originalLocation = window.location;
+  let axiosMock;
 
   beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
     const localStorageStore = {};
     const localStorageMock = {
       getItem: (key) => localStorageStore[key] || null,
@@ -51,17 +51,16 @@ describe("CSVDownloadsPage tests", () => {
   });
 
   afterEach(() => {
-    delete window.location;
-    window.location = originalLocation;
+    axiosMock.restore();
   });
 
-  const renderPage = () => {
+  const renderPage = (browserLocation = window.location) => {
     const queryClient = new QueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CSVDownloadsPage />
+          <CSVDownloadsPage browserLocation={browserLocation} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -69,11 +68,10 @@ describe("CSVDownloadsPage tests", () => {
 
   const mockLocationAssign = () => {
     const assignMock = vi.fn();
-    delete window.location;
-    window.location = Object.assign(new URL("http://localhost:3000"), {
-      assign: assignMock,
-    });
-    return assignMock;
+    return {
+      assignMock,
+      browserLocation: { assign: assignMock },
+    };
   };
 
   test("renders correctly", async () => {
@@ -124,8 +122,8 @@ describe("CSVDownloadsPage tests", () => {
   });
 
   test("submitting by-quarter form downloads selected quarter", async () => {
-    const assignMock = mockLocationAssign();
-    renderPage();
+    const { assignMock, browserLocation } = mockLocationAssign();
+    renderPage(browserLocation);
 
     const quarterDropdown = (await screen.findAllByLabelText("Quarter"))[0];
     const byQuarterButton = screen.getAllByRole("button", {
@@ -143,8 +141,8 @@ describe("CSVDownloadsPage tests", () => {
   });
 
   test("submitting by-quarter-and-subject form includes all endpoint parameters", async () => {
-    const assignMock = mockLocationAssign();
-    renderPage();
+    const { assignMock, browserLocation } = mockLocationAssign();
+    renderPage(browserLocation);
 
     fireEvent.click(
       screen.getByRole("button", {
@@ -186,8 +184,8 @@ describe("CSVDownloadsPage tests", () => {
   });
 
   test("submitting by-quarter-and-subject form includes default parameters", async () => {
-    const assignMock = mockLocationAssign();
-    renderPage();
+    const { assignMock, browserLocation } = mockLocationAssign();
+    renderPage(browserLocation);
 
     await waitFor(() =>
       expect(
