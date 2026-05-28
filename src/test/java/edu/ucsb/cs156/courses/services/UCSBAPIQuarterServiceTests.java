@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -31,11 +32,11 @@ import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBAPIQuarterService.class)
 @TestPropertySource(
-    properties = {
-      "app.startQtrYYYYQ=20211",
-      "app.endQtrYYYYQ=20223",
-      "app.ucsb.api.consumer_key=fakeApiKey"
-    })
+    properties = {"app.startQtrYYYYQ=20211", "app.ucsb.api.consumer_key=fakeApiKey"})
+// Previous versions of this app had an endQtrYYYYQ that was set via environment variables. This has
+// been removed from tests, but the UCSBAPIQuarterService has been set to a default "20223" for
+// testing purposes. As to not have to mock an api request in every test for a completely dynamic
+// endQtr.
 public class UCSBAPIQuarterServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")
@@ -51,6 +52,18 @@ public class UCSBAPIQuarterServiceTests {
 
   @Autowired private ObjectMapper objectMapper;
 
+  @BeforeEach
+  public void setup() {
+    service.setEndQtrYYYYQ("20223");
+  }
+
+  @Test
+  public void test_evictCurrentQuarterAtMidnight() {
+    // AB - Skipping test for now, as I don't know how to test cacheable items yet as their managed
+    // by springboot elsewhere
+    service.evictCurrentQuarterAtMidnight();
+  }
+
   @Test
   public void test_getStartQtrYYYYQ() {
     assertEquals("20211", service.getStartQtrYYYYQ());
@@ -59,7 +72,15 @@ public class UCSBAPIQuarterServiceTests {
   @Test
   public void test_getEndQtrYYYYQ() {
     assertEquals("20223", service.getEndQtrYYYYQ());
-  } // the value of app.endQtrYYYYQ is configured using @TestPropertySource
+  }
+
+  @Test
+  public void test_setEndQtrYYYYQ() {
+    service.setEndQtrYYYYQ("20224");
+    assertEquals("20224", service.getEndQtrYYYYQ());
+    service.setEndQtrYYYYQ("20232");
+    assertEquals("20232", service.getEndQtrYYYYQ());
+  }
 
   @Test
   public void test_getCurrentQuarterYYYYQ() throws Exception {
