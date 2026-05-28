@@ -34,7 +34,9 @@ describe("GeneralEducationSearchPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText(/UCSB General Education Search/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/UCSB General Education Search/i),
+    ).toBeInTheDocument();
     expect(screen.getByTestId("ge-area-search-form")).toBeInTheDocument();
   });
 });

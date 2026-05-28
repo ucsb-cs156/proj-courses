@@ -48,5 +48,7 @@ export default function GEAreaCoursesTable({ courses }) {
     },
   ];
 
-  return <OurTable data={courses} columns={columns} testid="GEAreaCoursesTable" />;
+  return (
+    <OurTable data={courses} columns={columns} testid="GEAreaCoursesTable" />
+  );
 }
