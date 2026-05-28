@@ -19,7 +19,7 @@ describe("SingleQuarterSelector tests", () => {
     vi.clearAllMocks();
   });
 
-  const quarter = vi.fn();
+  const quarter = "20211";
   const setQuarter = vi.fn();
 
   test("renders without crashing on one quarter", () => {

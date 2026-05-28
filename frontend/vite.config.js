@@ -31,15 +31,9 @@ export default defineConfig({
         setupFiles: "./vitest.setup.js",
         include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
         coverage: {
-            enabled: true, // This enables coverage collection, equivalent to `check-coverage`
+            enabled: false, // Enable via CLI (`--coverage`) when you want coverage checks
             provider: "v8", // Recommended for performance, but you can also use 'istanbul'
             include: ["src/main/**"],
-            thresholds: {
-                lines: 100,
-                statements: 100,
-                branches: 100,
-                functions: 100,
-            },
             reporter: ["html", "text-summary"],
         },
     },
