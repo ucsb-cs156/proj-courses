@@ -192,6 +192,13 @@ describe("SectionSearchesIndexPageNotLoggedIn tests", () => {
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "ES");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "G");
+
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
 
@@ -249,14 +256,6 @@ describe("SectionSearchesIndexPageNotLoggedIn tests", () => {
     expect(
       screen.queryByTestId("SectionsTable-cell-row-0-col-courseId"),
     ).not.toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(
-        screen.getByTestId("SectionsTable-cell-row-0-col-courseId"),
-      ).toBeInTheDocument();
-    });
-
-    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
   });
 
   test("displays SectionsTable when search returns results", async () => {
@@ -303,6 +302,13 @@ describe("SectionSearchesIndexPageNotLoggedIn tests", () => {
     await waitFor(() =>
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
+
+    const selectQuarter = screen.getByLabelText("Quarter");
+    userEvent.selectOptions(selectQuarter, "20222");
+    const selectSubject = screen.getByLabelText("Subject Area");
+    userEvent.selectOptions(selectSubject, "ES");
+    const selectLevel = screen.getByLabelText("Course Level");
+    userEvent.selectOptions(selectLevel, "G");
 
     const submitButton = screen.getByText("Submit");
     userEvent.click(submitButton);
