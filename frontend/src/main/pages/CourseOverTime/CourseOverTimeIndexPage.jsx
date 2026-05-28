@@ -54,7 +54,10 @@ export default function CourseOverTimeIndexPage() {
 
         {/* Results table */}
         {!mutation.isLoading && courseJSON.length > 0 && (
-          <ConvertedSectionTable sections={courseJSON} />
+          <ConvertedSectionTable
+            sections={courseJSON}
+            groupSectionsUnderLectures
+          />
         )}
       </div>
     </BasicLayout>
