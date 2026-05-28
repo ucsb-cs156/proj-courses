@@ -4,7 +4,7 @@ import { yyyyqToQyy } from "main/utils/quarterUtilities";
 
 const getGeneralEducationAreas = (course) => {
   const areas = course.generalEducation;
-  if (!areas || !Array.isArray(areas) || areas.length === 0) {
+  if (!areas || !Array.isArray(areas)) {
     return "";
   }
 
@@ -14,7 +14,7 @@ const getGeneralEducationAreas = (course) => {
         return "";
       }
       if (typeof area === "string") {
-        return area;
+        return area.trim();
       }
       return area.geCode ? area.geCode.trim() : area.toString();
     })

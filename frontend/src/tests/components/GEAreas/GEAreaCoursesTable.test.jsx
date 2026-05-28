@@ -96,8 +96,8 @@ describe("GEAreaCoursesTable tests", () => {
         quarter: "20235",
         courseId: "TEST 2",
         title: "Test Two",
-        description: "Trimmed area",
-        generalEducation: [{ geCode: " C1 " }],
+        description: "Trimmed string and object areas",
+        generalEducation: [" A1 ", { geCode: " C1 " }],
       },
     ];
 
@@ -112,7 +112,7 @@ describe("GEAreaCoursesTable tests", () => {
       screen.getByTestId(
         "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",
       ),
-    ).toHaveTextContent(/^C1$/);
+    ).toHaveTextContent(/^A1, C1$/);
   });
 
   test("renders array-like non-array generalEducation objects as blank", () => {
