@@ -198,7 +198,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "ES");
+    userEvent.selectOptions(selectSubject, "ESS");
     const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
     const submitButton = screen.getByText("Submit");
@@ -310,7 +310,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "ES");
+    userEvent.selectOptions(selectSubject, "ESS");
     const selectLevel = screen.getByLabelText("Course Level");
     userEvent.selectOptions(selectLevel, "G");
 
