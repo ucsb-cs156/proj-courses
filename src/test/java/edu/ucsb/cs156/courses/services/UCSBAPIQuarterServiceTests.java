@@ -58,6 +58,13 @@ public class UCSBAPIQuarterServiceTests {
   }
 
   @Test
+  public void test_evictCurrentQuarterAtMidnight() {
+    // AB - Skipping test for now, as I don't know how to test cacheable items yet as their managed
+    // by springboot elsewhere
+    service.evictCurrentQuarterAtMidnight();
+  }
+
+  @Test
   public void test_getStartQtrYYYYQ() {
     assertEquals("20211", service.getStartQtrYYYYQ());
   } // the value of app.startQtrYYYYQ is configured using @TestPropertySource
