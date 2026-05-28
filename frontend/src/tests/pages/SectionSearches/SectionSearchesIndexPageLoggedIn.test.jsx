@@ -194,7 +194,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     await waitFor(() =>
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
-    
+
     const selectQuarter = screen.getByLabelText("Quarter");
     userEvent.selectOptions(selectQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
@@ -258,7 +258,6 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     expect(
       screen.queryByTestId("SectionsTable-cell-row-0-col-courseId"),
     ).not.toBeInTheDocument();
-
   });
 
   test("displays SectionsTable when search returns results", async () => {
@@ -300,7 +299,6 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
     await waitFor(() =>
