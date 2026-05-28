@@ -44,6 +44,7 @@ public class CustomErrorControllerTests {
     assertFalse(stackTrace.isEmpty());
     assertTrue(stackTrace.contains("RuntimeException"));
     assertTrue(stackTrace.contains("This is a test exception to trigger the custom error page"));
+    assertNotNull(model.getAttribute("timestamp"));
   }
 
   @Test
@@ -59,6 +60,7 @@ public class CustomErrorControllerTests {
     assertEquals("custom-error", viewName);
     assertEquals(999, model.getAttribute("status"));
     assertEquals("Unknown Error", model.getAttribute("error"));
+    assertNotNull(model.getAttribute("timestamp"));
   }
 
   @Test
@@ -76,6 +78,7 @@ public class CustomErrorControllerTests {
     assertEquals("", model.getAttribute("path"));
     assertEquals("", model.getAttribute("exceptionMessage"));
     assertEquals("", model.getAttribute("stackTrace"));
+    assertNotNull(model.getAttribute("timestamp"));
   }
 
   @Test
@@ -91,5 +94,6 @@ public class CustomErrorControllerTests {
     assertEquals("custom-error", viewName);
     assertEquals(404, model.getAttribute("status"));
     assertEquals("Not Found", model.getAttribute("error"));
+    assertNotNull(model.getAttribute("timestamp"));
   }
 }
