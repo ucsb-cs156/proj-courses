@@ -108,10 +108,14 @@ describe("GEAreaCoursesTable tests", () => {
     render(<WrappedTable courses={courses} />);
 
     expect(
-      screen.getByTestId("GEAreaCoursesTable-cell-row-0-col-generalEducationAreas"),
+      screen.getByTestId(
+        "GEAreaCoursesTable-cell-row-0-col-generalEducationAreas",
+      ),
     ).toHaveTextContent("");
     expect(
-      screen.getByTestId("GEAreaCoursesTable-cell-row-1-col-generalEducationAreas"),
+      screen.getByTestId(
+        "GEAreaCoursesTable-cell-row-1-col-generalEducationAreas",
+      ),
     ).toHaveTextContent("CUSTOM");
   });
 });

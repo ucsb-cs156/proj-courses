@@ -140,15 +140,11 @@ describe("GeneralEducationSearchPage tests", () => {
     render(<WrappedPage />);
 
     expect(objectToAxiosParams).toBeDefined();
-    expect(
-      objectToAxiosParams({ quarter: "20232", area: "ALL" }),
-    ).toEqual({
+    expect(objectToAxiosParams({ quarter: "20232", area: "ALL" })).toEqual({
       url: "/api/public/primariesge",
       params: { qtr: "20232", area: "" },
     });
-    expect(
-      objectToAxiosParams({ quarter: "20232", area: "A1" }),
-    ).toEqual({
+    expect(objectToAxiosParams({ quarter: "20232", area: "A1" })).toEqual({
       url: "/api/public/primariesge",
       params: { qtr: "20232", area: "A1" },
     });
