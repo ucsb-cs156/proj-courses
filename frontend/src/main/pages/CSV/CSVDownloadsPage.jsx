@@ -16,7 +16,9 @@ const csvLevels = [
 ];
 // Stryker restore all
 
-export default function CSVDownloadsPage() {
+export default function CSVDownloadsPage({
+  browserLocation = window.location,
+}) {
   const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable OptionalChaining
@@ -54,7 +56,7 @@ export default function CSVDownloadsPage() {
     `&withTimeLocations=${withTimeLocations}`;
 
   const downloadCsv = (url) => {
-    window.location.assign(url);
+    browserLocation.assign(url);
   };
 
   const handleQuarterSubmit = (e) => {
