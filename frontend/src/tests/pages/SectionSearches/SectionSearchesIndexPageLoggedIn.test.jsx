@@ -36,7 +36,10 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
   });
 
   const queryClient = new QueryClient();
-  test("renders without crashing", () => {
+  test("renders without crashing", async () => {
+    axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
+    axiosMock.onGet("/api/personalschedules/all").reply(200, []);
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -44,6 +47,15 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+
+    expect(
+      screen.getByRole("heading", { level: 5, name: "UCSB Courses Search" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Submit")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Subject Area")).toBeInTheDocument();
+    });
   });
 
   test("calls UCSB section search api correctly with 1 section response", async () => {
@@ -206,11 +218,13 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          /No courses were found with the specified criteria./i,
+        ),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
     });
-
-    expect(
-      screen.queryByText(/No courses were found with the specified criteria./i),
-    ).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(
@@ -219,6 +233,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     });
 
     expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
   });
 
   test("displays loading message while search is in progress", async () => {
@@ -255,9 +270,17 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
     });
 
-    expect(
-      screen.queryByTestId("SectionsTable-cell-row-0-col-courseId"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
+    expect(screen.queryByText("MATH 2A")).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("SectionsTable-cell-row-0-col-courseId"),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
+    expect(screen.getByText("Course ID")).toBeInTheDocument();
   });
 
   test("displays SectionsTable when search returns results", async () => {
@@ -324,5 +347,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     expect(
       screen.queryByTestId("SectionsTable-cell-row-0-col-courseId"),
     ).not.toBeInTheDocument();
+    expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
+    expect(screen.queryByText("Title")).not.toBeInTheDocument();
   });
 });
