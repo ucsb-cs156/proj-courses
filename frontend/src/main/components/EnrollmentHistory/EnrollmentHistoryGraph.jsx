@@ -12,11 +12,12 @@ import {
   createEnrollmentHistoryChartData,
   formatDateCreated,
   formatEnrollmentTooltip,
-  lineColors,
+  lineColors as defaultLineColors,
 } from "main/components/EnrollmentHistory/EnrollmentHistoryHelper";
 
 const EnrollmentHistoryGraph = ({
   data = [],
+  lineColors = defaultLineColors,
   title = "Enrollment History",
 }) => {
   const { chartData, series } = createEnrollmentHistoryChartData(data);
