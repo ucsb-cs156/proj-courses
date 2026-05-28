@@ -6,10 +6,7 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import SingleQuarterDropdown from "../Quarters/SingleQuarterDropdown";
 import { useBackend } from "main/utils/useBackend";
 import { yyyyqToQyy } from "main/utils/quarterUtilities";
-import {
-  deduplicateAreaCodes,
-  getResolvedArea,
-} from "./geAreaSearchFormUtils";
+import { deduplicateAreaCodes, getResolvedArea } from "./geAreaSearchFormUtils";
 
 const GEAreaSearchForm = ({ fetchJSON }) => {
   const { data: systemInfo } = useSystemInfo();
