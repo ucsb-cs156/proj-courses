@@ -82,4 +82,36 @@ describe("GEAreaCoursesTable tests", () => {
       ),
     ).toHaveTextContent("C1");
   });
+
+  test("renders fallback values for non-array and object general education values", () => {
+    const courses = [
+      {
+        quarter: "20234",
+        courseId: "TEST 1",
+        title: "Test One",
+        description: "Non-array generalEducation",
+        generalEducation: "A1",
+      },
+      {
+        quarter: "20235",
+        courseId: "TEST 2",
+        title: "Test Two",
+        description: "Object fallback generalEducation",
+        generalEducation: [
+          {
+            toString: () => "CUSTOM",
+          },
+        ],
+      },
+    ];
+
+    render(<WrappedTable courses={courses} />);
+
+    expect(
+      screen.getByTestId("GEAreaCoursesTable-cell-row-0-col-generalEducationAreas"),
+    ).toHaveTextContent("");
+    expect(
+      screen.getByTestId("GEAreaCoursesTable-cell-row-1-col-generalEducationAreas"),
+    ).toHaveTextContent("CUSTOM");
+  });
 });

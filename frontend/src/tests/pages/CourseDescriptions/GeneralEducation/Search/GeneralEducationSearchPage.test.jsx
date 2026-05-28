@@ -130,6 +130,30 @@ describe("GeneralEducationSearchPage tests", () => {
     ).toHaveTextContent("A1");
   });
 
+  test("objectToAxiosParams converts ALL area to empty string and keeps other values", () => {
+    let objectToAxiosParams;
+    useBackendMutationSpy.mockImplementation((objectToAxiosParamsParam) => {
+      objectToAxiosParams = objectToAxiosParamsParam;
+      return { isLoading: false, mutate: vi.fn() };
+    });
+
+    render(<WrappedPage />);
+
+    expect(objectToAxiosParams).toBeDefined();
+    expect(
+      objectToAxiosParams({ quarter: "20232", area: "ALL" }),
+    ).toEqual({
+      url: "/api/public/primariesge",
+      params: { qtr: "20232", area: "" },
+    });
+    expect(
+      objectToAxiosParams({ quarter: "20232", area: "A1" }),
+    ).toEqual({
+      url: "/api/public/primariesge",
+      params: { qtr: "20232", area: "A1" },
+    });
+  });
+
   test("initializes useBackendMutation with correct options", () => {
     useBackendMutationSpy.mockReturnValue({
       isLoading: false,
