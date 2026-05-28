@@ -38,7 +38,7 @@
     "start": "vite",
     "test": "vitest run",
     "test:watch": "vitest",
-    "coverage": "vitest run --coverage --coverage.thresholds.lines=100 --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100",
+    "coverage": "vitest run --coverage --coverage.reportsDirectory=./coverage --coverage.reporter=html --coverage.reporter=text-summary --coverage.thresholds.lines=100 --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100",
     "test:watch:coverage": "vitest --coverage",
     "check-format": "prettier --check \"src/**/*.{js,jsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",

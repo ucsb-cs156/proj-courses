@@ -34,6 +34,7 @@ export default defineConfig({
             enabled: false, // Enable via CLI (`--coverage`) when you want coverage checks
             provider: "v8", // Recommended for performance, but you can also use 'istanbul'
             include: ["src/main/**"],
+            reportsDirectory: "./coverage",
             reporter: ["html", "text-summary"],
         },
     },
