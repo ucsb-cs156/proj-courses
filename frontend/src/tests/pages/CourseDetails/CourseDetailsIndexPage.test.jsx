@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
@@ -10,6 +10,7 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 import { oneQuarterCourse } from "fixtures/gradeHistoryFixtures";
+import { enrollmentDataPointFixtures } from "fixtures/enrollmentDataPointFixtures";
 
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
@@ -69,12 +70,25 @@ vi.mock("recharts", async () => {
 
 describe("CourseDetailsIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
+  let queryClient;
+
+  const renderPage = () => {
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CourseDetailsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+  };
+
   beforeEach(() => {
     vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 
   beforeEach(() => {
+    queryClient = new QueryClient();
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -93,30 +107,30 @@ describe("CourseDetailsIndexPage tests", () => {
         params: { subjectArea: "CHEM", courseNumber: "184" },
       })
       .reply(200, oneQuarterCourse);
+    axiosMock
+      .onGet("/api/enrollment/search", {
+        params: {
+          startQtr: "20221",
+          endQtr: "20221",
+          subjectArea: "CHEM",
+          courseNumber: "184",
+        },
+      })
+      .reply(
+        200,
+        enrollmentDataPointFixtures.cmpsc130aMultipleSectionsOverTime,
+      );
   });
 
-  const queryClient = new QueryClient();
   test("renders without crashing", () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseDetailsIndexPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderPage();
   });
 
   test("Calls UCSB Section Search api correctly and displays correct information", async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseDetailsIndexPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderPage();
 
     expect(
-      screen.getByText("Course Details for CHEM 184 W22"),
+      await screen.findByText("Course Details for CHEM 184 W22"),
     ).toBeInTheDocument();
 
     expect(screen.getByText("Enroll Code")).toBeInTheDocument();
@@ -136,28 +150,49 @@ describe("CourseDetailsIndexPage tests", () => {
   });
 
   test("Calls grade history api correctly and displays correct information", async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseDetailsIndexPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    renderPage();
+
+    expect(
+      await screen.findByText("Fall 2009 - GONZALEZ T F"),
+    ).toBeInTheDocument();
+  });
+
+  test("Calls enrollment history api correctly", async () => {
+    renderPage();
+
+    await waitFor(() => {
+      expect(
+        axiosMock.history.get.some(
+          (request) => request.url === "/api/enrollment/search",
+        ),
+      ).toBe(true);
+    });
+
+    const enrollmentHistoryRequest = axiosMock.history.get.find(
+      (request) => request.url === "/api/enrollment/search",
     );
 
-    expect(screen.getByText("Fall 2009 - GONZALEZ T F")).toBeInTheDocument();
+    expect(enrollmentHistoryRequest.params).toEqual({
+      startQtr: "20221",
+      endQtr: "20221",
+      subjectArea: "CHEM",
+      courseNumber: "184",
+    });
+  });
+
+  test("passes returned enrollment history data to the graph", async () => {
+    renderPage();
+
+    expect(await screen.findByText("07609 - Section 0100")).toBeInTheDocument();
+    expect(screen.getByText("07617 - Section 0101")).toBeInTheDocument();
+    expect(screen.getByText("07625 - Section 0102")).toBeInTheDocument();
   });
 
   test("renders enrollment history graph between course description and grade history", async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CourseDetailsIndexPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderPage();
 
     const courseDescription = await screen.findByText("Course Description");
-    const enrollmentHistoryGraph = screen.getByTestId(
+    const enrollmentHistoryGraph = await screen.findByTestId(
       "enrollment-history-graph",
     );
     const gradeHistoryGraphs = await screen.findByTestId(

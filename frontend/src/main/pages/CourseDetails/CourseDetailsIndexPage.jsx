@@ -8,7 +8,6 @@ import CourseDescriptionTable from "main/components/Courses/CourseDescriptionTab
 import GradeHistoryGraphs from "main/components/GradeHistory/GradeHistoryGraph";
 import FinalExamCard from "main/components/Finals/FinalExamCard";
 import EnrollmentHistoryGraph from "main/components/EnrollmentHistory/EnrollmentHistoryGraph";
-import { enrollmentDataPointFixtures } from "fixtures/enrollmentDataPointFixtures";
 
 export default function CourseDetailsIndexPage() {
   // Stryker disable next-line all : Can't test state because hook is internal
@@ -72,8 +71,23 @@ export default function CourseDetailsIndexPage() {
       },
     },
   );
-  const enrollmentHistory =
-    enrollmentDataPointFixtures.cmpsc130aMultipleSectionsOverTime;
+  const { data: enrollmentHistory } = useBackend(
+    [
+      `/api/enrollment/search?startQtr=${qtr}&endQtr=${qtr}&subjectArea=${subjectArea}&courseNumber=${trimmedCourseNumber}`,
+    ],
+    {
+      method: "GET",
+      url: "/api/enrollment/search",
+      params: {
+        startQtr: qtr,
+        endQtr: qtr,
+        subjectArea: subjectArea,
+        courseNumber: trimmedCourseNumber,
+      },
+    },
+    [],
+    { enabled: Boolean(subjectArea && trimmedCourseNumber) },
+  );
 
   return (
     <BasicLayout>
