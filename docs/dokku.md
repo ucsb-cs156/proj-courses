@@ -14,8 +14,7 @@ The lines in the instructions where you need to modify something are marked with
 
 * For the values of `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` see [docs/oauth.md](https://github.com/ucsb-cs156/proj-courses/blob/main/docs/oauth.md)
 * For the value of `UCSB_API_KEY` see: [UCSB Developer API overview](https://ucsb-cs156.github.io/topics/apis/apis_ucsb_developer_api.html)
-* For the values of `START_QTR` and `END_QTR` use whatever values you choose (first four digits are year, last digit is 1=Winter, 2=Spring, 3=Summer, 4=Fall), however make sure that
-  `START_QTR <= END_QTR`, and that `END_QTR` is a quarter for which data is available, which you can check quickly [here](https://my.sa.ucsb.edu/public/curriculum/coursesearch.aspx)
+* For the value of `START_QTR`, use whatever value you choose (first four digits are year, last digit is 1=Winter, 2=Spring, 3=Summer, 4=Fall). The app determines the end quarter from the current quarter at startup.
 * Set `SOURCE_REPO` to be the url of your teams' repo (i.e. replace the team name in the example below) 
 
 The other line you can copy/paste as is, except for changing `courses` to whatever your app name will be (e.g. `courses-qa`, `courses-dev-cgaucho`, `courses-pr235`).
@@ -43,7 +42,6 @@ dokku config:set --no-restart courses GOOGLE_CLIENT_ID=get-value-from-google-dev
 dokku config:set --no-restart courses GOOGLE_CLIENT_SECRET=get-value-from-google-developer-console # modify this
 dokku config:set --no-restart courses UCSB_API_KEY=get-from-developer.ucsb.edu  # modify this
 dokku config:set --no-restart courses START_QTR=20244  # modify this
-dokku config:set --no-restart courses END_QTR=20261    # modify this
 
 # Set SOURCE_REPO to your repo (modify the url)
 # This is for the link in the footer, and for the link to currently deployed branch in /api/systemInfo
@@ -85,7 +83,6 @@ dokku config:set --no-restart courses-qa GOOGLE_CLIENT_ID=get-value-from-google-
 dokku config:set --no-restart courses-qa GOOGLE_CLIENT_SECRET=get-value-from-google-developer-console # modify this
 dokku config:set --no-restart courses-qa UCSB_API_KEY=get-from-developer.ucsb.edu  # modify this
 dokku config:set --no-restart courses-qa START_QTR=20244  # modify this
-dokku config:set --no-restart courses-qa END_QTR=20261    # modify this
 
 # Set SOURCE_REPO to your repo (modify the url)
 # This is for the link in the footer, and for the link to currently deployed branch in /api/systemInfo
