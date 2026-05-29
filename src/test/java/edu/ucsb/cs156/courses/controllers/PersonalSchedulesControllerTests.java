@@ -774,49 +774,42 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
   @WithMockUser(roles = {"USER"})
   @Test
   public void api_schedules__user_logged_in__cannot_post_long_name() throws Exception {
-
-    // act
     MvcResult response =
         mockMvc
             .perform(
-                post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
+                post("/api/personalschedules/post?name=12345678901234567890123456&description=Test&quarter=20221")
                     .with(csrf()))
             .andExpect(status().isBadRequest())
             .andReturn();
 
-    // assert
     Map<String, Object> json = responseToJson(response);
     assertEquals("IllegalArgumentException", json.get("type"));
-    assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
+    assertEquals("name parameter restricted to 25 chars or less", json.get("message"));
   }
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
   public void api_schedules__admin_logged_in__cannot_post_long_name() throws Exception {
-
-    // act
     MvcResult response =
         mockMvc
             .perform(
-                post("/api/personalschedules/post?name=name longer than 15 characters&description=Test Description&quarter=20221")
+                post("/api/personalschedules/post?name=12345678901234567890123456&description=Test Description&quarter=20221")
                     .with(csrf()))
             .andExpect(status().isBadRequest())
             .andReturn();
 
-    // assert
     Map<String, Object> json = responseToJson(response);
     assertEquals("IllegalArgumentException", json.get("type"));
-    assertEquals("name parameter restricted to 15 chars or less", json.get("message"));
+    assertEquals("name parameter restricted to 25 chars or less", json.get("message"));
   }
 
   @WithMockUser(roles = {"USER"})
   @Test
-  public void api_schedules__user_logged_in__can_post_15_char_name() throws Exception {
+  public void api_schedules__user_logged_in__can_post_25_char_name() throws Exception {
     User thisUser = currentUserService.getCurrentUser().getUser();
-
     PersonalSchedule expectedSchedule =
         PersonalSchedule.builder()
-            .name("ABCDEFGHIJKLMNO")
+            .name("1234567890123456789012345")
             .description("Test Description")
             .quarter("20221")
             .user(thisUser)
@@ -828,12 +821,11 @@ public class PersonalSchedulesControllerTests extends ControllerTestCase {
     MvcResult response =
         mockMvc
             .perform(
-                post("/api/personalschedules/post?name=ABCDEFGHIJKLMNO&description=Test Description&quarter=20221")
+                post("/api/personalschedules/post?name=1234567890123456789012345&description=Test Description&quarter=20221")
                     .with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
 
-    // assert
     verify(personalscheduleRepository, times(1)).save(expectedSchedule);
     String expectedJson = mapper.writeValueAsString(expectedSchedule);
     String responseString = response.getResponse().getContentAsString();

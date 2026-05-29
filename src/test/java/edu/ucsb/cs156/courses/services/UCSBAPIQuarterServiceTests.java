@@ -32,11 +32,14 @@ import org.springframework.web.client.RestTemplate;
 
 @RestClientTest(UCSBAPIQuarterService.class)
 @TestPropertySource(
-    properties = {
-      "app.startQtrYYYYQ=20211",
-      "app.endQtrYYYYQ=20223",
-      "app.ucsb.api.consumer_key=fakeApiKey"
-    })
+    properties = {"app.startQtrYYYYQ=20211", "app.ucsb.api.consumer_key=fakeApiKey"})
+// Previous versions of this app had an endQtrYYYYQ that was set via environment
+// variables. This has
+// been removed from tests, but the UCSBAPIQuarterService has been set to a
+// default "20223" for
+// testing purposes. As to not have to mock an api request in every test for a
+// completely dynamic
+// endQtr.
 public class UCSBAPIQuarterServiceTests {
 
   @Value("${app.ucsb.api.consumer_key}")
@@ -57,6 +60,19 @@ public class UCSBAPIQuarterServiceTests {
     service.clearCurrentQuarterCache();
   }
 
+  @BeforeEach
+  public void setup() {
+    service.setEndQtrYYYYQ("20223");
+  }
+
+  @Test
+  public void test_evictCurrentQuarterAtMidnight() {
+    // AB - Skipping test for now, as I don't know how to test cacheable items yet
+    // as their managed
+    // by springboot elsewhere
+    service.evictCurrentQuarterAtMidnight();
+  }
+
   @Test
   public void test_getStartQtrYYYYQ() {
     assertEquals("20211", service.getStartQtrYYYYQ());
@@ -65,7 +81,15 @@ public class UCSBAPIQuarterServiceTests {
   @Test
   public void test_getEndQtrYYYYQ() {
     assertEquals("20223", service.getEndQtrYYYYQ());
-  } // the value of app.endQtrYYYYQ is configured using @TestPropertySource
+  }
+
+  @Test
+  public void test_setEndQtrYYYYQ() {
+    service.setEndQtrYYYYQ("20224");
+    assertEquals("20224", service.getEndQtrYYYYQ());
+    service.setEndQtrYYYYQ("20232");
+    assertEquals("20232", service.getEndQtrYYYYQ());
+  }
 
   @Test
   public void test_getCurrentQuarterYYYYQ() throws Exception {
@@ -81,6 +105,38 @@ public class UCSBAPIQuarterServiceTests {
             withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, MediaType.APPLICATION_JSON));
 
     assertEquals("20243", service.getCurrentQuarterYYYYQ());
+  }
+
+  @Test
+  public void test_getCurrentEndQuarterYYYYQ_spring() throws Exception {
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_S22, MediaType.APPLICATION_JSON));
+
+    assertEquals("20224", service.getCurrentEndQuarterYYYYQ());
+  }
+
+  @Test
+  public void test_getCurrentEndQuarterYYYYQ_not_spring() throws Exception {
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, MediaType.APPLICATION_JSON));
+
+    assertEquals("20212", service.getCurrentEndQuarterYYYYQ());
   }
 
   @Test
@@ -111,7 +167,8 @@ public class UCSBAPIQuarterServiceTests {
 
     String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
 
-    // Only one HTTP request should be made even though getCurrentQuarter() is called twice
+    // Only one HTTP request should be made even though getCurrentQuarter() is
+    // called twice
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
@@ -136,7 +193,8 @@ public class UCSBAPIQuarterServiceTests {
 
     String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
 
-    // Two HTTP requests should be made: one initial call and one after cache expires
+    // Two HTTP requests should be made: one initial call and one after cache
+    // expires
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))

@@ -15,12 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,7 +35,6 @@ public class UCSBAPIQuarterService {
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
 
-  @Value("${app.endQtrYYYYQ:20222}")
   private String endQtrYYYYQ;
 
   @Autowired private ObjectMapper objectMapper;
@@ -68,9 +70,6 @@ public class UCSBAPIQuarterService {
   public static final String ALL_QUARTERS_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
 
-  public static final String END_QUARTER_ENDPOINT =
-      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end";
-
   public String getStartQtrYYYYQ() {
     return startQtrYYYYQ;
   }
@@ -79,9 +78,22 @@ public class UCSBAPIQuarterService {
     return endQtrYYYYQ;
   }
 
+  public void setEndQtrYYYYQ(String YYYYQ) {
+    this.endQtrYYYYQ = YYYYQ;
+  }
+
   public String getCurrentQuarterYYYYQ() throws Exception {
     UCSBAPIQuarter quarter = getCurrentQuarter();
     return quarter.getQuarter();
+  }
+
+  public String getCurrentEndQuarterYYYYQ() throws Exception {
+    String quarter = getCurrentQuarter().getQuarter();
+    if (Quarter.getQ(Quarter.yyyyqToInt(quarter)) == "S") {
+      quarter = Quarter.increment(quarter);
+    }
+    quarter = Quarter.increment(quarter);
+    return quarter;
   }
 
   public List<String> getActiveQuarterList() throws Exception {
@@ -98,6 +110,15 @@ public class UCSBAPIQuarterService {
     return result;
   }
 
+  // This empties the cache called currentQuarter
+  // every night at midnight
+  @Scheduled(cron = "0 0 0 * * *")
+  @CacheEvict(value = "currentQuarter", allEntries = true)
+  void evictCurrentQuarterAtMidnight() {}
+
+  // This says to cache the value in a cache called
+  // currentQuarter, and only allow one call at a time
+  @Cacheable(value = "currentQuarter", sync = true)
   public UCSBAPIQuarter getCurrentQuarter() throws Exception {
     if (cachedCurrentQuarter != null
         && Instant.now().isBefore(cacheTime.plus(CACHE_DURATION_HOURS, ChronoUnit.HOURS))) {
@@ -177,7 +198,7 @@ public class UCSBAPIQuarterService {
 
   public boolean quarterYYYYQInRange(String quarterYYYYQ) {
     boolean dateGEStart = quarterYYYYQ.compareTo(startQtrYYYYQ) >= 0;
-    boolean dateLEEnd = quarterYYYYQ.compareTo(endQtrYYYYQ) <= 0;
+    boolean dateLEEnd = quarterYYYYQ.compareTo(getEndQtrYYYYQ()) <= 0;
     return (dateGEStart && dateLEEnd);
   }
 
