@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateCourseDataJob.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.jobs</a> &gt; <span class="el_source">UpdateCourseDataJob.java</span></div><h1>UpdateCourseDataJob.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.jobs;
+
+import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.collections.UpdateCollection;
+import edu.ucsb.cs156.courses.documents.ConvertedSection;
+import edu.ucsb.cs156.courses.documents.Update;
+import edu.ucsb.cs156.courses.models.Quarter;
+import edu.ucsb.cs156.courses.repositories.EnrollmentDataPointRepository;
+import edu.ucsb.cs156.courses.services.IsStaleService;
+import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
+import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
+import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
+import edu.ucsb.cs156.courses.services.jobs.JobRateLimit;
+import java.util.List;
+import java.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+@Builder
+@Getter
+@AllArgsConstructor
+<span class="fc" id="L25">@Slf4j</span>
+public class UpdateCourseDataJob implements JobContextConsumer {
+
+  private String start_quarterYYYYQ;
+  private String end_quarterYYYYQ;
+  private List&lt;String&gt; subjects;
+  private UCSBCurriculumService ucsbCurriculumService;
+  private ConvertedSectionCollection convertedSectionCollection;
+  private UpdateCollection updateCollection;
+  private IsStaleService isStaleService;
+  private boolean ifStale;
+  private EnrollmentDataPointRepository enrollmentDataPointRepository;
+  private UCSBAPIQuarterService ucsbapiQuarterService;
+  private JobRateLimit jobRateLimit;
+
+  @Override
+  public void accept(JobContext ctx) throws Exception {
+
+<span class="fc" id="L43">    ctx.log(</span>
+<span class="fc" id="L44">        String.format(</span>
+            &quot;Updating courses from %s to %s for %d subjects&quot;,
+<span class="fc" id="L46">            start_quarterYYYYQ, end_quarterYYYYQ, subjects.size()));</span>
+<span class="fc" id="L47">    List&lt;Quarter&gt; quarters = Quarter.quarterList(start_quarterYYYYQ, end_quarterYYYYQ);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">    for (Quarter quarter : quarters) {</span>
+<span class="fc" id="L49">      String quarterYYYYQ = quarter.getYYYYQ();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">      for (String subjectArea : subjects) {</span>
+<span class="fc" id="L51">        boolean isStale = isStaleService.isStale(subjectArea, quarterYYYYQ);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (ifStale) {</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">          if (!isStale) {</span>
+<span class="fc" id="L54">            continue;</span>
+          }
+        }
+<span class="fc" id="L57">        jobRateLimit.sleep();</span>
+<span class="fc" id="L58">        updateCourses(ctx, quarterYYYYQ, subjectArea);</span>
+<span class="fc" id="L59">      }</span>
+<span class="fc" id="L60">    }</span>
+<span class="fc" id="L61">    ctx.log(&quot;Finished updating courses&quot;);</span>
+<span class="fc" id="L62">  }</span>
+
+  public Update updateUpdatesCollection(
+      String quarterYYYYQ, String subjectArea, int saved, int updated, int errors) {
+<span class="fc" id="L66">    Update update = new Update(null, subjectArea, quarterYYYYQ, saved, updated, errors, null);</span>
+<span class="fc" id="L67">    Update savedUpdate = updateCollection.save(update);</span>
+<span class="fc" id="L68">    return savedUpdate;</span>
+  }
+
+  public void updateCourses(JobContext ctx, String quarterYYYYQ, String subjectArea)
+      throws Exception {
+<span class="fc" id="L73">    ctx.log(&quot;Updating courses for [&quot; + subjectArea + &quot; &quot; + quarterYYYYQ + &quot;]&quot;);</span>
+
+<span class="fc" id="L75">    List&lt;ConvertedSection&gt; convertedSections =</span>
+<span class="fc" id="L76">        ucsbCurriculumService.getConvertedSections(subjectArea, quarterYYYYQ, &quot;A&quot;);</span>
+
+<span class="fc" id="L78">    int newSections = 0;</span>
+<span class="fc" id="L79">    int updatedSections = 0;</span>
+<span class="fc" id="L80">    int errors = 0;</span>
+<span class="fc" id="L81">    boolean isInRegistrationPass = ucsbapiQuarterService.isQuarterInRegistrationPass(quarterYYYYQ);</span>
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    for (ConvertedSection section : convertedSections) {</span>
+      try {
+<span class="fc" id="L85">        String quarter = section.getCourseInfo().getQuarter();</span>
+<span class="fc" id="L86">        String enrollCode = section.getSection().getEnrollCode();</span>
+<span class="fc" id="L87">        Optional&lt;ConvertedSection&gt; optionalSection =</span>
+<span class="fc" id="L88">            convertedSectionCollection.findOneByQuarterAndEnrollCode(quarter, enrollCode);</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (optionalSection.isPresent()) {</span>
+<span class="fc" id="L90">          ConvertedSection existingSection = optionalSection.get();</span>
+<span class="fc" id="L91">          existingSection.setCourseInfo(section.getCourseInfo());</span>
+<span class="fc" id="L92">          existingSection.setSection(section.getSection());</span>
+<span class="fc" id="L93">          convertedSectionCollection.save(existingSection);</span>
+<span class="fc" id="L94">          updatedSections++;</span>
+<span class="fc" id="L95">        } else {</span>
+<span class="fc" id="L96">          convertedSectionCollection.save(section);</span>
+<span class="fc" id="L97">          newSections++;</span>
+        }
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (isInRegistrationPass) {</span>
+<span class="fc" id="L100">          enrollmentDataPointRepository.save(section.getEnrollmentDataPoint());</span>
+        }
+<span class="fc" id="L102">      } catch (Exception e) {</span>
+<span class="fc" id="L103">        errors++;</span>
+<span class="fc" id="L104">      }</span>
+<span class="fc" id="L105">    }</span>
+
+<span class="fc" id="L107">    Update savedUpdate =</span>
+<span class="fc" id="L108">        updateUpdatesCollection(quarterYYYYQ, subjectArea, newSections, updatedSections, errors);</span>
+
+<span class="fc" id="L110">    ctx.log(</span>
+<span class="fc" id="L111">        String.format(</span>
+            &quot;%d new sections saved, %d sections updated, %d errors, last update: %s&quot;,
+<span class="fc" id="L113">            newSections, updatedSections, errors, savedUpdate.getLastUpdate()));</span>
+
+<span class="fc" id="L115">    ctx.log(&quot;Saved update: &quot; + savedUpdate);</span>
+<span class="fc" id="L116">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
