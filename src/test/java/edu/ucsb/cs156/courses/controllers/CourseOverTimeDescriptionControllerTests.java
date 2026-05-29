@@ -15,6 +15,7 @@ import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.Section;
+import edu.ucsb.cs156.courses.filters.RateLimitFilter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +28,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import edu.ucsb.cs156.courses.filters.RateLimitFilter;
 
 @WebMvcTest(value = CourseOverTimeDescriptionController.class)
 @Import({SecurityConfig.class, RateLimitConfig.class})
