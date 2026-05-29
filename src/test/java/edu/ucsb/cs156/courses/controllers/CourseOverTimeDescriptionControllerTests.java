@@ -10,10 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
+import edu.ucsb.cs156.courses.config.RateLimitConfig;
 import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.Section;
+import edu.ucsb.cs156.courses.filters.RateLimitFilter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,20 +24,20 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(value = CourseOverTimeDescriptionController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, RateLimitConfig.class})
 public class CourseOverTimeDescriptionControllerTests {
   private ObjectMapper mapper = new ObjectMapper();
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private RateLimitFilter rateLimitFilter;
 
-  @MockBean ConvertedSectionCollection convertedSectionCollection;
+  @MockitoBean ConvertedSectionCollection convertedSectionCollection;
   @MockitoBean UserRepository userRepository;
 
   @Test
