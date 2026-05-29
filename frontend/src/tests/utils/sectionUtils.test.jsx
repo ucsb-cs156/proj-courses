@@ -200,10 +200,13 @@ describe("section utils tests", () => {
   });
   describe("formatSession tests", () => {
     test("formatSession empty string test", () => {
-      expect(formatSession("2023", " ")).toBe("");
+      expect(formatSession("2024", " ")).toBe("");
     });
-    test("formatSession test", () => {
+    test("formatSession five char test", () => {
       expect(formatSession("3", "2023A")).toBe("");
+    });
+    test("formatSession six char test", () => {
+      expect(formatSession("3", "2023A ")).toBe("");
     });
   });
   describe("tests that depend on what kind of row it is", () => {
