@@ -6,6 +6,7 @@ import {
   formatTime,
   formatInstructors,
   formatInfoLink,
+  formatSession,
   renderInfoLink,
   renderDetailPageLink,
   formatStatus,
@@ -195,6 +196,14 @@ describe("section utils tests", () => {
     test("formatStatus open test", () => {
       const section = { enrolledTotal: 20, maxEnroll: 30 };
       expect(formatStatus(section)).toBe("Open");
+    });
+  });
+  describe("formatSession tests", () => {
+    test("formatSession empty string test", () => {
+      expect(formatSession("2023", " ")).toBe("");
+    });
+    test("formatSession test", () => {
+      expect(formatSession("3", "2023A")).toBe("");
     });
   });
   describe("tests that depend on what kind of row it is", () => {
