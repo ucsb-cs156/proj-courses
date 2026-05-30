@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import CourseDescriptionIndexPage from "main/pages/CourseDescriptions/CourseDescriptionIndexPage";
 import ProfilePage from "main/pages/ProfilePage";
 import AdminUsersPage from "main/pages/Admin/AdminUsersPage";
@@ -118,6 +118,9 @@ function App() {
           element={<GeneralEducationSearchPage />}
         />
         <Route exact path="/downloads" element={<CSVDownloadsPage />} />
+
+        {/* Catch all route; pages that don't exist reroute to the home page */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
