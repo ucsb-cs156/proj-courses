@@ -239,12 +239,16 @@ describe("section utils tests", () => {
       expect(formatSession("20243", undefined)).toBe("");
     });
 
-    test("formatSession blanks,length 1 to 5 session test", () => {
-      expect(formatSession("20243", " ")).toBe("");
-      expect(formatSession("20243", " " * 2)).toBe("");
-      expect(formatSession("20243", " " * 3)).toBe("");
-      expect(formatSession("20243", " " * 4)).toBe("");
-      expect(formatSession("20243", " " * 5)).toBe("");
+    test("formatSession non summer course test", () => {
+      expect(formatSession("20242", "00000A")).toBe("");
+    });
+
+    test("formatSession blanks, length 1 to 5 session test", () => {
+      expect(formatSession("20243", " ".repeat(1))).toBe("");
+      expect(formatSession("20243", " ".repeat(2))).toBe("");
+      expect(formatSession("20243", " ".repeat(3))).toBe("");
+      expect(formatSession("20243", " ".repeat(4))).toBe("");
+      expect(formatSession("20243", " ".repeat(5))).toBe("");
     });
   });
 });
