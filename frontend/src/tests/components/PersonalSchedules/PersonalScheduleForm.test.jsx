@@ -19,6 +19,9 @@ vi.mock("react-router-dom", async () => ({
 
 describe("PersonalScheduleForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
+
+  const queryClient = new QueryClient();
+
   beforeEach(() => {
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
@@ -27,8 +30,6 @@ describe("PersonalScheduleForm tests", () => {
       endQtrYYYYQ: "20244",
     });
   });
-
-  const queryClient = new QueryClient();
 
   test("renders correctly", async () => {
     render(
@@ -139,6 +140,7 @@ describe("PersonalScheduleForm tests", () => {
   test("Fallback hardcoded values for startQtr and endQtr work when systemInfo doesn't provide any", async () => {
     const mockSubmitAction = vi.fn();
 
+    queryClient.clear();
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,

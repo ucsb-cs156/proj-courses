@@ -1,6 +1,8 @@
 import { useQuery } from "react-query";
 import axios from "axios";
 
+const TWENTY_FOUR_HOURS_MS = 1000 * 60 * 60 * 24;
+
 export function useSystemInfo() {
   return useQuery(
     "systemInfo",
@@ -14,13 +16,14 @@ export function useSystemInfo() {
       }
     },
     {
-      initialData: {
-        initialData: true,
+      placeholderData: {
         springH2ConsoleEnabled: false,
         showSwaggerUILink: false,
         startQtrYYYYQ: "20221",
         endQtrYYYYQ: "20222",
       },
+      staleTime: TWENTY_FOUR_HOURS_MS,
+      cacheTime: TWENTY_FOUR_HOURS_MS,
     },
   );
 }

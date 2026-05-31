@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -50,6 +51,11 @@ public class UCSBAPIQuarterServiceTests {
   @Autowired private UCSBAPIQuarterService service;
 
   @Autowired private ObjectMapper objectMapper;
+
+  @BeforeEach
+  public void clearCache() {
+    service.clearCurrentQuarterCache();
+  }
 
   @Test
   public void test_getStartQtrYYYYQ() {
@@ -96,6 +102,65 @@ public class UCSBAPIQuarterServiceTests {
     UCSBAPIQuarter result = service.getCurrentQuarter();
 
     assertEquals(expectedResult, result);
+  }
+
+  @Test
+  public void test_getCurrentQuarter_cached() throws Exception {
+    UCSBAPIQuarter expectedResult =
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
+
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+
+    // Only one HTTP request should be made even though getCurrentQuarter() is called twice
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, MediaType.APPLICATION_JSON));
+
+    UCSBAPIQuarter firstResult = service.getCurrentQuarter();
+    UCSBAPIQuarter secondResult = service.getCurrentQuarter();
+
+    assertEquals(expectedResult, firstResult);
+    assertEquals(expectedResult, secondResult);
+    this.mockRestServiceServer.verify();
+  }
+
+  @Test
+  public void test_getCurrentQuarter_cache_expired() throws Exception {
+    UCSBAPIQuarter expectedResult =
+        objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
+
+    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+
+    // Two HTTP requests should be made: one initial call and one after cache expires
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, MediaType.APPLICATION_JSON));
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
+        .andExpect(header("ucsb-api-version", "1.0"))
+        .andExpect(header("ucsb-api-key", apiKey))
+        .andRespond(
+            withSuccess(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, MediaType.APPLICATION_JSON));
+
+    UCSBAPIQuarter firstResult = service.getCurrentQuarter();
+    service.expireCurrentQuarterCache();
+    UCSBAPIQuarter secondResult = service.getCurrentQuarter();
+
+    assertEquals(expectedResult, firstResult);
+    assertEquals(expectedResult, secondResult);
+    this.mockRestServiceServer.verify();
   }
 
   @Test

@@ -197,6 +197,7 @@ describe("UpdatesSearchForm tests", () => {
     getItemSpy.mockImplementation(() => null);
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
+    queryClient.clear();
     axiosMock.onGet("/api/systemInfo").reply(200, {
       springH2ConsoleEnabled: false,
       showSwaggerUILink: false,

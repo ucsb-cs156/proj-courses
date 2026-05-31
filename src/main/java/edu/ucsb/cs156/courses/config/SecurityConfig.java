@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.config;
 
 import edu.ucsb.cs156.courses.entities.User;
+import edu.ucsb.cs156.courses.filters.RateLimitFilter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,6 +29,7 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -49,6 +51,8 @@ public class SecurityConfig {
 
   @Autowired UserRepository userRepository;
 
+  @Autowired RateLimitFilter rateLimitFilter;
+
   // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -64,10 +68,11 @@ public class SecurityConfig {
                 csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
-        .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-        .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers("/error", "/error/**").permitAll().anyRequest().permitAll())
+        .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+      http.addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+      http.authorizeHttpRequests(
+          auth ->
+            auth.requestMatchers("/error", "/error/**").permitAll().anyRequest().permitAll())
         .logout(
             logout ->
                 logout

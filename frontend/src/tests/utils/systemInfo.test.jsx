@@ -41,7 +41,6 @@ describe("utils/systemInfo tests", () => {
       const { result } = renderHook(() => useSystemInfo(), { wrapper });
 
       expect(result.current.data).toEqual({
-        initialData: true,
         springH2ConsoleEnabled: false,
         showSwaggerUILink: false,
         startQtrYYYYQ: "20221",
@@ -50,6 +49,9 @@ describe("utils/systemInfo tests", () => {
 
       const queryState = queryClient.getQueryState("systemInfo");
       expect(queryState).toBeDefined();
+
+      // Wait for any pending async fetch to complete to avoid act() warnings
+      await waitFor(() => result.current.isFetched);
     });
 
     test("useSystemInfo retrieves data from API", async () => {
@@ -72,6 +74,35 @@ describe("utils/systemInfo tests", () => {
 
       expect(result.current.data).toEqual(systemInfoFixtures.showingBoth);
       queryClient.clear();
+    });
+
+    test("useSystemInfo does not refetch when data is already cached (within staleTime)", async () => {
+      const wrapper = ({ children }) => (
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      );
+
+      axiosMock
+        .onGet("/api/systemInfo")
+        .reply(200, systemInfoFixtures.showingBoth);
+
+      const { result: result1 } = renderHook(() => useSystemInfo(), {
+        wrapper,
+      });
+
+      await waitFor(() => result1.current.isFetched);
+      expect(axiosMock.history.get.length).toBe(1);
+
+      // Render a second instance of the hook; it should use cached data and not call the API again
+      const { result: result2 } = renderHook(() => useSystemInfo(), {
+        wrapper,
+      });
+
+      await waitFor(() => result2.current.isFetched);
+      expect(axiosMock.history.get.length).toBe(1);
+
+      expect(result2.current.data).toEqual(systemInfoFixtures.showingBoth);
     });
 
     test("systemInfo when API unreachable", async () => {

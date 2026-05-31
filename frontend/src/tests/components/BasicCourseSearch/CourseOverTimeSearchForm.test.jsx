@@ -501,6 +501,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       getItemSpy.mockImplementation(() => null);
       setItemSpy.mockImplementation(() => null);
 
+      queryClient.clear();
       axiosMock.onGet("/api/systemInfo").reply(200, {
         springH2ConsoleEnabled: false,
         showSwaggerUILink: false,

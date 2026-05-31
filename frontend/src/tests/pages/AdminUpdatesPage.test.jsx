@@ -14,6 +14,8 @@ import { updatesFixtures } from "fixtures/updatesFixtures";
 describe("AdminUpdatesPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
+  const queryClient = new QueryClient();
+
   beforeEach(() => {
     vi.clearAllMocks();
     axiosMock.reset();
@@ -30,7 +32,6 @@ describe("AdminUpdatesPage tests", () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
   });
 
-  const queryClient = new QueryClient();
   test("Renders expected content", async () => {
     // act
     render(
@@ -50,6 +51,7 @@ describe("AdminUpdatesPage tests", () => {
     getItemSpy.mockImplementation(() => null);
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
+    queryClient.clear();
     // act
     render(
       <QueryClientProvider client={queryClient}>

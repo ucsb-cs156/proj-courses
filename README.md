@@ -120,3 +120,16 @@ To run full mutation test coverage, as usual, use:
 ```
 mvn pitest:mutationCoverage
 ```
+
+## Rate Limiting
+
+This app implements per-IP rate limiting using Bucket4j backed by a Caffeine in-memory cache. Each IP starts with an initial bucket of tokens, and the bucket refills at a configurable rate per minute.
+
+The limit can be configured via environment variables, which override the corresponding properties in `application.properties`.
+
+| Environment Variable | Property | Default | Description |
+|---|---|---|---|
+| `RATE_LIMIT_INITIAL_BUCKET_SIZE` | `app.ratelimit.initialBucketSize` | `200` | Initial number of tokens (requests) available per IP address |
+| `RATE_LIMIT_REFILL_PER_MINUTE` | `app.ratelimit.refillPerMinute` | `100` | Number of tokens refilled per minute per IP address |
+
+Requests exceeding the limit receive an HTTP 429 response.

@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +51,20 @@ public class UCSBAPIQuarterService {
   public static final String CURRENT_QUARTER_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current";
 
+  public static final int CACHE_DURATION_HOURS = 24;
+
+  private UCSBAPIQuarter cachedCurrentQuarter = null;
+  private Instant cacheTime = null;
+
+  void clearCurrentQuarterCache() {
+    cachedCurrentQuarter = null;
+    cacheTime = null;
+  }
+
+  void expireCurrentQuarterCache() {
+    cacheTime = Instant.EPOCH;
+  }
+
   public static final String ALL_QUARTERS_ENDPOINT =
       "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
 
@@ -83,6 +99,11 @@ public class UCSBAPIQuarterService {
   }
 
   public UCSBAPIQuarter getCurrentQuarter() throws Exception {
+    if (cachedCurrentQuarter != null
+        && Instant.now().isBefore(cacheTime.plus(CACHE_DURATION_HOURS, ChronoUnit.HOURS))) {
+      return cachedCurrentQuarter;
+    }
+
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -108,6 +129,8 @@ public class UCSBAPIQuarterService {
     log.trace("json: {}", retVal);
     UCSBAPIQuarter quarter = null;
     quarter = objectMapper.readValue(retVal, UCSBAPIQuarter.class);
+    cachedCurrentQuarter = quarter;
+    cacheTime = Instant.now();
     return quarter;
   }
 

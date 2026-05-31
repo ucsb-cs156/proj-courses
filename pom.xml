@@ -137,6 +137,17 @@
             <version>4.24.0</version>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>8.10.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -261,6 +272,7 @@
                         <param>edu.ucsb.cs156.courses.config.SpringFoxConfig</param>
                         <param>edu.ucsb.cs156.courses.config.MongoConfig</param>
                         <param>edu.ucsb.cs156.courses.config.MongoDevConfig</param>
+                        <param>edu.ucsb.cs156.courses.config.RateLimitConfig</param>
                         <param>edu.ucsb.cs156.courses.startup.CoursesStartup</param>
                         <param>edu.ucsb.cs156.courses.startup.CoursesApplicationRunnerDevelopment</param>
                         <param>edu.ucsb.cs156.courses.startup.CoursesApplicationRunnerProduction</param>

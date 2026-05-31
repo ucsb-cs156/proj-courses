@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
-import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.Section;
@@ -20,14 +20,12 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(value = CourseOverTimeController.class)
-@Import(SecurityConfig.class)
-public class CourseOverTimeControllerTests {
+public class CourseOverTimeControllerTests extends ControllerTestCase {
   private ObjectMapper mapper = new ObjectMapper();
 
   @Autowired private MockMvc mockMvc;

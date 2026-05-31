@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
-import edu.ucsb.cs156.courses.config.SecurityConfig;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
@@ -19,13 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(value = UCSBAPIQuarterController.class)
-@Import(SecurityConfig.class)
 public class UCSBAPIQuarterControllerTests extends ControllerTestCase {
 
   @MockBean UserRepository userRepository;
