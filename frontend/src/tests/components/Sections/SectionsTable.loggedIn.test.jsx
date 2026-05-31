@@ -20,6 +20,9 @@ import { toast } from "react-toastify";
 import mockConsole from "tests/testutils/mockConsole";
 let restoreConsole;
 const mockedNavigate = vi.fn();
+const mockUseCurrentUser = vi.fn(() => ({
+  data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
+}));
 
 vi.mock("react-router-dom", async () => ({
   ...(await vi.importActual("react-router-dom")),
@@ -44,9 +47,7 @@ vi.mock("main/utils/useBackend", async () => ({
 }));
 
 vi.mock("main/utils/currentUser", async () => ({
-  useCurrentUser: () => ({
-    data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
-  }),
+  useCurrentUser: () => mockUseCurrentUser(),
   useLogout: () => ({ mutate: vi.fn() }),
   hasRole: (_user, _role) => false, // or customize per role
 }));
@@ -76,6 +77,16 @@ describe("SectionsTable tests", () => {
       expect(useBackendMutation).toHaveBeenCalledTimes(2);
 
       const [axiosParamsFn] = useBackendMutation.mock.calls[0];
+      const [, callbacksArg, invalidateKeysArg] =
+        useBackendMutation.mock.calls[0];
+
+      expect(invalidateKeysArg).toEqual([]);
+      expect(callbacksArg).toEqual(
+        expect.objectContaining({
+          onSuccess: expect.any(Function),
+          onError: expect.any(Function),
+        }),
+      );
 
       const result = axiosParamsFn({ enrollCd: 12345, psId: 15 });
 
@@ -266,6 +277,53 @@ describe("SectionsTable tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
+
+      expect(screen.queryByText("GE Areas")).not.toBeInTheDocument();
+    });
+
+    test("renders GE Areas column and formatted values when includeGeneralEducation is true", () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable
+              sections={primaryFixtures.f24_math_lowerDiv}
+              includeGeneralEducation={true}
+            />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const testId = "SectionsTable";
+      expect(screen.getByText("GE Areas")).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-generalEducation`),
+      ).toHaveTextContent("L&S, L&S");
+
+      fireEvent.click(screen.getByTestId(`${testId}-row-0-expand-button`));
+
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0.1-col-generalEducation`),
+      ).toHaveTextContent("L&S, L&S");
+    });
+
+    test("renders blank GE Areas value when generalEducation array is empty", () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <SectionsTable
+              sections={primaryFixtures.singleLectureSectionWithNoDiscussion}
+              includeGeneralEducation={true}
+            />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const geCell = screen.getByTestId(
+        "SectionsTable-cell-row-0-col-generalEducation",
+      );
+
+      expect(geCell).toBeInTheDocument();
+      expect(geCell).toHaveTextContent("");
     });
 
     test("Has the expected cell values when expanded", () => {
@@ -649,16 +707,6 @@ describe("SectionsTable tests", () => {
     beforeEach(() => {
       axiosMock = new AxiosMockAdapter(axios);
       vi.clearAllMocks();
-      vi.mock("main/utils/currentUser", async () => ({
-        useCurrentUser: () => ({
-          data: {
-            loggedIn: true,
-            root: { user: { email: "test@example.com" } },
-          },
-        }),
-        useLogout: () => ({ mutate: vi.fn() }),
-        hasRole: (_user, _role) => false, // or customize per role
-      }));
       axiosMock
         .onGet("/api/currentUser")
         .reply(200, apiCurrentUserFixtures.userOnly);
@@ -730,8 +778,11 @@ describe("SectionsTable tests", () => {
   });
 
   describe("AddToScheduleModal interactions when there are no schedules", () => {
-    vi.mock("main/utils/currentUser", async () => ({
-      useCurrentUser: () => {
+    const queryClient = new QueryClient();
+    let axiosMock;
+    beforeEach(() => {
+      axiosMock = new AxiosMockAdapter(axios);
+      mockUseCurrentUser.mockImplementation(() => {
         console.log("useCurrentUser called in SectionsTable.test.jsx");
         return {
           data: {
@@ -739,21 +790,16 @@ describe("SectionsTable tests", () => {
             root: { user: { email: "test@example.com" } },
           },
         };
-      },
-      useLogout: () => ({ mutate: vi.fn() }),
-      hasRole: (_user, _role) => false, // or customize per role
-    }));
-
-    const queryClient = new QueryClient();
-    let axiosMock;
-    beforeEach(() => {
-      axiosMock = new AxiosMockAdapter(axios);
+      });
       axiosMock
         .onGet("/api/currentUser")
         .reply(200, apiCurrentUserFixtures.userOnly);
     });
 
     afterEach(() => {
+      mockUseCurrentUser.mockImplementation(() => ({
+        data: { loggedIn: true, root: { user: { email: "test@example.com" } } },
+      }));
       axiosMock.restore();
     });
 
