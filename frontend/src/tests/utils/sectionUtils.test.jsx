@@ -9,6 +9,8 @@ import {
   renderInfoLink,
   renderDetailPageLink,
   formatStatus,
+  formatSession,
+  enrollmentFraction,
   isLectureWithNoSections,
   shouldShowAddToScheduleLink,
 } from "main/utils/sectionUtils";
@@ -159,8 +161,10 @@ describe("section utils tests", () => {
       };
       const view = renderInfoLink(row, "testid");
       expect(view.props.children.props.style.color).toBe("black");
+      expect(view.props.children.props.style.backgroundColor).toBe("inherit");
       expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");
       expect(view.props.children.props["target"]).toBe("_blank");
+      expect(view.props.children.props.rel).toBe("noopener noreferrer");
     });
   });
   describe("renderDetailPageLink tests", () => {
@@ -173,6 +177,8 @@ describe("section utils tests", () => {
       const view = renderDetailPageLink(row, "testid");
       expect(view.props.children.props.href).toBe("/coursedetails/20244/30247");
       expect(view.props.children.props["target"]).toBe("_blank");
+      expect(view.props.children.props.rel).toBe("noopener noreferrer");
+      expect(view.props.children.props.children).toBe(course.courseId);
     });
   });
 
@@ -196,7 +202,64 @@ describe("section utils tests", () => {
       const section = { enrolledTotal: 20, maxEnroll: 30 };
       expect(formatStatus(section)).toBe("Open");
     });
+
+    test("formatStatus full when over capacity", () => {
+      const section = { enrolledTotal: 31, maxEnroll: 30 };
+      expect(formatStatus(section)).toBe("Full");
+    });
   });
+
+  describe("formatSession tests", () => {
+    test("formatSession non-summer quarter returns empty string", () => {
+      expect(formatSession("20244", "SESSNA")).toBe("");
+    });
+
+    test("formatSession summer quarter null session returns empty string", () => {
+      expect(formatSession("20233", null)).toBe("");
+    });
+
+    test("formatSession summer quarter empty session returns empty string", () => {
+      expect(formatSession("20233", "")).toBe("");
+    });
+
+    test("formatSession summer quarter whitespace-only session returns empty string", () => {
+      expect(formatSession("20233", "     ")).toBe("");
+    });
+
+    test("formatSession summer quarter session of length 5 returns empty string", () => {
+      expect(formatSession("20233", "ABCDE")).toBe("");
+    });
+
+    test("formatSession summer quarter valid session returns character at index 5", () => {
+      expect(formatSession("20233", "ABCDEF")).toBe("F");
+    });
+
+    test("formatSession summer quarter session with space at index 5 returns empty string", () => {
+      expect(formatSession("20233", "ABCDE ")).toBe("");
+    });
+
+    test("formatSession six char test", () => {
+      expect(formatSession("3", "2023A ")).toBe("");
+    });
+  });
+
+  describe("enrollmentFraction tests", () => {
+    const primaryRow = {
+      original: { ...primaryFixtures.f24_math_lowerDiv[0] },
+    };
+    const subRow = {
+      original: { ...primaryFixtures.f24_math_lowerDiv[0].subRows[0] },
+    };
+
+    test("enrollmentFraction for primary row", () => {
+      expect(enrollmentFraction(primaryRow)).toBe("172/175");
+    });
+
+    test("enrollmentFraction for subrow", () => {
+      expect(enrollmentFraction(subRow)).toBe("25/25");
+    });
+  });
+
   describe("tests that depend on what kind of row it is", () => {
     const rowForLectureWithSubRows = {
       original: { ...primaryFixtures.f24_math_lowerDiv[0] },
