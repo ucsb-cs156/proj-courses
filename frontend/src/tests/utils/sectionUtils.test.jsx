@@ -238,6 +238,15 @@ describe("section utils tests", () => {
 
       expect(result).toBe("");
     });
+
+    it("should return empty string if session a few spaces", () => {
+      const quarter = "20263";
+      const session = "   ";
+
+      const result = formatSession(quarter, session);
+
+      expect(result).toBe("");
+    });
   });
   describe("tests that depend on what kind of row it is", () => {
     const rowForLectureWithSubRows = {
