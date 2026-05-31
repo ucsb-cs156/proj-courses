@@ -6,6 +6,7 @@ import {
   formatTime,
   formatInstructors,
   formatInfoLink,
+  formatSession,
   renderInfoLink,
   renderDetailPageLink,
   formatStatus,
@@ -222,6 +223,28 @@ describe("section utils tests", () => {
       expect(shouldShowAddToScheduleLink(subrowForDiscussionSection)).toBe(
         true,
       );
+    });
+  });
+
+  describe("formatSession tests", () => {
+    test("formatSession summer course with session test", () => {
+      expect(formatSession("20243", "00000A")).toBe("A");
+    });
+
+    test("formatSession null session test", () => {
+      expect(formatSession("20243", null)).toBe("");
+    });
+
+    test("formatSession undefined session test", () => {
+      expect(formatSession("20243", undefined)).toBe("");
+    });
+
+    test("formatSession blanks,length 1 to 5 session test", () => {
+      expect(formatSession("20243", " ")).toBe("");
+      expect(formatSession("20243", " " * 2)).toBe("");
+      expect(formatSession("20243", " " * 3)).toBe("");
+      expect(formatSession("20243", " " * 4)).toBe("");
+      expect(formatSession("20243", " " * 5)).toBe("");
     });
   });
 });

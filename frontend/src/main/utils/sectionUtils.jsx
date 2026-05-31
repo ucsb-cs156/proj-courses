@@ -98,7 +98,7 @@ export const formatStatus = (section) => {
 
 export const formatSession = (quarter, session) => {
   const isSummerCourse = quarter?.toString().endsWith("3");
-  if (!isSummerCourse || !session || session.length < 5) {
+  if (!isSummerCourse || !session || session.length <= 5) {
     return "";
   }
   return session[5];
