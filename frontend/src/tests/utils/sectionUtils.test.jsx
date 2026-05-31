@@ -199,53 +199,32 @@ describe("section utils tests", () => {
     });
   });
   describe("formatSession tests", () => {
-    test("formatSession empty string test", () => {
-      expect(formatSession("2024", " ")).toBe("");
-    });
-    test("formatSession five char test", () => {
-      expect(formatSession("3", "2023A")).toBe("");
-    });
-    test("formatSession six char test", () => {
-      expect(formatSession("3", "2023A ")).toBe("");
+    test("formatSession not summer should return empty string", () => {
+      expect(formatSession("20242", "")).toBe("");
     });
 
-    it("should return empty string for a session that is only whitespace and longer than 5 characters", () => {
-      // Kills Mutant 1, 2, and 3
-      // Length is 6. Quarter ends in "3" (Summer).
-      const quarter = "20263";
-      const session = "      ";
-
-      const result = formatSession(quarter, session);
-
-      expect(result).toBe("");
+    test("formatSession null should return empty string", () => {
+      expect(formatSession("20243", null)).toBe("");
     });
 
-    it("should correctly process a valid summer session longer than 5 characters", () => {
-      // Standard sanity check to ensure valid behavior isn't broken
-      const quarter = "20263";
-      const session = "SUMMERB"; // Length is 7, index 5 is 'R'
-
-      const result = formatSession(quarter, session);
-
-      expect(result).toBe("R");
+    test("formatSession any number of blanks should return empty string", () => {
+      expect(formatSession("20243", " ")).toBe("");
+      expect(formatSession("20243", "  ")).toBe("");
+      expect(formatSession("20243", "   ")).toBe("");
+      expect(formatSession("20243", "   ")).toBe("");
     });
 
-    it("should return empty string if session is completely empty", () => {
-      const quarter = "20263";
-      const session = "";
-
-      const result = formatSession(quarter, session);
-
-      expect(result).toBe("");
+    test("formatSession non blank five characters or fewer should return empty string", () => {
+      expect(formatSession("20243", "x")).toBe("");
+      expect(formatSession("20243", "xx")).toBe("");
+      expect(formatSession("20243", "xxx")).toBe("");
+      expect(formatSession("20243", "xxxx")).toBe("");
+      expect(formatSession("20243", "xxxxx")).toBe("");
     });
 
-    it("should return empty string if session a few spaces", () => {
-      const quarter = "20263";
-      const session = "   ";
-
-      const result = formatSession(quarter, session);
-
-      expect(result).toBe("");
+    test("formatSession five characters or more returns 5th character", () => {
+      expect(formatSession("20243", "xxxxxA")).toBe("A");
+      expect(formatSession("20243", "xxxxxB")).toBe("B");
     });
   });
   describe("tests that depend on what kind of row it is", () => {

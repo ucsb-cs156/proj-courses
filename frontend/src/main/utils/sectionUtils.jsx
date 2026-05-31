@@ -96,12 +96,18 @@ export const formatStatus = (section) => {
   }
 };
 
+/*
+We expect the session to be either blank or in the format "00000X" where X
+is the session character.  The session character is only relevant for summer courses, which are the only
+and is typically an upper case letter. If the session is not in the expected format, we return an empty string.  
+Otherwise, we return the session character.
+*/
+
 export const formatSession = (quarter, session) => {
   const isSummerCourse = quarter?.toString().endsWith("3");
-  if (!isSummerCourse || !session || session.trim() === "") {
-    return "";
-  }
-  return session.length > 5 ? session[5].trim() : "";
+  if (!isSummerCourse) return "";
+  if (session === undefined || session === null) return "";
+  return session.length > 5 ? session[5] : "";
 };
 
 export const getQuarter = (row) =>
