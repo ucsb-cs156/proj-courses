@@ -26,6 +26,27 @@ describe("utils/currentUser tests", () => {
       axiosMock.resetHistory();
     });
 
+    test("useCurrentUser initial values before first fetch", () => {
+      const queryClient = new QueryClient();
+      const wrapper = ({ children }) => (
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      );
+
+      // Respond only to let the test proceed asynchronously later
+      axiosMock.onGet("/api/currentUser").reply(() => new Promise(() => {}));
+
+      const { result } = renderHook(() => useCurrentUser(), { wrapper });
+
+      // Before the fetch resolves, initialData from useQuery options is in effect
+      expect(result.current.data.loggedIn).toBe(false);
+      expect(result.current.data.root).toBeNull();
+      expect(result.current.data.initialData).toBe(true);
+
+      queryClient.clear();
+    });
+
     test("useCurrentUser retrieves initial data", async () => {
       const queryClient = new QueryClient();
       const wrapper = ({ children }) => (
