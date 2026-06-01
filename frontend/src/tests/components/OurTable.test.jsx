@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 import { render, waitFor, fireEvent, screen } from "@testing-library/react";
-import OurTable, { ButtonColumn } from "main/components/OurTable";
+import OurTable, { ButtonColumn, DateColumn } from "main/components/OurTable";
 import ourTableFixtures from "fixtures/ourTableFixtures";
 import { convertOldStyleColumnsToNewStyle } from "main/components/OurTableUtils";
 
@@ -128,6 +128,28 @@ describe("OurTable tests", () => {
       expect(firstNameHeader).toBeInTheDocument();
       expect(firstNameHeader).toHaveTextContent("First Name");
       expect(firstNameHeader).toHaveAttribute("style", "cursor: pointer;");
+    });
+  });
+
+  describe("DateColumn tests", () => {
+    test("DateColumn formats date in 24-hour format (hour12: false)", async () => {
+      // 2023-01-15T15:30:00-08:00 = 3:30 PM PST — with hour12:false should show as "15"
+      const isoString = "2023-01-15T23:30:00.000Z"; // 3:30 PM PST
+      const col = DateColumn("Created At", (cell) => cell.row.original.createdAt);
+
+      const data = [{ createdAt: isoString }];
+      render(<OurTable columns={[col]} data={data} testid="dateColTest" />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("dateColTest-cell-row-0-col-Created At"),
+        ).toBeInTheDocument();
+      });
+
+      const cell = screen.getByTestId("dateColTest-cell-row-0-col-Created At");
+      // 24-hour format must show "15" for 3 PM, not "3" or "3 PM"
+      expect(cell).toHaveTextContent("15");
+      expect(cell).not.toHaveTextContent("PM");
     });
   });
 });
