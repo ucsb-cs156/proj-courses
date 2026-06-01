@@ -135,7 +135,10 @@ describe("OurTable tests", () => {
     test("DateColumn formats date in 24-hour format (hour12: false)", async () => {
       // 2023-01-15T15:30:00-08:00 = 3:30 PM PST — with hour12:false should show as "15"
       const isoString = "2023-01-15T23:30:00.000Z"; // 3:30 PM PST
-      const col = DateColumn("Created At", (cell) => cell.row.original.createdAt);
+      const col = DateColumn(
+        "Created At",
+        (cell) => cell.row.original.createdAt,
+      );
 
       const data = [{ createdAt: isoString }];
       render(<OurTable columns={[col]} data={data} testid="dateColTest" />);
