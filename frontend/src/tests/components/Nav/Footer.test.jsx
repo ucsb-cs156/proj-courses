@@ -72,4 +72,17 @@ describe("Footer tests", () => {
       "https://github.com/ucsb-cs156/proj-courses",
     );
   });
+
+  test("sourceRepo fallback is never used when systemInfo.systemInfo.sourceRepo is defined", async () => {
+    const systemInfo = systemInfoFixtures.showingBoth;
+    render(<Footer systemInfo={systemInfo} />);
+    expect(screen.getByTestId("footer-source-code-link")).toHaveAttribute(
+      "href",
+      "mocklink",
+    );
+    expect(screen.getByTestId("footer-source-code-link")).not.toHaveAttribute(
+      "href",
+      "https://github.com/ucsb-cs156/proj-courses",
+    );
+  });
 });
