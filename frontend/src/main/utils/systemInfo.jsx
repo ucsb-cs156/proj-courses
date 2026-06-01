@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import axios from "axios";
 
-const TWENTY_FOUR_HOURS_MS = 1000 * 60 * 60 * 24;
+export const TWENTY_FOUR_HOURS_MS = 1000 * 60 * 60 * 24;
 
 export function useSystemInfo() {
   return useQuery(

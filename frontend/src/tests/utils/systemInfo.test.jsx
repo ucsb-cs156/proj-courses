@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { useSystemInfo } from "main/utils/systemInfo";
+import { useSystemInfo, TWENTY_FOUR_HOURS_MS } from "main/utils/systemInfo";
 import { renderHook, waitFor } from "@testing-library/react";
 import mockConsole from "tests/testutils/mockConsole";
 
@@ -12,6 +12,10 @@ vi.mock("react-router-dom");
 const { _MemoryRouter } = await vi.importActual("react-router-dom");
 
 describe("utils/systemInfo tests", () => {
+  test("TWENTY_FOUR_HOURS_MS equals 86400000", () => {
+    expect(TWENTY_FOUR_HOURS_MS).toBe(86400000);
+  });
+
   let queryClient;
   let axiosMock;
   beforeEach(() => {
