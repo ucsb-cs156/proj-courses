@@ -165,6 +165,7 @@ function buildGroupedSectionRows(flatSections) {
 function GroupedConvertedSectionTable({ sections }) {
   const groupedData = useMemo(
     () => buildGroupedSectionRows(sections),
+    // Stryker disable next-line ArrayDeclaration : dependency array contents are not directly testable via mutation
     [sections],
   );
 

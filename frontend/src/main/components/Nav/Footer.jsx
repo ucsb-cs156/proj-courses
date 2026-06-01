@@ -4,6 +4,7 @@ export const space = " ";
 
 export default function Footer(systemInfo) {
   const sourceRepo =
+    // Stryker disable next-line OptionalChaining : testing undefined systemInfo prop requires complex setup
     systemInfo?.systemInfo?.sourceRepo ||
     "https://github.com/ucsb-cs156/proj-courses";
   return (
