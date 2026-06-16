@@ -10,7 +10,6 @@ import {
   renderInfoLink,
   renderDetailPageLink,
   formatStatus,
-  formatSession,
   enrollmentFraction,
   isLectureWithNoSections,
   shouldShowAddToScheduleLink,
@@ -242,26 +241,6 @@ describe("section utils tests", () => {
     test("formatSession six char test", () => {
       expect(formatSession("3", "2023A ")).toBe("");
     });
-  });
-
-  describe("enrollmentFraction tests", () => {
-    const primaryRow = {
-      original: { ...primaryFixtures.f24_math_lowerDiv[0] },
-    };
-    const subRow = {
-      original: { ...primaryFixtures.f24_math_lowerDiv[0].subRows[0] },
-    };
-
-    test("enrollmentFraction for primary row", () => {
-      expect(enrollmentFraction(primaryRow)).toBe("172/175");
-    });
-
-    test("enrollmentFraction for subrow", () => {
-      expect(enrollmentFraction(subRow)).toBe("25/25");
-    });
-  });
-
-  describe("formatSession tests", () => {
     test("formatSession not summer should return empty string", () => {
       expect(formatSession("20242", "")).toBe("");
     });
@@ -290,6 +269,24 @@ describe("section utils tests", () => {
       expect(formatSession("20243", "xxxxxB")).toBe("B");
     });
   });
+
+  describe("enrollmentFraction tests", () => {
+    const primaryRow = {
+      original: { ...primaryFixtures.f24_math_lowerDiv[0] },
+    };
+    const subRow = {
+      original: { ...primaryFixtures.f24_math_lowerDiv[0].subRows[0] },
+    };
+
+    test("enrollmentFraction for primary row", () => {
+      expect(enrollmentFraction(primaryRow)).toBe("172/175");
+    });
+
+    test("enrollmentFraction for subrow", () => {
+      expect(enrollmentFraction(subRow)).toBe("25/25");
+    });
+  });
+
   describe("tests that depend on what kind of row it is", () => {
     const rowForLectureWithSubRows = {
       original: { ...primaryFixtures.f24_math_lowerDiv[0] },
