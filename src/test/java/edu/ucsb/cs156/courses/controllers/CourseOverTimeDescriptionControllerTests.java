@@ -36,9 +36,6 @@ public class CourseOverTimeDescriptionControllerTests {
 
   @Autowired private MockMvc mockMvc;
   @Autowired private RateLimitFilter rateLimitFilter;
-
-  @Autowired private RateLimitFilter rateLimitFilter;
-
   @MockitoBean ConvertedSectionCollection convertedSectionCollection;
   @MockitoBean UserRepository userRepository;
 
