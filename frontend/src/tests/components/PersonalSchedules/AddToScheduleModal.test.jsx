@@ -15,15 +15,6 @@ vi.mock("react-toastify", () => ({
 
 const queryClient = new QueryClient();
 
-vi.mock("main/components/PersonalSchedules/PersonalScheduleSelector", () => {
-  return {
-    default: ({ setHasSchedules }) => {
-      setHasSchedules(false);
-      return null;
-    },
-  };
-});
-
 describe("AddToScheduleModal", () => {
   const quarter = "20242";
   let mockOnAdd;
