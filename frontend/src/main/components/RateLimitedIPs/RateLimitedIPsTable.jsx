@@ -7,6 +7,11 @@ export default function RateLimitedIPsTable({ rateLimitedIPs }) {
     {
       header: "IP Address",
       accessorKey: "ipAddress",
+      cell: ({ cell }) => (
+        <a href={`https://tools.keycdn.com/geo?host=${cell.getValue()}`}>
+          {cell.getValue()}
+        </a>
+      ),
     },
     {
       header: "Request Count",

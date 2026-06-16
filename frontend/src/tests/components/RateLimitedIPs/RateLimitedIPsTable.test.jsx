@@ -49,6 +49,10 @@ describe("RateLimitedIPsTable tests", () => {
     expect(
       screen.getByTestId(`${testid}-cell-row-0-col-ipAddress`),
     ).toHaveTextContent("192.168.1.1");
+    expect(screen.getByRole("link", { name: "192.168.1.1" })).toHaveAttribute(
+      "href",
+      "https://tools.keycdn.com/geo?host=192.168.1.1",
+    );
     expect(
       screen.getByTestId(`${testid}-cell-row-0-col-requestCount`),
     ).toHaveTextContent("5");
