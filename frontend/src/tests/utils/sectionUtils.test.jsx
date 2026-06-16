@@ -226,6 +226,29 @@ describe("section utils tests", () => {
       expect(formatSession("20243", "xxxxxA")).toBe("A");
       expect(formatSession("20243", "xxxxxB")).toBe("B");
     });
+    test("formatSession summer course with session test", () => {
+      expect(formatSession("20243", "00000A")).toBe("A");
+    });
+
+    test("formatSession null session test", () => {
+      expect(formatSession("20243", null)).toBe("");
+    });
+
+    test("formatSession undefined session test", () => {
+      expect(formatSession("20243", undefined)).toBe("");
+    });
+
+    test("formatSession non summer course test", () => {
+      expect(formatSession("20242", "00000A")).toBe("");
+    });
+
+    test("formatSession blanks, length 1 to 5 session test", () => {
+      expect(formatSession("20243", " ".repeat(1))).toBe("");
+      expect(formatSession("20243", " ".repeat(2))).toBe("");
+      expect(formatSession("20243", " ".repeat(3))).toBe("");
+      expect(formatSession("20243", " ".repeat(4))).toBe("");
+      expect(formatSession("20243", " ".repeat(5))).toBe("");
+    });
   });
   describe("tests that depend on what kind of row it is", () => {
     const rowForLectureWithSubRows = {
@@ -252,32 +275,6 @@ describe("section utils tests", () => {
       expect(shouldShowAddToScheduleLink(subrowForDiscussionSection)).toBe(
         true,
       );
-    });
-  });
-
-  describe("formatSession tests", () => {
-    test("formatSession summer course with session test", () => {
-      expect(formatSession("20243", "00000A")).toBe("A");
-    });
-
-    test("formatSession null session test", () => {
-      expect(formatSession("20243", null)).toBe("");
-    });
-
-    test("formatSession undefined session test", () => {
-      expect(formatSession("20243", undefined)).toBe("");
-    });
-
-    test("formatSession non summer course test", () => {
-      expect(formatSession("20242", "00000A")).toBe("");
-    });
-
-    test("formatSession blanks, length 1 to 5 session test", () => {
-      expect(formatSession("20243", " ".repeat(1))).toBe("");
-      expect(formatSession("20243", " ".repeat(2))).toBe("");
-      expect(formatSession("20243", " ".repeat(3))).toBe("");
-      expect(formatSession("20243", " ".repeat(4))).toBe("");
-      expect(formatSession("20243", " ".repeat(5))).toBe("");
     });
   });
 });
