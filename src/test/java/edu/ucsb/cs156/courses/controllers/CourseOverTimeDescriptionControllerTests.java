@@ -35,6 +35,7 @@ public class CourseOverTimeDescriptionControllerTests {
   private ObjectMapper mapper = new ObjectMapper();
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private RateLimitFilter rateLimitFilter;
 
   @Autowired private RateLimitFilter rateLimitFilter;
 
