@@ -6,6 +6,7 @@ import {
   formatTime,
   formatInstructors,
   formatInfoLink,
+  formatSession,
   renderInfoLink,
   renderDetailPageLink,
   formatStatus,
@@ -195,6 +196,35 @@ describe("section utils tests", () => {
     test("formatStatus open test", () => {
       const section = { enrolledTotal: 20, maxEnroll: 30 };
       expect(formatStatus(section)).toBe("Open");
+    });
+  });
+  describe("formatSession tests", () => {
+    test("formatSession not summer should return empty string", () => {
+      expect(formatSession("20242", "")).toBe("");
+    });
+
+    test("formatSession null should return empty string", () => {
+      expect(formatSession("20243", null)).toBe("");
+    });
+
+    test("formatSession any number of blanks should return empty string", () => {
+      expect(formatSession("20243", " ")).toBe("");
+      expect(formatSession("20243", "  ")).toBe("");
+      expect(formatSession("20243", "   ")).toBe("");
+      expect(formatSession("20243", "   ")).toBe("");
+    });
+
+    test("formatSession non blank five characters or fewer should return empty string", () => {
+      expect(formatSession("20243", "x")).toBe("");
+      expect(formatSession("20243", "xx")).toBe("");
+      expect(formatSession("20243", "xxx")).toBe("");
+      expect(formatSession("20243", "xxxx")).toBe("");
+      expect(formatSession("20243", "xxxxx")).toBe("");
+    });
+
+    test("formatSession five characters or more returns 5th character", () => {
+      expect(formatSession("20243", "xxxxxA")).toBe("A");
+      expect(formatSession("20243", "xxxxxB")).toBe("B");
     });
   });
   describe("tests that depend on what kind of row it is", () => {

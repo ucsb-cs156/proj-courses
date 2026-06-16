@@ -14,3 +14,5 @@ jobs:
     uses: ucsb-cs156/workflows/.github/workflows/34-frontend-main-mutation-testing.yml@main
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      TIMEOUT: 180

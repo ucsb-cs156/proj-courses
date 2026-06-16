@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.startup;
 
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
+import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CoursesStartup {
 
+  private static final int MIN_STARTUP_QUARTER_YEAR = 1980;
+  private static final int MAX_STARTUP_QUARTER_YEAR = 2050;
+
   @Autowired UCSBAPIQuarterService ucsbAPIQuarterService;
   @Autowired UCSBSubjectsService ucsbSubjectsService;
 
@@ -25,15 +29,14 @@ public class CoursesStartup {
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
 
-  @Value("${app.endQtrYYYYQ:20222}")
-  private String endQtrYYYYQ;
-
   /**
    * Called once at application startup time . Put code here if you want it to run once each time
    * the Spring Boot application starts up in all environments.
    */
-  public void alwaysRunOnStartup() {
+  public void alwaysRunOnStartup() throws Exception {
     log.info("alwaysRunOnStartup called");
+    validateStartupQuarter("START_QTR", startQtrYYYYQ);
+    String endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
     try {
       ucsbSubjectsService.loadAllSubjects();
     } catch (Exception e) {
@@ -61,9 +64,39 @@ public class CoursesStartup {
    * Called once at application startup time . Put code here if you want it to run once each time
    * the Spring Boot application starts up but only in production.
    */
-  public void runOnStartupInProductionOnly() {
+  private void validateStartupQuarter(String envVarName, String value) {
+    if (isValidStartupQuarter(value)) {
+      return;
+    }
+
+    String message =
+        String.format(
+            "Environment variable %s has invalid value '%s'. Expected format/range: YYYYQ with year %d-%d inclusive and final quarter digit 1, 2, 3, or 4. Example valid value: 20221.",
+            envVarName, value, MIN_STARTUP_QUARTER_YEAR, MAX_STARTUP_QUARTER_YEAR);
+    log.error(message);
+    throw new RuntimeException(message);
+  }
+
+  private boolean isValidStartupQuarter(String value) {
+    if (value == null || !value.matches("\\d{5}")) {
+      return false;
+    }
+
+    int yyyyq;
+    try {
+      yyyyq = Quarter.yyyyqToInt(value);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+
+    int year = yyyyq / 10;
+    return year >= MIN_STARTUP_QUARTER_YEAR && year <= MAX_STARTUP_QUARTER_YEAR;
+  }
+
+  public void runOnStartupInProductionOnly() throws Exception {
     log.info("runOnStartupInProductionOnly called");
     // Launch course update job
+    String endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
 
     JobContextConsumer updateCourseDataJob =
         updateCourseDataJobFactory.createForQuarterRange(startQtrYYYYQ, endQtrYYYYQ, true);

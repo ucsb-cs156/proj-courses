@@ -5,7 +5,6 @@ import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
 import edu.ucsb.cs156.courses.services.jobs.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,17 +29,12 @@ public class ScheduledJobs {
 
   @Autowired private UCSBAPIQuarterService ucsbAPIQuarterService;
 
-  @Value("${app.startQtrYYYYQ:20221}")
-  private String startQtrYYYYQ;
-
-  @Value("${app.endQtrYYYYQ:20222}")
-  private String endQtrYYYYQ;
-
   @Scheduled(cron = "${app.updateCourseData.cron}", zone = "${spring.jackson.time-zone}")
   public void runUpdateCourseDataBasedOnCron() throws Exception {
     log.info("runUpdateCourseDataBasedOnCron: running");
 
     String currentQuarterYYYYQ = ucsbAPIQuarterService.getCurrentQuarterYYYYQ();
+    String endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ(currentQuarterYYYYQ);
 
     JobContextConsumer updateCourseDataJob =
         updateCourseDataJobFactory.createForQuarterRange(currentQuarterYYYYQ, endQtrYYYYQ, true);
