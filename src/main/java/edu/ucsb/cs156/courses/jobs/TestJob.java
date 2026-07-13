@@ -1,11 +1,14 @@
-package edu.ucsb.cs156.courses.testconfig;
+package edu.ucsb.cs156.courses.jobs;
 
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 import lombok.Builder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * A trivial job for testing the jobs infrastructure from the admin console: logs a line, sleeps,
+ * then either fails or logs a goodbye. The admin frontend already has a form wired up to launch
+ * this (TestJobForm/SingleButtonJobForm), but this app had no backend endpoint to receive it.
+ */
 @Builder
 public class TestJob implements JobContextConsumer {
 
@@ -14,15 +17,7 @@ public class TestJob implements JobContextConsumer {
 
   @Override
   public void accept(JobContext ctx) throws Exception {
-    // Ensure this is not null
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
     ctx.log("Hello World! from test job!");
-    if (authentication == null) {
-      ctx.log("authentication is null");
-    } else {
-      ctx.log("authentication is not null");
-    }
     Thread.sleep(sleepMs);
     if (fail) {
       throw new Exception("Fail!");

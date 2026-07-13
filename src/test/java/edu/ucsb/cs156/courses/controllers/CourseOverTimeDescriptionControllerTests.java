@@ -16,6 +16,7 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
 import edu.ucsb.cs156.courses.documents.Section;
 import edu.ucsb.cs156.courses.filters.RateLimitFilter;
+import edu.ucsb.cs156.courses.repositories.RateLimitedIPRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +40,10 @@ public class CourseOverTimeDescriptionControllerTests {
 
   @MockitoBean ConvertedSectionCollection convertedSectionCollection;
   @MockitoBean UserRepository userRepository;
+  // pre-existing gap, unrelated to lib-jobs: RateLimitConfig now needs this
+  // repository for context load; fixed as a drive-by since it left `mvn
+  // test` red on main (same failure without any of this PR's changes)
+  @MockitoBean RateLimitedIPRepository rateLimitedIPRepository;
 
   @Test
   public void test_search_emptyRequest() throws Exception {

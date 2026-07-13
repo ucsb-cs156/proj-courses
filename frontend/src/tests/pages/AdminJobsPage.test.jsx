@@ -144,7 +144,8 @@ describe("AdminJobsPage tests", () => {
 
     await screen.findByText("Job Status");
     const validPageSizeRegex = /^[1-9]\d*$/;
-    const validSortFieldRegex = /^(?:status|createdBy|createdAt|updatedAt)$/;
+    const validSortFieldRegex =
+      /^(?:status|createdByEmail|createdAt|updatedAt)$/;
     const validSortDirectionRegex = /^(?:ASC|DESC)$/;
     expect(useBackendSpy).toHaveBeenCalledWith(
       ["/api/jobs"],

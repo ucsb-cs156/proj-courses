@@ -1,60 +1,41 @@
 package edu.ucsb.cs156.courses.jobs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import edu.ucsb.cs156.courses.entities.Job;
-import edu.ucsb.cs156.courses.services.jobs.JobContext;
-import edu.ucsb.cs156.courses.testconfig.TestJob;
+import edu.ucsb.cs156.jobs.services.JobContext;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration
 public class TestJobTests {
 
   @Test
-  void test_log_output_with_no_user() throws Exception {
+  public void logs_hello_sleeps_and_says_goodbye() throws Exception {
+    JobContext ctx = mock(JobContext.class);
+    TestJob testJob = TestJob.builder().fail(false).sleepMs(50).build();
 
-    // Arrange
-
-    Job jobStarted = Job.builder().build();
-
-    JobContext ctx = new JobContext(null, jobStarted);
-
-    // Act
-    TestJob testJob = TestJob.builder().sleepMs(0).fail(false).build();
+    long start = System.nanoTime();
     testJob.accept(ctx);
+    long elapsedMs = (System.nanoTime() - start) / 1_000_000;
 
-    String expected =
-        """
-            Hello World! from test job!
-            authentication is null
-            Goodbye from test job!""";
-    // Assert
-    assertEquals(expected, jobStarted.getLog());
+    assertTrue(elapsedMs >= 45, "slept only " + elapsedMs + " ms");
+    verify(ctx).log("Hello World! from test job!");
+    verify(ctx).log("Goodbye from test job!");
+    verifyNoMoreInteractions(ctx);
   }
 
   @Test
-  @WithMockUser(roles = {"ADMIN"})
-  void test_log_output_with_mock_user() throws Exception {
-    // Arrange
+  public void throws_and_skips_goodbye_when_fail_is_true() {
+    JobContext ctx = mock(JobContext.class);
+    TestJob testJob = TestJob.builder().fail(true).sleepMs(0).build();
 
-    Job jobStarted = Job.builder().build();
-    JobContext ctx = new JobContext(null, jobStarted);
+    Exception thrown = assertThrows(Exception.class, () -> testJob.accept(ctx));
 
-    // Act
-    TestJob testJob = TestJob.builder().sleepMs(0).fail(false).build();
-    testJob.accept(ctx);
-
-    String expected =
-        """
-                Hello World! from test job!
-                authentication is not null
-                Goodbye from test job!""";
-    // Assert
-    assertEquals(expected, jobStarted.getLog());
+    assertEquals("Fail!", thrown.getMessage());
+    verify(ctx).log("Hello World! from test job!");
+    verifyNoMoreInteractions(ctx);
   }
 }

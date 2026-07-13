@@ -1,55 +1,46 @@
 package edu.ucsb.cs156.courses.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
-import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.jobs.UploadGradeDataJobFactory;
-import edu.ucsb.cs156.courses.repositories.JobsRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
-import edu.ucsb.cs156.courses.services.jobs.JobContextFactory;
-import edu.ucsb.cs156.courses.services.jobs.JobService;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import edu.ucsb.cs156.jobs.entities.Job;
+import edu.ucsb.cs156.jobs.services.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
+/**
+ * Tests for this app's JobsController: launching jobs. The generic endpoints (list, paginated,
+ * logs, delete) belong to the lib-jobs library controller and are tested in the library.
+ *
+ * @see JobsController
+ */
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
-@Import({JobService.class, JobContextFactory.class})
 public class JobsControllerTests extends ControllerTestCase {
 
-  @MockBean JobsRepository jobsRepository;
-
-  @MockBean UserRepository userRepository;
-
   @MockBean UploadGradeDataJobFactory uploadGradeDataJobFactory;
+
+  // required for context load: JobsController extends ApiController, which
+  // depends on CurrentUserService, which depends on this repository - even
+  // though none of the launch endpoints below call getCurrentUser()
+  @MockBean UserRepository userRepository;
 
   @MockBean JobService jobService;
 
@@ -62,189 +53,6 @@ public class JobsControllerTests extends ControllerTestCase {
   @MockBean UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
   @MockBean ConvertedSectionCollection convertedSectionCollection;
-
-  ArrayList<Job> emptyArray = new ArrayList<Job>();
-  PageRequest pageRequest_0_10_ASC_createdAt = PageRequest.of(0, 10, Direction.ASC, "createdAt");
-  PageRequest pageRequest_0_10_DESC_updatedAt = PageRequest.of(0, 10, Direction.DESC, "updatedAt");
-  PageRequest pageRequest_0_10_DESC_status = PageRequest.of(0, 10, Direction.DESC, "status");
-  PageRequest pageRequest_0_10_ASC_createdBy = PageRequest.of(0, 10, Direction.ASC, "createdBy");
-
-  private final Page<Job> emptyPage_0_10_ASC_createdAt =
-      new PageImpl<Job>(emptyArray, pageRequest_0_10_ASC_createdAt, 0);
-  private final Page<Job> emptyPage_0_10_DESC_updatedAt =
-      new PageImpl<Job>(emptyArray, pageRequest_0_10_DESC_updatedAt, 0);
-  private final Page<Job> emptyPage_0_10_DESC_status =
-      new PageImpl<Job>(emptyArray, pageRequest_0_10_DESC_status, 0);
-  private final Page<Job> emptyPage_0_10_ASC_createdBy =
-      new PageImpl<Job>(emptyArray, pageRequest_0_10_ASC_createdBy, 0);
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_get_all_jobs() throws Exception {
-
-    // arrange
-
-    Job job1 = Job.builder().log("this is job 1").build();
-    Job job2 = Job.builder().log("this is job 2").build();
-
-    ArrayList<Job> expectedJobs = new ArrayList<>();
-    expectedJobs.addAll(Arrays.asList(job1, job2));
-
-    when(jobsRepository.findAllByOrderByIdDesc()).thenReturn(expectedJobs);
-
-    // act
-    MvcResult response =
-        mockMvc.perform(get("/api/jobs/all")).andExpect(status().isOk()).andReturn();
-
-    // assert
-
-    verify(jobsRepository, atLeastOnce()).findAllByOrderByIdDesc();
-    String expectedJson = mapper.writeValueAsString(expectedJobs);
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void api_getJobLogById__admin_logged_in__returns_job_by_id() throws Exception {
-
-    // arrange
-
-    Job job = Job.builder().id(1L).status("completed").log("This is a test job log.").build();
-
-    when(jobsRepository.findById(eq(1L))).thenReturn(Optional.of(job));
-
-    // act
-
-    MvcResult response =
-        mockMvc.perform(get("/api/jobs?id=1")).andExpect(status().isOk()).andReturn();
-
-    // assert
-
-    verify(jobsRepository, times(1)).findById(1L);
-    String expectedJson = mapper.writeValueAsString(job);
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void api_getJobLogById__admin_logged_in__returns_not_found_for_missing_job()
-      throws Exception {
-
-    // arrange
-
-    when(jobsRepository.findById(eq(2L))).thenReturn(Optional.empty());
-
-    // act
-
-    MvcResult response =
-        mockMvc.perform(get("/api/jobs?id=2")).andExpect(status().isNotFound()).andReturn();
-
-    // assert
-
-    verify(jobsRepository, times(1)).findById(2L);
-    Map<String, Object> json = responseToJson(response);
-    assertEquals("EntityNotFoundException", json.get("type"));
-    assertEquals("Job with id 2 not found", json.get("message"));
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_delete_all_jobs() throws Exception {
-
-    doNothing().when(jobsRepository).deleteAll();
-
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(delete("/api/jobs/all").with(csrf()))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    // assert
-
-    verify(jobsRepository, times(1)).deleteAll();
-    String expectedJson = mapper.writeValueAsString(Map.of("message", "All jobs deleted"));
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void test_getJobLogs_admin_can_get_job_log() throws Exception {
-    // Arrange
-    Long jobId = 1L;
-    String jobLog = "This is a job log";
-    when(jobService.getLongJob(jobId)).thenReturn(jobLog);
-
-    // Act & Assert
-    mockMvc
-        .perform(get("/api/jobs/logs/{id}", jobId))
-        .andExpect(status().isOk())
-        .andExpect(content().string(jobLog));
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void test_getJobLogs_admin_can_get_empty_log() throws Exception {
-    // Arrange
-    Long jobId = 2L;
-    when(jobService.getLongJob(jobId)).thenReturn("");
-
-    // Act & Assert
-    mockMvc
-        .perform(get("/api/jobs/logs/{id}", jobId))
-        .andExpect(status().isOk())
-        .andExpect(content().string(""));
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_can_delete_specific_job() throws Exception {
-
-    // arrange
-
-    when(jobsRepository.existsById(eq(1L))).thenReturn(true);
-    doNothing().when(jobsRepository).deleteById(eq(1L));
-
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(delete("/api/jobs?id=1").with(csrf()))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    // assert
-
-    verify(jobsRepository, times(1)).deleteById(eq(1L));
-    String expectedJson = mapper.writeValueAsString(Map.of("message", "Job with id 1 deleted"));
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void admin_gets_reasonable_error_when_deleting_non_existing_job() throws Exception {
-
-    // arrange
-
-    when(jobsRepository.existsById(eq(2L))).thenReturn(false);
-
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(delete("/api/jobs?id=2").with(csrf()))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    // assert
-
-    verify(jobsRepository, times(1)).existsById(eq(2L));
-    String expectedJson = mapper.writeValueAsString(Map.of("message", "Job with id 2 not found"));
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
@@ -365,92 +173,31 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
-  public void test_paginatedJobs_empty_DESC_status() throws Exception {
+  public void admin_can_launch_test_job() throws Exception {
     // arrange
-    when(jobsRepository.findAll(pageRequest_0_10_DESC_status))
-        .thenReturn(emptyPage_0_10_DESC_status);
+    Job job = Job.builder().id(1L).status("started").build();
+    when(jobService.runAsJob(any())).thenReturn(job);
 
     // act
     MvcResult response =
         mockMvc
-            .perform(
-                get("/api/jobs/paginated?page=0&pageSize=10&sortField=status&sortDirection=DESC"))
+            .perform(post("/api/jobs/launch/testjob?fail=false&sleepMs=2000").with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
 
     // assert
-    String expectedResponseAsJson = objectMapper.writeValueAsString(emptyPage_0_10_DESC_status);
-    String actualResponse = response.getResponse().getContentAsString();
-    assertEquals(expectedResponseAsJson, actualResponse);
+    String responseString = response.getResponse().getContentAsString();
+    log.info("responseString={}", responseString);
+    Job jobReturned = objectMapper.readValue(responseString, Job.class);
+
+    assertNotNull(jobReturned.getStatus());
   }
 
-  @WithMockUser(roles = {"ADMIN"})
+  @WithMockUser(roles = {"USER"})
   @Test
-  public void test_paginatedJobs_empty_ASC_createdAt() throws Exception {
-    // arrange
-    when(jobsRepository.findAll(pageRequest_0_10_ASC_createdAt))
-        .thenReturn(emptyPage_0_10_ASC_createdAt);
-
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(
-                get("/api/jobs/paginated?page=0&pageSize=10&sortField=createdAt&sortDirection=ASC"))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    // assert
-    String expectedResponseAsJson = objectMapper.writeValueAsString(emptyPage_0_10_ASC_createdAt);
-    String actualResponse = response.getResponse().getContentAsString();
-    assertEquals(expectedResponseAsJson, actualResponse);
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void when_sortField_is_invalid_throws_exception() throws Exception {
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(
-                get("/api/jobs/paginated?page=0&pageSize=10&sortField=invalid&sortDirection=DESC"))
-            .andExpect(status().isBadRequest())
-            .andReturn();
-
-    // assert
-    Map<String, String> expectedResponse =
-        Map.of(
-            "message",
-            "invalid is not a valid sort field. Valid values are [createdBy, status, createdAt, updatedAt]",
-            "type",
-            "IllegalArgumentException");
-
-    String expectedResponseAsJson = objectMapper.writeValueAsString(expectedResponse);
-    String actualResponse = response.getResponse().getContentAsString();
-    assertEquals(expectedResponseAsJson, actualResponse);
-  }
-
-  @WithMockUser(roles = {"ADMIN"})
-  @Test
-  public void when_sortDirection_is_invalid_throws_exception() throws Exception {
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(
-                get(
-                    "/api/jobs/paginated?page=0&pageSize=10&sortField=status&sortDirection=INVALID"))
-            .andExpect(status().isBadRequest())
-            .andReturn();
-
-    // assert
-    Map<String, String> expectedResponse =
-        Map.of(
-            "message",
-            "INVALID is not a valid sort direction. Valid values are [ASC, DESC]",
-            "type",
-            "IllegalArgumentException");
-
-    String expectedResponseAsJson = objectMapper.writeValueAsString(expectedResponse);
-    String actualResponse = response.getResponse().getContentAsString();
-    assertEquals(expectedResponseAsJson, actualResponse);
+  public void regular_users_cannot_launch_test_job() throws Exception {
+    mockMvc
+        .perform(post("/api/jobs/launch/testjob?fail=false&sleepMs=0").with(csrf()))
+        .andExpect(status().is(403));
   }
 }

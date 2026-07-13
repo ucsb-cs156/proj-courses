@@ -1,8 +1,8 @@
 package edu.ucsb.cs156.courses.jobs;
 
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
-import edu.ucsb.cs156.courses.services.jobs.JobContextConsumer;
-import edu.ucsb.cs156.courses.services.jobs.JobService;
+import edu.ucsb.cs156.jobs.services.JobContextConsumer;
+import edu.ucsb.cs156.jobs.services.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
