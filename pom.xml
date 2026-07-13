@@ -149,7 +149,22 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
+
+        <!-- Shared async jobs system: https://github.com/ucsb-cs156/lib-jobs -->
+        <dependency>
+            <groupId>com.github.ucsb-cs156</groupId>
+            <artifactId>lib-jobs</artifactId>
+            <version>v0.1.6</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <!-- JitPack builds lib-jobs straight from its git tags -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

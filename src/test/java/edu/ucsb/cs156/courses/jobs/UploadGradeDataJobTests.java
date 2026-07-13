@@ -4,7 +4,7 @@ import static org.mockito.Mockito.verify;
 
 import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
 import edu.ucsb.cs156.courses.services.GradeHistoryImportServiceImpl;
-import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import edu.ucsb.cs156.jobs.services.JobContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;

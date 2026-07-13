@@ -9,10 +9,10 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import edu.ucsb.cs156.courses.entities.GradeHistory;
-import edu.ucsb.cs156.courses.entities.Job;
 import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
-import edu.ucsb.cs156.courses.services.jobs.JobContext;
+import edu.ucsb.cs156.jobs.entities.Job;
+import edu.ucsb.cs156.jobs.services.JobContext;
 import java.sql.PreparedStatement;
 import java.util.List;
 import org.junit.jupiter.api.Test;
