@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"s26-02-pr54","number":312,"title":"S26 02 pr54","url":"https://github.com/ucsb-cs156/proj-courses/pull/312"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-migrate-to-lib-jobs","number":314,"title":"Migrate jobs system to lib-jobs v0.1.6 (shared library)","url":"https://github.com/ucsb-cs156/proj-courses/pull/314"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"s26-02-pr54","number":312,"title":"S26 02 pr54 --- improvements to modal for creating schedules.","url":"https://github.com/ucsb-cs156/proj-courses/pull/312"}]
