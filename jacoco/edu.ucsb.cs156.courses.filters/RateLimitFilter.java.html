@@ -2,6 +2,8 @@
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import edu.ucsb.cs156.courses.entities.RateLimitedIP;
+import edu.ucsb.cs156.courses.repositories.RateLimitedIPRepository;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
@@ -11,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,25 +23,28 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
   private final int initialBucketSize;
   private final int refillPerMinute;
+  private final RateLimitedIPRepository rateLimitedIPRepository;
 
-<span class="fc" id="L23">  public RateLimitFilter(int initialBucketSize, int refillPerMinute) {</span>
-<span class="fc" id="L24">    this.initialBucketSize = initialBucketSize;</span>
-<span class="fc" id="L25">    this.refillPerMinute = refillPerMinute;</span>
-<span class="fc" id="L26">  }</span>
+  public RateLimitFilter(
+<span class="fc" id="L29">      int initialBucketSize, int refillPerMinute, RateLimitedIPRepository rateLimitedIPRepository) {</span>
+<span class="fc" id="L30">    this.initialBucketSize = initialBucketSize;</span>
+<span class="fc" id="L31">    this.refillPerMinute = refillPerMinute;</span>
+<span class="fc" id="L32">    this.rateLimitedIPRepository = rateLimitedIPRepository;</span>
+<span class="fc" id="L33">  }</span>
 
   // Caffeine cache: Keys are IP addresses, Values are Bucket objects.
   // Entries expire 1 hour after the last access.
-<span class="fc" id="L30">  private final Cache&lt;String, Bucket&gt; cache =</span>
-<span class="fc" id="L31">      Caffeine.newBuilder()</span>
-<span class="fc" id="L32">          .expireAfterAccess(1, TimeUnit.HOURS)</span>
-<span class="fc" id="L33">          .maximumSize(10000) // Protects against memory exhaustion from botnets</span>
-<span class="fc" id="L34">          .build();</span>
+<span class="fc" id="L37">  private final Cache&lt;String, Bucket&gt; cache =</span>
+<span class="fc" id="L38">      Caffeine.newBuilder()</span>
+<span class="fc" id="L39">          .expireAfterAccess(1, TimeUnit.HOURS)</span>
+<span class="fc" id="L40">          .maximumSize(10000) // Protects against memory exhaustion from botnets</span>
+<span class="fc" id="L41">          .build();</span>
 
   Bucket createNewBucket() {
-<span class="fc" id="L37">    Bandwidth limit =</span>
-<span class="fc" id="L38">        Bandwidth.classic(</span>
-<span class="fc" id="L39">            initialBucketSize, Refill.intervally(refillPerMinute, Duration.ofMinutes(1)));</span>
-<span class="fc" id="L40">    return Bucket.builder().addLimit(limit).build();</span>
+<span class="fc" id="L44">    Bandwidth limit =</span>
+<span class="fc" id="L45">        Bandwidth.classic(</span>
+<span class="fc" id="L46">            initialBucketSize, Refill.intervally(refillPerMinute, Duration.ofMinutes(1)));</span>
+<span class="fc" id="L47">    return Bucket.builder().addLimit(limit).build();</span>
   }
 
   @Override
@@ -46,24 +53,43 @@ public class RateLimitFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
 
     // Prefer X-Forwarded-For when behind a proxy like Nginx or AWS load balancers
-<span class="fc" id="L49">    String xForwardedFor = request.getHeader(&quot;X-Forwarded-For&quot;);</span>
+<span class="fc" id="L56">    String xForwardedFor = request.getHeader(&quot;X-Forwarded-For&quot;);</span>
     String ip =
-<span class="fc bfc" id="L51" title="All 4 branches covered.">        (xForwardedFor != null &amp;&amp; !xForwardedFor.isBlank())</span>
-<span class="fc" id="L52">            ? xForwardedFor.split(&quot;,&quot;)[0].trim()</span>
-<span class="fc" id="L53">            : request.getRemoteAddr();</span>
+<span class="fc bfc" id="L58" title="All 4 branches covered.">        (xForwardedFor != null &amp;&amp; !xForwardedFor.isBlank())</span>
+<span class="fc" id="L59">            ? xForwardedFor.split(&quot;,&quot;)[0].trim()</span>
+<span class="fc" id="L60">            : request.getRemoteAddr();</span>
 
     // Get or create the bucket for this IP
-<span class="fc" id="L56">    Bucket bucket = cache.get(ip, key -&gt; createNewBucket());</span>
+<span class="fc" id="L63">    Bucket bucket = cache.get(ip, key -&gt; createNewBucket());</span>
 
-<span class="fc bfc" id="L58" title="All 2 branches covered.">    if (bucket.tryConsume(1)) {</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (bucket.tryConsume(1)) {</span>
       // Success: Continue to the next filter/controller
-<span class="fc" id="L60">      filterChain.doFilter(request, response);</span>
+<span class="fc" id="L67">      filterChain.doFilter(request, response);</span>
     } else {
-      // Failure: Too many requests
-<span class="fc" id="L63">      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());</span>
-<span class="fc" id="L64">      response.setContentType(&quot;text/plain&quot;);</span>
-<span class="fc" id="L65">      response.getWriter().write(&quot;Too many requests. Your IP has been throttled.&quot;);</span>
+      // Failure: Too many requests — record this in the database
+<span class="fc" id="L70">      recordRateLimitedIP(ip);</span>
+<span class="fc" id="L71">      response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());</span>
+<span class="fc" id="L72">      response.setContentType(&quot;text/plain&quot;);</span>
+<span class="fc" id="L73">      response.getWriter().write(&quot;Too many requests. Your IP has been throttled.&quot;);</span>
     }
-<span class="fc" id="L67">  }</span>
+<span class="fc" id="L75">  }</span>
+
+  void recordRateLimitedIP(String ip) {
+<span class="fc" id="L78">    Optional&lt;RateLimitedIP&gt; existing = rateLimitedIPRepository.findById(ip);</span>
+    RateLimitedIP record;
+<span class="fc bfc" id="L80" title="All 2 branches covered.">    if (existing.isPresent()) {</span>
+<span class="fc" id="L81">      record = existing.get();</span>
+<span class="fc" id="L82">      record.setRequestCount(record.getRequestCount() + 1);</span>
+<span class="fc" id="L83">      record.setLastRequestAt(ZonedDateTime.now());</span>
+    } else {
+      record =
+<span class="fc" id="L86">          RateLimitedIP.builder()</span>
+<span class="fc" id="L87">              .ipAddress(ip)</span>
+<span class="fc" id="L88">              .requestCount(1)</span>
+<span class="fc" id="L89">              .lastRequestAt(ZonedDateTime.now())</span>
+<span class="fc" id="L90">              .build();</span>
+    }
+<span class="fc" id="L92">    rateLimitedIPRepository.save(record);</span>
+<span class="fc" id="L93">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
