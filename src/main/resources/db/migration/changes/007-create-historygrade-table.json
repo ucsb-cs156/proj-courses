@@ -1,0 +1,43 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "007-create-historygrade-table",
+        "author": "pconrad",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          { "not": { "tableExists": { "tableName": "historygrade" } } }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "historygrade",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "BIGINT",
+                    "autoIncrement": true,
+                    "constraints": { "nullable": false, "primaryKey": true }
+                  }
+                },
+                { "column": { "name": "yyyyq", "type": "VARCHAR(255)" } },
+                { "column": { "name": "course", "type": "VARCHAR(255)" } },
+                { "column": { "name": "instructor", "type": "VARCHAR(255)" } },
+                { "column": { "name": "grade", "type": "VARCHAR(255)" } },
+                { "column": { "name": "count", "type": "INT" } }
+              ]
+            }
+          },
+          {
+            "addUniqueConstraint": {
+              "tableName": "historygrade",
+              "columnNames": "yyyyq, course, instructor, grade, count",
+              "constraintName": "UniqueGradeHistory"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

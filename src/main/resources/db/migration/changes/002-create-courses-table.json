@@ -1,0 +1,43 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "002-create-courses-table",
+        "author": "pconrad",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          { "not": { "tableExists": { "tableName": "courses" } } }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "courses",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "BIGINT",
+                    "autoIncrement": true,
+                    "constraints": { "nullable": false, "primaryKey": true }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "BIGINT",
+                    "constraints": {
+                      "foreignKeyName": "fk_courses_user_id",
+                      "references": "users(id)"
+                    }
+                  }
+                },
+                { "column": { "name": "enroll_cd", "type": "VARCHAR(255)" } },
+                { "column": { "name": "ps_id", "type": "BIGINT" } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
