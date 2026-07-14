@@ -65,6 +65,40 @@ enough to pick it up. This mirrors how proj-dining includes the same library cha
 
 Changesets are plain JSON (not XML or YAML) to match the format already used by the other four sibling repos.
 
+## CI schema validation
+
+A GitHub Actions workflow, `.github/workflows/18-validate-db-schema.yml`, calls a reusable workflow from
+[ucsb-cs156/workflows](https://github.com/ucsb-cs156/workflows) on every PR and push to `main` that touches
+`src/**`, `pom.xml`, or `lombok.config`. It:
+
+1. Boots the app with `mvn spring-boot:run -Dspring-boot.run.arguments="--spring.jpa.hibernate.ddl-auto=validate"`
+   — overriding `ddl-auto` from `none` to `validate` just for this run, against the `development` H2 profile
+   (which is file-based and runs in `MODE=PostgreSQL`, see `application-development.properties`).
+2. In `validate` mode, Hibernate never touches the schema — Liquibase creates it as usual on startup — but
+   Hibernate *does* compare its own entity metadata against the resulting tables/columns, and refuses to
+   finish starting up if anything doesn't match (extra/missing/mistyped columns, wrong table names, etc.).
+3. Polls `http://localhost:8080` for up to 150 seconds; if the app never comes up (because Hibernate's
+   validation step threw and killed startup), the job fails with a message pointing at the mismatch.
+
+This is the automated check that closes the gap called out in [Adding a new migration](#adding-a-new-migration)
+below — it's what actually enforces that entity classes and Liquibase changesets stay in sync, since the
+Liquibase-only unit test suite never asks Hibernate to validate its mappings against the schema (tests run
+with `ddl-auto=none`, same as everywhere else).
+
+This workflow (and this analysis) exists in the other repos too — see
+[Alignment across repos](#alignment-across-repos) for which of the five have it, and which branch of
+`ucsb-cs156/workflows` they each point to. proj-courses adopts it here, pinned to `@main`.
+
+This check is not theoretical: while preparing this PR, running it locally caught a real mismatch — the
+`005-create-ucsbapiquarter-table.json` changeset originally named three columns `pass1_begin`, `pass2_begin`,
+`pass3_begin` (guessing that Hibernate's naming strategy would insert an underscore before every uppercase
+letter), but Hibernate's `CamelCaseToUnderscoresNamingStrategy` only inserts an underscore at a
+lowercase-to-uppercase boundary, not a digit-to-uppercase one — so `pass1Begin` actually maps to the column
+`pass1begin` (no underscore). `mvn spring-boot:run -Dspring-boot.run.arguments="--spring.jpa.hibernate.ddl-auto=validate"`
+failed immediately with `SchemaManagementException: Schema-validation: missing column [pass1begin] in table
+[ucsbapiquarter]`, which is exactly the kind of drift this workflow exists to catch before it reaches
+production. The changeset was corrected before merging.
+
 ## Adding a new migration
 
 1. Add a new file to `src/main/resources/db/migration/changes/`, named `NNN-short-kebab-case-description.json`,
@@ -101,10 +135,14 @@ Changesets are plain JSON (not XML or YAML) to match the format already used by 
    (in the `DATABASECHANGELOG` table); editing a file that has already run against any environment (including
    a teammate's localhost H2 database) causes a checksum-mismatch error on next startup. If you need to
    correct a mistake, write a new changeset that fixes it forward.
-4. Keep the entity class and the changeset in sync by hand. There is currently no automated diff/generation
-   step in this repo (see the alignment notes below) — after changing a `@Entity` class, write the
-   corresponding Liquibase changeset in the same PR, and let the test suite (which runs migrations against a
-   real, freshly-created H2 database on every run) catch any mismatch.
+4. Keep the entity class and the changeset in sync by hand. There is no diff/generation tool wired up in this
+   repo (see the alignment notes below) — after changing a `@Entity` class, write the corresponding Liquibase
+   changeset in the same PR. The [CI schema validation](#ci-schema-validation) workflow will fail the PR if
+   the two drift out of sync; you can also run the same check locally before pushing:
+
+   ```shell
+   mvn spring-boot:run -Dspring-boot.run.arguments="--spring.jpa.hibernate.ddl-auto=validate"
+   ```
 
 ## Column naming
 
@@ -168,8 +206,18 @@ proj-courses. All five repos are Spring Boot 3.4.3 / Java 21 / Maven projects.
 | `preConditions` (`MARK_RAN`) adoption | 0 of 18 files | 3 of 5 files | 7 of 7 files | 39 of 41 files | 8 of 8 files |
 | `lib-jobs` schema | n/a (doesn't use lib-jobs) | n/a | includes the library's own changelog | re-implements the jobs table locally | includes the library's own changelog (same approach as dining) |
 | Dedicated docs | none (only generic `h2-database.md`) | none | none | README section | this file |
-| CI schema-validation workflow (`18-validate-db-schema.yml`) | present, pinned to `@Division7-patch-1` | present, pinned to `@Division7-patch-1` | absent | present, pinned to `@main` | not yet added (see below) |
+| CI schema-validation workflow (`18-validate-db-schema.yml`) | present, pinned to `@Division7-patch-1` | present, pinned to `@main` | absent | present, pinned to `@Division7-patch-1` | present, pinned to `@main` (added in this PR) |
 | Stray leftover file | none | inert `V4__Add_admin_to_users.sql` (Flyway-style, unused) | same stray file as happycows | none | had the same stray file; **removed** as part of this PR |
+
+Two of the four already-existing repos (frontiers, scaffold) pin the reusable workflow to a non-default
+branch of `ucsb-cs156/workflows`, `Division7-patch-1`, rather than `main`. Diffing that branch against `main`
+in the `workflows` repo shows the two versions of `18-validate-db-schema.yml` are functionally almost
+identical (same `mvn spring-boot:run -Dspring-boot.run.arguments="--spring.jpa.hibernate.ddl-auto=validate"`
++ curl-polling logic) — `Division7-patch-1` adds an unused `WEBHOOK_SECRET` input, while `main` adds a
+configurable `TIMEOUT` input (default 10 minutes) in its place. Neither difference matters much in practice,
+but three repos each independently pinning to a different ref of the same shared workflow (`main`,
+`Division7-patch-1` ×2) is itself the kind of drift this alignment effort is meant to reduce — courses adopts
+`@main` here since it's the actively-maintained default branch.
 
 ### Recommendations to bring the five repos into better alignment
 
@@ -184,9 +232,9 @@ proj-courses. All five repos are Spring Boot 3.4.3 / Java 21 / Maven projects.
 3. **Require `preConditions`/`MARK_RAN` on every new changeset.** Retrofit frontiers (currently 0 of 18) and
    finish happycows (currently 3 of 5). This is what makes it safe to run the same migration set against an
    environment that might have been partially schema-managed by Hibernate in the past.
-4. **Add the `18-validate-db-schema.yml` CI workflow to dining**, and repoint frontiers'/happycows' pin from
-   `@Division7-patch-1` to `@main` (matching scaffold), so all repos validate against the same version of the
-   shared `ucsb-cs156/workflows` logic.
+4. **Add the `18-validate-db-schema.yml` CI workflow to dining** (the only one of the five without it), and
+   repoint frontiers'/scaffold's pin from `@Division7-patch-1` to `@main` (matching happycows/courses), so all
+   repos validate against the same version of the shared `ucsb-cs156/workflows` logic.
 5. **Remove the dead `V4__Add_admin_to_users.sql` files** from happycows and dining — this Flyway-style file
    sits outside `db/migration/changes/`, so Liquibase's `includeAll` never picks it up; it's inert dead weight
    left over from an earlier migration approach (courses had the same file, removed in this PR).
@@ -224,7 +272,7 @@ found that this issue tracks fixing here in proj-frontiers:
       require it on all new changesets going forward. This makes it safe to re-run the full migration set
       against a database that may have been partially schema-managed some other way.
 - [ ] Re-point the `18-validate-db-schema.yml` workflow's reference to `ucsb-cs156/workflows` from
-      `@Division7-patch-1` to `@main`, to match proj-scaffold.
+      `@Division7-patch-1` to `@main`, to match proj-happycows/proj-courses.
 - [ ] Add a `docs/liquibase.md` (or a README section) documenting this repo's migration conventions, modeled
       after `docs/liquibase.md` in proj-courses or the README section in proj-scaffold.
 ```
@@ -253,10 +301,9 @@ found that this issue tracks fixing here in proj-happycows:
 - [ ] Remove the dead `src/main/resources/db/migration/V4__Add_admin_to_users.sql` file. It's a Flyway-style
       file sitting outside `db/migration/changes/`, so Liquibase's `includeAll` never picks it up — it's
       inert leftover weight from an earlier migration approach.
-- [ ] Re-point the `18-validate-db-schema.yml` workflow's reference to `ucsb-cs156/workflows` from
-      `@Division7-patch-1` to `@main`, to match proj-scaffold.
 - [ ] Add a `docs/liquibase.md` (or a README section) documenting this repo's migration conventions, modeled
-      after `docs/liquibase.md` in proj-courses or the README section in proj-scaffold.
+      after `docs/liquibase.md` in proj-courses or the README section in proj-scaffold. (This repo's
+      `18-validate-db-schema.yml` is already pinned to `@main`, so no change needed there.)
 ```
 
 </details>
@@ -281,8 +328,9 @@ found that this issue tracks fixing here in proj-dining:
 - [ ] Remove the dead `src/main/resources/db/migration/V4__Add_admin_to_users.sql` file. It's a Flyway-style
       file sitting outside `db/migration/changes/`, so Liquibase's `includeAll` never picks it up — it's
       inert leftover weight from an earlier migration approach.
-- [ ] Add the `18-validate-db-schema.yml` CI workflow (present in frontiers/happycows/scaffold, pinned to
-      `ucsb-cs156/workflows@main`), which this repo is currently missing entirely.
+- [ ] Add the `18-validate-db-schema.yml` CI workflow (present in frontiers/happycows/scaffold/courses,
+      pinned to `ucsb-cs156/workflows@main` or `@Division7-patch-1`), which this repo is currently missing
+      entirely. Pin it to `@main`.
 - [ ] Add a `docs/liquibase.md` (or a README section) documenting this repo's migration conventions, modeled
       after `docs/liquibase.md` in proj-courses or the README section in proj-scaffold.
 ```
@@ -296,14 +344,16 @@ found that this issue tracks fixing here in proj-dining:
 Title: Align Liquibase setup with proj-courses/proj-dining conventions
 
 As part of a cross-repo survey in ucsb-cs156/proj-courses#315, we compared how Liquibase is set up across
-proj-frontiers, proj-happycows, proj-dining, proj-scaffold, and proj-courses. One inconsistency was found
-that this issue tracks fixing here in proj-scaffold:
+proj-frontiers, proj-happycows, proj-dining, proj-scaffold, and proj-courses. A couple of inconsistencies
+were found that this issue tracks fixing here in proj-scaffold:
 
 - [ ] Switch the `JOBS` table migration to `include` the changelog packaged inside the `lib-jobs` jar
       (`db/migration/lib-jobs/changelog-master.json`), the same way proj-dining and proj-courses do, instead
       of re-implementing the table locally in `039-migrate-jobs-to-lib-jobs.json`. This keeps the jobs table
       schema owned by the one place it's actually defined (the `lib-jobs` library itself), so a future schema
       change in the library doesn't require a matching hand-written migration in every consuming repo.
+- [ ] Re-point the `18-validate-db-schema.yml` workflow's reference to `ucsb-cs156/workflows` from
+      `@Division7-patch-1` to `@main`, to match proj-happycows/proj-courses.
 - [ ] Re-enable (or remove, if intentionally retired) the disabled `42-smoke-test.yml.SAVE` workflow, or
       document why it's disabled.
 ```
@@ -319,8 +369,6 @@ Title: Follow-up Liquibase alignment items from issue #315
 A few smaller items identified during the Liquibase survey in #315 were left out of the initial PR and are
 tracked here:
 
-- [ ] Add the `18-validate-db-schema.yml` CI workflow (pinned to `ucsb-cs156/workflows@main`), matching
-      frontiers/happycows/scaffold, so schema/entity drift is caught in CI here too.
 - [ ] Consider adding a `src/test/resources/application.properties` that forces H2 into
       `MODE=PostgreSQL` for all test runs (as proj-scaffold does), for stronger Postgres-compatibility
       guarantees in tests. Note: this requires re-declaring every property that the default (profile-less)
