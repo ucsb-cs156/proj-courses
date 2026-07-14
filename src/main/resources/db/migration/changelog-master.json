@@ -4,11 +4,6 @@
       "includeAll": {
         "path": "db/migration/changes/"
       }
-    },
-    {
-      "include": {
-        "file": "db/migration/lib-jobs/changelog-master.json"
-      }
     }
   ]
 }

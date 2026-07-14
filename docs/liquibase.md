@@ -42,7 +42,8 @@ src/main/resources/db/migration/
     ├── 005-create-ucsbapiquarter-table.json
     ├── 006-create-ucsb-subjects-table.json
     ├── 007-create-historygrade-table.json
-    └── 008-create-enrollmentdatapoint-table.json
+    ├── 008-create-enrollmentdatapoint-table.json
+    └── 009-create-jobs-table.json
 ```
 
 The master changelog uses Liquibase's `includeAll` directive to pick up every file in `db/migration/changes/`
@@ -51,19 +52,74 @@ in filename order, which is why every changeset file is numbered:
 ```json
 {
   "databaseChangeLog": [
-    { "includeAll": { "path": "db/migration/changes/" } },
-    { "include": { "file": "db/migration/lib-jobs/changelog-master.json" } }
+    { "includeAll": { "path": "db/migration/changes/" } }
   ]
 }
 ```
 
-The second entry pulls in the changelog bundled *inside* the `lib-jobs` jar (the shared async-jobs library
-this app depends on — see [proj-courses#314](https://github.com/ucsb-cs156/proj-courses/pull/314)), which
-creates the `JOBS` table. This means the jobs table schema is owned and versioned by `lib-jobs` itself, not
-duplicated here; when `lib-jobs` ships a schema change, bumping the dependency version in `pom.xml` is
-enough to pick it up. This mirrors how proj-dining includes the same library changelog.
+`009-create-jobs-table.json` creates the `JOBS` table used by the shared async-jobs library this app depends
+on, `lib-jobs` (see [proj-courses#314](https://github.com/ucsb-cs156/proj-courses/pull/314)). The library
+ships its own copy of this same changeset bundled inside its jar
+(`db/migration/lib-jobs/changelog-master.json`, which proj-dining `include`s directly), but proj-courses
+deliberately does **not** use that `include` — see
+[Incident: "relation \"jobs\" already exists" on first production deploy](#incident-relation-jobs-already-exists-on-first-production-deploy)
+below for why, and [Alignment across repos](#alignment-across-repos) for the resulting recommendation to fix
+this upstream in `lib-jobs` itself.
 
 Changesets are plain JSON (not XML or YAML) to match the format already used by the other four sibling repos.
+
+## Incident: relation "jobs" already exists on first production deploy
+
+The first production deploy of this Liquibase setup failed with `relation "jobs" already exists`. Here's
+what happened and why, since it's instructive for anyone adding a new migration later.
+
+**Root cause.** Every table this app already had — `users`, `courses`, `personalschedule`,
+`rate_limited_ips`, `ucsbapiquarter`, `ucsb_subjects`, `historygrade`, `enrollmentdatapoint`, and `jobs` —
+pre-existed in production, created over time by Hibernate's old `ddl-auto=update`. All eight of *this repo's
+own* changesets have a `preConditions`/`MARK_RAN` guard (see [Adding a new migration](#adding-a-new-migration)),
+so when Liquibase ran them against production for the first time, each one correctly detected its table
+already existed and marked itself as already-applied without trying to recreate it — this is confirmed in the
+Liquibase startup log as `Marking ChangeSet ... as ran despite precondition failure due to onFail='MARK_RAN'`.
+
+The `JOBS` table was different. The original setup `include`d the changelog bundled inside the `lib-jobs`
+jar itself, and that changelog's one changeset has **no** `preConditions` guard — it unconditionally issues
+`CREATE TABLE JOBS (...)`. Every other table survived because *this repo's* changesets happened to be
+written defensively; the `JOBS` table's creation logic isn't ours to write defensively, since it lives inside
+a third-party dependency jar.
+
+**Why we didn't just add a guard to the library's changelog.** We can't edit a file inside a jar. We tried
+shadowing it — placing a local copy of the exact same classpath-relative path
+(`src/main/resources/db/migration/lib-jobs/changes/001-create-jobs-table.json`) with a `preConditions` guard
+added, hoping our module's own classes would take precedence over the dependency jar's copy of the same
+path. Liquibase 4.29.2 does not allow this: it explicitly detects multiple resources found at the same path
+across the effective classpath and refuses to proceed (`Found 2 files with the path '...'`, unless
+`liquibase.duplicateFileMode=WARN` is set globally — which would silence this safety check for *every*
+changelog path, not just this one, so we didn't use it).
+
+**The fix.** `009-create-jobs-table.json` recreates the exact same table (matching `lib-jobs`'s own column
+definitions) as a changeset owned by this repo, with the same `preConditions`/`MARK_RAN` guard as every other
+changeset here. The `include` of the library's own changelog was removed. This was verified by simulating a
+database with `users` and `jobs` tables pre-created (mimicking the pre-Liquibase production schema) and
+confirming Liquibase now starts cleanly, and by confirming a fresh database still gets a fully working `JOBS`
+table (verified via `mvn spring-boot:run -Dspring-boot.run.arguments="--spring.jpa.hibernate.ddl-auto=validate"`
+and by exercising the real job-tracking code path against it).
+
+**Trade-off.** This repo no longer automatically picks up future `JOBS` schema changes shipped by `lib-jobs`
+— bumping the dependency version won't be enough if the library ever changes that table; a matching manual
+changeset will need to be added here too. This is the same trade-off proj-scaffold already made (it also
+locally re-implements the `JOBS` table rather than `include`-ing the library's changelog) — it turns out
+proj-scaffold's approach was the right call, and the recommendation in a prior draft of this document (that
+proj-scaffold should switch to `include`-ing the library's changelog like proj-dining/proj-courses did) was
+backwards. See the updated recommendation in [Alignment across repos](#alignment-across-repos): the real fix
+belongs in `lib-jobs` itself.
+
+**Recovering the already-failed production deploy.** No manual database surgery should be needed. Liquibase
+only records a changeset in `DATABASECHANGELOG` once it completes successfully, so the failed `JOBS`
+changeset from the first deploy attempt left no trace to clean up — redeploying with this fix will run
+`009-create-jobs-table.json` for the first time, its precondition will detect the pre-existing `jobs` table,
+and it will mark itself ran, same as every other changeset already did. If the deploy crashed hard enough
+that `DATABASECHANGELOGLOCK` was left `LOCKED = TRUE`, see
+[Inspecting migration state](#inspecting-migration-state) to clear it before redeploying.
 
 ## CI schema validation
 
@@ -204,7 +260,7 @@ proj-courses. All five repos are Spring Boot 3.4.3 / Java 21 / Maven projects.
 | Liquibase dependency | `liquibase-maven-plugin` (misplaced as a plain `<dependency>`) | same as frontiers | same as frontiers | `liquibase-core` (idiomatic) | `liquibase-core` |
 | Changeset naming | `000-kebab-case.json` | `000_UNDERSCORE.json` (duplicate `002` prefix) | entity-name based, no numeric order (`Users-01.json`) | `NNN-kebab-case.json` | `NNN-kebab-case.json` |
 | `preConditions` (`MARK_RAN`) adoption | 0 of 18 files | 3 of 5 files | 7 of 7 files | 39 of 41 files | 8 of 8 files |
-| `lib-jobs` schema | n/a (doesn't use lib-jobs) | n/a | includes the library's own changelog | re-implements the jobs table locally | includes the library's own changelog (same approach as dining) |
+| `lib-jobs` schema | n/a (doesn't use lib-jobs) | n/a | includes the library's own changelog (unguarded — see incident below) | re-implements the jobs table locally, with a guard | re-implements the jobs table locally, with a guard (see incident below) |
 | Dedicated docs | none (only generic `h2-database.md`) | none | none | README section | this file |
 | CI schema-validation workflow (`18-validate-db-schema.yml`) | present, pinned to `@Division7-patch-1` | present, pinned to `@main` | absent | present, pinned to `@Division7-patch-1` | present, pinned to `@main` (added in this PR) |
 | Stray leftover file | none | inert `V4__Add_admin_to_users.sql` (Flyway-style, unused) | same stray file as happycows | none | had the same stray file; **removed** as part of this PR |
@@ -238,11 +294,17 @@ but three repos each independently pinning to a different ref of the same shared
 5. **Remove the dead `V4__Add_admin_to_users.sql` files** from happycows and dining — this Flyway-style file
    sits outside `db/migration/changes/`, so Liquibase's `includeAll` never picks it up; it's inert dead weight
    left over from an earlier migration approach (courses had the same file, removed in this PR).
-6. **Standardize the `lib-jobs` changelog-inclusion strategy.** dining and courses `include` the changelog
-   packaged inside the `lib-jobs` jar; scaffold instead re-implements the same `JOBS` table as a local
-   changeset. The `include`-the-library's-changelog approach (dining/courses) is recommended, since it keeps
-   the jobs table schema owned by the one place it's actually defined — scaffold should switch to it and
-   drop its local re-implementation.
+6. **Add a `preConditions`/`MARK_RAN` guard to the changeset bundled inside the `lib-jobs` library itself**
+   (`db/migration/lib-jobs/changes/001-create-jobs-table.json`), and cut a new release. This is the real fix
+   for the [incident](#incident-relation-jobs-already-exists-on-first-production-deploy) proj-courses hit:
+   `include`-ing that changelog (as proj-dining still does, and as proj-courses originally did) will fail with
+   `relation "jobs" already exists` on any consuming repo's production database where the `JOBS` table
+   pre-dates that repo's adoption of Liquibase — which is likely true for proj-dining's production database
+   too, since it migrated to `lib-jobs` the same way proj-courses did. Until `lib-jobs` ships a guarded
+   changeset, proj-dining should consider switching to a locally-owned, guarded changeset for the `JOBS`
+   table, the same way proj-courses and proj-scaffold both do now (see the incident writeup above) — the
+   earlier recommendation in a prior draft of this document, that proj-scaffold switch *to* the `include`
+   approach, was backwards and is withdrawn.
 7. **Port a documentation page based on this one (or scaffold's README section)** into frontiers, happycows,
    and dining, so every repo explains its own migration conventions rather than leaving new contributors to
    infer them from scaffold or courses.
@@ -333,6 +395,16 @@ found that this issue tracks fixing here in proj-dining:
       entirely. Pin it to `@main`.
 - [ ] Add a `docs/liquibase.md` (or a README section) documenting this repo's migration conventions, modeled
       after `docs/liquibase.md` in proj-courses or the README section in proj-scaffold.
+- [ ] **Check whether this repo's production database already had a `jobs` table before Liquibase was
+      introduced here** (e.g. created by a prior `spring.jpa.hibernate.ddl-auto=update`/`create` setup). If
+      so, this repo is at risk of the exact failure proj-courses hit on its first production deploy of
+      Liquibase (`relation "jobs" already exists`) — see
+      `docs/liquibase.md#incident-relation-jobs-already-exists-on-first-production-deploy` in proj-courses for
+      the full writeup. The root cause is that `db/migration/lib-jobs/changelog-master.json` (which this repo
+      currently `include`s directly) has no `preConditions` guard on its `createTable` changeset. Until
+      `lib-jobs` ships a guarded version (see the companion issue against `ucsb-cs156/lib-jobs`), consider
+      switching to a locally-owned, guarded changeset for the `JOBS` table instead, the same way proj-courses
+      and proj-scaffold both do.
 ```
 
 </details>
@@ -341,21 +413,53 @@ found that this issue tracks fixing here in proj-dining:
 <summary><strong>Issue text for proj-scaffold</strong></summary>
 
 ```markdown
-Title: Align Liquibase setup with proj-courses/proj-dining conventions
+Title: Align Liquibase setup with proj-courses/proj-happycows conventions
 
 As part of a cross-repo survey in ucsb-cs156/proj-courses#315, we compared how Liquibase is set up across
-proj-frontiers, proj-happycows, proj-dining, proj-scaffold, and proj-courses. A couple of inconsistencies
-were found that this issue tracks fixing here in proj-scaffold:
+proj-frontiers, proj-happycows, proj-dining, proj-scaffold, and proj-courses. One inconsistency was found
+that this issue tracks fixing here in proj-scaffold:
 
-- [ ] Switch the `JOBS` table migration to `include` the changelog packaged inside the `lib-jobs` jar
-      (`db/migration/lib-jobs/changelog-master.json`), the same way proj-dining and proj-courses do, instead
-      of re-implementing the table locally in `039-migrate-jobs-to-lib-jobs.json`. This keeps the jobs table
-      schema owned by the one place it's actually defined (the `lib-jobs` library itself), so a future schema
-      change in the library doesn't require a matching hand-written migration in every consuming repo.
 - [ ] Re-point the `18-validate-db-schema.yml` workflow's reference to `ucsb-cs156/workflows` from
       `@Division7-patch-1` to `@main`, to match proj-happycows/proj-courses.
 - [ ] Re-enable (or remove, if intentionally retired) the disabled `42-smoke-test.yml.SAVE` workflow, or
       document why it's disabled.
+
+Note: an earlier draft of this survey recommended switching this repo's locally-owned `JOBS` table migration
+(`039-migrate-jobs-to-lib-jobs.json`) to `include` the changelog packaged inside the `lib-jobs` jar instead,
+to match proj-dining/proj-courses. That recommendation is withdrawn — proj-courses hit a production incident
+(`relation "jobs" already exists`) caused by doing exactly that, because the library's bundled changeset has
+no `preConditions` guard. proj-scaffold's local-changeset-with-a-guard approach was the correct call; no
+change needed here.
+```
+
+</details>
+
+<details>
+<summary><strong>Issue text for ucsb-cs156/lib-jobs</strong></summary>
+
+```markdown
+Title: Add a preConditions guard to the bundled JOBS table changeset
+
+`db/migration/lib-jobs/changes/001-create-jobs-table.json` (included via
+`db/migration/lib-jobs/changelog-master.json`) unconditionally runs `createTable` for the `JOBS` table, with
+no `preConditions` guard. Every consuming repo's own changesets follow the convention of guarding
+`createTable` with:
+
+    "preConditions": [
+      { "onFail": "MARK_RAN" },
+      { "not": { "tableExists": { "tableName": "JOBS" } } }
+    ]
+
+so that re-running migrations against a database that already has the table (for example, any app that
+adopted `lib-jobs` after already having a Hibernate/`ddl-auto`-managed `JOBS`-equivalent table) is a no-op
+instead of a hard failure. Without that guard, any consuming repo that `include`s this changelog directly
+(proj-dining does; proj-courses did until it hit this exact issue in production — see
+[ucsb-cs156/proj-courses#316](https://github.com/ucsb-cs156/proj-courses/pull/316) and
+`docs/liquibase.md` there for the full incident writeup) will fail with `relation "jobs" already exists` the
+first time it runs against a database where the table pre-dates Liquibase.
+
+Please add the guard and cut a new release. Once available, proj-dining (and any other consumer relying on
+the `include`) can upgrade to it without needing a local workaround changeset.
 ```
 
 </details>
@@ -376,6 +480,10 @@ tracked here:
       resolution only loads the *first* match on the classpath, and `target/test-classes` precedes
       `target/classes` — a naive version of this file will silently shadow unrelated app properties (this bit
       us during the initial implementation; see the PR discussion for #315).
+- [ ] Once `ucsb-cs156/lib-jobs` ships a `preConditions`-guarded version of its `JOBS` table changeset,
+      revisit whether `009-create-jobs-table.json` should go back to `include`-ing the library's changelog
+      instead of maintaining a locally-owned copy (see
+      `docs/liquibase.md#incident-relation-jobs-already-exists-on-first-production-deploy`).
 ```
 
 </details>
