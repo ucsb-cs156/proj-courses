@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RateLimitedIPsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">RateLimitedIPsController.java</span></div><h1>RateLimitedIPsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import edu.ucsb.cs156.courses.entities.RateLimitedIP;
+import edu.ucsb.cs156.courses.repositories.RateLimitedIPRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Arrays;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = &quot;Rate Limited IPs&quot;)
+@RequestMapping(&quot;/api/admin/rate-limited-ips&quot;)
+@RestController
+<span class="fc" id="L24">@Slf4j</span>
+<span class="fc" id="L25">public class RateLimitedIPsController extends ApiController {</span>
+
+  @Autowired private RateLimitedIPRepository rateLimitedIPRepository;
+
+  @Operation(summary = &quot;Get a paginated list of rate-limited IP addresses&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @GetMapping(value = &quot;&quot;, produces = &quot;application/json&quot;)
+  public Page&lt;RateLimitedIP&gt; getRateLimitedIPs(
+      @Parameter(
+              name = &quot;page&quot;,
+              description = &quot;what page of the data&quot;,
+              example = &quot;0&quot;,
+              required = true)
+          @RequestParam
+          int page,
+      @Parameter(
+              name = &quot;pageSize&quot;,
+              description = &quot;size of each page&quot;,
+              example = &quot;10&quot;,
+              required = true)
+          @RequestParam
+          int pageSize,
+      @Parameter(
+              name = &quot;sortField&quot;,
+              description = &quot;sort field (requestCount or lastRequestAt)&quot;,
+              example = &quot;requestCount&quot;,
+              required = false)
+          @RequestParam(defaultValue = &quot;requestCount&quot;)
+          String sortField,
+      @Parameter(
+              name = &quot;sortDirection&quot;,
+              description = &quot;sort direction (ASC or DESC)&quot;,
+              example = &quot;DESC&quot;,
+              required = false)
+          @RequestParam(defaultValue = &quot;DESC&quot;)
+          String sortDirection) {
+
+<span class="fc" id="L62">    List&lt;String&gt; allowedSortFields = Arrays.asList(&quot;requestCount&quot;, &quot;lastRequestAt&quot;);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">    if (!allowedSortFields.contains(sortField)) {</span>
+<span class="fc" id="L64">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L65">          String.format(</span>
+              &quot;%s is not a valid sort field. Valid values are %s&quot;, sortField, allowedSortFields));
+    }
+
+<span class="fc" id="L69">    List&lt;String&gt; allowedSortDirections = Arrays.asList(&quot;ASC&quot;, &quot;DESC&quot;);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (!allowedSortDirections.contains(sortDirection)) {</span>
+<span class="fc" id="L71">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L72">          String.format(</span>
+              &quot;%s is not a valid sort direction. Valid values are %s&quot;,
+              sortDirection, allowedSortDirections));
+    }
+
+<span class="fc bfc" id="L77" title="All 2 branches covered.">    Direction sortDirectionObject = sortDirection.equals(&quot;ASC&quot;) ? Direction.ASC : Direction.DESC;</span>
+
+<span class="fc" id="L79">    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);</span>
+<span class="fc" id="L80">    return rateLimitedIPRepository.findAll(pageRequest);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
