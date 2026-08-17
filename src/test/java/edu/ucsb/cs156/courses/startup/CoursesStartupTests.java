@@ -137,6 +137,40 @@ public class CoursesStartupTests {
     verify(jobService).runAsJob(updateCourseDataJob);
   }
 
+  @Test
+  public void alwaysRunOnStartup_getEndQtrThrows_logsAndSkipsJobLaunchButStillLoadsSubjectsAndQuarters(
+      CapturedOutput output) throws Exception {
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20221");
+
+    RuntimeException apiFailure = new RuntimeException("401 Unauthorized: Invalid ApiKey");
+    when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenThrow(apiFailure);
+
+    coursesStartup.alwaysRunOnStartup();
+
+    verify(ucsbSubjectsService).loadAllSubjects();
+    verify(ucsbAPIQuarterService).loadAllQuarters();
+    verify(ucsbAPIQuarterService).getEndQtrYYYYQ();
+    verifyNoInteractions(updateCourseDataJobFactory, jobService);
+    assertTrue(output.getAll().contains("Error in ucsbAPIQuarterService.getEndQtrYYYYQ()"));
+    assertTrue(output.getAll().contains("401 Unauthorized: Invalid ApiKey"));
+  }
+
+  @Test
+  public void runOnStartupInProductionOnly_getEndQtrThrows_logsAndSkipsJobLaunch(
+      CapturedOutput output) throws Exception {
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20221");
+
+    RuntimeException apiFailure = new RuntimeException("401 Unauthorized: Invalid ApiKey");
+    when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenThrow(apiFailure);
+
+    coursesStartup.runOnStartupInProductionOnly();
+
+    verify(ucsbAPIQuarterService).getEndQtrYYYYQ();
+    verifyNoInteractions(updateCourseDataJobFactory, jobService);
+    assertTrue(output.getAll().contains("Error in ucsbAPIQuarterService.getEndQtrYYYYQ()"));
+    assertTrue(output.getAll().contains("401 Unauthorized: Invalid ApiKey"));
+  }
+
   private CoursesStartup coursesStartupWithStartQuarter(String startQtrYYYYQ) {
     CoursesStartup coursesStartup = new CoursesStartup();
 

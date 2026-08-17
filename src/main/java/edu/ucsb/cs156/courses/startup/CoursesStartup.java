@@ -36,7 +36,7 @@ public class CoursesStartup {
   public void alwaysRunOnStartup() throws Exception {
     log.info("alwaysRunOnStartup called");
     validateStartupQuarter("START_QTR", startQtrYYYYQ);
-    String endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
+
     try {
       ucsbSubjectsService.loadAllSubjects();
     } catch (Exception e) {
@@ -47,6 +47,16 @@ public class CoursesStartup {
       ucsbAPIQuarterService.loadAllQuarters();
     } catch (Exception e) {
       log.error("Error in ucsbAPIQuarterService.loadAllQuarters():", e);
+    }
+
+    String endQtrYYYYQ;
+    try {
+      endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
+    } catch (Exception e) {
+      log.error(
+          "Error in ucsbAPIQuarterService.getEndQtrYYYYQ(); skipping updateCourseDataJob launch:",
+          e);
+      return;
     }
 
     JobContextConsumer updateCourseDataJob =
@@ -96,7 +106,15 @@ public class CoursesStartup {
   public void runOnStartupInProductionOnly() throws Exception {
     log.info("runOnStartupInProductionOnly called");
     // Launch course update job
-    String endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
+    String endQtrYYYYQ;
+    try {
+      endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
+    } catch (Exception e) {
+      log.error(
+          "Error in ucsbAPIQuarterService.getEndQtrYYYYQ(); skipping updateCourseDataJob launch:",
+          e);
+      return;
+    }
 
     JobContextConsumer updateCourseDataJob =
         updateCourseDataJobFactory.createForQuarterRange(startQtrYYYYQ, endQtrYYYYQ, true);
