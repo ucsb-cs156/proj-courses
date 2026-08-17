@@ -35,6 +35,8 @@ public class SystemInfoServiceImpl extends SystemInfoService {
 
   @Autowired private UCSBAPIQuarterService ucsbAPIQuarterService;
 
+  @Autowired private SystemMessagesService systemMessagesService;
+
   public static String githubUrl(String repo, String commit) {
     return commit != null && repo != null ? repo + "/commit/" + commit : null;
   }
@@ -57,6 +59,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
             .commitMessage(this.commitMessage)
             .commitId(this.commitId)
             .githubUrl(githubUrl(this.sourceRepo, this.commitId))
+            .systemMessages(systemMessagesService.getMessages())
             .build();
     log.info("getSystemInfo returns {}", si);
     return si;
