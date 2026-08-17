@@ -55,6 +55,12 @@ extraLinks_bothH2AndSwagger.args = {
   systemInfo: systemInfoFixtures.showingBoth,
 };
 
+export const withSystemMessages = Template.bind({});
+withSystemMessages.args = {
+  currentUser: currentUserFixtures.userOnly,
+  systemInfo: systemInfoFixtures.withSystemMessages,
+};
+
 export const localhost_3000 = Template.bind({});
 localhost_3000.args = {
   currentUrl: "http://localhost:3000",
