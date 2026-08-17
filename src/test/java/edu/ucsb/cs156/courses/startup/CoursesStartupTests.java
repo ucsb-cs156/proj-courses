@@ -138,8 +138,9 @@ public class CoursesStartupTests {
   }
 
   @Test
-  public void alwaysRunOnStartup_getEndQtrThrows_logsAndSkipsJobLaunchButStillLoadsSubjectsAndQuarters(
-      CapturedOutput output) throws Exception {
+  public void
+      alwaysRunOnStartup_getEndQtrThrows_logsAndSkipsJobLaunchButStillLoadsSubjectsAndQuarters(
+          CapturedOutput output) throws Exception {
     CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20221");
 
     RuntimeException apiFailure = new RuntimeException("401 Unauthorized: Invalid ApiKey");
