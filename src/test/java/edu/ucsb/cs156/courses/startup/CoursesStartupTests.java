@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJob;
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
+import edu.ucsb.cs156.courses.services.SystemMessagesService;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.jobs.services.JobService;
@@ -29,6 +30,8 @@ public class CoursesStartupTests {
   @Mock UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
   @Mock JobService jobService;
+
+  @Mock SystemMessagesService systemMessagesService;
 
   @Mock UpdateCourseDataJob updateCourseDataJob;
 
@@ -137,6 +140,46 @@ public class CoursesStartupTests {
     verify(jobService).runAsJob(updateCourseDataJob);
   }
 
+  @Test
+  public void
+      alwaysRunOnStartup_getEndQtrThrows_logsAndSkipsJobLaunchButStillLoadsSubjectsAndQuarters(
+          CapturedOutput output) throws Exception {
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20221");
+
+    RuntimeException apiFailure = new RuntimeException("401 Unauthorized: Invalid ApiKey");
+    when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenThrow(apiFailure);
+
+    coursesStartup.alwaysRunOnStartup();
+
+    verify(ucsbSubjectsService).loadAllSubjects();
+    verify(ucsbAPIQuarterService).loadAllQuarters();
+    verify(ucsbAPIQuarterService).getEndQtrYYYYQ();
+    verifyNoInteractions(updateCourseDataJobFactory, jobService);
+    verify(systemMessagesService)
+        .addMessage(
+            "warning", "UCSB API unreachable; either key is undefined, or endpoint is down");
+    assertTrue(output.getAll().contains("Error in ucsbAPIQuarterService.getEndQtrYYYYQ()"));
+    assertTrue(output.getAll().contains("401 Unauthorized: Invalid ApiKey"));
+  }
+
+  @Test
+  public void runOnStartupInProductionOnly_getEndQtrThrows_logsAndSkipsJobLaunch(
+      CapturedOutput output) throws Exception {
+    CoursesStartup coursesStartup = coursesStartupWithStartQuarter("20221");
+
+    RuntimeException apiFailure = new RuntimeException("401 Unauthorized: Invalid ApiKey");
+    when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenThrow(apiFailure);
+
+    coursesStartup.runOnStartupInProductionOnly();
+
+    verify(ucsbAPIQuarterService).getEndQtrYYYYQ();
+    // No systemMessagesService interaction here -- see the comment in
+    // runOnStartupInProductionOnly() about avoiding a duplicate banner.
+    verifyNoInteractions(updateCourseDataJobFactory, jobService, systemMessagesService);
+    assertTrue(output.getAll().contains("Error in ucsbAPIQuarterService.getEndQtrYYYYQ()"));
+    assertTrue(output.getAll().contains("401 Unauthorized: Invalid ApiKey"));
+  }
+
   private CoursesStartup coursesStartupWithStartQuarter(String startQtrYYYYQ) {
     CoursesStartup coursesStartup = new CoursesStartup();
 
@@ -145,6 +188,7 @@ public class CoursesStartupTests {
     ReflectionTestUtils.setField(
         coursesStartup, "updateCourseDataJobFactory", updateCourseDataJobFactory);
     ReflectionTestUtils.setField(coursesStartup, "jobService", jobService);
+    ReflectionTestUtils.setField(coursesStartup, "systemMessagesService", systemMessagesService);
     ReflectionTestUtils.setField(coursesStartup, "startQtrYYYYQ", startQtrYYYYQ);
 
     return coursesStartup;
@@ -165,6 +209,10 @@ public class CoursesStartupTests {
 
   private void verifyNoStartupDependenciesCalled() {
     verifyNoInteractions(
-        ucsbSubjectsService, ucsbAPIQuarterService, updateCourseDataJobFactory, jobService);
+        ucsbSubjectsService,
+        ucsbAPIQuarterService,
+        updateCourseDataJobFactory,
+        jobService,
+        systemMessagesService);
   }
 }
