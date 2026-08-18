@@ -1,0 +1,41 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "001-create-users-table",
+        "author": "pconrad",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          { "not": { "tableExists": { "tableName": "users" } } }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "users",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "BIGINT",
+                    "autoIncrement": true,
+                    "constraints": { "nullable": false, "primaryKey": true }
+                  }
+                },
+                { "column": { "name": "email", "type": "VARCHAR(255)" } },
+                { "column": { "name": "google_sub", "type": "VARCHAR(255)" } },
+                { "column": { "name": "picture_url", "type": "VARCHAR(255)" } },
+                { "column": { "name": "full_name", "type": "VARCHAR(255)" } },
+                { "column": { "name": "given_name", "type": "VARCHAR(255)" } },
+                { "column": { "name": "family_name", "type": "VARCHAR(255)" } },
+                { "column": { "name": "email_verified", "type": "BOOLEAN" } },
+                { "column": { "name": "locale", "type": "VARCHAR(255)" } },
+                { "column": { "name": "hosted_domain", "type": "VARCHAR(255)" } },
+                { "column": { "name": "admin", "type": "BOOLEAN" } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

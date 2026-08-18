@@ -1,0 +1,45 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "009-create-jobs-table",
+        "author": "pconrad",
+        "comment": "Schema for the JOBS table owned by the lib-jobs library (https://github.com/ucsb-cs156/lib-jobs). Defined locally with a preConditions guard instead of `include`-ing lib-jobs' own bundled changelog (db/migration/lib-jobs/changelog-master.json), because that changelog's changeset has no preConditions guard of its own, and fails with 'relation \"jobs\" already exists' on any environment (like this app's production database) where the JOBS table pre-dates Liquibase management. See docs/liquibase.md for the full incident writeup.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          { "not": { "tableExists": { "tableName": "JOBS" } } }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "JOBS",
+              "columns": [
+                {
+                  "column": {
+                    "name": "ID",
+                    "type": "BIGINT",
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "JOB_PK"
+                    }
+                  }
+                },
+                { "column": { "name": "CREATED_BY_ID", "type": "BIGINT" } },
+                { "column": { "name": "CREATED_BY_EMAIL", "type": "VARCHAR(255)" } },
+                { "column": { "name": "JOB_NAME", "type": "VARCHAR(255)" } },
+                { "column": { "name": "STATUS", "type": "VARCHAR(255)" } },
+                { "column": { "name": "SCOPE_TYPE", "type": "VARCHAR(255)" } },
+                { "column": { "name": "SCOPE_ID", "type": "BIGINT" } },
+                { "column": { "name": "LOG", "type": "VARCHAR(1048576)" } },
+                { "column": { "name": "CREATED_AT", "type": "TIMESTAMP" } },
+                { "column": { "name": "UPDATED_AT", "type": "TIMESTAMP" } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

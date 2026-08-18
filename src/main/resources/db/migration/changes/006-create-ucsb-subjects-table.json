@@ -1,0 +1,35 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "006-create-ucsb-subjects-table",
+        "author": "pconrad",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          { "not": { "tableExists": { "tableName": "ucsb_subjects" } } }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "ucsb_subjects",
+              "columns": [
+                {
+                  "column": {
+                    "name": "subject_code",
+                    "type": "VARCHAR(255)",
+                    "constraints": { "nullable": false, "primaryKey": true }
+                  }
+                },
+                { "column": { "name": "subject_translation", "type": "VARCHAR(255)" } },
+                { "column": { "name": "dept_code", "type": "VARCHAR(255)" } },
+                { "column": { "name": "college_code", "type": "VARCHAR(255)" } },
+                { "column": { "name": "related_dept_code", "type": "VARCHAR(255)" } },
+                { "column": { "name": "inactive", "type": "BOOLEAN" } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
