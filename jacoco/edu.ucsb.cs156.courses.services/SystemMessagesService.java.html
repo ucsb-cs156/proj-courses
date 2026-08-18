@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SystemMessagesService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.services</a> &gt; <span class="el_source">SystemMessagesService.java</span></div><h1>SystemMessagesService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.services;
+
+import edu.ucsb.cs156.courses.models.SystemMessage;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.springframework.stereotype.Service;
+
+/**
+ * Holds system messages (e.g. startup misconfiguration warnings) for the lifetime of the running
+ * process. Deliberately in-memory rather than persisted: a {@code @Service} bean is a Spring
+ * singleton by default, so this naturally starts empty on every process start with no explicit
+ * &quot;clear on startup&quot; step required, and -- should this app ever run multiple instances -- each
+ * instance reports its own diagnostics rather than a shared table conflating them.
+ */
+@Service
+<span class="fc" id="L17">public class SystemMessagesService {</span>
+
+<span class="fc" id="L19">  private final List&lt;SystemMessage&gt; messages = new CopyOnWriteArrayList&lt;&gt;();</span>
+
+  public void addMessage(String variant, String message) {
+<span class="fc" id="L22">    messages.add(SystemMessage.builder().variant(variant).message(message).build());</span>
+<span class="fc" id="L23">  }</span>
+
+  public List&lt;SystemMessage&gt; getMessages() {
+<span class="fc" id="L26">    return Collections.unmodifiableList(messages);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
