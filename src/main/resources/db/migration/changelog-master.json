@@ -4,6 +4,16 @@
       "includeAll": {
         "path": "db/migration/changes/"
       }
+    },
+    {
+      "include": {
+        "file": "db/migration/lib-jobs/changes/002-job-logs-table.json"
+      }
+    },
+    {
+      "include": {
+        "file": "db/migration/changes-post-lib-jobs/011-complete-jobs-log-backfill.json"
+      }
     }
   ]
 }

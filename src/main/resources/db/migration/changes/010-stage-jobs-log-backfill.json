@@ -1,0 +1,26 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "010-stage-jobs-log-backfill",
+        "author": "pconrad",
+        "comment": "lib-jobs v0.2.0 backfill (1/2): copy existing JOBS.LOG text into a staging column before the lib-jobs library changelog drops JOBS.LOG and creates JOB_LOGS (see lib-jobs DESIGN.md 8). The library's own changeset creates JOB_LOGS and drops JOBS.LOG in one atomic changeSet, so the copy has to happen before it runs, not in between.",
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "JOBS",
+              "columns": [
+                { "column": { "name": "LOG_BACKFILL", "type": "VARCHAR(1048576)" } }
+              ]
+            }
+          },
+          {
+            "sql": {
+              "sql": "UPDATE JOBS SET LOG_BACKFILL = LOG WHERE LOG IS NOT NULL"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
