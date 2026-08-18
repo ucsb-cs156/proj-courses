@@ -2,6 +2,7 @@ package edu.ucsb.cs156.courses.startup;
 
 import edu.ucsb.cs156.courses.jobs.UpdateCourseDataJobFactory;
 import edu.ucsb.cs156.courses.models.Quarter;
+import edu.ucsb.cs156.courses.services.SystemMessagesService;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBSubjectsService;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -25,6 +26,8 @@ public class CoursesStartup {
   @Autowired private UpdateCourseDataJobFactory updateCourseDataJobFactory;
 
   @Autowired private JobService jobService;
+
+  @Autowired private SystemMessagesService systemMessagesService;
 
   @Value("${app.startQtrYYYYQ:20221}")
   private String startQtrYYYYQ;
@@ -56,6 +59,8 @@ public class CoursesStartup {
       log.error(
           "Error in ucsbAPIQuarterService.getEndQtrYYYYQ(); skipping updateCourseDataJob launch:",
           e);
+      systemMessagesService.addMessage(
+          "warning", "UCSB API unreachable; either key is undefined, or endpoint is down");
       return;
     }
 
@@ -110,6 +115,9 @@ public class CoursesStartup {
     try {
       endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();
     } catch (Exception e) {
+      // No systemMessagesService.addMessage() here: alwaysRunOnStartup() already added one for
+      // the identical failure moments earlier, since it always runs first (dev and production
+      // alike); adding a second would just duplicate the banner.
       log.error(
           "Error in ucsbAPIQuarterService.getEndQtrYYYYQ(); skipping updateCourseDataJob launch:",
           e);
