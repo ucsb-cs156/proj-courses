@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.courses.models;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,5 @@ public class SystemInfo {
   private String commitMessage;
   private String commitId;
   private String githubUrl; // URL to the commit in the source repository
+  private List<SystemMessage> systemMessages;
 }

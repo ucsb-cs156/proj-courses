@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import edu.ucsb.cs156.courses.models.SystemInfo;
+import edu.ucsb.cs156.courses.models.SystemMessage;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +28,14 @@ class SystemInfoServiceImplTests {
 
   @MockBean private UCSBAPIQuarterService ucsbAPIQuarterService;
 
+  @MockBean private SystemMessagesService systemMessagesService;
+
   @Test
   void test_getSystemInfo() throws Exception {
     when(ucsbAPIQuarterService.getEndQtrYYYYQ()).thenReturn("20244");
+    List<SystemMessage> messages =
+        List.of(SystemMessage.builder().variant("warning").message("uh oh").build());
+    when(systemMessagesService.getMessages()).thenReturn(messages);
 
     SystemInfo si = systemInfoService.getSystemInfo();
     assertTrue(si.getSpringH2ConsoleEnabled());
@@ -37,6 +44,7 @@ class SystemInfoServiceImplTests {
     assertTrue(si.getGithubUrl().startsWith(si.getSourceRepo()));
     assertTrue(si.getGithubUrl().endsWith(si.getCommitId()));
     assertTrue(si.getGithubUrl().contains("/commit/"));
+    assertEquals(messages, si.getSystemMessages());
   }
 
   @Test
