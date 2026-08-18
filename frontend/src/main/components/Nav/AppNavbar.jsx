@@ -1,8 +1,30 @@
-import { Button, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import {
+  Alert,
+  Button,
+  Container,
+  Nav,
+  Navbar,
+  NavDropdown,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheckCircle,
+  faExclamationCircle,
+  faExclamationTriangle,
+  faInfoCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { hasRole } from "main/utils/currentUser";
 import AppNavbarLocalhost from "main/components/Nav/AppNavbarLocalhost";
 import headerImg from "../../../assets/header-logo-240.png";
+
+// Icon shown alongside each SystemMessage, matched to its React Bootstrap Alert variant.
+const systemMessageIcons = {
+  danger: faExclamationCircle,
+  warning: faExclamationTriangle,
+  success: faCheckCircle,
+  info: faInfoCircle,
+};
 
 export default function AppNavbar({
   currentUser,
@@ -178,6 +200,20 @@ export default function AppNavbar({
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      {systemInfo?.systemMessages?.map((systemMessage, index) => (
+        <Alert
+          key={index}
+          variant={systemMessage.variant}
+          className="mb-0 rounded-0 text-center"
+          data-testid={`AppNavbar-systemMessage-${index}`}
+        >
+          <FontAwesomeIcon
+            icon={systemMessageIcons[systemMessage.variant]}
+            className="me-2"
+          />
+          {systemMessage.message}
+        </Alert>
+      ))}
     </>
   );
 }

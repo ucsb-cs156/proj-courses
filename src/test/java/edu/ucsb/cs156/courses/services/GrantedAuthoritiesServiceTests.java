@@ -29,6 +29,8 @@ class GrantedAuthoritiesServiceTests {
 
   @MockBean UCSBAPIQuarterService ucsbAPIQuarterService;
 
+  @MockBean SystemMessagesService systemMessagesService;
+
   @Autowired GrantedAuthoritiesService grantedAuthoritiesService;
 
   @WithMockUser(roles = {"USER"})

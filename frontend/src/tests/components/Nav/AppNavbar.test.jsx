@@ -312,4 +312,56 @@ describe("AppNavbar tests", () => {
       await screen.findByTestId("appnavbar-course-over-time-instructor-search"),
     ).toBeInTheDocument();
   });
+
+  test("renders no system message banners when systemInfo.systemMessages is empty or absent", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.showingBoth;
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Welcome, pconrad.cis@gmail.com"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("AppNavbar-systemMessage-0"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("renders a banner with the right variant, icon, and message for each system message", async () => {
+    const currentUser = currentUserFixtures.userOnly;
+    const systemInfo = systemInfoFixtures.withSystemMessages;
+    const doLogin = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    for (const [index, systemMessage] of systemInfo.systemMessages.entries()) {
+      const banner = await screen.findByTestId(
+        `AppNavbar-systemMessage-${index}`,
+      );
+      expect(banner).toHaveTextContent(systemMessage.message);
+      expect(banner.className).toContain(`alert-${systemMessage.variant}`);
+      expect(banner.querySelector("svg")).toBeInTheDocument();
+    }
+  });
 });
