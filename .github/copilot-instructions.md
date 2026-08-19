@@ -4,6 +4,19 @@ UCSB Courses Search is a Spring Boot Java application with a React frontend that
 
 **ALWAYS follow these instructions first and fallback to additional search and context gathering only if the information here is incomplete or found to be in error.**
 
+## Do not stop working on an issue until all Github Workflows are green
+
+Use the Github API to monitor the status of all Github Workflows.
+
+If any fail, take appropriate steps:
+
+* If frontend formatting fails, use `cd frontend; npm run format` to fix it.
+* If backend formatting fails, use `mvn git-code-format:format-code` to fix it.
+* If unit tests fail, fix the tests if they are wrong, or if they are correct, fix the code.
+* If test coverage fails, write more tests.  Refactor the code if that makes it easier to test.
+* If mutation coverage fails, write more tests.  Refactor the code if that makes it easier to test.
+* Only stop if you are truly unable to determine the root cause of a github workflow failure, and take steps to address it. In that case, make a comment on the PR indicating that you are unable to determine the cause of the github workflow failure, and need human assistance.
+
 ## Working Effectively
 
 ### Prerequisites and Environment Setup
