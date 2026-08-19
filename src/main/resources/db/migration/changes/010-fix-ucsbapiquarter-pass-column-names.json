@@ -1,0 +1,41 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "010-fix-ucsbapiquarter-pass-column-names",
+        "author": "pconrad",
+        "comment": "Some environments' ucsbapiquarter table still has the pass1_begin/pass2_begin/pass3_begin column names from before 005-create-ucsbapiquarter-table.json was corrected: Hibernate's naming strategy actually maps the pass1Begin/pass2Begin/pass3Begin entity fields to pass1begin/pass2begin/pass3begin (no underscore -- it only inserts one at a lowercase-to-uppercase boundary, not a digit-to-uppercase one). Renames the columns on any environment still carrying the old names; a no-op everywhere else, since 005 has always created the correctly-named columns for any environment running it for the first time.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          { "columnExists": { "tableName": "ucsbapiquarter", "columnName": "pass1_begin" } }
+        ],
+        "changes": [
+          {
+            "renameColumn": {
+              "tableName": "ucsbapiquarter",
+              "oldColumnName": "pass1_begin",
+              "newColumnName": "pass1begin",
+              "columnDataType": "TIMESTAMP"
+            }
+          },
+          {
+            "renameColumn": {
+              "tableName": "ucsbapiquarter",
+              "oldColumnName": "pass2_begin",
+              "newColumnName": "pass2begin",
+              "columnDataType": "TIMESTAMP"
+            }
+          },
+          {
+            "renameColumn": {
+              "tableName": "ucsbapiquarter",
+              "oldColumnName": "pass3_begin",
+              "newColumnName": "pass3begin",
+              "columnDataType": "TIMESTAMP"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
