@@ -4,6 +4,8 @@
       "changeSet": {
         "id": "005-create-ucsbapiquarter-table",
         "author": "pconrad",
+        "comment": "validCheckSums covers environments where this changeset already ran before the pass1_begin/pass2_begin/pass3_begin -> pass1begin/pass2begin/pass3begin column-naming fix (see 010-fix-ucsbapiquarter-pass-column-names.json, which corrects the resulting live column names on any such environment).",
+        "validCheckSums": ["9:654e80c1bf6fda5ffa1f0412a8aa87a8"],
         "preConditions": [
           { "onFail": "MARK_RAN" },
           { "not": { "tableExists": { "tableName": "ucsbapiquarter" } } }
