@@ -16,28 +16,28 @@ const DeveloperPage = () => {
           <tr>
             <td>Github Repo:</td>
             <td>
-              <a href={systemInfo?.sourceRepo}>{systemInfo?.sourceRepo}</a>
+              <a href={systemInfo.sourceRepo}>{systemInfo.sourceRepo}</a>
             </td>
           </tr>
           <tr>
             <td>Commit Link:</td>
             <td>
-              <a href={systemInfo?.githubUrl}>{systemInfo?.githubUrl}</a>
+              <a href={systemInfo.githubUrl}>{systemInfo.githubUrl}</a>
             </td>
           </tr>
           <tr>
             <td>Commit Hash:</td>
-            <td>{systemInfo?.commitId}</td>
+            <td>{systemInfo.commitId}</td>
           </tr>
           <tr>
             <td>Commit Message:</td>
-            <td>{systemInfo?.commitMessage}</td>
+            <td>{systemInfo.commitMessage}</td>
           </tr>
         </tbody>
       </Table>
       <h2>Backend Endpoints</h2>
       <ul>
-        {systemInfo?.showSwaggerUILink && (
+        {systemInfo.showSwaggerUILink && (
           <li>
             <a
               href="/swagger-ui/index.html"
@@ -47,7 +47,7 @@ const DeveloperPage = () => {
             </a>
           </li>
         )}
-        {systemInfo?.springH2ConsoleEnabled && (
+        {systemInfo.springH2ConsoleEnabled && (
           <li>
             <a
               href="/h2-console/index.html"
