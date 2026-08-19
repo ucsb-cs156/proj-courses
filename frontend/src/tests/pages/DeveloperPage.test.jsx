@@ -9,10 +9,11 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 
 describe("DeveloperPage tests", () => {
-  const queryClient = new QueryClient();
+  let queryClient;
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
+    queryClient = new QueryClient();
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -32,12 +33,44 @@ describe("DeveloperPage tests", () => {
       </QueryClientProvider>,
     );
     expect(
-      await screen.findByText("Github Branch Information"),
+      await screen.findByText("Developer Information"),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(
-        "The following SystemInfo is displayed in a JSON file.",
-      ),
+      await screen.findByText("Current Deployed Branch"),
+    ).toBeInTheDocument();
+    expect(await screen.findByText("Backend Endpoints")).toBeInTheDocument();
+    expect(await screen.findByText("System Info")).toBeInTheDocument();
+    expect(await screen.findByText("mocklink")).toBeInTheDocument();
+    expect(await screen.findByText("abc123")).toBeInTheDocument();
+    expect(
+      await screen.findByText("This is a mock commit message"),
+    ).toBeInTheDocument();
+
+    // showingNeither fixture disables both links
+    expect(
+      screen.queryByTestId("developer-swagger-link"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("developer-h2-console-link"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("renders swagger and h2 console links when enabled", async () => {
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingBoth);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <DeveloperPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(
+      await screen.findByTestId("developer-swagger-link"),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("developer-h2-console-link"),
     ).toBeInTheDocument();
   });
 });

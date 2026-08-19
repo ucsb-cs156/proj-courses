@@ -5,6 +5,9 @@ const systemInfoFixtures = {
     startQtrYYYYQ: "20084",
     endQtrYYYYQ: "20222",
     sourceRepo: "mocklink",
+    commitId: "abc123",
+    commitMessage: "This is a mock commit message",
+    githubUrl: "https://github.com/ucsb-cs156/proj-courses/commit/abc123",
   },
   showingNeither: {
     springH2ConsoleEnabled: false,
@@ -12,6 +15,9 @@ const systemInfoFixtures = {
     startQtrYYYYQ: "20084",
     endQtrYYYYQ: "20222",
     sourceRepo: "mocklink",
+    commitId: "abc123",
+    commitMessage: "This is a mock commit message",
+    githubUrl: "https://github.com/ucsb-cs156/proj-courses/commit/abc123",
   },
   withSystemMessages: {
     springH2ConsoleEnabled: true,
@@ -19,6 +25,9 @@ const systemInfoFixtures = {
     startQtrYYYYQ: "20084",
     endQtrYYYYQ: "20222",
     sourceRepo: "mocklink",
+    commitId: "abc123",
+    commitMessage: "This is a mock commit message",
+    githubUrl: "https://github.com/ucsb-cs156/proj-courses/commit/abc123",
     systemMessages: [
       {
         variant: "danger",
