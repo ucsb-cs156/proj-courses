@@ -35,31 +35,34 @@ import org.springframework.stereotype.Service;
 
   @Autowired private UCSBAPIQuarterService ucsbAPIQuarterService;
 
+  @Autowired private SystemMessagesService systemMessagesService;
+
   public static String githubUrl(String repo, String commit) {
-<span class="fc bfc" id="L39" title="All 4 branches covered.">    return commit != null &amp;&amp; repo != null ? repo + &quot;/commit/&quot; + commit : null;</span>
+<span class="fc bfc" id="L41" title="All 4 branches covered.">    return commit != null &amp;&amp; repo != null ? repo + &quot;/commit/&quot; + commit : null;</span>
   }
 
   public SystemInfo getSystemInfo() {
-<span class="fc" id="L43">    String endQtrYYYYQ = null;</span>
+<span class="fc" id="L45">    String endQtrYYYYQ = null;</span>
     try {
-<span class="fc" id="L45">      endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();</span>
-<span class="fc" id="L46">    } catch (Exception e) {</span>
-<span class="fc" id="L47">      log.error(&quot;Error in ucsbAPIQuarterService.getEndQtrYYYYQ():&quot;, e);</span>
-<span class="fc" id="L48">    }</span>
+<span class="fc" id="L47">      endQtrYYYYQ = ucsbAPIQuarterService.getEndQtrYYYYQ();</span>
+<span class="fc" id="L48">    } catch (Exception e) {</span>
+<span class="fc" id="L49">      log.error(&quot;Error in ucsbAPIQuarterService.getEndQtrYYYYQ():&quot;, e);</span>
+<span class="fc" id="L50">    }</span>
 
     SystemInfo si =
-<span class="fc" id="L51">        SystemInfo.builder()</span>
-<span class="fc" id="L52">            .springH2ConsoleEnabled(this.springH2ConsoleEnabled)</span>
-<span class="fc" id="L53">            .showSwaggerUILink(this.showSwaggerUILink)</span>
-<span class="fc" id="L54">            .startQtrYYYYQ(this.startQtrYYYYQ)</span>
-<span class="fc" id="L55">            .endQtrYYYYQ(endQtrYYYYQ)</span>
-<span class="fc" id="L56">            .sourceRepo(this.sourceRepo)</span>
-<span class="fc" id="L57">            .commitMessage(this.commitMessage)</span>
-<span class="fc" id="L58">            .commitId(this.commitId)</span>
-<span class="fc" id="L59">            .githubUrl(githubUrl(this.sourceRepo, this.commitId))</span>
-<span class="fc" id="L60">            .build();</span>
-<span class="fc" id="L61">    log.info(&quot;getSystemInfo returns {}&quot;, si);</span>
-<span class="fc" id="L62">    return si;</span>
+<span class="fc" id="L53">        SystemInfo.builder()</span>
+<span class="fc" id="L54">            .springH2ConsoleEnabled(this.springH2ConsoleEnabled)</span>
+<span class="fc" id="L55">            .showSwaggerUILink(this.showSwaggerUILink)</span>
+<span class="fc" id="L56">            .startQtrYYYYQ(this.startQtrYYYYQ)</span>
+<span class="fc" id="L57">            .endQtrYYYYQ(endQtrYYYYQ)</span>
+<span class="fc" id="L58">            .sourceRepo(this.sourceRepo)</span>
+<span class="fc" id="L59">            .commitMessage(this.commitMessage)</span>
+<span class="fc" id="L60">            .commitId(this.commitId)</span>
+<span class="fc" id="L61">            .githubUrl(githubUrl(this.sourceRepo, this.commitId))</span>
+<span class="fc" id="L62">            .systemMessages(systemMessagesService.getMessages())</span>
+<span class="fc" id="L63">            .build();</span>
+<span class="fc" id="L64">    log.info(&quot;getSystemInfo returns {}&quot;, si);</span>
+<span class="fc" id="L65">    return si;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
