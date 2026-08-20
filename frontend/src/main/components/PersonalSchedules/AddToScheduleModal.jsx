@@ -44,10 +44,11 @@ export default function AddToScheduleModal({
     handleModalClose();
   };
 
-const onError = (error) => {
-  const message = error?.response?.data?.message ?? error?.message ?? "Unknown error";
-  toast(`Error: ${message}`);
-};
+  const onError = (error) => {
+    const message =
+      error?.response?.data?.message ?? error?.message ?? "Unknown error";
+    toast(`Error: ${message}`);
+  };
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
@@ -66,20 +67,19 @@ const onError = (error) => {
     handleModalClose();
   };
 
-const handleModalSaveSchedule = () => {
-  mutation.mutate({ ...scheduleParams, quarter });
-};
+  const handleModalSaveSchedule = () => {
+    mutation.mutate({ ...scheduleParams, quarter });
+  };
 
-const handleCreateClick = () => {
-  const safeName = `${yyyyqToQyy(quarter)} Schedule`;
-  setScheduleParams((prev) => ({
-    ...prev,
-    quarter,
-    name: safeName,
-    description: "Auto-generated schedule",
-  }));
-  setModalMode("auto-create");
-};
+  const handleCreateClick = () => {
+    const safeName = `${yyyyqToQyy(quarter)} Schedule`;
+    setScheduleParams((prev) => ({
+      ...prev,
+      quarter,
+      name: safeName,
+      description: "Auto-generated schedule",
+    }));
+    setModalMode("auto-create");
   };
 
   const onSaveButtonClick = () => {

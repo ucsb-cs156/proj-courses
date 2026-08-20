@@ -165,7 +165,7 @@ describe("AddToScheduleModal", () => {
     ).toHaveTextContent("There are no personal schedules for S24.");
   });
 
-  test("formats the timeString correctly in auto-create mode", () => {
+  test("uses a deterministic short schedule name in auto-create mode", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
@@ -182,9 +182,7 @@ describe("AddToScheduleModal", () => {
     fireEvent.click(screen.getByText("[Create Personal Schedule]"));
 
     const text = screen.getByText(/New Schedule:/).textContent;
-    expect(text).toMatch(
-      /[A-Z][a-z]{2} \d{1,2}, \d{1,2}:\d{2}[\s\u202F]?(AM|PM) Schedule/,
-    );
+    expect(text).toContain("S24 Schedule");
   });
 
   test("does not show Save Changes until Create Personal Schedule is clicked", () => {
