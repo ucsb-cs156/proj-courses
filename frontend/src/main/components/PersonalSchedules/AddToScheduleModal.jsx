@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-
 import Form from "react-bootstrap/Form";
 import PersonalScheduleSelector from "./PersonalScheduleSelector";
-import { Link } from "react-router-dom";
 import { schedulesFilter } from "main/utils/PersonalScheduleUtils";
 import { yyyyqToQyy } from "main/utils/quarterUtilities.jsx";
+import { useBackendMutation } from "main/utils/useBackend";
+import { toast } from "react-toastify";
 
 export default function AddToScheduleModal({
   quarter,
@@ -17,17 +17,81 @@ export default function AddToScheduleModal({
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState("");
+  const [modalMode, setModalMode] = useState("normal");
+  const [scheduleParams, setScheduleParams] = useState({
+    // Stryker disable next-line StringLiteral : initial values are overwritten before use
+    name: "",
+    // Stryker disable next-line StringLiteral : initial values are overwritten before use
+    description: "",
+    quarter: quarter,
+  });
 
   const filteringSchedules = schedulesFilter(schedules, quarter);
 
+  const objectToAxiosParams = (personalSchedule) => ({
+    url: "/api/personalschedules/post",
+    method: "POST",
+    params: {
+      name: personalSchedule.name,
+      description: personalSchedule.description,
+      quarter: personalSchedule.quarter,
+    },
+  });
+
+  const onSuccess = (data) => {
+    toast(`Schedule "${data.name}" Created`);
+    onAdd(section, data.id);
+    handleModalClose();
+  };
+
+  const onError = (error) => {
+    const message =
+      error?.response?.data?.message ?? error?.message ?? "Unknown error";
+    toast(`Error: ${message}`);
+  };
+
+  const mutation = useBackendMutation(
+    objectToAxiosParams,
+    { onSuccess, onError },
+    // Stryker disable next-line all : hard to set up test for caching
+    ["/api/personalschedules/all"],
+  );
+
   const handleModalClose = () => {
     setShowModal(false);
+    setModalMode("normal");
   };
 
   const handleModalSave = () => {
     onAdd(section, selectedSchedule);
     handleModalClose();
   };
+
+  const handleModalSaveSchedule = () => {
+    mutation.mutate({ ...scheduleParams, quarter });
+  };
+
+  const handleCreateClick = () => {
+    const safeName = `${yyyyqToQyy(quarter)} Schedule`;
+    setScheduleParams((prev) => ({
+      ...prev,
+      quarter,
+      name: safeName,
+      description: "Auto-generated schedule",
+    }));
+    setModalMode("auto-create");
+  };
+
+  const onSaveButtonClick = () => {
+    if (modalMode === "auto-create") {
+      handleModalSaveSchedule();
+    } else {
+      handleModalSave();
+    }
+  };
+
+  const showSaveButton =
+    modalMode === "auto-create" || filteringSchedules.length > 0;
 
   return (
     <>
@@ -41,6 +105,7 @@ export default function AddToScheduleModal({
       <Modal
         show={showModal}
         onHide={handleModalClose}
+        animation={false}
         data-testid={`${testid}-modal`}
       >
         <Modal.Header closeButton>
@@ -50,7 +115,7 @@ export default function AddToScheduleModal({
           <Form>
             {
               /* istanbul ignore next */
-              filteringSchedules.length > 0 ? (
+              filteringSchedules.length > 0 && modalMode === "normal" ? (
                 <Form.Group controlId="scheduleSelect">
                   <Form.Label>Select Schedule</Form.Label>
                   <PersonalScheduleSelector
@@ -61,12 +126,31 @@ export default function AddToScheduleModal({
                   />
                 </Form.Group>
               ) : (
-                <p data-testid={`${testid}-no-schedules`}>
-                  There are no personal schedules for {yyyyqToQyy(quarter)}.
-                  <Link to="/personalschedules/create">
-                    [Create Personal Schedule]
-                  </Link>
-                </p>
+                <div data-testid={`${testid}-no-schedules`}>
+                  {modalMode === "auto-create" ? (
+                    <p>
+                      New Schedule: <strong>{scheduleParams.name}</strong> will
+                      be created.
+                    </p>
+                  ) : (
+                    <p>
+                      There are no personal schedules for {yyyyqToQyy(quarter)}.
+                      <Button
+                        onClick={handleCreateClick}
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
+                          color: "#007bff",
+                          padding: 0,
+                          verticalAlign: "baseline",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        [Create Personal Schedule]
+                      </Button>
+                    </p>
+                  )}
+                </div>
               )
             }
           </Form>
@@ -77,15 +161,18 @@ export default function AddToScheduleModal({
             onClick={handleModalClose}
             data-testid={`${testid}-modal-close-button`}
           >
-            Close
+            Cancel
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleModalSave}
-            data-testid={`${testid}-modal-save-button`}
-          >
-            Save Changes
-          </Button>
+          {showSaveButton && (
+            <Button
+              variant="primary"
+              onClick={onSaveButtonClick}
+              data-testid={`${testid}-modal-save-button`}
+              disabled={mutation.isLoading}
+            >
+              {mutation.isLoading ? "Creating..." : "Save Changes"}
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </>
