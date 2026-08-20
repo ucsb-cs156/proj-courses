@@ -87,10 +87,10 @@ public class PersonalSchedulesController extends ApiController {
     CurrentUser currentUser = getCurrentUser();
     log.info("currentUser={}", currentUser);
 
-    // Checks length of name parameter (length should be 25 chars or less, nonzero)
-    if (name.length() > 25) {
-      throw new IllegalArgumentException("name parameter restricted to 25 chars or less");
-    }
+// Checks length of name parameter (length should be 25 chars or less)
+if (name.length() > 25) {
+  throw new IllegalArgumentException("name parameter restricted to 25 chars or less");
+}
 
     PersonalSchedule personalschedule = new PersonalSchedule();
     personalschedule.setUser(currentUser.getUser());
