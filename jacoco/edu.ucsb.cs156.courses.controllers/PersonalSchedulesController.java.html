@@ -87,9 +87,9 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L87">    CurrentUser currentUser = getCurrentUser();</span>
 <span class="fc" id="L88">    log.info(&quot;currentUser={}&quot;, currentUser);</span>
 
-    // Checks length of name parameter (length should be 15 chars or less, nonzero)
-<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (name.length() &gt; 15) {</span>
-<span class="fc" id="L92">      throw new IllegalArgumentException(&quot;name parameter restricted to 15 chars or less&quot;);</span>
+    // Checks length of name parameter (length should be 25 chars or less)
+<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (name.length() &gt; 25) {</span>
+<span class="fc" id="L92">      throw new IllegalArgumentException(&quot;name parameter restricted to 25 chars or less&quot;);</span>
     }
 
 <span class="fc" id="L95">    PersonalSchedule personalschedule = new PersonalSchedule();</span>
