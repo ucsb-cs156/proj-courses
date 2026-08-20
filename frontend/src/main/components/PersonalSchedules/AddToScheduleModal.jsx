@@ -44,9 +44,10 @@ export default function AddToScheduleModal({
     handleModalClose();
   };
 
-  const onError = (error) => {
-    toast(`Error: ${error.response.data.message}`);
-  };
+const onError = (error) => {
+  const message = error?.response?.data?.message ?? error?.message ?? "Unknown error";
+  toast(`Error: ${message}`);
+};
 
   const mutation = useBackendMutation(
     objectToAxiosParams,
