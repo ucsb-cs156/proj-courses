@@ -45,6 +45,11 @@ describe("DeveloperPage tests", () => {
     expect(
       await screen.findByText("This is a mock commit message"),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /dokku config:set my-deployment SOURCE_REPO=https:\/\/github\.com\/ucsb-cs156-s26\/proj-courses-s26-17/,
+      ),
+    ).toBeInTheDocument();
 
     // showingNeither fixture disables both links
     expect(
