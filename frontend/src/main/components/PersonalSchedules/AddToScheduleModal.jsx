@@ -69,20 +69,16 @@ export default function AddToScheduleModal({
     mutation.mutate(scheduleParams);
   };
 
-  const handleCreateClick = () => {
-    const timeString = new Date().toLocaleString([], {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    setScheduleParams({
-      ...scheduleParams,
-      name: `${timeString} Schedule`,
-      description: "Auto-generated schedule",
-    });
-    setModalMode("auto-create");
+const handleCreateClick = () => {
+  const safeName = `${yyyyqToQyy(quarter)} Schedule`;
+  setScheduleParams((prev) => ({
+    ...prev,
+    quarter,
+    name: safeName,
+    description: "Auto-generated schedule",
+  }));
+  setModalMode("auto-create");
+};
   };
 
   const onSaveButtonClick = () => {
