@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/improve-admin-developer-info-page","number":325,"title":"Improve Admin/Developer Info page for consistency with sibling apps","url":"https://github.com/ucsb-cs156/proj-courses/pull/325"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"s26-02-pr54","number":312,"title":"S26 02 pr54 --- improvements to modal for creating schedules.","url":"https://github.com/ucsb-cs156/proj-courses/pull/312"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"s26-02-pr54","number":312,"title":"S26 02 pr54 --- improvements to modal for creating schedules.","url":"https://github.com/ucsb-cs156/proj-courses/pull/312"}]
