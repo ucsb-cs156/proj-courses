@@ -65,9 +65,9 @@ export default function AddToScheduleModal({
     handleModalClose();
   };
 
-  const handleModalSaveSchedule = () => {
-    mutation.mutate(scheduleParams);
-  };
+const handleModalSaveSchedule = () => {
+  mutation.mutate({ ...scheduleParams, quarter });
+};
 
 const handleCreateClick = () => {
   const safeName = `${yyyyqToQyy(quarter)} Schedule`;
