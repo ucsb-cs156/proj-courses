@@ -105,6 +105,7 @@ export default function AddToScheduleModal({
       <Modal
         show={showModal}
         onHide={handleModalClose}
+        animation={false}
         data-testid={`${testid}-modal`}
       >
         <Modal.Header closeButton>
