@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"issue-329-fix-jobs-log-backfill-varchar","number":330,"title":"Fix JOBS log backfill migration failing on logs over 1MB in production","url":"https://github.com/ucsb-cs156/proj-courses/pull/330"}]
+pull_requests: []
