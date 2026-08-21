@@ -29,6 +29,9 @@ public class UCSBCurriculumServiceTests {
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
 
+  @Value("${app.ucsb.api.host}")
+  private String apiHost;
+
   @Autowired private MockRestServiceServer mockRestServiceServer;
 
   @Mock private RestTemplate restTemplate;
@@ -47,7 +50,8 @@ public class UCSBCurriculumServiceTests {
         String.format(
             "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
             quarter, subjectArea, level, 1, 100, "true");
-    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+    String expectedURL =
+        (UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams).replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -69,7 +73,7 @@ public class UCSBCurriculumServiceTests {
     String qtr = "20221";
     String enrollCd = "59501";
 
-    String expectedURL = "https://api.ucsb.edu/academics/curriculums/v3/classsection/20221/59501";
+    String expectedURL = apiHost + "/academics/curriculums/v3/classsection/20221/59501";
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -97,7 +101,8 @@ public class UCSBCurriculumServiceTests {
         String.format(
             "?quarter=%s&subjectCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
             quarter, subjectArea, 1, 100, "true");
-    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+    String expectedURL =
+        (UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams).replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -115,7 +120,7 @@ public class UCSBCurriculumServiceTests {
   @Test
   public void test_getSubjectsJSON_success() throws Exception {
     String expectedResult = "[ {deptCode: \"ANTH\"} ]";
-    String expectedURL = UCSBCurriculumService.SUBJECTS_ENDPOINT;
+    String expectedURL = UCSBCurriculumService.SUBJECTS_ENDPOINT.replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -141,7 +146,8 @@ public class UCSBCurriculumServiceTests {
         String.format(
             "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
             quarter, subjectArea, level, 1, 100, "true");
-    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+    String expectedURL =
+        (UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams).replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -174,7 +180,8 @@ public class UCSBCurriculumServiceTests {
         String.format(
             "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
             quarter, subjectArea, level, 1, 100, "true");
-    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+    String expectedURL =
+        (UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams).replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -207,6 +214,7 @@ public class UCSBCurriculumServiceTests {
 
     String expectedURL =
         UCSBCurriculumService.SECTION_ENDPOINT
+            .replace("{apiHost}", apiHost)
             .replace("{quarter}", quarter)
             .replace("{enrollcode}", enrollCode);
 
@@ -232,6 +240,7 @@ public class UCSBCurriculumServiceTests {
 
     String expectedURL =
         UCSBCurriculumService.SECTION_ENDPOINT
+            .replace("{apiHost}", apiHost)
             .replace("{quarter}", quarter)
             .replace("{enrollcode}", enrollCode);
 
@@ -257,6 +266,7 @@ public class UCSBCurriculumServiceTests {
 
     String expectedURL =
         UCSBCurriculumService.ALL_SECTIONS_ENDPOINT
+            .replace("{apiHost}", apiHost)
             .replace("{quarter}", quarter)
             .replace("{enrollcode}", enrollCode);
 
@@ -282,6 +292,7 @@ public class UCSBCurriculumServiceTests {
 
     String expectedURL =
         UCSBCurriculumService.ALL_SECTIONS_ENDPOINT
+            .replace("{apiHost}", apiHost)
             .replace("{quarter}", quarter)
             .replace("{enrollcode}", enrollCode);
 
@@ -305,7 +316,8 @@ public class UCSBCurriculumServiceTests {
     String quarter = "20251";
 
     String expectedParams = String.format("?quarter=%s&enrollCode=%s", quarter, enrollCode);
-    String expectedURL = UCSBCurriculumService.FINALS_ENDPOINT + expectedParams;
+    String expectedURL =
+        (UCSBCurriculumService.FINALS_ENDPOINT + expectedParams).replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -335,7 +347,7 @@ public class UCSBCurriculumServiceTests {
 
     // stub out the GET to the GE endpoint
     this.mockRestServiceServer
-        .expect(requestTo(UCSBCurriculumService.GE_ENDPOINT))
+        .expect(requestTo(UCSBCurriculumService.GE_ENDPOINT.replace("{apiHost}", apiHost)))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
         .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
         .andExpect(header("ucsb-api-version", "1.0"))
@@ -359,7 +371,7 @@ public class UCSBCurriculumServiceTests {
 
     // stub the same GE endpoint
     this.mockRestServiceServer
-        .expect(requestTo(UCSBCurriculumService.GE_ENDPOINT))
+        .expect(requestTo(UCSBCurriculumService.GE_ENDPOINT.replace("{apiHost}", apiHost)))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
         .andExpect(header("Content-Type", MediaType.APPLICATION_JSON.toString()))
         .andExpect(header("ucsb-api-version", "1.0"))
@@ -390,7 +402,8 @@ public class UCSBCurriculumServiceTests {
         String.format(
             "?quarter=%s&subjectCode=%s&objLevelCode=%s&pageNumber=%d&pageSize=%d&includeClassSections=%s",
             quarter, subjectArea, level, 1, 100, "true");
-    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+    String expectedURL =
+        (UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams).replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -413,7 +426,8 @@ public class UCSBCurriculumServiceTests {
 
     String expectedParams =
         String.format("?quarter=%s&areas=%s&pageNumber=%d&pageSize=%d", quarter, area, 1, 500);
-    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+    String expectedURL =
+        (UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams).replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -444,7 +458,8 @@ public class UCSBCurriculumServiceTests {
 
     String expectedParams =
         String.format("?quarter=%s&areas=%s&pageNumber=%d&pageSize=%d", quarter, area, 1, 500);
-    String expectedURL = UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams;
+    String expectedURL =
+        (UCSBCurriculumService.CURRICULUM_ENDPOINT + expectedParams).replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))

@@ -29,6 +29,9 @@ class UCSBSubjectsServiceTests {
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
 
+  @Value("${app.ucsb.api.host}")
+  private String apiHost;
+
   @MockitoBean UserRepository userRepository;
 
   @MockitoBean UCSBSubjectRepository ucsbSubjectRepository;
@@ -43,7 +46,7 @@ class UCSBSubjectsServiceTests {
   @Test
   void get_returns_a_list_of_subjects() throws Exception {
 
-    String expectedURL = UCSBSubjectsService.ENDPOINT;
+    String expectedURL = UCSBSubjectsService.ENDPOINT.replace("{apiHost}", apiHost);
 
     String expectedResult =
         String.format(
@@ -92,7 +95,7 @@ class UCSBSubjectsServiceTests {
   @Test
   void test_loadAllSubjects() throws Exception {
 
-    String expectedURL = UCSBSubjectsService.ENDPOINT;
+    String expectedURL = UCSBSubjectsService.ENDPOINT.replace("{apiHost}", apiHost);
 
     String expectedResult =
         String.format(

@@ -40,6 +40,9 @@ public class UCSBAPIQuarterServiceTests {
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
 
+  @Value("${app.ucsb.api.host}")
+  private String apiHost;
+
   @Autowired private MockRestServiceServer mockRestServiceServer;
 
   @Mock private RestTemplate restTemplate;
@@ -171,7 +174,8 @@ public class UCSBAPIQuarterServiceTests {
 
   @Test
   public void test_getCurrentQuarterYYYYQ() throws Exception {
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -190,7 +194,8 @@ public class UCSBAPIQuarterServiceTests {
     UCSBAPIQuarter expectedResult =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -211,7 +216,8 @@ public class UCSBAPIQuarterServiceTests {
     UCSBAPIQuarter expectedResult =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
 
     // Only one HTTP request should be made even though getCurrentQuarter() is called twice
     this.mockRestServiceServer
@@ -236,7 +242,8 @@ public class UCSBAPIQuarterServiceTests {
     UCSBAPIQuarter expectedResult =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
 
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
 
     // Two HTTP requests should be made: one initial call and one after cache expires
     this.mockRestServiceServer
@@ -274,7 +281,7 @@ public class UCSBAPIQuarterServiceTests {
     expectedResult.add(sampleQuarter);
     String expectedJSON = objectMapper.writeValueAsString(expectedResult);
 
-    String expectedURL = UCSBAPIQuarterService.ALL_QUARTERS_ENDPOINT;
+    String expectedURL = UCSBAPIQuarterService.ALL_QUARTERS_ENDPOINT.replace("{apiHost}", apiHost);
 
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
@@ -294,7 +301,8 @@ public class UCSBAPIQuarterServiceTests {
     UCSBAPIQuarter sampleCurrent =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, UCSBAPIQuarter.class);
     String expectedJSON = objectMapper.writeValueAsString(sampleCurrent);
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
@@ -314,7 +322,8 @@ public class UCSBAPIQuarterServiceTests {
     UCSBAPIQuarter sampleCurrent =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
     String expectedJSON = objectMapper.writeValueAsString(sampleCurrent);
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
@@ -335,7 +344,8 @@ public class UCSBAPIQuarterServiceTests {
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_M24, UCSBAPIQuarter.class);
     sampleCurrent.setQuarter("20223");
     String expectedJSON = objectMapper.writeValueAsString(sampleCurrent);
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
@@ -414,7 +424,7 @@ public class UCSBAPIQuarterServiceTests {
     expectedAPIResult.add(M23); // expected to be ignored
 
     expectCurrentQuarter("20211");
-    String expectedURL = UCSBAPIQuarterService.ALL_QUARTERS_ENDPOINT;
+    String expectedURL = UCSBAPIQuarterService.ALL_QUARTERS_ENDPOINT.replace("{apiHost}", apiHost);
 
     String expectedJSON = objectMapper.writeValueAsString(expectedAPIResult);
 
@@ -438,7 +448,8 @@ public class UCSBAPIQuarterServiceTests {
     UCSBAPIQuarter sampleQuarter =
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_W21, UCSBAPIQuarter.class);
     String expectedJSON = objectMapper.writeValueAsString(sampleQuarter);
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
@@ -681,7 +692,8 @@ public class UCSBAPIQuarterServiceTests {
         objectMapper.readValue(UCSBAPIQuarter.SAMPLE_QUARTER_JSON_S21, UCSBAPIQuarter.class);
 
     String expectedJSON = objectMapper.writeValueAsString(W21);
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))
@@ -713,7 +725,8 @@ public class UCSBAPIQuarterServiceTests {
   }
 
   private void expectCurrentQuarterJson(String expectedJSON) {
-    String expectedURL = UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT;
+    String expectedURL =
+        UCSBAPIQuarterService.CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
     this.mockRestServiceServer
         .expect(requestTo(expectedURL))
         .andExpect(header("Accept", MediaType.APPLICATION_JSON.toString()))

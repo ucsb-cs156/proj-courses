@@ -33,6 +33,8 @@ will likely see an error such as:
 
 You will also need a value for `UCSB_API_KEY`; you can obtain a value for that by following the instructions at this link: <https://ucsb-cs156.github.io/topics/apis/apis_ucsb_developer_api.html>
 
+Optionally, you can set `UCSB_COURSES_API_HOST` to override the host used for the UCSB Curriculum/Subjects/Quarter APIs (default: `https://api.ucsb.edu`), e.g. to point at a caching proxy instead of the UCSB API directly.
+
 # Getting Started on localhost
 
 * Open *two separate terminal windows*  
