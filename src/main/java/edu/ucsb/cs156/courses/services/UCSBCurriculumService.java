@@ -34,6 +34,9 @@ public class UCSBCurriculumService {
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
 
+  @Value("${app.ucsb.api.host}")
+  private String apiHost;
+
   private RestTemplate restTemplate = new RestTemplate();
 
   public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) throws Exception {
@@ -41,21 +44,19 @@ public class UCSBCurriculumService {
   }
 
   public static final String CURRICULUM_ENDPOINT =
-      "https://api.ucsb.edu/academics/curriculums/v1/classes/search";
+      "{apiHost}/academics/curriculums/v1/classes/search";
 
-  public static final String SUBJECTS_ENDPOINT =
-      "https://api.ucsb.edu/students/lookups/v1/subjects";
+  public static final String SUBJECTS_ENDPOINT = "{apiHost}/students/lookups/v1/subjects";
 
   public static final String SECTION_ENDPOINT =
-      "https://api.ucsb.edu/academics/curriculums/v1/classsection/{quarter}/{enrollcode}";
+      "{apiHost}/academics/curriculums/v1/classsection/{quarter}/{enrollcode}";
 
   public static final String ALL_SECTIONS_ENDPOINT =
-      "https://api.ucsb.edu/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
+      "{apiHost}/academics/curriculums/v3/classes/{quarter}/{enrollcode}";
 
-  public static final String FINALS_ENDPOINT =
-      "https://api.ucsb.edu/academics/curriculums/v3/finals";
+  public static final String FINALS_ENDPOINT = "{apiHost}/academics/curriculums/v3/finals";
 
-  public static final String GE_ENDPOINT = "https://api.ucsb.edu/students/lookups/v1/requirements";
+  public static final String GE_ENDPOINT = "{apiHost}/students/lookups/v1/requirements";
 
   public String getJSON(String subjectArea, String quarter, String courseLevel) throws Exception {
 
@@ -80,6 +81,8 @@ public class UCSBCurriculumService {
               quarter, subjectArea, 1, 100, "true");
       url = CURRICULUM_ENDPOINT + params;
     }
+
+    url = url.replace("{apiHost}", apiHost);
 
     log.info("url=" + url);
 
@@ -151,7 +154,7 @@ public class UCSBCurriculumService {
 
     String params =
         String.format("?quarter=%s&areas=%s&pageNumber=%d&pageSize=%d", quarter, area, 1, 500);
-    String url = CURRICULUM_ENDPOINT + params;
+    String url = (CURRICULUM_ENDPOINT + params).replace("{apiHost}", apiHost);
 
     log.info("url=" + url);
 
@@ -195,14 +198,15 @@ public class UCSBCurriculumService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    log.info("url=" + SUBJECTS_ENDPOINT);
+    String url = SUBJECTS_ENDPOINT.replace("{apiHost}", apiHost);
+
+    log.info("url=" + url);
 
     String retVal = "";
     MediaType contentType = null;
     HttpStatus statusCode = null;
 
-    ResponseEntity<String> re =
-        restTemplate.exchange(SUBJECTS_ENDPOINT, HttpMethod.GET, entity, String.class);
+    ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     contentType = re.getHeaders().getContentType();
     statusCode = (HttpStatus) re.getStatusCode();
     retVal = re.getBody();
@@ -225,7 +229,7 @@ public class UCSBCurriculumService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    String url = SECTION_ENDPOINT;
+    String url = SECTION_ENDPOINT.replace("{apiHost}", apiHost);
 
     log.info("url=" + url);
 
@@ -266,7 +270,7 @@ public class UCSBCurriculumService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    String url = ALL_SECTIONS_ENDPOINT;
+    String url = ALL_SECTIONS_ENDPOINT.replace("{apiHost}", apiHost);
 
     log.info("url=" + url);
 
@@ -302,8 +306,8 @@ public class UCSBCurriculumService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    String url =
-        "https://api.ucsb.edu/academics/curriculums/v3/classsection/" + quarter + "/" + enrollCd;
+    String url = "{apiHost}/academics/curriculums/v3/classsection/" + quarter + "/" + enrollCd;
+    url = url.replace("{apiHost}", apiHost);
 
     log.info("url=" + url);
 
@@ -329,7 +333,7 @@ public class UCSBCurriculumService {
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
     String params = String.format("?quarter=%s&enrollCode=%s", quarter, enrollCd);
-    String url = FINALS_ENDPOINT + params;
+    String url = (FINALS_ENDPOINT + params).replace("{apiHost}", apiHost);
 
     log.info("url=" + url);
 
@@ -355,9 +359,11 @@ public class UCSBCurriculumService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    log.info("Fetching GE areas from {}", GE_ENDPOINT);
+    String url = GE_ENDPOINT.replace("{apiHost}", apiHost);
+
+    log.info("Fetching GE areas from {}", url);
     ResponseEntity<String> response =
-        restTemplate.exchange(GE_ENDPOINT, HttpMethod.GET, entity, String.class);
+        restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
     log.debug("GE areas JSON: {}", response.getBody());
     return response.getBody();

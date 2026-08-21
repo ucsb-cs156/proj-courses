@@ -39,6 +39,9 @@ public class UCSBAPIQuarterService {
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
 
+  @Value("${app.ucsb.api.host}")
+  private String apiHost;
+
   private RestTemplate restTemplate = new RestTemplate();
 
   public UCSBAPIQuarterService(RestTemplateBuilder restTemplateBuilder) throws Exception {
@@ -46,7 +49,7 @@ public class UCSBAPIQuarterService {
   }
 
   public static final String CURRENT_QUARTER_ENDPOINT =
-      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/current";
+      "{apiHost}/academics/quartercalendar/v1/quarters/current";
 
   public static final int CACHE_DURATION_HOURS = 24;
 
@@ -63,10 +66,10 @@ public class UCSBAPIQuarterService {
   }
 
   public static final String ALL_QUARTERS_ENDPOINT =
-      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters";
+      "{apiHost}/academics/quartercalendar/v1/quarters";
 
   public static final String END_QUARTER_ENDPOINT =
-      "https://api.ucsb.edu/academics/quartercalendar/v1/quarters/end";
+      "{apiHost}/academics/quartercalendar/v1/quarters/end";
 
   public String getStartQtrYYYYQ() {
     return startQtrYYYYQ;
@@ -148,7 +151,7 @@ public class UCSBAPIQuarterService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    String url = CURRENT_QUARTER_ENDPOINT;
+    String url = CURRENT_QUARTER_ENDPOINT.replace("{apiHost}", apiHost);
 
     log.info("url=" + url);
 
@@ -187,7 +190,7 @@ public class UCSBAPIQuarterService {
 
     HttpEntity<String> entity = new HttpEntity<>("body", headers);
 
-    String url = ALL_QUARTERS_ENDPOINT;
+    String url = ALL_QUARTERS_ENDPOINT.replace("{apiHost}", apiHost);
 
     log.info("url=" + url);
 

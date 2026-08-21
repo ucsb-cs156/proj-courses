@@ -29,8 +29,11 @@ public class UCSBSubjectsService {
   @Value("${app.ucsb.api.consumer_key}")
   private String apiKey;
 
+  @Value("${app.ucsb.api.host}")
+  private String apiHost;
+
   public static final String ENDPOINT =
-      "https://api.ucsb.edu/students/lookups/v1/subjects?includeInactive=false";
+      "{apiHost}/students/lookups/v1/subjects?includeInactive=false";
 
   private final RestTemplate restTemplate;
 
@@ -45,9 +48,10 @@ public class UCSBSubjectsService {
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.set("ucsb-api-key", this.apiKey);
 
+    String url = ENDPOINT.replace("{apiHost}", apiHost);
+
     HttpEntity<String> entity = new HttpEntity<>(headers);
-    ResponseEntity<String> re =
-        restTemplate.exchange(ENDPOINT, HttpMethod.GET, entity, String.class);
+    ResponseEntity<String> re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
     String retBody = re.getBody();
     List<UCSBSubject> subjects =
