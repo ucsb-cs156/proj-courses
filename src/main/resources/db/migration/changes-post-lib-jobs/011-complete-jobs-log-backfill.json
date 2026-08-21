@@ -2,6 +2,23 @@
   "databaseChangeLog": [
     {
       "changeSet": {
+        "id": "011-widen-job-logs-message-postgresql",
+        "author": "pconrad",
+        "dbms": "postgresql",
+        "comment": "Widens JOB_LOGS.MESSAGE (declared VARCHAR(1048576) by the lib-jobs library's own bundled changeset) to TEXT before the INSERT below copies data into it -- production has at least one job log longer than 1,048,576 characters (see docs/liquibase.md incident writeup), and the INSERT would otherwise fail the same way changeset 010's UPDATE originally did. Postgres-only: on H2 (used by tests and the local/CI development profile), the JobLog entity's @Column(columnDefinition=\"TEXT\") is validated by Hibernate as expecting a VARCHAR-category column, and widening to a literal TEXT column here makes H2 report it as CLOB instead, failing the CI schema-validation check -- H2 test/dev data never approaches the real production length problem anyway, so MESSAGE is left at its library-declared VARCHAR(1048576) there.",
+        "changes": [
+          {
+            "modifyDataType": {
+              "tableName": "JOB_LOGS",
+              "columnName": "MESSAGE",
+              "newDataType": "TEXT"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
         "id": "011-complete-jobs-log-backfill",
         "author": "pconrad",
         "comment": "lib-jobs v0.2.0 backfill (2/2): move the staged log text into JOB_LOGS, one row per job (per-line timestamps were never preserved by the old single-column design, so a historical job's full log becomes a single JOB_LOGS row), then drop the staging column. Runs after the lib-jobs library changelog has created JOB_LOGS and dropped JOBS.LOG -- included separately in changelog-master.json rather than swept up by includeAll, since it must run after that library include, not before it like every other app-owned changeset.",
