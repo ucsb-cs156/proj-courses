@@ -4,13 +4,13 @@
       "changeSet": {
         "id": "010-stage-jobs-log-backfill",
         "author": "pconrad",
-        "comment": "lib-jobs v0.2.0 backfill (1/2): copy existing JOBS.LOG text into a staging column before the lib-jobs library changelog drops JOBS.LOG and creates JOB_LOGS (see lib-jobs DESIGN.md 8). The library's own changeset creates JOB_LOGS and drops JOBS.LOG in one atomic changeSet, so the copy has to happen before it runs, not in between.",
+        "comment": "lib-jobs v0.2.0 backfill (1/2): copy existing JOBS.LOG text into a staging column before the lib-jobs library changelog drops JOBS.LOG and creates JOB_LOGS (see lib-jobs DESIGN.md 8). The library's own changeset creates JOB_LOGS and drops JOBS.LOG in one atomic changeSet, so the copy has to happen before it runs, not in between. LOG_BACKFILL is TEXT (not VARCHAR(1048576)) because production's JOBS.LOG column -- created by the old @Column(columnDefinition=\"TEXT\", length=1048576) entity annotation, where columnDefinition wins and the length is only a JPA hint -- is an unbounded Postgres TEXT column, and at least one production job log exceeds 1,048,576 characters. See docs/liquibase.md incident writeup.",
         "changes": [
           {
             "addColumn": {
               "tableName": "JOBS",
               "columns": [
-                { "column": { "name": "LOG_BACKFILL", "type": "VARCHAR(1048576)" } }
+                { "column": { "name": "LOG_BACKFILL", "type": "TEXT" } }
               ]
             }
           },

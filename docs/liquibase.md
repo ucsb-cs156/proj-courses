@@ -121,6 +121,71 @@ and it will mark itself ran, same as every other changeset already did. If the d
 that `DATABASECHANGELOGLOCK` was left `LOCKED = TRUE`, see
 [Inspecting migration state](#inspecting-migration-state) to clear it before redeploying.
 
+## Incident: `value too long for type character varying(1048576)` on the JOBS log backfill
+
+The lib-jobs v0.2.0 migration (see [issue #329](https://github.com/ucsb-cs156/proj-courses/issues/329)) failed
+on its first production deploy attempt with:
+
+```
+liquibase.exception.DatabaseException: ERROR: value too long for type character varying(1048576)
+[Failed SQL: (0) UPDATE JOBS SET LOG_BACKFILL = LOG WHERE LOG IS NOT NULL]
+```
+
+**Root cause.** `010-stage-jobs-log-backfill.json` added a `LOG_BACKFILL VARCHAR(1048576)` staging column and
+copied `JOBS.LOG` into it, ahead of the `lib-jobs` library changeset that creates `JOB_LOGS` and drops
+`JOBS.LOG`. Both that staging column and `JOB_LOGS.MESSAGE` (declared by the library's own bundled changeset)
+assumed `JOBS.LOG` had a hard 1,048,576-character cap, matching its Liquibase-managed declared type. It never
+did: the pre-Liquibase entity annotation was
+
+```java
+@Column(columnDefinition="TEXT", length=1048576)
+private String log;
+```
+
+`columnDefinition` wins over `length` here — Hibernate created the real Postgres column as an unbounded
+`TEXT`, with `length=1048576` only ever enforced as validation metadata, never as an actual database
+constraint. Production had accumulated at least one job log longer than 1,048,576 characters, so the copy
+into the `VARCHAR(1048576)` staging column failed. This is the same category of issue as the
+[`JOBS` table incident](#incident-relation-jobs-already-exists-on-first-production-deploy) above: a table that
+pre-dates Liquibase doesn't necessarily match what a new migration assumes about it.
+
+Reproduced directly against a throwaway Postgres 16 container — creating `JOBS.LOG TEXT`, inserting a
+1,048,577-character value, and running the exact `010` SQL reproduces the identical error message.
+
+**The fix.** `LOG_BACKFILL` in `010-stage-jobs-log-backfill.json` is now `TEXT` instead of
+`VARCHAR(1048576)`, matching the real production column type — this staging column is never mapped by any
+JPA entity and is dropped again before Hibernate's schema validation ever runs, so this part of the fix needs
+no special handling. `011-complete-jobs-log-backfill.json` gained a new, Postgres-only changeset
+(`011-widen-job-logs-message-postgresql`, using the `dbms` filter, the same pattern proj-scaffold already uses
+for its own H2/Postgres divergence) that widens `JOB_LOGS.MESSAGE` to `TEXT` before the existing INSERT
+changeset runs, since that column has the identical `VARCHAR(1048576)` limitation and would otherwise fail the
+same way one step later.
+
+This one had to be Postgres-only: `JOB_LOGS.MESSAGE` **is** mapped by `lib-jobs`'s `JobLog` entity
+(`@Column(columnDefinition = "TEXT")`), so unlike `LOG_BACKFILL` it's still there when Hibernate's
+schema-validation check ([below](#ci-schema-validation)) runs. Widening it to a literal `TEXT` column on H2
+made H2 report the column's JDBC type as `CLOB`, but Hibernate's validator expected `VARCHAR` for this exact
+`columnDefinition` string on this dialect (apparently the original `VARCHAR(1048576)` only ever happened to
+satisfy that expectation by coincidence of what Liquibase's `VARCHAR(1048576)` maps to on H2, not because
+anyone had verified the entity and column type truly agree) — so H2/dev/test keeps the original
+`VARCHAR(1048576)` for `MESSAGE` unchanged, which is harmless there since test data never approaches the real
+production length problem.
+
+Verified against a throwaway Postgres 16 container that the full fixed sequence (stage as `TEXT` → widen
+`MESSAGE` to `TEXT` → insert → drop staging column) completes with no truncation, using the same
+1,048,577-character value that broke the original, and verified the full unit test suite (438 tests) plus the
+Hibernate `ddl-auto=validate` check both still pass against H2 with `MESSAGE` left untouched there.
+
+**Since production's deploy failed and rolled back** (Postgres DDL is transactional, and Liquibase runs each
+changeset in its own transaction), `010` and `011` never completed there, so — unlike the general rule in
+[Adding a new migration](#adding-a-new-migration) — editing these two changesets in place was safe for
+production specifically, rather than writing a new changeset to fix forward. Anyone who already pulled `main`
+after the original (broken) migration was merged and started the app locally against a persistent H2 database
+may see a checksum mismatch on these two changesets; per
+[Troubleshooting](#troubleshooting), deleting `target/db-development.mv.db` clears it. If QA or any other
+shared Postgres environment already ran the original `010`/`011` successfully before this fix, it will need
+the same checksum-mismatch recovery.
+
 ## CI schema validation
 
 A GitHub Actions workflow, `.github/workflows/18-validate-db-schema.yml`, calls a reusable workflow from
