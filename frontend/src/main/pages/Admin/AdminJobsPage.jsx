@@ -163,7 +163,7 @@ const AdminJobsPage = () => {
     },
   ];
 
-  const { data: page } = useBackend(
+  const { data: page, refetch } = useBackend(
     ["/api/jobs"],
     {
       method: "GET",
@@ -201,7 +201,7 @@ const AdminJobsPage = () => {
         updateActivePage={setSelectedPage}
         totalPages={page.totalPages}
       />
-      <JobsTable jobs={page.content} />
+      <JobsTable jobs={page.content} onCancelled={refetch} />
       <Button variant="danger" onClick={purgeJobLog} data-testid="purgeJobLog">
         Purge Job Log
       </Button>

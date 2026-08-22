@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import edu.ucsb.cs156.courses.entities.GradeHistory;
 import edu.ucsb.cs156.courses.utilities.CourseUtilities;
+import edu.ucsb.cs156.jobs.errors.JobCancelledException;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -55,6 +56,10 @@ public class GradeHistoryImportServiceImpl implements GradeHistoryImportService 
             String[] nextLine;
 
             while ((nextLine = csvReader.readNext()) != null) {
+              // ctx.log() below (and its cancellation check) only fires once per `batchSize`
+              // rows -- checkCancellation() gives every row its own checkpoint, so a cancel
+              // request doesn't have to wait for the next batch to flush on a very large CSV.
+              ctx.checkCancellation();
               List<GradeHistory> gradesFromLine = mapLineToGrades(nextLine, col);
               buffer.addAll(gradesFromLine);
 
@@ -72,6 +77,10 @@ public class GradeHistoryImportServiceImpl implements GradeHistoryImportService 
           } catch (NullHeaderException nhe) {
             log.error("Error processing CSV from URL: {}", url, nhe);
             throw nhe;
+          } catch (JobCancelledException jce) {
+            // Must not be wrapped: JobService's catch chain matches on this exact type to set
+            // the job's terminal status to "cancelled" rather than "error".
+            throw jce;
           } catch (Exception e) {
             log.error("Error processing CSV from URL: {}", url, e);
             throw new RuntimeException("CSV processing failed", e);
