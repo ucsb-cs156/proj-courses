@@ -6,6 +6,7 @@ import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CoursePage;
 import edu.ucsb.cs156.courses.documents.GERequirement;
 import edu.ucsb.cs156.courses.documents.Primary;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -37,10 +38,14 @@ public class UCSBCurriculumService {
   @Value("${app.ucsb.api.host}")
   private String apiHost;
 
+  private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
+  private static final Duration READ_TIMEOUT = Duration.ofSeconds(60);
+
   private RestTemplate restTemplate = new RestTemplate();
 
   public UCSBCurriculumService(RestTemplateBuilder restTemplateBuilder) throws Exception {
-    restTemplate = restTemplateBuilder.build();
+    restTemplate =
+        restTemplateBuilder.connectTimeout(CONNECT_TIMEOUT).readTimeout(READ_TIMEOUT).build();
   }
 
   public static final String CURRICULUM_ENDPOINT =

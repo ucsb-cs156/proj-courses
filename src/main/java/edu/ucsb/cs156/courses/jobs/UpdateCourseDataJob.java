@@ -48,6 +48,11 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     for (Quarter quarter : quarters) {
       String quarterYYYYQ = quarter.getYYYYQ();
       for (String subjectArea : subjects) {
+        // Most (subjectArea, quarterYYYYQ) pairs are not stale on a typical re-run and hit the
+        // `continue` below with no ctx.log() call at all -- checkCancellation() gives this loop
+        // its own cancellation checkpoint independent of whether an iteration happens to log
+        // anything (see UpdateCourseDataJobTests for why a bare log()-only check isn't enough).
+        ctx.checkCancellation();
         boolean isStale = isStaleService.isStale(subjectArea, quarterYYYYQ);
         if (ifStale) {
           if (!isStale) {
@@ -81,6 +86,10 @@ public class UpdateCourseDataJob implements JobContextConsumer {
     boolean isInRegistrationPass = ucsbapiQuarterService.isQuarterInRegistrationPass(quarterYYYYQ);
 
     for (ConvertedSection section : convertedSections) {
+      // No branch of this loop ever calls ctx.log() -- all logging happens once, after the loop,
+      // in the summary line below. Without its own checkpoint, this loop has zero opportunities
+      // to notice a cancellation request no matter how many sections it processes.
+      ctx.checkCancellation();
       try {
         String quarter = section.getCourseInfo().getQuarter();
         String enrollCode = section.getSection().getEnrollCode();
