@@ -1,11 +1,29 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
+import { vi } from "vitest";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
 import JobsTable from "main/components/Jobs/JobsTable";
 import jobsFixtures from "fixtures/jobsFixtures";
 
+const axiosMock = new AxiosMockAdapter(axios);
+const mockToast = vi.fn();
+vi.mock("react-toastify", async (importOriginal) => {
+  return {
+    ...(await importOriginal()),
+    toast: (x) => mockToast(x),
+  };
+});
+
 describe("JobsTable tests", () => {
   const queryClient = new QueryClient();
+
+  beforeEach(() => {
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    vi.clearAllMocks();
+  });
 
   test("renders correctly for empty table", () => {
     render(
@@ -34,6 +52,11 @@ describe("JobsTable tests", () => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
     });
+
+    // "Cancel" is checked separately via getAllByText, since the header
+    // text collides with the visible label on the Cancel button rendered
+    // for the fixture's one "running" job.
+    expect(screen.getAllByText("Cancel").length).toBeGreaterThanOrEqual(1);
 
     expectedFields.forEach((field) => {
       const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
@@ -190,5 +213,125 @@ describe("JobsTable tests", () => {
 
     expect(logCell1).toHaveTextContent("No logs available");
     expect(logCell2).toHaveTextContent("No logs available");
+  });
+
+  test.each(["queued", "running"])(
+    "shows a Cancel button for a %s job",
+    (status) => {
+      const jobsFixture = [
+        {
+          id: 5,
+          createdAt: "2023-11-01T12:00:00Z",
+          updatedAt: "2023-11-01T12:00:00Z",
+          status,
+          log: "",
+        },
+      ];
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <JobsTable jobs={jobsFixture} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        screen.getByTestId("JobsTable-cell-row-0-col-cancel-button"),
+      ).toBeInTheDocument();
+    },
+  );
+
+  test.each(["complete", "error", "cancelling", "cancelled", "interrupted"])(
+    "does not show a Cancel button for a %s job",
+    (status) => {
+      const jobsFixture = [
+        {
+          id: 5,
+          createdAt: "2023-11-01T12:00:00Z",
+          updatedAt: "2023-11-01T12:00:00Z",
+          status,
+          log: "",
+        },
+      ];
+
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <JobsTable jobs={jobsFixture} />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        screen.queryByTestId("JobsTable-cell-row-0-col-cancel-button"),
+      ).not.toBeInTheDocument();
+    },
+  );
+
+  test("clicking Cancel requests cancellation and calls onCancelled", async () => {
+    axiosMock.onPost("/api/jobs/5/cancel").reply(200, {
+      id: 5,
+      status: "cancelling",
+    });
+    const onCancelled = vi.fn();
+    const jobsFixture = [
+      {
+        id: 5,
+        createdAt: "2023-11-01T12:00:00Z",
+        updatedAt: "2023-11-01T12:00:00Z",
+        status: "running",
+        log: "",
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsFixture} onCancelled={onCancelled} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const cancelButton = screen.getByTestId(
+      "JobsTable-cell-row-0-col-cancel-button",
+    );
+    fireEvent.click(cancelButton);
+
+    await waitFor(() => expect(axiosMock.history.post.length).toEqual(1));
+    expect(mockToast).toBeCalledWith("Cancellation requested.");
+    expect(onCancelled).toHaveBeenCalledTimes(1);
+  });
+
+  test("clicking Cancel works without an onCancelled prop", async () => {
+    axiosMock.onPost("/api/jobs/5/cancel").reply(200, {
+      id: 5,
+      status: "cancelling",
+    });
+    const jobsFixture = [
+      {
+        id: 5,
+        createdAt: "2023-11-01T12:00:00Z",
+        updatedAt: "2023-11-01T12:00:00Z",
+        status: "running",
+        log: "",
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <JobsTable jobs={jobsFixture} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const cancelButton = screen.getByTestId(
+      "JobsTable-cell-row-0-col-cancel-button",
+    );
+    fireEvent.click(cancelButton);
+
+    await waitFor(() => expect(axiosMock.history.post.length).toEqual(1));
+    expect(mockToast).toBeCalledWith("Cancellation requested.");
   });
 });

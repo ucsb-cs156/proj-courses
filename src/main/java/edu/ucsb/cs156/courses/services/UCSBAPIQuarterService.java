@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
 import edu.ucsb.cs156.courses.models.Quarter;
 import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -42,10 +43,14 @@ public class UCSBAPIQuarterService {
   @Value("${app.ucsb.api.host}")
   private String apiHost;
 
+  private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
+  private static final Duration READ_TIMEOUT = Duration.ofSeconds(60);
+
   private RestTemplate restTemplate = new RestTemplate();
 
   public UCSBAPIQuarterService(RestTemplateBuilder restTemplateBuilder) throws Exception {
-    restTemplate = restTemplateBuilder.build();
+    restTemplate =
+        restTemplateBuilder.connectTimeout(CONNECT_TIMEOUT).readTimeout(READ_TIMEOUT).build();
   }
 
   public static final String CURRENT_QUARTER_ENDPOINT =
