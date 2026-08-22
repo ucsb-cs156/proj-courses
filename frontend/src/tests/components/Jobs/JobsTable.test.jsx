@@ -53,10 +53,13 @@ describe("JobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    // "Cancel" is checked separately via getAllByText, since the header
-    // text collides with the visible label on the Cancel button rendered
-    // for the fixture's one "running" job.
-    expect(screen.getAllByText("Cancel").length).toBeGreaterThanOrEqual(1);
+    // "Cancel" is checked separately, scoped to the header cell itself via
+    // its data-testid, since the plain text "Cancel" also appears as the
+    // button label on the fixture's one "running" job -- getByText alone
+    // can't tell the header and the button apart.
+    expect(screen.getByTestId(`${testId}-header-cancel`)).toHaveTextContent(
+      "Cancel",
+    );
 
     expectedFields.forEach((field) => {
       const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
