@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-lib-jobs-v0.3.2","number":331,"title":"Bump lib-jobs to v0.3.2: job cancellation","url":"https://github.com/ucsb-cs156/proj-courses/pull/331"}]
+pull_requests: [{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/allow-feedback-when-app-feedback-url-enabled","number":335,"title":"[WIP] Add feedback button when APP_FEEDBACK_URL is enabled","url":"https://github.com/ucsb-cs156/proj-courses/pull/335"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-lib-jobs-v0.3.2","number":331,"title":"Bump lib-jobs to v0.3.2: job cancellation","url":"https://github.com/ucsb-cs156/proj-courses/pull/331"}]
