@@ -1,8 +1,10 @@
-import { Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 
 export const space = " ";
 
 export default function Footer(systemInfo) {
+  const feedbackUrl = import.meta.env.APP_FEEDBACK_URL;
+
   return (
     <footer className="bg-light pt-3 pt-md-4 pb-4 pb-md-5">
       <Container>
@@ -69,6 +71,18 @@ export default function Footer(systemInfo) {
             www.as.ucsb.edu/sticker-packs/
           </a>
         </p>
+        {feedbackUrl && (
+          <Button
+            as="a"
+            data-testid="footer-feedback-button"
+            href={feedbackUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+            variant="primary"
+          >
+            Provide Feedback
+          </Button>
+        )}
       </Container>
     </footer>
   );

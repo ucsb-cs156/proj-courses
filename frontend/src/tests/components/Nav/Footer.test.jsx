@@ -3,6 +3,10 @@ import Footer, { space } from "main/components/Nav/Footer";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 describe("Footer tests", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   test("space stands for a space", () => {
     expect(space).toBe(" ");
   });
@@ -70,6 +74,29 @@ describe("Footer tests", () => {
     expect(screen.getByTestId("footer-source-code-link")).toHaveAttribute(
       "href",
       "https://github.com/ucsb-cs156/proj-courses",
+    );
+  });
+
+  test("Feedback button is not shown when APP_FEEDBACK_URL is not defined", () => {
+    render(<Footer />);
+
+    expect(
+      screen.queryByTestId("footer-feedback-button"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("Feedback button is shown when APP_FEEDBACK_URL is defined", () => {
+    vi.stubEnv("APP_FEEDBACK_URL", "https://example.com/feedback");
+
+    render(<Footer />);
+
+    expect(screen.getByTestId("footer-feedback-button")).toHaveAttribute(
+      "href",
+      "https://example.com/feedback",
+    );
+    expect(screen.getByTestId("footer-feedback-button")).toHaveAttribute(
+      "target",
+      "_blank",
     );
   });
 });
