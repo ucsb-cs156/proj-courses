@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-lib-jobs-v0.3.2","number":331,"title":"Bump lib-jobs to v0.3.2: job cancellation","url":"https://github.com/ucsb-cs156/proj-courses/pull/331"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc/fix-jobs-log-backfill-checksum","number":333,"title":"Fix checksum mismatch on 010-stage-jobs-log-backfill","url":"https://github.com/ucsb-cs156/proj-courses/pull/333"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-lib-jobs-v0.3.2","number":331,"title":"Bump lib-jobs to v0.3.2: job cancellation","url":"https://github.com/ucsb-cs156/proj-courses/pull/331"}]
