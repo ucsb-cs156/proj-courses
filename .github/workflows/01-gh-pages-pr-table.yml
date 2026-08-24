@@ -63,11 +63,12 @@ jobs:
           echo "repo_name: ${REPOSITORY}" >> ${CONFIG_YML}    
           cat ${CONFIG_YML}
     - name: Store PRs as JSON in _config.yml
+      env:
+        PULL_REQUESTS_JSON: ${{ needs.get-pull-requests.outputs.pull_requests }}
       run: |
-         pull_requests=${{toJSON(needs.get-pull-requests.outputs.pull_requests)}}
          CONFIG_YML=frontend/docs-index/_config.yml
-         echo "pull_requests: ${pull_requests}, CONFIG_YML: ${CONFIG_YML}"
-         echo "pull_requests: ${pull_requests}" >> ${CONFIG_YML}
+         echo "pull_requests: ${PULL_REQUESTS_JSON}, CONFIG_YML: ${CONFIG_YML}"
+         echo "pull_requests: ${PULL_REQUESTS_JSON}" >> ${CONFIG_YML}
          cat ${CONFIG_YML}
     - name: Compose web site
       run: |
@@ -85,4 +86,3 @@ jobs:
           folder: site # The folder the action should deploy.
           branch: gh-pages
           clean: false # Automatically remove deleted files from the deploy branch
-
