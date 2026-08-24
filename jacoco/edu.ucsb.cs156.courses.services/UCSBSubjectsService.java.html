@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-<span class="fc" id="L22">@Slf4j</span>
+<span class="fc" id="L23">@Slf4j</span>
 @Service(&quot;UCSBSubjects&quot;)
 public class UCSBSubjectsService {
 
@@ -35,42 +36,46 @@ public class UCSBSubjectsService {
   public static final String ENDPOINT =
       &quot;{apiHost}/students/lookups/v1/subjects?includeInactive=false&quot;;
 
+<span class="fc" id="L39">  private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);</span>
+<span class="fc" id="L40">  private static final Duration READ_TIMEOUT = Duration.ofSeconds(60);</span>
+
   private final RestTemplate restTemplate;
 
-<span class="fc" id="L40">  public UCSBSubjectsService(RestTemplateBuilder restTemplateBuilder) {</span>
-<span class="fc" id="L41">    restTemplate = restTemplateBuilder.build();</span>
-<span class="fc" id="L42">  }</span>
+<span class="fc" id="L44">  public UCSBSubjectsService(RestTemplateBuilder restTemplateBuilder) {</span>
+<span class="fc" id="L45">    restTemplate =</span>
+<span class="fc" id="L46">        restTemplateBuilder.connectTimeout(CONNECT_TIMEOUT).readTimeout(READ_TIMEOUT).build();</span>
+<span class="fc" id="L47">  }</span>
 
   public List&lt;UCSBSubject&gt; get() throws JsonProcessingException {
 
-<span class="fc" id="L46">    HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L47">    headers.setAccept(List.of(MediaType.APPLICATION_JSON));</span>
-<span class="fc" id="L48">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L49">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
+<span class="fc" id="L51">    HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L52">    headers.setAccept(List.of(MediaType.APPLICATION_JSON));</span>
+<span class="fc" id="L53">    headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L54">    headers.set(&quot;ucsb-api-key&quot;, this.apiKey);</span>
 
-<span class="fc" id="L51">    String url = ENDPOINT.replace(&quot;{apiHost}&quot;, apiHost);</span>
+<span class="fc" id="L56">    String url = ENDPOINT.replace(&quot;{apiHost}&quot;, apiHost);</span>
 
-<span class="fc" id="L53">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
-<span class="fc" id="L54">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
+<span class="fc" id="L58">    HttpEntity&lt;String&gt; entity = new HttpEntity&lt;&gt;(headers);</span>
+<span class="fc" id="L59">    ResponseEntity&lt;String&gt; re = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);</span>
 
-<span class="fc" id="L56">    String retBody = re.getBody();</span>
-<span class="fc" id="L57">    List&lt;UCSBSubject&gt; subjects =</span>
-<span class="fc" id="L58">        mapper.readValue(retBody, new TypeReference&lt;List&lt;UCSBSubject&gt;&gt;() {});</span>
+<span class="fc" id="L61">    String retBody = re.getBody();</span>
+<span class="fc" id="L62">    List&lt;UCSBSubject&gt; subjects =</span>
+<span class="fc" id="L63">        mapper.readValue(retBody, new TypeReference&lt;List&lt;UCSBSubject&gt;&gt;() {});</span>
 
-<span class="fc" id="L60">    return subjects;</span>
+<span class="fc" id="L65">    return subjects;</span>
   }
 
   public List&lt;UCSBSubject&gt; loadAllSubjects() throws JsonProcessingException {
-<span class="fc" id="L64">    List&lt;UCSBSubject&gt; subjects = this.get();</span>
-<span class="fc" id="L65">    List&lt;UCSBSubject&gt; savedSubjects = new ArrayList&lt;UCSBSubject&gt;();</span>
+<span class="fc" id="L69">    List&lt;UCSBSubject&gt; subjects = this.get();</span>
+<span class="fc" id="L70">    List&lt;UCSBSubject&gt; savedSubjects = new ArrayList&lt;UCSBSubject&gt;();</span>
 
-<span class="fc" id="L67">    subjects.forEach(</span>
+<span class="fc" id="L72">    subjects.forEach(</span>
         (ucsbSubject) -&gt; {
-<span class="fc" id="L69">          subjectRepository.save(ucsbSubject);</span>
-<span class="fc" id="L70">          savedSubjects.add(ucsbSubject);</span>
-<span class="fc" id="L71">        });</span>
-<span class="fc" id="L72">    log.info(&quot;subjects={}&quot;, subjects);</span>
-<span class="fc" id="L73">    return savedSubjects;</span>
+<span class="fc" id="L74">          subjectRepository.save(ucsbSubject);</span>
+<span class="fc" id="L75">          savedSubjects.add(ucsbSubject);</span>
+<span class="fc" id="L76">        });</span>
+<span class="fc" id="L77">    log.info(&quot;subjects={}&quot;, subjects);</span>
+<span class="fc" id="L78">    return savedSubjects;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
