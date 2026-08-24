@@ -44,6 +44,7 @@ class SystemInfoServiceImplTests {
     assertTrue(si.getGithubUrl().startsWith(si.getSourceRepo()));
     assertTrue(si.getGithubUrl().endsWith(si.getCommitId()));
     assertTrue(si.getGithubUrl().contains("/commit/"));
+    assertEquals("", si.getAppFeedbackUrl());
     assertEquals(messages, si.getSystemMessages());
   }
 

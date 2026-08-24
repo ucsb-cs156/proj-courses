@@ -1,9 +1,11 @@
-import { Button, Container, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { useState } from "react";
+import { Button, Container, Modal } from "react-bootstrap";
 
 export const space = " ";
 
 export default function Footer(systemInfo) {
-  const feedbackUrl = import.meta.env.APP_FEEDBACK_URL;
+  const feedbackUrl = systemInfo?.systemInfo?.appFeedbackUrl;
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   return (
     <footer className="bg-light pt-3 pt-md-4 pb-4 pb-md-5">
@@ -72,25 +74,54 @@ export default function Footer(systemInfo) {
           </a>
         </p>
         {feedbackUrl && (
-          <OverlayTrigger
-            overlay={
-              <Tooltip id="footer-feedback-tooltip">
-                Available only when logged in with your UCSB Google account.
-              </Tooltip>
-            }
-            placement="top"
-          >
+          <>
             <Button
-              as="a"
               data-testid="footer-feedback-button"
-              href={feedbackUrl}
-              rel="noopener noreferrer"
-              target="_blank"
+              onClick={() => setShowFeedbackModal(true)}
               variant="primary"
             >
               Provide Feedback
             </Button>
-          </OverlayTrigger>
+            <Modal
+              show={showFeedbackModal}
+              onHide={() => setShowFeedbackModal(false)}
+              animation={false}
+              data-testid="footer-feedback-modal"
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Provide Feedback</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p>
+                  Users with a UCSB Google Account are welcome to leave feedback
+                  and make suggestions for improvements and new features. If the
+                  following link doesn&apos;t work, try logging into your UCSB
+                  Email/Google account in this browser first, and then try the
+                  link again.
+                </p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowFeedbackModal(false)}
+                  data-testid="footer-feedback-modal-close-button"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  as="a"
+                  data-testid="footer-feedback-modal-link"
+                  href={feedbackUrl}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  variant="primary"
+                  onClick={() => setShowFeedbackModal(false)}
+                >
+                  Open Feedback Form
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </>
         )}
       </Container>
     </footer>

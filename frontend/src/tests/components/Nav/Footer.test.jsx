@@ -3,10 +3,6 @@ import Footer, { space } from "main/components/Nav/Footer";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 describe("Footer tests", () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
-
   test("space stands for a space", () => {
     expect(space).toBe(" ");
   });
@@ -77,7 +73,7 @@ describe("Footer tests", () => {
     );
   });
 
-  test("Feedback button is not shown when APP_FEEDBACK_URL is not defined", () => {
+  test("Feedback button is not shown when systemInfo.appFeedbackUrl is not defined", () => {
     render(<Footer />);
 
     expect(
@@ -85,30 +81,63 @@ describe("Footer tests", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("Feedback button is shown when APP_FEEDBACK_URL is defined", () => {
-    vi.stubEnv("APP_FEEDBACK_URL", "https://example.com/feedback");
+  test("Feedback button is not shown when systemInfo.appFeedbackUrl is empty", () => {
+    const systemInfo = {
+      ...systemInfoFixtures.showingBoth,
+      appFeedbackUrl: "",
+    };
 
-    render(<Footer />);
+    render(<Footer systemInfo={systemInfo} />);
 
-    expect(screen.getByTestId("footer-feedback-button")).toHaveAttribute(
+    expect(
+      screen.queryByTestId("footer-feedback-button"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("Feedback button is shown when systemInfo.appFeedbackUrl is defined, and opens the feedback modal", () => {
+    const systemInfo = systemInfoFixtures.withFeedbackUrl;
+
+    render(<Footer systemInfo={systemInfo} />);
+
+    expect(
+      screen.queryByTestId("footer-feedback-modal-link"),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("footer-feedback-button"));
+
+    expect(
+      screen.getByText(/Users with a UCSB Google Account are welcome/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/try logging into your UCSB Email\/Google account/),
+    ).toBeInTheDocument();
+
+    expect(screen.getByTestId("footer-feedback-modal-link")).toHaveAttribute(
       "href",
       "https://example.com/feedback",
     );
-    expect(screen.getByTestId("footer-feedback-button")).toHaveAttribute(
+    expect(screen.getByTestId("footer-feedback-modal-link")).toHaveAttribute(
       "target",
       "_blank",
     );
+    expect(screen.getByTestId("footer-feedback-modal-link")).toHaveAttribute(
+      "rel",
+      "noopener noreferrer",
+    );
   });
 
-  test("Feedback button shows UCSB login tooltip on hover", async () => {
-    vi.stubEnv("APP_FEEDBACK_URL", "https://example.com/feedback");
+  test("Feedback modal closes when the Cancel button is clicked", () => {
+    const systemInfo = systemInfoFixtures.withFeedbackUrl;
 
-    render(<Footer />);
+    render(<Footer systemInfo={systemInfo} />);
 
-    fireEvent.mouseOver(screen.getByTestId("footer-feedback-button"));
+    fireEvent.click(screen.getByTestId("footer-feedback-button"));
+    expect(screen.getByTestId("footer-feedback-modal-link")).toBeVisible();
 
-    expect(await screen.findByRole("tooltip")).toHaveTextContent(
-      "Available only when logged in with your UCSB Google account.",
-    );
+    fireEvent.click(screen.getByTestId("footer-feedback-modal-close-button"));
+
+    expect(
+      screen.queryByTestId("footer-feedback-modal-link"),
+    ).not.toBeInTheDocument();
   });
 });
