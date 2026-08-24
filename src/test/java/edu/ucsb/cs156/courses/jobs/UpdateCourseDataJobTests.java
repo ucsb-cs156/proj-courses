@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.jobs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -18,6 +19,8 @@ import edu.ucsb.cs156.courses.services.IsStaleService;
 import edu.ucsb.cs156.courses.services.UCSBAPIQuarterService;
 import edu.ucsb.cs156.courses.services.UCSBCurriculumService;
 import edu.ucsb.cs156.jobs.entities.Job;
+import edu.ucsb.cs156.jobs.errors.JobCancelledException;
+import edu.ucsb.cs156.jobs.repositories.JobsRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobRateLimit;
 import java.time.LocalDateTime;
@@ -420,5 +423,99 @@ public class UpdateCourseDataJobTests {
             ucsbapiQuarterService,
             jobRateLimit);
     job.accept(ctx);
+  }
+
+  // ────────────────────── checkCancellation checkpoints ──────────────────────
+  // On a typical re-run, most (subjectArea, quarterYYYYQ) pairs are not stale and hit `continue`
+  // with no ctx.log() call at all, and the convertedSections loop never calls ctx.log() at any
+  // point (only after the whole loop finishes). Without their own ctx.checkCancellation()
+  // checkpoints, cancellation could sit unactioned through both loops no matter how many pairs
+  // or sections they process. These tests mock a JobsRepository that reports "running" for
+  // exactly the calls known to precede the checkpoint under test, then "cancelling" from then on,
+  // and assert both that JobCancelledException is thrown AND that a specific downstream call the
+  // checkpoint should have pre-empted was never made -- the second assertion is what actually
+  // distinguishes the real code from a mutant that removes the checkpoint, since removing one
+  // checkpoint just shifts the exception to whatever checkpoint comes next.
+
+  private static Job runningJob() {
+    return Job.builder().id(99L).status("running").build();
+  }
+
+  private static Job cancellingJob() {
+    return Job.builder().id(99L).status("cancelling").build();
+  }
+
+  @Test
+  void checkCancellation_stops_the_subject_loop_before_checking_staleness() throws Exception {
+    JobsRepository jobsRepository = mock(JobsRepository.class);
+    // 1 real checkpoint precedes the outer loop's own check: accept()'s opening "Updating
+    // courses..." log line.
+    when(jobsRepository.findById(99L))
+        .thenReturn(Optional.of(runningJob()), Optional.of(cancellingJob()));
+    Job job = Job.builder().id(99L).build();
+    JobContext cancellingCtx = new JobContext(null, job, null, jobsRepository);
+
+    var updateCourseDataJob =
+        UpdateCourseDataJob.builder()
+            .start_quarterYYYYQ("20211")
+            .end_quarterYYYYQ("20211")
+            .subjects(List.of("CMPSC"))
+            .ucsbCurriculumService(ucsbCurriculumService)
+            .convertedSectionCollection(convertedSectionCollection)
+            .updateCollection(updateCollection)
+            .isStaleService(isStaleService)
+            .ifStale(false)
+            .enrollmentDataPointRepository(enrollmentDataPointRepository)
+            .ucsbapiQuarterService(ucsbapiQuarterService)
+            .jobRateLimit(jobRateLimit)
+            .build();
+
+    assertThrows(JobCancelledException.class, () -> updateCourseDataJob.accept(cancellingCtx));
+
+    verify(isStaleService, never()).isStale(any(), any());
+    verify(ucsbCurriculumService, never()).getConvertedSections(any(), any(), any());
+  }
+
+  @Test
+  void checkCancellation_stops_the_sections_loop_before_saving_the_first_section()
+      throws Exception {
+    String coursePageJson = CoursePageFixtures.COURSE_PAGE_JSON_MATH3B;
+    CoursePage coursePage = CoursePage.fromJSON(coursePageJson);
+    List<ConvertedSection> result = coursePage.convertedSections();
+    when(ucsbCurriculumService.getConvertedSections(eq("CMPSC"), eq("20211"), eq("A")))
+        .thenReturn(result);
+    when(ucsbapiQuarterService.isQuarterInRegistrationPass(anyString())).thenReturn(false);
+
+    JobsRepository jobsRepository = mock(JobsRepository.class);
+    // 3 real checkpoints precede the sections loop's own check under this setup: accept()'s
+    // opening log line, the outer subject-loop's own checkCancellation() (checked above), and
+    // updateCourses' "Updating courses for [...]" log line.
+    when(jobsRepository.findById(99L))
+        .thenReturn(
+            Optional.of(runningJob()),
+            Optional.of(runningJob()),
+            Optional.of(runningJob()),
+            Optional.of(cancellingJob()));
+    Job job = Job.builder().id(99L).build();
+    JobContext cancellingCtx = new JobContext(null, job, null, jobsRepository);
+
+    var updateCourseDataJob =
+        UpdateCourseDataJob.builder()
+            .start_quarterYYYYQ("20211")
+            .end_quarterYYYYQ("20211")
+            .subjects(List.of("CMPSC"))
+            .ucsbCurriculumService(ucsbCurriculumService)
+            .convertedSectionCollection(convertedSectionCollection)
+            .updateCollection(updateCollection)
+            .isStaleService(isStaleService)
+            .ifStale(false)
+            .enrollmentDataPointRepository(enrollmentDataPointRepository)
+            .ucsbapiQuarterService(ucsbapiQuarterService)
+            .jobRateLimit(jobRateLimit)
+            .build();
+
+    assertThrows(JobCancelledException.class, () -> updateCourseDataJob.accept(cancellingCtx));
+
+    verify(convertedSectionCollection, never()).findOneByQuarterAndEnrollCode(any(), any());
   }
 }

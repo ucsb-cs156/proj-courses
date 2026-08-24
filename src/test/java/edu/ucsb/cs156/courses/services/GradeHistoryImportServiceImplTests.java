@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.courses.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
@@ -12,9 +13,12 @@ import edu.ucsb.cs156.courses.entities.GradeHistory;
 import edu.ucsb.cs156.courses.repositories.GradeHistoryRepository;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.entities.Job;
+import edu.ucsb.cs156.jobs.errors.JobCancelledException;
+import edu.ucsb.cs156.jobs.repositories.JobsRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -294,5 +298,44 @@ Processed 19 grade history records. Done!""";
     verify(ps).setString(3, "CONRAD P T");
     verify(ps).setString(4, "P");
     verify(ps).setInt(5, 7);
+  }
+
+  @Test
+  void checkCancellation_stops_the_row_loop_before_reading_the_second_row() throws Exception {
+    // ctx.log() (and its cancellation check) only fires once every `batchSize` rows -- a
+    // checkCancellation() call is added to every loop iteration so cancellation isn't stuck
+    // waiting for the next batch to flush on a large CSV. A large batchSize here means neither
+    // row triggers a flush/log, so the *only* checkCancellation-consuming calls in this test are
+    // the loop's own, one per row -- isolating the checkpoint under test.
+    String expectedURL = "https://example.com/grades.csv";
+    String expectedResult =
+        """
+        course,instructor,quarter,year,A,B,C,D,F,nLetterStudents,nPNPStudents,avgGPA,P,dept,S,su,Ap,Bp,Cp,Dp,Am,Bm,Cm,Dm,IP
+        CMPSC     5A,CONRAD P T,Spring,2025,50,13,2,1,3,122,0,3.4188524590163936,0,CMPSC,0,0,10,7,2,1,22,6,3,2,0
+        FAKE    123,CONRAD P T,Spring,2025,71,0,0,0,0,96,10,3.923958333333333,7,FAKE,0,0,2,1,0,0,22,0,0,0,0
+        """;
+
+    this.mockRestServiceServer
+        .expect(requestTo(expectedURL))
+        .andRespond(withSuccess(expectedResult, MediaType.APPLICATION_JSON));
+
+    JobsRepository jobsRepository = mock(JobsRepository.class);
+    // 1 real checkpoint precedes the loop's own check for the first row: none -- the loop's
+    // checkCancellation() is the very first thing that runs each iteration, so the first row's
+    // check is the very first checkCancellation-consuming call overall.
+    Job runningJob = Job.builder().id(99L).status("running").build();
+    Job cancellingJob = Job.builder().id(99L).status("cancelling").build();
+    Mockito.when(jobsRepository.findById(99L))
+        .thenReturn(Optional.of(runningJob), Optional.of(cancellingJob));
+    Job job = Job.builder().id(99L).build();
+    JobContext cancellingCtx = new JobContext(null, job, null, jobsRepository);
+
+    assertThrows(
+        JobCancelledException.class,
+        () -> gradeHistoryImportServiceImpl.importGradesFromUrl(expectedURL, cancellingCtx, 1_000));
+
+    // Nothing was ever logged: cancellation fired on the second row, before the batch ever grew
+    // large enough to flush/log, and before the final "Done!" summary line.
+    assertNull(cancellingCtx.getJob().getLog());
   }
 }

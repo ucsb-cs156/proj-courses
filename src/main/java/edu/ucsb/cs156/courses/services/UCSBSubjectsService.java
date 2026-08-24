@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.courses.entities.UCSBSubject;
 import edu.ucsb.cs156.courses.repositories.UCSBSubjectRepository;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +36,14 @@ public class UCSBSubjectsService {
   public static final String ENDPOINT =
       "{apiHost}/students/lookups/v1/subjects?includeInactive=false";
 
+  private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
+  private static final Duration READ_TIMEOUT = Duration.ofSeconds(60);
+
   private final RestTemplate restTemplate;
 
   public UCSBSubjectsService(RestTemplateBuilder restTemplateBuilder) {
-    restTemplate = restTemplateBuilder.build();
+    restTemplate =
+        restTemplateBuilder.connectTimeout(CONNECT_TIMEOUT).readTimeout(READ_TIMEOUT).build();
   }
 
   public List<UCSBSubject> get() throws JsonProcessingException {
