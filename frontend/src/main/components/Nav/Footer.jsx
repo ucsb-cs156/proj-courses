@@ -1,4 +1,4 @@
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 export const space = " ";
 
@@ -72,16 +72,25 @@ export default function Footer(systemInfo) {
           </a>
         </p>
         {feedbackUrl && (
-          <Button
-            as="a"
-            data-testid="footer-feedback-button"
-            href={feedbackUrl}
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="primary"
+          <OverlayTrigger
+            overlay={
+              <Tooltip id="footer-feedback-tooltip">
+                Available only when logged in with your UCSB Google account.
+              </Tooltip>
+            }
+            placement="top"
           >
-            Provide Feedback
-          </Button>
+            <Button
+              as="a"
+              data-testid="footer-feedback-button"
+              href={feedbackUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+              variant="primary"
+            >
+              Provide Feedback
+            </Button>
+          </OverlayTrigger>
         )}
       </Container>
     </footer>

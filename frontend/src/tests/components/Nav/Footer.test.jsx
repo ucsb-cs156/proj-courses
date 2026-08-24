@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import Footer, { space } from "main/components/Nav/Footer";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
@@ -97,6 +97,18 @@ describe("Footer tests", () => {
     expect(screen.getByTestId("footer-feedback-button")).toHaveAttribute(
       "target",
       "_blank",
+    );
+  });
+
+  test("Feedback button shows UCSB login tooltip on hover", async () => {
+    vi.stubEnv("APP_FEEDBACK_URL", "https://example.com/feedback");
+
+    render(<Footer />);
+
+    fireEvent.mouseOver(screen.getByTestId("footer-feedback-button"));
+
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(
+      "Available only when logged in with your UCSB Google account.",
     );
   });
 });
