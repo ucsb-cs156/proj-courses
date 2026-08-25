@@ -27,6 +27,9 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.sourceRepo:https://github.com/ucsb-cs156/proj-courses}")
   private String sourceRepo;
 
+  @Value("${app.feedbackUrl:}")
+  private String appFeedbackUrl;
+
   @Value("${git.commit.message.short:unknown}")
   private String commitMessage;
 
@@ -56,6 +59,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
             .startQtrYYYYQ(this.startQtrYYYYQ)
             .endQtrYYYYQ(endQtrYYYYQ)
             .sourceRepo(this.sourceRepo)
+            .appFeedbackUrl(this.appFeedbackUrl)
             .commitMessage(this.commitMessage)
             .commitId(this.commitId)
             .githubUrl(githubUrl(this.sourceRepo, this.commitId))

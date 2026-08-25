@@ -39,6 +39,7 @@ The fallback values, in this case being:
 | `ADMIN_EMAILS` | `phtcon@ucsb.edu` |  Comma separated list emails with admin access |
 | `UCSB_API_KEY` | none | api key from https://developer.ucsb.edu |
 | `START_QTR` | `20221` | start quarter for dropdown menus in yyyyq format |
+| `APP_FEEDBACK_URL` | unset (blank) | URL of an external feedback form; when set, shows a "Provide Feedback" button in the footer |
 
 While the values for `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` will not work in practice (i.e. with these values, OAuth login 
 will fail), having a default value:

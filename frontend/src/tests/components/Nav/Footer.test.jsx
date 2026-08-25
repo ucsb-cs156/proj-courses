@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import Footer, { space } from "main/components/Nav/Footer";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
@@ -71,5 +71,73 @@ describe("Footer tests", () => {
       "href",
       "https://github.com/ucsb-cs156/proj-courses",
     );
+  });
+
+  test("Feedback button is not shown when systemInfo.appFeedbackUrl is not defined", () => {
+    render(<Footer />);
+
+    expect(
+      screen.queryByTestId("footer-feedback-button"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("Feedback button is not shown when systemInfo.appFeedbackUrl is empty", () => {
+    const systemInfo = {
+      ...systemInfoFixtures.showingBoth,
+      appFeedbackUrl: "",
+    };
+
+    render(<Footer systemInfo={systemInfo} />);
+
+    expect(
+      screen.queryByTestId("footer-feedback-button"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("Feedback button is shown when systemInfo.appFeedbackUrl is defined, and opens the feedback modal", () => {
+    const systemInfo = systemInfoFixtures.withFeedbackUrl;
+
+    render(<Footer systemInfo={systemInfo} />);
+
+    expect(
+      screen.queryByTestId("footer-feedback-modal-link"),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("footer-feedback-button"));
+
+    expect(
+      screen.getByText(/Users with a UCSB Google Account are welcome/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/try logging into your UCSB Email\/Google account/),
+    ).toBeInTheDocument();
+
+    expect(screen.getByTestId("footer-feedback-modal-link")).toHaveAttribute(
+      "href",
+      "https://example.com/feedback",
+    );
+    expect(screen.getByTestId("footer-feedback-modal-link")).toHaveAttribute(
+      "target",
+      "_blank",
+    );
+    expect(screen.getByTestId("footer-feedback-modal-link")).toHaveAttribute(
+      "rel",
+      "noopener noreferrer",
+    );
+  });
+
+  test("Feedback modal closes when the Cancel button is clicked", () => {
+    const systemInfo = systemInfoFixtures.withFeedbackUrl;
+
+    render(<Footer systemInfo={systemInfo} />);
+
+    fireEvent.click(screen.getByTestId("footer-feedback-button"));
+    expect(screen.getByTestId("footer-feedback-modal-link")).toBeVisible();
+
+    fireEvent.click(screen.getByTestId("footer-feedback-modal-close-button"));
+
+    expect(
+      screen.queryByTestId("footer-feedback-modal-link"),
+    ).not.toBeInTheDocument();
   });
 });

@@ -47,6 +47,17 @@ const systemInfoFixtures = {
       },
     ],
   },
+  withFeedbackUrl: {
+    springH2ConsoleEnabled: true,
+    showSwaggerUILink: true,
+    startQtrYYYYQ: "20084",
+    endQtrYYYYQ: "20222",
+    sourceRepo: "mocklink",
+    commitId: "abc123",
+    commitMessage: "This is a mock commit message",
+    githubUrl: "https://github.com/ucsb-cs156/proj-courses/commit/abc123",
+    appFeedbackUrl: "https://example.com/feedback",
+  },
 };
 
 export { systemInfoFixtures };

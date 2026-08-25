@@ -21,5 +21,9 @@ public class SystemInfo {
   private String commitMessage;
   private String commitId;
   private String githubUrl; // URL to the commit in the source repository
+
+  // user configured URL of an external feedback form; footer feedback button is hidden when unset
+  private String appFeedbackUrl;
+
   private List<SystemMessage> systemMessages;
 }
