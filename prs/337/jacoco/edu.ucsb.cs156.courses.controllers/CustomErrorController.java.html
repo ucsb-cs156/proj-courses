@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomErrorController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.controllers</a> &gt; <span class="el_source">CustomErrorController.java</span></div><h1>CustomErrorController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.controllers;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.LocalDateTime;
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+<span class="fc" id="L15">public class CustomErrorController implements ErrorController {</span>
+
+  @RequestMapping(&quot;/error&quot;)
+  public String handleError(HttpServletRequest request, Model model) {
+<span class="fc" id="L19">    Object statusObj = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);</span>
+
+<span class="fc" id="L21">    int statusCode = 500;</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">    if (statusObj != null) {</span>
+<span class="fc" id="L23">      statusCode = Integer.parseInt(statusObj.toString());</span>
+    }
+
+<span class="fc" id="L26">    HttpStatus httpStatus = HttpStatus.resolve(statusCode);</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">    String error = httpStatus == null ? &quot;Unknown Error&quot; : httpStatus.getReasonPhrase();</span>
+
+<span class="fc" id="L29">    Object messageObj = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">    String message = messageObj == null ? &quot;&quot; : messageObj.toString();</span>
+
+<span class="fc" id="L32">    Object pathObj = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">    String path = pathObj == null ? &quot;&quot; : pathObj.toString();</span>
+
+<span class="fc" id="L35">    Throwable throwable = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);</span>
+
+<span class="fc" id="L37">    String exceptionMessage = &quot;&quot;;</span>
+<span class="fc" id="L38">    String stackTrace = &quot;&quot;;</span>
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">    if (throwable != null) {</span>
+<span class="fc" id="L41">      exceptionMessage = throwable.getMessage();</span>
+
+<span class="fc" id="L43">      StringWriter sw = new StringWriter();</span>
+<span class="fc" id="L44">      PrintWriter pw = new PrintWriter(sw);</span>
+<span class="fc" id="L45">      throwable.printStackTrace(pw);</span>
+<span class="fc" id="L46">      stackTrace = sw.toString();</span>
+    }
+
+<span class="fc" id="L49">    model.addAttribute(&quot;status&quot;, statusCode);</span>
+<span class="fc" id="L50">    model.addAttribute(&quot;error&quot;, error);</span>
+<span class="fc" id="L51">    model.addAttribute(&quot;message&quot;, message);</span>
+<span class="fc" id="L52">    model.addAttribute(&quot;exceptionMessage&quot;, exceptionMessage);</span>
+<span class="fc" id="L53">    model.addAttribute(&quot;stackTrace&quot;, stackTrace);</span>
+<span class="fc" id="L54">    model.addAttribute(&quot;timestamp&quot;, LocalDateTime.now());</span>
+<span class="fc" id="L55">    model.addAttribute(&quot;path&quot;, path);</span>
+
+<span class="fc" id="L57">    return &quot;custom-error&quot;;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
