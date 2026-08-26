@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"fix-stale-persisted-query-cache-on-deploy","number":339,"title":"Fix stale persisted react-query cache surviving deploys for up to 24h","url":"https://github.com/ucsb-cs156/proj-courses/pull/339"}]
+pull_requests: []
