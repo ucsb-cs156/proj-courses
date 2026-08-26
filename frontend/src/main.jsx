@@ -20,6 +20,12 @@ const localStoragePersistor = createWebStoragePersistor({
 persistQueryClient({
   queryClient,
   persistor: localStoragePersistor,
+  // Invalidates every visiting browser's persisted cache on each new deploy --
+  // without this, a stale cached response (e.g. an old /api/systemInfo) can
+  // silently survive in localStorage for up to 24h (persistQueryClient's
+  // default maxAge) even across a hard refresh, since the persisted cache is
+  // otherwise considered "fresh" and no network refetch ever happens.
+  buster: import.meta.env.VITE_COMMIT_HASH,
 });
 
 createRoot(document.getElementById("root")).render(
