@@ -1,5 +1,7 @@
 package edu.ucsb.cs156.courses.controllers;
 
+// Tests for UsersController, including paged endpoints with sortField support
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
