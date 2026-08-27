@@ -7,7 +7,7 @@ const UsersSearchForm = ({
   updatePageSize,
 }) => {
   // Stryker disable all ; testing for specific hard coded lists is just writing the code twice
-  const sortFields = ["givenName", "familyName", "email"];
+  const sortFields = ["email", "givenName", "familyName"];
   const sortDirections = ["ASC", "DESC"];
   const pageSizes = ["10", "25", "50", "100", "500"];
   // Stryker restore all
