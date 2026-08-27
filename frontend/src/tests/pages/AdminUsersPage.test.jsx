@@ -129,6 +129,41 @@ describe("AdminUsersPage tests", () => {
     });
   });
 
+  test("reads pageSize, sortField, sortDirection from localStorage", async () => {
+    const queryClient = new QueryClient();
+
+    localStorage.setItem("UsersSearch.PageSize", "25");
+    localStorage.setItem("UsersSearch.SortField", "familyName");
+    localStorage.setItem("UsersSearch.SortDirection", "DESC");
+
+    axiosMock.onGet("/api/admin/users").reply(200, {
+      content: usersFixtures.threeUsers,
+      totalPages: 2,
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminUsersPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Users")).toBeInTheDocument();
+
+    const usersRequest = axiosMock.history.get.find(
+      (request) => request.url === "/api/admin/users",
+    );
+    expect(usersRequest.params).toEqual({
+      page: 0,
+      pageSize: "25",
+      sortField: "familyName",
+      sortDirection: "DESC",
+    });
+
+    localStorage.clear();
+  });
+
   test("renders empty table when backend unavailable", async () => {
     const queryClient = new QueryClient();
     axiosMock.onGet("/api/admin/users").timeout();
