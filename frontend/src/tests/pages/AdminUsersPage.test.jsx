@@ -69,7 +69,8 @@ describe("AdminUsersPage tests", () => {
     );
     expect(usersRequest.params).toEqual({
       page: 0,
-      pageSize: 10,
+      pageSize: "10",
+      sortField: "email",
       sortDirection: "ASC",
     });
   });
@@ -122,7 +123,8 @@ describe("AdminUsersPage tests", () => {
     expect(usersRequests).toHaveLength(2);
     expect(usersRequests[1].params).toEqual({
       page: 1,
-      pageSize: 10,
+      pageSize: "10",
+      sortField: "email",
       sortDirection: "ASC",
     });
   });

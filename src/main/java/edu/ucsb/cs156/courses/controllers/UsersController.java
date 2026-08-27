@@ -38,7 +38,7 @@ public class UsersController extends ApiController {
 
   @Operation(summary = "Get a list of all users with pages")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @GetMapping(params = {"page", "pageSize", "sortDirection"})
+  @GetMapping(params = {"page", "pageSize", "sortField", "sortDirection"})
   public Iterable<User> usersPaged(
       @Parameter(
               name = "page",
@@ -55,6 +55,13 @@ public class UsersController extends ApiController {
           @RequestParam
           int pageSize,
       @Parameter(
+              name = "sortField",
+              description = "field to sort by",
+              example = "email",
+              required = true)
+          @RequestParam
+          String sortField,
+      @Parameter(
               name = "sortDirection",
               description = "sort direction",
               example = "ASC",
@@ -62,7 +69,13 @@ public class UsersController extends ApiController {
           @RequestParam
           String sortDirection)
       throws JsonProcessingException {
-    Iterable<User> users = null;
+    List<String> allowedSortFields = Arrays.asList("givenName", "familyName", "email");
+    if (!allowedSortFields.contains(sortField)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "%s is not a valid sort field.  Valid values are %s", sortField, allowedSortFields));
+    }
+
     List<String> allowedSortDirections = Arrays.asList("ASC", "DESC");
     if (!allowedSortDirections.contains(sortDirection)) {
       throw new IllegalArgumentException(
@@ -76,9 +89,9 @@ public class UsersController extends ApiController {
       sortDirectionObject = Direction.DESC;
     }
 
-    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, "id");
+    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);
 
-    users = userRepository.findAll(pageRequest);
+    Iterable<User> users = userRepository.findAll(pageRequest);
     return users;
   }
 }

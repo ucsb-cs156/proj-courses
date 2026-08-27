@@ -35,8 +35,8 @@ public class UsersControllerTests extends ControllerTestCase {
 
   @Autowired private ObjectMapper objectMapper;
 
-  PageRequest pageRequest_0_5_ASC = PageRequest.of(0, 5, Direction.ASC, "id");
-  PageRequest pageRequest_0_5_DESC = PageRequest.of(0, 5, Direction.DESC, "id");
+  PageRequest pageRequest_0_5_ASC = PageRequest.of(0, 5, Direction.ASC, "email");
+  PageRequest pageRequest_0_5_DESC = PageRequest.of(0, 5, Direction.DESC, "email");
 
   @Test
   public void users__logged_out() throws Exception {
@@ -102,6 +102,7 @@ public class UsersControllerTests extends ControllerTestCase {
                 get("/api/admin/users")
                     .param("page", "0")
                     .param("pageSize", "5")
+                    .param("sortField", "email")
                     .param("sortDirection", "ASC"))
             .andExpect(status().isOk())
             .andReturn();
@@ -111,7 +112,7 @@ public class UsersControllerTests extends ControllerTestCase {
     verify(userRepository, times(1))
         .findAll(
             org.springframework.data.domain.PageRequest.of(
-                0, 5, org.springframework.data.domain.Sort.Direction.ASC, "id"));
+                0, 5, org.springframework.data.domain.Sort.Direction.ASC, "email"));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
   }
@@ -140,6 +141,7 @@ public class UsersControllerTests extends ControllerTestCase {
                 get("/api/admin/users")
                     .param("page", "0")
                     .param("pageSize", "5")
+                    .param("sortField", "email")
                     .param("sortDirection", "DESC"))
             .andExpect(status().isOk())
             .andReturn();
@@ -149,9 +151,38 @@ public class UsersControllerTests extends ControllerTestCase {
     verify(userRepository, times(1))
         .findAll(
             org.springframework.data.domain.PageRequest.of(
-                0, 5, org.springframework.data.domain.Sort.Direction.DESC, "id"));
+                0, 5, org.springframework.data.domain.Sort.Direction.DESC, "email"));
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void usersPaged__fails_when_invalid_sortField() throws Exception {
+
+    MvcResult response =
+        mockMvc
+            .perform(
+                get("/api/admin/users")
+                    .param("page", "0")
+                    .param("pageSize", "5")
+                    .param("sortField", "INVALID")
+                    .param("sortDirection", "ASC"))
+            .andExpect(status().isBadRequest())
+            .andReturn();
+
+    Map<String, String> expectedResponse =
+        Map.of(
+            "message",
+            "INVALID is not a valid sort field.  Valid values are [givenName, familyName, email]",
+            "type",
+            "IllegalArgumentException");
+
+    // assert
+
+    String expectedResponseAsJson = objectMapper.writeValueAsString(expectedResponse);
+    String actualResponse = response.getResponse().getContentAsString();
+    assertEquals(expectedResponseAsJson, actualResponse);
   }
 
   @WithMockUser(roles = {"ADMIN", "USER"})
@@ -164,6 +195,7 @@ public class UsersControllerTests extends ControllerTestCase {
                 get("/api/admin/users")
                     .param("page", "0")
                     .param("pageSize", "5")
+                    .param("sortField", "email")
                     .param("sortDirection", "INVALID"))
             .andExpect(status().isBadRequest())
             .andReturn();
