@@ -1,0 +1,15 @@
+.devcontainer/
+.github/
+docs/
+graphql-schemas/
+frontend/.storybook
+frontend/docs-index
+frontend/node_modules
+*.md
+keyconvert.sh
+keyconvert-localhost.sh
+.junie/
+Dockerfile
+.dockerignore
+issues/
+scripts/
