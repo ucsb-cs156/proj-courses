@@ -22,6 +22,7 @@
         <targetClasses>${targetClasses:edu.ucsb.cs156.*}</targetClasses>
         <h2.version>2.2.224</h2.version>
         <app.frontend.nodeVersion>v22.18.0</app.frontend.nodeVersion>
+        <cache.use>false</cache.use>
     </properties>
     <dependencies>
         <dependency>
@@ -575,20 +576,22 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>install node and npm</id>
+                                <id>install-node-and-npm</id>
                                 <goals>
                                     <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
                                     <nodeVersion>${app.frontend.nodeVersion}</nodeVersion>
+                                    <skip>${cache.use}</skip>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>npm install</id>
+                                <id>npm-install</id>
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>
                                 <configuration>
+                                    <skip>${cache.use}</skip>
                                     <arguments>ci</arguments>
                                 </configuration>
                             </execution>
