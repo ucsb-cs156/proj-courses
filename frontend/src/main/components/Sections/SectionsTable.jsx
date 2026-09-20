@@ -72,6 +72,7 @@ export default function SectionsTable({
   const mutation = useBackendMutation(
     objectToAxiosParams,
     { onSuccess, onError },
+    // Stryker disable next-line all : hard to set up test for caching
     [],
   );
 
