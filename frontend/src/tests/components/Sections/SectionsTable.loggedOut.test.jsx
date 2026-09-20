@@ -74,4 +74,79 @@ describe("SectionsTable.loggedOut tests", () => {
     expect(row0ExpandButton).toBeInTheDocument();
     expect(row0ExpandButton).toHaveAttribute("style", "cursor: pointer;");
   });
+
+  test("session column is not shown by default", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={primaryFixtures.f24_math_lowerDiv} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(`${testId}-expand-all-rows`),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("Session")).not.toBeInTheDocument();
+  });
+
+  test("session column is shown when showSession is true", async () => {
+    const summerPrimary = [
+      {
+        ...primaryFixtures.singleLectureSectionWithNoDiscussion[0],
+        quarter: "20243",
+        primary: {
+          ...primaryFixtures.singleLectureSectionWithNoDiscussion[0].primary,
+          session: "00000A",
+        },
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={summerPrimary} showSession />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Session")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-session`),
+    ).toHaveTextContent("A");
+  });
+
+  test("session column is empty for non-summer quarters when showSession is true", async () => {
+    const fallPrimary = [
+      {
+        ...primaryFixtures.singleLectureSectionWithNoDiscussion[0],
+        primary: {
+          ...primaryFixtures.singleLectureSectionWithNoDiscussion[0].primary,
+          session: "00000A",
+        },
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SectionsTable sections={fallPrimary} showSession />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Session")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-session`),
+    ).toHaveTextContent("");
+  });
 });

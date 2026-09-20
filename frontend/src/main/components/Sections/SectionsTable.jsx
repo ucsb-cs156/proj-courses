@@ -10,6 +10,7 @@ import {
   formatLocation,
   formatTime,
   formatStatus,
+  formatSession,
   enrollmentFraction,
   getSection,
   getSectionField,
@@ -52,7 +53,11 @@ const onError = (error) => {
   toast.error(message);
 };
 
-export default function SectionsTable({ sections, schedules = [] }) {
+export default function SectionsTable({
+  sections,
+  schedules = [],
+  showSession = false,
+}) {
   if (!(schedules instanceof Array)) {
     throw new Error("schedules prop must be an array");
   }
@@ -163,6 +168,16 @@ export default function SectionsTable({ sections, schedules = [] }) {
       header: "Enroll Code",
       cell: ({ row }) => getSectionField(row, "enrollCode"),
     },
+    ...(showSession
+      ? [
+          {
+            id: "session",
+            header: "Session",
+            cell: ({ row }) =>
+              formatSession(getQuarter(row), getSection(row).session),
+          },
+        ]
+      : []),
     {
       header: "Info",
       id: "info",

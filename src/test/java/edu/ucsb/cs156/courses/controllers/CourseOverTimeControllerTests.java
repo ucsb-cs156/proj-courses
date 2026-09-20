@@ -12,6 +12,7 @@ import edu.ucsb.cs156.courses.ControllerTestCase;
 import edu.ucsb.cs156.courses.collections.ConvertedSectionCollection;
 import edu.ucsb.cs156.courses.documents.ConvertedSection;
 import edu.ucsb.cs156.courses.documents.CourseInfo;
+import edu.ucsb.cs156.courses.documents.Primary;
 import edu.ucsb.cs156.courses.documents.Section;
 import edu.ucsb.cs156.courses.repositories.UserRepository;
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ public class CourseOverTimeControllerTests extends ControllerTestCase {
 
   @Test
   public void test_search_emptyRequest() throws Exception {
-    List<ConvertedSection> expectedResult = new ArrayList<ConvertedSection>();
+    List<ConvertedSection> databaseResult = new ArrayList<ConvertedSection>();
+    List<Primary> expectedResult = new ArrayList<Primary>();
     String urlTemplate =
         "/api/public/courseovertime/search?startQtr=%s&endQtr=%s&subjectArea=%s&courseNumber=%s";
 
@@ -44,7 +46,7 @@ public class CourseOverTimeControllerTests extends ControllerTestCase {
     // mock
     when(convertedSectionCollection.findByQuarterRangeAndCourseId(
             any(String.class), any(String.class), any(String.class)))
-        .thenReturn(expectedResult);
+        .thenReturn(databaseResult);
 
     // act
     MvcResult response =
@@ -70,9 +72,9 @@ public class CourseOverTimeControllerTests extends ControllerTestCase {
             .description("Intro to object oriented design")
             .build();
 
-    Section section1 = new Section();
+    Section section1 = Section.builder().enrollCode("07500").section("0100").build();
 
-    Section section2 = new Section();
+    Section section2 = Section.builder().enrollCode("07501").section("0101").build();
 
     ConvertedSection cs1 = ConvertedSection.builder().courseInfo(info).section(section1).build();
 
@@ -83,19 +85,30 @@ public class CourseOverTimeControllerTests extends ControllerTestCase {
 
     String url = String.format(urlTemplate, "20222", "20222", "CMPSC", "24");
 
-    List<ConvertedSection> expectedSecs = new ArrayList<ConvertedSection>();
-    expectedSecs.addAll(Arrays.asList(cs1, cs2));
+    List<ConvertedSection> databaseResult = new ArrayList<ConvertedSection>();
+    databaseResult.addAll(Arrays.asList(cs2, cs1));
+
+    List<Primary> expectedPrimaries =
+        Arrays.asList(
+            Primary.builder()
+                .quarter("20222")
+                .courseId("CMPSC   24 -1")
+                .title("OBJ ORIENTED DESIGN")
+                .description("Intro to object oriented design")
+                .primary(section1)
+                .subRows(Arrays.asList(section2))
+                .build());
 
     // mock
     when(convertedSectionCollection.findByQuarterRangeAndCourseId(
             any(String.class), any(String.class), eq("CMPSC    24")))
-        .thenReturn(expectedSecs);
+        .thenReturn(databaseResult);
 
     // act
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
     // assert
-    String expectedString = mapper.writeValueAsString(expectedSecs);
+    String expectedString = mapper.writeValueAsString(expectedPrimaries);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedString, responseString);
   }
@@ -110,9 +123,9 @@ public class CourseOverTimeControllerTests extends ControllerTestCase {
             .description("Data Structures and Algorithms")
             .build();
 
-    Section section1 = new Section();
+    Section section1 = Section.builder().enrollCode("07500").section("0100").build();
 
-    Section section2 = new Section();
+    Section section2 = Section.builder().enrollCode("07555").section("0100").build();
 
     ConvertedSection cs1 = ConvertedSection.builder().courseInfo(info).section(section1).build();
 
@@ -125,22 +138,39 @@ public class CourseOverTimeControllerTests extends ControllerTestCase {
 
     String url = String.format(urlTemplate, "20222", "20222", "CMPSC", "130A");
 
-    List<ConvertedSection> expectedSecsOutOfOrder = new ArrayList<ConvertedSection>();
-    expectedSecsOutOfOrder.addAll(Arrays.asList(cs1, cs2));
+    List<ConvertedSection> databaseResultOutOfOrder = new ArrayList<ConvertedSection>();
+    databaseResultOutOfOrder.addAll(Arrays.asList(cs1, cs2));
 
-    List<ConvertedSection> expectedSecsInOrder = new ArrayList<ConvertedSection>();
-    expectedSecsInOrder.addAll(Arrays.asList(cs2, cs1));
+    // results should be sorted by quarter, descending (cs2 is 20244, cs1 is 20222)
+    List<Primary> expectedPrimariesInOrder =
+        Arrays.asList(
+            Primary.builder()
+                .quarter("20244")
+                .courseId("CMPSC   130A -1")
+                .title("DATA STRUCT AND ALG")
+                .description("Data Structures and Algorithms")
+                .primary(section2)
+                .subRows(new ArrayList<>())
+                .build(),
+            Primary.builder()
+                .quarter("20222")
+                .courseId("CMPSC   130A -1")
+                .title("DATA STRUCT AND ALG")
+                .description("Data Structures and Algorithms")
+                .primary(section1)
+                .subRows(new ArrayList<>())
+                .build());
 
     // mock
     when(convertedSectionCollection.findByQuarterRangeAndCourseId(
             any(String.class), any(String.class), eq("CMPSC   130A ")))
-        .thenReturn(expectedSecsOutOfOrder);
+        .thenReturn(databaseResultOutOfOrder);
 
     // act
     MvcResult response = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
     // assert
-    String expectedString = mapper.writeValueAsString(expectedSecsInOrder);
+    String expectedString = mapper.writeValueAsString(expectedPrimariesInOrder);
     String responseString = response.getResponse().getContentAsString();
     assertEquals(expectedString, responseString);
   }
