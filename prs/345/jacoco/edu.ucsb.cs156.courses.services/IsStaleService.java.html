@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsStaleService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.services</a> &gt; <span class="el_source">IsStaleService.java</span></div><h1>IsStaleService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.services;
+
+import edu.ucsb.cs156.courses.entities.UCSBAPIQuarter;
+import edu.ucsb.cs156.courses.repositories.UCSBAPIQuarterRepository;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Service;
+
+<span class="fc" id="L13">@Slf4j</span>
+@Service(&quot;IsStaleService&quot;)
+@ConfigurationProperties
+<span class="fc" id="L16">public class IsStaleService {</span>
+
+  @Value(&quot;#{new Integer('${app.courseDataStaleThresholdMinutes:1440}')}&quot;)
+  private Integer courseDataStaleThresholdMinutes;
+
+  @Autowired private UCSBAPIQuarterService ucsbApiQuarterService;
+  @Autowired private UCSBAPIQuarterRepository ucsbApiQuarterRepository;
+  @Autowired private UpdateService updateService;
+
+  public int getCourseDataStaleThresholdMinutes() {
+<span class="fc" id="L26">    return courseDataStaleThresholdMinutes;</span>
+  }
+
+  /**
+   * Check if the data is stale for a given subject area and quarter
+   *
+   * @param subjectArea e.g. CMPSC
+   * @param quarterYYYYQ e.g. 20221 for Winter 2022
+   * @return true if the data is stale, false otherwise
+   * @throws Exception
+   */
+  public boolean isStale(String subjectArea, String quarterYYYYQ) throws Exception {
+
+<span class="fc" id="L39">    Optional&lt;LocalDateTime&gt; lastUpdateOptional =</span>
+<span class="fc" id="L40">        updateService.getLastUpdate(subjectArea, quarterYYYYQ);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">    if (lastUpdateOptional.isEmpty()) {</span>
+<span class="fc" id="L42">      return true; // no update found, so data has never been loaded</span>
+    }
+<span class="fc" id="L44">    LocalDateTime lastUpdate = lastUpdateOptional.get();</span>
+
+<span class="fc" id="L46">    String currentQuarterYYYYQ = ucsbApiQuarterService.getCurrentQuarterYYYYQ();</span>
+
+    // is the quarter in the past?
+<span class="fc bfc" id="L49" title="All 2 branches covered.">    if (quarterYYYYQ.compareTo(currentQuarterYYYYQ) &lt; 0) {</span>
+      // this quarter is in the past
+      // check if the last update was after last day of that quarter
+<span class="fc" id="L52">      Optional&lt;UCSBAPIQuarter&gt; optionalQuarter =</span>
+<span class="fc" id="L53">          ucsbApiQuarterRepository.findByQuarter(quarterYYYYQ);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">      if (optionalQuarter.isEmpty()) {</span>
+<span class="fc" id="L55">        return true; // quarter not found</span>
+      }
+      // Data is stale if the last update was before the last day of the quarter
+<span class="fc" id="L58">      UCSBAPIQuarter quarter = optionalQuarter.get();</span>
+<span class="fc" id="L59">      LocalDateTime lastDayOfQuarter = quarter.getLastDayOfSchedule();</span>
+<span class="fc" id="L60">      return lastUpdate.isBefore(lastDayOfQuarter);</span>
+    }
+    // This quarter is the current quarter or in the future
+    // So data becomes stale at last update + app.
+
+<span class="fc" id="L65">    LocalDateTime staleTime = lastUpdate.plusMinutes(courseDataStaleThresholdMinutes);</span>
+<span class="fc" id="L66">    LocalDateTime now = LocalDateTime.now();</span>
+<span class="fc" id="L67">    return now.isAfter(staleTime);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
