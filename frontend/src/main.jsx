@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { persistQueryClient } from "react-query/persistQueryClient-experimental";
 import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
 import { ToastContainer } from "react-toastify";
+import { HEALTH_CHECK_QUERY_KEY } from "main/utils/healthCheck";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +27,14 @@ persistQueryClient({
   // default maxAge) even across a hard refresh, since the persisted cache is
   // otherwise considered "fresh" and no network refetch ever happens.
   buster: import.meta.env.VITE_COMMIT_HASH,
+  // The health check answers "are the databases up right now?", so a persisted answer
+  // from an earlier visit must never be shown. (Supplying shouldDehydrateQuery replaces
+  // the default, which persists only successful queries, so that condition is repeated.)
+  dehydrateOptions: {
+    shouldDehydrateQuery: (query) =>
+      query.state.status === "success" &&
+      query.queryKey !== HEALTH_CHECK_QUERY_KEY,
+  },
 });
 
 createRoot(document.getElementById("root")).render(

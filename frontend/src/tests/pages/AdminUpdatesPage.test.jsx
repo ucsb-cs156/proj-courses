@@ -74,9 +74,10 @@ describe("AdminUpdatesPage tests", () => {
     );
     expect(setItemSpy).toHaveBeenCalledWith("UpdatesSearch.PageSize", "10");
 
-    expect(axiosMock.history.get.length).toBe(4);
+    expect(axiosMock.history.get.length).toBe(5);
     const urls = axiosMock.history.get.map((req) => req.url);
     expect(urls).toContain("/api/systemInfo");
+    expect(urls).toContain("/api/actuator/health"); // from BasicLayout
     expect(urls).toContain("/api/UCSBSubjects/all");
     expect(urls).toContain("/api/currentUser");
     expect(urls).toContain("/api/updates");
