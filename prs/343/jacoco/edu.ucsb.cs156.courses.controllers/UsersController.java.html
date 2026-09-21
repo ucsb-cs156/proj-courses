@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
   @Operation(summary = &quot;Get a list of all users with pages&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-  @GetMapping(params = {&quot;page&quot;, &quot;pageSize&quot;, &quot;sortDirection&quot;})
+  @GetMapping(params = {&quot;page&quot;, &quot;pageSize&quot;, &quot;sortField&quot;, &quot;sortDirection&quot;})
   public Iterable&lt;User&gt; usersPaged(
       @Parameter(
               name = &quot;page&quot;,
@@ -55,6 +55,13 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam
           int pageSize,
       @Parameter(
+              name = &quot;sortField&quot;,
+              description = &quot;field to sort by&quot;,
+              example = &quot;email&quot;,
+              required = true)
+          @RequestParam
+          String sortField,
+      @Parameter(
               name = &quot;sortDirection&quot;,
               description = &quot;sort direction&quot;,
               example = &quot;ASC&quot;,
@@ -62,24 +69,30 @@ import org.springframework.web.bind.annotation.RestController;
           @RequestParam
           String sortDirection)
       throws JsonProcessingException {
-<span class="fc" id="L65">    Iterable&lt;User&gt; users = null;</span>
-<span class="fc" id="L66">    List&lt;String&gt; allowedSortDirections = Arrays.asList(&quot;ASC&quot;, &quot;DESC&quot;);</span>
-<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (!allowedSortDirections.contains(sortDirection)) {</span>
-<span class="fc" id="L68">      throw new IllegalArgumentException(</span>
-<span class="fc" id="L69">          String.format(</span>
+<span class="fc" id="L72">    List&lt;String&gt; allowedSortFields = Arrays.asList(&quot;givenName&quot;, &quot;familyName&quot;, &quot;email&quot;);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (!allowedSortFields.contains(sortField)) {</span>
+<span class="fc" id="L74">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L75">          String.format(</span>
+              &quot;%s is not a valid sort field.  Valid values are %s&quot;, sortField, allowedSortFields));
+    }
+
+<span class="fc" id="L79">    List&lt;String&gt; allowedSortDirections = Arrays.asList(&quot;ASC&quot;, &quot;DESC&quot;);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">    if (!allowedSortDirections.contains(sortDirection)) {</span>
+<span class="fc" id="L81">      throw new IllegalArgumentException(</span>
+<span class="fc" id="L82">          String.format(</span>
               &quot;%s is not a valid sort direction.  Valid values are %s&quot;,
               sortDirection, allowedSortDirections));
     }
 
-<span class="fc" id="L74">    Direction sortDirectionObject = Direction.ASC;</span>
-<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (sortDirection.equals(&quot;DESC&quot;)) {</span>
-<span class="fc" id="L76">      sortDirectionObject = Direction.DESC;</span>
+<span class="fc" id="L87">    Direction sortDirectionObject = Direction.ASC;</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (sortDirection.equals(&quot;DESC&quot;)) {</span>
+<span class="fc" id="L89">      sortDirectionObject = Direction.DESC;</span>
     }
 
-<span class="fc" id="L79">    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, &quot;id&quot;);</span>
+<span class="fc" id="L92">    PageRequest pageRequest = PageRequest.of(page, pageSize, sortDirectionObject, sortField);</span>
 
-<span class="fc" id="L81">    users = userRepository.findAll(pageRequest);</span>
-<span class="fc" id="L82">    return users;</span>
+<span class="fc" id="L94">    Iterable&lt;User&gt; users = userRepository.findAll(pageRequest);</span>
+<span class="fc" id="L95">    return users;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
