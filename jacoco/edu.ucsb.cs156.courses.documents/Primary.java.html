@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Primary.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">courses</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.courses.documents</a> &gt; <span class="el_source">Primary.java</span></div><h1>Primary.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.courses.documents;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-<span class="fc" id="L11">@Slf4j</span>
+<span class="fc" id="L13">@Slf4j</span>
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,5 +24,56 @@ public class Primary {
   private Section primary;
   private List&lt;Section&gt; subRows;
   private List&lt;GeneralEducation&gt; generalEducation;
+
+  /**
+   * Convert a flat list of {@link ConvertedSection} objects into a list of Primary objects, where
+   * each Primary contains a primary section (e.g. a lecture) and its secondary sections (e.g.
+   * discussion sections) as subRows. The result is sorted by quarter descending, then by course id
+   * (a search may match several courses, e.g. 130A and 130B), then by section number ascending, so
+   * that secondary sections immediately follow their primary section.
+   *
+   * @param convertedSections a flat list of ConvertedSection objects
+   * @return a list of Primary objects
+   */
+  public static List&lt;Primary&gt; fromConvertedSections(List&lt;ConvertedSection&gt; convertedSections) {
+<span class="fc" id="L39">    List&lt;ConvertedSection&gt; sorted = new ArrayList&lt;&gt;(convertedSections);</span>
+<span class="fc" id="L40">    sorted.sort(</span>
+<span class="fc" id="L41">        Comparator.comparing(</span>
+<span class="fc" id="L42">                (ConvertedSection cs) -&gt; cs.getCourseInfo().getQuarter(),</span>
+<span class="fc" id="L43">                Comparator.nullsLast(Comparator.reverseOrder()))</span>
+<span class="fc" id="L44">            .thenComparing(</span>
+<span class="fc" id="L45">                cs -&gt; cs.getCourseInfo().getCourseId(),</span>
+<span class="fc" id="L46">                Comparator.nullsLast(Comparator.naturalOrder()))</span>
+<span class="fc" id="L47">            .thenComparing(</span>
+<span class="fc" id="L48">                cs -&gt; cs.getSection().getSection(),</span>
+<span class="fc" id="L49">                Comparator.nullsLast(Comparator.naturalOrder())));</span>
+
+<span class="fc" id="L51">    List&lt;Primary&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L52">    Primary current = null;</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    for (ConvertedSection cs : sorted) {</span>
+<span class="fc" id="L54">      CourseInfo courseInfo = cs.getCourseInfo();</span>
+<span class="fc" id="L55">      Section section = cs.getSection();</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">      boolean sameCourse =</span>
+          current != null
+<span class="fc bfc" id="L58" title="All 2 branches covered.">              &amp;&amp; java.util.Objects.equals(current.getQuarter(), courseInfo.getQuarter())</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">              &amp;&amp; java.util.Objects.equals(current.getCourseId(), courseInfo.getCourseId());</span>
+<span class="fc bfc" id="L60" title="All 4 branches covered.">      if (section.isPrimary() || !sameCourse) {</span>
+        current =
+<span class="fc" id="L62">            Primary.builder()</span>
+<span class="fc" id="L63">                .quarter(courseInfo.getQuarter())</span>
+<span class="fc" id="L64">                .courseId(courseInfo.getCourseId())</span>
+<span class="fc" id="L65">                .title(courseInfo.getTitle())</span>
+<span class="fc" id="L66">                .description(courseInfo.getDescription())</span>
+<span class="fc" id="L67">                .primary(section)</span>
+<span class="fc" id="L68">                .subRows(new ArrayList&lt;&gt;())</span>
+<span class="fc" id="L69">                .generalEducation(courseInfo.getGeneralEducation())</span>
+<span class="fc" id="L70">                .build();</span>
+<span class="fc" id="L71">        result.add(current);</span>
+      } else {
+<span class="fc" id="L73">        current.getSubRows().add(section);</span>
+      }
+<span class="fc" id="L75">    }</span>
+<span class="fc" id="L76">    return result;</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
