@@ -14,7 +14,7 @@ import { healthFixtures } from "fixtures/healthFixtures";
 const mongoMessage = {
   variant: "danger",
   message:
-    "The course database (MongoDB) is currently unavailable, so course searches will not work. Please try again later.",
+    "The course database (MongoDB) is currently unavailable, so some searches may not work. Please try again later.",
 };
 const sqlMessage = {
   variant: "danger",
