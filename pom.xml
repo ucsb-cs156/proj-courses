@@ -49,6 +49,13 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
+        <!-- Provides /api/actuator/health, which reports whether Postgres and MongoDB are reachable.
+        Used by uptime monitoring and by the frontend's database-outage banner; see docs/healthcheck.md -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!--
         https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
         <dependency>
