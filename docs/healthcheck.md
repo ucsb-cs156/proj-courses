@@ -26,8 +26,16 @@ Only component names and `UP`/`DOWN` are shown; hostnames and error text are del
 (`management.endpoint.health.show-details=never`). For the underlying error, look at the app's
 logs (`dokku logs appname`). `health` is the only Actuator endpoint that is exposed.
 
-If MongoDB has disappeared entirely (as opposed to refusing a login), the MongoDB driver waits
-30 seconds before giving up, so the 503 takes 30 seconds to arrive.
+If MongoDB has disappeared entirely (as opposed to refusing a login), the 503 takes about 5
+seconds to arrive. That is how long the app waits for MongoDB before giving up, and it applies
+to every request that uses MongoDB, not just the health check: during an outage a search fails
+after 5 seconds. The MongoDB driver's own default is 30 seconds, which made the health check too
+slow for many uptime monitors, and tied up a server thread for 30 seconds for every browser tab
+polling it. When MongoDB is healthy this wait is never used. It is set in `MongoTimeoutConfig`,
+and can be changed with the environment variable `MONGO_SERVER_SELECTION_TIMEOUT_SECONDS`, e.g.
+`dokku config:set appname MONGO_SERVER_SELECTION_TIMEOUT_SECONDS=2`.
+
+Set your monitor's own timeout comfortably above that, e.g. 10 seconds or more.
 
 ## Setting up an uptime monitor
 
