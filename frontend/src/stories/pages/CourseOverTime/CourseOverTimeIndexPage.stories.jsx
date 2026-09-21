@@ -5,7 +5,7 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { ucsbSubjectsFixtures } from "fixtures/ucsbSubjectsFixtures";
 import { personalSectionsFixtures } from "fixtures/personalSectionsFixtures";
 import { oneQuarterCourse } from "fixtures/gradeHistoryFixtures";
-import { threeSections } from "fixtures/sectionFixtures";
+import primaryFixtures from "fixtures/primaryFixtures";
 
 import { toast } from "react-toastify";
 import { http, HttpResponse } from "msw";
@@ -45,7 +45,7 @@ Default.parameters = {
     }),
     http.get("/api/public/courseovertime/search", ({ request }) => {
       toast(`Generated ${request.method} ${request.url}`);
-      return HttpResponse.json(threeSections, {
+      return HttpResponse.json(primaryFixtures.f24_math_lowerDiv, {
         status: 200,
       });
     }),

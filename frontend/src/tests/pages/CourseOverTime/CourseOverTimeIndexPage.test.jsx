@@ -8,7 +8,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import CourseOverTimeIndexPage from "main/pages/CourseOverTime/CourseOverTimeIndexPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { oneSection, threeSections } from "fixtures/sectionFixtures";
+import primaryFixtures from "fixtures/primaryFixtures";
 import { allTheSubjects } from "fixtures/subjectFixtures";
 import userEvent from "@testing-library/user-event";
 
@@ -50,7 +50,7 @@ describe("CourseOverTimeIndexPage tests", () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock
       .onGet("/api/public/courseovertime/search")
-      .reply(200, threeSections);
+      .reply(200, primaryFixtures.f24_math_lowerDiv);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -92,7 +92,7 @@ describe("CourseOverTimeIndexPage tests", () => {
       courseNumber: "130A",
     });
 
-    expect(screen.getByText("ECE 1A -1")).toBeInTheDocument();
+    expect(screen.getAllByText("CALC W/ ALG & TRIG").length).toBeGreaterThan(0);
   });
 
   test("displays 'No courses found' message when search returns empty results", async () => {
@@ -219,7 +219,14 @@ describe("CourseOverTimeIndexPage tests", () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock.onGet("/api/public/courseovertime/search").reply(() => {
       return new Promise((resolve) => {
-        setTimeout(() => resolve([200, oneSection]), 100);
+        setTimeout(
+          () =>
+            resolve([
+              200,
+              primaryFixtures.singleLectureSectionWithNoDiscussion,
+            ]),
+          100,
+        );
       });
     });
 
@@ -251,7 +258,7 @@ describe("CourseOverTimeIndexPage tests", () => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
     });
 
-    expect(screen.queryByText("CourseId")).not.toBeInTheDocument();
+    expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
     expect(screen.queryByText("Title")).not.toBeInTheDocument();
 
     await waitFor(() => {
@@ -259,12 +266,14 @@ describe("CourseOverTimeIndexPage tests", () => {
     });
 
     expect(screen.queryByText(/Loading courses.../i)).not.toBeInTheDocument();
-    expect(screen.getByText("CourseId")).toBeInTheDocument();
+    expect(screen.getByText("Course ID")).toBeInTheDocument();
   });
 
   test("displays course table when search returns results", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock.onGet("/api/public/courseovertime/search").reply(200, oneSection);
+    axiosMock
+      .onGet("/api/public/courseovertime/search")
+      .reply(200, primaryFixtures.singleLectureSectionWithNoDiscussion);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -298,14 +307,15 @@ describe("CourseOverTimeIndexPage tests", () => {
       screen.queryByText(/No courses were found with the specified criteria./i),
     ).not.toBeInTheDocument();
 
-    expect(screen.getByText("CourseId")).toBeInTheDocument();
+    expect(screen.getByText("Course ID")).toBeInTheDocument();
     expect(screen.getByText("Title")).toBeInTheDocument();
+    expect(screen.getByText("Session")).toBeInTheDocument();
     expect(
-      screen.getByTestId("ConvertedSectionTable-header-session"),
-    ).toHaveTextContent("Session");
+      screen.getByTestId("SectionsTable-expand-all-rows"),
+    ).toBeInTheDocument();
   });
 
-  test("does not display ConvertedSectionTable when search returns empty results", async () => {
+  test("does not display SectionsTable when search returns empty results", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
     axiosMock.onGet("/api/public/courseovertime/search").reply(200, []);
 
@@ -339,7 +349,7 @@ describe("CourseOverTimeIndexPage tests", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.queryByText("CourseId")).not.toBeInTheDocument();
+    expect(screen.queryByText("Course ID")).not.toBeInTheDocument();
     expect(screen.queryByText("Title")).not.toBeInTheDocument();
   });
 });
