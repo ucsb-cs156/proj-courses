@@ -72,6 +72,26 @@ public class PrimaryTests {
   }
 
   @Test
+  public void test_fromConvertedSections_multipleCoursesInOneQuarterAreNotInterleaved() {
+    // A search for e.g. "CMPSC 130" matches both 130A and 130B, which use the same section numbers
+    ConvertedSection primaryA = makeConvertedSection("20222", "CMPSC   130A ", "0100");
+    ConvertedSection secondaryA = makeConvertedSection("20222", "CMPSC   130A ", "0101");
+    ConvertedSection primaryB = makeConvertedSection("20222", "CMPSC   130B ", "0100");
+    ConvertedSection secondaryB = makeConvertedSection("20222", "CMPSC   130B ", "0101");
+
+    List<Primary> result =
+        Primary.fromConvertedSections(Arrays.asList(secondaryB, primaryA, primaryB, secondaryA));
+
+    assertEquals(2, result.size());
+    assertEquals("CMPSC   130A ", result.get(0).getCourseId());
+    assertEquals(primaryA.getSection(), result.get(0).getPrimary());
+    assertEquals(Arrays.asList(secondaryA.getSection()), result.get(0).getSubRows());
+    assertEquals("CMPSC   130B ", result.get(1).getCourseId());
+    assertEquals(primaryB.getSection(), result.get(1).getPrimary());
+    assertEquals(Arrays.asList(secondaryB.getSection()), result.get(1).getSubRows());
+  }
+
+  @Test
   public void test_fromConvertedSections_sortsQuartersDescending() {
     ConvertedSection older = makeConvertedSection("20221", "CMPSC   130A ", "0100");
     ConvertedSection newer = makeConvertedSection("20224", "CMPSC   130A ", "0100");
@@ -134,6 +154,18 @@ public class PrimaryTests {
     assertEquals(2, result.size());
     assertEquals("20221", result.get(0).getQuarter());
     assertEquals(null, result.get(1).getQuarter());
+  }
+
+  @Test
+  public void test_fromConvertedSections_nullCourseIdSortsLast() {
+    ConvertedSection nullCourseId = makeConvertedSection("20222", null, "0100");
+    ConvertedSection withCourseId = makeConvertedSection("20222", "CMPSC   130A ", "0100");
+
+    List<Primary> result = Primary.fromConvertedSections(Arrays.asList(nullCourseId, withCourseId));
+
+    assertEquals(2, result.size());
+    assertEquals("CMPSC   130A ", result.get(0).getCourseId());
+    assertEquals(null, result.get(1).getCourseId());
   }
 
   @Test

@@ -28,9 +28,9 @@ public class Primary {
   /**
    * Convert a flat list of {@link ConvertedSection} objects into a list of Primary objects, where
    * each Primary contains a primary section (e.g. a lecture) and its secondary sections (e.g.
-   * discussion sections) as subRows. The result is sorted by quarter descending, and within a
-   * quarter, by section number ascending, so that secondary sections immediately follow their
-   * primary section.
+   * discussion sections) as subRows. The result is sorted by quarter descending, then by course id
+   * (a search may match several courses, e.g. 130A and 130B), then by section number ascending, so
+   * that secondary sections immediately follow their primary section.
    *
    * @param convertedSections a flat list of ConvertedSection objects
    * @return a list of Primary objects
@@ -41,6 +41,9 @@ public class Primary {
         Comparator.comparing(
                 (ConvertedSection cs) -> cs.getCourseInfo().getQuarter(),
                 Comparator.nullsLast(Comparator.reverseOrder()))
+            .thenComparing(
+                cs -> cs.getCourseInfo().getCourseId(),
+                Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparing(
                 cs -> cs.getSection().getSection(),
                 Comparator.nullsLast(Comparator.naturalOrder())));
