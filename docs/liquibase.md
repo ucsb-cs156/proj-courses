@@ -305,7 +305,7 @@ four sibling repos that already had one — [proj-frontiers](https://github.com/
 [proj-happycows](https://github.com/ucsb-cs156/proj-happycows),
 [proj-dining](https://github.com/ucsb-cs156/proj-dining), and
 [proj-scaffold](https://github.com/ucsb-cs156/proj-scaffold) — were surveyed to design a consistent setup for
-proj-courses. All five repos are Spring Boot 3.4.3 / Java 21 / Maven projects.
+proj-courses. At the time of the survey (2026-07), all five repos were Spring Boot 3.4.3 / Java 21 / Maven projects.
 
 ### What's identical across all five
 

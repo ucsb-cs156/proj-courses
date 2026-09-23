@@ -632,7 +632,7 @@ public class UCSBAPIQuarterServiceTests {
     LocalDateTime fixedDateTime = LocalDateTime.parse("2020-10-01T00:00:00");
 
     try (MockedStatic<LocalDateTime> mockedLocalDateTime =
-        Mockito.mockStatic(LocalDateTime.class)) {
+        Mockito.mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)) {
       mockedLocalDateTime.when(LocalDateTime::now).thenReturn(fixedDateTime);
       assertEquals(false, service.isQuarterInRegistrationPass("20211"));
     }
@@ -655,7 +655,7 @@ public class UCSBAPIQuarterServiceTests {
     LocalDateTime fixedDateTime = LocalDateTime.parse("2021-04-01T00:00:00");
 
     try (MockedStatic<LocalDateTime> mockedLocalDateTime =
-        Mockito.mockStatic(LocalDateTime.class)) {
+        Mockito.mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)) {
       mockedLocalDateTime.when(LocalDateTime::now).thenReturn(fixedDateTime);
       assertEquals(false, service.isQuarterInRegistrationPass("20211"));
     }
@@ -678,7 +678,7 @@ public class UCSBAPIQuarterServiceTests {
     LocalDateTime fixedDateTime = LocalDateTime.parse("2020-11-02T00:00:00");
 
     try (MockedStatic<LocalDateTime> mockedLocalDateTime =
-        Mockito.mockStatic(LocalDateTime.class)) {
+        Mockito.mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)) {
       mockedLocalDateTime.when(LocalDateTime::now).thenReturn(fixedDateTime);
       assertEquals(true, service.isQuarterInRegistrationPass("20211"));
     }
@@ -708,7 +708,7 @@ public class UCSBAPIQuarterServiceTests {
     LocalDateTime fixedDateTime = LocalDateTime.parse("2021-02-09T00:00:00");
 
     try (MockedStatic<LocalDateTime> mockedLocalDateTime =
-        Mockito.mockStatic(LocalDateTime.class)) {
+        Mockito.mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)) {
       mockedLocalDateTime.when(LocalDateTime::now).thenReturn(fixedDateTime);
 
       List<String> expectedResult = List.of("20212");

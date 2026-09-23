@@ -1,4 +1,4 @@
-FROM maven:3.9.16-eclipse-temurin-21-noble AS builder
+FROM maven:3.9.16-eclipse-temurin-25-noble AS builder
 
 WORKDIR /home/app
 
@@ -18,7 +18,7 @@ COPY . .
 
 RUN mvn -Pproduction -DskipTests -Dcache.use=true package -B
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 WORKDIR /app
 

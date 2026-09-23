@@ -20,9 +20,9 @@ If any fail, take appropriate steps:
 ## Working Effectively
 
 ### Prerequisites and Environment Setup
-- **Java 21 is REQUIRED**. Set environment variables:
+- **Java 25 is REQUIRED**. Set environment variables:
   ```bash
-  export JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64
+  export JAVA_HOME=/usr/lib/jvm/temurin-25-jdk-amd64
   export PATH=$JAVA_HOME/bin:$PATH
   ```
 - **Node.js v20.17.0 is REQUIRED** (current v20.19.4 works with warnings)
@@ -109,7 +109,7 @@ cp .env.SAMPLE .env
 - **Tests**: `frontend/src/tests/`
 
 ### Typical Development Workflow
-1. **Bootstrap environment**: Set Java 21, install frontend dependencies
+1. **Bootstrap environment**: Set Java 25, install frontend dependencies
 2. **Setup OAuth**: Copy `.env.SAMPLE` to `.env`, configure credentials
 3. **Build backend**: `mvn clean compile` (45 seconds)
 4. **Test backend**: `mvn test` (50 seconds) 
