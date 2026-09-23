@@ -275,6 +275,9 @@
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
+                <!-- Last release with built-in history (historyInputFile/historyOutputFile below),
+                     which the incremental pitest workflow relies on. Pitest 1.23.0+ moved history
+                     to a separate plugin and fails with "no history plugin has been installed". -->
                 <version>1.22.1</version>
                 <dependencies>
                     <dependency>
