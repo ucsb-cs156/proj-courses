@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"spring-boot-3.5.16-java-25","number":350,"title":"Migrate to Spring Boot 3.5.16 and Java 25","url":"https://github.com/ucsb-cs156/proj-courses/pull/350"}]
+pull_requests: []
