@@ -102,7 +102,7 @@ class GradeHistoryImportServiceImplTests {
         """;
 
     String expectedLog =
-        """
+"""
 Processed 13 grade history records so far.
 Processed 26 grade history records so far.
 Processed 37 grade history records so far.
@@ -147,7 +147,7 @@ Processed 145 grade history records. Done!""";
         """;
 
     String expectedLog =
-        """
+"""
 Processed 13 grade history records so far.
 Processed 19 grade history records. Done!""";
 

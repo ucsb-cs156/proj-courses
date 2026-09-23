@@ -143,7 +143,8 @@ class IsStaleServiceTests {
 
     // act / assert
 
-    try (MockedStatic<LocalDateTime> mockNowStatic = Mockito.mockStatic(LocalDateTime.class)) {
+    try (MockedStatic<LocalDateTime> mockNowStatic =
+        Mockito.mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)) {
       mockNowStatic.when(LocalDateTime::now).thenReturn(mockNow);
       assertFalse(isStaleService.isStale("CMPSC", "20211"));
     }
@@ -176,7 +177,8 @@ class IsStaleServiceTests {
 
     // act / assert
 
-    try (MockedStatic<LocalDateTime> mockNowStatic = Mockito.mockStatic(LocalDateTime.class)) {
+    try (MockedStatic<LocalDateTime> mockNowStatic =
+        Mockito.mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)) {
       mockNowStatic.when(LocalDateTime::now).thenReturn(mockNow);
       assertTrue(isStaleService.isStale("CMPSC", "20211"));
     }
