@@ -177,7 +177,7 @@
         <dependency>
             <groupId>com.github.ucsb-cs156</groupId>
             <artifactId>lib-jobs</artifactId>
-            <version>v0.4.0</version>
+            <version>v0.4.1</version>
         </dependency>
     </dependencies>
 
