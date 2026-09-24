@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-lib-jobs-v041","number":354,"title":"Bump lib-jobs to v0.4.1 (log preview shows when lines were omitted; restores the See-entire-log link)","url":"https://github.com/ucsb-cs156/proj-courses/pull/354"}]
+pull_requests: []
