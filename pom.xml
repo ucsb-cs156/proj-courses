@@ -21,7 +21,7 @@
         <app.packagePath>edu/ucsb/cs156/courses</app.packagePath>
         <targetClasses>${targetClasses:edu.ucsb.cs156.*}</targetClasses>
         <h2.version>2.2.224</h2.version>
-        <app.frontend.nodeVersion>v22.18.0</app.frontend.nodeVersion>
+        <app.frontend.nodeVersion>v24.21.0</app.frontend.nodeVersion>
         <cache.use>false</cache.use>
     </properties>
     <dependencies>
