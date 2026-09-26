@@ -24,7 +24,7 @@ export default defineConfig([
         files: ["src/**/*.{js,jsx}"],
         extends: [
             js.configs.recommended,
-            reactHooks.configs["recommended-latest"],
+            reactHooks.configs.flat.recommended,
             reactRefresh.configs.vite,
             reactPlugin.configs.flat.recommended,
         ],
@@ -46,6 +46,12 @@ export default defineConfig([
                 { varsIgnorePattern: "^[A-Z_].*", argsIgnorePattern: "^_" },
             ],
             "react/prop-types" : "off",
+            // eslint-plugin-react-hooks v7 added React Compiler-derived rules.
+            // These two flag existing patterns (setState in useEffect in
+            // PersonalScheduleEvent; TanStack Table's useReactTable). Disabled to keep
+            // lint behavior the same as with v5; revisit when adopting React Compiler.
+            "react-hooks/set-state-in-effect": "off",
+            "react-hooks/incompatible-library": "off",
         },
         settings: {
             react: {

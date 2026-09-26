@@ -59,21 +59,21 @@ describe("CourseOverTimeDescriptionIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
+    await userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    await userEvent.selectOptions(selectEndQuarter, "20222");
     const enterSearchTerms = screen.getByLabelText("Search Terms");
-    userEvent.type(enterSearchTerms, "data");
+    await userEvent.type(enterSearchTerms, "data");
     const selectCheckbox = screen.getByTestId(
       "CourseOverTimeDescriptionSearchForm-checkbox",
     );
-    userEvent.click(selectCheckbox);
+    await userEvent.click(selectCheckbox);
 
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
-    userEvent.click(submitButton);
-
     axiosMock.resetHistory();
+
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);

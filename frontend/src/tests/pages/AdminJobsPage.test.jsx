@@ -235,10 +235,10 @@ describe("AdminJobsPage tests", () => {
     );
 
     const selectQuarter = screen.getByTestId("UpdateCoursesJobForm.Quarter");
-    userEvent.selectOptions(selectQuarter, "20211");
+    await userEvent.selectOptions(selectQuarter, "20211");
     const selectSubject = screen.getByLabelText("Subject Area");
     expect(selectSubject).toBeInTheDocument();
-    userEvent.selectOptions(selectSubject, "ANTH");
+    await userEvent.selectOptions(selectSubject, "ANTH");
 
     expect(submitButton).toBeInTheDocument();
 
@@ -282,7 +282,7 @@ describe("AdminJobsPage tests", () => {
     const selectQuarter = screen.getByTestId(
       "UpdateCoursesByQuarterJobForm.Quarter",
     );
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     expect(submitButton).toBeInTheDocument();
 
     submitButton.click();
@@ -321,9 +321,9 @@ describe("AdminJobsPage tests", () => {
     ).toBeInTheDocument();
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20212");
+    await userEvent.selectOptions(selectStartQuarter, "20212");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20213");
+    await userEvent.selectOptions(selectEndQuarter, "20213");
     expect(submitButton).toBeInTheDocument();
 
     submitButton.click();

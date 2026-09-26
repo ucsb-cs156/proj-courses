@@ -1,7 +1,6 @@
 import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom/extend-expect";
 import * as react from "react";
 
 import SingleSubjectDropdown from "main/components/Subjects/SingleSubjectDropdown";
@@ -165,7 +164,7 @@ describe("SingleSubjectDropdown tests", () => {
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
 
     const selectQuarter = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectQuarter, "ARTHI");
+    await userEvent.selectOptions(selectQuarter, "ARTHI");
     expect(setSubject).toBeCalledWith("ARTHI");
   });
 
@@ -183,7 +182,7 @@ describe("SingleSubjectDropdown tests", () => {
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
 
     const selectQuarter = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectQuarter, "ALL");
+    await userEvent.selectOptions(selectQuarter, "ALL");
     expect(setSubject).toBeCalledWith("ALL");
   });
 
@@ -219,7 +218,7 @@ describe("SingleSubjectDropdown tests", () => {
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
 
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "ARTHI");
+    await userEvent.selectOptions(selectSubject, "ARTHI");
     await waitFor(() => expect(setSubject).toBeCalledWith("ARTHI"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
 
@@ -244,7 +243,7 @@ describe("SingleSubjectDropdown tests", () => {
     expect(await screen.findByLabelText("Subject Area")).toBeInTheDocument();
 
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "ALL");
+    await userEvent.selectOptions(selectSubject, "ALL");
     await waitFor(() => expect(setSubject).toBeCalledWith("ALL"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
 

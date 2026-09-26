@@ -74,7 +74,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
@@ -82,15 +82,15 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
-    userEvent.selectOptions(selectSubject, "ANTH");
+    await userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
 
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
-    userEvent.click(submitButton);
-
     axiosMock.resetHistory();
+
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
@@ -117,7 +117,12 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
 
   test("displays 'No courses found' message when search returns empty results", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock.onGet("/api/public/primaries").reply(200, []);
+    axiosMock.onGet("/api/public/primaries").reply(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve([200, []]), 100);
+        }),
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -128,7 +133,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
@@ -137,12 +142,12 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
-    userEvent.selectOptions(selectSubject, "ANTH");
+    await userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -208,13 +213,13 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "ESS");
+    await userEvent.selectOptions(selectSubject, "ESS");
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -256,7 +261,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
     await waitFor(() =>
@@ -264,7 +269,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     );
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -298,7 +303,7 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     );
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(
@@ -329,14 +334,14 @@ describe("SectionSearchesIndexPageLoggedIn tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "ESS");
+    await userEvent.selectOptions(selectSubject, "ESS");
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(

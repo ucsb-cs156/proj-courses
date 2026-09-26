@@ -37,7 +37,7 @@ describe("JobsSearchForm tests", () => {
     expect(screen.getByLabelText("Page Size")).toBeInTheDocument();
   });
 
-  test("when I select a sortField, the state for sortField changes", () => {
+  test("when I select a sortField, the state for sortField changes", async () => {
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
@@ -52,7 +52,7 @@ describe("JobsSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectSortField = screen.getByLabelText("Sort By");
-    userEvent.selectOptions(selectSortField, "updatedAt");
+    await userEvent.selectOptions(selectSortField, "updatedAt");
     expect(selectSortField.value).toBe("updatedAt");
     expect(setItemSpy).toHaveBeenCalledWith(
       "JobsSearch.SortField",
@@ -60,7 +60,7 @@ describe("JobsSearchForm tests", () => {
     );
   });
 
-  test("when I select a sortDirection, the state for sortDirection changes", () => {
+  test("when I select a sortDirection, the state for sortDirection changes", async () => {
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
@@ -75,16 +75,16 @@ describe("JobsSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectSortDirection = screen.getByLabelText("Sort Direction");
-    userEvent.selectOptions(selectSortDirection, "ASC");
+    await userEvent.selectOptions(selectSortDirection, "ASC");
     expect(selectSortDirection.value).toBe("ASC");
     expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "ASC");
 
-    userEvent.selectOptions(selectSortDirection, "DESC");
+    await userEvent.selectOptions(selectSortDirection, "DESC");
     expect(selectSortDirection.value).toBe("DESC");
     expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.SortDirection", "DESC");
   });
 
-  test("when I select a pageSize, the state for pageSize changes", () => {
+  test("when I select a pageSize, the state for pageSize changes", async () => {
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
@@ -99,7 +99,7 @@ describe("JobsSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectPageSize = screen.getByLabelText("Page Size");
-    userEvent.selectOptions(selectPageSize, "200");
+    await userEvent.selectOptions(selectPageSize, "200");
     expect(selectPageSize.value).toBe("200");
     expect(setItemSpy).toHaveBeenCalledWith("JobsSearch.PageSize", "200");
   });

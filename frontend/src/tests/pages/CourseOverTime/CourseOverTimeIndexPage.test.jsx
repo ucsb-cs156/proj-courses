@@ -61,9 +61,9 @@ describe("CourseOverTimeIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
+    await userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    await userEvent.selectOptions(selectEndQuarter, "20222");
     const selectSubject = screen.getByLabelText("Subject Area");
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-ANTH";
@@ -71,15 +71,15 @@ describe("CourseOverTimeIndexPage tests", () => {
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
-    userEvent.selectOptions(selectSubject, "ANTH");
+    await userEvent.selectOptions(selectSubject, "ANTH");
     const enterCourseNumber = screen.getByLabelText("Course Number");
-    userEvent.type(enterCourseNumber, "130A");
+    await userEvent.type(enterCourseNumber, "130A");
 
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
-    userEvent.click(submitButton);
-
     axiosMock.resetHistory();
+
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
@@ -97,7 +97,12 @@ describe("CourseOverTimeIndexPage tests", () => {
 
   test("displays 'No courses found' message when search returns empty results", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock.onGet("/api/public/courseovertime/search").reply(200, []);
+    axiosMock.onGet("/api/public/courseovertime/search").reply(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve([200, []]), 100);
+        }),
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -108,9 +113,9 @@ describe("CourseOverTimeIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20221");
+    await userEvent.selectOptions(selectStartQuarter, "20221");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20221");
+    await userEvent.selectOptions(selectEndQuarter, "20221");
     const selectSubject = screen.getByLabelText("Subject Area");
 
     const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
@@ -118,12 +123,12 @@ describe("CourseOverTimeIndexPage tests", () => {
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
-    userEvent.selectOptions(selectSubject, "CMPSC");
+    await userEvent.selectOptions(selectSubject, "CMPSC");
     const enterCourseNumber = screen.getByLabelText("Course Number");
-    userEvent.type(enterCourseNumber, "1");
+    await userEvent.type(enterCourseNumber, "1");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -187,16 +192,16 @@ describe("CourseOverTimeIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20221");
+    await userEvent.selectOptions(selectStartQuarter, "20221");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20221");
+    await userEvent.selectOptions(selectEndQuarter, "20221");
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "CMPSC");
+    await userEvent.selectOptions(selectSubject, "CMPSC");
     const enterCourseNumber = screen.getByLabelText("Course Number");
-    userEvent.type(enterCourseNumber, "1");
+    await userEvent.type(enterCourseNumber, "1");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -239,20 +244,20 @@ describe("CourseOverTimeIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20221");
+    await userEvent.selectOptions(selectStartQuarter, "20221");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20221");
+    await userEvent.selectOptions(selectEndQuarter, "20221");
     const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
     await waitFor(() =>
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "CMPSC");
+    await userEvent.selectOptions(selectSubject, "CMPSC");
     const enterCourseNumber = screen.getByLabelText("Course Number");
-    userEvent.type(enterCourseNumber, "16");
+    await userEvent.type(enterCourseNumber, "16");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -284,20 +289,20 @@ describe("CourseOverTimeIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20221");
+    await userEvent.selectOptions(selectStartQuarter, "20221");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20221");
+    await userEvent.selectOptions(selectEndQuarter, "20221");
     const expectedKey = "CourseOverTimeSearch.Subject-option-CMPSC";
     await waitFor(() =>
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "CMPSC");
+    await userEvent.selectOptions(selectSubject, "CMPSC");
     const enterCourseNumber = screen.getByLabelText("Course Number");
-    userEvent.type(enterCourseNumber, "16");
+    await userEvent.type(enterCourseNumber, "16");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText("Title")).toBeInTheDocument();
@@ -332,16 +337,16 @@ describe("CourseOverTimeIndexPage tests", () => {
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20221");
+    await userEvent.selectOptions(selectStartQuarter, "20221");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20221");
+    await userEvent.selectOptions(selectEndQuarter, "20221");
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "CMPSC");
+    await userEvent.selectOptions(selectSubject, "CMPSC");
     const enterCourseNumber = screen.getByLabelText("Course Number");
-    userEvent.type(enterCourseNumber, "1");
+    await userEvent.type(enterCourseNumber, "1");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(

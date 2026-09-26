@@ -103,7 +103,7 @@ describe("PersonalSchedulesIndexPage tests", () => {
     );
   });
 
-  test("renders 'Add New Personal Schedule' button", () => {
+  test("renders 'Add New Personal Schedule' button", async () => {
     setupUserOnly();
     const queryClient = new QueryClient();
     axiosMock.onGet("/api/personalschedules/all").reply(200, []);
@@ -121,7 +121,7 @@ describe("PersonalSchedulesIndexPage tests", () => {
     });
     expect(addButton).toBeInTheDocument();
 
-    userEvent.click(addButton);
+    await userEvent.click(addButton);
   });
 
   test("renders three PersonalSchedules without crashing for admin user", async () => {

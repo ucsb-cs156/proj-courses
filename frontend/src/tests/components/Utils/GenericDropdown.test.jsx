@@ -31,7 +31,7 @@ describe("GenericDropdown tests", () => {
       await screen.findByLabelText("Select Pizza Topping"),
     ).toBeInTheDocument();
     const selectTopping = screen.getByLabelText("Select Pizza Topping");
-    userEvent.selectOptions(selectTopping, "Mushroom");
+    await userEvent.selectOptions(selectTopping, "Mushroom");
     expect(setPizzaTopping).toHaveBeenCalledWith("Mushroom");
   });
 

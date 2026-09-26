@@ -452,7 +452,7 @@
                                                     <srcfiles dir="${project.basedir}/frontend/node_modules" includes="**/*" />
                                                     <srcfiles dir="${project.basedir}/frontend/src" includes="**/*" />
                                                     <srcfiles dir="${project.basedir}/frontend/build" includes="**/*" />
-                                                    <srcfiles file="${project.basedir}/frontend/vite.config.js" />
+                                                    <srcfiles file="${project.basedir}/frontend/vite.config.mjs" />
                                                     <mapper type="merge" to="${project.build.outputDirectory}/public/index.html" />
                                                 </uptodate>
                                             </and>

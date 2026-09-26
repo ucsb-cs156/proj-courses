@@ -7,7 +7,7 @@ const config = {
     reporters: ["html", "clear-text", "progress"],
     testRunner: "vitest",
     vitest:{
-      configFile: "vite.config.js",
+      configFile: "vite.config.mjs",
     },
     mutate: ["src/main/**/*.js", "src/main/**/*.jsx", "!src/main/**/*_NoStryker.{js,jsx,ts,tsx}"],
     testRunner_comment:

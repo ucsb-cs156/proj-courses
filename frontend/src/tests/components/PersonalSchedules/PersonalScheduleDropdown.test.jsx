@@ -1,7 +1,6 @@
 import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom/extend-expect";
 import * as react from "react";
 
 import PersonalScheduleDropdown from "main/components/PersonalSchedules/PersonalScheduleDropdown";
@@ -66,7 +65,7 @@ describe("SingleSubjectDropdown tests", () => {
     );
     expect(await screen.findByLabelText("Schedule")).toBeInTheDocument();
     const selectSchedule = screen.getByLabelText("Schedule");
-    userEvent.selectOptions(selectSchedule, "1");
+    await userEvent.selectOptions(selectSchedule, "1");
     expect(setSchedule).toBeCalledWith("1");
   });
 
@@ -84,7 +83,7 @@ describe("SingleSubjectDropdown tests", () => {
 
     expect(await screen.findByLabelText("Schedule")).toBeInTheDocument();
     const selectSchedule = screen.getByLabelText("Schedule");
-    userEvent.selectOptions(selectSchedule, "1");
+    await userEvent.selectOptions(selectSchedule, "1");
     await waitFor(() => expect(setSchedule).toBeCalledWith("1"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
 

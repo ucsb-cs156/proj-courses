@@ -63,21 +63,21 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
+    await userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    await userEvent.selectOptions(selectEndQuarter, "20222");
     const enterInstructor = screen.getByLabelText("Instructor Name");
-    userEvent.type(enterInstructor, "CONRAD");
+    await userEvent.type(enterInstructor, "CONRAD");
     const selectCheckbox = screen.getByTestId(
       "CourseOverTimeInstructorSearchForm-checkbox",
     );
-    userEvent.click(selectCheckbox);
+    await userEvent.click(selectCheckbox);
 
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
-    userEvent.click(submitButton);
-
     axiosMock.resetHistory();
+
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
@@ -104,9 +104,12 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
 
   test("displays 'No courses found' message when search returns empty results", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock
-      .onGet("/api/public/courseovertime/instructorsearch")
-      .reply(200, []);
+    axiosMock.onGet("/api/public/courseovertime/instructorsearch").reply(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve([200, []]), 100);
+        }),
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -117,14 +120,14 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
+    await userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    await userEvent.selectOptions(selectEndQuarter, "20222");
     const enterInstructor = screen.getByLabelText("Instructor Name");
-    userEvent.type(enterInstructor, "CONRADDD");
+    await userEvent.type(enterInstructor, "CONRADDD");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -183,14 +186,14 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
+    await userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    await userEvent.selectOptions(selectEndQuarter, "20222");
     const enterInstructor = screen.getByLabelText("Instructor Name");
-    userEvent.type(enterInstructor, "CONRADDD");
+    await userEvent.type(enterInstructor, "CONRADDD");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -226,14 +229,14 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
+    await userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    await userEvent.selectOptions(selectEndQuarter, "20222");
     const enterInstructor = screen.getByLabelText("Instructor Name");
-    userEvent.type(enterInstructor, "CONRAD P T");
+    await userEvent.type(enterInstructor, "CONRAD P T");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -265,14 +268,14 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
+    await userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    await userEvent.selectOptions(selectEndQuarter, "20222");
     const enterInstructor = screen.getByLabelText("Instructor Name");
-    userEvent.type(enterInstructor, "CONRAD P T");
+    await userEvent.type(enterInstructor, "CONRAD P T");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText("CourseId")).toBeInTheDocument();
@@ -301,14 +304,14 @@ describe("CourseOverTimeInstructorIndexPage tests", () => {
     );
 
     const selectStartQuarter = screen.getByLabelText("Start Quarter");
-    userEvent.selectOptions(selectStartQuarter, "20222");
+    await userEvent.selectOptions(selectStartQuarter, "20222");
     const selectEndQuarter = screen.getByLabelText("End Quarter");
-    userEvent.selectOptions(selectEndQuarter, "20222");
+    await userEvent.selectOptions(selectEndQuarter, "20222");
     const enterInstructor = screen.getByLabelText("Instructor Name");
-    userEvent.type(enterInstructor, "CONRADDD");
+    await userEvent.type(enterInstructor, "CONRADDD");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(

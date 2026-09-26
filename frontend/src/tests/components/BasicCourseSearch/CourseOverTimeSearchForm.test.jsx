@@ -217,7 +217,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         ).toBeInTheDocument();
       });
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      userEvent.selectOptions(selectEndQuarter, "20204");
+      await userEvent.selectOptions(selectEndQuarter, "20204");
       expect(selectEndQuarter.value).toBe("20204");
 
       expect(getItemSpy).toHaveBeenCalledWith(
@@ -255,7 +255,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       expect(expectedKey).toBeInTheDocument();
 
       const selectSubject = screen.getByLabelText("Subject Area");
-      userEvent.selectOptions(selectSubject, "MATH");
+      await userEvent.selectOptions(selectSubject, "MATH");
 
       expect(selectSubject.value).toBe("MATH");
 
@@ -290,7 +290,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         ).toHaveValue("20201");
       });
       const selectCourseNumber = screen.getByLabelText("Course Number");
-      userEvent.type(selectCourseNumber, "24");
+      await userEvent.type(selectCourseNumber, "24");
       expect(selectCourseNumber.value).toBe("24");
 
       expect(getItemSpy).toHaveBeenCalledWith(
@@ -325,7 +325,7 @@ describe("CourseOverTimeSearchForm tests", () => {
       });
 
       const selectCourseNumber = screen.getByLabelText("Course Number");
-      userEvent.type(selectCourseNumber, "130A");
+      await userEvent.type(selectCourseNumber, "130A");
       expect(selectCourseNumber.value).toBe("130A");
 
       expect(getItemSpy).toHaveBeenCalledWith(
@@ -355,7 +355,7 @@ describe("CourseOverTimeSearchForm tests", () => {
         ).toHaveValue("20201");
       });
       const selectCourseNumber = screen.getByLabelText("Course Number");
-      userEvent.type(selectCourseNumber, "A");
+      await userEvent.type(selectCourseNumber, "A");
       expect(selectCourseNumber.value).toBe("A");
 
       expect(getItemSpy).toHaveBeenCalledWith(
@@ -412,16 +412,16 @@ describe("CourseOverTimeSearchForm tests", () => {
       expect(expectedKey).toBeInTheDocument();
 
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
-      userEvent.selectOptions(selectStartQuarter, "20211");
+      await userEvent.selectOptions(selectStartQuarter, "20211");
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      userEvent.selectOptions(selectEndQuarter, "20214");
+      await userEvent.selectOptions(selectEndQuarter, "20214");
       const selectSubject = screen.getByLabelText("Subject Area");
       expect(selectSubject).toBeInTheDocument();
-      userEvent.selectOptions(selectSubject, "CMPSC");
+      await userEvent.selectOptions(selectSubject, "CMPSC");
       const selectCourseNumber = screen.getByLabelText("Course Number");
-      userEvent.type(selectCourseNumber, "130A");
+      await userEvent.type(selectCourseNumber, "130A");
       const submitButton = screen.getByText("Submit");
-      userEvent.click(submitButton);
+      await userEvent.click(submitButton);
 
       await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
 
@@ -476,15 +476,15 @@ describe("CourseOverTimeSearchForm tests", () => {
       expect(expectedKey).toBeInTheDocument();
 
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
-      userEvent.selectOptions(selectStartQuarter, "20204");
+      await userEvent.selectOptions(selectStartQuarter, "20204");
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      userEvent.selectOptions(selectEndQuarter, "20204");
+      await userEvent.selectOptions(selectEndQuarter, "20204");
       const selectSubject = screen.getByLabelText("Subject Area");
-      userEvent.selectOptions(selectSubject, "CMPSC");
+      await userEvent.selectOptions(selectSubject, "CMPSC");
       const selectCourseNumber = screen.getByLabelText("Course Number");
-      userEvent.type(selectCourseNumber, "130A");
+      await userEvent.type(selectCourseNumber, "130A");
       const submitButton = screen.getByText("Submit");
-      userEvent.click(submitButton);
+      await userEvent.click(submitButton);
 
       expect(getItemSpy).toHaveBeenCalledWith(
         "CourseOverTimeSearch.StartQuarter",
@@ -732,16 +732,16 @@ describe("CourseOverTimeSearchForm tests", () => {
       expect(expectedKey).toBeInTheDocument();
 
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
-      userEvent.selectOptions(selectStartQuarter, "20211");
+      await userEvent.selectOptions(selectStartQuarter, "20211");
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      userEvent.selectOptions(selectEndQuarter, "20214");
+      await userEvent.selectOptions(selectEndQuarter, "20214");
       const selectSubject = screen.getByLabelText("Subject Area");
       expect(selectSubject).toBeInTheDocument();
-      userEvent.selectOptions(selectSubject, "CMPSC");
+      await userEvent.selectOptions(selectSubject, "CMPSC");
       const selectCourseNumber = screen.getByLabelText("Course Number");
-      userEvent.type(selectCourseNumber, "130ABC");
+      await userEvent.type(selectCourseNumber, "130ABC");
       const submitButton = screen.getByText("Submit");
-      userEvent.click(submitButton);
+      await userEvent.click(submitButton);
       await waitFor(() => {
         expect(
           screen.getByText(/Course Number is required./),
