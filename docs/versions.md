@@ -54,7 +54,13 @@ Notes from the move to node 24.21.0 (issue #355), useful as a checklist:
   * @testing-library/jest-dom 6+ has no `extend-expect` entrypoint (setup file already imports it).
   * eslint-plugin-react-hooks 7: use `configs.flat.recommended`; two new React Compiler rules
     (`set-state-in-effect`, `incompatible-library`) are turned off in `eslint.config.mjs`.
-  * recharts 3: the bar-rendering `waitFor` in `GradeHistoryGraph.test.jsx` needs a longer timeout.
+  * recharts 3 animates bars, so `.recharts-rectangle` elements appear only after the animation
+    (~1s idle, much longer under load). This passes in `npm test` but **fails in the Stryker dry run
+    on CI** (initial run aborts: "Test timed out"); raising timeouts does not reliably help. Fix: in the
+    test's `vi.mock("recharts")`, render `Bar` with `isAnimationActive={false}`.
+  * The CI mutation-testing job runs Stryker only on changed `src/main` files (and files whose tests
+    changed) and aborts if *any* test fails in its initial dry run, so a timing-sensitive test anywhere
+    in the suite can fail it even though `npm test` is green.
 * Held back on purpose:
   * `vitest`/`@vitest/coverage-v8` stay on 4.x: with vitest 5 Stryker maps no tests to mutants, so
     every mutant survives (score 4% instead of 100%).
