@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"update-node-24-lts","number":356,"title":"Update frontend for Node 24.21.0 LTS; upgrade dependencies (0 audit vulnerabilities)","url":"https://github.com/ucsb-cs156/proj-courses/pull/356"}]
