@@ -1,7 +1,6 @@
 import { vi } from "vitest";
 import React from "react";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AddToScheduleModal from "main/components/PersonalSchedules/AddToScheduleModal";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -121,6 +120,40 @@ describe("AddToScheduleModal", () => {
     const mockError = { response: { data: { message: "Stub Error" } } };
     onError(mockError);
     expect(toast).toHaveBeenCalledWith("Error: Stub Error");
+  });
+
+  test("onError falls back to error.message, then to a generic message", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AddToScheduleModal
+            quarter={quarter}
+            onAdd={mockOnAdd}
+            schedules={[]}
+            section="test-section"
+          />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const [, callbacks] = useBackendMutation.mock.lastCall;
+    const { onError } = callbacks;
+
+    // response present but no data
+    onError({ response: {}, message: "No Data" });
+    expect(toast).toHaveBeenLastCalledWith("Error: No Data");
+
+    // no response at all
+    onError({ message: "Network Error" });
+    expect(toast).toHaveBeenLastCalledWith("Error: Network Error");
+
+    // no message anywhere
+    onError({});
+    expect(toast).toHaveBeenLastCalledWith("Error: Unknown error");
+
+    // no error object
+    onError(undefined);
+    expect(toast).toHaveBeenLastCalledWith("Error: Unknown error");
   });
 
   test("has correct inline styles for create button", () => {

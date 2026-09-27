@@ -45,7 +45,7 @@ describe("SingleLevelDropdown tests", () => {
 
     expect(await screen.findByLabelText("Course Level")).toBeInTheDocument();
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "U");
+    await userEvent.selectOptions(selectLevel, "U");
     expect(setLevel).toBeCalledWith("U");
   });
 
@@ -63,7 +63,7 @@ describe("SingleLevelDropdown tests", () => {
 
     expect(await screen.findByLabelText("Course Level")).toBeInTheDocument();
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "U");
+    await userEvent.selectOptions(selectLevel, "U");
 
     await waitFor(() => expect(setLevel).toBeCalledWith("U"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));

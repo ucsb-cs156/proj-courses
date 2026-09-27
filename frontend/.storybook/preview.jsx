@@ -7,7 +7,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'; // All solid icons
 import { fab } from '@fortawesome/free-brands-svg-icons'; // All brand icons
 import { far } from '@fortawesome/free-regular-svg-icons'; // All regular icons
 
-import { initialize, mswLoader } from 'msw-storybook-addon'
+import { mswLoader } from 'msw-storybook-addon/csf3'
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -18,9 +18,6 @@ import { useEffect } from "react";
 library.add(fas, fab, far);
 
 const queryClient = new QueryClient();
-
-// Initialize MSW
-initialize()
 
 // For conditional decorators trick, see: https://github.com/storybookjs/storybook/issues/23237#issuecomment-1611351405 
 // Decorators are applied in order; the innermost decorator is applied first.
@@ -71,7 +68,7 @@ const preview = {
       },
     },
   },
-  loaders: [mswLoader]
+  loaders: [mswLoader()]
 };
 
 

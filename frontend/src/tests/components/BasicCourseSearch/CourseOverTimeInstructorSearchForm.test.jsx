@@ -52,7 +52,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       });
     });
 
-    test("when I select a start quarter, the state for start quarter changes", () => {
+    test("when I select a start quarter, the state for start quarter changes", async () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -61,11 +61,11 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         </QueryClientProvider>,
       );
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
-      userEvent.selectOptions(selectStartQuarter, "20201");
+      await userEvent.selectOptions(selectStartQuarter, "20201");
       expect(selectStartQuarter.value).toBe("20201");
     });
 
-    test("when I select an end quarter, the state for end quarter changes", () => {
+    test("when I select an end quarter, the state for end quarter changes", async () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -74,11 +74,11 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         </QueryClientProvider>,
       );
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      userEvent.selectOptions(selectEndQuarter, "20204");
+      await userEvent.selectOptions(selectEndQuarter, "20204");
       expect(selectEndQuarter.value).toBe("20204");
     });
 
-    test("when I select an instructor name, the state for instructor name changes", () => {
+    test("when I select an instructor name, the state for instructor name changes", async () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -87,11 +87,11 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
         </QueryClientProvider>,
       );
       const selectInstructor = screen.getByLabelText("Instructor Name");
-      userEvent.type(selectInstructor, "conrad");
+      await userEvent.type(selectInstructor, "conrad");
       expect(selectInstructor.value).toBe("conrad");
     });
 
-    test("when I select the checkbox, the state for checkbox changes", () => {
+    test("when I select the checkbox, the state for checkbox changes", async () => {
       vi.spyOn(Storage.prototype, "setItem");
 
       render(
@@ -104,7 +104,7 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       const selectCheckbox = screen.getByTestId(
         "CourseOverTimeInstructorSearchForm-checkbox",
       );
-      userEvent.click(selectCheckbox);
+      await userEvent.click(selectCheckbox);
       expect(selectCheckbox.checked).toBe(true);
       expect(localStorage.setItem).toBeCalledWith(
         "CourseOverTimeInstructorSearch.Checkbox",
@@ -138,17 +138,17 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       };
 
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
-      userEvent.selectOptions(selectStartQuarter, "20211");
+      await userEvent.selectOptions(selectStartQuarter, "20211");
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      userEvent.selectOptions(selectEndQuarter, "20214");
+      await userEvent.selectOptions(selectEndQuarter, "20214");
       const selectInstructor = screen.getByLabelText("Instructor Name");
-      userEvent.type(selectInstructor, "CONRAD");
+      await userEvent.type(selectInstructor, "CONRAD");
       const selectCheckbox = screen.getByTestId(
         "CourseOverTimeInstructorSearchForm-checkbox",
       );
-      userEvent.click(selectCheckbox);
+      await userEvent.click(selectCheckbox);
       const submitButton = screen.getByText("Submit");
-      userEvent.click(submitButton);
+      await userEvent.click(submitButton);
 
       await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
 
@@ -179,17 +179,17 @@ describe("CourseOverTimeInstructorSearchForm tests", () => {
       );
 
       const selectStartQuarter = screen.getByLabelText("Start Quarter");
-      userEvent.selectOptions(selectStartQuarter, "20204");
+      await userEvent.selectOptions(selectStartQuarter, "20204");
       const selectEndQuarter = screen.getByLabelText("End Quarter");
-      userEvent.selectOptions(selectEndQuarter, "20204");
+      await userEvent.selectOptions(selectEndQuarter, "20204");
       const selectInstructor = screen.getByLabelText("Instructor Name");
-      userEvent.type(selectInstructor, "conrad");
+      await userEvent.type(selectInstructor, "conrad");
       const selectCheckbox = screen.getByTestId(
         "CourseOverTimeInstructorSearchForm-checkbox",
       );
-      userEvent.click(selectCheckbox);
+      await userEvent.click(selectCheckbox);
       const submitButton = screen.getByText("Submit");
-      userEvent.click(submitButton);
+      await userEvent.click(submitButton);
     });
 
     test("Button padding is correct", () => {

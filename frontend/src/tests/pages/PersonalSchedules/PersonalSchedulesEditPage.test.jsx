@@ -142,7 +142,7 @@ describe("PersonalSchedulesEditPage tests", () => {
       );
     });
 
-    test("renders 'Back' button", () => {
+    test("renders 'Back' button", async () => {
       const queryClient = new QueryClient();
       axiosMock.onGet(`/api/personalschedules?id=17`).reply(200, []);
       axiosMock.onGet(`api/personalSections/all?psId=17`).reply(200, []);
@@ -159,7 +159,7 @@ describe("PersonalSchedulesEditPage tests", () => {
       expect(backButton).toBeInTheDocument();
 
       // Optional: Test button functionality
-      userEvent.click(backButton);
+      await userEvent.click(backButton);
       // Add your assertions here to ensure that clicking the button triggers the expected action.
     });
 

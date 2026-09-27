@@ -133,10 +133,10 @@ describe("GEAreaSearchForm tests", () => {
       expect(screen.getByText("Searching for B in M21")).toBeInTheDocument();
     });
 
-    test("selecting quarter updates state", () => {
+    test("selecting quarter updates state", async () => {
       render(<WrappedForm />);
       const quarterSelect = screen.getByLabelText("Quarter");
-      userEvent.selectOptions(quarterSelect, "20212");
+      await userEvent.selectOptions(quarterSelect, "20212");
       expect(quarterSelect.value).toBe("20212");
       expect(setItemSpy).toHaveBeenCalledWith("GEAreaSearch.Quarter", "20212");
     });
@@ -245,7 +245,7 @@ describe("GEAreaSearchForm tests", () => {
 
       await screen.findByTestId("GEAreaSearch.Area-option-B");
       const areaSelect = screen.getByLabelText("General Education Area");
-      userEvent.selectOptions(areaSelect, "B");
+      await userEvent.selectOptions(areaSelect, "B");
       expect(areaSelect.value).toBe("B");
     });
 
@@ -257,13 +257,13 @@ describe("GEAreaSearchForm tests", () => {
       await screen.findByTestId("GEAreaSearch.Area-option-A1");
 
       // choose quarter and area
-      userEvent.selectOptions(screen.getByLabelText("Quarter"), "20212");
-      userEvent.selectOptions(
+      await userEvent.selectOptions(screen.getByLabelText("Quarter"), "20212");
+      await userEvent.selectOptions(
         screen.getByLabelText("General Education Area"),
         "A1",
       );
 
-      userEvent.click(screen.getByRole("button", { name: /submit/i }));
+      await userEvent.click(screen.getByRole("button", { name: /submit/i }));
 
       await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
       expect(fetchJSONSpy).toHaveBeenCalledWith(expect.any(Object), {

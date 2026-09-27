@@ -66,7 +66,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20211");
+    await userEvent.selectOptions(selectQuarter, "20211");
     const selectSubject = screen.getByLabelText("Subject Area");
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
@@ -79,15 +79,15 @@ describe("CourseDescriptionIndexPage tests", () => {
       "ANTH",
     );
 
-    userEvent.selectOptions(selectSubject, "ANTH");
+    await userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
 
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
-    userEvent.click(submitButton);
-
     axiosMock.resetHistory();
+
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
@@ -104,7 +104,12 @@ describe("CourseDescriptionIndexPage tests", () => {
 
   test("displays 'No courses found' message when search returns empty results", async () => {
     axiosMock.onGet("/api/UCSBSubjects/all").reply(200, allTheSubjects);
-    axiosMock.onGet("/api/public/basicsearch").reply(200, { classes: [] });
+    axiosMock.onGet("/api/public/basicsearch").reply(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve([200, { classes: [] }]), 100);
+        }),
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -115,7 +120,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20211");
+    await userEvent.selectOptions(selectQuarter, "20211");
     const selectSubject = screen.getByLabelText("Subject Area");
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
@@ -124,12 +129,12 @@ describe("CourseDescriptionIndexPage tests", () => {
       expect(screen.getByTestId(expectedKey)).toBeInTheDocument(),
     );
 
-    userEvent.selectOptions(selectSubject, "ANTH");
+    await userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -193,7 +198,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     );
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -232,7 +237,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20211");
+    await userEvent.selectOptions(selectQuarter, "20211");
 
     const expectedKey = "BasicSearch.Subject-option-ANTH";
     await waitFor(() =>
@@ -240,7 +245,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     );
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -272,7 +277,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     );
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText("CMPSC")).toBeInTheDocument();
@@ -304,7 +309,7 @@ describe("CourseDescriptionIndexPage tests", () => {
     );
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(

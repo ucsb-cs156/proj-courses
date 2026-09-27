@@ -72,7 +72,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
     );
   });
 
-  test("when I select a quarter, the state for quarter changes", () => {
+  test("when I select a quarter, the state for quarter changes", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -81,7 +81,7 @@ describe("CourseOverTimeBuildingsSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20232");
+    await userEvent.selectOptions(selectQuarter, "20232");
     expect(selectQuarter.value).toBe("20232");
   });
 

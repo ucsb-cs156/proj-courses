@@ -1,7 +1,6 @@
 import { vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom/extend-expect";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
@@ -159,7 +158,7 @@ describe("SingleAreaDropdown tests", () => {
 
     const select = screen.getByLabelText("GE Area");
     await screen.findByTestId("SampleGEControlId-option-A1");
-    userEvent.selectOptions(select, "A1");
+    await userEvent.selectOptions(select, "A1");
     expect(setArea).toBeCalledWith("A1");
   });
 
@@ -179,7 +178,7 @@ describe("SingleAreaDropdown tests", () => {
     );
 
     const select = await screen.findByLabelText("GE Area");
-    userEvent.selectOptions(select, "ALL");
+    await userEvent.selectOptions(select, "ALL");
     expect(setArea).toBeCalledWith("ALL");
   });
 
@@ -206,7 +205,7 @@ describe("SingleAreaDropdown tests", () => {
     const select = screen.getByLabelText("GE Area");
 
     // Now that the option is loaded, select "A1"
-    userEvent.selectOptions(select, "A1");
+    await userEvent.selectOptions(select, "A1");
 
     // Wait for setArea to be called with "A1"
     await waitFor(() => expect(setArea).toBeCalledWith("A1"));
@@ -236,7 +235,7 @@ describe("SingleAreaDropdown tests", () => {
     );
 
     const select = await screen.findByLabelText("GE Area");
-    userEvent.selectOptions(select, "ALL");
+    await userEvent.selectOptions(select, "ALL");
     await waitFor(() => expect(setArea).toBeCalledWith("ALL"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
     expect(onChange.mock.calls[0][0].target.value).toBe("ALL");

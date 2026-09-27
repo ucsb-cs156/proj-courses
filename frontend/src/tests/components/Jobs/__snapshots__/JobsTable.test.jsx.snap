@@ -52,6 +52,7 @@ exports[`JobsTable tests > renders long logs and handles truncation (snapshot) 1
   </span>
   <br />
   <a
+    data-discover="true"
     href="/admin/jobs/logs/2"
   >
     See entire log

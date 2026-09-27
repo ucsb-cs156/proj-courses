@@ -53,7 +53,7 @@ describe("BasicCourseSearchForm tests", () => {
     );
   });
 
-  test("when I select a quarter, the state for quarter changes", () => {
+  test("when I select a quarter, the state for quarter changes", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -62,7 +62,7 @@ describe("BasicCourseSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20204");
+    await userEvent.selectOptions(selectQuarter, "20204");
     expect(selectQuarter.value).toBe("20204");
   });
 
@@ -83,12 +83,12 @@ describe("BasicCourseSearchForm tests", () => {
     );
 
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "MATH");
+    await userEvent.selectOptions(selectSubject, "MATH");
 
     expect(selectSubject.value).toBe("MATH");
   });
 
-  test("when I select a level, the state for level changes", () => {
+  test("when I select a level, the state for level changes", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -97,7 +97,7 @@ describe("BasicCourseSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
     expect(selectLevel.value).toBe("G");
   });
 
@@ -131,14 +131,14 @@ describe("BasicCourseSearchForm tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20211");
+    await userEvent.selectOptions(selectQuarter, "20211");
     const selectSubject = screen.getByLabelText("Subject Area");
     expect(selectSubject).toBeInTheDocument();
-    userEvent.selectOptions(selectSubject, "ANTH");
+    await userEvent.selectOptions(selectSubject, "ANTH");
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
 
@@ -174,13 +174,13 @@ describe("BasicCourseSearchForm tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20204");
+    await userEvent.selectOptions(selectQuarter, "20204");
     const selectSubject = screen.getByLabelText("Subject Area");
-    userEvent.selectOptions(selectSubject, "MATH");
+    await userEvent.selectOptions(selectSubject, "MATH");
     const selectLevel = screen.getByLabelText("Course Level");
-    userEvent.selectOptions(selectLevel, "G");
+    await userEvent.selectOptions(selectLevel, "G");
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
   });
 
   test("renders without crashing when fallback values are used", async () => {

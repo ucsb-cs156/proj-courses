@@ -21,7 +21,7 @@
         <app.packagePath>edu/ucsb/cs156/courses</app.packagePath>
         <targetClasses>${targetClasses:edu.ucsb.cs156.*}</targetClasses>
         <h2.version>2.2.224</h2.version>
-        <app.frontend.nodeVersion>v22.18.0</app.frontend.nodeVersion>
+        <app.frontend.nodeVersion>v24.21.0</app.frontend.nodeVersion>
         <cache.use>false</cache.use>
     </properties>
     <dependencies>
@@ -452,7 +452,7 @@
                                                     <srcfiles dir="${project.basedir}/frontend/node_modules" includes="**/*" />
                                                     <srcfiles dir="${project.basedir}/frontend/src" includes="**/*" />
                                                     <srcfiles dir="${project.basedir}/frontend/build" includes="**/*" />
-                                                    <srcfiles file="${project.basedir}/frontend/vite.config.js" />
+                                                    <srcfiles file="${project.basedir}/frontend/vite.config.mjs" />
                                                     <mapper type="merge" to="${project.build.outputDirectory}/public/index.html" />
                                                 </uptodate>
                                             </and>

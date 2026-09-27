@@ -93,7 +93,7 @@ describe("SingleQuarterSelector tests", () => {
     );
     expect(await screen.findByLabelText("Select Quarter")).toBeInTheDocument();
     const selectQuarter = screen.getByLabelText("Select Quarter");
-    userEvent.selectOptions(selectQuarter, "20213");
+    await userEvent.selectOptions(selectQuarter, "20213");
     expect(setQuarter).toBeCalledWith("20213");
   });
 
@@ -110,7 +110,7 @@ describe("SingleQuarterSelector tests", () => {
     );
     expect(await screen.findByLabelText("Select Quarter")).toBeInTheDocument();
     const selectQuarter = screen.getByLabelText("Select Quarter");
-    userEvent.selectOptions(selectQuarter, "ALL");
+    await userEvent.selectOptions(selectQuarter, "ALL");
     expect(selectQuarter.value).toBe("ALL");
   });
 
@@ -129,7 +129,7 @@ describe("SingleQuarterSelector tests", () => {
 
     expect(await screen.findByLabelText("Select Quarter")).toBeInTheDocument();
     const selectQuarter = screen.getByLabelText("Select Quarter");
-    userEvent.selectOptions(selectQuarter, "20213");
+    await userEvent.selectOptions(selectQuarter, "20213");
     await waitFor(() => expect(setQuarter).toBeCalledWith("20213"));
     await waitFor(() => expect(onChange).toBeCalledTimes(1));
 
@@ -155,7 +155,7 @@ describe("SingleQuarterSelector tests", () => {
 
     expect(await screen.findByLabelText("Select Quarter")).toBeInTheDocument();
     const selectQuarter = screen.getByLabelText("Select Quarter");
-    userEvent.selectOptions(selectQuarter, "ALL");
+    await userEvent.selectOptions(selectQuarter, "ALL");
     await waitFor(() => expect(setQuarter).toHaveBeenCalledWith("ALL"));
     await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
 

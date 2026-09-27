@@ -62,13 +62,13 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectBuilding = screen.getByLabelText("Building Name");
 
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await screen.findByTestId(expectedKey);
 
-    userEvent.selectOptions(selectBuilding, "GIRV");
+    await userEvent.selectOptions(selectBuilding, "GIRV");
 
     axiosMock.resetHistory();
 
@@ -76,7 +76,7 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
 
     const submitButton = screen.getByText("Submit");
     expect(submitButton).toBeInTheDocument();
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
@@ -569,7 +569,12 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
   });
 
   test("displays 'No courses found' message when search returns empty results", async () => {
-    axiosMock.onGet("/api/public/courseovertime/buildingsearch").reply(200, []);
+    axiosMock.onGet("/api/public/courseovertime/buildingsearch").reply(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => resolve([200, []]), 100);
+        }),
+    );
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -580,14 +585,14 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectBuilding = screen.getByLabelText("Building Name");
     const expectedKey = "CourseOverTimeBuildingsSearch.BuildingCode-option-0";
     await screen.findByTestId(expectedKey);
-    userEvent.selectOptions(selectBuilding, "ARTS");
+    await userEvent.selectOptions(selectBuilding, "ARTS");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -643,15 +648,15 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectBuilding = screen.getByLabelText("Building Name");
     await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
     );
-    userEvent.selectOptions(selectBuilding, "ARTS");
+    await userEvent.selectOptions(selectBuilding, "ARTS");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -686,15 +691,15 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectBuilding = screen.getByLabelText("Building Name");
     await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
     );
-    userEvent.selectOptions(selectBuilding, "GIRV");
+    await userEvent.selectOptions(selectBuilding, "GIRV");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/Loading courses.../i)).toBeInTheDocument();
@@ -725,15 +730,15 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectBuilding = screen.getByLabelText("Building Name");
     await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
     );
-    userEvent.selectOptions(selectBuilding, "GIRV");
+    await userEvent.selectOptions(selectBuilding, "GIRV");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText("Title")).toBeInTheDocument();
@@ -759,15 +764,15 @@ describe("CourseOverTimeBuildingsIndexPage tests", () => {
     );
 
     const selectQuarter = screen.getByLabelText("Quarter");
-    userEvent.selectOptions(selectQuarter, "20222");
+    await userEvent.selectOptions(selectQuarter, "20222");
     const selectBuilding = screen.getByLabelText("Building Name");
     await screen.findByTestId(
       "CourseOverTimeBuildingsSearch.BuildingCode-option-0",
     );
-    userEvent.selectOptions(selectBuilding, "ARTS");
+    await userEvent.selectOptions(selectBuilding, "ARTS");
 
     const submitButton = screen.getByText("Submit");
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await waitFor(() => {
       expect(

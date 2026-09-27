@@ -15,7 +15,7 @@ export default defineConfig({
     build: {
         outDir: "build", // Changes the output directory from 'dist' to 'build'
         chunkSizeWarningLimit: 512, // You can set this to a reasonable number slightly above your current chunk size
-        rollupOptions: {
+        rolldownOptions: {
             output: {
                 manualChunks: (id) => {
                     if (id.includes("node_modules")) {
@@ -40,9 +40,9 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            main: path.resolve(__dirname, "./src/main"),
-            fixtures: path.resolve(__dirname, "./src/fixtures"),
-            tests: path.resolve(__dirname, "./src/tests"),
+            main: path.resolve(import.meta.dirname, "./src/main"),
+            fixtures: path.resolve(import.meta.dirname, "./src/fixtures"),
+            tests: path.resolve(import.meta.dirname, "./src/tests"),
         },
     },
     server: {

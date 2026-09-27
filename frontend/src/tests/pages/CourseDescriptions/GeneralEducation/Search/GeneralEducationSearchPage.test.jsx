@@ -106,7 +106,7 @@ describe("GeneralEducationSearchPage tests", () => {
 
     render(<WrappedPage />);
 
-    userEvent.click(screen.getByText("Search GE"));
+    await userEvent.click(screen.getByText("Search GE"));
 
     expect(
       await screen.findByText(
@@ -133,7 +133,7 @@ describe("GeneralEducationSearchPage tests", () => {
     );
 
     render(<WrappedPage />);
-    userEvent.click(screen.getByText("Search GE"));
+    await userEvent.click(screen.getByText("Search GE"));
 
     expect(await screen.findByTestId("GEAreaCoursesTable")).toBeInTheDocument();
     expect(

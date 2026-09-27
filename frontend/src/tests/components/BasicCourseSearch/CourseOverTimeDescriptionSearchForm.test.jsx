@@ -125,7 +125,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       expect(localStorage.setItem).not.toHaveBeenCalledWith("", "20204");
     });
 
-    test("when I select the checkbox, the state for checkbox changes", () => {
+    test("when I select the checkbox, the state for checkbox changes", async () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
@@ -136,7 +136,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       const selectCheckbox = screen.getByTestId(
         "CourseOverTimeDescriptionSearchForm-checkbox",
       );
-      userEvent.click(selectCheckbox);
+      await userEvent.click(selectCheckbox);
       expect(selectCheckbox.checked).toBe(true);
       expect(localStorage.setItem).toBeCalledWith(
         "CourseOverTimeDescriptionSearch.LectureOnly",
@@ -295,7 +295,7 @@ describe("CourseOverTimeDescriptionSearchForm tests", () => {
       };
 
       const submitButton = screen.getByText("Submit");
-      userEvent.click(submitButton);
+      await userEvent.click(submitButton);
 
       await waitFor(() => expect(fetchJSONSpy).toHaveBeenCalledTimes(1));
 

@@ -37,7 +37,7 @@ describe("RateLimitedIPsSearchForm tests", () => {
     expect(screen.getByLabelText("Page Size")).toBeInTheDocument();
   });
 
-  test("when I select a sortField, the state for sortField changes", () => {
+  test("when I select a sortField, the state for sortField changes", async () => {
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
@@ -52,7 +52,7 @@ describe("RateLimitedIPsSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectSortField = screen.getByLabelText("Sort By");
-    userEvent.selectOptions(selectSortField, "lastRequestAt");
+    await userEvent.selectOptions(selectSortField, "lastRequestAt");
     expect(selectSortField.value).toBe("lastRequestAt");
     expect(setItemSpy).toHaveBeenCalledWith(
       "RateLimitedIPsSearch.SortField",
@@ -60,7 +60,7 @@ describe("RateLimitedIPsSearchForm tests", () => {
     );
   });
 
-  test("when I select a sortDirection, the state for sortDirection changes", () => {
+  test("when I select a sortDirection, the state for sortDirection changes", async () => {
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
@@ -75,7 +75,7 @@ describe("RateLimitedIPsSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectSortDirection = screen.getByLabelText("Sort Direction");
-    userEvent.selectOptions(selectSortDirection, "ASC");
+    await userEvent.selectOptions(selectSortDirection, "ASC");
     expect(selectSortDirection.value).toBe("ASC");
     expect(setItemSpy).toHaveBeenCalledWith(
       "RateLimitedIPsSearch.SortDirection",
@@ -83,7 +83,7 @@ describe("RateLimitedIPsSearchForm tests", () => {
     );
   });
 
-  test("when I select a pageSize, the state for pageSize changes", () => {
+  test("when I select a pageSize, the state for pageSize changes", async () => {
     const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
 
     render(
@@ -98,7 +98,7 @@ describe("RateLimitedIPsSearchForm tests", () => {
       </QueryClientProvider>,
     );
     const selectPageSize = screen.getByLabelText("Page Size");
-    userEvent.selectOptions(selectPageSize, "50");
+    await userEvent.selectOptions(selectPageSize, "50");
     expect(selectPageSize.value).toBe("50");
     expect(setItemSpy).toHaveBeenCalledWith(
       "RateLimitedIPsSearch.PageSize",

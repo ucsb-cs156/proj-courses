@@ -35,6 +35,9 @@ vi.mock("recharts", async () => {
 
   return {
     ...OriginalModule,
+    // recharts 3 animates bars, so the bar rectangles appear only after the animation
+    // runs; disable it so the tests are deterministic (also under Stryker's parallel runs).
+    Bar: (props) => <OriginalModule.Bar {...props} isAnimationActive={false} />,
     ResponsiveContainer: ({ height, children }) => (
       <OriginalModule.ResponsiveContainer width={800} height={height}>
         {children}
