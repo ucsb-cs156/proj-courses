@@ -99,12 +99,15 @@ describe("Grade history tests", () => {
       "grade-history-graphs",
     );
 
-    await waitFor(() => {
-      const bars = gradeHistoryGraphsContainer.querySelectorAll(
-        ".recharts-rectangle",
-      );
-      expect(bars.length).toBe(7);
-    });
+    await waitFor(
+      () => {
+        const bars = gradeHistoryGraphsContainer.querySelectorAll(
+          ".recharts-rectangle",
+        );
+        expect(bars.length).toBe(7);
+      },
+      { timeout: 5000 },
+    ); // recharts 3 renders bars asynchronously; the default 1000ms is too short under full-suite load
 
     const allWrappers =
       gradeHistoryGraphsContainer.querySelectorAll(".recharts-wrapper");

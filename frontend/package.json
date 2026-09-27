@@ -10,7 +10,7 @@
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
     "@fortawesome/free-regular-svg-icons": "^7.0.0",
     "@fortawesome/free-solid-svg-icons": "^7.0.0",
-    "@fortawesome/react-fontawesome": "^0.2.3",
+    "@fortawesome/react-fontawesome": "^3.5.0",
     "@tanstack/react-table": "^8.21.3",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/user-event": "^14.6.7",
@@ -21,12 +21,12 @@
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
-    "react-inspector": "^6.0.2",
+    "react-inspector": "^9.0.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^7.18.4",
-    "react-toastify": "^10.0.5",
+    "react-toastify": "^11.1.0",
     "react18-json-view": "^0.2.8",
-    "recharts": "^2.12.7"
+    "recharts": "^3.10.1"
   },
   "scripts": {
     "dev": "vite",
@@ -69,7 +69,7 @@
     "@stryker-mutator/vitest-runner": "^10.0.0",
     "@testing-library/react": "^16.0.0",
     "@vitejs/plugin-react-swc": "^4.3.3",
-    "@vitest/coverage-v8": "^5.0.2",
+    "@vitest/coverage-v8": "^4.1.11",
     "@vitest/eslint-plugin": "^1.6.27",
     "axios-mock-adapter": "^2.0.0",
     "eslint": "^9.39.5",
@@ -87,7 +87,7 @@
     "rollup-plugin-visualizer": "^7.1.1",
     "storybook": "^10.6.0",
     "vite": "^8.3.1",
-    "vitest": "^5.0.2"
+    "vitest": "^4.1.11"
   },
   "nyc": {
     "check-coverage": true,
