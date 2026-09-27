@@ -106,8 +106,8 @@ describe("Grade history tests", () => {
         );
         expect(bars.length).toBe(7);
       },
-      { timeout: 5000 },
-    ); // recharts 3 renders bars asynchronously; the default 1000ms is too short under full-suite load
+      { timeout: 20000 },
+    ); // recharts 3 animates the bars (~1s even when idle); default waitFor timeout is 1000ms
 
     const allWrappers =
       gradeHistoryGraphsContainer.querySelectorAll(".recharts-wrapper");
@@ -118,5 +118,5 @@ describe("Grade history tests", () => {
     fireEvent.mouseOver(element, { clientX: 200, clientY: 200 });
 
     expect(element).toBeVisible();
-  });
+  }, 30000); // per-test timeout must exceed the waitFor above: Stryker runs several instrumented workers in parallel on slow CI machines
 });
