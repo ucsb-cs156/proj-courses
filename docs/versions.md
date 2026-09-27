@@ -69,3 +69,12 @@ Notes from the move to node 24.21.0 (issue #355), useful as a checklist:
     moving to `@tanstack/react-query` is a separate migration. `react-query` 3 is also the source of
     the remaining `inflight`/`rimraf@3`/`glob@7` deprecation warnings.
   * `@tanstack/react-table` stays on 8 (9 is a rewrite); `graphql` stays on 16 (`msw` needs 16).
+  * Stryker 10's new `CallExpression` mutator (deletes bare call statements like
+    `localStorage.setItem(...)`) is excluded in `stryker.config.mjs` (`mutator.excludedMutations`).
+    With it on, the PR mutation job failed with survivors in `GenericDropdown`, `SingleAreaDropdown`,
+    `PersonalScheduleDropdown`, `GEAreaSearchForm`, `UpdatesSearchForm` (main, on Stryker 9, was 100% on
+    them). Re-enabling it needs new tests that assert those calls happen.
+  * The PR mutation job mutates every `src/main` file whose test file changed, so touching a test file
+    (e.g. removing `extend-expect`) exposes *pre-existing* survivors in the matching component. Here
+    `AddToScheduleModal.jsx`'s `onError` fallbacks had none killed on `main` either; a test was added.
+    To check a baseline, run Stryker on unmodified `main` for the same files.
