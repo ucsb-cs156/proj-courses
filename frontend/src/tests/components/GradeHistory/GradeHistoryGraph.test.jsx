@@ -35,6 +35,9 @@ vi.mock("recharts", async () => {
 
   return {
     ...OriginalModule,
+    // recharts 3 animates bars, so the bar rectangles appear only after the animation
+    // runs; disable it so the tests are deterministic (also under Stryker's parallel runs).
+    Bar: (props) => <OriginalModule.Bar {...props} isAnimationActive={false} />,
     ResponsiveContainer: ({ height, children }) => (
       <OriginalModule.ResponsiveContainer width={800} height={height}>
         {children}
@@ -99,15 +102,12 @@ describe("Grade history tests", () => {
       "grade-history-graphs",
     );
 
-    await waitFor(
-      () => {
-        const bars = gradeHistoryGraphsContainer.querySelectorAll(
-          ".recharts-rectangle",
-        );
-        expect(bars.length).toBe(7);
-      },
-      { timeout: 20000 },
-    ); // recharts 3 animates the bars (~1s even when idle); default waitFor timeout is 1000ms
+    await waitFor(() => {
+      const bars = gradeHistoryGraphsContainer.querySelectorAll(
+        ".recharts-rectangle",
+      );
+      expect(bars.length).toBe(7);
+    });
 
     const allWrappers =
       gradeHistoryGraphsContainer.querySelectorAll(".recharts-wrapper");
@@ -118,5 +118,5 @@ describe("Grade history tests", () => {
     fireEvent.mouseOver(element, { clientX: 200, clientY: 200 });
 
     expect(element).toBeVisible();
-  }, 30000); // per-test timeout must exceed the waitFor above: Stryker runs several instrumented workers in parallel on slow CI machines
+  });
 });
