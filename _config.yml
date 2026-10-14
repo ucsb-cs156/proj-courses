@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-playwright-runs-on","number":359,"title":"Use PLAYWRIGHT_RUNS_ON variable for integration workflow runners","url":"https://github.com/ucsb-cs156/proj-courses/pull/359"}]
