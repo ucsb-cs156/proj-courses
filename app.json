@@ -5,9 +5,8 @@
             "type":        "startup",
             "name":        "web check",
             "description": "Checking if the web server is up",
-            "attempts": 10,
-            "initialDelay": 20,
-            "wait": 5
+            "path":        "/",
+            "attempts": 3
         }
     ]
   }
