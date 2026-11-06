@@ -147,7 +147,7 @@
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo.spring3x</artifactId>
-            <version>4.24.0</version>
+            <version>4.33.0</version>
             <optional>true</optional>
         </dependency>
         <!-- Maven's nearest-wins mediation otherwise picks commons-io 2.16.1 (declared shallower
