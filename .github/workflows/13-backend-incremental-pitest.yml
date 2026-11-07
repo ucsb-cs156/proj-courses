@@ -13,6 +13,12 @@ on:
     branches: [ main ]
     paths: [src/**, pom.xml, lombok.config, .github/workflows/13-backend-incremental-pitest.yml]
 
+permissions:
+  contents: write
+  pages: write
+  pull-requests: read
+  actions: read
+
 jobs:
   call-backend-incremental-pitest:
     uses: ucsb-cs156/workflows/.github/workflows/13-backend-incremental-pitest.yml@main
