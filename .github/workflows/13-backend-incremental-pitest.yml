@@ -1,7 +1,9 @@
+# Runs the incremental pitest job first (fast, may reuse history), then the full
+# pitest job as a backstop only if the incremental job passes.
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: "13-backend-incremental-pitest: Java Mutation Testing (Pitest)"
+name: "13-backend-incremental-pitest: Java Mutation Testing (Pitest, incremental then full)"
 
 on:
   workflow_dispatch:
@@ -18,4 +20,13 @@ jobs:
       JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
       TIMEOUT: 20
     secrets:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  call-backend-pitest:
+    # Full (non-incremental) run; only starts once the faster incremental run has passed.
+    needs: call-backend-incremental-pitest
+    uses: ucsb-cs156/workflows/.github/workflows/14-backend-pitest.yml@main
+    with:
+      JAVA_DISTRIBUTION: ${{ vars.JAVA_DISTRIBUTION || 'temurin' }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
