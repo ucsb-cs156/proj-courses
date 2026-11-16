@@ -2,7 +2,10 @@ name: "37-frontend-storybook-coverage: Report components without stories"
 
 # Reports which React components and pages under frontend/src/main do not
 # have a matching story under frontend/src/stories.  The report appears in
-# the job summary of the workflow run (Actions tab -> this run -> Summary).
+# the job summary of the workflow run (Actions tab -> this run -> Summary),
+# and an HTML copy is published to this repo's GitHub Pages site at
+# storybook-coverage/ (pushes to main) or prs/<PR number>/storybook-coverage/
+# (pull requests); see the "Storybook Coverage" column on the site's index page.
 #
 # This is a thin wrapper around the reusable workflow in ucsb-cs156/workflows;
 # see https://github.com/ucsb-cs156/workflows/blob/main/.github/workflows/37-frontend-storybook-coverage.yml
@@ -22,8 +25,11 @@ on:
     branches: [main]
     paths: [frontend/src/**, .github/workflows/37-frontend-storybook-coverage.yml]
 
+# contents: write is needed to publish the HTML report to the gh-pages branch.
 permissions:
-  contents: read
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   call-frontend-storybook-coverage:
