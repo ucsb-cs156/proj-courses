@@ -4,48 +4,27 @@ name: "37-frontend-storybook-coverage: Report components without stories"
 # have a matching story under frontend/src/stories.  The report appears in
 # the job summary of the workflow run (Actions tab -> this run -> Summary).
 #
-# By default this workflow only *reports*; it never fails the build.
-# Once every component has a story, flip FAIL_ON_MISSING_STORIES below to
-# "true" and the check will fail whenever coverage drops below 100%.
+# This is a thin wrapper around the reusable workflow in ucsb-cs156/workflows;
+# see https://github.com/ucsb-cs156/workflows/blob/main/.github/workflows/37-frontend-storybook-coverage.yml
+#
+# By default this workflow only *reports*; it never fails the build.  Once
+# every component has a story, add
+#     with:
+#       FAIL_ON_MISSING_STORIES: true
+# under the `uses:` line below and the check will fail whenever coverage
+# drops below 100%.
 
 on:
   workflow_dispatch:
   pull_request:
-    paths:
-      - frontend/src/**
-      - scripts/storybook_coverage.py
-      - scripts/test_storybook_coverage.py
-      - .github/workflows/37-frontend-storybook-coverage.yml
+    paths: [frontend/src/**, .github/workflows/37-frontend-storybook-coverage.yml]
   push:
     branches: [main]
-    paths:
-      - frontend/src/**
-      - scripts/storybook_coverage.py
-      - scripts/test_storybook_coverage.py
-      - .github/workflows/37-frontend-storybook-coverage.yml
+    paths: [frontend/src/**, .github/workflows/37-frontend-storybook-coverage.yml]
 
-env:
-  # Set to "true" to make this check fail when any component lacks a story.
-  FAIL_ON_MISSING_STORIES: "false"
+permissions:
+  contents: read
 
 jobs:
-  storybook-coverage:
-    name: Storybook coverage report
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
-      - name: Run unit tests for the coverage script
-        run: python3 -m unittest scripts/test_storybook_coverage.py
-
-      - name: Report Storybook coverage
-        # The script prints a Markdown report and also appends it to
-        # $GITHUB_STEP_SUMMARY.  It exits non-zero only when
-        # FAIL_ON_MISSING_STORIES is "true" and at least one story is missing.
-        run: python3 scripts/storybook_coverage.py
+  call-frontend-storybook-coverage:
+    uses: ucsb-cs156/workflows/.github/workflows/37-frontend-storybook-coverage.yml@main
