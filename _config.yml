@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-37-use-reusable-workflow","number":369,"title":"Use reusable workflow 37-frontend-storybook-coverage from ucsb-cs156/workflows","url":"https://github.com/ucsb-cs156/proj-courses/pull/369"}]
