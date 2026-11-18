@@ -12,4 +12,4 @@ export JDBC_DATABASE_URL=jdbc:postgresql://$(echo "$DATABASE_URL" | cut --delimi
 
 export JDBC_DATABASE_USERNAME=postgres
 
-java -jar $1
+java -jar $1 -XX:-UseBASE64Intrinsics
