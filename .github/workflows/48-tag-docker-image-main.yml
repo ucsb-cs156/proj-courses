@@ -1,0 +1,74 @@
+name: "48-tag-docker-image-main"
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+
+concurrency:
+  group: ${{ github.workflow }}-main
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  publish-docker-image:
+    name: Publish Docker Image
+    runs-on: ubuntu-latest
+    outputs:
+      ghcr-url: ghcr.io/${{ steps.configure-vars.outputs.REPO }}:${{ steps.meta.outputs.version }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+      - name: Log in to the Container registry
+        uses: docker/login-action@v4.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v6.1.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=sha,format=long
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: flatten output for use with GHCR
+        id: configure-vars
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker images
+        id: push
+        uses: docker/build-push-action@v7.2.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=ghcr.io/${{ steps.configure-vars.outputs.REPO }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ steps.configure-vars.outputs.REPO }}:buildcache,mode=max
+  deploy:
+    if: ${{ vars.DEPLOY_PROD == 'true' }}
+    permissions:
+      id-token: write
+      actions: read
+      contents: read
+      pull-requests: read
+      deployments: write
+    needs: publish-docker-image
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ucsb-cs156/dokku-review-apps/.github/workflows/deploy-prod-app.yml@main
+    with:
+      docker_image: ${{ needs.publish-docker-image.outputs.ghcr-url }}
+    secrets:
+      PORT: ${{ secrets.PORT || 22 }}
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
