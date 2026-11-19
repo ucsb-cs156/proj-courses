@@ -182,12 +182,28 @@
     </dependencies>
 
     <repositories>
-        <!-- JitPack builds lib-jobs straight from its git tags -->
+        <!-- Google's read-only mirror of Maven Central. Maven consults repositories in this order, then
+             Maven Central itself (inherited from the Maven super-POM). If one of them fails to serve an
+             artifact, Maven falls through to the next, so either host being up is enough to build. -->
+        <repository>
+            <id>google-maven-central</id>
+            <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+        </repository>
+        <!-- JitPack builds lib-jobs straight from its git tags.
+             .mvn/rrf/groupId-jitpack.io.txt limits this repository to the com.github.ucsb-cs156 groupId. -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
+    <!-- Same fallback for Maven plugins (plugins are resolved from pluginRepositories, not repositories) -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>google-maven-central</id>
+            <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <plugins>
