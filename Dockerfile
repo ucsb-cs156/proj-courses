@@ -7,6 +7,7 @@ WORKDIR /home/app
 # have to reload them constantly.
 
 COPY pom.xml .
+COPY .mvn .mvn
 
 RUN mvn -Pproduction dependency:go-offline -B
 
