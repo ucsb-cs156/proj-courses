@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-courses
 owner: ucsb-cs156
 repo_name: proj-courses
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-375-maven-resilience","number":377,"title":"Make dependency resolution resilient to Maven Central outages (Google mirror; restrict jitpack.io)","url":"https://github.com/ucsb-cs156/proj-courses/pull/377"}]
+pull_requests: []
